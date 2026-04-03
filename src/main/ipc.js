@@ -133,9 +133,19 @@ $apps = Get-StartApps | ForEach-Object {
         if (-not $exePath -and $sc.TargetPath -and (Test-Path $sc.TargetPath)) {
           $exePath = $sc.TargetPath
         }
-        if (-not $exePath) { $exePath = $lnk.FullName }
       }
     } catch {}
+  }
+  # Resolve GUID-based AUMID like {GUID}\path\app.exe (e.g. BOINC, older Win32 apps)
+  if (-not $iconPath -and -not $exePath -and $appId -match '^\{[0-9A-Fa-f-]+\}\\(.+\.exe)$') {
+    $relPath = $Matches[1]
+    $searchDirs = @($env:ProgramFiles, ${env:ProgramFiles(x86)}, "$env:LOCALAPPDATA\Programs")
+    foreach ($dir in $searchDirs) {
+      if ($dir) {
+        $fullPath = Join-Path $dir $relPath
+        if (Test-Path $fullPath) { $exePath = $fullPath; break }
+      }
+    }
   }
   [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath }
 }
@@ -223,23 +233,32 @@ $apps | ConvertTo-Json -Depth 2
 }
 
 async function buildAppEntry(filePath) {
-  const { app } = require('electron');
   const name = path.basename(filePath, path.extname(filePath));
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+  // For .lnk files, resolve the shortcut target/IconLocation so we get the real
+  // app icon instead of the generic shortcut-overlay icon.
+  let iconSourcePath = filePath;
+  if (path.extname(filePath).toLowerCase() === '.lnk') {
+    const psPath = filePath.replace(/'/g, "''");
+    const resolved = await new Promise((resolve) => {
+      execFile('powershell.exe',
+        ['-NoProfile', '-NonInteractive', '-Command',
+         `$wsh=New-Object -ComObject WScript.Shell;$sc=$wsh.CreateShortcut('${psPath}');` +
+         `$i=($sc.IconLocation-split',')[0].Trim();$t=$sc.TargetPath;` +
+         `if($i-and(Test-Path $i)){Write-Output $i}elseif($t-and(Test-Path $t)){Write-Output $t}`],
+        { windowsHide: true, stdio: 'pipe', timeout: 5000 },
+        (err, stdout) => resolve(stdout ? stdout.trim() : null)
+      );
+    });
+    if (resolved) iconSourcePath = resolved;
+  }
+
   try {
-    const icon = await app.getFileIcon(filePath, { size: 'large' });
-    return {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      name,
-      path: filePath,
-      iconDataUrl: icon.toDataURL()
-    };
+    const icon = trimIcon(await app.getFileIcon(iconSourcePath, { size: 'large' }));
+    return { id, name, path: filePath, iconDataUrl: icon.toDataURL() };
   } catch {
-    return {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      name,
-      path: filePath,
-      iconDataUrl: ''
-    };
+    return { id, name, path: filePath, iconDataUrl: '' };
   }
 }
 
