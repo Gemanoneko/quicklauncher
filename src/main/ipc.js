@@ -149,7 +149,7 @@ $apps = Get-StartApps | ForEach-Object {
   # Resolve GUID-based AUMID like {GUID}\path\app.exe (e.g. BOINC, older Win32 apps)
   if (-not $iconPath -and -not $exePath -and $appId -match '^\{[0-9A-Fa-f-]+\}\\\\(.+\.exe)$') {
     $relPath = $Matches[1]
-    $searchDirs = @($env:ProgramFiles, ${env:ProgramFiles(x86)}, "$env:LOCALAPPDATA\Programs")
+    $searchDirs = @($env:ProgramFiles, \${env:ProgramFiles(x86)}, "$env:LOCALAPPDATA\Programs")
     foreach ($dir in $searchDirs) {
       if ($dir) {
         $fullPath = Join-Path $dir $relPath
