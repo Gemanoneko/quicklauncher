@@ -5,7 +5,7 @@ const { execFile } = require('child_process');
 const { sendToBottom } = require('./window');
 const { checkForUpdates } = require('./updater');
 
-// C# type injected into PowerShell to extract 256×256 (SHIL_JUMBO) icons.
+// C# type injected into PowerShell for high-quality icon/thumbnail extraction.
 const ICON_HELPER_CS = `
 using System;
 using System.Runtime.InteropServices;
@@ -28,6 +28,12 @@ public struct ShFI {
   [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string szDisplay;
   [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)] public string szType;
 }
+[StructLayout(LayoutKind.Sequential)]
+public struct ThumbSize { public int cx; public int cy; }
+[ComImport, Guid("bcc18b79-ba16-442f-80c4-8a59c30c463b"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+public interface IShellItemImageFactory {
+  [PreserveSig] int GetImage([In] ThumbSize sz, [In] int flags, out IntPtr phbm);
+}
 public static class IconHelper {
   [DllImport("shell32.dll", CharSet = CharSet.Auto)]
   static extern IntPtr SHGetFileInfo(string p, uint a, ref ShFI s, uint sz, uint f);
@@ -35,6 +41,11 @@ public static class IconHelper {
   static extern int SHGetImageList(int n, ref Guid g, out IImageList2 v);
   [DllImport("user32.dll")]
   static extern bool DestroyIcon(IntPtr h);
+  [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+  static extern int SHCreateItemFromParsingName(string path, IntPtr pbc, ref Guid riid, out IShellItemImageFactory ppv);
+  [DllImport("gdi32.dll")]
+  static extern bool DeleteObject(IntPtr h);
+  // 256x256 icon from the jumbo system image list (exe, lnk, cpl, etc.)
   public static string GetBase64(string path) {
     try {
       var s = new ShFI();
@@ -53,6 +64,24 @@ public static class IconHelper {
           return Convert.ToBase64String(ms.ToArray());
         }
       } finally { DestroyIcon(h); }
+    } catch { return null; }
+  }
+  // Shell thumbnail (folder stack previews, file previews) via IShellItemImageFactory
+  public static string GetThumbnailBase64(string path) {
+    try {
+      var riid = new Guid("bcc18b79-ba16-442f-80c4-8a59c30c463b");
+      IShellItemImageFactory factory;
+      if (SHCreateItemFromParsingName(path, IntPtr.Zero, ref riid, out factory) != 0) return null;
+      var sz = new ThumbSize { cx = 256, cy = 256 };
+      IntPtr hbm = IntPtr.Zero;
+      if (factory.GetImage(sz, 0, out hbm) != 0 || hbm == IntPtr.Zero) return null;
+      try {
+        using (var bmp = Image.FromHbitmap(hbm))
+        using (var ms = new MemoryStream()) {
+          bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+          return Convert.ToBase64String(ms.ToArray());
+        }
+      } finally { DeleteObject(hbm); }
     } catch { return null; }
   }
 }`;
@@ -338,6 +367,24 @@ $apps | ConvertTo-Json -Depth 2
   ipcMain.handle('hide-window', () => win.hide());
 }
 
+// Extract a shell thumbnail (folder stack preview, file preview) via IShellItemImageFactory.
+function getFolderThumbnailBase64(folderPath) {
+  return new Promise((resolve) => {
+    const escaped = folderPath.replace(/'/g, "''");
+    const ps = `try {
+  Add-Type -TypeDefinition @'
+${ICON_HELPER_CS}
+'@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue
+} catch {}
+$b = [IconHelper]::GetThumbnailBase64('${escaped}')
+if ($b) { Write-Output $b }`;
+    execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
+      { windowsHide: true, stdio: 'pipe', timeout: 15000 },
+      (err, stdout) => resolve(stdout ? stdout.trim() : null)
+    );
+  });
+}
+
 // Extract a 256×256 icon from an executable via the Windows jumbo image list.
 // Spawns a short PowerShell process (~1-2 s first call due to C# compilation).
 function getJumboIconBase64(exePath) {
@@ -363,7 +410,9 @@ async function buildAppEntry(filePath) {
 
   // For .lnk files, resolve the icon source via Electron's native readShortcutLink.
   // Prefer the explicit icon field; fall back to target (only if it's a file, not a folder).
+  // Track directory targets separately so we can fetch a shell thumbnail.
   let iconSourcePath = filePath;
+  let folderTarget = null;
   if (path.extname(filePath).toLowerCase() === '.lnk') {
     try {
       const info = shell.readShortcutLink(filePath);
@@ -374,7 +423,10 @@ async function buildAppEntry(filePath) {
       if (iconSourcePath === filePath && info.target) {
         const r = resolveIconPath(info.target) || info.target;
         try {
-          if (fs.existsSync(r) && !fs.statSync(r).isDirectory()) iconSourcePath = r;
+          if (fs.existsSync(r)) {
+            if (fs.statSync(r).isDirectory()) folderTarget = r;
+            else iconSourcePath = r;
+          }
         } catch { /* ignore */ }
       }
     } catch { /* fall through to .lnk itself */ }
@@ -386,20 +438,33 @@ async function buildAppEntry(filePath) {
   // .lnk included: SHGetFileInfo resolves the link and returns the target icon (no overlay)
   const execExts = new Set(['.exe', '.dll', '.cpl', '.scr', '.lnk']);
 
-  if (imageExts.has(srcExt)) {
-    // Image file: read at native resolution (supports 256×256 .ico)
-    try {
-      const img = trimIcon(nativeImage.createFromPath(iconSourcePath));
-      if (!img.isEmpty()) iconDataUrl = img.toDataURL();
-    } catch { /* fall through */ }
-  } else if (execExts.has(srcExt)) {
-    // Executable: use jumbo (256×256) extraction, fall back to getFileIcon
-    const b64 = await getJumboIconBase64(iconSourcePath);
+  // Folder target: try IShellItemImageFactory thumbnail (shows stack preview)
+  if (folderTarget) {
+    const b64 = await getFolderThumbnailBase64(folderTarget);
     if (b64) {
       try {
-        const img = trimIcon(nativeImage.createFromBuffer(Buffer.from(b64, 'base64')));
+        const img = nativeImage.createFromBuffer(Buffer.from(b64, 'base64'));
         if (!img.isEmpty()) iconDataUrl = img.toDataURL();
       } catch { /* fall through */ }
+    }
+  }
+
+  if (!iconDataUrl) {
+    if (imageExts.has(srcExt)) {
+      // Image file: read at native resolution (supports 256×256 .ico)
+      try {
+        const img = trimIcon(nativeImage.createFromPath(iconSourcePath));
+        if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+      } catch { /* fall through */ }
+    } else if (execExts.has(srcExt)) {
+      // Executable / shortcut: use jumbo (256×256) extraction
+      const b64 = await getJumboIconBase64(iconSourcePath);
+      if (b64) {
+        try {
+          const img = trimIcon(nativeImage.createFromBuffer(Buffer.from(b64, 'base64')));
+          if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+        } catch { /* fall through */ }
+      }
     }
   }
   if (!iconDataUrl) {
