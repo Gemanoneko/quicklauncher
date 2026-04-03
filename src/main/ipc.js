@@ -30,6 +30,13 @@ public struct ShFI {
 }
 [StructLayout(LayoutKind.Sequential)]
 public struct ThumbSize { public int cx; public int cy; }
+[StructLayout(LayoutKind.Sequential)]
+public struct BmpInfoHdr {
+  public int biSize, biWidth, biHeight; public short biPlanes, biBitCount;
+  public int biCompression, biSizeImage, biXPels, biYPels, biClrUsed, biClrImportant;
+}
+[StructLayout(LayoutKind.Sequential)]
+public struct BmpInfo { public BmpInfoHdr hdr; public int colors; }
 [ComImport, Guid("bcc18b79-ba16-442f-80c4-8a59c30c463b"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 public interface IShellItemImageFactory {
   [PreserveSig] int GetImage([In] ThumbSize sz, [In] int flags, out IntPtr phbm);
@@ -43,8 +50,10 @@ public static class IconHelper {
   static extern bool DestroyIcon(IntPtr h);
   [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
   static extern int SHCreateItemFromParsingName(string path, IntPtr pbc, ref Guid riid, out IShellItemImageFactory ppv);
-  [DllImport("gdi32.dll")]
-  static extern bool DeleteObject(IntPtr h);
+  [DllImport("gdi32.dll")] static extern bool DeleteObject(IntPtr h);
+  [DllImport("gdi32.dll")] static extern IntPtr CreateCompatibleDC(IntPtr h);
+  [DllImport("gdi32.dll")] static extern bool DeleteDC(IntPtr h);
+  [DllImport("gdi32.dll")] static extern int GetDIBits(IntPtr dc, IntPtr bm, uint s, uint l, byte[] b, ref BmpInfo bi, uint u);
   // 256x256 icon from the jumbo system image list (exe, lnk, cpl, etc.)
   public static string GetBase64(string path) {
     try {
@@ -66,20 +75,42 @@ public static class IconHelper {
       } finally { DestroyIcon(h); }
     } catch { return null; }
   }
-  // Shell thumbnail (folder stack previews, file previews) via IShellItemImageFactory
+  // Shell thumbnail via IShellItemImageFactory.
+  // Uses GetDIBits to read raw BGRA pixel data so the alpha channel is preserved
+  // (Image.FromHbitmap strips alpha, turning transparent areas white).
   public static string GetThumbnailBase64(string path) {
     try {
       var riid = new Guid("bcc18b79-ba16-442f-80c4-8a59c30c463b");
-      IShellItemImageFactory factory;
-      if (SHCreateItemFromParsingName(path, IntPtr.Zero, ref riid, out factory) != 0) return null;
+      IShellItemImageFactory fac;
+      if (SHCreateItemFromParsingName(path, IntPtr.Zero, ref riid, out fac) != 0) return null;
       var sz = new ThumbSize { cx = 256, cy = 256 };
       IntPtr hbm = IntPtr.Zero;
-      if (factory.GetImage(sz, 0, out hbm) != 0 || hbm == IntPtr.Zero) return null;
+      if (fac.GetImage(sz, 0, out hbm) != 0 || hbm == IntPtr.Zero) return null;
       try {
-        using (var bmp = Image.FromHbitmap(hbm))
-        using (var ms = new MemoryStream()) {
-          bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-          return Convert.ToBase64String(ms.ToArray());
+        const int W = 256, H = 256;
+        var bi = new BmpInfo();
+        bi.hdr.biSize = Marshal.SizeOf(typeof(BmpInfoHdr));
+        bi.hdr.biWidth = W; bi.hdr.biHeight = -H;
+        bi.hdr.biPlanes = 1; bi.hdr.biBitCount = 32;
+        bi.hdr.biCompression = 0;
+        var pix = new byte[W * H * 4];
+        var hdc = CreateCompatibleDC(IntPtr.Zero);
+        try { GetDIBits(hdc, hbm, 0, (uint)H, pix, ref bi, 0); }
+        finally { DeleteDC(hdc); }
+        // If no pixel has non-zero alpha the channel is absent — make fully opaque
+        bool hasAlpha = false;
+        for (int i = 3; i < pix.Length; i += 4) { if (pix[i] != 0) { hasAlpha = true; break; } }
+        if (!hasAlpha) for (int i = 3; i < pix.Length; i += 4) pix[i] = 255;
+        using (var result = new Bitmap(W, H, System.Drawing.Imaging.PixelFormat.Format32bppArgb)) {
+          var bd = result.LockBits(new Rectangle(0, 0, W, H),
+                                   System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                                   System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+          Marshal.Copy(pix, 0, bd.Scan0, pix.Length);
+          result.UnlockBits(bd);
+          using (var ms = new MemoryStream()) {
+            result.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            return Convert.ToBase64String(ms.ToArray());
+          }
         }
       } finally { DeleteObject(hbm); }
     } catch { return null; }
