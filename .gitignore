@@ -2,3 +2,5 @@ node_modules/
 dist/
 .env
 *.log
+*.ps1
+.claude/
