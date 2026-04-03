@@ -38,9 +38,7 @@
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": false,
       "createStartMenuShortcut": true,
-      "runAfterFinish": true,
-      "installerIcon": "icon.png",
-      "uninstallerIcon": "icon.png"
+      "runAfterFinish": true
     },
     "publish": {
       "provider": "github",
