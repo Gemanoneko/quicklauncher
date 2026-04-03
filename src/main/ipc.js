@@ -338,6 +338,25 @@ $apps | ConvertTo-Json -Depth 2
   ipcMain.handle('hide-window', () => win.hide());
 }
 
+// Extract a 256×256 icon from an executable via the Windows jumbo image list.
+// Spawns a short PowerShell process (~1-2 s first call due to C# compilation).
+function getJumboIconBase64(exePath) {
+  return new Promise((resolve) => {
+    const escaped = exePath.replace(/'/g, "''");
+    const ps = `try {
+  Add-Type -TypeDefinition @'
+${ICON_HELPER_CS}
+'@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue
+} catch {}
+$b = [IconHelper]::GetBase64('${escaped}')
+if ($b) { Write-Output $b }`;
+    execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
+      { windowsHide: true, stdio: 'pipe', timeout: 15000 },
+      (err, stdout) => resolve(stdout ? stdout.trim() : null)
+    );
+  });
+}
+
 async function buildAppEntry(filePath) {
   const name = path.basename(filePath, path.extname(filePath));
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -362,16 +381,32 @@ async function buildAppEntry(filePath) {
   }
 
   let iconDataUrl = '';
-  try {
-    const imageExts = new Set(['.ico', '.png', '.jpg', '.jpeg', '.bmp']);
-    let img;
-    if (imageExts.has(path.extname(iconSourcePath).toLowerCase())) {
-      img = trimIcon(nativeImage.createFromPath(iconSourcePath));
-    } else {
-      img = trimIcon(await app.getFileIcon(iconSourcePath, { size: 'large' }));
+  const srcExt = path.extname(iconSourcePath).toLowerCase();
+  const imageExts = new Set(['.ico', '.png', '.jpg', '.jpeg', '.bmp']);
+  const execExts = new Set(['.exe', '.dll', '.cpl', '.scr']);
+
+  if (imageExts.has(srcExt)) {
+    // Image file: read at native resolution (supports 256×256 .ico)
+    try {
+      const img = trimIcon(nativeImage.createFromPath(iconSourcePath));
+      if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+    } catch { /* fall through */ }
+  } else if (execExts.has(srcExt)) {
+    // Executable: use jumbo (256×256) extraction, fall back to getFileIcon
+    const b64 = await getJumboIconBase64(iconSourcePath);
+    if (b64) {
+      try {
+        const img = trimIcon(nativeImage.createFromBuffer(Buffer.from(b64, 'base64')));
+        if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+      } catch { /* fall through */ }
     }
-    if (!img.isEmpty()) iconDataUrl = img.toDataURL();
-  } catch { /* leave empty */ }
+  }
+  if (!iconDataUrl) {
+    try {
+      const img = trimIcon(await app.getFileIcon(iconSourcePath, { size: 'large' }));
+      if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+    } catch { /* leave empty */ }
+  }
   return { id, name, path: filePath, iconDataUrl };
 }
 
