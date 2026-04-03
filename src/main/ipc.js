@@ -262,7 +262,8 @@ async function buildAppEntry(filePath) {
       execFile('powershell.exe',
         ['-NoProfile', '-NonInteractive', '-Command',
          `$wsh=New-Object -ComObject WScript.Shell;$sc=$wsh.CreateShortcut('${psPath}');` +
-         `$i=($sc.IconLocation-split',')[0].Trim();$t=$sc.TargetPath;` +
+         `$i=[Environment]::ExpandEnvironmentVariables(($sc.IconLocation-split',')[0].Trim());` +
+         `$t=[Environment]::ExpandEnvironmentVariables($sc.TargetPath);` +
          `if($i-and(Test-Path $i)){Write-Output $i}elseif($t-and(Test-Path $t)){Write-Output $t}`],
         { windowsHide: true, stdio: 'pipe', timeout: 5000 },
         (err, stdout) => resolve(stdout ? stdout.trim() : null)
