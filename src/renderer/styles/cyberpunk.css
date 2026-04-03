@@ -907,3 +907,525 @@ html.theme-alien .rename-input         { border-radius: 0; background: rgba(24,1
 html.theme-alien #update-banner        { background: rgba(64,208,64,0.05); border-top-color: rgba(64,208,64,0.25); }
 html.theme-alien .skin-btn             { border-radius: 0; }
 html.theme-alien .skin-btn.active      { background: rgba(24,176,24,0.15); }
+
+/* ══ TRON theme ══════════════════════════════════════════════════════════════════
+   The Grid. A digital frontier. Ice-blue circuits on absolute black.
+   Glow is tight and precise — light travels in straight lines here.             */
+html.theme-tron {
+  --bg:        rgba(0, 2, 8, 0.97);
+  --panel-bg:  rgba(0, 3, 12, 0.99);
+  --accent-c:  #6de8ff;   /* ice blue / program color */
+  --accent-m:  #ff8800;   /* orange / identity disc */
+  --accent-y:  #ffffff;
+  --text:      #80c0d0;
+  --text-dim:  rgba(128, 192, 208, 0.36);
+  --border:    rgba(109, 232, 255, 0.20);
+  --border-h:  rgba(109, 232, 255, 0.55);
+  --glow-c:    0 0 4px rgba(109,232,255,1.0), 0 0 14px rgba(109,232,255,.40);
+  --glow-m:    0 0 4px rgba(255,136,0,1.0),   0 0 14px rgba(255,136,0,.40);
+  --glow-y:    0 0 4px rgba(255,255,255,.9),  0 0 14px rgba(255,255,255,.30);
+  --radius:    0px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* Perfect rectangle — geometry is everything on the Grid */
+html.theme-tron #app {
+  clip-path: none;
+  border-radius: 0;
+  border: 1px solid rgba(109,232,255,0.30);
+  box-shadow: inset 0 0 40px rgba(109,232,255,0.03);
+}
+html.theme-tron #app::before {
+  clip-path: none;
+  border-radius: 0;
+  animation: tron-grid-pulse 5s ease-in-out infinite;
+}
+@keyframes tron-grid-pulse {
+  0%, 100% { border-color: rgba(109,232,255,0.20); }
+  50%       { border-color: rgba(109,232,255,0.50); box-shadow: inset 0 0 20px rgba(109,232,255,0.05); }
+}
+html.theme-tron .overlay { clip-path: none; border-radius: 0; }
+
+/* Subtle horizontal grid lines — the floor of the Grid */
+html.theme-tron #app::after {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px, transparent 19px,
+    rgba(109,232,255,0.03) 19px, rgba(109,232,255,0.03) 20px
+  );
+  animation: none;
+}
+
+/* Header: circuit board aesthetic */
+html.theme-tron #header {
+  background: rgba(109,232,255,0.04);
+  border-bottom: 1px solid rgba(109,232,255,0.22);
+}
+html.theme-tron #header::before { background: var(--accent-c); box-shadow: var(--glow-c); }
+
+/* Title: Consolas, precise glow, circuit-initialization burst */
+html.theme-tron #title {
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  text-shadow: var(--glow-c);
+  animation: tron-init 8s linear infinite;
+}
+html.theme-tron .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
+@keyframes tron-init {
+  0%, 88%, 100% { opacity: 1;   text-shadow: var(--glow-c); }
+  90%           { opacity: 0.2; text-shadow: none; }
+  91%           { opacity: 1;   text-shadow: 0 0 20px rgba(255,255,255,1), 0 0 4px rgba(109,232,255,1); }
+  92%           { opacity: 0.4; text-shadow: none; }
+  93%           { opacity: 1;   text-shadow: var(--glow-c); }
+}
+
+/* Tiles */
+html.theme-tron .app-tile              { border-radius: 0; }
+html.theme-tron .app-tile:hover        { background: rgba(109,232,255,0.05); border-color: rgba(109,232,255,0.32); box-shadow: 0 0 12px rgba(109,232,255,0.08); }
+html.theme-tron .app-tile:active       { background: rgba(109,232,255,0.10); transform: none; }
+html.theme-tron .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 7px rgba(109,232,255,.60)) drop-shadow(0 2px 4px rgba(0,0,0,.8));
+}
+
+/* Edit bar — identity disc orange */
+html.theme-tron #edit-bar             { background: rgba(255,136,0,0.05); border-top-color: rgba(255,136,0,0.30); }
+html.theme-tron .edit-label           { color: var(--accent-m); text-shadow: var(--glow-m); }
+html.theme-tron #btn-done-edit        { color: var(--accent-m); border-color: rgba(255,136,0,0.35); }
+html.theme-tron #btn-done-edit:hover  { background: rgba(255,136,0,0.09); border-color: var(--accent-m); box-shadow: var(--glow-m); }
+
+/* Buttons */
+html.theme-tron button                { border-radius: 0; }
+html.theme-tron button:hover          { background: rgba(109,232,255,0.08); }
+html.theme-tron button:active         { background: rgba(109,232,255,0.16); }
+html.theme-tron .btn-remove           { border-radius: 0; background: rgba(255,136,0,0.80); border-color: var(--accent-m); }
+html.theme-tron .btn-remove:hover     { background: var(--accent-m); box-shadow: var(--glow-m); }
+
+/* Picker */
+html.theme-tron .picker-item          { border-radius: 0; }
+html.theme-tron .picker-item:hover    { background: rgba(109,232,255,0.06); }
+html.theme-tron .picker-item:active   { background: rgba(109,232,255,0.12); }
+html.theme-tron .picker-search        { background: rgba(109,232,255,0.05); border-radius: 0; }
+html.theme-tron .picker-icon-placeholder { background: rgba(109,232,255,0.07); border-radius: 0; }
+
+/* Misc */
+html.theme-tron .drop-hint-inner      { border-color: rgba(109,232,255,0.18); border-radius: 0; }
+html.theme-tron .hint-sub             { color: rgba(109,232,255,0.22); }
+html.theme-tron .rename-input         { border-radius: 0; background: rgba(109,232,255,0.07); }
+html.theme-tron #update-banner        { background: rgba(255,136,0,0.05); border-top-color: rgba(255,136,0,0.28); }
+html.theme-tron .skin-btn             { border-radius: 0; }
+html.theme-tron .skin-btn.active      { background: rgba(109,232,255,0.14); }
+
+/* ══ LCARS theme ══════════════════════════════════════════════════════════════════
+   Starfleet Library Computer Access and Retrieval System, 24th century.
+   Flat color blocks, rounded organics, zero glow — information architecture.    */
+html.theme-lcars {
+  --bg:        rgba(0, 0, 4, 0.97);
+  --panel-bg:  rgba(2, 0, 8, 0.99);
+  --accent-c:  #ff9900;   /* LCARS orange */
+  --accent-m:  #cc88ff;   /* LCARS lavender */
+  --accent-y:  #ffcc44;   /* LCARS yellow */
+  --text:      #ddbbff;
+  --text-dim:  rgba(221, 187, 255, 0.38);
+  --border:    rgba(255, 153, 0, 0.32);
+  --border-h:  rgba(255, 153, 0, 0.65);
+  --glow-c:    none;      /* LCARS is flat — Starfleet screens don't glow */
+  --glow-m:    none;
+  --glow-y:    none;
+  --radius:    10px;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+}
+
+/* Rounded LCARS panel — pill-like architecture */
+html.theme-lcars #app {
+  clip-path: none;
+  border-radius: 12px;
+  border: 0;
+  box-shadow: none;
+}
+html.theme-lcars #app::before {
+  clip-path: none;
+  border-radius: 12px;
+  border: 2px solid rgba(255,153,0,0.40);
+  animation: none;
+}
+html.theme-lcars .overlay { clip-path: none; border-radius: 12px; }
+
+/* No scanlines — Starfleet displays are clean */
+html.theme-lcars #app::after { display: none; }
+
+/* Header: LCARS top bar with thick orange left block */
+html.theme-lcars #header {
+  background: rgba(255,153,0,0.07);
+  border-bottom: 2px solid #ff9900;
+  border-radius: 12px 12px 0 0;
+}
+html.theme-lcars #header::before {
+  top: 0; bottom: 0;
+  width: 8px;
+  background: #ff9900;
+  box-shadow: none;
+  border-radius: 12px 0 0 0;
+}
+
+/* Title: clean bold sans, no animation — a computer at work, not a display */
+html.theme-lcars #title {
+  font-family: 'Arial', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-shadow: none;
+  color: var(--accent-c);
+  animation: none;
+}
+html.theme-lcars .accent          { color: var(--accent-m); }
+html.theme-lcars #header-version  { color: rgba(255,153,0,0.50); }
+
+/* Tiles */
+html.theme-lcars .app-tile:hover  { background: rgba(255,153,0,0.07); border-color: rgba(255,153,0,0.35); box-shadow: none; }
+html.theme-lcars .app-tile:active { background: rgba(255,153,0,0.14); }
+html.theme-lcars .app-tile:hover .tile-icon { filter: none; }
+
+/* Edit bar */
+html.theme-lcars #edit-bar    { background: rgba(204,136,255,0.07); border-top: 2px solid rgba(204,136,255,0.45); }
+html.theme-lcars .edit-label  { color: var(--accent-m); text-shadow: none; }
+
+/* Buttons: flat LCARS pill shape */
+html.theme-lcars button              { border-radius: var(--radius); }
+html.theme-lcars button:hover        { background: rgba(255,153,0,0.12); border-color: #ff9900; box-shadow: none; color: #ff9900; }
+html.theme-lcars button:active       { background: rgba(255,153,0,0.22); }
+html.theme-lcars #btn-done-edit      { color: var(--accent-m); border-color: rgba(204,136,255,0.40); }
+html.theme-lcars #btn-done-edit:hover { background: rgba(204,136,255,0.12); border-color: var(--accent-m); box-shadow: none; color: var(--accent-m); }
+html.theme-lcars #btn-close-settings { color: var(--accent-m); border-color: rgba(204,136,255,0.40); }
+html.theme-lcars #btn-close-settings:hover { background: rgba(204,136,255,0.12); border-color: var(--accent-m); box-shadow: none; }
+html.theme-lcars .btn-remove         { border-radius: 50%; background: rgba(204,136,255,0.80); border-color: var(--accent-m); }
+html.theme-lcars .btn-remove:hover   { background: var(--accent-m); box-shadow: none; }
+
+/* Overlay */
+html.theme-lcars .overlay-title      { border-bottom: 2px solid #ff9900; text-shadow: none; }
+html.theme-lcars .overlay-footer     { border-top-color: rgba(255,153,0,0.25); }
+
+/* Picker */
+html.theme-lcars .picker-item:hover    { background: rgba(255,153,0,0.07); }
+html.theme-lcars .picker-item:active   { background: rgba(255,153,0,0.14); }
+html.theme-lcars .picker-search        { background: rgba(255,153,0,0.06); }
+html.theme-lcars .picker-search:focus  { border-color: #ff9900; box-shadow: none; }
+html.theme-lcars .picker-icon-placeholder { background: rgba(255,153,0,0.08); }
+
+/* Misc */
+html.theme-lcars .drop-hint-inner  { border-color: rgba(255,153,0,0.25); border-style: solid; }
+html.theme-lcars .hint-sub         { color: rgba(255,153,0,0.25); }
+html.theme-lcars .rename-input     { box-shadow: none; }
+html.theme-lcars #update-banner    { background: rgba(255,204,68,0.07); border-top: 2px solid rgba(255,204,68,0.45); }
+html.theme-lcars .update-btn       { border-radius: var(--radius); }
+html.theme-lcars .skin-btn.active  { background: rgba(255,153,0,0.18); box-shadow: none; }
+
+/* ══ PIP-BOY theme ════════════════════════════════════════════════════════════════
+   Vault-Tec Pip-Boy 3000 Mark IV. Nuclear-age optimism, circa 2070s.
+   Warm yellow-green phosphor, rounded vault-tech shapes, blocky bold type.      */
+html.theme-pip-boy {
+  --bg:        rgba(2, 6, 0, 0.96);
+  --panel-bg:  rgba(2, 8, 0, 0.98);
+  --accent-c:  #92c800;   /* Pip-Boy warm yellow-green */
+  --accent-m:  #5a9000;
+  --accent-y:  #cae840;
+  --text:      #78a028;
+  --text-dim:  rgba(120, 160, 40, 0.38);
+  --border:    rgba(146, 200, 0, 0.22);
+  --border-h:  rgba(146, 200, 0, 0.52);
+  --glow-c:    0 0 6px rgba(146,200,0,.65), 0 0 18px rgba(146,200,0,.22);
+  --glow-m:    0 0 6px rgba(90,144,0,.65),  0 0 18px rgba(90,144,0,.22);
+  --glow-y:    0 0 6px rgba(202,232,64,.65),0 0 18px rgba(202,232,64,.22);
+  --radius:    6px;
+  font-family: 'Arial Black', 'Impact', 'Arial', sans-serif;
+}
+
+/* Rounded vault-tech shape — bolted panels, not angular chrome */
+html.theme-pip-boy #app {
+  clip-path: none;
+  border-radius: 6px;
+  border: 2px solid rgba(146,200,0,0.28);
+  box-shadow: 0 0 20px rgba(146,200,0,0.08), inset 0 0 30px rgba(0,0,0,0.3);
+}
+html.theme-pip-boy #app::before {
+  clip-path: none;
+  border-radius: 6px;
+  animation: pip-border-pulse 4s ease-in-out infinite;
+}
+@keyframes pip-border-pulse {
+  0%, 100% { border-color: rgba(146,200,0,0.20); }
+  50%       { border-color: rgba(146,200,0,0.48); }
+}
+html.theme-pip-boy .overlay { clip-path: none; border-radius: 6px; }
+
+/* Warm scanlines — the Pip-Boy screen runs a little hot */
+html.theme-pip-boy #app::after {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px, transparent 2px,
+    rgba(0,0,0,0.14) 2px, rgba(0,0,0,0.14) 3px
+  );
+  animation: none;
+}
+
+/* Header */
+html.theme-pip-boy #header {
+  background: rgba(146,200,0,0.04);
+  border-bottom: 2px solid rgba(146,200,0,0.24);
+  border-radius: 4px 4px 0 0;
+}
+html.theme-pip-boy #header::before { background: var(--accent-c); box-shadow: var(--glow-c); }
+
+/* Title: blocky bold, Vault-Tec signage style, boot-up flash */
+html.theme-pip-boy #title {
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-shadow: var(--glow-c);
+  animation: pip-boot 7s ease-in-out infinite;
+}
+@keyframes pip-boot {
+  0%, 84%, 100% { opacity: 1;    text-shadow: var(--glow-c); }
+  87%           { opacity: 0.45; text-shadow: none; }
+  90%           { opacity: 1;    text-shadow: var(--glow-c), 0 0 28px rgba(146,200,0,.75); }
+  92%           { opacity: 0.7;  }
+  94%           { opacity: 1;    text-shadow: var(--glow-c); }
+}
+
+/* Tiles */
+html.theme-pip-boy .app-tile:hover  { background: rgba(146,200,0,0.06); border-color: rgba(146,200,0,0.30); box-shadow: 0 0 12px rgba(146,200,0,0.08); }
+html.theme-pip-boy .app-tile:active { background: rgba(146,200,0,0.12); }
+html.theme-pip-boy .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 7px rgba(146,200,0,.48)) drop-shadow(0 2px 5px rgba(0,0,0,.7));
+}
+
+/* Edit bar */
+html.theme-pip-boy #edit-bar   { background: rgba(90,144,0,0.07); border-top: 2px solid rgba(90,144,0,0.30); }
+
+/* Buttons */
+html.theme-pip-boy button:hover  { background: rgba(146,200,0,0.09); }
+html.theme-pip-boy button:active { background: rgba(146,200,0,0.18); }
+
+/* Picker */
+html.theme-pip-boy .picker-item:hover    { background: rgba(146,200,0,0.06); }
+html.theme-pip-boy .picker-item:active   { background: rgba(146,200,0,0.12); }
+html.theme-pip-boy .picker-search        { background: rgba(146,200,0,0.06); }
+html.theme-pip-boy .picker-icon-placeholder { background: rgba(146,200,0,0.08); }
+
+/* Misc */
+html.theme-pip-boy .drop-hint-inner  { border-color: rgba(146,200,0,0.18); }
+html.theme-pip-boy .hint-sub         { color: rgba(146,200,0,0.22); }
+html.theme-pip-boy .rename-input     { background: rgba(146,200,0,0.07); }
+html.theme-pip-boy #update-banner    { background: rgba(202,232,64,0.06); border-top-color: rgba(202,232,64,0.32); }
+html.theme-pip-boy .skin-btn.active  { background: rgba(146,200,0,0.15); }
+
+/* ══ DUNE theme ══════════════════════════════════════════════════════════════════
+   Arrakis. The spice must flow. Architecture of sand and ancient shadow.
+   No glow, no neon, no animation beyond the desert breathing. Restraint is power. */
+html.theme-dune {
+  --bg:        rgba(10, 6, 2, 0.97);
+  --panel-bg:  rgba(14, 8, 2, 0.99);
+  --accent-c:  #c88840;   /* desert sand ochre */
+  --accent-m:  #906030;   /* shadow brown */
+  --accent-y:  #e8d098;   /* pale bone */
+  --text:      #a07848;
+  --text-dim:  rgba(160, 120, 72, 0.36);
+  --border:    rgba(200, 136, 64, 0.12);
+  --border-h:  rgba(200, 136, 64, 0.32);
+  --glow-c:    none;      /* the desert casts no light of its own */
+  --glow-m:    none;
+  --glow-y:    none;
+  --radius:    1px;
+  font-family: 'Georgia', 'Palatino Linotype', 'Palatino', serif;
+}
+
+/* Stark rectangle — a monolith in the open desert */
+html.theme-dune #app {
+  clip-path: none;
+  border-radius: 1px;
+  border: 1px solid rgba(200,136,64,0.15);
+  box-shadow: none;
+}
+html.theme-dune #app::before {
+  clip-path: none;
+  border-radius: 1px;
+  animation: dune-breathe 14s ease-in-out infinite;
+}
+@keyframes dune-breathe {
+  0%, 100% { border-color: rgba(200,136,64,0.10); }
+  50%       { border-color: rgba(200,136,64,0.24); }
+}
+html.theme-dune .overlay { clip-path: none; border-radius: 1px; }
+
+/* No scanlines — the desert air is clear */
+html.theme-dune #app::after { display: none; }
+
+/* Header: minimal ochre line */
+html.theme-dune #header {
+  background: rgba(200,136,64,0.03);
+  border-bottom: 1px solid rgba(200,136,64,0.12);
+}
+html.theme-dune #header::before {
+  background: var(--accent-c);
+  box-shadow: none;
+  opacity: 0.65;
+}
+
+/* Title: wide-spaced elegant serif, slow breath — the sietch at dawn */
+html.theme-dune #title {
+  font-family: 'Georgia', 'Palatino Linotype', serif;
+  font-size: 11px;
+  font-weight: normal;
+  font-style: normal;
+  letter-spacing: 6px;
+  color: var(--accent-c);
+  text-shadow: none;
+  animation: dune-breath 16s ease-in-out infinite;
+}
+html.theme-dune .accent { color: var(--accent-y); }
+@keyframes dune-breath {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.70; }
+}
+
+/* Tiles: no glow — warmth without fire */
+html.theme-dune .app-tile:hover  { background: rgba(200,136,64,0.05); border-color: rgba(200,136,64,0.22); box-shadow: none; }
+html.theme-dune .app-tile:active { background: rgba(200,136,64,0.10); transform: none; }
+html.theme-dune .app-tile:hover .tile-icon { filter: none; }
+html.theme-dune .tile-label      { letter-spacing: 0.6px; }
+
+/* Edit bar */
+html.theme-dune #edit-bar  { background: rgba(144,96,48,0.05); border-top-color: rgba(144,96,48,0.20); }
+html.theme-dune .edit-label { color: var(--accent-m); text-shadow: none; }
+
+/* Buttons: muted, no glow */
+html.theme-dune button:hover  { background: rgba(200,136,64,0.08); border-color: rgba(200,136,64,0.36); box-shadow: none; color: var(--accent-y); }
+html.theme-dune button:active { background: rgba(200,136,64,0.14); }
+
+/* Picker */
+html.theme-dune .picker-item:hover    { background: rgba(200,136,64,0.06); }
+html.theme-dune .picker-item:active   { background: rgba(200,136,64,0.10); }
+html.theme-dune .picker-search        { background: rgba(200,136,64,0.05); }
+html.theme-dune .picker-search:focus  { border-color: rgba(200,136,64,0.36); box-shadow: none; }
+html.theme-dune .picker-icon-placeholder { background: rgba(200,136,64,0.07); }
+
+/* Misc */
+html.theme-dune .drop-hint-inner  { border-color: rgba(200,136,64,0.14); }
+html.theme-dune .hint-sub         { color: rgba(200,136,64,0.18); }
+html.theme-dune .rename-input     { background: rgba(200,136,64,0.06); box-shadow: none; }
+html.theme-dune #update-banner    { background: rgba(232,208,160,0.04); border-top-color: rgba(232,208,160,0.18); }
+html.theme-dune .skin-btn.active  { background: rgba(200,136,64,0.14); box-shadow: none; }
+
+/* ══ X-FILES theme ════════════════════════════════════════════════════════════════
+   FBI Special Projects Division. Classification: EYES ONLY.
+   Cold forensic teal on deep navy — government terminals, classified archives.
+   The red accent is the stamp on the file. The truth is in here.               */
+html.theme-x-files {
+  --bg:        rgba(3, 5, 12, 0.97);
+  --panel-bg:  rgba(4, 6, 16, 0.99);
+  --accent-c:  #00b0a0;   /* FBI forensic teal */
+  --accent-m:  #c02828;   /* classified red */
+  --accent-y:  #8aacc8;
+  --text:      #6080a0;
+  --text-dim:  rgba(96, 128, 160, 0.38);
+  --border:    rgba(0, 176, 160, 0.16);
+  --border-h:  rgba(0, 176, 160, 0.42);
+  --glow-c:    0 0 5px rgba(0,176,160,.55), 0 0 16px rgba(0,176,160,.18);
+  --glow-m:    0 0 5px rgba(192,40,40,.55), 0 0 16px rgba(192,40,40,.18);
+  --glow-y:    0 0 5px rgba(138,172,200,.45),0 0 16px rgba(138,172,200,.15);
+  --radius:    2px;
+  font-family: 'Courier New', 'Courier', monospace;
+}
+
+/* Government terminal — cold rectangle, outer black matte border */
+html.theme-x-files #app {
+  clip-path: none;
+  border-radius: 2px;
+  border: 1px solid rgba(0,176,160,0.22);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.85);
+}
+/* Border static — like a signal intermittently losing lock */
+html.theme-x-files #app::before {
+  clip-path: none;
+  border-radius: 2px;
+  animation: xf-static 7s step-start infinite;
+}
+@keyframes xf-static {
+  0%, 88%, 100% { border-color: rgba(0,176,160,0.16); }
+  90%           { border-color: rgba(0,176,160,0.40); }
+  92%           { border-color: rgba(0,176,160,0.12); }
+  95%           { border-color: rgba(0,176,160,0.36); }
+}
+html.theme-x-files .overlay { clip-path: none; border-radius: 2px; }
+
+/* Subtle scan interference */
+html.theme-x-files #app::after {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+  );
+  animation: none;
+}
+
+/* Header: classified document header */
+html.theme-x-files #header {
+  background: rgba(0,176,160,0.03);
+  border-bottom: 1px solid rgba(0,176,160,0.20);
+}
+html.theme-x-files #header::before { background: var(--accent-c); box-shadow: var(--glow-c); }
+
+/* Title: Courier case-file, signal interference instead of glitch */
+html.theme-x-files #title {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 3px;
+  text-shadow: var(--glow-c);
+  animation: xf-signal 11s ease-in-out infinite;
+}
+html.theme-x-files .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
+@keyframes xf-signal {
+  0%, 80%, 100% { opacity: 1;    filter: none; }
+  83%           { opacity: 0.55; filter: blur(0.5px); }
+  85%           { opacity: 1;    filter: none; }
+  87%           { opacity: 0.75; }
+  89%           { opacity: 1; }
+}
+
+/* Tiles */
+html.theme-x-files .app-tile:hover  { background: rgba(0,176,160,0.05); border-color: rgba(0,176,160,0.28); box-shadow: 0 0 12px rgba(0,176,160,0.07); }
+html.theme-x-files .app-tile:active { background: rgba(0,176,160,0.10); }
+html.theme-x-files .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 7px rgba(0,176,160,.42)) drop-shadow(0 2px 5px rgba(0,0,0,.75));
+}
+
+/* Edit bar — classified red */
+html.theme-x-files #edit-bar             { background: rgba(192,40,40,0.05); border-top-color: rgba(192,40,40,0.26); }
+html.theme-x-files .edit-label           { color: var(--accent-m); text-shadow: var(--glow-m); }
+html.theme-x-files #btn-done-edit        { color: var(--accent-m); border-color: rgba(192,40,40,0.32); }
+html.theme-x-files #btn-done-edit:hover  { background: rgba(192,40,40,0.09); border-color: var(--accent-m); box-shadow: var(--glow-m); }
+html.theme-x-files #btn-close-settings   { color: var(--accent-m); border-color: rgba(192,40,40,0.32); }
+html.theme-x-files #btn-close-settings:hover { background: rgba(192,40,40,0.09); border-color: var(--accent-m); }
+html.theme-x-files .btn-remove           { background: rgba(192,40,40,0.80); border-color: var(--accent-m); }
+html.theme-x-files .btn-remove:hover     { background: var(--accent-m); box-shadow: var(--glow-m); }
+
+/* Buttons */
+html.theme-x-files button:hover  { background: rgba(0,176,160,0.08); }
+html.theme-x-files button:active { background: rgba(0,176,160,0.16); }
+
+/* Picker */
+html.theme-x-files .picker-item:hover    { background: rgba(0,176,160,0.06); }
+html.theme-x-files .picker-item:active   { background: rgba(0,176,160,0.12); }
+html.theme-x-files .picker-search        { background: rgba(0,176,160,0.05); }
+html.theme-x-files .picker-search:focus  { border-color: rgba(0,176,160,0.42); box-shadow: var(--glow-c); }
+html.theme-x-files .picker-icon-placeholder { background: rgba(0,176,160,0.07); }
+
+/* Misc */
+html.theme-x-files .drop-hint-inner  { border-color: rgba(0,176,160,0.16); }
+html.theme-x-files .hint-sub         { color: rgba(0,176,160,0.22); }
+html.theme-x-files .rename-input     { background: rgba(0,176,160,0.06); }
+html.theme-x-files #update-banner    { background: rgba(138,172,200,0.05); border-top-color: rgba(138,172,200,0.22); }
+html.theme-x-files .skin-btn.active  { background: rgba(0,176,160,0.14); }
