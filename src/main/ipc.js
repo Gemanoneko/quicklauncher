@@ -159,8 +159,13 @@ $apps | ConvertTo-Json -Depth 2
           try {
             let data = JSON.parse(stdout.trim());
             if (!Array.isArray(data)) data = data ? [data] : [];
-            const items = data.filter(item => item.Name && item.AppID)
-                              .sort((a, b) => a.Name.localeCompare(b.Name));
+            const items = data
+              .filter(item => item.Name && item.AppID
+                // Skip document/URL shortcuts dumped into the Start Menu by installers
+                && !/\.(txt|htm|html|pdf|rtf|url|chm|doc|docx|md)(\b|$)/i.test(item.AppID)
+                // Must have at least one icon source — if neither found, it's not a real app
+                && (item.IconPath || item.ExePath))
+              .sort((a, b) => a.Name.localeCompare(b.Name));
             const result = [];
             for (const item of items) {
               let iconDataUrl = '';
