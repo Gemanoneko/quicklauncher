@@ -37,7 +37,8 @@
     <div id="edit-bar" class="hidden">
       <span class="edit-label">// EDIT MODE</span>
       <div class="edit-actions">
-        <button id="btn-add-edit">+ ADD APP</button>
+        <button id="btn-add-edit">+ FILE</button>
+        <button id="btn-add-installed">+ INSTALLED</button>
         <button id="btn-done-edit">DONE</button>
       </div>
     </div>
@@ -78,6 +79,19 @@
       <div class="overlay-footer">
         <button id="btn-check-update">CHECK FOR UPDATES</button>
         <button id="btn-close-settings">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Installed apps picker overlay -->
+  <div id="apps-picker" class="overlay hidden">
+    <div class="overlay-panel picker-panel">
+      <div class="overlay-title">// ADD INSTALLED APP</div>
+      <input type="text" id="picker-search" class="picker-search" placeholder="SEARCH..." autocomplete="off" spellcheck="false">
+      <div id="picker-loading" class="picker-loading hidden">SCANNING INSTALLED APPS...</div>
+      <div id="picker-list"></div>
+      <div class="overlay-footer">
+        <button id="btn-close-picker">CLOSE</button>
       </div>
     </div>
   </div>

@@ -564,5 +564,117 @@ input[type="range"] {
   box-shadow: var(--glow-m);
 }
 
+/* ── Installed apps picker ───────────────────────────────────────────────────── */
+.picker-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 14px;
+}
+
+.picker-search {
+  width: 100%;
+  background: rgba(0, 240, 255, 0.07);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--accent-c);
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 6px 10px;
+  outline: none;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.picker-search::placeholder {
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+.picker-search:focus {
+  border-color: var(--accent-c);
+  box-shadow: var(--glow-c);
+}
+
+.picker-loading {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  padding: 20px;
+  animation: blink-dim 1.2s step-start infinite;
+}
+
+@keyframes blink-dim {
+  50% { opacity: 0.3; }
+}
+
+#picker-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  margin: 0 -4px;
+}
+
+#picker-list::-webkit-scrollbar { width: 4px; }
+#picker-list::-webkit-scrollbar-track { background: transparent; }
+#picker-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.picker-item:hover {
+  background: rgba(0, 240, 255, 0.07);
+  border-color: var(--border);
+}
+
+.picker-item:active {
+  background: rgba(0, 240, 255, 0.13);
+}
+
+.picker-item img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.picker-icon-placeholder {
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.picker-item-name {
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-empty {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  padding: 20px;
+}
+
 /* ── Utilities ───────────────────────────────────────────────────────────────── */
 .hidden { display: none !important; }

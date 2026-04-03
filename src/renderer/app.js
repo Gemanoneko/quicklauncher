@@ -7,6 +7,7 @@ let apps = [];
 let settings = {};
 let editMode = false;
 let pendingUpdateReady = false;
+let installedApps = [];
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
@@ -210,11 +211,88 @@ function setupDragDrop() {
   });
 }
 
+// ── Installed apps picker ─────────────────────────────────────────────────────
+async function openInstalledAppsPicker() {
+  const pickerEl = document.getElementById('apps-picker');
+  const loadingEl = document.getElementById('picker-loading');
+  const listEl = document.getElementById('picker-list');
+  const searchEl = document.getElementById('picker-search');
+
+  listEl.innerHTML = '';
+  searchEl.value = '';
+  loadingEl.classList.remove('hidden');
+  pickerEl.classList.remove('hidden');
+
+  installedApps = await ipcRenderer.invoke('get-installed-apps');
+  loadingEl.classList.add('hidden');
+  renderPickerList(installedApps);
+  searchEl.focus();
+}
+
+function renderPickerList(items) {
+  const listEl = document.getElementById('picker-list');
+  listEl.innerHTML = '';
+
+  if (items.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'picker-empty';
+    empty.textContent = 'NO APPS FOUND';
+    listEl.appendChild(empty);
+    return;
+  }
+
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'picker-item';
+
+    if (item.iconDataUrl) {
+      const img = document.createElement('img');
+      img.src = item.iconDataUrl;
+      img.alt = '';
+      el.appendChild(img);
+    } else {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'picker-icon-placeholder';
+      el.appendChild(placeholder);
+    }
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'picker-item-name';
+    nameEl.textContent = item.name;
+    el.appendChild(nameEl);
+
+    el.addEventListener('click', async () => {
+      const appItem = await ipcRenderer.invoke('add-app-from-appid', {
+        name: item.name,
+        appId: item.appId,
+        iconDataUrl: item.iconDataUrl
+      });
+      if (appItem && !apps.find(a => a.path === appItem.path)) {
+        apps.push(appItem);
+        await saveApps();
+        renderGrid();
+      }
+      document.getElementById('apps-picker').classList.add('hidden');
+    });
+
+    listEl.appendChild(el);
+  });
+}
+
+document.getElementById('picker-search').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase();
+  renderPickerList(q ? installedApps.filter(a => a.name.toLowerCase().includes(q)) : installedApps);
+});
+
+document.getElementById('btn-close-picker').addEventListener('click', () => {
+  document.getElementById('apps-picker').classList.add('hidden');
+});
+
 // ── Context menu (right-click → edit mode) ────────────────────────────────────
 function setupContextMenu() {
   document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    if (!editMode && !e.target.closest('#settings-overlay')) {
+    if (!editMode && !e.target.closest('#settings-overlay') && !e.target.closest('#apps-picker')) {
       enterEditMode();
     }
   });
@@ -254,7 +332,7 @@ function setupUpdateListeners() {
   });
 
   ipcRenderer.on('update-error', (_, msg) => {
-    showUpdateBanner('UPDATE CHECK FAILED', [], 3000);
+    showUpdateBanner(`UPDATE ERROR: ${msg}`, [], 6000);
     console.warn('Update error:', msg);
   });
 }
@@ -322,6 +400,7 @@ document.getElementById('btn-check-update').addEventListener('click', () => {
 });
 
 document.getElementById('btn-add-edit').addEventListener('click', addAppFromDialog);
+document.getElementById('btn-add-installed').addEventListener('click', openInstalledAppsPicker);
 document.getElementById('btn-done-edit').addEventListener('click', exitEditMode);
 
 // ── Start ─────────────────────────────────────────────────────────────────────
