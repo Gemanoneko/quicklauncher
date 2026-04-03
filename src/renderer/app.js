@@ -180,6 +180,12 @@ function applySettings() {
   document.getElementById('slider-icon-size').value = size;
   document.getElementById('icon-size-val').textContent = size + 'px';
   document.getElementById('chk-startup').checked = settings.startWithWindows !== false;
+
+  const theme = settings.theme || 'cyberpunk';
+  document.documentElement.className = theme !== 'cyberpunk' ? 'theme-' + theme : '';
+  document.querySelectorAll('.skin-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === theme);
+  });
 }
 
 document.getElementById('slider-icon-size').addEventListener('input', async (e) => {
@@ -423,6 +429,15 @@ document.getElementById('btn-check-update').addEventListener('click', () => {
 document.getElementById('btn-add-edit').addEventListener('click', addAppFromDialog);
 document.getElementById('btn-add-installed').addEventListener('click', openInstalledAppsPicker);
 document.getElementById('btn-done-edit').addEventListener('click', exitEditMode);
+
+// ── Skin selection ────────────────────────────────────────────────────────────
+document.querySelectorAll('.skin-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    settings.theme = btn.dataset.theme;
+    applySettings();
+    await ipcRenderer.invoke('save-settings', settings);
+  });
+});
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 init();

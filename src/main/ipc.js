@@ -5,6 +5,58 @@ const { execFile } = require('child_process');
 const { sendToBottom } = require('./window');
 const { checkForUpdates } = require('./updater');
 
+// C# type injected into PowerShell to extract 256×256 (SHIL_JUMBO) icons.
+const ICON_HELPER_CS = `
+using System;
+using System.Runtime.InteropServices;
+using System.Drawing;
+using System.IO;
+[ComImport, Guid("46EB5926-582E-4017-9FDF-E8998DAA0950"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+public interface IImageList2 {
+  [PreserveSig] int Add(IntPtr a, IntPtr b, out int c);
+  [PreserveSig] int ReplaceIcon(int a, IntPtr b, out int c);
+  [PreserveSig] int SetOverlayImage(int a, int b);
+  [PreserveSig] int Replace(int a, IntPtr b, IntPtr c);
+  [PreserveSig] int AddMasked(IntPtr a, int b, out int c);
+  [PreserveSig] int Draw(IntPtr p);
+  [PreserveSig] int Remove(int i);
+  [PreserveSig] int GetIcon(int i, int flags, out IntPtr picon);
+}
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+public struct ShFI {
+  public IntPtr hIcon; public int iIcon; public uint dwAttr;
+  [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string szDisplay;
+  [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)] public string szType;
+}
+public static class IconHelper {
+  [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+  static extern IntPtr SHGetFileInfo(string p, uint a, ref ShFI s, uint sz, uint f);
+  [DllImport("shell32.dll")]
+  static extern int SHGetImageList(int n, ref Guid g, out IImageList2 v);
+  [DllImport("user32.dll")]
+  static extern bool DestroyIcon(IntPtr h);
+  public static string GetBase64(string path) {
+    try {
+      var s = new ShFI();
+      SHGetFileInfo(path, 0, ref s, (uint)Marshal.SizeOf(s), 0x4000);
+      var g = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+      IImageList2 l;
+      if (SHGetImageList(4, ref g, out l) != 0) return null;
+      IntPtr h = IntPtr.Zero;
+      l.GetIcon(s.iIcon, 1, out h);
+      if (h == IntPtr.Zero) return null;
+      try {
+        using (var ic = Icon.FromHandle(h))
+        using (var bmp = ic.ToBitmap())
+        using (var ms = new MemoryStream()) {
+          bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+          return Convert.ToBase64String(ms.ToArray());
+        }
+      } finally { DestroyIcon(h); }
+    } catch { return null; }
+  }
+}`;
+
 // Crop background padding from an icon image.
 // Detects background via corner sampling (handles both transparent and solid backgrounds).
 function trimIcon(img) {
@@ -105,6 +157,11 @@ Get-AppxPackage -ErrorAction SilentlyContinue | ForEach-Object { $pkgMap[$_.Pack
 $steamInstall = $null
 try { $steamInstall = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Valve\Steam' -EA SilentlyContinue).InstallPath } catch {}
 if (-not $steamInstall) { try { $steamInstall = (Get-ItemProperty 'HKLM:\SOFTWARE\Valve\Steam' -EA SilentlyContinue).InstallPath } catch {} }
+try {
+  Add-Type -TypeDefinition @'
+${ICON_HELPER_CS}
+'@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue
+} catch {}
 $apps = Get-StartApps | ForEach-Object {
   $appId = $_.AppID; $name = $_.Name; $iconPath = $null; $exePath = $null
   if ($appId -match '^steam://rungameid/(\d+)$') {
@@ -179,7 +236,11 @@ $apps = Get-StartApps | ForEach-Object {
       }
     }
   }
-  [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath }
+  $exeIconB64 = $null
+  if ($exePath -and -not $iconPath) {
+    try { $exeIconB64 = [IconHelper]::GetBase64($exePath) } catch {}
+  }
+  [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath; ExeIconB64=$exeIconB64 }
 }
 $apps | ConvertTo-Json -Depth 2
 `;
@@ -207,7 +268,13 @@ $apps | ConvertTo-Json -Depth 2
                   const img = trimIcon(nativeImage.createFromBuffer(buf));
                   iconDataUrl = img.toDataURL();
                 } catch { /* skip */ }
-              } else if (item.ExePath) {
+              } else if (item.ExeIconB64) {
+                try {
+                  const img = trimIcon(nativeImage.createFromBuffer(Buffer.from(item.ExeIconB64, 'base64')));
+                  if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+                } catch { /* skip */ }
+              }
+              if (!iconDataUrl && item.ExePath) {
                 try {
                   const img = trimIcon(await app.getFileIcon(item.ExePath, { size: 'large' }));
                   iconDataUrl = img.toDataURL();
@@ -294,12 +361,18 @@ async function buildAppEntry(filePath) {
     } catch { /* fall through to .lnk itself */ }
   }
 
+  let iconDataUrl = '';
   try {
-    const icon = trimIcon(await app.getFileIcon(iconSourcePath, { size: 'large' }));
-    return { id, name, path: filePath, iconDataUrl: icon.toDataURL() };
-  } catch {
-    return { id, name, path: filePath, iconDataUrl: '' };
-  }
+    const imageExts = new Set(['.ico', '.png', '.jpg', '.jpeg', '.bmp']);
+    let img;
+    if (imageExts.has(path.extname(iconSourcePath).toLowerCase())) {
+      img = trimIcon(nativeImage.createFromPath(iconSourcePath));
+    } else {
+      img = trimIcon(await app.getFileIcon(iconSourcePath, { size: 'large' }));
+    }
+    if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+  } catch { /* leave empty */ }
+  return { id, name, path: filePath, iconDataUrl };
 }
 
 module.exports = { setupIPC };

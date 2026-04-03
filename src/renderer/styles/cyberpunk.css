@@ -678,3 +678,104 @@ input[type="range"] {
 
 /* ── Utilities ───────────────────────────────────────────────────────────────── */
 .hidden { display: none !important; }
+
+/* ── Skin selector (settings) ────────────────────────────────────────────────── */
+.skin-select { display: flex; gap: 5px; flex-wrap: wrap; }
+.skin-btn { font-size: 9px; letter-spacing: 1.5px; padding: 3px 8px; }
+.skin-btn.active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--accent-c);
+  box-shadow: var(--glow-c);
+  color: #fff;
+}
+
+/* ══ BLADE RUNNER theme ══════════════════════════════════════════════════════════
+   Neo-noir aesthetic: warm amber / orange neon on near-black.
+   Keeps the angular Cyberpunk clip-path — same city, different palette.         */
+html.theme-blade-runner {
+  --bg:        rgba(6, 3, 0, 0.93);
+  --panel-bg:  rgba(10, 4, 0, 0.97);
+  --accent-c:  #ff9500;
+  --accent-m:  #ff3a00;
+  --accent-y:  #ffd700;
+  --text:      #ccaa80;
+  --text-dim:  rgba(204, 170, 128, 0.4);
+  --border:    rgba(255, 149, 0, 0.18);
+  --border-h:  rgba(255, 149, 0, 0.55);
+  --glow-c:    0 0 6px rgba(255,149,0,.7), 0 0 18px rgba(255,149,0,.25);
+  --glow-m:    0 0 6px rgba(255,58,0,.7),  0 0 18px rgba(255,58,0,.25);
+  --glow-y:    0 0 6px rgba(255,215,0,.7), 0 0 18px rgba(255,215,0,.25);
+}
+html.theme-blade-runner #header                { background: rgba(255,149,0,0.04); }
+html.theme-blade-runner .app-tile:hover        { background: rgba(255,149,0,0.055); border-color: rgba(255,149,0,0.22); box-shadow: 0 0 10px rgba(255,149,0,0.08); }
+html.theme-blade-runner .app-tile:active       { background: rgba(255,149,0,0.11); }
+html.theme-blade-runner .app-tile:hover .tile-icon { filter: drop-shadow(0 0 7px rgba(255,149,0,.38)) drop-shadow(0 2px 5px rgba(0,0,0,.6)); }
+html.theme-blade-runner button:hover           { background: rgba(255,149,0,0.09); }
+html.theme-blade-runner button:active          { background: rgba(255,149,0,0.18); }
+html.theme-blade-runner .picker-item:hover     { background: rgba(255,149,0,0.07); }
+html.theme-blade-runner .picker-item:active    { background: rgba(255,149,0,0.13); }
+html.theme-blade-runner .picker-search         { background: rgba(255,149,0,0.07); }
+html.theme-blade-runner .picker-icon-placeholder { background: rgba(255,149,0,0.08); }
+html.theme-blade-runner #edit-bar              { background: rgba(255,58,0,0.06); border-top-color: rgba(255,58,0,0.3); }
+html.theme-blade-runner .rename-input          { background: rgba(255,149,0,0.07); }
+html.theme-blade-runner .drop-hint-inner       { border-color: rgba(255,149,0,0.18); }
+html.theme-blade-runner .hint-sub              { color: rgba(255,149,0,0.2); }
+html.theme-blade-runner #update-banner         { background: rgba(255,215,0,0.06); border-top-color: rgba(255,215,0,0.35); }
+html.theme-blade-runner .skin-btn.active       { background: rgba(255,149,0,0.15); }
+
+/* ══ ALIEN theme ═════════════════════════════════════════════════════════════════
+   Weyland-Yutani phosphor terminal: green monochrome CRT on near-black.
+   Square corners and heavier scanlines reinforce the retro-futurist screen look. */
+html.theme-alien {
+  --bg:        rgba(0, 5, 0, 0.94);
+  --panel-bg:  rgba(0, 6, 0, 0.97);
+  --accent-c:  #00ff41;
+  --accent-m:  #00cc33;
+  --accent-y:  #aaff00;
+  --text:      #88cc88;
+  --text-dim:  rgba(136, 204, 136, 0.4);
+  --border:    rgba(0, 255, 65, 0.18);
+  --border-h:  rgba(0, 255, 65, 0.50);
+  --glow-c:    0 0 6px rgba(0,255,65,.7),  0 0 18px rgba(0,255,65,.25);
+  --glow-m:    0 0 6px rgba(0,204,51,.7),  0 0 18px rgba(0,204,51,.25);
+  --glow-y:    0 0 6px rgba(170,255,0,.7), 0 0 18px rgba(170,255,0,.25);
+  --radius: 0px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+/* Square-cornered window instead of the angular clip-path */
+html.theme-alien #app        { clip-path: none; border-radius: 2px; border: 1px solid rgba(0,255,65,0.25); }
+html.theme-alien #app::before { clip-path: none; border-radius: 2px; }
+html.theme-alien .overlay    { clip-path: none; border-radius: 2px; }
+/* Heavier phosphor scanlines */
+html.theme-alien #app::after {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px, transparent 2px,
+    rgba(0,0,0,.18) 2px, rgba(0,0,0,.18) 3px
+  );
+}
+/* Phosphor flicker instead of cyber-glitch */
+html.theme-alien #title { animation: alien-flicker 5s ease-in-out infinite; }
+@keyframes alien-flicker {
+  0%, 88%, 100% { opacity: 1; }
+  90% { opacity: 0.65; }
+  92% { opacity: 1; }
+  95% { opacity: 0.8; }
+  97% { opacity: 1; }
+}
+html.theme-alien #header               { background: rgba(0,255,65,0.04); }
+html.theme-alien .app-tile:hover       { background: rgba(0,255,65,0.055); border-color: rgba(0,255,65,0.22); box-shadow: 0 0 10px rgba(0,255,65,0.08); }
+html.theme-alien .app-tile:active      { background: rgba(0,255,65,0.11); }
+html.theme-alien .app-tile:hover .tile-icon { filter: drop-shadow(0 0 7px rgba(0,255,65,.38)) drop-shadow(0 2px 5px rgba(0,0,0,.6)); }
+html.theme-alien button:hover          { background: rgba(0,255,65,0.09); }
+html.theme-alien button:active         { background: rgba(0,255,65,0.18); }
+html.theme-alien .picker-item:hover    { background: rgba(0,255,65,0.07); }
+html.theme-alien .picker-item:active   { background: rgba(0,255,65,0.13); }
+html.theme-alien .picker-search        { background: rgba(0,255,65,0.07); }
+html.theme-alien .picker-icon-placeholder { background: rgba(0,255,65,0.08); }
+html.theme-alien #edit-bar             { background: rgba(0,204,51,0.06); border-top-color: rgba(0,204,51,0.3); }
+html.theme-alien .rename-input         { background: rgba(0,255,65,0.07); }
+html.theme-alien .drop-hint-inner      { border-color: rgba(0,255,65,0.18); }
+html.theme-alien .hint-sub             { color: rgba(0,255,65,0.2); }
+html.theme-alien #update-banner        { background: rgba(170,255,0,0.06); border-top-color: rgba(170,255,0,0.35); }
+html.theme-alien .skin-btn.active      { background: rgba(0,255,65,0.15); }
