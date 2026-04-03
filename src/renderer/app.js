@@ -1,5 +1,5 @@
 /* global require */
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, webUtils } = require('electron');
 const { version: APP_VERSION } = require('../../package.json');
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -18,6 +18,7 @@ async function init() {
   setupContextMenu();
   setupUpdateListeners();
   document.getElementById('app-version').textContent = `v${APP_VERSION}`;
+  document.getElementById('header-version').textContent = `v${APP_VERSION}`;
 }
 
 // ── Render ───────────────────────────────────────────────────────────────────
@@ -34,8 +35,6 @@ function renderGrid() {
   }
 
   apps.forEach(appItem => grid.appendChild(createAppTile(appItem)));
-
-  resizeWindow();
 }
 
 function createAppTile(appItem) {
@@ -69,7 +68,15 @@ function createAppTile(appItem) {
   const label = document.createElement('span');
   label.className = 'tile-label';
   label.textContent = appItem.name;
-  label.title = appItem.name;
+  label.title = editMode ? 'Click to rename' : appItem.name;
+
+  if (editMode) {
+    label.classList.add('renameable');
+    label.addEventListener('click', (e) => {
+      e.stopPropagation();
+      startRename(appItem, label);
+    });
+  }
 
   tile.appendChild(iconWrapper);
   tile.appendChild(label);
@@ -79,6 +86,33 @@ function createAppTile(appItem) {
   }
 
   return tile;
+}
+
+function startRename(appItem, labelEl) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'rename-input';
+  input.value = appItem.name;
+  input.maxLength = 40;
+
+  labelEl.replaceWith(input);
+  input.focus();
+  input.select();
+
+  async function commit() {
+    const newName = input.value.trim() || appItem.name;
+    appItem.name = newName;
+    labelEl.textContent = newName;
+    labelEl.title = 'Click to rename';
+    input.replaceWith(labelEl);
+    await saveApps();
+  }
+
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.replaceWith(labelEl); }
+  });
 }
 
 // ── Actions ──────────────────────────────────────────────────────────────────
@@ -117,27 +151,6 @@ async function saveApps() {
   await ipcRenderer.invoke('save-apps', apps);
 }
 
-// ── Window resize ─────────────────────────────────────────────────────────────
-function resizeWindow() {
-  const iconSize = settings.iconSize || 64;
-  const tileW = iconSize + 32;  // icon + horizontal padding
-  const tileH = iconSize + 42;  // icon + label + vertical padding
-
-  const count = Math.max(apps.length, 4);  // minimum 4 slots for layout
-  const cols = Math.ceil(Math.sqrt(count));
-  const rows = Math.ceil(count / cols);
-
-  const gridPad = 16;
-  const headerH = 40;
-  const editBarH = editMode ? 38 : 0;
-  const updateBannerH = pendingUpdateReady ? 40 : 0;
-
-  const width = cols * tileW + gridPad * 2 + 2;
-  const height = headerH + rows * tileH + gridPad * 2 + editBarH + updateBannerH;
-
-  ipcRenderer.invoke('resize-window', { width, height });
-}
-
 // ── Settings ──────────────────────────────────────────────────────────────────
 function applySettings() {
   const size = settings.iconSize || 64;
@@ -153,7 +166,6 @@ document.getElementById('slider-icon-size').addEventListener('input', async (e) 
   document.documentElement.style.setProperty('--icon-size', size + 'px');
   settings.iconSize = size;
   await ipcRenderer.invoke('save-settings', settings);
-  resizeWindow();
 });
 
 document.getElementById('chk-startup').addEventListener('change', async (e) => {
@@ -184,7 +196,7 @@ function setupDragDrop() {
 
     const files = Array.from(e.dataTransfer.files);
     for (const file of files) {
-      const filePath = file.path;
+      const filePath = webUtils.getPathForFile(file);
       const ext = filePath.split('.').pop().toLowerCase();
       if (ext === 'exe' || ext === 'lnk') {
         const appItem = await ipcRenderer.invoke('add-app-from-path', filePath);
@@ -231,7 +243,6 @@ function setupUpdateListeners() {
       'UPDATE READY — RESTART TO INSTALL',
       [{ label: 'RESTART NOW', action: 'install' }]
     );
-    resizeWindow();
   });
 
   ipcRenderer.on('update-not-available', () => {
@@ -286,7 +297,6 @@ function showUpdateBanner(text, actions, autoDismissMs = 0) {
   actionsEl.appendChild(dismissBtn);
 
   banner.classList.remove('hidden');
-  resizeWindow();
 
   if (autoDismissMs > 0) {
     setTimeout(hideUpdateBanner, autoDismissMs);

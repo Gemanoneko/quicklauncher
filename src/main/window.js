@@ -1,6 +1,6 @@
 const { BrowserWindow, screen } = require('electron');
 const path = require('path');
-const { execFileSync } = require('child_process');
+const { execFile } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 
@@ -11,16 +11,19 @@ function createWindow(store) {
   const { width: sw, height: sh } = screen.getPrimaryDisplay().workAreaSize;
 
   const defaultWidth = 424;
-  const defaultHeight = 280;
+  const defaultHeight = 300;
 
+  const size = settings.windowSize || { width: defaultWidth, height: defaultHeight };
   const pos = settings.windowPosition || {
-    x: sw - defaultWidth - 20,
-    y: sh - defaultHeight - 20
+    x: sw - size.width - 20,
+    y: sh - size.height - 20
   };
 
   const win = new BrowserWindow({
-    width: defaultWidth,
-    height: defaultHeight,
+    width: size.width,
+    height: size.height,
+    minWidth: 180,
+    minHeight: 150,
     x: pos.x,
     y: pos.y,
     frame: false,
@@ -28,7 +31,7 @@ function createWindow(store) {
     backgroundColor: '#00000000',
     hasShadow: false,
     skipTaskbar: true,
-    resizable: false,
+    resizable: true,
     alwaysOnTop: false,
     focusable: true,
     webPreferences: {
@@ -55,6 +58,14 @@ function createWindow(store) {
     const [x, y] = win.getPosition();
     const s = store.get('settings');
     store.set('settings', { ...s, windowPosition: { x, y } });
+  });
+
+  // Save size on resize and re-anchor to desktop
+  win.on('resize', () => {
+    const [width, height] = win.getSize();
+    const s = store.get('settings');
+    store.set('settings', { ...s, windowSize: { width, height } });
+    sendToBottom(win);
   });
 
   // Open DevTools in dev mode only
@@ -98,12 +109,12 @@ $hwnd = [IntPtr][long]${hwnd.toString()}
     }
     fs.writeFileSync(sendToBottomScriptPath, script, 'utf8');
 
-    execFileSync('powershell.exe', [
+    execFile('powershell.exe', [
       '-ExecutionPolicy', 'Bypass',
       '-NonInteractive',
       '-WindowStyle', 'Hidden',
       '-File', sendToBottomScriptPath
-    ], { windowsHide: true, timeout: 3000 });
+    ], { windowsHide: true, stdio: 'pipe' }, () => {});
   } catch {
     // Non-critical — silently ignore
   }

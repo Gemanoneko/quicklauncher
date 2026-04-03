@@ -127,6 +127,12 @@ html, body {
   box-shadow: var(--glow-c);
 }
 
+#title-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 #title {
   font-size: 11px;
   font-weight: 700;
@@ -134,6 +140,13 @@ html, body {
   color: var(--accent-c);
   text-shadow: var(--glow-c);
   animation: glitch-title 8s steps(1) infinite;
+}
+
+#header-version {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  line-height: 1;
 }
 
 .accent { color: var(--accent-m); }
@@ -200,7 +213,19 @@ button:active {
   flex: 1;
   padding: var(--grid-pad);
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#grid-container::-webkit-scrollbar {
+  width: 4px;
+}
+#grid-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+#grid-container::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
 }
 
 #app-grid {
@@ -266,6 +291,32 @@ button:active {
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 1.2;
+}
+
+.tile-label.renameable {
+  cursor: text;
+  border-bottom: 1px dashed rgba(0, 240, 255, 0.3);
+}
+
+.tile-label.renameable:hover {
+  border-bottom-color: var(--accent-c);
+  color: var(--accent-c);
+}
+
+.rename-input {
+  width: calc(var(--icon-size) + 28px);
+  background: rgba(0, 240, 255, 0.07);
+  border: 1px solid var(--accent-c);
+  border-radius: 2px;
+  color: var(--accent-c);
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-align: center;
+  padding: 1px 4px;
+  margin-top: 5px;
+  outline: none;
+  box-shadow: var(--glow-c);
 }
 
 /* Remove badge (edit mode) */

@@ -12,6 +12,13 @@ function setupTray(win, electronApp, store) {
 
   const buildMenu = () => Menu.buildFromTemplate([
     {
+      label: 'Quit QuickLauncher',
+      click: () => {
+        electronApp.exit(0);
+      }
+    },
+    { type: 'separator' },
+    {
       label: 'Show / Hide',
       click: () => {
         if (win.isVisible()) {
@@ -27,13 +34,6 @@ function setupTray(win, electronApp, store) {
     {
       label: 'Check for Updates',
       click: () => win.webContents.send('trigger-update-check')
-    },
-    { type: 'separator' },
-    {
-      label: 'Quit QuickLauncher',
-      click: () => {
-        electronApp.exit(0);
-      }
     }
   ]);
 
