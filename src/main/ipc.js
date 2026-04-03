@@ -245,10 +245,15 @@ $apps = Get-StartApps | ForEach-Object {
     try {
       $pkg = $pkgMap[$pfn]
       if ($pkg) {
-        [xml]$mf = Get-Content "$($pkg.InstallLocation)\\AppxManifest.xml" -ErrorAction SilentlyContinue
+        [xml]$mf = Get-Content "$($pkg.InstallLocation)\\AppxManifest.xml" -EA SilentlyContinue
+        # Application may be a single node or an array — always work with the first entry
+        $appNodes = $mf.Package.Applications.Application
+        $appNode  = if ($appNodes -is [System.Array]) { $appNodes[0] } else { $appNodes }
+        $ve = try { $appNode.VisualElements } catch { $null }
         $logoRel = $null
-        try { $logoRel = $mf.Package.Applications.Application.VisualElements.Square150x150Logo } catch {}
-        if (-not $logoRel) { try { $logoRel = $mf.Package.Applications.Application.VisualElements.Square44x44Logo } catch {} }
+        try { $logoRel = $ve.Square150x150Logo } catch {}
+        if (-not $logoRel) { try { $logoRel = $ve.Square44x44Logo } catch {} }
+        if (-not $logoRel) { try { $logoRel = $ve.Square71x71Logo  } catch {} }
         if (-not $logoRel) { try { $logoRel = $mf.Package.Properties.Logo } catch {} }
         if ($logoRel) {
           $logoRel  = $logoRel -replace '/', '\\'
@@ -260,9 +265,21 @@ $apps = Get-StartApps | ForEach-Object {
           $exact    = Join-Path $baseDir $logoRel
           if (Test-Path $exact) { $iconPath = $exact }
           else {
-            $found = Get-ChildItem -Path $fullDir -Filter "$logoBase*$logoExt" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -First 1
+            # Prefer highest-resolution scaled/targetsize variant
+            $found = Get-ChildItem -Path $fullDir -Filter "$logoBase*$logoExt" -EA SilentlyContinue |
+                     Sort-Object {
+                       if ($_.Name -match 'targetsize-(\d+)') { [int]$Matches[1] * -1 }
+                       elseif ($_.Name -match 'scale-(\d+)')  { [int]$Matches[1] * -1 }
+                       else { 0 }
+                     } | Select-Object -First 1
             if ($found) { $iconPath = $found.FullName }
           }
+        }
+        # Fallback: grab the package's main executable so SHGetImageList can extract its icon
+        if (-not $iconPath -and $appNode -and $appNode.Executable) {
+          $exeRel = $appNode.Executable -replace '/', '\\'
+          $exeCandidate = Join-Path $pkg.InstallLocation $exeRel
+          if (Test-Path $exeCandidate) { $exePath = $exeCandidate }
         }
       }
     } catch {}
@@ -316,8 +333,10 @@ $apps | ConvertTo-Json -Depth 2
               .filter(item => item.Name && item.AppID
                 // Skip document/URL shortcuts dumped into the Start Menu by installers
                 && !/\.(txt|htm|html|pdf|rtf|url|chm|doc|docx|md)(\b|$)/i.test(item.AppID)
-                // Must have an icon source, OR be a known launchable protocol (Steam etc.)
-                && (item.IconPath || item.ExePath || /^steam:\/\//.test(item.AppID)))
+                // Must have an icon source, OR be a known launchable protocol (Steam/AppX etc.)
+                && (item.IconPath || item.ExePath || item.ExeIconB64
+                    || /^steam:\/\//.test(item.AppID)
+                    || /^[^!\\]+![^!\\]+$/.test(item.AppID)))
               .sort((a, b) => a.Name.localeCompare(b.Name));
             const result = [];
             for (const item of items) {
