@@ -1,0 +1,58 @@
+{
+  "name": "quicklauncher",
+  "productName": "QuickLauncher",
+  "version": "1.0.0",
+  "description": "Cyberpunk-themed desktop quick launcher",
+  "main": "src/main/index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --publish always",
+    "pack": "electron-builder --win --publish never"
+  },
+  "build": {
+    "appId": "com.antigravity.quicklauncher",
+    "productName": "QuickLauncher",
+    "copyright": "Copyright © 2025 Antigravity Projects",
+    "icon": "icon.png",
+    "directories": {
+      "output": "dist",
+      "buildResources": "."
+    },
+    "files": [
+      "src/**/*",
+      "icon.png",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "installerIcon": "icon.png",
+      "uninstallerIcon": "icon.png"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Gemanoneko",
+      "repo": "quicklauncher"
+    }
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.0"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.1.0"
+  }
+}

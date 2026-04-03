@@ -1,0 +1,53 @@
+const { Tray, Menu, nativeImage } = require('electron');
+const path = require('path');
+
+let tray = null;
+
+function setupTray(win, electronApp, store) {
+  const iconPath = path.join(__dirname, '../../icon.png');
+  const icon = nativeImage.createFromPath(iconPath).resize({ width: 16, height: 16 });
+
+  tray = new Tray(icon);
+  tray.setToolTip('QuickLauncher');
+
+  const buildMenu = () => Menu.buildFromTemplate([
+    {
+      label: 'Show / Hide',
+      click: () => {
+        if (win.isVisible()) {
+          win.hide();
+        } else {
+          win.show();
+          const { sendToBottom } = require('./window');
+          sendToBottom(win);
+        }
+      }
+    },
+    { type: 'separator' },
+    {
+      label: 'Check for Updates',
+      click: () => win.webContents.send('trigger-update-check')
+    },
+    { type: 'separator' },
+    {
+      label: 'Quit QuickLauncher',
+      click: () => {
+        electronApp.exit(0);
+      }
+    }
+  ]);
+
+  tray.setContextMenu(buildMenu());
+
+  tray.on('double-click', () => {
+    if (win.isVisible()) {
+      win.hide();
+    } else {
+      win.show();
+      const { sendToBottom } = require('./window');
+      sendToBottom(win);
+    }
+  });
+}
+
+module.exports = { setupTray };

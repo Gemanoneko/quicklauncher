@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-inline'">
+  <title>QuickLauncher</title>
+  <link rel="stylesheet" href="styles/cyberpunk.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header bar (draggable) -->
+    <div id="header">
+      <span id="title">QUICK<span class="accent">.</span>LAUNCH</span>
+      <div id="header-controls">
+        <button id="btn-settings" title="Settings">⚙</button>
+        <button id="btn-hide" title="Hide to tray">╌</button>
+      </div>
+    </div>
+
+    <!-- Main grid -->
+    <div id="grid-container">
+      <div id="drop-hint" class="hidden">
+        <div class="drop-hint-inner">
+          <div class="drop-icon">⊕</div>
+          <div>DROP .EXE OR .LNK HERE</div>
+          <div class="hint-sub">or RIGHT-CLICK to enter edit mode</div>
+        </div>
+      </div>
+      <div id="app-grid"></div>
+    </div>
+
+    <!-- Edit mode bottom bar -->
+    <div id="edit-bar" class="hidden">
+      <span class="edit-label">// EDIT MODE</span>
+      <div class="edit-actions">
+        <button id="btn-add-edit">+ ADD APP</button>
+        <button id="btn-done-edit">DONE</button>
+      </div>
+    </div>
+
+    <!-- Update banner (hidden by default) -->
+    <div id="update-banner" class="hidden">
+      <span id="update-text"></span>
+      <div id="update-actions"></div>
+    </div>
+
+  </div>
+
+  <!-- Settings overlay -->
+  <div id="settings-overlay" class="overlay hidden">
+    <div class="overlay-panel">
+      <div class="overlay-title">// SETTINGS</div>
+
+      <div class="setting-row">
+        <label for="slider-icon-size">ICON SIZE</label>
+        <div class="slider-row">
+          <input type="range" id="slider-icon-size" min="32" max="128" step="8" value="64">
+          <span id="icon-size-val">64px</span>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="chk-startup" checked>
+          <span class="checkmark"></span>
+          START WITH WINDOWS
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">VERSION <span id="app-version" class="accent"></span></div>
+      </div>
+
+      <div class="overlay-footer">
+        <button id="btn-check-update">CHECK FOR UPDATES</button>
+        <button id="btn-close-settings">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
