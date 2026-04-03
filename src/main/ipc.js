@@ -46,7 +46,8 @@ $apps = Get-StartApps | ForEach-Object {
       if ($pkg) {
         [xml]$mf = Get-Content "$($pkg.InstallLocation)\\AppxManifest.xml" -ErrorAction SilentlyContinue
         $logoRel = $null
-        try { $logoRel = $mf.Package.Applications.Application.VisualElements.Square44x44Logo } catch {}
+        try { $logoRel = $mf.Package.Applications.Application.VisualElements.Square150x150Logo } catch {}
+        if (-not $logoRel) { try { $logoRel = $mf.Package.Applications.Application.VisualElements.Square44x44Logo } catch {} }
         if (-not $logoRel) { try { $logoRel = $mf.Package.Properties.Logo } catch {} }
         if ($logoRel) {
           $logoRel  = $logoRel -replace '/', '\\'
