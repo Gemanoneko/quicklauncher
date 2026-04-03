@@ -299,6 +299,9 @@ $apps = Get-StartApps | ForEach-Object {
         if (-not $exePath -and $sc.TargetPath -and (Test-Path $sc.TargetPath)) {
           $exePath = $sc.TargetPath
         }
+        # Target in WindowsApps or other protected path: fall back to the .lnk itself.
+        # SHGetFileInfo on a .lnk resolves the icon through the shell cache regardless.
+        if (-not $exePath -and -not $iconPath) { $exePath = $lnk.FullName }
       }
     } catch {}
   }
@@ -435,6 +438,40 @@ if ($b) { Write-Output $b }`;
   });
 }
 
+// Resolve a .lnk shortcut's icon path and target via PowerShell WScript.Shell.
+// This is safer than Electron's shell.readShortcutLink(), which can hard-crash the
+// main process on MSIX/AppX-generated shortcuts (the COM error is not catchable in JS).
+function resolveShortcutLink(lnkPath) {
+  return new Promise((resolve) => {
+    const escaped = lnkPath.replace(/'/g, "''");
+    const ps = `
+$wsh = New-Object -ComObject WScript.Shell
+try {
+  $sc = $wsh.CreateShortcut('${escaped}')
+  $icon = $null; $target = $null
+  if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\\s*,') {
+    $p = (($sc.IconLocation -split ',')[0]).Trim()
+    $p = [Environment]::ExpandEnvironmentVariables($p)
+    if ($p -and (Test-Path $p)) { $icon = $p }
+  }
+  if ($sc.TargetPath) {
+    $target = [Environment]::ExpandEnvironmentVariables($sc.TargetPath)
+  }
+  @{ Icon = $icon; Target = $target } | ConvertTo-Json -Compress
+} catch { '{}' }`;
+    execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
+      { windowsHide: true, stdio: 'pipe', timeout: 8000 },
+      (err, stdout) => {
+        if (err || !stdout) { resolve(null); return; }
+        try {
+          const r = JSON.parse(stdout.trim());
+          resolve({ icon: r.Icon || null, target: r.Target || null });
+        } catch { resolve(null); }
+      }
+    );
+  });
+}
+
 // Extract a 256×256 icon from an executable via the Windows jumbo image list.
 // Spawns a short PowerShell process (~1-2 s first call due to C# compilation).
 function getJumboIconBase64(exePath) {
@@ -458,14 +495,15 @@ async function buildAppEntry(filePath) {
   const name = path.basename(filePath, path.extname(filePath));
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-  // For .lnk files, resolve the icon source via Electron's native readShortcutLink.
+  // For .lnk files, resolve the icon source via PowerShell WScript.Shell.
+  // (Replaces Electron's shell.readShortcutLink which hard-crashes on MSIX shortcuts.)
   // Prefer the explicit icon field; fall back to target (only if it's a file, not a folder).
   // Track directory targets separately so we can fetch a shell thumbnail.
   let iconSourcePath = filePath;
   let folderTarget = null;
   if (path.extname(filePath).toLowerCase() === '.lnk') {
-    try {
-      const info = shell.readShortcutLink(filePath);
+    const info = await resolveShortcutLink(filePath);
+    if (info) {
       if (info.icon) {
         const r = resolveIconPath(info.icon);
         if (r) iconSourcePath = r;
@@ -479,7 +517,7 @@ async function buildAppEntry(filePath) {
           }
         } catch { /* ignore */ }
       }
-    } catch { /* fall through to .lnk itself */ }
+    }
   }
 
   let iconDataUrl = '';

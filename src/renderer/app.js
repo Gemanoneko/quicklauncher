@@ -156,11 +156,15 @@ function exitEditMode() {
 }
 
 async function addAppFromDialog() {
-  const appItem = await ipcRenderer.invoke('add-app-dialog');
-  if (!appItem) return;
-  apps.push(appItem);
-  await saveApps();
-  renderGrid();
+  try {
+    const appItem = await ipcRenderer.invoke('add-app-dialog');
+    if (!appItem) return;
+    apps.push(appItem);
+    await saveApps();
+    renderGrid();
+  } catch (e) {
+    console.error('Failed to add app:', e);
+  }
 }
 
 async function removeApp(id) {
