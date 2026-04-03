@@ -44,17 +44,33 @@ $apps = Get-StartApps | ForEach-Object {
         try { $logoRel = $mf.Package.Applications.Application.VisualElements.Square44x44Logo } catch {}
         if (-not $logoRel) { try { $logoRel = $mf.Package.Properties.Logo } catch {} }
         if ($logoRel) {
-          $baseDir = $pkg.InstallLocation
+          $logoRel  = $logoRel -replace '/', '\\'
+          $baseDir  = $pkg.InstallLocation
           $logoBase = [IO.Path]::GetFileNameWithoutExtension($logoRel)
           $logoDir  = [IO.Path]::GetDirectoryName($logoRel)
           $logoExt  = [IO.Path]::GetExtension($logoRel)
-          $fullDir  = Join-Path $baseDir $logoDir
+          $fullDir  = if ($logoDir) { Join-Path $baseDir $logoDir } else { $baseDir }
           $exact    = Join-Path $baseDir $logoRel
           if (Test-Path $exact) { $iconPath = $exact }
           else {
-            foreach ($q in @('scale-100','scale-150','scale-200','targetsize-44','targetsize-48','targetsize-32')) {
-              $c = Join-Path $fullDir "$logoBase.$q$logoExt"
-              if (Test-Path $c) { $iconPath = $c; break }
+            $found = Get-ChildItem -Path $fullDir -Filter "$logoBase*$logoExt" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -First 1
+            if ($found) { $iconPath = $found.FullName }
+          }
+          if (-not $iconPath) {
+            $logoRel2 = $null
+            try { $logoRel2 = $mf.Package.Properties.Logo } catch {}
+            if ($logoRel2 -and $logoRel2 -ne $logoRel) {
+              $logoRel2 = $logoRel2 -replace '/', '\\'
+              $logoBase2 = [IO.Path]::GetFileNameWithoutExtension($logoRel2)
+              $logoDir2  = [IO.Path]::GetDirectoryName($logoRel2)
+              $logoExt2  = [IO.Path]::GetExtension($logoRel2)
+              $fullDir2  = if ($logoDir2) { Join-Path $baseDir $logoDir2 } else { $baseDir }
+              $exact2    = Join-Path $baseDir $logoRel2
+              if (Test-Path $exact2) { $iconPath = $exact2 }
+              else {
+                $found2 = Get-ChildItem -Path $fullDir2 -Filter "$logoBase2*$logoExt2" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -First 1
+                if ($found2) { $iconPath = $found2.FullName }
+              }
             }
           }
         }

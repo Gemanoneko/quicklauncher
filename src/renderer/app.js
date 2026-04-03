@@ -20,6 +20,26 @@ async function init() {
   setupUpdateListeners();
   document.getElementById('app-version').textContent = `v${APP_VERSION}`;
   document.getElementById('header-version').textContent = `v${APP_VERSION}`;
+  refreshMissingIcons();
+}
+
+async function refreshMissingIcons() {
+  const missing = apps.filter(a => a.path && a.path.startsWith('shell:') && !a.iconDataUrl);
+  if (missing.length === 0) return;
+  const installed = await ipcRenderer.invoke('get-installed-apps');
+  let changed = false;
+  for (const appItem of missing) {
+    const appId = appItem.path.replace('shell:AppsFolder\\', '');
+    const match = installed.find(i => i.appId === appId);
+    if (match && match.iconDataUrl) {
+      appItem.iconDataUrl = match.iconDataUrl;
+      changed = true;
+    }
+  }
+  if (changed) {
+    await saveApps();
+    renderGrid();
+  }
 }
 
 // ── Render ───────────────────────────────────────────────────────────────────
