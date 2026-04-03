@@ -383,7 +383,8 @@ async function buildAppEntry(filePath) {
   let iconDataUrl = '';
   const srcExt = path.extname(iconSourcePath).toLowerCase();
   const imageExts = new Set(['.ico', '.png', '.jpg', '.jpeg', '.bmp']);
-  const execExts = new Set(['.exe', '.dll', '.cpl', '.scr']);
+  // .lnk included: SHGetFileInfo resolves the link and returns the target icon (no overlay)
+  const execExts = new Set(['.exe', '.dll', '.cpl', '.scr', '.lnk']);
 
   if (imageExts.has(srcExt)) {
     // Image file: read at native resolution (supports 256×256 .ico)
