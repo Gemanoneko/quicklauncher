@@ -1,6 +1,7 @@
 const { ipcMain, dialog, shell, app } = require('electron');
 const path = require('path');
 const { sendToBottom } = require('./window');
+const { checkForUpdates } = require('./updater');
 
 function setupIPC(win, store, electronApp) {
 
@@ -53,7 +54,7 @@ function setupIPC(win, store, electronApp) {
   });
 
   ipcMain.handle('check-update', () => {
-    win.webContents.send('trigger-update-check');
+    checkForUpdates();
   });
 
   ipcMain.handle('show-window', () => win.show());

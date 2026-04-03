@@ -33,7 +33,10 @@ function setupTray(win, electronApp, store) {
     { type: 'separator' },
     {
       label: 'Check for Updates',
-      click: () => win.webContents.send('trigger-update-check')
+      click: () => {
+        const { checkForUpdates } = require('./updater');
+        checkForUpdates();
+      }
     }
   ]);
 

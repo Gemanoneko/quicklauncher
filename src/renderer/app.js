@@ -226,6 +226,10 @@ function setupContextMenu() {
 
 // ── Update banner ─────────────────────────────────────────────────────────────
 function setupUpdateListeners() {
+  ipcRenderer.on('update-checking', () => {
+    showUpdateBanner('CHECKING FOR UPDATES...', []);
+  });
+
   ipcRenderer.on('update-available', (_, info) => {
     showUpdateBanner(
       `UPDATE AVAILABLE — v${info.version}`,
@@ -234,32 +238,24 @@ function setupUpdateListeners() {
   });
 
   ipcRenderer.on('update-progress', (_, pct) => {
-    document.getElementById('update-text').textContent = `DOWNLOADING UPDATE... ${pct}%`;
+    document.getElementById('update-text').textContent = `DOWNLOADING... ${pct}%`;
   });
 
   ipcRenderer.on('update-ready', () => {
     pendingUpdateReady = true;
     showUpdateBanner(
-      'UPDATE READY — RESTART TO INSTALL',
-      [{ label: 'RESTART NOW', action: 'install' }]
+      'UPDATE READY — WILL INSTALL AND RESTART',
+      [{ label: 'INSTALL NOW', action: 'install' }]
     );
   });
 
   ipcRenderer.on('update-not-available', () => {
-    // Only show if user manually checked
-    if (document.getElementById('update-banner').dataset.manual === 'true') {
-      showUpdateBanner('SYSTEM IS UP TO DATE', [], 3000);
-    }
+    showUpdateBanner('SYSTEM IS UP TO DATE', [], 3000);
   });
 
   ipcRenderer.on('update-error', (_, msg) => {
+    showUpdateBanner('UPDATE CHECK FAILED', [], 3000);
     console.warn('Update error:', msg);
-    hideUpdateBanner();
-  });
-
-  ipcRenderer.on('trigger-update-check', () => {
-    document.getElementById('update-banner').dataset.manual = 'true';
-    ipcRenderer.invoke('check-update');
   });
 }
 
@@ -321,7 +317,6 @@ document.getElementById('btn-close-settings').addEventListener('click', () => {
 });
 
 document.getElementById('btn-check-update').addEventListener('click', () => {
-  document.getElementById('update-banner').dataset.manual = 'true';
   ipcRenderer.invoke('check-update');
   document.getElementById('settings-overlay').classList.add('hidden');
 });
