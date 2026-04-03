@@ -43,7 +43,8 @@
     "publish": {
       "provider": "github",
       "owner": "Gemanoneko",
-      "repo": "quicklauncher"
+      "repo": "quicklauncher",
+      "releaseType": "release"
     }
   },
   "dependencies": {
