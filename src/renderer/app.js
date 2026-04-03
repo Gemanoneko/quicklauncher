@@ -71,6 +71,7 @@ function createAppTile(appItem) {
   img.src = appItem.iconDataUrl || '';
   img.alt = appItem.name;
   img.draggable = false;
+  img.onerror = () => { img.style.visibility = 'hidden'; };
 
   iconWrapper.appendChild(img);
 

@@ -117,14 +117,15 @@ $apps = Get-StartApps | ForEach-Object {
         }
       }
     } catch {}
-  } else {
-    # Win32 app: find exe via Start Menu shortcut
+  }
+  # Fallback: if no icon found yet, try Start Menu shortcut (covers Win32 apps and
+  # MSIX/Click-to-Run apps not listed by Get-AppxPackage e.g. Office 2021)
+  if (-not $iconPath -and -not $exePath) {
     try {
       $lnk = Get-ChildItem -Path $startDirs -Filter '*.lnk' -Recurse -ErrorAction SilentlyContinue |
              Where-Object { $_.BaseName -ieq $name } | Select-Object -First 1
       if ($lnk) {
         $sc = $wsh.CreateShortcut($lnk.FullName)
-        # Prefer IconLocation (Squirrel apps point TargetPath to Update.exe; icon is on real exe)
         if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\s*,') {
           $iconExe = ($sc.IconLocation -split ',')[0].Trim()
           if ($iconExe -and (Test-Path $iconExe)) { $exePath = $iconExe }
@@ -132,6 +133,7 @@ $apps = Get-StartApps | ForEach-Object {
         if (-not $exePath -and $sc.TargetPath -and (Test-Path $sc.TargetPath)) {
           $exePath = $sc.TargetPath
         }
+        if (-not $exePath) { $exePath = $lnk.FullName }
       }
     } catch {}
   }
