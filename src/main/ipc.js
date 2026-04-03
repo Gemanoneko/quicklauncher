@@ -72,8 +72,8 @@ function setupIPC(win, store, electronApp) {
   });
 
   ipcMain.handle('launch-app', (_, filePath) => {
-    if (filePath.startsWith('shell:')) {
-      // Use explorer.exe to launch shell: URIs (Store apps, AUMIDs)
+    if (filePath.startsWith('shell:') || filePath.startsWith('steam://')) {
+      // Use explorer.exe for shell: URIs (Store apps) and steam:// URLs
       execFile('explorer.exe', [filePath], { windowsHide: false, stdio: 'pipe' }, () => {});
     } else {
       shell.openPath(filePath);
@@ -91,7 +91,17 @@ $pkgMap = @{}
 Get-AppxPackage -ErrorAction SilentlyContinue | ForEach-Object { $pkgMap[$_.PackageFamilyName] = $_ }
 $apps = Get-StartApps | ForEach-Object {
   $appId = $_.AppID; $name = $_.Name; $iconPath = $null; $exePath = $null
-  if ($appId -match '^(.+)!.+$') {
+  if ($appId -match '^steam://rungameid/(\d+)$') {
+    # Steam game: look up icon path from Windows Uninstall registry entry
+    $steamId = $Matches[1]
+    try {
+      $reg = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App $steamId" -ErrorAction SilentlyContinue
+      if ($reg -and $reg.DisplayIcon) {
+        $iconExe = ($reg.DisplayIcon -split ',')[0].Trim('" ')
+        if ($iconExe -and (Test-Path $iconExe)) { $exePath = $iconExe }
+      }
+    } catch {}
+  } elseif ($appId -match '^(.+)!.+$') {
     $pfn = $Matches[1]
     try {
       $pkg = $pkgMap[$pfn]
@@ -163,8 +173,8 @@ $apps | ConvertTo-Json -Depth 2
               .filter(item => item.Name && item.AppID
                 // Skip document/URL shortcuts dumped into the Start Menu by installers
                 && !/\.(txt|htm|html|pdf|rtf|url|chm|doc|docx|md)(\b|$)/i.test(item.AppID)
-                // Must have at least one icon source — if neither found, it's not a real app
-                && (item.IconPath || item.ExePath))
+                // Must have an icon source, OR be a known launchable protocol (Steam etc.)
+                && (item.IconPath || item.ExePath || /^steam:\/\//.test(item.AppID)))
               .sort((a, b) => a.Name.localeCompare(b.Name));
             const result = [];
             for (const item of items) {
@@ -191,10 +201,12 @@ $apps | ConvertTo-Json -Depth 2
   });
 
   ipcMain.handle('add-app-from-appid', (_, { name, appId, iconDataUrl }) => {
+    // Steam URLs and other protocol-based IDs are stored as-is; everything else uses shell:AppsFolder
+    const appPath = /^[a-z][a-z0-9+.-]*:\/\//i.test(appId) ? appId : `shell:AppsFolder\\${appId}`;
     return {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       name,
-      path: `shell:AppsFolder\\${appId}`,
+      path: appPath,
       iconDataUrl: iconDataUrl || ''
     };
   });

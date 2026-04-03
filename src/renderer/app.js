@@ -24,12 +24,12 @@ async function init() {
 }
 
 async function refreshMissingIcons() {
-  const missing = apps.filter(a => a.path && a.path.startsWith('shell:') && !a.iconDataUrl);
+  const missing = apps.filter(a => a.path && (a.path.startsWith('shell:') || /^[a-z][a-z0-9+.-]*:\/\//i.test(a.path)) && !a.iconDataUrl);
   if (missing.length === 0) return;
   const installed = await ipcRenderer.invoke('get-installed-apps');
   let changed = false;
   for (const appItem of missing) {
-    const appId = appItem.path.replace('shell:AppsFolder\\', '');
+    const appId = appItem.path.startsWith('shell:') ? appItem.path.replace('shell:AppsFolder\\', '') : appItem.path;
     const match = installed.find(i => i.appId === appId);
     if (match && match.iconDataUrl) {
       appItem.iconDataUrl = match.iconDataUrl;
