@@ -35,12 +35,14 @@ function setupIPC(win, store, electronApp) {
       const ps = `
 $startDirs = @([Environment]::GetFolderPath('ApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs', [Environment]::GetFolderPath('CommonApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs')
 $wsh = New-Object -ComObject WScript.Shell
+$pkgMap = @{}
+Get-AppxPackage -ErrorAction SilentlyContinue | ForEach-Object { $pkgMap[$_.PackageFamilyName] = $_ }
 $apps = Get-StartApps | ForEach-Object {
   $appId = $_.AppID; $name = $_.Name; $iconPath = $null; $exePath = $null
   if ($appId -match '^(.+)!.+$') {
     $pfn = $Matches[1]
     try {
-      $pkg = Get-AppxPackage -PackageFamilyName $pfn -ErrorAction SilentlyContinue
+      $pkg = $pkgMap[$pfn]
       if ($pkg) {
         [xml]$mf = Get-Content "$($pkg.InstallLocation)\\AppxManifest.xml" -ErrorAction SilentlyContinue
         $logoRel = $null

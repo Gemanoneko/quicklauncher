@@ -1,7 +1,7 @@
 {
   "name": "quicklauncher",
   "productName": "QuickLauncher",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Cyberpunk-themed desktop quick launcher",
   "main": "src/main/index.js",
   "scripts": {
