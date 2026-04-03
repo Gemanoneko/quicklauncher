@@ -21,7 +21,8 @@ function setupIPC(win, store, electronApp) {
 
   ipcMain.handle('launch-app', (_, filePath) => {
     if (filePath.startsWith('shell:')) {
-      shell.openExternal(filePath);
+      // Use explorer.exe to launch shell: URIs (Store apps, AUMIDs)
+      execFile('explorer.exe', [filePath], { windowsHide: false, stdio: 'pipe' }, () => {});
     } else {
       shell.openPath(filePath);
     }
@@ -32,8 +33,10 @@ function setupIPC(win, store, electronApp) {
   ipcMain.handle('get-installed-apps', () => {
     return new Promise((resolve) => {
       const ps = `
+$startDirs = @([Environment]::GetFolderPath('ApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs', [Environment]::GetFolderPath('CommonApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs')
+$wsh = New-Object -ComObject WScript.Shell
 $apps = Get-StartApps | ForEach-Object {
-  $appId = $_.AppID; $name = $_.Name; $iconPath = $null
+  $appId = $_.AppID; $name = $_.Name; $iconPath = $null; $exePath = $null
   if ($appId -match '^(.+)!.+$') {
     $pfn = $Matches[1]
     try {
@@ -56,54 +59,52 @@ $apps = Get-StartApps | ForEach-Object {
             $found = Get-ChildItem -Path $fullDir -Filter "$logoBase*$logoExt" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -First 1
             if ($found) { $iconPath = $found.FullName }
           }
-          if (-not $iconPath) {
-            $logoRel2 = $null
-            try { $logoRel2 = $mf.Package.Properties.Logo } catch {}
-            if ($logoRel2 -and $logoRel2 -ne $logoRel) {
-              $logoRel2 = $logoRel2 -replace '/', '\\'
-              $logoBase2 = [IO.Path]::GetFileNameWithoutExtension($logoRel2)
-              $logoDir2  = [IO.Path]::GetDirectoryName($logoRel2)
-              $logoExt2  = [IO.Path]::GetExtension($logoRel2)
-              $fullDir2  = if ($logoDir2) { Join-Path $baseDir $logoDir2 } else { $baseDir }
-              $exact2    = Join-Path $baseDir $logoRel2
-              if (Test-Path $exact2) { $iconPath = $exact2 }
-              else {
-                $found2 = Get-ChildItem -Path $fullDir2 -Filter "$logoBase2*$logoExt2" -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -First 1
-                if ($found2) { $iconPath = $found2.FullName }
-              }
-            }
-          }
         }
       }
     } catch {}
+  } else {
+    # Win32 app: find exe via Start Menu shortcut
+    try {
+      $lnk = Get-ChildItem -Path $startDirs -Filter '*.lnk' -Recurse -ErrorAction SilentlyContinue |
+             Where-Object { $_.BaseName -eq $name } | Select-Object -First 1
+      if ($lnk) {
+        $sc = $wsh.CreateShortcut($lnk.FullName)
+        if ($sc.TargetPath -and (Test-Path $sc.TargetPath)) { $exePath = $sc.TargetPath }
+      }
+    } catch {}
   }
-  [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath }
+  [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath }
 }
 $apps | ConvertTo-Json -Depth 2
 `;
       execFile('powershell.exe',
         ['-NoProfile', '-NonInteractive', '-Command', ps],
-        { windowsHide: true, stdio: 'pipe', timeout: 20000 },
-        (err, stdout) => {
+        { windowsHide: true, stdio: 'pipe', timeout: 25000 },
+        async (err, stdout) => {
           if (err || !stdout) { resolve([]); return; }
           try {
             let data = JSON.parse(stdout.trim());
             if (!Array.isArray(data)) data = data ? [data] : [];
-            const result = data
-              .filter(item => item.Name && item.AppID)
-              .sort((a, b) => a.Name.localeCompare(b.Name))
-              .map(item => {
-                let iconDataUrl = '';
-                if (item.IconPath) {
-                  try {
-                    const buf = fs.readFileSync(item.IconPath);
-                    const ext = item.IconPath.split('.').pop().toLowerCase();
-                    const mime = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png';
-                    iconDataUrl = `data:${mime};base64,${buf.toString('base64')}`;
-                  } catch { /* skip */ }
-                }
-                return { name: item.Name, appId: item.AppID, iconDataUrl };
-              });
+            const items = data.filter(item => item.Name && item.AppID)
+                              .sort((a, b) => a.Name.localeCompare(b.Name));
+            const result = [];
+            for (const item of items) {
+              let iconDataUrl = '';
+              if (item.IconPath) {
+                try {
+                  const buf = fs.readFileSync(item.IconPath);
+                  const ext = item.IconPath.split('.').pop().toLowerCase();
+                  const mime = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png';
+                  iconDataUrl = `data:${mime};base64,${buf.toString('base64')}`;
+                } catch { /* skip */ }
+              } else if (item.ExePath) {
+                try {
+                  const icon = await app.getFileIcon(item.ExePath, { size: 'large' });
+                  iconDataUrl = icon.toDataURL();
+                } catch { /* skip */ }
+              }
+              result.push({ name: item.Name, appId: item.AppID, iconDataUrl });
+            }
             resolve(result);
           } catch { resolve([]); }
         }
