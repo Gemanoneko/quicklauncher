@@ -57,6 +57,19 @@ function trimIcon(img) {
   return img.crop({ x, y, width: w, height: h });
 }
 
+// Resolve an icon path that may contain %ENV% vars or be a bare filename like "appwiz.cpl".
+function resolveIconPath(p) {
+  if (!p) return null;
+  const expanded = p.replace(/%([^%]+)%/gi, (_, v) => process.env[v] || `%${v}%`);
+  if (fs.existsSync(expanded)) return expanded;
+  // Bare filename with no directory part: search System32
+  if (!path.isAbsolute(expanded) && !expanded.includes('\\') && !expanded.includes('/')) {
+    const sys32 = path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', expanded);
+    if (fs.existsSync(sys32)) return sys32;
+  }
+  return null;
+}
+
 function setupIPC(win, store, electronApp) {
 
   ipcMain.handle('get-apps', () => store.get('apps'));
@@ -89,18 +102,27 @@ $startDirs = @([Environment]::GetFolderPath('ApplicationData') + '\\Microsoft\\W
 $wsh = New-Object -ComObject WScript.Shell
 $pkgMap = @{}
 Get-AppxPackage -ErrorAction SilentlyContinue | ForEach-Object { $pkgMap[$_.PackageFamilyName] = $_ }
+$steamInstall = $null
+try { $steamInstall = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Valve\Steam' -EA SilentlyContinue).InstallPath } catch {}
+if (-not $steamInstall) { try { $steamInstall = (Get-ItemProperty 'HKLM:\SOFTWARE\Valve\Steam' -EA SilentlyContinue).InstallPath } catch {} }
 $apps = Get-StartApps | ForEach-Object {
   $appId = $_.AppID; $name = $_.Name; $iconPath = $null; $exePath = $null
   if ($appId -match '^steam://rungameid/(\d+)$') {
-    # Steam game: look up icon path from Windows Uninstall registry entry
+    # Steam game: use library cache icon (most reliable), fall back to Uninstall registry
     $steamId = $Matches[1]
-    try {
-      $reg = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App $steamId" -ErrorAction SilentlyContinue
-      if ($reg -and $reg.DisplayIcon) {
-        $iconExe = ($reg.DisplayIcon -split ',')[0].Trim('" ')
-        if ($iconExe -and (Test-Path $iconExe)) { $exePath = $iconExe }
-      }
-    } catch {}
+    if ($steamInstall) {
+      $cacheIcon = Join-Path $steamInstall ("appcache\librarycache\" + $steamId + "_icon.jpg")
+      if (Test-Path $cacheIcon) { $iconPath = $cacheIcon }
+    }
+    if (-not $iconPath) {
+      try {
+        $reg = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App $steamId" -ErrorAction SilentlyContinue
+        if ($reg -and $reg.DisplayIcon) {
+          $iconExe = ($reg.DisplayIcon -split ',')[0].Trim('" ')
+          if ($iconExe -and (Test-Path $iconExe)) { $exePath = $iconExe }
+        }
+      } catch {}
+    }
   } elseif ($appId -match '^(.+)!.+$') {
     $pfn = $Matches[1]
     try {
@@ -133,7 +155,7 @@ $apps = Get-StartApps | ForEach-Object {
   if (-not $iconPath -and -not $exePath) {
     try {
       $lnk = Get-ChildItem -Path $startDirs -Filter '*.lnk' -Recurse -ErrorAction SilentlyContinue |
-             Where-Object { $_.BaseName -ieq $name } | Select-Object -First 1
+             Where-Object { $_.BaseName -ieq $name -or $name -ilike ('*' + $_.BaseName + '*') -or $_.BaseName -ilike ('*' + $name + '*') } | Select-Object -First 1
       if ($lnk) {
         $sc = $wsh.CreateShortcut($lnk.FullName)
         if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\s*,') {
@@ -253,23 +275,23 @@ async function buildAppEntry(filePath) {
   const name = path.basename(filePath, path.extname(filePath));
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-  // For .lnk files, resolve the shortcut target/IconLocation so we get the real
-  // app icon instead of the generic shortcut-overlay icon.
+  // For .lnk files, resolve the icon source via Electron's native readShortcutLink.
+  // Prefer the explicit icon field; fall back to target (only if it's a file, not a folder).
   let iconSourcePath = filePath;
   if (path.extname(filePath).toLowerCase() === '.lnk') {
-    const psPath = filePath.replace(/'/g, "''");
-    const resolved = await new Promise((resolve) => {
-      execFile('powershell.exe',
-        ['-NoProfile', '-NonInteractive', '-Command',
-         `$wsh=New-Object -ComObject WScript.Shell;$sc=$wsh.CreateShortcut('${psPath}');` +
-         `$i=[Environment]::ExpandEnvironmentVariables(($sc.IconLocation-split',')[0].Trim());` +
-         `$t=[Environment]::ExpandEnvironmentVariables($sc.TargetPath);` +
-         `if($i-and(Test-Path $i)){Write-Output $i}elseif($t-and(Test-Path $t)){Write-Output $t}`],
-        { windowsHide: true, stdio: 'pipe', timeout: 5000 },
-        (err, stdout) => resolve(stdout ? stdout.trim() : null)
-      );
-    });
-    if (resolved) iconSourcePath = resolved;
+    try {
+      const info = shell.readShortcutLink(filePath);
+      if (info.icon) {
+        const r = resolveIconPath(info.icon);
+        if (r) iconSourcePath = r;
+      }
+      if (iconSourcePath === filePath && info.target) {
+        const r = resolveIconPath(info.target) || info.target;
+        try {
+          if (fs.existsSync(r) && !fs.statSync(r).isDirectory()) iconSourcePath = r;
+        } catch { /* ignore */ }
+      }
+    } catch { /* fall through to .lnk itself */ }
   }
 
   try {
