@@ -694,8 +694,8 @@ input[type="range"] {
    No angular geometry — Tyrell Corp builds in brutalist mass, not sharp angles.
    Neon halos are wide and diffused, like color seen through a rain-streaked window. */
 html.theme-blade-runner {
-  --bg:        rgba(4, 2, 0, 0.95);
-  --panel-bg:  rgba(7, 3, 0, 0.98);
+  --bg:        rgba(6, 3, 0, 0.96);
+  --panel-bg:  rgba(9, 4, 0, 0.98);
   --accent-c:  #e07a00;   /* sodium-vapor amber */
   --accent-m:  #b83000;   /* deep neon red-orange */
   --accent-y:  #e8c040;   /* pale sodium gold */
@@ -717,6 +717,7 @@ html.theme-blade-runner #app {
   border: 1px solid rgba(224,122,0,0.20);
   box-shadow: 0 0 30px rgba(224,122,0,0.10), 0 0 80px rgba(224,122,0,0.05);
 }
+
 /* Animated border: slow amber pulse, like a neon tube warming up */
 html.theme-blade-runner #app::before {
   clip-path: none;
@@ -725,28 +726,27 @@ html.theme-blade-runner #app::before {
 }
 @keyframes br-border-pulse {
   0%, 100% { border-color: rgba(224,122,0,0.14); }
-  50%       { border-color: rgba(224,122,0,0.38); box-shadow: inset 0 0 30px rgba(224,122,0,0.04); }
+  50%       { border-color: rgba(224,122,0,0.42); box-shadow: inset 0 0 30px rgba(224,122,0,0.05); }
 }
+
 html.theme-blade-runner .overlay { clip-path: none; border-radius: 1px; }
 
-/* Scanlines drifting slowly downward — rain on glass */
+/* SVG rain streaks + scanlines + warm amber radial glow from bottom corners */
 html.theme-blade-runner #app::after {
   background:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px, transparent 4px,
-      rgba(0,0,0,.05) 4px, rgba(0,0,0,.05) 5px
-    ),
-    radial-gradient(ellipse 120% 40% at 50% 0%, rgba(224,122,0,0.07) 0%, transparent 100%);
-  animation: rain-drift 10s linear infinite;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='200'%3E%3Cline x1='12' y1='0' x2='10' y2='200' stroke='rgba(224,122,0,0.04)' stroke-width='1'/%3E%3Cline x1='30' y1='0' x2='28' y2='200' stroke='rgba(224,122,0,0.03)' stroke-width='1'/%3E%3Cline x1='52' y1='0' x2='50' y2='200' stroke='rgba(224,122,0,0.05)' stroke-width='1'/%3E%3Cline x1='70' y1='0' x2='68' y2='200' stroke='rgba(224,122,0,0.03)' stroke-width='1'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, transparent 0px, transparent 4px, rgba(0,0,0,.05) 4px, rgba(0,0,0,.05) 5px),
+    radial-gradient(ellipse 80% 40% at 20% 100%, rgba(224,122,0,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 40% at 80% 100%, rgba(184,48,0,0.05) 0%, transparent 70%);
+  animation: br-rain-drift 12s linear infinite;
   pointer-events: none;
 }
-@keyframes rain-drift {
-  from { background-position: 0 0, center; }
-  to   { background-position: 0 80px, center; }
+@keyframes br-rain-drift {
+  from { background-position: 0 0, 0 0, center, center; }
+  to   { background-position: 0 200px, 0 80px, center, center; }
 }
 
-/* Header: amber light pooling at the bottom edge */
+/* Header: dim location text right of title, before buttons */
 html.theme-blade-runner #header {
   background: rgba(224,122,0,0.03);
   border-bottom: 1px solid rgba(224,122,0,0.14);
@@ -756,8 +756,21 @@ html.theme-blade-runner #header::before {
   background: var(--accent-c);
   box-shadow: var(--glow-c);
 }
+html.theme-blade-runner #header::after {
+  content: 'LOS ANGELES  2019';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: rgba(224,122,0,0.28);
+  pointer-events: none;
+}
 
-/* Title: italic serif — cinematic, not tech. Slow neon-buzz, not a glitch. */
+/* Title: italic serif — cinematic, not tech. Slow neon-buzz. */
 html.theme-blade-runner #title {
   font-family: 'Georgia', 'Times New Roman', serif;
   font-style: italic;
@@ -768,13 +781,33 @@ html.theme-blade-runner #title {
 }
 @keyframes br-neon-buzz {
   0%, 80%, 100% { opacity: 1;    text-shadow: var(--glow-c); }
-  83%           { opacity: 0.75; text-shadow: 0 0 4px rgba(224,122,0,.4); }
+  83%           { opacity: 0.72; text-shadow: 0 0 4px rgba(224,122,0,.3); }
   85%           { opacity: 1;    text-shadow: var(--glow-c), 0 0 40px rgba(224,122,0,.5); }
-  87%           { opacity: 0.85; text-shadow: 0 0 4px rgba(224,122,0,.4); }
+  87%           { opacity: 0.82; text-shadow: 0 0 4px rgba(224,122,0,.3); }
   89%           { opacity: 1;    text-shadow: var(--glow-c); }
 }
 
-/* Tile icons: wide diffused halo — like seeing light through fog */
+/* Grid background: Tyrell Corp. branding — large italic serif, right-aligned, very dim */
+html.theme-blade-runner #grid-container { position: relative; }
+html.theme-blade-runner #grid-container::before {
+  content: 'TYRELL\ACORP.\A\AMORE\AHUMAN\ATHAN\AHUMAN\A\AOFF-WORLD\ACOLONIES\A\AREPLICANT\ARETIREMENT';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 24px;
+  line-height: 1.4;
+  color: rgba(224,122,0,0.055);
+  text-align: right;
+  padding: 12px 16px 0 0;
+}
+html.theme-blade-runner #app-grid   { position: relative; z-index: 1; }
+html.theme-blade-runner #drop-hint  { z-index: 1; }
+
+/* Tile icons: wide diffused amber halo — light through fog */
 html.theme-blade-runner .app-tile:hover {
   background: rgba(224,122,0,0.05);
   border-color: rgba(224,122,0,0.22);
@@ -787,6 +820,7 @@ html.theme-blade-runner .app-tile:hover .tile-icon {
 
 /* Edit bar, buttons, picker */
 html.theme-blade-runner #edit-bar            { background: rgba(184,48,0,0.06); border-top-color: rgba(184,48,0,0.28); }
+html.theme-blade-runner .edit-label          { color: var(--accent-m); text-shadow: var(--glow-m); }
 html.theme-blade-runner button:hover         { background: rgba(224,122,0,0.08); }
 html.theme-blade-runner button:active        { background: rgba(224,122,0,0.16); }
 html.theme-blade-runner .picker-item:hover   { background: rgba(224,122,0,0.06); }
@@ -800,7 +834,7 @@ html.theme-blade-runner #update-banner       { background: rgba(232,192,64,0.05)
 html.theme-blade-runner .skin-btn.active     { background: rgba(224,122,0,0.14); }
 
 /* ══ ALIEN theme ══════════════════════════════════════════════════════════════════
-   Weyland-Yutani MU-TH-R 182 terminal, USCSS Nostromo, 2122.
+   Weyland-Yutani MU-TH-UR 6000 terminal, USCSS Nostromo, 2122.
    Aged phosphor on dead black. No decoration — only function.
    The machine does not glitch. It blinks, and waits.                             */
 html.theme-alien {
@@ -820,62 +854,114 @@ html.theme-alien {
   font-family: 'Courier New', 'Courier', monospace;
 }
 
-/* Hard CRT rectangle. No clip-path, no radius. Inner phosphor glow. */
+/* Hard CRT rectangle. No clip-path, no radius. */
 html.theme-alien #app {
   clip-path: none;
   border-radius: 0;
   border: 1px solid rgba(24,176,24,0.32);
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.9),
-              inset 0 0 40px rgba(24,176,24,0.04);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.9), inset 0 0 40px rgba(24,176,24,0.04);
 }
+
+/* TOP WARNING STRIPE instead of animated border */
 html.theme-alien #app::before {
+  inset: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(24,176,24,0.5) 0px, rgba(24,176,24,0.5) 8px,
+    transparent 8px, transparent 14px
+  );
+  border: none;
   clip-path: none;
   border-radius: 0;
-  animation: none;  /* no border animation — terminals don't pulse */
-  border-color: rgba(24,176,24,0.22);
+  animation: none;
 }
+
 html.theme-alien .overlay { clip-path: none; border-radius: 0; }
 
-/* Dense phosphor scanlines */
+/* Dense phosphor CRT scanlines + phosphor vignette + faint center glow */
 html.theme-alien #app::after {
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0,0,0,0.22) 0px, rgba(0,0,0,0.22) 1px,
-    transparent 1px, transparent 3px
-  );
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0px, rgba(0,0,0,.22) 1px, transparent 1px, transparent 3px),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.5) 100%),
+    radial-gradient(ellipse 60% 60% at 50% 50%, rgba(24,176,24,0.04) 0%, transparent 70%);
   animation: none;
   opacity: 1;
 }
 
-/* Header: plain, minimal. No left accent bar — terminals have no chrome. */
+/* Header: plain terminal — no chrome, no left accent bar */
 html.theme-alien #header {
   background: transparent;
   border-bottom: 1px solid rgba(24,176,24,0.28);
 }
 html.theme-alien #header::before { display: none; }
+html.theme-alien #header::after {
+  content: 'MU-TH-UR 6000  ///  WEYLAND-YUTANI CORP.';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Courier New', monospace;
+  font-size: 7.5px;
+  letter-spacing: 1px;
+  color: rgba(24,176,24,0.28);
+  pointer-events: none;
+}
 
-/* Title: typewriter courier, no animation — just a blinking cursor */
+/* Title: typewriter Courier, blinking cursor */
 html.theme-alien #title {
   font-family: 'Courier New', monospace;
   font-size: 11px;
   font-weight: normal;
-  font-style: normal;
   letter-spacing: 2px;
   text-shadow: 0 0 4px rgba(24,176,24,0.5);
   animation: none;
 }
 html.theme-alien #title::after {
   content: '_';
-  animation: crt-cursor 1.1s step-start infinite;
+  animation: alien-cursor 1.1s step-start infinite;
   margin-left: 1px;
   text-shadow: none;
 }
-@keyframes crt-cursor {
+@keyframes alien-cursor {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
 }
 
-/* Tiles: square, no hover glow — just a dim selection highlight */
+/* Grid background: MU-TH-UR system output — tiny Courier, very dim */
+html.theme-alien #grid-container { position: relative; }
+html.theme-alien #grid-container::before {
+  content: 'MU-TH-UR ONLINE\ACREW: 7 / 7\ACARGO: ORE\ADEST: EARTH (W-Y)\A\A> LV-426 APPROACH\A> PRIORITY ONE\A  OVERRIDE\A\A*** WARNING ***\ABIO-HZD CLASS A\ADANGER: EXTREME\ACREW EXPENDABLE\A\AALL PRIORITIES\ARECEDE';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Courier New', monospace;
+  font-size: 8.5px;
+  line-height: 1.55;
+  color: rgba(24,176,24,0.09);
+  padding: 10px 12px 0;
+}
+/* Biohazard symbol — bottom-right watermark */
+html.theme-alien #grid-container::after {
+  content: '\2622';
+  position: absolute;
+  bottom: 10px;
+  right: 14px;
+  z-index: 0;
+  pointer-events: none;
+  font-size: 64px;
+  color: rgba(24,176,24,0.04);
+  line-height: 1;
+}
+html.theme-alien #app-grid   { position: relative; z-index: 1; }
+html.theme-alien #drop-hint  { z-index: 1; }
+
+/* Tiles: square, no hover glow — utilitarian */
 html.theme-alien .app-tile              { border-radius: 0; }
 html.theme-alien .app-tile:hover        { background: rgba(24,176,24,0.07); border-color: rgba(24,176,24,0.32); box-shadow: none; }
 html.theme-alien .app-tile:active       { background: rgba(24,176,24,0.14); transform: none; }
@@ -946,13 +1032,12 @@ html.theme-tron #app::before {
 }
 html.theme-tron .overlay { clip-path: none; border-radius: 0; }
 
-/* Subtle horizontal grid lines — the floor of the Grid */
+/* Grid lines — the floor of the Grid, replacing scanlines */
 html.theme-tron #app::after {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0px, transparent 19px,
-    rgba(109,232,255,0.03) 19px, rgba(109,232,255,0.03) 20px
-  );
+  background:
+    linear-gradient(rgba(109,232,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(109,232,255,0.025) 1px, transparent 1px);
+  background-size: 24px 24px;
   animation: none;
 }
 
@@ -962,8 +1047,20 @@ html.theme-tron #header {
   border-bottom: 1px solid rgba(109,232,255,0.22);
 }
 html.theme-tron #header::before { background: var(--accent-c); box-shadow: var(--glow-c); }
+html.theme-tron #header::after {
+  content: 'USER: ACTIVE  ///  GRID: ONLINE';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  color: rgba(109,232,255,0.25);
+  pointer-events: none;
+}
 
-/* Title: Consolas, precise glow, circuit-initialization burst */
+/* Title: Consolas, circuit-initialization flash */
 html.theme-tron #title {
   font-family: 'Consolas', monospace;
   font-size: 12px;
@@ -980,6 +1077,39 @@ html.theme-tron .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
   92%           { opacity: 0.4; text-shadow: none; }
   93%           { opacity: 1;   text-shadow: var(--glow-c); }
 }
+
+/* Grid background: binary/program flavor text, dim ice blue */
+html.theme-tron #grid-container { position: relative; }
+html.theme-tron #grid-container::before {
+  content: '01001010 01010111\A10110110 11001010\A\AUSER 42 // ACTIVE\AGRID SECTOR: 7-G\AIDENTITY DISC: ON\ACYCLES: 1,024,000\A\AEND OF LINE\A\A10110110 11001010\A01010111 00101101';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Consolas', monospace;
+  font-size: 9px;
+  line-height: 1.6;
+  color: rgba(109,232,255,0.07);
+  padding: 12px 14px 0;
+}
+/* Light sweep animation — a recognition beam crossing the Grid */
+html.theme-tron #grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 0% 35%, rgba(109,232,255,0.05) 50%, transparent 65% 100%);
+  background-size: 300% 100%;
+  animation: tron-sweep 7s ease-in-out infinite;
+}
+@keyframes tron-sweep {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -100% 0; }
+}
+html.theme-tron #app-grid   { position: relative; z-index: 1; }
+html.theme-tron #drop-hint  { z-index: 1; }
 
 /* Tiles */
 html.theme-tron .app-tile              { border-radius: 0; }
@@ -1037,39 +1167,80 @@ html.theme-lcars {
   font-family: 'Arial', 'Helvetica', sans-serif;
 }
 
-/* Rounded LCARS panel — pill-like architecture */
+/* LCARS panel — thick left orange border + top orange border, no clip-path */
 html.theme-lcars #app {
   clip-path: none;
-  border-radius: 12px;
+  border-radius: 0;
   border: 0;
+  border-left: 14px solid #ff9900;
+  border-top: 5px solid #ff9900;
   box-shadow: none;
 }
+
+/* Disable the animated pseudo-border — LCARS panels are static */
 html.theme-lcars #app::before {
-  clip-path: none;
-  border-radius: 12px;
-  border: 2px solid rgba(255,153,0,0.40);
+  display: none;
+  border: none;
   animation: none;
 }
-html.theme-lcars .overlay { clip-path: none; border-radius: 12px; }
 
-/* No scanlines — Starfleet displays are clean */
-html.theme-lcars #app::after { display: none; }
+html.theme-lcars .overlay {
+  clip-path: none;
+  border-radius: 0;
+  border-left: 14px solid #ff9900;
+  border-top: 5px solid #ff9900;
+}
 
-/* Header: LCARS top bar with thick orange left block */
+/* Starfield background — quiet stars in deep space */
+html.theme-lcars #app::after {
+  background:
+    radial-gradient(1px 1px at 8% 12%, rgba(255,255,255,0.50) 0%, transparent 100%),
+    radial-gradient(1px 1px at 22% 7%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 38% 20%, rgba(255,255,255,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,0.30) 0%, transparent 100%),
+    radial-gradient(1px 1px at 71% 15%, rgba(255,255,255,0.50) 0%, transparent 100%),
+    radial-gradient(1px 1px at 84% 8%, rgba(255,255,255,0.40) 0%, transparent 100%),
+    radial-gradient(1px 1px at 93% 22%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 14% 40%, rgba(255,255,255,0.30) 0%, transparent 100%),
+    radial-gradient(1px 1px at 47% 38%, rgba(255,255,255,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 66% 45%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 79% 35%, rgba(255,255,255,0.40) 0%, transparent 100%),
+    radial-gradient(1px 1px at 31% 62%, rgba(255,255,255,0.30) 0%, transparent 100%),
+    radial-gradient(1px 1px at 58% 70%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 58%, rgba(255,255,255,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 78%, rgba(255,255,255,0.28) 0%, transparent 100%),
+    radial-gradient(1px 1px at 42% 85%, rgba(255,255,255,0.32) 0%, transparent 100%),
+    radial-gradient(1px 1px at 74% 80%, rgba(255,255,255,0.38) 0%, transparent 100%);
+  animation: none;
+}
+
+/* Header: LCARS bar */
 html.theme-lcars #header {
-  background: rgba(255,153,0,0.07);
-  border-bottom: 2px solid #ff9900;
-  border-radius: 12px 12px 0 0;
+  background: rgba(0,0,0,0);
+  border-bottom: 3px solid #ff9900;
 }
 html.theme-lcars #header::before {
   top: 0; bottom: 0;
-  width: 8px;
-  background: #ff9900;
+  width: 6px;
+  background: #cc88ff;
   box-shadow: none;
-  border-radius: 12px 0 0 0;
+  border-radius: 0;
+}
+html.theme-lcars #header::after {
+  content: 'STARDATE  47634.44';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Arial', sans-serif;
+  font-size: 8.5px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: rgba(255,153,0,0.38);
+  pointer-events: none;
 }
 
-/* Title: clean bold sans, no animation — a computer at work, not a display */
+/* Title: clean bold sans — a computer at work */
 html.theme-lcars #title {
   font-family: 'Arial', sans-serif;
   font-size: 12px;
@@ -1082,6 +1253,45 @@ html.theme-lcars #title {
 html.theme-lcars .accent          { color: var(--accent-m); }
 html.theme-lcars #header-version  { color: rgba(255,153,0,0.50); }
 
+/* Grid background: Starfleet status readout, right-aligned */
+html.theme-lcars #grid-container { position: relative; }
+html.theme-lcars #grid-container::before {
+  content: 'SHIELDS: NOMINAL\AWARP CORE: STABLE\ASENSORS: ACTIVE\AALL SYSTEMS: ONLINE\AFEDERATION STANDARD';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Arial', sans-serif;
+  font-size: 8.5px;
+  font-weight: bold;
+  line-height: 1.8;
+  color: rgba(255,153,0,0.10);
+  text-align: right;
+  padding: 12px 16px 0 0;
+}
+/* LCARS processing sweep — a horizontal bar that scans across the grid */
+html.theme-lcars #grid-container::after {
+  content: '';
+  position: absolute;
+  bottom: 20px;
+  left: 14px;
+  right: 14px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff9900, transparent);
+  background-size: 200% 100%;
+  animation: lcars-scan 4s ease-in-out infinite;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes lcars-scan {
+  0%, 100% { background-position: 200% 0; }
+  50%       { background-position: -100% 0; }
+}
+html.theme-lcars #app-grid   { position: relative; z-index: 1; }
+html.theme-lcars #drop-hint  { z-index: 1; }
+
 /* Tiles */
 html.theme-lcars .app-tile:hover  { background: rgba(255,153,0,0.07); border-color: rgba(255,153,0,0.35); box-shadow: none; }
 html.theme-lcars .app-tile:active { background: rgba(255,153,0,0.14); }
@@ -1091,7 +1301,7 @@ html.theme-lcars .app-tile:hover .tile-icon { filter: none; }
 html.theme-lcars #edit-bar    { background: rgba(204,136,255,0.07); border-top: 2px solid rgba(204,136,255,0.45); }
 html.theme-lcars .edit-label  { color: var(--accent-m); text-shadow: none; }
 
-/* Buttons: flat LCARS pill shape */
+/* Buttons: flat LCARS pill shape, no glow */
 html.theme-lcars button              { border-radius: var(--radius); }
 html.theme-lcars button:hover        { background: rgba(255,153,0,0.12); border-color: #ff9900; box-shadow: none; color: #ff9900; }
 html.theme-lcars button:active       { background: rgba(255,153,0,0.22); }
@@ -1141,31 +1351,30 @@ html.theme-pip-boy {
   font-family: 'Arial Black', 'Impact', 'Arial', sans-serif;
 }
 
-/* Rounded vault-tech shape — bolted panels, not angular chrome */
+/* Rounded vault-tech bezel — bolted panels, not angular chrome */
 html.theme-pip-boy #app {
   clip-path: none;
-  border-radius: 6px;
-  border: 2px solid rgba(146,200,0,0.28);
+  border-radius: 8px;
+  border: 3px solid rgba(146,200,0,0.28);
   box-shadow: 0 0 20px rgba(146,200,0,0.08), inset 0 0 30px rgba(0,0,0,0.3);
 }
 html.theme-pip-boy #app::before {
   clip-path: none;
-  border-radius: 6px;
+  border-radius: 8px;
   animation: pip-border-pulse 4s ease-in-out infinite;
 }
 @keyframes pip-border-pulse {
   0%, 100% { border-color: rgba(146,200,0,0.20); }
   50%       { border-color: rgba(146,200,0,0.48); }
 }
-html.theme-pip-boy .overlay { clip-path: none; border-radius: 6px; }
+html.theme-pip-boy .overlay { clip-path: none; border-radius: 8px; }
 
-/* Warm scanlines — the Pip-Boy screen runs a little hot */
+/* CRT vignette: scanlines + dark radial vignette + faint phosphor center glow */
 html.theme-pip-boy #app::after {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0px, transparent 2px,
-    rgba(0,0,0,0.14) 2px, rgba(0,0,0,0.14) 3px
-  );
+  background:
+    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,.14) 2px, rgba(0,0,0,.14) 3px),
+    radial-gradient(ellipse 90% 90% at 50% 50%, transparent 30%, rgba(0,0,0,0.60) 100%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(146,200,0,0.04) 0%, transparent 70%);
   animation: none;
 }
 
@@ -1173,11 +1382,23 @@ html.theme-pip-boy #app::after {
 html.theme-pip-boy #header {
   background: rgba(146,200,0,0.04);
   border-bottom: 2px solid rgba(146,200,0,0.24);
-  border-radius: 4px 4px 0 0;
+  border-radius: 6px 6px 0 0;
 }
 html.theme-pip-boy #header::before { background: var(--accent-c); box-shadow: var(--glow-c); }
+html.theme-pip-boy #header::after {
+  content: 'VAULT-TEC  //  PIP-BOY 3000 MK.IV';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: rgba(146,200,0,0.22);
+  pointer-events: none;
+}
 
-/* Title: blocky bold, Vault-Tec signage style, boot-up flash */
+/* Title: blocky bold, Vault-Tec signage, boot-up flash */
 html.theme-pip-boy #title {
   font-family: 'Arial Black', 'Impact', sans-serif;
   font-size: 11px;
@@ -1193,6 +1414,44 @@ html.theme-pip-boy #title {
   92%           { opacity: 0.7;  }
   94%           { opacity: 1;    text-shadow: var(--glow-c); }
 }
+
+/* Grid background: S.P.E.C.I.A.L. stats — right-aligned, Arial Black, very dim */
+html.theme-pip-boy #grid-container { position: relative; }
+html.theme-pip-boy #grid-container::before {
+  content: 'S.P.E.C.I.A.L.\A\ASTR  10\APER   8\AEND   9\ACHA   6\AINT   7\AAGI   8\ALCK   5\A\AWAR NEVER\ACHANGES.';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-size: 10px;
+  line-height: 1.55;
+  color: rgba(146,200,0,0.065);
+  text-align: right;
+  padding: 12px 16px 0 0;
+}
+/* Vault door circle — concentric rings, centered behind the grid */
+html.theme-pip-boy #grid-container::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(146,200,0,0.06);
+  box-shadow:
+    0 0 0 12px rgba(146,200,0,0.04),
+    0 0 0 24px rgba(146,200,0,0.03),
+    0 0 0 40px rgba(146,200,0,0.02),
+    0 0 0 60px rgba(146,200,0,0.01);
+  pointer-events: none;
+  z-index: 0;
+}
+html.theme-pip-boy #app-grid   { position: relative; z-index: 1; }
+html.theme-pip-boy #drop-hint  { z-index: 1; }
 
 /* Tiles */
 html.theme-pip-boy .app-tile:hover  { background: rgba(146,200,0,0.06); border-color: rgba(146,200,0,0.30); box-shadow: 0 0 12px rgba(146,200,0,0.08); }
@@ -1215,9 +1474,9 @@ html.theme-pip-boy .picker-search        { background: rgba(146,200,0,0.06); }
 html.theme-pip-boy .picker-icon-placeholder { background: rgba(146,200,0,0.08); }
 
 /* Misc */
-html.theme-pip-boy .drop-hint-inner  { border-color: rgba(146,200,0,0.18); }
+html.theme-pip-boy .drop-hint-inner  { border-color: rgba(146,200,0,0.18); border-radius: 6px; }
 html.theme-pip-boy .hint-sub         { color: rgba(146,200,0,0.22); }
-html.theme-pip-boy .rename-input     { background: rgba(146,200,0,0.07); }
+html.theme-pip-boy .rename-input     { background: rgba(146,200,0,0.07); border-radius: 6px; }
 html.theme-pip-boy #update-banner    { background: rgba(202,232,64,0.06); border-top-color: rgba(202,232,64,0.32); }
 html.theme-pip-boy .skin-btn.active  { background: rgba(146,200,0,0.15); }
 
@@ -1241,7 +1500,7 @@ html.theme-dune {
   font-family: 'Georgia', 'Palatino Linotype', 'Palatino', serif;
 }
 
-/* Stark rectangle — a monolith in the open desert */
+/* Stark monolith — a structure rising from the open desert */
 html.theme-dune #app {
   clip-path: none;
   border-radius: 1px;
@@ -1259,10 +1518,18 @@ html.theme-dune #app::before {
 }
 html.theme-dune .overlay { clip-path: none; border-radius: 1px; }
 
-/* No scanlines — the desert air is clear */
-html.theme-dune #app::after { display: none; }
+/* Sand texture — angled gradients creating grain, no scanlines */
+html.theme-dune #app::after {
+  background:
+    linear-gradient(168deg, rgba(200,136,64,0.04) 0%, transparent 40%),
+    linear-gradient(12deg, rgba(144,96,48,0.05) 0%, transparent 50%),
+    linear-gradient(195deg, rgba(200,136,64,0.03) 0%, transparent 30%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(200,136,64,0.07) 0%, transparent 100%),
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,0,0,0.25) 0%, transparent 100%);
+  animation: none;
+}
 
-/* Header: minimal ochre line */
+/* Header: minimal ochre line, desert dawn */
 html.theme-dune #header {
   background: rgba(200,136,64,0.03);
   border-bottom: 1px solid rgba(200,136,64,0.12);
@@ -1271,6 +1538,19 @@ html.theme-dune #header::before {
   background: var(--accent-c);
   box-shadow: none;
   opacity: 0.65;
+}
+html.theme-dune #header::after {
+  content: 'ARRAKIS  //  DUNE  //  DESERT PLANET';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: 7.5px;
+  letter-spacing: 2px;
+  color: rgba(200,136,64,0.24);
+  pointer-events: none;
 }
 
 /* Title: wide-spaced elegant serif, slow breath — the sietch at dawn */
@@ -1290,6 +1570,40 @@ html.theme-dune .accent { color: var(--accent-y); }
   50%       { opacity: 0.70; }
 }
 
+/* Grid background: Fremen scripture — large italic serif, right-aligned, very dim */
+html.theme-dune #grid-container { position: relative; }
+html.theme-dune #grid-container::before {
+  content: 'THE SPICE\AMUST FLOW\A\AFEAR IS THE\AMIND-KILLER\A\AARRAKIS\ADUNE\A\ASHAI-HULUD\AAWAKENS';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Georgia', 'Palatino Linotype', serif;
+  font-style: italic;
+  font-size: 26px;
+  line-height: 1.35;
+  color: rgba(200,136,64,0.045);
+  text-align: right;
+  padding: 10px 14px 0 0;
+}
+/* Sand dune silhouette — warm radial shapes at the bottom edge */
+html.theme-dune #grid-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background:
+    radial-gradient(ellipse 120% 100% at 20% 100%, rgba(200,136,64,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 80% at 80% 100%, rgba(144,96,48,0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+html.theme-dune #app-grid   { position: relative; z-index: 1; }
+html.theme-dune #drop-hint  { z-index: 1; }
+
 /* Tiles: no glow — warmth without fire */
 html.theme-dune .app-tile:hover  { background: rgba(200,136,64,0.05); border-color: rgba(200,136,64,0.22); box-shadow: none; }
 html.theme-dune .app-tile:active { background: rgba(200,136,64,0.10); transform: none; }
@@ -1300,7 +1614,7 @@ html.theme-dune .tile-label      { letter-spacing: 0.6px; }
 html.theme-dune #edit-bar  { background: rgba(144,96,48,0.05); border-top-color: rgba(144,96,48,0.20); }
 html.theme-dune .edit-label { color: var(--accent-m); text-shadow: none; }
 
-/* Buttons: muted, no glow */
+/* Buttons: muted, no glow on hover */
 html.theme-dune button:hover  { background: rgba(200,136,64,0.08); border-color: rgba(200,136,64,0.36); box-shadow: none; color: var(--accent-y); }
 html.theme-dune button:active { background: rgba(200,136,64,0.14); }
 
@@ -1346,7 +1660,8 @@ html.theme-x-files #app {
   border: 1px solid rgba(0,176,160,0.22);
   box-shadow: 0 0 0 3px rgba(0,0,0,0.85);
 }
-/* Border static — like a signal intermittently losing lock */
+
+/* Border signal static — like a transmission intermittently losing lock */
 html.theme-x-files #app::before {
   clip-path: none;
   border-radius: 2px;
@@ -1358,6 +1673,7 @@ html.theme-x-files #app::before {
   92%           { border-color: rgba(0,176,160,0.12); }
   95%           { border-color: rgba(0,176,160,0.36); }
 }
+
 html.theme-x-files .overlay { clip-path: none; border-radius: 2px; }
 
 /* Subtle scan interference */
@@ -1370,14 +1686,26 @@ html.theme-x-files #app::after {
   animation: none;
 }
 
-/* Header: classified document header */
+/* Header: classified document style */
 html.theme-x-files #header {
   background: rgba(0,176,160,0.03);
   border-bottom: 1px solid rgba(0,176,160,0.20);
 }
 html.theme-x-files #header::before { background: var(--accent-c); box-shadow: var(--glow-c); }
+html.theme-x-files #header::after {
+  content: 'FBI  //  SPECIAL PROJECTS  //  EYES ONLY';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Courier New', monospace;
+  font-size: 7.5px;
+  letter-spacing: 1px;
+  color: rgba(192,40,40,0.30);
+  pointer-events: none;
+}
 
-/* Title: Courier case-file, signal interference instead of glitch */
+/* Title: Courier case-file, signal interference animation */
 html.theme-x-files #title {
   font-family: 'Courier New', monospace;
   font-size: 11px;
@@ -1394,6 +1722,46 @@ html.theme-x-files .accent { color: var(--accent-m); text-shadow: var(--glow-m);
   87%           { opacity: 0.75; }
   89%           { opacity: 1; }
 }
+
+/* Grid background: CLASSIFIED watermark + case file data */
+html.theme-x-files #grid-container { position: relative; }
+
+/* Large CLASSIFIED watermark — diagonal red stamp behind all tiles */
+html.theme-x-files #grid-container::before {
+  content: 'CLASSIFIED';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-28deg);
+  font-size: 52px;
+  font-weight: bold;
+  letter-spacing: 8px;
+  color: rgba(192,40,40,0.05);
+  pointer-events: none;
+  z-index: 0;
+  white-space: nowrap;
+  font-family: 'Courier New', monospace;
+}
+
+/* Scattered case file text — left-aligned, tiny Courier, dim teal */
+html.theme-x-files #grid-container::after {
+  content: 'CASE: X-73841\AAGENT: MULDER, F.\ACLASSIFICATION:\AEYES ONLY\A\ATHE TRUTH\AIS OUT THERE\A\ATRUST NO ONE\A\ACOORDINATES:\A48.2N  122.4W\A\AI WANT TO\ABELIEVE';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  line-height: 1.6;
+  color: rgba(0,176,160,0.10);
+  text-align: left;
+  padding: 10px 0 0 12px;
+}
+
+/* app-grid must float above BOTH pseudo-elements */
+html.theme-x-files #app-grid   { position: relative; z-index: 2; }
+html.theme-x-files #drop-hint  { z-index: 2; }
 
 /* Tiles */
 html.theme-x-files .app-tile:hover  { background: rgba(0,176,160,0.05); border-color: rgba(0,176,160,0.28); box-shadow: 0 0 12px rgba(0,176,160,0.07); }
@@ -1412,8 +1780,8 @@ html.theme-x-files #btn-close-settings:hover { background: rgba(192,40,40,0.09);
 html.theme-x-files .btn-remove           { background: rgba(192,40,40,0.80); border-color: var(--accent-m); }
 html.theme-x-files .btn-remove:hover     { background: var(--accent-m); box-shadow: var(--glow-m); }
 
-/* Buttons */
-html.theme-x-files button:hover  { background: rgba(0,176,160,0.08); }
+/* Buttons: government issue, no glow */
+html.theme-x-files button:hover  { background: rgba(0,176,160,0.08); box-shadow: none; }
 html.theme-x-files button:active { background: rgba(0,176,160,0.16); }
 
 /* Picker */
@@ -1429,3 +1797,13 @@ html.theme-x-files .hint-sub         { color: rgba(0,176,160,0.22); }
 html.theme-x-files .rename-input     { background: rgba(0,176,160,0.06); }
 html.theme-x-files #update-banner    { background: rgba(138,172,200,0.05); border-top-color: rgba(138,172,200,0.22); }
 html.theme-x-files .skin-btn.active  { background: rgba(0,176,160,0.14); }
+
+/* ══ CYBERPUNK theme ══════════════════════════════════════════════════════════════
+   Night City neon. The base stylesheet IS the cyberpunk theme.
+   Nothing to override — this selector exists only for the skin-btn.active state. */
+html.theme-cyberpunk .skin-btn.active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--accent-c);
+  box-shadow: var(--glow-c);
+  color: #fff;
+}
