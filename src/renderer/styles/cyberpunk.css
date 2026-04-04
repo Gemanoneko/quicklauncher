@@ -2580,19 +2580,11 @@ html.theme-matrix #app::before {
 
 html.theme-matrix .overlay { clip-path: none; border-radius: 0; border-top: 2px solid rgba(0,255,65,0.35); }
 
-/* Digital rain — 3 layers of falling characters at different speeds/densities */
+/* #app::after has z-index:199 (full-window overlay) — keep it as subtle scanlines only.
+   The actual rain lives in #grid-container::before, behind the tiles at z-index:0. */
 html.theme-matrix #app::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='160'%3E%3Ctext x='4' y='14' font-family='monospace' font-size='13' fill='rgba(220,255,200,0.95)'%3E7%3C/text%3E%3Ctext x='4' y='28' font-family='monospace' font-size='13' fill='rgba(0,255,65,0.80)'%3ET%3C/text%3E%3Ctext x='4' y='42' font-family='monospace' font-size='13' fill='rgba(0,240,60,0.60)'%3E4%3C/text%3E%3Ctext x='4' y='56' font-family='monospace' font-size='13' fill='rgba(0,215,54,0.42)'%3EZ%3C/text%3E%3Ctext x='4' y='70' font-family='monospace' font-size='13' fill='rgba(0,188,47,0.27)'%3E9%3C/text%3E%3Ctext x='4' y='84' font-family='monospace' font-size='13' fill='rgba(0,162,41,0.16)'%3E1%3C/text%3E%3Ctext x='4' y='98' font-family='monospace' font-size='13' fill='rgba(0,136,34,0.09)'%3ED%3C/text%3E%3Ctext x='4' y='112' font-family='monospace' font-size='13' fill='rgba(0,110,27,0.05)'%3EX%3C/text%3E%3Ctext x='4' y='126' font-family='monospace' font-size='13' fill='rgba(0,84,21,0.02)'%3EE%3C/text%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='240'%3E%3Ctext x='5' y='20' font-family='monospace' font-size='13' fill='rgba(190,255,170,0.88)'%3EA%3C/text%3E%3Ctext x='5' y='40' font-family='monospace' font-size='13' fill='rgba(0,255,65,0.72)'%3E0%3C/text%3E%3Ctext x='5' y='60' font-family='monospace' font-size='13' fill='rgba(0,238,60,0.54)'%3EN%3C/text%3E%3Ctext x='5' y='80' font-family='monospace' font-size='13' fill='rgba(0,215,54,0.38)'%3E8%3C/text%3E%3Ctext x='5' y='100' font-family='monospace' font-size='13' fill='rgba(0,188,47,0.25)'%3E5%3C/text%3E%3Ctext x='5' y='120' font-family='monospace' font-size='13' fill='rgba(0,162,41,0.15)'%3EK%3C/text%3E%3Ctext x='5' y='140' font-family='monospace' font-size='13' fill='rgba(0,136,34,0.09)'%3E3%3C/text%3E%3Ctext x='5' y='160' font-family='monospace' font-size='13' fill='rgba(0,110,27,0.05)'%3EY%3C/text%3E%3Ctext x='5' y='180' font-family='monospace' font-size='13' fill='rgba(0,84,21,0.03)'%3EQ%3C/text%3E%3Ctext x='5' y='200' font-family='monospace' font-size='13' fill='rgba(0,58,15,0.01)'%3EJ%3C/text%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='320'%3E%3Ctext x='6' y='20' font-family='monospace' font-size='14' fill='rgba(160,255,120,0.60)'%3EB%3C/text%3E%3Ctext x='6' y='40' font-family='monospace' font-size='14' fill='rgba(0,230,57,0.45)'%3E6%3C/text%3E%3Ctext x='6' y='60' font-family='monospace' font-size='14' fill='rgba(0,208,52,0.32)'%3EW%3C/text%3E%3Ctext x='6' y='80' font-family='monospace' font-size='14' fill='rgba(0,184,46,0.21)'%3EH%3C/text%3E%3Ctext x='6' y='100' font-family='monospace' font-size='14' fill='rgba(0,160,40,0.14)'%3EG%3C/text%3E%3Ctext x='6' y='120' font-family='monospace' font-size='14' fill='rgba(0,138,34,0.09)'%3EM%3C/text%3E%3Ctext x='6' y='140' font-family='monospace' font-size='14' fill='rgba(0,114,28,0.05)'%3ES%3C/text%3E%3Ctext x='6' y='160' font-family='monospace' font-size='14' fill='rgba(0,90,22,0.03)'%3EP%3C/text%3E%3Ctext x='6' y='180' font-family='monospace' font-size='14' fill='rgba(0,66,16,0.01)'%3EC%3C/text%3E%3C/svg%3E");
-  background-size: 25px 160px, 38px 240px, 52px 320px;
-  animation: mx-rain 8s linear infinite;
-}
-/* LCM(160,240,320)=960 → perfect 8s loop at 120px/s */
-@keyframes mx-rain {
-  from { background-position: 0 0,    11px 53px,  25px 107px; }
-  to   { background-position: 0 960px, 11px 1013px, 25px 1067px; }
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,.07) 2px, rgba(0,0,0,.07) 3px);
+  animation: none;
 }
 
 /* Header: construct terminal */
@@ -2632,10 +2624,29 @@ html.theme-matrix .accent { color: var(--accent-y); text-shadow: var(--glow-y); 
   90%         { opacity: 1; transform: none; }
 }
 
-/* Grid: decode stream (left-aligned, scrolling text) + "THERE IS NO SPOON" watermark */
+/* Rain in the grid container — behind tiles (z-index:0 < app-grid z-index:2) */
 html.theme-matrix #grid-container { position: relative; }
 html.theme-matrix #grid-container::before {
-  content: 'WAKE UP, NEO...\A\ATHE MATRIX\AHAS YOU\A\AKNOCK KNOCK\A\AFOLLOW THE\AWHITE RABBIT\A\ATHERE IS\ANO SPOON\A\AFREE YOUR MIND';
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='160'%3E%3Ctext x='4' y='14' font-family='monospace' font-size='13' fill='rgba(200,255,180,0.90)'%3E7%3C/text%3E%3Ctext x='4' y='28' font-family='monospace' font-size='13' fill='rgba(0,255,65,0.70)'%3ET%3C/text%3E%3Ctext x='4' y='42' font-family='monospace' font-size='13' fill='rgba(0,240,60,0.50)'%3E4%3C/text%3E%3Ctext x='4' y='56' font-family='monospace' font-size='13' fill='rgba(0,215,54,0.34)'%3EZ%3C/text%3E%3Ctext x='4' y='70' font-family='monospace' font-size='13' fill='rgba(0,188,47,0.21)'%3E9%3C/text%3E%3Ctext x='4' y='84' font-family='monospace' font-size='13' fill='rgba(0,162,41,0.12)'%3E1%3C/text%3E%3Ctext x='4' y='98' font-family='monospace' font-size='13' fill='rgba(0,136,34,0.07)'%3ED%3C/text%3E%3Ctext x='4' y='112' font-family='monospace' font-size='13' fill='rgba(0,110,27,0.04)'%3EX%3C/text%3E%3Ctext x='4' y='126' font-family='monospace' font-size='13' fill='rgba(0,84,21,0.02)'%3EE%3C/text%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='240'%3E%3Ctext x='5' y='20' font-family='monospace' font-size='13' fill='rgba(170,255,150,0.82)'%3EA%3C/text%3E%3Ctext x='5' y='40' font-family='monospace' font-size='13' fill='rgba(0,255,65,0.65)'%3E0%3C/text%3E%3Ctext x='5' y='60' font-family='monospace' font-size='13' fill='rgba(0,238,60,0.48)'%3EN%3C/text%3E%3Ctext x='5' y='80' font-family='monospace' font-size='13' fill='rgba(0,215,54,0.33)'%3E8%3C/text%3E%3Ctext x='5' y='100' font-family='monospace' font-size='13' fill='rgba(0,188,47,0.21)'%3E5%3C/text%3E%3Ctext x='5' y='120' font-family='monospace' font-size='13' fill='rgba(0,162,41,0.13)'%3EK%3C/text%3E%3Ctext x='5' y='140' font-family='monospace' font-size='13' fill='rgba(0,136,34,0.07)'%3E3%3C/text%3E%3Ctext x='5' y='160' font-family='monospace' font-size='13' fill='rgba(0,110,27,0.04)'%3EY%3C/text%3E%3Ctext x='5' y='180' font-family='monospace' font-size='13' fill='rgba(0,84,21,0.02)'%3EQ%3C/text%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='320'%3E%3Ctext x='6' y='20' font-family='monospace' font-size='14' fill='rgba(140,255,110,0.55)'%3EB%3C/text%3E%3Ctext x='6' y='40' font-family='monospace' font-size='14' fill='rgba(0,230,57,0.40)'%3E6%3C/text%3E%3Ctext x='6' y='60' font-family='monospace' font-size='14' fill='rgba(0,208,52,0.28)'%3EW%3C/text%3E%3Ctext x='6' y='80' font-family='monospace' font-size='14' fill='rgba(0,184,46,0.18)'%3EH%3C/text%3E%3Ctext x='6' y='100' font-family='monospace' font-size='14' fill='rgba(0,160,40,0.11)'%3EG%3C/text%3E%3Ctext x='6' y='120' font-family='monospace' font-size='14' fill='rgba(0,138,34,0.07)'%3EM%3C/text%3E%3Ctext x='6' y='140' font-family='monospace' font-size='14' fill='rgba(0,114,28,0.04)'%3ES%3C/text%3E%3C/svg%3E");
+  background-size: 25px 160px, 38px 240px, 52px 320px;
+  animation: mx-rain 8s linear infinite;
+}
+/* LCM(160,240,320)=960px — perfect 8s seamless loop at 120px/s */
+@keyframes mx-rain {
+  from { background-position: 0 0,    11px 53px,  25px 107px; }
+  to   { background-position: 0 960px, 11px 1013px, 25px 1067px; }
+}
+/* Quotes + Construct horizon line — also behind tiles */
+html.theme-matrix #grid-container::after {
+  content: 'WAKE UP, NEO...\A\ATHE MATRIX\AHAS YOU\A\ATHERE IS\ANO SPOON\A\AFREE YOUR MIND';
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -2643,31 +2654,15 @@ html.theme-matrix #grid-container::before {
   white-space: pre;
   font-family: 'Courier New', monospace;
   font-size: 10px;
-  line-height: 1.65;
-  color: rgba(0,255,65,0.10);
+  line-height: 1.7;
+  color: rgba(0,255,65,0.11);
   text-align: right;
   padding: 10px 16px 0 0;
   animation: mx-decode 16s ease-in-out infinite;
 }
 @keyframes mx-decode {
   0%,100% { opacity: 1; }
-  50%     { opacity: 0.55; }
-}
-/* Construct room: pure white flash horizon at center — like the loading construct */
-html.theme-matrix #grid-container::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  top: 50%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(0,255,65,0.08) 20%, rgba(0,255,65,0.20) 50%, rgba(0,255,65,0.08) 80%, transparent 100%);
-  pointer-events: none;
-  z-index: 0;
-  animation: mx-horizon 6s ease-in-out infinite;
-}
-@keyframes mx-horizon {
-  0%,100% { opacity: 0.6; transform: scaleX(1); }
-  50%     { opacity: 1.0; transform: scaleX(1.05); box-shadow: 0 0 12px rgba(0,255,65,0.15); }
+  50%     { opacity: 0.5; }
 }
 html.theme-matrix #app-grid  { position: relative; z-index: 2; }
 html.theme-matrix #drop-hint { z-index: 2; }
@@ -2714,6 +2709,892 @@ html.theme-matrix .overlay-panel  { background: rgba(0,2,0,0.99); border: 1px so
 html.theme-matrix .overlay-title  { font-family: 'Courier New', monospace; letter-spacing: 4px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 1px solid rgba(0,255,65,0.22); }
 html.theme-matrix .overlay-footer { border-top-color: rgba(0,255,65,0.18); }
 html.theme-matrix .setting-row label { color: rgba(0,255,65,0.55); letter-spacing: 2px; font-family: 'Courier New', monospace; }
+
+/* ══ WARHAMMER 40K theme ══════════════════════════════════════════════════════════
+   For the Emperor. Iron, parchment, and gilded excess. Gothic beyond reason.
+   Servo-skulls patrol. Purity seals drip red wax. The machine-god watches.       */
+html.theme-warhammer {
+  --bg:        rgba(6, 3, 1, 0.98);
+  --panel-bg:  rgba(10, 5, 1, 0.99);
+  --accent-c:  #c8900a;   /* darkgoldenrod — gilded metal */
+  --accent-m:  #8b0000;   /* dark red — blood of martyrs */
+  --accent-y:  #d8c080;   /* aged parchment bone */
+  --text:      #907848;
+  --text-dim:  rgba(144, 120, 72, 0.38);
+  --border:    rgba(200, 144, 10, 0.20);
+  --border-h:  rgba(200, 144, 10, 0.55);
+  --glow-c:    0 0 6px rgba(200,144,10,.65), 0 0 20px rgba(200,144,10,.22);
+  --glow-m:    0 0 6px rgba(139,0,0,.65),   0 0 20px rgba(139,0,0,.22);
+  --glow-y:    0 0 4px rgba(216,192,128,.55),0 0 14px rgba(216,192,128,.20);
+  --radius:    0px;
+  font-family: 'Georgia', 'Palatino Linotype', serif;
+}
+
+/* Octagonal frame — the 8-pointed shape of Imperial iconography */
+html.theme-warhammer #app {
+  clip-path: polygon(18px 0%, calc(100% - 18px) 0%, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0% calc(100% - 18px), 0% 18px);
+  border-radius: 0;
+  border: 1px solid rgba(200,144,10,0.28);
+  box-shadow: inset 0 0 0 3px rgba(200,144,10,0.08), inset 0 0 60px rgba(6,3,1,0.6), 0 0 30px rgba(0,0,0,0.6);
+}
+
+/* Double-frame gold pulse — like a reliquary being activated */
+html.theme-warhammer #app::before {
+  clip-path: polygon(18px 0%, calc(100% - 18px) 0%, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0% calc(100% - 18px), 0% 18px);
+  border-radius: 0;
+  animation: wh-consecrate 10s ease-in-out infinite;
+}
+@keyframes wh-consecrate {
+  0%,100% { border-color: rgba(200,144,10,0.20); }
+  40%     { border-color: rgba(200,144,10,0.55); box-shadow: inset 0 0 30px rgba(200,144,10,0.06), inset 0 0 0 4px rgba(200,144,10,0.08); }
+  42%     { border-color: rgba(200,144,10,0.30); }
+  44%     { border-color: rgba(200,144,10,0.55); }
+}
+
+html.theme-warhammer .overlay { clip-path: polygon(14px 0%,calc(100% - 14px) 0%,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0% calc(100% - 14px),0% 14px); border-radius: 0; }
+
+/* Gothic crosshatch + gear tooth border pattern */
+html.theme-warhammer #app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cline x1='0' y1='0' x2='24' y2='24' stroke='rgba(200,144,10,0.04)' stroke-width='0.5'/%3E%3Cline x1='24' y1='0' x2='0' y2='24' stroke='rgba(200,144,10,0.03)' stroke-width='0.5'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 60%, rgba(0,0,0,0.50) 100%),
+    radial-gradient(ellipse 40% 40% at 50% 0%, rgba(200,144,10,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 50% 100%, rgba(139,0,0,0.04) 0%, transparent 70%);
+  background-size: 24px 24px, 100% 100%, 100% 100%, 100% 100%;
+  animation: none;
+}
+
+/* Header: Adeptus Mechanicus cognisance */
+html.theme-warhammer #header {
+  background: rgba(200,144,10,0.05);
+  border-bottom: 2px solid rgba(200,144,10,0.28);
+  box-shadow: 0 2px 16px rgba(200,144,10,0.10);
+}
+html.theme-warhammer #header::before {
+  background: linear-gradient(180deg, #c8900a 0%, #8b0000 100%);
+  box-shadow: none;
+  width: 3px;
+  animation: wh-bar-flicker 13s step-start infinite;
+}
+@keyframes wh-bar-flicker {
+  0%,90%,100% { opacity: 1; }
+  92%         { opacity: 0.3; }
+  94%         { opacity: 1; }
+  96%         { opacity: 0.6; }
+}
+html.theme-warhammer #header::after {
+  content: 'ADEPTUS MECHANICUS  //  OMNIS ARCANUM';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: 7.5px;
+  letter-spacing: 2px;
+  color: rgba(200,144,10,0.52);
+  pointer-events: none;
+}
+
+/* Title: gothic serif, consecration flicker */
+html.theme-warhammer #title {
+  font-family: 'Georgia', 'Palatino Linotype', serif;
+  font-style: italic;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-shadow: var(--glow-c);
+  animation: wh-title-flicker 11s ease-in-out infinite;
+}
+html.theme-warhammer .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
+@keyframes wh-title-flicker {
+  0%,84%,100% { opacity: 1; text-shadow: var(--glow-c); }
+  86%         { opacity: 0.5; text-shadow: none; }
+  88%         { opacity: 1; text-shadow: var(--glow-c), 0 0 30px rgba(200,144,10,0.55); }
+  90%         { opacity: 0.8; }
+  92%         { opacity: 1; }
+}
+
+/* Grid: imperial litany (right-aligned gothic) + servo-skull watermark */
+html.theme-warhammer #grid-container { position: relative; background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(200,144,10,0.025) 0%, transparent 100%); }
+html.theme-warhammer #grid-container::before {
+  content: 'THE EMPEROR\APROTECTS\A\AFOR THE\AIMPERIUM\A\AOMNIS\AARCANUM\A\APURITY\ASEAL\AREQUIRED\A\AHERESY\ADETECTED';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Georgia', 'Palatino Linotype', serif;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 1px;
+  line-height: 1.55;
+  color: rgba(200,144,10,0.09);
+  text-align: right;
+  padding: 10px 16px 0 0;
+}
+/* Servo-skull — a rotating gear-like circle with a skull ☠ at center */
+html.theme-warhammer #grid-container::after {
+  content: '☠';
+  position: absolute;
+  bottom: 16px;
+  left: 20px;
+  z-index: 0;
+  pointer-events: none;
+  font-size: 36px;
+  color: rgba(200,144,10,0.10);
+  line-height: 1;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(200,144,10,0.10);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(200,144,10,0.05), 0 0 0 10px rgba(200,144,10,0.03);
+  animation: wh-skull-rotate 30s linear infinite;
+}
+@keyframes wh-skull-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+html.theme-warhammer #app-grid  { position: relative; z-index: 2; }
+html.theme-warhammer #drop-hint { z-index: 2; }
+
+/* Tiles: gothic framing, gilded hover */
+html.theme-warhammer .app-tile              { border-radius: 0; }
+html.theme-warhammer .app-tile:hover        { background: rgba(200,144,10,0.06); border-color: rgba(200,144,10,0.42); box-shadow: 0 0 14px rgba(200,144,10,0.12), inset 0 0 0 1px rgba(200,144,10,0.10); }
+html.theme-warhammer .app-tile:active       { background: rgba(200,144,10,0.12); transform: none; }
+html.theme-warhammer .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 8px rgba(200,144,10,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.85));
+}
+
+/* Edit bar: HERESY DETECTED */
+html.theme-warhammer #edit-bar             { position: relative; background: rgba(139,0,0,0.08); border-top: 2px solid rgba(139,0,0,0.38); }
+html.theme-warhammer #edit-bar::after      { content: 'HERESY DETECTED'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Georgia', serif; font-style: italic; font-size: 8px; letter-spacing: 3px; color: rgba(139,0,0,0.50); pointer-events: none; }
+html.theme-warhammer .edit-label           { color: var(--accent-m); text-shadow: var(--glow-m); font-style: italic; }
+html.theme-warhammer #btn-done-edit        { color: var(--accent-c); border-color: rgba(200,144,10,0.40); }
+html.theme-warhammer #btn-done-edit:hover  { background: rgba(200,144,10,0.09); border-color: var(--accent-c); }
+
+/* Buttons */
+html.theme-warhammer button              { border-radius: 0; }
+html.theme-warhammer button:hover        { background: rgba(200,144,10,0.09); border-color: rgba(200,144,10,0.50); box-shadow: var(--glow-c); }
+html.theme-warhammer button:active       { background: rgba(200,144,10,0.18); }
+html.theme-warhammer .btn-remove         { border-radius: 0; background: rgba(139,0,0,0.85); border-color: var(--accent-m); }
+html.theme-warhammer .btn-remove:hover   { background: var(--accent-m); }
+
+/* Picker */
+html.theme-warhammer .picker-item          { border-radius: 0; }
+html.theme-warhammer .picker-item:hover    { background: rgba(200,144,10,0.07); }
+html.theme-warhammer .picker-item:active   { background: rgba(200,144,10,0.14); }
+html.theme-warhammer .picker-search        { border-radius: 0; background: rgba(200,144,10,0.05); font-family: 'Georgia', serif; }
+html.theme-warhammer .picker-search:focus  { border-color: rgba(200,144,10,0.50); box-shadow: var(--glow-c); }
+html.theme-warhammer .picker-icon-placeholder { border-radius: 0; background: rgba(200,144,10,0.08); }
+html.theme-warhammer .picker-loading       { font-family: 'Georgia', serif; font-style: italic; letter-spacing: 2px; color: rgba(200,144,10,0.55); }
+
+/* Misc */
+html.theme-warhammer .drop-hint-inner  { border-color: rgba(200,144,10,0.22); border-radius: 0; }
+html.theme-warhammer .hint-sub         { color: rgba(200,144,10,0.28); }
+html.theme-warhammer .rename-input     { border-radius: 0; background: rgba(200,144,10,0.07); font-family: 'Georgia', serif; }
+html.theme-warhammer #update-banner    { background: rgba(216,192,128,0.04); border-top: 2px solid rgba(216,192,128,0.28); }
+html.theme-warhammer .skin-btn         { border-radius: 0; }
+html.theme-warhammer .skin-btn.active  { background: rgba(200,144,10,0.18); border-color: var(--accent-c); }
+
+/* Overlay: reliquary panel */
+html.theme-warhammer .overlay-panel  { background: rgba(8,4,1,0.99); border: 1px solid rgba(200,144,10,0.28); box-shadow: inset 0 0 0 3px rgba(200,144,10,0.06); clip-path: polygon(14px 0%,calc(100% - 14px) 0%,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0% calc(100% - 14px),0% 14px); }
+html.theme-warhammer .overlay-title  { font-family: 'Georgia', serif; font-style: italic; font-weight: bold; letter-spacing: 3px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 2px solid rgba(200,144,10,0.28); }
+html.theme-warhammer .overlay-footer { border-top: 1px solid rgba(200,144,10,0.18); }
+html.theme-warhammer .setting-row label { color: rgba(200,144,10,0.58); letter-spacing: 2px; font-family: 'Georgia', serif; font-style: italic; }
+
+/* ══ DEAD SPACE theme ════════════════════════════════════════════════════════════
+   USG Ishimura. Engineering rig. Diegetic UI on Isaac's suit spine.
+   The marker calls. Orange phosphor bleeds into absolute dark.                   */
+html.theme-dead-space {
+  --bg:        rgba(3, 1, 0, 0.98);
+  --panel-bg:  rgba(6, 2, 0, 0.99);
+  --accent-c:  #e06820;   /* engineering orange */
+  --accent-m:  #b00000;   /* danger red */
+  --accent-y:  #f0c080;   /* pale amber */
+  --text:      #7a4820;
+  --text-dim:  rgba(122, 72, 32, 0.38);
+  --border:    rgba(224,104,32,0.18);
+  --border-h:  rgba(224,104,32,0.52);
+  --glow-c:    0 0 6px rgba(224,104,32,.68), 0 0 20px rgba(224,104,32,.24);
+  --glow-m:    0 0 6px rgba(176,0,0,.68),    0 0 20px rgba(176,0,0,.24);
+  --glow-y:    0 0 4px rgba(240,192,128,.55), 0 0 14px rgba(240,192,128,.20);
+  --radius:    2px;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+/* RIG suit body — thick orange spine on the left, like Isaac's health indicator */
+html.theme-dead-space #app {
+  clip-path: none;
+  border-radius: 2px;
+  border: 1px solid rgba(224,104,32,0.20);
+  border-left: 5px solid #e06820;
+  box-shadow: -2px 0 20px rgba(224,104,32,0.12), inset 0 0 60px rgba(3,1,0,0.4);
+}
+
+/* RIG spine pulse — health indicator animation */
+html.theme-dead-space #app::before {
+  clip-path: none;
+  border-radius: 2px;
+  animation: ds-rig-pulse 3s ease-in-out infinite;
+}
+@keyframes ds-rig-pulse {
+  0%,100% { border-color: rgba(224,104,32,0.16); box-shadow: -3px 0 12px rgba(224,104,32,0.10); }
+  50%     { border-color: rgba(224,104,32,0.40); box-shadow: -3px 0 24px rgba(224,104,32,0.22); }
+}
+
+html.theme-dead-space .overlay { clip-path: none; border-radius: 2px; border-left: 5px solid #e06820; }
+
+/* Space dust: scattered faint dots + grime vignette */
+html.theme-dead-space #app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ccircle cx='12' cy='23' r='0.8' fill='rgba(224,104,32,0.10)'/%3E%3Ccircle cx='45' cy='8' r='0.6' fill='rgba(224,104,32,0.07)'/%3E%3Ccircle cx='67' cy='41' r='1' fill='rgba(224,104,32,0.08)'/%3E%3Ccircle cx='28' cy='62' r='0.7' fill='rgba(224,104,32,0.06)'/%3E%3Ccircle cx='73' cy='70' r='0.9' fill='rgba(224,104,32,0.09)'/%3E%3Ccircle cx='5' cy='55' r='0.5' fill='rgba(224,104,32,0.05)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%),
+    radial-gradient(ellipse 40% 60% at 0% 50%, rgba(224,104,32,0.04) 0%, transparent 60%);
+  background-size: 80px 80px, 100% 100%, 100% 100%;
+  animation: none;
+}
+
+/* Header: engineering terminal */
+html.theme-dead-space #header {
+  background: rgba(224,104,32,0.04);
+  border-bottom: 1px solid rgba(224,104,32,0.22);
+  box-shadow: 0 1px 16px rgba(224,104,32,0.08);
+}
+html.theme-dead-space #header::before {
+  background: linear-gradient(180deg, #e06820 0%, rgba(224,104,32,0.4) 100%);
+  box-shadow: none;
+  width: 3px;
+  animation: ds-rig-pulse 3s ease-in-out infinite;
+}
+html.theme-dead-space #header::after {
+  content: 'RIG DIAGNOSTIC  //  USG ISHIMURA';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 7.5px;
+  letter-spacing: 2px;
+  color: rgba(224,104,32,0.50);
+  pointer-events: none;
+}
+
+/* Title: clean sans, engineering flicker */
+html.theme-dead-space #title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-shadow: var(--glow-c);
+  animation: ds-flicker 9s ease-in-out infinite;
+}
+html.theme-dead-space .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
+@keyframes ds-flicker {
+  0%,86%,100% { opacity: 1; }
+  88%         { opacity: 0.3; }
+  90%         { opacity: 1; }
+  92%         { opacity: 0.6; }
+  94%         { opacity: 1; }
+}
+
+/* Grid: marker signal (left-aligned, disturbing) + kinesis rings */
+html.theme-dead-space #grid-container { position: relative; background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(224,104,32,0.03) 0%, transparent 70%); }
+html.theme-dead-space #grid-container::before {
+  content: 'NECROMORPH\AWARNING\A\AINTEGRITY:\ACRITICAL\A\AMAKE US\AWHOLE\A\ADELETE YOUR\AMARKERS\A\ASTASIS: LOW\AOXYGEN: LOW';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  line-height: 1.7;
+  color: rgba(224,104,32,0.12);
+  padding: 10px 0 0 12px;
+}
+/* Kinesis module rings — concentric targeting circles, bottom-right */
+html.theme-dead-space #grid-container::after {
+  content: '';
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1px solid rgba(224,104,32,0.18);
+  box-shadow:
+    0 0 0 7px rgba(224,104,32,0.10),
+    0 0 0 16px rgba(224,104,32,0.06),
+    0 0 0 28px rgba(224,104,32,0.04),
+    0 0 0 44px rgba(176,0,0,0.03);
+  pointer-events: none;
+  z-index: 0;
+  animation: ds-kinesis 4s ease-in-out infinite;
+}
+@keyframes ds-kinesis {
+  0%,100% { opacity: 0.8; transform: scale(1); }
+  50%     { opacity: 1; transform: scale(1.05); box-shadow: 0 0 0 7px rgba(224,104,32,0.18), 0 0 0 16px rgba(224,104,32,0.10), 0 0 0 28px rgba(224,104,32,0.06), 0 0 0 44px rgba(176,0,0,0.05); }
+}
+html.theme-dead-space #app-grid  { position: relative; z-index: 2; }
+html.theme-dead-space #drop-hint { z-index: 2; }
+
+/* Tiles */
+html.theme-dead-space .app-tile:hover  { background: rgba(224,104,32,0.06); border-color: rgba(224,104,32,0.38); box-shadow: 0 0 14px rgba(224,104,32,0.10); }
+html.theme-dead-space .app-tile:active { background: rgba(224,104,32,0.12); }
+html.theme-dead-space .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 8px rgba(224,104,32,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.85));
+}
+
+/* Edit bar */
+html.theme-dead-space #edit-bar        { position: relative; background: rgba(176,0,0,0.06); border-top-color: rgba(176,0,0,0.30); border-left: 5px solid rgba(176,0,0,0.60); }
+html.theme-dead-space #edit-bar::after { content: 'STASIS MODULE ACTIVE'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 7px; letter-spacing: 2px; color: rgba(176,0,0,0.45); pointer-events: none; }
+html.theme-dead-space .edit-label      { color: var(--accent-m); text-shadow: var(--glow-m); }
+
+/* Buttons, picker, misc */
+html.theme-dead-space button:hover   { background: rgba(224,104,32,0.09); }
+html.theme-dead-space button:active  { background: rgba(224,104,32,0.18); }
+html.theme-dead-space .picker-item:hover    { background: rgba(224,104,32,0.06); }
+html.theme-dead-space .picker-search        { background: rgba(224,104,32,0.05); }
+html.theme-dead-space .picker-search:focus  { border-color: rgba(224,104,32,0.45); box-shadow: var(--glow-c); }
+html.theme-dead-space .picker-icon-placeholder { background: rgba(224,104,32,0.08); }
+html.theme-dead-space .picker-loading       { letter-spacing: 3px; color: rgba(224,104,32,0.55); }
+html.theme-dead-space .drop-hint-inner  { border-color: rgba(224,104,32,0.20); }
+html.theme-dead-space .hint-sub         { color: rgba(224,104,32,0.24); }
+html.theme-dead-space .rename-input     { background: rgba(224,104,32,0.07); }
+html.theme-dead-space #update-banner    { background: rgba(240,192,128,0.04); border-top-color: rgba(240,192,128,0.22); }
+html.theme-dead-space .skin-btn.active  { background: rgba(224,104,32,0.16); border-color: var(--accent-c); }
+html.theme-dead-space .overlay-panel    { background: rgba(5,2,0,0.99); border: 1px solid rgba(224,104,32,0.22); border-left: 5px solid #e06820; }
+html.theme-dead-space .overlay-title    { letter-spacing: 4px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 1px solid rgba(224,104,32,0.22); }
+html.theme-dead-space .picker-panel     { border-left: 5px solid #e06820; }
+html.theme-dead-space .setting-row label { color: rgba(224,104,32,0.55); letter-spacing: 2px; font-weight: 600; }
+
+/* ══ HALF-LIFE theme ══════════════════════════════════════════════════════════════
+   Black Mesa Research Facility. HEV suit online. Anomalous readings detected.
+   Amber terminals, olive military, Lambda complex. Gordon Freeman's world.        */
+html.theme-half-life {
+  --bg:        rgba(2, 5, 2, 0.97);
+  --panel-bg:  rgba(3, 7, 3, 0.99);
+  --accent-c:  #dea000;   /* HEV suit amber */
+  --accent-m:  #507040;   /* BMRF olive */
+  --accent-y:  #f0d080;   /* pale terminal amber */
+  --text:      #788858;
+  --text-dim:  rgba(120, 136, 88, 0.38);
+  --border:    rgba(222,160,0,0.18);
+  --border-h:  rgba(222,160,0,0.50);
+  --glow-c:    0 0 5px rgba(222,160,0,.68), 0 0 18px rgba(222,160,0,.24);
+  --glow-m:    0 0 5px rgba(80,112,64,.68), 0 0 18px rgba(80,112,64,.24);
+  --glow-y:    0 0 4px rgba(240,208,128,.55),0 0 14px rgba(240,208,128,.20);
+  --radius:    0px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* BMRF terminal — military grid rectangle */
+html.theme-half-life #app {
+  clip-path: none;
+  border-radius: 0;
+  border: 1px solid rgba(222,160,0,0.22);
+  border-top: 3px solid rgba(80,112,64,0.60);
+  box-shadow: 0 -2px 20px rgba(80,112,64,0.08), inset 0 0 40px rgba(2,5,2,0.3);
+}
+
+/* HEV power grid scan */
+html.theme-half-life #app::before {
+  clip-path: none;
+  border-radius: 0;
+  animation: hl-hev-power 5s ease-in-out infinite;
+}
+@keyframes hl-hev-power {
+  0%,100% { border-color: rgba(222,160,0,0.16); }
+  50%     { border-color: rgba(222,160,0,0.42); box-shadow: inset 0 0 30px rgba(222,160,0,0.04); }
+}
+
+html.theme-half-life .overlay { clip-path: none; border-radius: 0; border-top: 3px solid rgba(80,112,64,0.50); }
+
+/* HEV suit power display — vertical scan bars + CRT */
+html.theme-half-life #app::after {
+  background:
+    repeating-linear-gradient(90deg, transparent 0px, transparent 18px, rgba(222,160,0,0.014) 18px, rgba(222,160,0,0.014) 19px),
+    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,.07) 2px, rgba(0,0,0,.07) 3px),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 35%, rgba(0,0,0,0.45) 100%);
+  animation: none;
+}
+
+/* Header: BMRF classified terminal */
+html.theme-half-life #header {
+  background: rgba(222,160,0,0.04);
+  border-bottom: 1px solid rgba(222,160,0,0.20);
+}
+html.theme-half-life #header::before {
+  background: linear-gradient(180deg, #dea000 0%, #507040 100%);
+  box-shadow: var(--glow-c);
+  animation: hl-bar-flicker 14s step-start infinite;
+}
+@keyframes hl-bar-flicker {
+  0%,90%,100% { opacity: 1; }
+  92%         { opacity: 0.4; }
+  94%         { opacity: 1; }
+}
+html.theme-half-life #header::after {
+  content: 'BLACK MESA  //  ANOMALOUS READINGS';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 7.5px;
+  letter-spacing: 1.5px;
+  color: rgba(222,160,0,0.50);
+  pointer-events: none;
+}
+
+/* Title: HEV boot sequence */
+html.theme-half-life #title {
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 4px;
+  text-shadow: var(--glow-c);
+  animation: hl-hev-boot 7s ease-in-out infinite;
+}
+html.theme-half-life .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
+@keyframes hl-hev-boot {
+  0%,82%,100% { opacity: 1; }
+  84%         { opacity: 0.4; }
+  86%         { opacity: 1; text-shadow: var(--glow-c), 0 0 30px rgba(222,160,0,0.6); }
+  88%         { opacity: 0.7; }
+  90%         { opacity: 1; }
+}
+
+/* Grid: BMRF data log (left-aligned) + LAMBDA watermark */
+html.theme-half-life #grid-container { position: relative; background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(222,160,0,0.04) 0%, transparent 70%); }
+html.theme-half-life #grid-container::before {
+  content: 'HEV SUIT ONLINE\A\AABNORMAL\AMATERIAL\ARESONANCE\A\ABLACK MESA\ARESEARCH\AFACILITY\A\ARESONANCE\ACASCADE\ADETECTED\A\AEVACUATE';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Consolas', monospace;
+  font-size: 9px;
+  line-height: 1.65;
+  color: rgba(222,160,0,0.12);
+  padding: 10px 0 0 12px;
+}
+/* Lambda complex — large Λ watermark center-right */
+html.theme-half-life #grid-container::after {
+  content: 'Λ';
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+  z-index: 0;
+  pointer-events: none;
+  font-family: 'Georgia', serif;
+  font-size: 110px;
+  font-weight: bold;
+  line-height: 1;
+  color: rgba(222,160,0,0.06);
+  animation: hl-lambda-pulse 8s ease-in-out infinite;
+}
+@keyframes hl-lambda-pulse {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.55; }
+}
+html.theme-half-life #app-grid  { position: relative; z-index: 2; }
+html.theme-half-life #drop-hint { z-index: 2; }
+
+/* Tiles */
+html.theme-half-life .app-tile:hover  { background: rgba(222,160,0,0.06); border-color: rgba(222,160,0,0.36); box-shadow: 0 0 12px rgba(222,160,0,0.09); }
+html.theme-half-life .app-tile:active { background: rgba(222,160,0,0.12); transform: none; }
+html.theme-half-life .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 7px rgba(222,160,0,.52)) drop-shadow(0 2px 5px rgba(0,0,0,.80));
+}
+
+/* Edit bar */
+html.theme-half-life #edit-bar        { position: relative; background: rgba(80,112,64,0.07); border-top: 2px solid rgba(80,112,64,0.35); }
+html.theme-half-life #edit-bar::after { content: 'HEV RECALIBRATION'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Consolas', monospace; font-size: 7.5px; letter-spacing: 2px; color: rgba(222,160,0,0.38); pointer-events: none; }
+html.theme-half-life .edit-label      { color: var(--accent-c); text-shadow: var(--glow-c); }
+
+/* Buttons, picker, misc */
+html.theme-half-life button              { border-radius: 0; }
+html.theme-half-life button:hover        { background: rgba(222,160,0,0.09); }
+html.theme-half-life button:active       { background: rgba(222,160,0,0.18); }
+html.theme-half-life .picker-item          { border-radius: 0; }
+html.theme-half-life .picker-item:hover    { background: rgba(222,160,0,0.06); }
+html.theme-half-life .picker-search        { border-radius: 0; background: rgba(222,160,0,0.05); }
+html.theme-half-life .picker-search:focus  { border-color: rgba(222,160,0,0.45); box-shadow: var(--glow-c); }
+html.theme-half-life .picker-icon-placeholder { border-radius: 0; background: rgba(222,160,0,0.07); }
+html.theme-half-life .picker-loading       { font-family: 'Consolas', monospace; letter-spacing: 3px; color: rgba(222,160,0,0.55); }
+html.theme-half-life .drop-hint-inner  { border-color: rgba(222,160,0,0.20); border-radius: 0; }
+html.theme-half-life .hint-sub         { color: rgba(222,160,0,0.24); }
+html.theme-half-life .rename-input     { border-radius: 0; background: rgba(222,160,0,0.07); }
+html.theme-half-life #update-banner    { background: rgba(240,208,128,0.04); border-top-color: rgba(240,208,128,0.22); }
+html.theme-half-life .skin-btn         { border-radius: 0; }
+html.theme-half-life .skin-btn.active  { background: rgba(222,160,0,0.16); border-color: var(--accent-c); }
+html.theme-half-life .overlay-panel    { background: rgba(3,7,3,0.99); border: 1px solid rgba(222,160,0,0.20); border-top: 3px solid rgba(80,112,64,0.50); }
+html.theme-half-life .overlay-title    { font-family: 'Consolas', monospace; letter-spacing: 4px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 1px solid rgba(222,160,0,0.22); }
+html.theme-half-life .overlay-footer   { border-top-color: rgba(222,160,0,0.18); }
+html.theme-half-life .setting-row label { color: rgba(222,160,0,0.55); letter-spacing: 2px; font-family: 'Consolas', monospace; }
+
+/* ══ TERMINATOR theme ════════════════════════════════════════════════════════════
+   Skynet. T-800 visual cortex. Pure red targeting overlay on void black.
+   Cold machine logic. Humans classified hostile. Terminate.                      */
+html.theme-terminator {
+  --bg:        rgba(0, 0, 0, 0.99);
+  --panel-bg:  rgba(2, 0, 0, 0.99);
+  --accent-c:  #ff2000;   /* targeting red */
+  --accent-m:  #800000;   /* deep machine red */
+  --accent-y:  #ff8060;   /* warning amber-red */
+  --text:      #cc2800;
+  --text-dim:  rgba(204, 40, 0, 0.38);
+  --border:    rgba(255,32,0,0.18);
+  --border-h:  rgba(255,32,0,0.52);
+  --glow-c:    0 0 5px rgba(255,32,0,.80), 0 0 16px rgba(255,32,0,.28);
+  --glow-m:    0 0 5px rgba(128,0,0,.80),  0 0 16px rgba(128,0,0,.28);
+  --glow-y:    0 0 4px rgba(255,128,96,.65),0 0 14px rgba(255,128,96,.22);
+  --radius:    0px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* Machine vision — perfect black rectangle, red border */
+html.theme-terminator #app {
+  clip-path: none;
+  border-radius: 0;
+  border: 1px solid rgba(255,32,0,0.28);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.95), inset 0 0 60px rgba(255,32,0,0.02);
+}
+
+/* Targeting lock-on pulse */
+html.theme-terminator #app::before {
+  clip-path: none;
+  border-radius: 0;
+  animation: tm-lock 4s ease-in-out infinite;
+}
+@keyframes tm-lock {
+  0%,100% { border-color: rgba(255,32,0,0.18); }
+  50%     { border-color: rgba(255,32,0,0.55); box-shadow: inset 0 0 30px rgba(255,32,0,0.05); }
+}
+
+html.theme-terminator .overlay { clip-path: none; border-radius: 0; border-top: 2px solid rgba(255,32,0,0.40); }
+
+/* HUD targeting grid — horizontal scan lines + vertical targeting columns */
+html.theme-terminator #app::after {
+  background:
+    repeating-linear-gradient(0deg, transparent 0px, transparent 22px, rgba(255,32,0,0.025) 22px, rgba(255,32,0,0.025) 23px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 40px, rgba(255,32,0,0.018) 40px, rgba(255,32,0,0.018) 41px),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.50) 100%);
+  animation: tm-scan 6s linear infinite;
+}
+@keyframes tm-scan {
+  from { background-position: 0 0, 0 0, center; }
+  to   { background-position: 0 23px, 0 0, center; }
+}
+
+/* Header: Skynet threat assessment */
+html.theme-terminator #header {
+  background: rgba(255,32,0,0.04);
+  border-bottom: 1px solid rgba(255,32,0,0.28);
+  box-shadow: 0 1px 20px rgba(255,32,0,0.08);
+}
+html.theme-terminator #header::before {
+  background: var(--accent-c);
+  box-shadow: var(--glow-c);
+  animation: tm-bar-flicker 8s step-start infinite;
+}
+@keyframes tm-bar-flicker {
+  0%,86%,100% { opacity: 1; }
+  88%         { opacity: 0.2; }
+  90%         { opacity: 1; }
+  92%         { opacity: 0.5; }
+  94%         { opacity: 1; }
+}
+html.theme-terminator #header::after {
+  content: 'SKYNET  //  TARGET: ACQUIRED  //  TERMINATE';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 7px;
+  letter-spacing: 1.5px;
+  color: rgba(255,32,0,0.50);
+  pointer-events: none;
+}
+
+/* Title: machine terminal, targeting glitch */
+html.theme-terminator #title {
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 4px;
+  text-shadow: var(--glow-c);
+  animation: tm-target 9s ease-in-out infinite;
+}
+html.theme-terminator .accent { color: var(--accent-y); text-shadow: var(--glow-y); }
+@keyframes tm-target {
+  0%,80%,100% { opacity: 1; transform: none; }
+  83%         { opacity: 0.3; transform: translateX(3px); }
+  85%         { opacity: 1; transform: none; }
+  87%         { opacity: 0.6; transform: translateX(-1px); }
+  89%         { opacity: 1; transform: none; }
+}
+
+/* Grid: threat assessment database + crosshair reticle */
+html.theme-terminator #grid-container { position: relative; }
+html.theme-terminator #grid-container::before {
+  content: 'THREAT LEVEL\AMAXIMUM\A\ATERMINATE\AWITH EXTREME\APREJUDICE\A\AHUMANS:\AHOSTILE\A\APRIORITY:\ATY1\A\ASKYNET\AONLINE';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Consolas', monospace;
+  font-size: 9.5px;
+  letter-spacing: 2px;
+  line-height: 1.6;
+  color: rgba(255,32,0,0.11);
+  text-align: right;
+  padding: 10px 16px 0 0;
+}
+/* Targeting crosshair — center of grid */
+html.theme-terminator #grid-container::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border: 1px solid rgba(255,32,0,0.18);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px rgba(255,32,0,0.06),
+    0 0 0 20px rgba(255,32,0,0.04),
+    0 0 0 40px rgba(255,32,0,0.025);
+  pointer-events: none;
+  z-index: 0;
+  animation: tm-reticle 3s ease-in-out infinite;
+}
+@keyframes tm-reticle {
+  0%,100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+  50%     { opacity: 1; transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 0 1px rgba(255,32,0,0.12), 0 0 0 20px rgba(255,32,0,0.07), 0 0 0 40px rgba(255,32,0,0.04); }
+}
+html.theme-terminator #app-grid  { position: relative; z-index: 2; }
+html.theme-terminator #drop-hint { z-index: 2; }
+
+/* Tiles: targeting bracket hover */
+html.theme-terminator .app-tile              { border-radius: 0; }
+html.theme-terminator .app-tile:hover        { background: rgba(255,32,0,0.05); border-color: rgba(255,32,0,0.40); box-shadow: 0 0 12px rgba(255,32,0,0.10); }
+html.theme-terminator .app-tile:active       { background: rgba(255,32,0,0.10); transform: none; }
+html.theme-terminator .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 8px rgba(255,32,0,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.90));
+}
+
+/* Edit bar */
+html.theme-terminator #edit-bar             { position: relative; background: rgba(128,0,0,0.07); border-top-color: rgba(128,0,0,0.35); }
+html.theme-terminator #edit-bar::after      { content: 'TARGET SELECTION MODE'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Consolas', monospace; font-size: 7.5px; letter-spacing: 2px; color: rgba(255,32,0,0.40); pointer-events: none; }
+html.theme-terminator .edit-label           { color: var(--accent-c); text-shadow: var(--glow-c); }
+
+/* Buttons, picker, misc */
+html.theme-terminator button              { border-radius: 0; }
+html.theme-terminator button:hover        { background: rgba(255,32,0,0.09); border-color: rgba(255,32,0,0.48); box-shadow: var(--glow-c); }
+html.theme-terminator button:active       { background: rgba(255,32,0,0.18); }
+html.theme-terminator .btn-remove         { border-radius: 0; background: rgba(128,0,0,0.90); border-color: var(--accent-m); }
+html.theme-terminator .btn-remove:hover   { background: var(--accent-c); }
+html.theme-terminator .picker-item          { border-radius: 0; }
+html.theme-terminator .picker-item:hover    { background: rgba(255,32,0,0.06); }
+html.theme-terminator .picker-search        { border-radius: 0; background: rgba(255,32,0,0.05); }
+html.theme-terminator .picker-search:focus  { border-color: rgba(255,32,0,0.48); box-shadow: var(--glow-c); }
+html.theme-terminator .picker-icon-placeholder { border-radius: 0; background: rgba(255,32,0,0.07); }
+html.theme-terminator .picker-loading       { font-family: 'Consolas', monospace; letter-spacing: 3px; color: rgba(255,32,0,0.55); }
+html.theme-terminator .drop-hint-inner  { border-color: rgba(255,32,0,0.22); border-radius: 0; }
+html.theme-terminator .hint-sub         { color: rgba(255,32,0,0.26); }
+html.theme-terminator .rename-input     { border-radius: 0; background: rgba(255,32,0,0.07); }
+html.theme-terminator #update-banner    { background: rgba(255,128,96,0.04); border-top-color: rgba(255,128,96,0.22); }
+html.theme-terminator .skin-btn         { border-radius: 0; }
+html.theme-terminator .skin-btn.active  { background: rgba(255,32,0,0.16); border-color: var(--accent-c); }
+html.theme-terminator .overlay-panel    { background: rgba(2,0,0,0.99); border: 1px solid rgba(255,32,0,0.28); }
+html.theme-terminator .overlay-title    { font-family: 'Consolas', monospace; letter-spacing: 4px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 1px solid rgba(255,32,0,0.28); }
+html.theme-terminator .overlay-footer   { border-top-color: rgba(255,32,0,0.18); }
+html.theme-terminator .setting-row label { color: rgba(255,32,0,0.55); letter-spacing: 2px; font-family: 'Consolas', monospace; }
+
+/* ══ PORTAL theme ════════════════════════════════════════════════════════════════
+   Aperture Science Laboratories. Test in progress. The cake is a lie.
+   Clean white test chamber, orange and blue portals. GLaDOS observes.            */
+html.theme-portal {
+  --bg:        rgba(10, 12, 16, 0.96);
+  --panel-bg:  rgba(12, 14, 20, 0.98);
+  --accent-c:  #ff6600;   /* orange portal */
+  --accent-m:  #0060cc;   /* blue portal */
+  --accent-y:  #e0e8f0;   /* test chamber white */
+  --text:      #9098a8;
+  --text-dim:  rgba(144, 152, 168, 0.38);
+  --border:    rgba(255,102,0,0.18);
+  --border-h:  rgba(255,102,0,0.50);
+  --glow-c:    0 0 6px rgba(255,102,0,.65), 0 0 20px rgba(255,102,0,.22);
+  --glow-m:    0 0 6px rgba(0,96,204,.65),  0 0 20px rgba(0,96,204,.22);
+  --glow-y:    0 0 4px rgba(224,232,240,.50),0 0 14px rgba(224,232,240,.18);
+  --radius:    4px;
+  font-family: 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+}
+
+/* Clean Aperture test chamber — very light grey border, rounded */
+html.theme-portal #app {
+  clip-path: none;
+  border-radius: 4px;
+  border: 1px solid rgba(224,232,240,0.12);
+  box-shadow: 0 0 0 1px rgba(255,102,0,0.08), 0 8px 40px rgba(0,0,0,0.5);
+}
+
+/* Subtle chamber panel edge lighting */
+html.theme-portal #app::before {
+  clip-path: none;
+  border-radius: 4px;
+  animation: pt-panel-pulse 7s ease-in-out infinite;
+}
+@keyframes pt-panel-pulse {
+  0%,100% { border-color: rgba(224,232,240,0.10); }
+  33%     { border-color: rgba(255,102,0,0.22); }
+  66%     { border-color: rgba(0,96,204,0.22); }
+}
+
+html.theme-portal .overlay { clip-path: none; border-radius: 4px; border-top: 2px solid rgba(255,102,0,0.35); }
+
+/* Hex ceiling tile pattern — like the Aperture test chamber panels */
+html.theme-portal #app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='40'%3E%3Cpolygon points='23,1 44,11 44,29 23,39 2,29 2,11' fill='none' stroke='rgba(224,232,240,0.05)' stroke-width='0.8'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(0,0,0,0.35) 100%);
+  background-size: 46px 40px, 100% 100%;
+  animation: none;
+}
+
+/* Header: Aperture Science facility terminal */
+html.theme-portal #header {
+  background: rgba(224,232,240,0.03);
+  border-bottom: 1px solid rgba(224,232,240,0.10);
+}
+html.theme-portal #header::before {
+  background: linear-gradient(180deg, #ff6600 50%, #0060cc 100%);
+  box-shadow: none;
+  animation: pt-bar-shift 7s ease-in-out infinite;
+}
+@keyframes pt-bar-shift {
+  0%,100% { background: linear-gradient(180deg, #ff6600 50%, #0060cc 100%); }
+  50%     { background: linear-gradient(180deg, #0060cc 50%, #ff6600 100%); }
+}
+html.theme-portal #header::after {
+  content: 'APERTURE SCIENCE  //  TEST CHAMBER ACTIVE';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 7.5px;
+  letter-spacing: 2px;
+  color: rgba(224,232,240,0.38);
+  pointer-events: none;
+}
+
+/* Title: clean, corporate, minimal */
+html.theme-portal #title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 5px;
+  color: var(--accent-y);
+  text-shadow: 0 0 20px rgba(224,232,240,0.20);
+  animation: none;
+}
+html.theme-portal .accent { color: var(--accent-c); text-shadow: var(--glow-c); }
+html.theme-portal #header-version { color: rgba(224,232,240,0.35); }
+
+/* Grid: GLaDOS quotes (right-aligned) + portal circles */
+html.theme-portal #grid-container { position: relative; background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,102,0,0.02) 0%, transparent 70%); }
+html.theme-portal #grid-container::before {
+  content: 'FOR SCIENCE\A\ATHE CAKE\AIS A LIE\A\ATESTING IN\APROGRESS\A\ASUBJECT\ACOMPLIANCE:\ANOMINAL\A\ATHINK WITH\APORTALS';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-size: 9px;
+  letter-spacing: 2px;
+  line-height: 1.7;
+  color: rgba(224,232,240,0.08);
+  text-align: right;
+  padding: 10px 16px 0 0;
+}
+/* Orange + blue portal rings — bottom corners */
+html.theme-portal #grid-container::after {
+  content: '';
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,102,0,0.22);
+  box-shadow:
+    0 0 0 4px rgba(255,102,0,0.08),
+    0 0 16px rgba(255,102,0,0.12),
+    100px 0 0 0 rgba(0,96,204,0.08),
+    100px 0 0 4px rgba(0,96,204,0.05),
+    100px 0 16px rgba(0,96,204,0.10),
+    inset 0 0 20px rgba(255,102,0,0.06);
+  pointer-events: none;
+  z-index: 0;
+  animation: pt-portal-pulse 4s ease-in-out infinite;
+}
+@keyframes pt-portal-pulse {
+  0%,100% { border-color: rgba(255,102,0,0.22); box-shadow: 0 0 0 4px rgba(255,102,0,0.08), 0 0 16px rgba(255,102,0,0.12), 100px 0 0 0 rgba(0,96,204,0.08), 100px 0 0 4px rgba(0,96,204,0.05), 100px 0 16px rgba(0,96,204,0.10), inset 0 0 20px rgba(255,102,0,0.06); }
+  50%     { border-color: rgba(255,102,0,0.40); box-shadow: 0 0 0 6px rgba(255,102,0,0.14), 0 0 28px rgba(255,102,0,0.22), 100px 0 0 6px rgba(0,96,204,0.12), 100px 0 28px rgba(0,96,204,0.20), inset 0 0 30px rgba(255,102,0,0.10); }
+}
+html.theme-portal #app-grid  { position: relative; z-index: 2; }
+html.theme-portal #drop-hint { z-index: 2; }
+
+/* Tiles: very clean — orange OR blue portal glow alternating */
+html.theme-portal .app-tile:hover  { background: rgba(255,102,0,0.06); border-color: rgba(255,102,0,0.35); box-shadow: 0 0 14px rgba(255,102,0,0.12); border-radius: 4px; }
+html.theme-portal .app-tile:active { background: rgba(255,102,0,0.12); }
+html.theme-portal .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 8px rgba(255,102,0,.50)) drop-shadow(0 2px 5px rgba(0,0,0,.70));
+}
+
+/* Edit bar: TESTING IN PROGRESS */
+html.theme-portal #edit-bar             { position: relative; background: rgba(0,96,204,0.06); border-top: 2px solid rgba(0,96,204,0.30); border-radius: 0 0 4px 4px; }
+html.theme-portal #edit-bar::after      { content: 'TESTING IN PROGRESS'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 7.5px; letter-spacing: 2px; color: rgba(255,102,0,0.45); pointer-events: none; }
+html.theme-portal .edit-label           { color: var(--accent-c); text-shadow: var(--glow-c); }
+html.theme-portal #btn-done-edit        { color: var(--accent-m); border-color: rgba(0,96,204,0.35); }
+html.theme-portal #btn-done-edit:hover  { background: rgba(0,96,204,0.09); border-color: var(--accent-m); box-shadow: var(--glow-m); }
+
+/* Buttons */
+html.theme-portal button              { border-radius: 4px; }
+html.theme-portal button:hover        { background: rgba(255,102,0,0.09); border-color: rgba(255,102,0,0.42); }
+html.theme-portal button:active       { background: rgba(255,102,0,0.18); }
+html.theme-portal .btn-remove         { border-radius: 4px; background: rgba(0,96,204,0.80); border-color: var(--accent-m); }
+html.theme-portal .btn-remove:hover   { background: var(--accent-m); box-shadow: var(--glow-m); }
+
+/* Picker */
+html.theme-portal .picker-item:hover    { background: rgba(255,102,0,0.06); }
+html.theme-portal .picker-item:active   { background: rgba(255,102,0,0.12); }
+html.theme-portal .picker-search        { background: rgba(224,232,240,0.05); border-color: rgba(224,232,240,0.12); }
+html.theme-portal .picker-search:focus  { border-color: rgba(255,102,0,0.45); box-shadow: var(--glow-c); }
+html.theme-portal .picker-icon-placeholder { background: rgba(224,232,240,0.06); }
+html.theme-portal .picker-loading       { letter-spacing: 3px; color: rgba(224,232,240,0.45); }
+
+/* Misc */
+html.theme-portal .drop-hint-inner  { border-color: rgba(255,102,0,0.22); border-radius: 4px; }
+html.theme-portal .hint-sub         { color: rgba(224,232,240,0.22); }
+html.theme-portal .rename-input     { background: rgba(224,232,240,0.07); border-radius: 4px; }
+html.theme-portal #update-banner    { background: rgba(224,232,240,0.04); border-top-color: rgba(255,102,0,0.28); }
+html.theme-portal .skin-btn.active  { background: rgba(255,102,0,0.16); border-color: var(--accent-c); }
+
+/* Overlay: Aperture white-room briefing panel */
+html.theme-portal .overlay-panel   { background: rgba(12,14,20,0.99); border: 1px solid rgba(224,232,240,0.12); border-radius: 4px; border-top: 2px solid rgba(255,102,0,0.35); }
+html.theme-portal .overlay-title   { font-weight: 600; letter-spacing: 4px; color: var(--accent-y); text-shadow: 0 0 14px rgba(224,232,240,0.18); border-bottom: 1px solid rgba(224,232,240,0.10); }
+html.theme-portal .overlay-footer  { border-top-color: rgba(224,232,240,0.08); }
+html.theme-portal .picker-panel    { border-top: 2px solid rgba(0,96,204,0.35); }
+html.theme-portal .setting-row label { color: rgba(224,232,240,0.50); letter-spacing: 2px; font-weight: 600; }
 
 /* ══ CYBERPUNK theme ══════════════════════════════════════════════════════════════
    Night City neon. The base stylesheet IS the cyberpunk theme.
