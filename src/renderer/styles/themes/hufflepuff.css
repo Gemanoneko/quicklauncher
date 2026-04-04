@@ -1,0 +1,170 @@
+/* ══ HUFFLEPUFF ═════════════════════════════════════════════════════════════════
+   You might belong in Hufflepuff where they are just and loyal. The badger
+   burrows deep. Warm kitchens, earthy common rooms, sunflowers and patience.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #030200;
+  --panel-bg:     rgba(6, 4, 0, 0.97);
+  --overlay-bg:   rgba(4, 2, 0, 0.95);
+  --header-bg:    rgba(200, 150, 20, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #C09040;
+  --text-dim:     rgba(175, 130, 50, 0.45);
+
+  --accent-c:     #D09020;   /* Hufflepuff yellow */
+  --accent-m:     #604020;   /* badger brown / earth */
+  --accent-y:     #E0B040;   /* warm bright gold */
+
+  --border:       rgba(180, 130, 20, 0.22);
+  --border-h:     rgba(210, 155, 30, 0.50);
+
+  --glow-c:       0 0 8px rgba(208,144,32,.58), 0 0 22px rgba(208,144,32,.20);
+  --glow-m:       0 0 7px rgba(96,64,32,.52), 0 0 18px rgba(96,64,32,.18);
+  --glow-y:       0 0 9px rgba(224,176,64,.65), 0 0 26px rgba(224,176,64,.22);
+
+  --pulse-glow:   inset 0 0 22px rgba(180,130,20,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(208,144,32,.09);
+
+  --title-anim:   hufflepuff-warmth 8s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(180, 130, 20, 0.07);
+  --tile-hover-border: rgba(210, 155, 30, 0.34);
+  --tile-hover-shadow: 0 0 13px rgba(208, 144, 32, 0.20);
+  --tile-active-bg:    rgba(180, 130, 20, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(208,144,32,.58)) drop-shadow(0 0 14px rgba(96,64,32,.26));
+
+  --btn-hover-bg:   rgba(180, 130, 20, 0.09);
+  --btn-active-bg:  rgba(180, 130, 20, 0.18);
+
+  --drop-hint-border: rgba(180, 130, 20, 0.26);
+  --drop-icon-color:  rgba(208, 144, 32, 0.38);
+  --hint-sub-color:   rgba(160, 110, 40, 0.40);
+
+  --rename-dashed:    rgba(208, 144, 32, 0.40);
+  --rename-input-bg:  rgba(180, 130, 20, 0.07);
+
+  --edit-bar-bg:          rgba(96, 64, 32, 0.08);
+  --edit-bar-border:      rgba(96, 64, 32, 0.42);
+  --edit-label-color:     #D09020;
+  --edit-label-glow:      var(--glow-c);
+  --btn-done-color:       #D09020;
+  --btn-done-border:      rgba(208, 144, 32, 0.42);
+  --btn-done-hover-bg:    rgba(208, 144, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(208, 144, 32, 0.42);
+
+  --update-bg:             rgba(224, 176, 64, 0.06);
+  --update-border:         rgba(210, 165, 50, 0.34);
+  --update-color:          #B08030;
+  --update-btn-border:     rgba(224, 176, 64, 0.28);
+  --update-btn-hover-bg:   rgba(224, 176, 64, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #D09020;
+  --btn-close-border:     rgba(208, 144, 32, 0.40);
+  --btn-close-hover-bg:   rgba(208, 144, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(180, 130, 20, 0.07);
+  --picker-item-hover-bg:  rgba(180, 130, 20, 0.08);
+  --picker-item-active-bg: rgba(180, 130, 20, 0.16);
+  --picker-placeholder-bg: rgba(180, 130, 20, 0.07);
+
+  --skin-btn-active-bg:    rgba(180, 130, 20, 0.16);
+  --remove-btn-bg:         rgba(96, 64, 32, 0.90);
+  --remove-btn-border:     #604020;
+}
+
+/* ── Warm earth grain + soft kitchen glow — cozy, never harsh ───────────────── */
+#app::after {
+  background:
+    /* warm organic grain — earthy, like packed soil and straw */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.6 0 0 0 0.06  0.5 0 0 0 0.04  0.2 0 0 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* gentle warm vignette — soft, like candlelight at the edges */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 44%, rgba(2, 1, 0, 0.68) 100%),
+    /* kitchen hearth glow from below — warm and welcoming */
+    radial-gradient(ellipse 85% 40% at 50% 100%, rgba(170, 100, 10, 0.08) 0%, rgba(130, 70, 5, 0.04) 55%, transparent 75%),
+    /* sunlight from above — as if through a round window */
+    radial-gradient(ellipse 55% 28% at 50% 0%, rgba(200, 150, 20, 0.06) 0%, transparent 62%),
+    /* cozy center warmth — the common room fire */
+    radial-gradient(ellipse 50% 50% at 50% 60%, rgba(140, 90, 10, 0.04) 0%, transparent 65%);
+  background-size: 300px 300px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — Hufflepuff yellow accent bar ───────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #D09020, rgba(180, 120, 20, 0.28));
+  box-shadow: 0 0 10px rgba(208, 144, 32, 0.55), 0 0 26px rgba(208, 144, 32, 0.18);
+}
+
+/* ── Grid: warm burrow light — earthy depth, gentle and inviting ─────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 40% at 50% 100%, rgba(150, 90, 10, 0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 28% at 50% 0%, rgba(180, 130, 15, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 32% 100% at 0% 50%, rgba(2, 1, 0, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 32% 100% at 100% 50%, rgba(2, 1, 0, 0.14) 0%, transparent 60%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'HUFFLEPUFF  //  JUST AND LOYAL  //  PATIENT  KIND  UNAFRAID OF TOIL';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 145, 30, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'HUFFLEPUFF\AJUST AND\ALOYAL\A\ANEVILLE\AWOULD\AHave\ABEEN\AONE\A\ATRUE\AGRIT';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(180, 130, 20, 0.10); white-space: pre;
+  animation: hufflepuff-breathe 12s ease-in-out infinite;
+}
+
+@keyframes hufflepuff-breathe {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1.0; }
+}
+
+#edit-bar::after {
+  content: 'LOYALTY IS THE HIGHEST MAGIC';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(208, 144, 32, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title animation: warm yellow to bright gold, the badger's steady glow ────── */
+@keyframes hufflepuff-warmth {
+  0%, 100% { text-shadow: 0 0 8px rgba(208,144,32,.55), 0 0 22px rgba(208,144,32,.18); color: #D09020; }
+  40%       { text-shadow: 0 0 12px rgba(224,176,64,.80), 0 0 30px rgba(224,176,64,.30); color: #E0B040; }
+  75%       { text-shadow: 0 0 7px rgba(96,64,32,.50), 0 0 18px rgba(96,64,32,.16); color: #B07828; }
+}
+
+/* ── App: soft amber border — warm, never harsh ──────────────────────────────── */
+#app { animation: hufflepuff-border 10s ease-in-out infinite; }
+@keyframes hufflepuff-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(180,130,20,.28), inset 0 0 22px rgba(180,130,20,.04); }
+  50%       { box-shadow: 0 0 0 1px rgba(210,155,30,.48), inset 0 0 30px rgba(208,144,32,.07); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(5, 3, 0, 0.98); border-top-color: rgba(180, 130, 20, 0.22); }
+#theme-banner::before { content: '✿'; color: #D09020; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 140, 30, 0.65); }

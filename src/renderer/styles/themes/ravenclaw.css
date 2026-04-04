@@ -1,0 +1,172 @@
+/* ══ RAVENCLAW ═════════════════════════════════════════════════════════════════
+   Wit beyond measure is man's greatest treasure. The eagle soars above the
+   moonlit courtyard. Blue and bronze — books, stars, and silent thinking.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #020308;
+  --panel-bg:     rgba(4, 6, 14, 0.97);
+  --overlay-bg:   rgba(2, 4, 10, 0.95);
+  --header-bg:    rgba(60, 90, 160, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #8898C0;
+  --text-dim:     rgba(110, 135, 185, 0.45);
+
+  --accent-c:     #4068B0;   /* Ravenclaw blue */
+  --accent-m:     #9A7030;   /* Ravenclaw bronze */
+  --accent-y:     #6070A0;   /* silver-blue secondary */
+
+  --border:       rgba(64, 104, 176, 0.22);
+  --border-h:     rgba(80, 128, 210, 0.52);
+
+  --glow-c:       0 0 8px rgba(64,104,176,.60), 0 0 22px rgba(64,104,176,.20);
+  --glow-m:       0 0 8px rgba(154,112,48,.60), 0 0 22px rgba(154,112,48,.20);
+  --glow-y:       0 0 7px rgba(96,112,160,.52), 0 0 18px rgba(96,112,160,.16);
+
+  --pulse-glow:   inset 0 0 22px rgba(64,104,176,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(64,104,176,.10);
+
+  --title-anim:   ravenclaw-wisdom 7s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(64, 100, 160, 0.07);
+  --tile-hover-border: rgba(80, 128, 210, 0.36);
+  --tile-hover-shadow: 0 0 13px rgba(64, 104, 176, 0.22);
+  --tile-active-bg:    rgba(64, 100, 160, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(64,104,176,.60)) drop-shadow(0 0 14px rgba(154,112,48,.28));
+
+  --btn-hover-bg:   rgba(64, 100, 160, 0.10);
+  --btn-active-bg:  rgba(64, 100, 160, 0.20);
+
+  --drop-hint-border: rgba(64, 100, 160, 0.26);
+  --drop-icon-color:  rgba(64, 104, 176, 0.38);
+  --hint-sub-color:   rgba(100, 130, 175, 0.40);
+
+  --rename-dashed:    rgba(64, 104, 176, 0.40);
+  --rename-input-bg:  rgba(64, 100, 160, 0.07);
+
+  --edit-bar-bg:          rgba(154, 112, 48, 0.07);
+  --edit-bar-border:      rgba(154, 112, 48, 0.40);
+  --edit-label-color:     #9A7030;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #9A7030;
+  --btn-done-border:      rgba(154, 112, 48, 0.42);
+  --btn-done-hover-bg:    rgba(154, 112, 48, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(64, 104, 176, 0.42);
+
+  --update-bg:             rgba(96, 112, 160, 0.06);
+  --update-border:         rgba(110, 130, 185, 0.34);
+  --update-color:          #607098;
+  --update-btn-border:     rgba(96, 112, 160, 0.30);
+  --update-btn-hover-bg:   rgba(96, 112, 160, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #9A7030;
+  --btn-close-border:     rgba(154, 112, 48, 0.40);
+  --btn-close-hover-bg:   rgba(154, 112, 48, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(64, 100, 160, 0.07);
+  --picker-item-hover-bg:  rgba(64, 100, 160, 0.08);
+  --picker-item-active-bg: rgba(64, 100, 160, 0.15);
+  --picker-placeholder-bg: rgba(64, 100, 160, 0.07);
+
+  --skin-btn-active-bg:    rgba(64, 100, 160, 0.16);
+  --remove-btn-bg:         rgba(154, 112, 48, 0.88);
+  --remove-btn-border:     #9A7030;
+}
+
+/* ── Distant stars + cool moonlight + bronze ambient ─────────────────────────── */
+#app::after {
+  background:
+    /* fine star field — subtle, cerebral */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.45 0 0 0 0 0.60 0 0 0 0 1.0 0 0 0 16 -12'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E"),
+    /* moonlit vignette — cool and composed */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(1, 2, 7, 0.74) 100%),
+    /* Ravenclaw tower — blue ambient from above */
+    radial-gradient(ellipse 65% 50% at 50% 10%, rgba(40, 70, 150, 0.07) 0%, transparent 65%),
+    /* bronze candlelight from below — study warmth */
+    radial-gradient(ellipse 60% 30% at 50% 100%, rgba(100, 70, 20, 0.05) 0%, transparent 62%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — Ravenclaw blue accent bar ─────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #4068B0, rgba(64, 100, 160, 0.28));
+  box-shadow: 0 0 10px rgba(64, 104, 176, 0.55), 0 0 26px rgba(64, 104, 176, 0.18);
+}
+
+/* ── Grid: elven archway lines — knowledge structured in stone ───────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* horizontal shelf lines — like rows of books */
+    repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 79px,
+      rgba(64, 104, 176, 0.016) 79px, rgba(64, 104, 176, 0.016) 80px
+    ),
+    radial-gradient(ellipse 75% 50% at 50% 20%, rgba(40, 70, 150, 0.05) 0%, transparent 62%),
+    radial-gradient(ellipse 50% 35% at 50% 90%, rgba(90, 65, 20, 0.04) 0%, transparent 58%),
+    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(2, 4, 12, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(2, 4, 12, 0.14) 0%, transparent 60%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'RAVENCLAW  //  WIT BEYOND MEASURE  //  THE EAGLE SOARS';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(80, 120, 190, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'RAVENCLAW\AWIT\ABEYOND\AMEASURE\A\ATHE\AEAGLE\ASOARS\A\ALUNA\ALOVEGOOD\A\ATHE\ADIADEM';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(60, 95, 165, 0.11); white-space: pre;
+  animation: ravenclaw-breathe 11s ease-in-out infinite;
+}
+
+@keyframes ravenclaw-breathe {
+  0%, 100% { opacity: 0.60; }
+  50% { opacity: 1.0; }
+}
+
+#edit-bar::after {
+  content: 'CLAWS SHARP AS THOUGHT  —  KNOWLEDGE IS THE BLADE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(154, 112, 48, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title animation: blue → bronze → silver, the shifting eagle ────────────── */
+@keyframes ravenclaw-wisdom {
+  0%, 100% { text-shadow: 0 0 8px rgba(64,104,176,.58), 0 0 22px rgba(64,104,176,.20); color: #4068B0; }
+  40%       { text-shadow: 0 0 13px rgba(100,145,220,.82), 0 0 32px rgba(64,104,176,.38); color: #6488D0; }
+  70%       { text-shadow: 0 0 8px rgba(154,112,48,.55), 0 0 20px rgba(154,112,48,.18); color: #9A7030; }
+}
+
+/* ── App: cool blue scholarly border ────────────────────────────────────────── */
+#app { animation: ravenclaw-border 9s ease-in-out infinite; }
+@keyframes ravenclaw-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(64,104,176,.30), inset 0 0 24px rgba(64,104,176,.05); }
+  50%       { box-shadow: 0 0 0 1px rgba(80,128,210,.52), inset 0 0 32px rgba(64,104,176,.08); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(2, 3, 9, 0.97); border-top-color: rgba(64, 104, 176, 0.22); }
+#theme-banner::before { content: '✧'; color: #4068B0; font-size: 22px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(70, 110, 185, 0.65); }

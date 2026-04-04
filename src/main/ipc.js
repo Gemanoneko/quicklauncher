@@ -14,7 +14,7 @@ const VALID_THEMES = new Set([
   'star-wars-rebel', 'star-wars-empire', 'star-wars-republic',
   'doctor-who', 'akira', 'evangelion', '2001', 'silent-hill', 'stalker',
   'resident-evil', 'the-expanse', 'event-horizon',
-  'hogwarts', 'ministry-of-magic', 'slytherin',
+  'hogwarts', 'ministry-of-magic', 'gryffindor', 'ravenclaw', 'hufflepuff', 'slytherin',
   'rivendell', 'shire', 'mordor',
   'scp', 'alan-wake', 'control', 'twin-peaks', 'lovecraft', 'the-sandman',
   'persona-5', 'the-witcher', 'diablo', 'soma', 'stranger-things', 'fatal-frame',

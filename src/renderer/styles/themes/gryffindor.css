@@ -1,0 +1,167 @@
+/* ══ GRYFFINDOR ════════════════════════════════════════════════════════════════
+   Where dwell the brave at heart. Scarlet and gold on ancient warm stone —
+   common room firelight, house banners, Godric's sword, the lion's roar.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #040100;
+  --panel-bg:     rgba(8, 2, 0, 0.98);
+  --overlay-bg:   rgba(4, 1, 0, 0.96);
+  --header-bg:    rgba(180, 40, 20, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #C08040;
+  --text-dim:     rgba(180, 110, 50, 0.45);
+
+  --accent-c:     #CC3020;   /* Gryffindor scarlet */
+  --accent-m:     #C89020;   /* deep burnished gold */
+  --accent-y:     #7A5818;   /* old wood / dark gold */
+
+  --border:       rgba(160, 40, 20, 0.24);
+  --border-h:     rgba(204, 48, 32, 0.55);
+
+  --glow-c:       0 0 8px rgba(204,48,32,.62), 0 0 22px rgba(204,48,32,.22);
+  --glow-m:       0 0 8px rgba(200,144,32,.62), 0 0 22px rgba(200,144,32,.22);
+  --glow-y:       0 0 6px rgba(122,88,24,.50), 0 0 16px rgba(122,88,24,.16);
+
+  --pulse-glow:   inset 0 0 22px rgba(160,40,20,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(200,144,32,.10);
+
+  --title-anim:   gryffindor-flame 5s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(160, 40, 20, 0.07);
+  --tile-hover-border: rgba(204, 48, 32, 0.36);
+  --tile-hover-shadow: 0 0 12px rgba(204, 48, 32, 0.22);
+  --tile-active-bg:    rgba(160, 40, 20, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,144,32,.62)) drop-shadow(0 0 14px rgba(204,48,32,.28));
+
+  --btn-hover-bg:   rgba(160, 40, 20, 0.10);
+  --btn-active-bg:  rgba(160, 40, 20, 0.20);
+
+  --drop-hint-border: rgba(160, 40, 20, 0.26);
+  --drop-icon-color:  rgba(200, 144, 32, 0.38);
+  --hint-sub-color:   rgba(160, 100, 40, 0.40);
+
+  --rename-dashed:    rgba(200, 144, 32, 0.40);
+  --rename-input-bg:  rgba(160, 40, 20, 0.07);
+
+  --edit-bar-bg:          rgba(200, 144, 32, 0.07);
+  --edit-bar-border:      rgba(200, 144, 32, 0.40);
+  --edit-label-color:     #C89020;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C89020;
+  --btn-done-border:      rgba(200, 144, 32, 0.42);
+  --btn-done-hover-bg:    rgba(200, 144, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(204, 48, 32, 0.42);
+
+  --update-bg:             rgba(122, 88, 24, 0.07);
+  --update-border:         rgba(150, 110, 30, 0.36);
+  --update-color:          #9A7020;
+  --update-btn-border:     rgba(122, 88, 24, 0.32);
+  --update-btn-hover-bg:   rgba(122, 88, 24, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #C89020;
+  --btn-close-border:     rgba(200, 144, 32, 0.40);
+  --btn-close-hover-bg:   rgba(200, 144, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(160, 40, 20, 0.07);
+  --picker-item-hover-bg:  rgba(160, 40, 20, 0.09);
+  --picker-item-active-bg: rgba(160, 40, 20, 0.16);
+  --picker-placeholder-bg: rgba(160, 40, 20, 0.07);
+
+  --skin-btn-active-bg:    rgba(160, 40, 20, 0.17);
+  --remove-btn-bg:         rgba(204, 48, 32, 0.90);
+  --remove-btn-border:     #CC3020;
+}
+
+/* ── Warm stone grain + fireplace glow from below ────────────────────────────── */
+#app::after {
+  background:
+    /* warm stone texture — rough and noble */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.9 0 0 0 0.06  0.5 0 0 0 0.01  0.2 0 0 0 0  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* warm vignette — like looking into the common room from outside */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 42%, rgba(3, 0, 0, 0.78) 100%),
+    /* fireplace glow from below — hearth warmth */
+    radial-gradient(ellipse 80% 35% at 50% 100%, rgba(180, 60, 0, 0.10) 0%, rgba(140, 40, 0, 0.05) 50%, transparent 72%),
+    /* banner warmth from top — house colours */
+    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(160, 30, 10, 0.06) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — scarlet accent bar ────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #CC3020, rgba(160, 40, 20, 0.28));
+  box-shadow: 0 0 10px rgba(204, 48, 32, 0.60), 0 0 26px rgba(204, 48, 32, 0.20);
+}
+
+/* ── Grid: fireplace warmth pooling bottom, banner glow from top ─────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 100% 38% at 50% 100%, rgba(160, 60, 0, 0.08) 0%, transparent 68%),
+    radial-gradient(ellipse 70% 28% at 50% 0%, rgba(140, 30, 10, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(3, 0, 0, 0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(3, 0, 0, 0.16) 0%, transparent 60%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'GRYFFINDOR  //  BRAVE AT HEART  //  DARING  NERVE  CHIVALRY';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 100, 30, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'GRYFFINDOR\ABRAVE\AAT HEART\A\ATHE\ALION\AROARS\A\ANEVILLE\ADID\AWELL\A\AFAWKES';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(180, 80, 20, 0.11); white-space: pre;
+  animation: gryffindor-breathe 10s ease-in-out infinite;
+}
+
+@keyframes gryffindor-breathe {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1.0; }
+}
+
+#edit-bar::after {
+  content: "DUMBLEDORE'S ARMY  —  WE STAND TOGETHER";
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(200, 144, 32, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title animation: scarlet to gold, the lion's fire ─────────────────────── */
+@keyframes gryffindor-flame {
+  0%, 100% { text-shadow: 0 0 8px rgba(204,48,32,.62), 0 0 22px rgba(204,48,32,.22); color: #CC3020; }
+  50%       { text-shadow: 0 0 12px rgba(200,144,32,.85), 0 0 32px rgba(200,144,32,.35); color: #C89020; }
+}
+
+/* ── App: noble scarlet border pulse ────────────────────────────────────────── */
+#app { animation: gryffindor-border 7s ease-in-out infinite; }
+@keyframes gryffindor-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(160,40,20,.35), inset 0 0 28px rgba(160,40,20,.05); }
+  50%       { box-shadow: 0 0 0 1px rgba(204,48,32,.55), inset 0 0 36px rgba(180,80,10,.08); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(6, 1, 0, 0.98); border-top-color: rgba(160, 40, 20, 0.24); }
+#theme-banner::before { content: '✦'; color: #C89020; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 110, 30, 0.65); }
