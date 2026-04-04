@@ -731,19 +731,22 @@ html.theme-blade-runner #app::before {
 
 html.theme-blade-runner .overlay { clip-path: none; border-radius: 1px; }
 
-/* SVG rain streaks + scanlines + warm amber radial glow from bottom corners */
+/* Three rain layers + fog band + heat-haze pulse + scanlines */
 html.theme-blade-runner #app::after {
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='200'%3E%3Cline x1='12' y1='0' x2='10' y2='200' stroke='rgba(224,122,0,0.04)' stroke-width='1'/%3E%3Cline x1='30' y1='0' x2='28' y2='200' stroke='rgba(224,122,0,0.03)' stroke-width='1'/%3E%3Cline x1='52' y1='0' x2='50' y2='200' stroke='rgba(224,122,0,0.05)' stroke-width='1'/%3E%3Cline x1='70' y1='0' x2='68' y2='200' stroke='rgba(224,122,0,0.03)' stroke-width='1'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='120'%3E%3Cline x1='6' y1='0' x2='5' y2='120' stroke='rgba(184,48,0,0.025)' stroke-width='1'/%3E%3Cline x1='18' y1='0' x2='17' y2='120' stroke='rgba(184,48,0,0.02)' stroke-width='1'/%3E%3Cline x1='32' y1='0' x2='31' y2='120' stroke='rgba(224,122,0,0.03)' stroke-width='1'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='300'%3E%3Cline x1='20' y1='0' x2='18' y2='300' stroke='rgba(224,122,0,0.015)' stroke-width='1'/%3E%3Cline x1='60' y1='0' x2='58' y2='300' stroke='rgba(184,48,0,0.012)' stroke-width='1'/%3E%3Cline x1='95' y1='0' x2='93' y2='300' stroke='rgba(224,122,0,0.018)' stroke-width='1'/%3E%3C/svg%3E"),
     repeating-linear-gradient(0deg, transparent 0px, transparent 4px, rgba(0,0,0,.05) 4px, rgba(0,0,0,.05) 5px),
+    radial-gradient(ellipse 60% 20% at 50% 55%, rgba(224,122,0,0.025) 0%, transparent 100%),
     radial-gradient(ellipse 80% 40% at 20% 100%, rgba(224,122,0,0.07) 0%, transparent 70%),
     radial-gradient(ellipse 80% 40% at 80% 100%, rgba(184,48,0,0.05) 0%, transparent 70%);
   animation: br-rain-drift 12s linear infinite;
   pointer-events: none;
 }
 @keyframes br-rain-drift {
-  from { background-position: 0 0, 0 0, center, center; }
-  to   { background-position: 0 200px, 0 80px, center, center; }
+  from { background-position: 0 0, 0 0, 0 0, 0 0, center, center, center; }
+  to   { background-position: 0 200px, 0 120px, 0 300px, 0 80px, center, center, center; }
 }
 
 /* Header: dim location text right of title, before buttons */
@@ -755,6 +758,14 @@ html.theme-blade-runner #header {
 html.theme-blade-runner #header::before {
   background: var(--accent-c);
   box-shadow: var(--glow-c);
+  animation: br-bar-flicker 9s step-start infinite;
+}
+@keyframes br-bar-flicker {
+  0%,85%,100% { opacity: 1; }
+  87%         { opacity: 0.5; }
+  89%         { opacity: 1; }
+  91%         { opacity: 0.7; }
+  93%         { opacity: 1; }
 }
 html.theme-blade-runner #header::after {
   content: 'LOS ANGELES  2019';
@@ -788,7 +799,7 @@ html.theme-blade-runner #title {
 }
 
 /* Grid background: Tyrell Corp. branding — large italic serif, right-aligned, very dim */
-html.theme-blade-runner #grid-container { position: relative; }
+html.theme-blade-runner #grid-container { position: relative; background: radial-gradient(ellipse 60% 30% at 50% 80%, rgba(224,122,0,0.025) 0%, transparent 100%); }
 html.theme-blade-runner #grid-container::before {
   content: 'TYRELL\ACORP.\A\AMORE\AHUMAN\ATHAN\AHUMAN\A\AOFF-WORLD\ACOLONIES\A\AREPLICANT\ARETIREMENT';
   position: absolute;
@@ -804,8 +815,38 @@ html.theme-blade-runner #grid-container::before {
   text-align: right;
   padding: 12px 16px 0 0;
 }
-html.theme-blade-runner #app-grid   { position: relative; z-index: 1; }
-html.theme-blade-runner #drop-hint  { z-index: 1; }
+/* Neon sign fragment — dying amber tube segments at the bottom */
+html.theme-blade-runner #grid-container::after {
+  content: '';
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 3px;
+  height: 20px;
+  background: #e07a00;
+  box-shadow:
+    8px 0 0 #e07a00,
+    16px 0 0 transparent,
+    24px 0 0 #b83000,
+    32px 0 0 #b83000,
+    40px 0 0 transparent,
+    48px 0 0 #e8c040,
+    56px 0 0 #e8c040,
+    64px 0 0 #e8c040;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+  animation: br-sign-flicker 6s step-start infinite;
+}
+@keyframes br-sign-flicker {
+  0%,90%,100% { opacity: 0.18; }
+  92%         { opacity: 0.06; }
+  94%         { opacity: 0.18; }
+  96%         { opacity: 0.10; }
+  98%         { opacity: 0.18; }
+}
+html.theme-blade-runner #app-grid   { position: relative; z-index: 2; }
+html.theme-blade-runner #drop-hint  { z-index: 2; }
 
 /* Tile icons: wide diffused amber halo — light through fog */
 html.theme-blade-runner .app-tile:hover {
@@ -819,7 +860,8 @@ html.theme-blade-runner .app-tile:hover .tile-icon {
 }
 
 /* Edit bar, buttons, picker */
-html.theme-blade-runner #edit-bar            { background: rgba(184,48,0,0.06); border-top-color: rgba(184,48,0,0.28); }
+html.theme-blade-runner #edit-bar            { position: relative; background: rgba(184,48,0,0.06); border-top-color: rgba(184,48,0,0.28); }
+html.theme-blade-runner #edit-bar::after     { content: 'NEXUS-6 PROTOCOL'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Georgia', serif; font-style: italic; font-size: 7px; letter-spacing: 2px; color: rgba(224,122,0,0.18); pointer-events: none; }
 html.theme-blade-runner .edit-label          { color: var(--accent-m); text-shadow: var(--glow-m); }
 html.theme-blade-runner button:hover         { background: rgba(224,122,0,0.08); }
 html.theme-blade-runner button:active        { background: rgba(224,122,0,0.16); }
@@ -832,6 +874,10 @@ html.theme-blade-runner .hint-sub            { color: rgba(224,122,0,0.20); }
 html.theme-blade-runner .rename-input        { background: rgba(224,122,0,0.07); }
 html.theme-blade-runner #update-banner       { background: rgba(232,192,64,0.05); border-top-color: rgba(232,192,64,0.30); }
 html.theme-blade-runner .skin-btn.active     { background: rgba(224,122,0,0.14); }
+
+/* Overlay: cinematic darkness and fog */
+html.theme-blade-runner .overlay-panel  { background: rgba(6,3,0,0.97); }
+html.theme-blade-runner .overlay-title  { font-family: 'Georgia', serif; font-style: italic; border-bottom-color: rgba(224,122,0,0.25); }
 
 /* ══ ALIEN theme ══════════════════════════════════════════════════════════════════
    Weyland-Yutani MU-TH-UR 6000 terminal, USCSS Nostromo, 2122.
@@ -862,7 +908,7 @@ html.theme-alien #app {
   box-shadow: 0 0 0 3px rgba(0,0,0,0.9), inset 0 0 40px rgba(24,176,24,0.04);
 }
 
-/* TOP WARNING STRIPE instead of animated border */
+/* TOP WARNING STRIPE — marching hazard pattern */
 html.theme-alien #app::before {
   inset: auto;
   top: 0;
@@ -877,7 +923,11 @@ html.theme-alien #app::before {
   border: none;
   clip-path: none;
   border-radius: 0;
-  animation: none;
+  animation: al-stripe-march 1.2s linear infinite;
+}
+@keyframes al-stripe-march {
+  from { background-position: 0 0; }
+  to   { background-position: 28px 0; }
 }
 
 html.theme-alien .overlay { clip-path: none; border-radius: 0; }
@@ -932,7 +982,7 @@ html.theme-alien #title::after {
 }
 
 /* Grid background: MU-TH-UR system output — tiny Courier, very dim */
-html.theme-alien #grid-container { position: relative; }
+html.theme-alien #grid-container { position: relative; background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(24,176,24,0.03) 0%, transparent 100%); }
 html.theme-alien #grid-container::before {
   content: 'MU-TH-UR ONLINE\ACREW: 7 / 7\ACARGO: ORE\ADEST: EARTH (W-Y)\A\A> LV-426 APPROACH\A> PRIORITY ONE\A  OVERRIDE\A\A*** WARNING ***\ABIO-HZD CLASS A\ADANGER: EXTREME\ACREW EXPENDABLE\A\AALL PRIORITIES\ARECEDE';
   position: absolute;
@@ -946,7 +996,7 @@ html.theme-alien #grid-container::before {
   color: rgba(24,176,24,0.09);
   padding: 10px 12px 0;
 }
-/* Biohazard symbol — bottom-right watermark */
+/* Biohazard symbol — bottom-right watermark, slowly pulsing */
 html.theme-alien #grid-container::after {
   content: '\2622';
   position: absolute;
@@ -957,20 +1007,26 @@ html.theme-alien #grid-container::after {
   font-size: 64px;
   color: rgba(24,176,24,0.04);
   line-height: 1;
+  animation: al-bio-pulse 4s ease-in-out infinite;
+}
+@keyframes al-bio-pulse {
+  0%,100% { opacity: 0.04; transform: scale(1); }
+  50%     { opacity: 0.07; transform: scale(1.04); }
 }
 html.theme-alien #app-grid   { position: relative; z-index: 1; }
 html.theme-alien #drop-hint  { z-index: 1; }
 
 /* Tiles: square, no hover glow — utilitarian */
 html.theme-alien .app-tile              { border-radius: 0; }
-html.theme-alien .app-tile:hover        { background: rgba(24,176,24,0.07); border-color: rgba(24,176,24,0.32); box-shadow: none; }
+html.theme-alien .app-tile:hover        { background: rgba(24,176,24,0.07); border-color: rgba(24,176,24,0.32); box-shadow: none; border-top: 1px solid rgba(24,176,24,0.40); }
 html.theme-alien .app-tile:active       { background: rgba(24,176,24,0.14); transform: none; }
 html.theme-alien .app-tile:hover .tile-icon {
   filter: drop-shadow(0 0 5px rgba(24,176,24,.28)) drop-shadow(0 2px 4px rgba(0,0,0,.8));
 }
 
 /* Edit bar: terminal prompt style */
-html.theme-alien #edit-bar             { background: rgba(15,128,15,0.05); border-top-color: rgba(15,128,15,0.28); }
+html.theme-alien #edit-bar             { position: relative; background: rgba(15,128,15,0.05); border-top-color: rgba(15,128,15,0.28); }
+html.theme-alien #edit-bar::after      { content: 'CREW EXPENDABLE'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Courier New', monospace; font-size: 7px; letter-spacing: 2px; color: rgba(24,176,24,0.15); pointer-events: none; }
 html.theme-alien .edit-label::before  { content: '> '; }
 
 /* All buttons: square */
@@ -985,6 +1041,7 @@ html.theme-alien .picker-item:hover    { background: rgba(24,176,24,0.07); }
 html.theme-alien .picker-item:active   { background: rgba(24,176,24,0.14); }
 html.theme-alien .picker-search        { background: rgba(24,176,24,0.05); border-radius: 0; }
 html.theme-alien .picker-icon-placeholder { background: rgba(24,176,24,0.08); border-radius: 0; }
+html.theme-alien .picker-loading       { color: rgba(24,176,24,0.5); letter-spacing: 3px; }
 
 /* Drop hint, rename, update, skins */
 html.theme-alien .drop-hint-inner      { border-color: rgba(24,176,24,0.22); border-radius: 0; border-style: solid; }
@@ -993,6 +1050,10 @@ html.theme-alien .rename-input         { border-radius: 0; background: rgba(24,1
 html.theme-alien #update-banner        { background: rgba(64,208,64,0.05); border-top-color: rgba(64,208,64,0.25); }
 html.theme-alien .skin-btn             { border-radius: 0; }
 html.theme-alien .skin-btn.active      { background: rgba(24,176,24,0.15); }
+
+/* Overlay: deep terminal darkness */
+html.theme-alien .overlay-panel  { background: rgba(0,4,1,0.99); }
+html.theme-alien .overlay-title  { font-family: 'Courier New', monospace; letter-spacing: 3px; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid rgba(24,176,24,0.28); }
 
 /* ══ TRON theme ══════════════════════════════════════════════════════════════════
    The Grid. A digital frontier. Ice-blue circuits on absolute black.
@@ -1032,12 +1093,13 @@ html.theme-tron #app::before {
 }
 html.theme-tron .overlay { clip-path: none; border-radius: 0; }
 
-/* Grid lines — the floor of the Grid, replacing scanlines */
+/* Grid lines + circuit node dots at intersections */
 html.theme-tron #app::after {
   background:
     linear-gradient(rgba(109,232,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(109,232,255,0.025) 1px, transparent 1px);
-  background-size: 24px 24px;
+    linear-gradient(90deg, rgba(109,232,255,0.025) 1px, transparent 1px),
+    radial-gradient(circle 1.5px at 0 0, rgba(109,232,255,0.10) 0%, transparent 100%);
+  background-size: 24px 24px, 24px 24px, 24px 24px;
   animation: none;
 }
 
@@ -1046,7 +1108,15 @@ html.theme-tron #header {
   background: rgba(109,232,255,0.04);
   border-bottom: 1px solid rgba(109,232,255,0.22);
 }
-html.theme-tron #header::before { background: var(--accent-c); box-shadow: var(--glow-c); }
+html.theme-tron #header::before {
+  background: var(--accent-c);
+  box-shadow: var(--glow-c);
+  animation: tr-node-pulse 3s ease-in-out infinite;
+}
+@keyframes tr-node-pulse {
+  0%,100% { box-shadow: var(--glow-c); }
+  50%     { box-shadow: 0 0 10px rgba(109,232,255,1), 0 0 30px rgba(109,232,255,.6); }
+}
 html.theme-tron #header::after {
   content: 'USER: ACTIVE  ///  GRID: ONLINE';
   position: absolute;
@@ -1078,7 +1148,7 @@ html.theme-tron .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
   93%           { opacity: 1;   text-shadow: var(--glow-c); }
 }
 
-/* Grid background: binary/program flavor text, dim ice blue */
+/* Grid background: binary/program flavor text — fluctuating data stream */
 html.theme-tron #grid-container { position: relative; }
 html.theme-tron #grid-container::before {
   content: '01001010 01010111\A10110110 11001010\A\AUSER 42 // ACTIVE\AGRID SECTOR: 7-G\AIDENTITY DISC: ON\ACYCLES: 1,024,000\A\AEND OF LINE\A\A10110110 11001010\A01010111 00101101';
@@ -1092,8 +1162,13 @@ html.theme-tron #grid-container::before {
   line-height: 1.6;
   color: rgba(109,232,255,0.07);
   padding: 12px 14px 0;
+  animation: tr-data-fade 12s ease-in-out infinite;
 }
-/* Light sweep animation — a recognition beam crossing the Grid */
+@keyframes tr-data-fade {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.5; }
+}
+/* Dual recognition beam — sweeps twice per cycle */
 html.theme-tron #grid-container::after {
   content: '';
   position: absolute;
@@ -1102,25 +1177,29 @@ html.theme-tron #grid-container::after {
   pointer-events: none;
   background: linear-gradient(105deg, transparent 0% 35%, rgba(109,232,255,0.05) 50%, transparent 65% 100%);
   background-size: 300% 100%;
-  animation: tron-sweep 7s ease-in-out infinite;
+  animation: tr-sweep 14s ease-in-out infinite;
 }
-@keyframes tron-sweep {
+@keyframes tr-sweep {
   0%   { background-position: 200% 0; }
-  100% { background-position: -100% 0; }
+  45%  { background-position: -100% 0; }
+  50%  { background-position: 200% 0; }
+  95%  { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
 }
-html.theme-tron #app-grid   { position: relative; z-index: 1; }
-html.theme-tron #drop-hint  { z-index: 1; }
+html.theme-tron #app-grid   { position: relative; z-index: 2; }
+html.theme-tron #drop-hint  { z-index: 2; }
 
 /* Tiles */
-html.theme-tron .app-tile              { border-radius: 0; }
-html.theme-tron .app-tile:hover        { background: rgba(109,232,255,0.05); border-color: rgba(109,232,255,0.32); box-shadow: 0 0 12px rgba(109,232,255,0.08); }
+html.theme-tron .app-tile              { border-radius: 0; outline: 1px solid transparent; transition: background 0.12s, border-color 0.12s, box-shadow 0.12s, outline-color 0.1s; }
+html.theme-tron .app-tile:hover        { background: rgba(109,232,255,0.05); border-color: rgba(109,232,255,0.32); box-shadow: 0 0 12px rgba(109,232,255,0.08); outline-color: rgba(109,232,255,0.15); }
 html.theme-tron .app-tile:active       { background: rgba(109,232,255,0.10); transform: none; }
 html.theme-tron .app-tile:hover .tile-icon {
   filter: drop-shadow(0 0 7px rgba(109,232,255,.60)) drop-shadow(0 2px 4px rgba(0,0,0,.8));
 }
 
 /* Edit bar — identity disc orange */
-html.theme-tron #edit-bar             { background: rgba(255,136,0,0.05); border-top-color: rgba(255,136,0,0.30); }
+html.theme-tron #edit-bar             { position: relative; background: rgba(255,136,0,0.05); border-top-color: rgba(255,136,0,0.30); }
+html.theme-tron #edit-bar::after      { content: 'END OF LINE'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Consolas', monospace; font-size: 8px; letter-spacing: 3px; color: rgba(255,136,0,0.20); pointer-events: none; }
 html.theme-tron .edit-label           { color: var(--accent-m); text-shadow: var(--glow-m); }
 html.theme-tron #btn-done-edit        { color: var(--accent-m); border-color: rgba(255,136,0,0.35); }
 html.theme-tron #btn-done-edit:hover  { background: rgba(255,136,0,0.09); border-color: var(--accent-m); box-shadow: var(--glow-m); }
@@ -1146,6 +1225,10 @@ html.theme-tron .rename-input         { border-radius: 0; background: rgba(109,2
 html.theme-tron #update-banner        { background: rgba(255,136,0,0.05); border-top-color: rgba(255,136,0,0.28); }
 html.theme-tron .skin-btn             { border-radius: 0; }
 html.theme-tron .skin-btn.active      { background: rgba(109,232,255,0.14); }
+
+/* Overlay: circuit panel framing */
+html.theme-tron .overlay-panel  { border-left: 2px solid rgba(109,232,255,0.3); border-top: 1px solid rgba(109,232,255,0.2); }
+html.theme-tron .overlay-title  { font-family: 'Consolas', monospace; letter-spacing: 4px; border-bottom: 1px solid rgba(109,232,255,0.25); }
 
 /* ══ LCARS theme ══════════════════════════════════════════════════════════════════
    Starfleet Library Computer Access and Retrieval System, 24th century.
@@ -1191,9 +1274,11 @@ html.theme-lcars .overlay {
   border-top: 5px solid #ff9900;
 }
 
-/* Starfield background — quiet stars in deep space */
+/* Starfield + nebula clouds in deep space */
 html.theme-lcars #app::after {
   background:
+    radial-gradient(ellipse 40% 20% at 60% 50%, rgba(204,136,255,0.025) 0%, transparent 100%),
+    radial-gradient(ellipse 30% 15% at 30% 65%, rgba(255,153,0,0.020) 0%, transparent 100%),
     radial-gradient(1px 1px at 8% 12%, rgba(255,255,255,0.50) 0%, transparent 100%),
     radial-gradient(1px 1px at 22% 7%, rgba(255,255,255,0.35) 0%, transparent 100%),
     radial-gradient(1px 1px at 38% 20%, rgba(255,255,255,0.45) 0%, transparent 100%),
@@ -1254,7 +1339,7 @@ html.theme-lcars .accent          { color: var(--accent-m); }
 html.theme-lcars #header-version  { color: rgba(255,153,0,0.50); }
 
 /* Grid background: Starfleet status readout, right-aligned */
-html.theme-lcars #grid-container { position: relative; }
+html.theme-lcars #grid-container { position: relative; background: linear-gradient(180deg, rgba(255,153,0,0.02) 0%, transparent 40%); }
 html.theme-lcars #grid-container::before {
   content: 'SHIELDS: NOMINAL\AWARP CORE: STABLE\ASENSORS: ACTIVE\AALL SYSTEMS: ONLINE\AFEDERATION STANDARD';
   position: absolute;
@@ -1270,7 +1355,7 @@ html.theme-lcars #grid-container::before {
   text-align: right;
   padding: 12px 16px 0 0;
 }
-/* LCARS processing sweep — a horizontal bar that scans across the grid */
+/* LCARS processing sweep — tri-color LCARS bar */
 html.theme-lcars #grid-container::after {
   content: '';
   position: absolute;
@@ -1278,16 +1363,15 @@ html.theme-lcars #grid-container::after {
   left: 14px;
   right: 14px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #ff9900, transparent);
+  background: linear-gradient(90deg, transparent 0%, #cc88ff 15%, #ff9900 50%, #ffcc44 85%, transparent 100%);
   background-size: 200% 100%;
-  animation: lcars-scan 4s ease-in-out infinite;
-  opacity: 0.25;
+  animation: lc-scan 6s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
 }
-@keyframes lcars-scan {
-  0%, 100% { background-position: 200% 0; }
-  50%       { background-position: -100% 0; }
+@keyframes lc-scan {
+  0%,100% { background-position: 200% 0; opacity: 0.15; }
+  50%     { background-position: -100% 0; opacity: 0.30; }
 }
 html.theme-lcars #app-grid   { position: relative; z-index: 1; }
 html.theme-lcars #drop-hint  { z-index: 1; }
@@ -1298,7 +1382,8 @@ html.theme-lcars .app-tile:active { background: rgba(255,153,0,0.14); }
 html.theme-lcars .app-tile:hover .tile-icon { filter: none; }
 
 /* Edit bar */
-html.theme-lcars #edit-bar    { background: rgba(204,136,255,0.07); border-top: 2px solid rgba(204,136,255,0.45); }
+html.theme-lcars #edit-bar    { position: relative; background: rgba(204,136,255,0.07); border-top: 2px solid rgba(204,136,255,0.45); }
+html.theme-lcars #edit-bar::after { content: 'COMPUTER: READY'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Arial', sans-serif; font-weight: bold; font-size: 8px; letter-spacing: 2px; color: rgba(255,153,0,0.18); pointer-events: none; }
 html.theme-lcars .edit-label  { color: var(--accent-m); text-shadow: none; }
 
 /* Buttons: flat LCARS pill shape, no glow */
@@ -1313,8 +1398,11 @@ html.theme-lcars .btn-remove         { border-radius: 50%; background: rgba(204,
 html.theme-lcars .btn-remove:hover   { background: var(--accent-m); box-shadow: none; }
 
 /* Overlay */
-html.theme-lcars .overlay-title      { border-bottom: 2px solid #ff9900; text-shadow: none; }
+html.theme-lcars .overlay-panel      { border-left: 14px solid #ff9900; border-top: 5px solid #ff9900; background: rgba(2,0,8,0.99); }
+html.theme-lcars .overlay-title      { font-family: 'Arial', sans-serif; font-weight: bold; letter-spacing: 3px; color: #ff9900; text-shadow: none; border-bottom: 3px solid #ff9900; padding-bottom: 8px; }
 html.theme-lcars .overlay-footer     { border-top-color: rgba(255,153,0,0.25); }
+html.theme-lcars .picker-panel       { border-left: 14px solid #ff9900; border-top: 5px solid #ff9900; }
+html.theme-lcars .setting-row label  { color: rgba(255,153,0,0.6); letter-spacing: 2px; font-weight: bold; }
 
 /* Picker */
 html.theme-lcars .picker-item:hover    { background: rgba(255,153,0,0.07); }
@@ -1322,6 +1410,7 @@ html.theme-lcars .picker-item:active   { background: rgba(255,153,0,0.14); }
 html.theme-lcars .picker-search        { background: rgba(255,153,0,0.06); }
 html.theme-lcars .picker-search:focus  { border-color: #ff9900; box-shadow: none; }
 html.theme-lcars .picker-icon-placeholder { background: rgba(255,153,0,0.08); }
+html.theme-lcars .picker-loading       { color: #ff9900; font-family: 'Arial', sans-serif; font-weight: bold; letter-spacing: 3px; }
 
 /* Misc */
 html.theme-lcars .drop-hint-inner  { border-color: rgba(255,153,0,0.25); border-style: solid; }
@@ -1361,9 +1450,9 @@ html.theme-pip-boy #app {
 html.theme-pip-boy #app::before {
   clip-path: none;
   border-radius: 8px;
-  animation: pip-border-pulse 4s ease-in-out infinite;
+  animation: pb-border-pulse 4s ease-in-out infinite;
 }
-@keyframes pip-border-pulse {
+@keyframes pb-border-pulse {
   0%, 100% { border-color: rgba(146,200,0,0.20); }
   50%       { border-color: rgba(146,200,0,0.48); }
 }
@@ -1405,9 +1494,9 @@ html.theme-pip-boy #title {
   font-weight: 900;
   letter-spacing: 3px;
   text-shadow: var(--glow-c);
-  animation: pip-boot 7s ease-in-out infinite;
+  animation: pb-boot 7s ease-in-out infinite;
 }
-@keyframes pip-boot {
+@keyframes pb-boot {
   0%, 84%, 100% { opacity: 1;    text-shadow: var(--glow-c); }
   87%           { opacity: 0.45; text-shadow: none; }
   90%           { opacity: 1;    text-shadow: var(--glow-c), 0 0 28px rgba(146,200,0,.75); }
@@ -1416,7 +1505,7 @@ html.theme-pip-boy #title {
 }
 
 /* Grid background: S.P.E.C.I.A.L. stats — right-aligned, Arial Black, very dim */
-html.theme-pip-boy #grid-container { position: relative; }
+html.theme-pip-boy #grid-container { position: relative; background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(146,200,0,0.03) 0%, transparent 70%); }
 html.theme-pip-boy #grid-container::before {
   content: 'S.P.E.C.I.A.L.\A\ASTR  10\APER   8\AEND   9\ACHA   6\AINT   7\AAGI   8\ALCK   5\A\AWAR NEVER\ACHANGES.';
   position: absolute;
@@ -1431,7 +1520,7 @@ html.theme-pip-boy #grid-container::before {
   text-align: right;
   padding: 12px 16px 0 0;
 }
-/* Vault door circle — concentric rings, centered behind the grid */
+/* Vault door — slowly rotating concentric rings */
 html.theme-pip-boy #grid-container::after {
   content: '';
   position: absolute;
@@ -1441,14 +1530,21 @@ html.theme-pip-boy #grid-container::after {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 1.5px solid rgba(146,200,0,0.06);
+  border: 2px solid rgba(146,200,0,0.08);
   box-shadow:
-    0 0 0 12px rgba(146,200,0,0.04),
-    0 0 0 24px rgba(146,200,0,0.03),
-    0 0 0 40px rgba(146,200,0,0.02),
-    0 0 0 60px rgba(146,200,0,0.01);
+    0 0 0 8px rgba(146,200,0,0.05),
+    0 0 0 16px rgba(146,200,0,0.04),
+    0 0 0 28px rgba(146,200,0,0.03),
+    0 0 0 44px rgba(146,200,0,0.02),
+    0 0 0 64px rgba(146,200,0,0.015),
+    0 0 0 88px rgba(146,200,0,0.01);
   pointer-events: none;
   z-index: 0;
+  animation: pb-vault-spin 60s linear infinite;
+}
+@keyframes pb-vault-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 html.theme-pip-boy #app-grid   { position: relative; z-index: 1; }
 html.theme-pip-boy #drop-hint  { z-index: 1; }
@@ -1461,7 +1557,8 @@ html.theme-pip-boy .app-tile:hover .tile-icon {
 }
 
 /* Edit bar */
-html.theme-pip-boy #edit-bar   { background: rgba(90,144,0,0.07); border-top: 2px solid rgba(90,144,0,0.30); }
+html.theme-pip-boy #edit-bar   { position: relative; background: rgba(90,144,0,0.07); border-top: 2px solid rgba(90,144,0,0.30); }
+html.theme-pip-boy #edit-bar::after { content: 'WAR NEVER CHANGES'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Arial Black', sans-serif; font-size: 7px; letter-spacing: 2px; color: rgba(146,200,0,0.15); pointer-events: none; }
 
 /* Buttons */
 html.theme-pip-boy button:hover  { background: rgba(146,200,0,0.09); }
@@ -1472,6 +1569,7 @@ html.theme-pip-boy .picker-item:hover    { background: rgba(146,200,0,0.06); }
 html.theme-pip-boy .picker-item:active   { background: rgba(146,200,0,0.12); }
 html.theme-pip-boy .picker-search        { background: rgba(146,200,0,0.06); }
 html.theme-pip-boy .picker-icon-placeholder { background: rgba(146,200,0,0.08); }
+html.theme-pip-boy .picker-loading       { font-family: 'Arial Black', sans-serif; letter-spacing: 2px; color: rgba(146,200,0,0.6); }
 
 /* Misc */
 html.theme-pip-boy .drop-hint-inner  { border-color: rgba(146,200,0,0.18); border-radius: 6px; }
@@ -1479,6 +1577,10 @@ html.theme-pip-boy .hint-sub         { color: rgba(146,200,0,0.22); }
 html.theme-pip-boy .rename-input     { background: rgba(146,200,0,0.07); border-radius: 6px; }
 html.theme-pip-boy #update-banner    { background: rgba(202,232,64,0.06); border-top-color: rgba(202,232,64,0.32); }
 html.theme-pip-boy .skin-btn.active  { background: rgba(146,200,0,0.15); }
+
+/* Overlay: vault terminal */
+html.theme-pip-boy .overlay-panel  { border-radius: 6px; background: rgba(2,6,0,0.98); border: 2px solid rgba(146,200,0,0.24); }
+html.theme-pip-boy .overlay-title  { font-family: 'Arial Black', 'Impact', sans-serif; letter-spacing: 3px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 2px solid rgba(146,200,0,0.24); }
 
 /* ══ DUNE theme ══════════════════════════════════════════════════════════════════
    Arrakis. The spice must flow. Architecture of sand and ancient shadow.
@@ -1510,20 +1612,26 @@ html.theme-dune #app {
 html.theme-dune #app::before {
   clip-path: none;
   border-radius: 1px;
-  animation: dune-breathe 14s ease-in-out infinite;
+  animation: du-breathe 14s ease-in-out infinite;
 }
-@keyframes dune-breathe {
+@keyframes du-breathe {
   0%, 100% { border-color: rgba(200,136,64,0.10); }
   50%       { border-color: rgba(200,136,64,0.24); }
 }
 html.theme-dune .overlay { clip-path: none; border-radius: 1px; }
 
-/* Sand texture — angled gradients creating grain, no scanlines */
+/* Sand texture — angled gradients + horizon line + Arrakis starfield hints */
 html.theme-dune #app::after {
   background:
     linear-gradient(168deg, rgba(200,136,64,0.04) 0%, transparent 40%),
     linear-gradient(12deg, rgba(144,96,48,0.05) 0%, transparent 50%),
     linear-gradient(195deg, rgba(200,136,64,0.03) 0%, transparent 30%),
+    linear-gradient(180deg, transparent 58%, rgba(200,136,64,0.04) 60%, transparent 62%),
+    radial-gradient(1px 1px at 15% 18%, rgba(232,220,190,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 72% 12%, rgba(232,220,190,0.12) 0%, transparent 100%),
+    radial-gradient(1px 1px at 43% 8%, rgba(232,220,190,0.10) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 22%, rgba(232,220,190,0.14) 0%, transparent 100%),
+    radial-gradient(1px 1px at 6% 35%, rgba(232,220,190,0.08) 0%, transparent 100%),
     radial-gradient(ellipse 100% 60% at 50% 100%, rgba(200,136,64,0.07) 0%, transparent 100%),
     radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,0,0,0.25) 0%, transparent 100%);
   animation: none;
@@ -1538,6 +1646,11 @@ html.theme-dune #header::before {
   background: var(--accent-c);
   box-shadow: none;
   opacity: 0.65;
+  animation: du-bar-breathe 16s ease-in-out infinite;
+}
+@keyframes du-bar-breathe {
+  0%,100% { opacity: 0.65; }
+  50%     { opacity: 0.35; }
 }
 html.theme-dune #header::after {
   content: 'ARRAKIS  //  DUNE  //  DESERT PLANET';
@@ -1562,16 +1675,16 @@ html.theme-dune #title {
   letter-spacing: 6px;
   color: var(--accent-c);
   text-shadow: none;
-  animation: dune-breath 16s ease-in-out infinite;
+  animation: du-breath 16s ease-in-out infinite;
 }
 html.theme-dune .accent { color: var(--accent-y); }
-@keyframes dune-breath {
+@keyframes du-breath {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.70; }
 }
 
-/* Grid background: Fremen scripture — large italic serif, right-aligned, very dim */
-html.theme-dune #grid-container { position: relative; }
+/* Grid background: Fremen scripture — slowly rising like a mirage */
+html.theme-dune #grid-container { position: relative; background: radial-gradient(ellipse 80% 30% at 50% 100%, rgba(200,136,64,0.04) 0%, transparent 100%); }
 html.theme-dune #grid-container::before {
   content: 'THE SPICE\AMUST FLOW\A\AFEAR IS THE\AMIND-KILLER\A\AARRAKIS\ADUNE\A\ASHAI-HULUD\AAWAKENS';
   position: absolute;
@@ -1586,6 +1699,11 @@ html.theme-dune #grid-container::before {
   color: rgba(200,136,64,0.045);
   text-align: right;
   padding: 10px 14px 0 0;
+  animation: du-quote-breathe 20s ease-in-out infinite;
+}
+@keyframes du-quote-breathe {
+  0%,100% { opacity: 1; transform: translateY(0); }
+  50%     { opacity: 0.6; transform: translateY(-4px); }
 }
 /* Sand dune silhouette — warm radial shapes at the bottom edge */
 html.theme-dune #grid-container::after {
@@ -1605,13 +1723,14 @@ html.theme-dune #app-grid   { position: relative; z-index: 1; }
 html.theme-dune #drop-hint  { z-index: 1; }
 
 /* Tiles: no glow — warmth without fire */
-html.theme-dune .app-tile:hover  { background: rgba(200,136,64,0.05); border-color: rgba(200,136,64,0.22); box-shadow: none; }
+html.theme-dune .app-tile:hover  { background: rgba(200,136,64,0.05); border-color: rgba(200,136,64,0.22); box-shadow: none; border-top: 1px solid rgba(200,136,64,0.30); }
 html.theme-dune .app-tile:active { background: rgba(200,136,64,0.10); transform: none; }
 html.theme-dune .app-tile:hover .tile-icon { filter: none; }
 html.theme-dune .tile-label      { letter-spacing: 0.6px; }
 
 /* Edit bar */
-html.theme-dune #edit-bar  { background: rgba(144,96,48,0.05); border-top-color: rgba(144,96,48,0.20); }
+html.theme-dune #edit-bar  { position: relative; background: rgba(144,96,48,0.05); border-top-color: rgba(144,96,48,0.20); }
+html.theme-dune #edit-bar::after { content: 'SHAI-HULUD APPROACHES'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Georgia', serif; font-style: italic; font-size: 7px; letter-spacing: 2px; color: rgba(200,136,64,0.14); pointer-events: none; }
 html.theme-dune .edit-label { color: var(--accent-m); text-shadow: none; }
 
 /* Buttons: muted, no glow on hover */
@@ -1624,6 +1743,7 @@ html.theme-dune .picker-item:active   { background: rgba(200,136,64,0.10); }
 html.theme-dune .picker-search        { background: rgba(200,136,64,0.05); }
 html.theme-dune .picker-search:focus  { border-color: rgba(200,136,64,0.36); box-shadow: none; }
 html.theme-dune .picker-icon-placeholder { background: rgba(200,136,64,0.07); }
+html.theme-dune .picker-loading       { font-family: 'Georgia', serif; font-style: italic; color: rgba(200,136,64,0.45); }
 
 /* Misc */
 html.theme-dune .drop-hint-inner  { border-color: rgba(200,136,64,0.14); }
@@ -1631,6 +1751,10 @@ html.theme-dune .hint-sub         { color: rgba(200,136,64,0.18); }
 html.theme-dune .rename-input     { background: rgba(200,136,64,0.06); box-shadow: none; }
 html.theme-dune #update-banner    { background: rgba(232,208,160,0.04); border-top-color: rgba(232,208,160,0.18); }
 html.theme-dune .skin-btn.active  { background: rgba(200,136,64,0.14); box-shadow: none; }
+
+/* Overlay: desert monastery weight */
+html.theme-dune .overlay-panel  { background: rgba(12,7,2,0.99); border: 1px solid rgba(200,136,64,0.10); }
+html.theme-dune .overlay-title  { font-family: 'Georgia', serif; font-style: italic; letter-spacing: 4px; color: var(--accent-c); text-shadow: none; border-bottom: 1px solid rgba(200,136,64,0.12); font-weight: normal; }
 
 /* ══ X-FILES theme ════════════════════════════════════════════════════════════════
    FBI Special Projects Division. Classification: EYES ONLY.
@@ -1674,16 +1798,20 @@ html.theme-x-files #app::before {
   95%           { border-color: rgba(0,176,160,0.36); }
 }
 
-html.theme-x-files .overlay { clip-path: none; border-radius: 2px; }
+html.theme-x-files .overlay { clip-path: none; border-radius: 2px; border-top: 3px solid rgba(192,40,40,0.35); }
 
-/* Subtle scan interference */
+/* Scan interference + vertical frequency noise — whole-screen TV flicker */
 html.theme-x-files #app::after {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0px, transparent 3px,
-    rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
-  );
-  animation: none;
+  background:
+    repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 80px, rgba(0,176,160,0.008) 80px, rgba(0,176,160,0.008) 81px);
+  animation: xf-flicker 13s step-start infinite;
+}
+@keyframes xf-flicker {
+  0%,94%,100% { opacity: 1; }
+  95%         { opacity: 0.85; }
+  96%         { opacity: 1; }
+  97%         { opacity: 0.92; }
 }
 
 /* Header: classified document style */
@@ -1724,9 +1852,9 @@ html.theme-x-files .accent { color: var(--accent-m); text-shadow: var(--glow-m);
 }
 
 /* Grid background: CLASSIFIED watermark + case file data */
-html.theme-x-files #grid-container { position: relative; }
+html.theme-x-files #grid-container { position: relative; background: radial-gradient(ellipse 15% 40% at 80% 0%, rgba(0,176,160,0.04) 0%, transparent 100%); }
 
-/* Large CLASSIFIED watermark — diagonal red stamp behind all tiles */
+/* Large CLASSIFIED watermark — diagonal red stamp, pulses like it's being applied */
 html.theme-x-files #grid-container::before {
   content: 'CLASSIFIED';
   position: absolute;
@@ -1741,11 +1869,17 @@ html.theme-x-files #grid-container::before {
   z-index: 0;
   white-space: nowrap;
   font-family: 'Courier New', monospace;
+  animation: xf-stamp-appear 25s ease-in-out infinite;
+}
+@keyframes xf-stamp-appear {
+  0%,60%,100% { opacity: 0.05; }
+  70%,90%     { opacity: 0.08; }
+  80%         { opacity: 0.03; }
 }
 
-/* Scattered case file text — left-aligned, tiny Courier, dim teal */
+/* Scattered case file text — data stream corrupts occasionally */
 html.theme-x-files #grid-container::after {
-  content: 'CASE: X-73841\AAGENT: MULDER, F.\ACLASSIFICATION:\AEYES ONLY\A\ATHE TRUTH\AIS OUT THERE\A\ATRUST NO ONE\A\ACOORDINATES:\A48.2N  122.4W\A\AI WANT TO\ABELIEVE';
+  content: 'CASE: X-73841\AAGENT: MULDER, F.\ACLASSIFICATION:\AEYES ONLY\A\ATHE TRUTH\AIS OUT THERE\A\ATRUST NO ONE\A\ACOORDINATES:\A48.2N  122.4W\A\AI WANT TO\ABELIEVE\A\ACASE STATUS:\AOPEN';
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -1757,6 +1891,13 @@ html.theme-x-files #grid-container::after {
   color: rgba(0,176,160,0.10);
   text-align: left;
   padding: 10px 0 0 12px;
+  animation: xf-data-flicker 17s step-start infinite;
+}
+@keyframes xf-data-flicker {
+  0%,88%,100% { opacity: 1; }
+  90%         { opacity: 0.5; }
+  92%         { opacity: 1; }
+  95%         { opacity: 0.7; }
 }
 
 /* app-grid must float above BOTH pseudo-elements */
@@ -1771,7 +1912,8 @@ html.theme-x-files .app-tile:hover .tile-icon {
 }
 
 /* Edit bar — classified red */
-html.theme-x-files #edit-bar             { background: rgba(192,40,40,0.05); border-top-color: rgba(192,40,40,0.26); }
+html.theme-x-files #edit-bar             { position: relative; background: rgba(192,40,40,0.05); border-top-color: rgba(192,40,40,0.26); }
+html.theme-x-files #edit-bar::after      { content: 'TRUST NO ONE'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Courier New', monospace; font-size: 8px; letter-spacing: 3px; color: rgba(192,40,40,0.20); pointer-events: none; }
 html.theme-x-files .edit-label           { color: var(--accent-m); text-shadow: var(--glow-m); }
 html.theme-x-files #btn-done-edit        { color: var(--accent-m); border-color: rgba(192,40,40,0.32); }
 html.theme-x-files #btn-done-edit:hover  { background: rgba(192,40,40,0.09); border-color: var(--accent-m); box-shadow: var(--glow-m); }
@@ -1790,6 +1932,7 @@ html.theme-x-files .picker-item:active   { background: rgba(0,176,160,0.12); }
 html.theme-x-files .picker-search        { background: rgba(0,176,160,0.05); }
 html.theme-x-files .picker-search:focus  { border-color: rgba(0,176,160,0.42); box-shadow: var(--glow-c); }
 html.theme-x-files .picker-icon-placeholder { background: rgba(0,176,160,0.07); }
+html.theme-x-files .picker-loading       { font-family: 'Courier New', monospace; letter-spacing: 3px; color: rgba(0,176,160,0.5); }
 
 /* Misc */
 html.theme-x-files .drop-hint-inner  { border-color: rgba(0,176,160,0.16); }
@@ -1797,6 +1940,10 @@ html.theme-x-files .hint-sub         { color: rgba(0,176,160,0.22); }
 html.theme-x-files .rename-input     { background: rgba(0,176,160,0.06); }
 html.theme-x-files #update-banner    { background: rgba(138,172,200,0.05); border-top-color: rgba(138,172,200,0.22); }
 html.theme-x-files .skin-btn.active  { background: rgba(0,176,160,0.14); }
+
+/* Overlay: government file dark panel */
+html.theme-x-files .overlay-panel  { background: rgba(4,6,16,0.99); border: 1px solid rgba(0,176,160,0.18); border-top: 3px solid rgba(192,40,40,0.4); }
+html.theme-x-files .overlay-title  { font-family: 'Courier New', monospace; letter-spacing: 3px; color: var(--accent-c); border-bottom: 1px solid rgba(0,176,160,0.22); }
 
 /* ══ CYBERPUNK theme ══════════════════════════════════════════════════════════════
    Night City neon. The base stylesheet IS the cyberpunk theme.
