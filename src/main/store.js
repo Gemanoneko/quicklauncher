@@ -23,6 +23,7 @@ class Store {
       settings: {
         iconSize: 64,
         startWithWindows: true,
+        theme: 'cyberpunk',
         windowPosition: null
       }
     };

@@ -6,7 +6,6 @@ const { version: APP_VERSION } = require('../../package.json');
 let apps = [];
 let settings = {};
 let editMode = false;
-let pendingUpdateReady = false;
 let installedApps = [];
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
@@ -26,19 +25,23 @@ async function init() {
 async function refreshMissingIcons() {
   const missing = apps.filter(a => a.path && (a.path.startsWith('shell:') || /^[a-z][a-z0-9+.-]*:\/\//i.test(a.path)) && !a.iconDataUrl);
   if (missing.length === 0) return;
-  const installed = await ipcRenderer.invoke('get-installed-apps');
-  let changed = false;
-  for (const appItem of missing) {
-    const appId = appItem.path.startsWith('shell:') ? appItem.path.replace('shell:AppsFolder\\', '') : appItem.path;
-    const match = installed.find(i => i.appId === appId);
-    if (match && match.iconDataUrl) {
-      appItem.iconDataUrl = match.iconDataUrl;
-      changed = true;
+  try {
+    const installed = await ipcRenderer.invoke('get-installed-apps');
+    let changed = false;
+    for (const appItem of missing) {
+      const appId = appItem.path.startsWith('shell:') ? appItem.path.replace('shell:AppsFolder\\', '') : appItem.path;
+      const match = installed.find(i => i.appId === appId);
+      if (match && match.iconDataUrl) {
+        appItem.iconDataUrl = match.iconDataUrl;
+        changed = true;
+      }
     }
-  }
-  if (changed) {
-    await saveApps();
-    renderGrid();
+    if (changed) {
+      await saveApps();
+      renderGrid();
+    }
+  } catch (e) {
+    console.error('refreshMissingIcons failed:', e);
   }
 }
 
@@ -260,7 +263,12 @@ async function openInstalledAppsPicker() {
   loadingEl.classList.remove('hidden');
   pickerEl.classList.remove('hidden');
 
-  installedApps = await ipcRenderer.invoke('get-installed-apps');
+  try {
+    installedApps = await ipcRenderer.invoke('get-installed-apps');
+  } catch (e) {
+    console.error('get-installed-apps failed:', e);
+    installedApps = [];
+  }
   loadingEl.classList.add('hidden');
   renderPickerList(installedApps);
   searchEl.focus();
@@ -299,15 +307,19 @@ function renderPickerList(items) {
     el.appendChild(nameEl);
 
     el.addEventListener('click', async () => {
-      const appItem = await ipcRenderer.invoke('add-app-from-appid', {
-        name: item.name,
-        appId: item.appId,
-        iconDataUrl: item.iconDataUrl
-      });
-      if (appItem && !apps.find(a => a.path === appItem.path)) {
-        apps.push(appItem);
-        await saveApps();
-        renderGrid();
+      try {
+        const appItem = await ipcRenderer.invoke('add-app-from-appid', {
+          name: item.name,
+          appId: item.appId,
+          iconDataUrl: item.iconDataUrl
+        });
+        if (appItem && !apps.find(a => a.path === appItem.path)) {
+          apps.push(appItem);
+          await saveApps();
+          renderGrid();
+        }
+      } catch (e) {
+        console.error('Failed to add app from picker:', e);
       }
       document.getElementById('apps-picker').classList.add('hidden');
     });
@@ -357,7 +369,6 @@ function setupUpdateListeners() {
   });
 
   ipcRenderer.on('update-ready', () => {
-    pendingUpdateReady = true;
     showUpdateBanner(
       'UPDATE READY — WILL INSTALL AND RESTART',
       [{ label: 'INSTALL NOW', action: 'install' }]
@@ -403,7 +414,6 @@ function showUpdateBanner(text, actions, autoDismissMs = 0) {
   dismissBtn.textContent = '✕';
   dismissBtn.addEventListener('click', () => {
     hideUpdateBanner();
-    pendingUpdateReady = false;
   });
   actionsEl.appendChild(dismissBtn);
 
