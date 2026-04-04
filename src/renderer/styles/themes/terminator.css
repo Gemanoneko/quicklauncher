@@ -246,3 +246,28 @@
     letter-spacing: 4px;
   }
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'SKYNET  //  TARGET: ACQUIRED  //  TERMINATE';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 8px; letter-spacing: 2px; color: rgba(255, 32, 0, 0.50);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THREAT LEVEL\AMAXIMUM\A\ATERMINATE\AWITH EXTREME\APREJUDICE\A\AHUMANS:\AHOSTILE\A\APRIORITY:\ATY1\A\ASKYNET\AONLINE';
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  padding: 10px 12px 0 0;
+  font-size: 9px; line-height: 1.6; text-align: right;
+  color: rgba(255, 32, 0, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'TARGET SELECTION MODE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 8px; letter-spacing: 2px; color: rgba(255, 32, 0, 0.40);
+  pointer-events: none; white-space: nowrap;
+}

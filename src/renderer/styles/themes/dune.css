@@ -201,3 +201,37 @@
   background: linear-gradient(180deg, #D4A020 0%, #C04000 100%);
   box-shadow: 0 0 6px rgba(200,144,80,.5);
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'ARRAKIS  //  DUNE  //  DESERT PLANET';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 136, 64, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE SPICE\AMUST FLOW\A\AFEAR IS THE\AMIND-KILLER\A\AARRAKIS\ADUNE\A\ASHAI-HULUD\AAWAKENS';
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  padding: 10px 12px 0 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 22px; line-height: 1.5; text-align: right;
+  color: rgba(200, 136, 64, 0.10); white-space: pre;
+  animation: du-breathe 7s ease-in-out infinite;
+}
+
+@keyframes du-breathe {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+#edit-bar::after {
+  content: 'SHAI-HULUD APPROACHES';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(200, 136, 64, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; letter-spacing: 6px; }

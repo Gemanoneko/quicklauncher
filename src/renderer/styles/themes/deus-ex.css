@@ -217,3 +217,31 @@
   clip-path: polygon(0 18px,18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px)) !important;
   border-left: 2px solid rgba(240,192,32,.35) !important;
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'SARIF INDUSTRIES  //  AUG v3.1  //  ONLINE';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-family: Impact, Arial, sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(212, 165, 32, 0.50);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'ILLUMINATI\A\AAUGMENT\AOR\AOBSOLETE\A\AADAM JENSEN\ADOSSIER\A\ACONSPIRACY\APROTOCOL\A  ACTIVE';
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  padding: 10px 12px 0 0;
+  font-family: Impact, Arial, sans-serif;
+  font-size: 11px; line-height: 1.6; text-align: right;
+  color: rgba(212, 165, 32, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'BREACH AUTHORIZED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Impact, Arial, sans-serif;
+  font-size: 8px; letter-spacing: 3px; color: rgba(212, 165, 32, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Impact, Arial, sans-serif; font-size: 12px; letter-spacing: 3px; }

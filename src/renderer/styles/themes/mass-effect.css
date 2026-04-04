@@ -198,3 +198,26 @@
 .overlay-panel {
   border-left: 3px solid rgba(192, 0, 28, 0.60) !important;
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'SSV NORMANDY  SR-2  ///  ALLIANCE';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-size: 8px; letter-spacing: 2px; color: rgba(0, 184, 236, 0.52);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'MASS RELAY\ANETWORK\A  ACTIVE\A\ACITADEL\ASTATION\A  ONLINE\A\ANORMANDY\ASYSTEMS\A  NOMINAL\A\ASPECTRE\ACLEARANCE';
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  padding: 10px 12px 0 0;
+  font-size: 8.5px; line-height: 1.6; text-align: right; letter-spacing: 2px;
+  color: rgba(0, 184, 236, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'MISSION LOADOUT';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-size: 8px; letter-spacing: 2px; color: rgba(192, 0, 28, 0.38);
+  pointer-events: none; white-space: nowrap;
+}

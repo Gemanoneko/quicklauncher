@@ -166,3 +166,32 @@
   border-radius: 16px;
   border: 1px solid rgba(255, 153, 0, 0.25);
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'STARDATE  47634.44';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-family: Arial, Helvetica, sans-serif; font-weight: bold;
+  font-size: 9px; letter-spacing: 3px; color: rgba(255, 153, 0, 0.60);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'SHIELDS: NOMINAL\AWARP CORE: STABLE\ASENSORS: ACTIVE\AO2: NOMINAL\AALL SYSTEMS: ONLINE\A\AFEDERATION\ASTANDARD';
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  padding: 10px 12px 0 0;
+  font-family: Arial, Helvetica, sans-serif; font-weight: bold;
+  font-size: 8px; line-height: 1.7; text-align: right;
+  color: rgba(255, 153, 0, 0.12); white-space: pre;
+  background: none;
+}
+
+#edit-bar::after {
+  content: 'COMPUTER: READY';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Arial, Helvetica, sans-serif; font-weight: bold;
+  font-size: 8px; letter-spacing: 2px; color: rgba(102, 204, 204, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Arial, Helvetica, sans-serif; font-weight: bold; }

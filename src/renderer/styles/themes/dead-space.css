@@ -194,3 +194,26 @@
     opacity: 0.93;
   }
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'RIG DIAGNOSTIC  //  USG ISHIMURA';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-size: 8px; letter-spacing: 2px; color: rgba(224, 104, 32, 0.50);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'NECROMORPH\AWARNING\A\AINTEGRITY:\ACRITICAL\A\AMAKE US\AWHOLE\A\ADELETE YOUR\AMARKERS\A\ASTASIS: LOW\AOXYGEN: LOW';
+  display: flex; align-items: flex-start; justify-content: flex-start;
+  padding: 10px 0 0 12px;
+  font-size: 9px; line-height: 1.6; text-align: left; font-weight: 600;
+  color: rgba(224, 104, 32, 0.12); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'STASIS MODULE ACTIVE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-size: 8px; letter-spacing: 2px; color: rgba(176, 0, 0, 0.45);
+  pointer-events: none; white-space: nowrap;
+}

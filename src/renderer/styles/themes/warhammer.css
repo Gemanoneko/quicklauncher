@@ -226,3 +226,31 @@
     opacity: 1;
   }
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'ADEPTUS MECHANICUS  //  OMNIS ARCANUM';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(200, 144, 10, 0.52);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE EMPEROR\APROTECTS\A\AFOR THE\AIMPERIUM\A\AOMNIS\AARCANUM\A\APURITY\ASEAL\AREQUIRED\A\AHERESY\ADETECTED';
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  padding: 10px 12px 0 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 9px; line-height: 1.6; text-align: right;
+  color: rgba(200, 144, 10, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'HERESY DETECTED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(139, 0, 0, 0.50);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: bold; letter-spacing: 5px; }

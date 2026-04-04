@@ -1,7 +1,7 @@
 {
   "name": "quicklauncher",
   "productName": "QuickLauncher",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Cyberpunk-themed desktop quick launcher",
   "main": "src/main/index.js",
   "scripts": {
@@ -27,7 +27,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },

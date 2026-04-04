@@ -170,3 +170,32 @@
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'MU-TH-UR 6000  ///  WEYLAND-YUTANI CORP.';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(27, 200, 27, 0.50);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'MU-TH-UR ONLINE\ACREW: 7 / 7\ACARGO: ORE\ADEST: EARTH (W-Y)\A\A> LV-426 APPROACH\A> PRIORITY ONE\A  OVERRIDE\A\A*** WARNING ***\ABIO-HZD CLASS A\ADANGER: EXTREME\ACREW EXPENDABLE\A\AALL PRIORITIES\ARECEDE';
+  display: flex; align-items: flex-start; justify-content: flex-start;
+  padding: 10px 0 0 12px;
+  font-size: 8px; line-height: 1.6; text-align: left;
+  color: rgba(27, 200, 27, 0.14); white-space: pre;
+  background: none;
+}
+
+#edit-bar::after {
+  content: 'CREW EXPENDABLE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-size: 8px; letter-spacing: 2px; color: rgba(27, 200, 27, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title::after {
+  content: '_';
+  animation: alien-blink 1.1s step-start infinite;
+}

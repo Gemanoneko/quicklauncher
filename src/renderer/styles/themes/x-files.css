@@ -196,3 +196,31 @@
   background: linear-gradient(180deg, #00B0A0 0%, rgba(0,176,160,.4) 100%);
   box-shadow: 0 0 6px rgba(0,176,160,.5);
 }
+
+/* ── Flavor content ────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'FBI  //  SPECIAL PROJECTS  //  EYES ONLY';
+  position: absolute; right: 90px; top: 50%; transform: translateY(-50%);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(192, 40, 40, 0.55);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'CASE: X-73841\AAGENT: MULDER, F.\ACLASSIFICATION:\AEYES ONLY\A\ATHE TRUTH\AIS OUT THERE\A\ATRUST NO ONE\A\AI WANT TO\ABELIEVE\A\ACASE STATUS:\AOPEN';
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  padding: 10px 12px 0 0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 8px; line-height: 1.6; text-align: right;
+  color: rgba(0, 176, 160, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'TRUST NO ONE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 8px; letter-spacing: 3px; color: rgba(192, 40, 40, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Courier New', Courier, monospace; }

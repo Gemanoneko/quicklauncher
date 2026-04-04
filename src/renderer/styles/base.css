@@ -339,6 +339,7 @@ button:active { background: var(--btn-active-bg); }
   background: var(--edit-bar-bg);
   border-top: 1px solid var(--edit-bar-border);
   flex-shrink: 0;
+  position: relative;
 }
 .edit-label  { font-size: 10px; letter-spacing: 2px; color: var(--edit-label-color); text-shadow: var(--edit-label-glow); }
 .edit-actions { display: flex; gap: 6px; }
