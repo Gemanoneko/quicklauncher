@@ -197,7 +197,7 @@
 /* ── Flavor content ────────────────────────────────────────────────────────── */
 #header::after {
   content: 'LOS ANGELES  2019';
-  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
   font-size: 9px; letter-spacing: 3px; color: rgba(224, 122, 0, 0.50);
   pointer-events: none; white-space: nowrap;

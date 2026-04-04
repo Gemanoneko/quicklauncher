@@ -250,7 +250,7 @@
 /* ── Flavor content ────────────────────────────────────────────────────────── */
 #header::after {
   content: 'SKYNET  //  TARGET: ACQUIRED  //  TERMINATE';
-  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Consolas, 'Courier New', monospace;
   font-size: 8px; letter-spacing: 2px; color: rgba(255, 32, 0, 0.50);
   pointer-events: none; white-space: nowrap;

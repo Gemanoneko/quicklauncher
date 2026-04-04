@@ -152,7 +152,7 @@
 /* ── Flavor content ──────────────────────────────────────────────────────────── */
 #header::after {
   content: 'PROVIDENCE  //  R\'LYEH ARCHIVES  //  DO NOT READ ALOUD';
-  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
   font-size: 8.5px; letter-spacing: 2px; color: rgba(80, 100, 170, 0.42);
   pointer-events: none; white-space: nowrap;
