@@ -107,16 +107,17 @@
   --drag-over-glow:       inset 0 0 22px rgba(109, 232, 255, 0.25);
 }
 
-/* ── Very faint blue scanlines overlay ────────────────────────────────────── */
+/* ── Hex game-grid overlay across entire app + scanlines ─────────────────── */
 #app::after {
   content: '';
   background:
+    /* TRON: Legacy hexagonal game-grid architecture — full app */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='52'%3E%3Cpolygon points='22,1 43,14 43,38 22,51 1,38 1,14' fill='none' stroke='rgba(109,232,255,0.038)' stroke-width='0.5'/%3E%3C/svg%3E"),
+    /* blue phosphor scanlines */
     repeating-linear-gradient(
       to bottom,
-      transparent 0px,
-      transparent 5px,
-      rgba(109, 232, 255, 0.022) 5px,
-      rgba(109, 232, 255, 0.022) 6px
+      transparent 0px, transparent 5px,
+      rgba(109, 232, 255, 0.018) 5px, rgba(109, 232, 255, 0.018) 6px
     );
   opacity: 1;
   pointer-events: none;
@@ -128,60 +129,21 @@
   box-shadow: 0 0 10px rgba(255, 127, 0, 0.7), 0 0 22px rgba(255, 127, 0, 0.3);
 }
 
-/* ── Circuit grid in grid area ────────────────────────────────────────────── */
+/* ── Circuit grid: node dots at intersections + edge glows + disc trace ───── */
 #grid-container::before {
   content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* vertical circuit lines */
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 63px,
-      rgba(109, 232, 255, 0.05) 63px,
-      rgba(109, 232, 255, 0.05) 64px
-    ),
-    /* horizontal circuit lines */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 63px,
-      rgba(109, 232, 255, 0.05) 63px,
-      rgba(109, 232, 255, 0.05) 64px
-    ),
-    /* top-edge blue glow band */
-    linear-gradient(
-      to bottom,
-      rgba(109, 232, 255, 0.06) 0px,
-      transparent 16px
-    ),
-    /* bottom-edge blue glow band */
-    linear-gradient(
-      to top,
-      rgba(109, 232, 255, 0.06) 0px,
-      transparent 16px
-    );
-}
-
-/* ── Subtle orange circuit traces (decorative) ────────────────────────────── */
-#grid-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    /* diagonal trace hints — very subtle */
-    repeating-linear-gradient(
-      45deg,
-      transparent 0px,
-      transparent 95px,
-      rgba(255, 127, 0, 0.025) 95px,
-      rgba(255, 127, 0, 0.025) 96px
-    );
+    /* glowing node dots at each circuit intersection */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Ccircle cx='0' cy='0' r='2.5' fill='rgba(109,232,255,0.18)'/%3E%3Ccircle cx='64' cy='0' r='2.5' fill='rgba(109,232,255,0.18)'/%3E%3Ccircle cx='0' cy='64' r='2.5' fill='rgba(109,232,255,0.18)'/%3E%3Ccircle cx='64' cy='64' r='2.5' fill='rgba(109,232,255,0.18)'/%3E%3Cline x1='0' y1='0' x2='64' y2='0' stroke='rgba(109,232,255,0.06)' stroke-width='0.5'/%3E%3Cline x1='0' y1='64' x2='64' y2='64' stroke='rgba(109,232,255,0.06)' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='0' y2='64' stroke='rgba(109,232,255,0.06)' stroke-width='0.5'/%3E%3Cline x1='64' y1='0' x2='64' y2='64' stroke='rgba(109,232,255,0.06)' stroke-width='0.5'/%3E%3C/svg%3E"),
+    /* identity disc diagonal trace */
+    repeating-linear-gradient(45deg, transparent 0px, transparent 95px, rgba(255,127,0,0.028) 95px, rgba(255,127,0,0.028) 96px),
+    /* top-edge programme glow */
+    linear-gradient(to bottom, rgba(109,232,255,0.09) 0px, transparent 22px),
+    /* bottom-edge End of Line glow */
+    linear-gradient(to top, rgba(109,232,255,0.09) 0px, transparent 22px),
+    /* data disc center radial */
+    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(109,232,255,0.028) 0%, transparent 70%);
 }
 
 /* ── Title slow blue pulse ────────────────────────────────────────────────── */

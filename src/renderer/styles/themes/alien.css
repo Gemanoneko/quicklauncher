@@ -107,19 +107,27 @@
   --drag-over-glow:       inset 0 0 20px rgba(27, 200, 27, 0.2);
 }
 
-/* ── Heavy CRT scanlines overlay ──────────────────────────────────────────── */
+/* ── Heavy CRT scanlines ─────────────────────────────────────────────────── */
 #app::after {
   content: '';
   background:
     repeating-linear-gradient(
       to bottom,
-      transparent 0px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.5) 2px,
-      rgba(0, 0, 0, 0.5) 3px
+      transparent 0px, transparent 2px,
+      rgba(0, 0, 0, 0.52) 2px, rgba(0, 0, 0, 0.52) 3px
     );
   opacity: 1;
   pointer-events: none;
+}
+
+/* ── Bio-organic border pulse: slow, like a xenomorph heartbeat ──────────── */
+#app { animation: alien-bio-pulse 3.2s ease-in-out infinite; }
+@keyframes alien-bio-pulse {
+  0%,  45% { box-shadow: 0 0 0 1px rgba(27,200,27,0.22), inset 0 0 18px rgba(27,200,27,0.04); }
+  50%       { box-shadow: 0 0 0 1px rgba(27,200,27,0.55), inset 0 0 30px rgba(27,200,27,0.09); }
+  52%       { box-shadow: 0 0 0 1px rgba(27,200,27,0.18), inset 0 0 16px rgba(27,200,27,0.03); }
+  60%       { box-shadow: 0 0 0 1px rgba(27,200,27,0.48), inset 0 0 26px rgba(27,200,27,0.08); }
+  65%, 100% { box-shadow: 0 0 0 1px rgba(27,200,27,0.22), inset 0 0 18px rgba(27,200,27,0.04); }
 }
 
 /* ── Header bright phosphor accent bar ────────────────────────────────────── */
@@ -129,40 +137,36 @@
   width: 3px;
 }
 
-/* ── WEYLAND-YUTANI watermark + crosshatch grid ───────────────────────────── */
+/* ── Motion tracker: concentric rings + sweeping arm, rotates on its axis ─── */
 #grid-container::before {
-  content: 'WEYLAND-YUTANI CORP';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 22px;
-  font-weight: bold;
-  letter-spacing: 6px;
-  color: rgba(27, 200, 27, 0.04);
-  text-align: center;
-  white-space: nowrap;
-  transform: rotate(-30deg);
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* subtle crosshatch */
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 31px,
-      rgba(27, 200, 27, 0.03) 31px,
-      rgba(27, 200, 27, 0.03) 32px
+    /* ring 1 — innermost */
+    radial-gradient(circle at 50% 50%, transparent 53px, rgba(27,200,27,0.08) 54px, rgba(27,200,27,0.08) 56px, transparent 57px),
+    /* ring 2 */
+    radial-gradient(circle at 50% 50%, transparent 103px, rgba(27,200,27,0.07) 104px, rgba(27,200,27,0.07) 106px, transparent 107px),
+    /* ring 3 */
+    radial-gradient(circle at 50% 50%, transparent 153px, rgba(27,200,27,0.055) 154px, rgba(27,200,27,0.055) 156px, transparent 157px),
+    /* ring 4 — outermost */
+    radial-gradient(circle at 50% 50%, transparent 203px, rgba(27,200,27,0.04) 204px, rgba(27,200,27,0.04) 206px, transparent 207px),
+    /* sweep arm — bright leading edge trailing off */
+    conic-gradient(from 0deg at 50% 50%,
+      rgba(27,200,27,0.12) 0deg,
+      rgba(27,200,27,0.05) 28deg,
+      rgba(27,200,27,0.01) 44deg,
+      transparent 45deg,
+      transparent 360deg
     ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 31px,
-      rgba(27, 200, 27, 0.03) 31px,
-      rgba(27, 200, 27, 0.03) 32px
-    );
+    /* center hub */
+    radial-gradient(circle at 50% 50%, rgba(27,200,27,0.14) 0px, rgba(27,200,27,0.06) 4px, transparent 8px);
+  transform-origin: 50% 50%;
+  animation: alien-tracker 5s linear infinite;
+}
+
+@keyframes alien-tracker {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 /* ── Terminal cursor/blink animation ──────────────────────────────────────── */

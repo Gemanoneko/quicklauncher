@@ -101,57 +101,48 @@
   --drag-over-glow:       inset 0 0 22px rgba(255, 153, 0, 0.2);
 }
 
-/* ── LCARS thick left bar — pill shape, 8px wide ──────────────────────────── */
+/* ── LCARS sidebar — full-height, 16px, authentic 4-block color column ─────── */
 #header::before {
+  top: 0; bottom: 0; width: 16px;
+  border-radius: 0 8px 8px 0;
   background: linear-gradient(to bottom,
-    #FF9900 0%,
-    #FF9900 30%,
-    #CC88FF 30%,
-    #CC88FF 65%,
-    #66CCCC 65%,
-    #66CCCC 100%
+    #FF9900 0%,   #FF9900 25%,
+    #CC88FF 25%,  #CC88FF 55%,
+    #66CCCC 55%,  #66CCCC 78%,
+    #CC3333 78%,  #CC3333 100%
   );
-  width: 8px;
-  border-radius: 4px;
-  box-shadow: 0 0 12px rgba(255, 153, 0, 0.4), 0 0 6px rgba(204, 136, 255, 0.3);
+  box-shadow: 3px 0 14px rgba(255,153,0,0.38), 3px 0 5px rgba(204,136,255,0.22);
 }
 
-/* ── LCARS color stripes in grid area ─────────────────────────────────────── */
+/* ── LCARS display grid: left sidebar echo + thick color bottom bar ─────────── */
 #grid-container::before {
   content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* bottom LCARS horizontal color bands */
-    linear-gradient(
-      to top,
-      rgba(255, 153, 0, 0.07) 0px,
-      rgba(255, 153, 0, 0.07) 4px,
-      rgba(204, 136, 255, 0.07) 4px,
-      rgba(204, 136, 255, 0.07) 8px,
-      rgba(204, 51, 51, 0.06) 8px,
-      rgba(204, 51, 51, 0.06) 12px,
-      rgba(102, 204, 204, 0.06) 12px,
-      rgba(102, 204, 204, 0.06) 16px,
-      transparent 16px
+    /* left sidebar ambient echo — same color blocks as the header bar */
+    linear-gradient(to right,
+      rgba(255,153,0,0.10)  0px,  rgba(255,153,0,0.10)  3px,
+      rgba(204,136,255,0.08) 3px, rgba(204,136,255,0.08) 5px,
+      rgba(102,204,204,0.06) 5px, rgba(102,204,204,0.06) 7px,
+      rgba(204,51,51,0.05)  7px,  rgba(204,51,51,0.05)  9px,
+      transparent 9px
     ),
-    /* top LCARS horizontal bands */
-    linear-gradient(
-      to bottom,
-      rgba(255, 153, 0, 0.05) 0px,
-      rgba(255, 153, 0, 0.05) 4px,
-      rgba(102, 204, 204, 0.05) 4px,
-      rgba(102, 204, 204, 0.05) 8px,
-      transparent 8px
+    /* bottom LCARS color bar — real LCARS has thick colored blocks at bottom */
+    linear-gradient(to top,
+      rgba(255,153,0,0.12)  0px,  rgba(255,153,0,0.12)  7px,
+      rgba(204,136,255,0.10) 7px, rgba(204,136,255,0.10) 14px,
+      rgba(204,51,51,0.09)  14px, rgba(204,51,51,0.09)  20px,
+      rgba(102,204,204,0.08) 20px,rgba(102,204,204,0.08) 26px,
+      transparent 26px
     ),
-    /* subtle warm radial background warmth */
-    radial-gradient(
-      ellipse 70% 60% at 50% 50%,
-      rgba(255, 153, 0, 0.03) 0%,
-      transparent 70%
-    );
+    /* top data header bar */
+    linear-gradient(to bottom,
+      rgba(255,153,0,0.07) 0px, rgba(255,153,0,0.07) 5px,
+      rgba(102,204,204,0.06) 5px, rgba(102,204,204,0.06) 10px,
+      transparent 10px
+    ),
+    /* warm center radial */
+    radial-gradient(ellipse 70% 55% at 55% 50%, rgba(255,153,0,0.025) 0%, transparent 70%);
 }
 
 /* ── Overlay panel rounded with orange top border ─────────────────────────── */
