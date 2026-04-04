@@ -125,9 +125,25 @@
   50%       { border-color: rgba(0,184,236,.50); box-shadow: inset 0 0 14px rgba(0,184,236,.05); }
 }
 
-/* ── App::after — nothing (clean space-opera look) ─────────────────────────── */
+/* ── Normandy SR-2 engine drive — blue thruster glow, slow pulse ────────────── */
+#app { animation: me-normandy 10s ease-in-out infinite; }
+@keyframes me-normandy {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0,184,236,.08), inset 0 -2px 16px rgba(0,184,236,.04); }
+  50% { box-shadow: 0 4px 34px rgba(0,184,236,.20), inset 0 -2px 26px rgba(0,184,236,.09); }
+}
+
+/* ── App::after — Alliance omni-tool scan sweeping top to bottom ────────────── */
 #app::after {
-  background: none;
+  background:
+    linear-gradient(to bottom, transparent 0, rgba(0,184,236,.05) 35px, transparent 70px) no-repeat;
+  background-size: 100% 70px;
+  background-position: 0 -70px;
+  animation: me-scan 12s linear infinite;
+  opacity: 1;
+}
+@keyframes me-scan {
+  from { background-position: 0 -70px; }
+  to   { background-position: 0 calc(100% + 70px); }
 }
 
 /* ── Grid container: holographic blue grid + N7 edge stripe ────────────────── */
@@ -187,11 +203,11 @@
   box-shadow: 0 2px 12px rgba(0,0,0,.35);
 }
 
-/* ── Header::before — 6px wide N7 red bar ─────────────────────────────────── */
+/* ── Header::before — N7 logo bar: white stripe over red ──────────────────── */
 #header::before {
-  width: 6px;
-  background: linear-gradient(180deg, #C0001C 0%, rgba(192,0,28,.5) 100%);
-  box-shadow: 0 0 8px rgba(192,0,28,.6), 2px 0 12px rgba(192,0,28,.2);
+  width: 10px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 42%, #C0001C 42%, #C0001C 100%);
+  box-shadow: 0 0 8px rgba(192,0,28,.55), 2px 0 14px rgba(192,0,28,.25), 0 0 4px rgba(255,255,255,.3);
 }
 
 /* ── Overlay panel: N7 red left border ─────────────────────────────────────── */

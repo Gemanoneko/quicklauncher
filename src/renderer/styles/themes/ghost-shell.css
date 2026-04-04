@@ -154,7 +154,8 @@
   opacity: 1;
 }
 
-/* ── Grid container: Section 9 targeting reticles ──────────────────────────── */
+/* ── Grid container: Section 9 targeting reticle — ROTATING ────────────────── */
+/* Oversized so rotation clips at container edges, not diagonally */
 #grid-container {
   position: relative;
 }
@@ -162,38 +163,41 @@
 #grid-container::before {
   content: '';
   position: absolute;
-  inset: 0;
+  width: 160%; height: 160%;
+  left: -30%; top: -30%;
   z-index: 0;
   pointer-events: none;
+  /* Reticle only — scan lines moved to ::after so they don't rotate */
   background:
-    /* targeting reticle — centered radial with crosshair */
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'200'%20height%3D'200'%3E%3Cg%20stroke%3D'%2300E0C8'%20stroke-opacity%3D'0.05'%20stroke-width%3D'0.8'%20fill%3D'none'%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'60'%2F%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'36'%2F%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'8'%2F%3E%3Cline%20x1%3D'100'%20y1%3D'36'%20x2%3D'100'%20y2%3D'58'%2F%3E%3Cline%20x1%3D'100'%20y1%3D'142'%20x2%3D'100'%20y2%3D'164'%2F%3E%3Cline%20x1%3D'36'%20y1%3D'100'%20x2%3D'58'%20y2%3D'100'%2F%3E%3Cline%20x1%3D'142'%20y1%3D'100'%20x2%3D'164'%20y2%3D'100'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
-    /* teal horizontal scan lines at very low opacity */
-    repeating-linear-gradient(
-      180deg,
-      transparent 0px,
-      transparent 23px,
-      rgba(0,224,200,.036) 23px,
-      rgba(0,224,200,.036) 24px
-    ),
-    /* neural purple deep background hint */
-    radial-gradient(ellipse 80% 60% at 80% 40%, rgba(64,20,120,.06) 0%, transparent 60%),
-    /* teal top glow */
-    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(0,80,70,.08) 0%, transparent 60%);
-  background-size: 200px 200px, 100% 24px, 100% 100%, 100% 100%;
-  background-position: center center, 0 0, 0 0, 0 0;
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'200'%20height%3D'200'%3E%3Cg%20stroke%3D'%2300E0C8'%20stroke-opacity%3D'0.05'%20stroke-width%3D'0.8'%20fill%3D'none'%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'60'%2F%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'36'%2F%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'8'%2F%3E%3Cline%20x1%3D'100'%20y1%3D'36'%20x2%3D'100'%20y2%3D'58'%2F%3E%3Cline%20x1%3D'100'%20y1%3D'142'%20x2%3D'100'%20y2%3D'164'%2F%3E%3Cline%20x1%3D'36'%20y1%3D'100'%20x2%3D'58'%20y2%3D'100'%2F%3E%3Cline%20x1%3D'142'%20y1%3D'100'%20x2%3D'164'%20y2%3D'100'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+    center / 200px 200px no-repeat;
+  transform-origin: 50% 50%;
+  animation: gits-reticle 25s linear infinite;
+}
+@keyframes gits-reticle {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
+/* ── Static overlays: scan lines + neural blooms (don't rotate) ─────────────── */
 #grid-container::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  /* purple neural overlay — bottom corner bloom */
   background:
+    /* teal horizontal scan lines */
+    repeating-linear-gradient(180deg, transparent 0px, transparent 23px, rgba(0,224,200,.036) 23px, rgba(0,224,200,.036) 24px),
+    /* neural purple deep background hint */
+    radial-gradient(ellipse 80% 60% at 80% 40%, rgba(64,20,120,.06) 0%, transparent 60%),
+    /* teal top glow */
+    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(0,80,70,.08) 0%, transparent 60%),
+    /* purple neural overlay — bottom corner bloom */
     radial-gradient(ellipse 50% 40% at 0% 100%, rgba(80,20,160,.06) 0%, transparent 60%),
+    /* teal bloom — top right */
     radial-gradient(ellipse 40% 30% at 100% 0%, rgba(0,180,160,.04) 0%, transparent 50%);
+  background-size: 100% 24px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
 }
 
 /* ── Header ─────────────────────────────────────────────────────────────────── */
@@ -212,6 +216,16 @@
 .overlay-panel {
   clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px)) !important;
   border-left: 2px solid rgba(128,64,208,.45) !important;
+}
+
+/* ── Ghost shell pulse — neural link established, purple heartbeat ───────────── */
+#app { animation: gits-shell-pulse 6s ease-in-out infinite; }
+@keyframes gits-shell-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(0,224,200,.16), inset 0 0 14px rgba(0,224,200,.04); }
+  35% { box-shadow: 0 0 0 1px rgba(0,224,200,.40), inset 0 0 24px rgba(0,224,200,.08); }
+  36% { box-shadow: 0 0 0 1px rgba(128,64,208,.55), inset 0 0 28px rgba(128,64,208,.10); }
+  37% { box-shadow: 0 0 0 1px rgba(0,224,200,.20), inset 0 0 12px rgba(0,224,200,.04); }
+  70% { box-shadow: 0 0 0 1px rgba(128,64,208,.35), inset 0 0 20px rgba(128,64,208,.07); }
 }
 
 /* ── Flavor content ────────────────────────────────────────────────────────── */

@@ -16,10 +16,10 @@
   --text:                 #B0BCC8;
   --text-dim:             #4A5560;
 
-  /* Shape — straight rectangular like the Ishimura's brutal corridors */
+  /* Shape — Ishimura viewport: top-right corner sheared like a blast door */
   --radius:               2px;
-  --app-clip:             none;
-  --overlay-clip:         none;
+  --app-clip:             polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
+  --overlay-clip:         polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
 
   /* Accent palette — RIG orange / dim system red / cold white */
   --accent-c:             #E06820;
@@ -109,9 +109,21 @@
 }
 
 /* ── RIG spine — the orange left border, Isaac's lifeline ─────────────────── */
+/* Health pulse with stasis field flash — orange beats, blue crisis flash */
 #app {
   border-left: 5px solid rgba(224, 104, 32, 0.8);
   box-shadow: -2px 0 12px rgba(224, 104, 32, 0.3), inset 2px 0 10px rgba(224, 104, 32, 0.06);
+  animation: ds-rig-monitor 9s ease-in-out infinite;
+}
+@keyframes ds-rig-monitor {
+  0%, 100% { box-shadow: -2px 0 12px rgba(224,104,32,.30), inset 2px 0 10px rgba(224,104,32,.06); }
+  40% { box-shadow: -2px 0 22px rgba(224,104,32,.58), inset 2px 0 18px rgba(224,104,32,.14); }
+  41% { box-shadow: -2px 0 5px rgba(224,104,32,.12), inset 2px 0 3px rgba(224,104,32,.02); }
+  43% { box-shadow: -2px 0 18px rgba(224,104,32,.50), inset 2px 0 14px rgba(224,104,32,.11); }
+  /* Stasis module engaged — cold blue override */
+  83% { box-shadow: -2px 0 14px rgba(224,104,32,.42), inset 2px 0 12px rgba(224,104,32,.09); }
+  84% { box-shadow: -2px 0 24px rgba(0,120,220,.38), inset 2px 0 20px rgba(0,120,220,.12), 0 0 32px rgba(0,100,200,.14); }
+  85% { box-shadow: -2px 0 12px rgba(224,104,32,.32), inset 2px 0 10px rgba(224,104,32,.07); }
 }
 
 /* ── Header orange RIG-color left bar ─────────────────────────────────────── */

@@ -138,21 +138,41 @@
   }
 }
 
+/* ── Augmentation power surge — Jensen's implants cycling up ───────────────── */
+#app { animation: aug-power 14s ease-in-out infinite; }
+@keyframes aug-power {
+  0%, 100% { box-shadow: inset 0 0 16px rgba(212,165,32,.05); }
+  33% { box-shadow: inset 0 0 30px rgba(212,165,32,.12), 0 0 1px rgba(212,165,32,.45); }
+  34% { box-shadow: inset 0 0 8px rgba(212,165,32,.03); }
+  35% { box-shadow: inset 0 0 26px rgba(212,165,32,.10), 0 0 1px rgba(212,165,32,.38); }
+  68% { box-shadow: inset 0 0 22px rgba(212,165,32,.08); }
+  69% { box-shadow: inset 0 0 38px rgba(212,165,32,.16), 0 0 2px rgba(212,165,32,.55); }
+  70% { box-shadow: inset 0 0 12px rgba(212,165,32,.04); }
+}
+
 /* ── App border: gold augmentation pulse ───────────────────────────────────── */
 @keyframes border-pulse {
   0%, 100% { border-color: rgba(212,165,32,.18); box-shadow: none; }
   50%       { border-color: rgba(212,165,32,.50); box-shadow: inset 0 0 16px rgba(212,165,32,.06); }
 }
 
-/* ── App::after — augmentation circuit dot-dash pattern ────────────────────── */
+/* ── App::after — circuit dots + diagonal augmentation trace sweep ──────────── */
 #app::after {
   background:
+    /* augmentation trace — diagonal gold bar sweeping through circuit */
+    linear-gradient(to bottom, transparent 0, rgba(212,165,32,.05) 40px, transparent 80px) no-repeat,
     /* geometric circuit dots — very low opacity */
     url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'20'%20height%3D'20'%3E%3Ccircle%20cx%3D'10'%20cy%3D'10'%20r%3D'0.7'%20fill%3D'%23D4A520'%20fill-opacity%3D'0.06'%2F%3E%3Cline%20x1%3D'0'%20y1%3D'10'%20x2%3D'4'%20y2%3D'10'%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.04'%20stroke-width%3D'0.5'%2F%3E%3Cline%20x1%3D'16'%20y1%3D'10'%20x2%3D'20'%20y2%3D'10'%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.04'%20stroke-width%3D'0.5'%2F%3E%3Cline%20x1%3D'10'%20y1%3D'0'%20x2%3D'10'%20y2%3D'4'%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.04'%20stroke-width%3D'0.5'%2F%3E%3Cline%20x1%3D'10'%20y1%3D'16'%20x2%3D'10'%20y2%3D'20'%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.04'%20stroke-width%3D'0.5'%2F%3E%3C%2Fsvg%3E"),
     /* vignette */
     radial-gradient(ellipse 110% 100% at 50% 50%, transparent 52%, rgba(2,1,0,.48) 100%);
-  background-size: 20px 20px, auto;
+  background-size: 100% 80px, 20px 20px, auto;
+  background-position: 0 -80px, 0 0, 0 0;
+  animation: aug-trace 13s linear infinite;
   opacity: 1;
+}
+@keyframes aug-trace {
+  from { background-position: 0 -80px, 0 0, 0 0; }
+  to   { background-position: 0 calc(100% + 80px), 0 0, 0 0; }
 }
 
 /* ── Grid container: Jensen's HUD scan lines + gold corner markers ──────────── */

@@ -108,6 +108,24 @@
   --drag-over-glow:       inset 0 0 24px rgba(255, 102, 0, 0.22);
 }
 
+/* ── Dual portal side glows — orange left, blue right, breathing together ─── */
+#app { animation: pt-portal-energy 5s ease-in-out infinite; }
+@keyframes pt-portal-energy {
+  0%, 100% {
+    box-shadow: -3px 0 22px rgba(255,102,0,.22), 3px 0 22px rgba(0,96,204,.22);
+  }
+  50% {
+    box-shadow: -3px 0 42px rgba(255,102,0,.42), 3px 0 42px rgba(0,96,204,.42);
+  }
+}
+
+/* ── Portal rings pulse — the energy field breathes ──────────────────────── */
+#grid-container::after { animation: pt-portals-breathe 5s ease-in-out infinite; }
+@keyframes pt-portals-breathe {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+
 /* ── Header left bar — orange portal accent ──────────────────────────────── */
 #header::before {
   background: linear-gradient(to bottom, #FF6600, rgba(255, 102, 0, 0.25));

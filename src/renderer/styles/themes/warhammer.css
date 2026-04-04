@@ -102,16 +102,30 @@
   --drag-over-glow:       inset 0 0 28px rgba(200, 144, 10, 0.25);
 }
 
+/* ── Ember pulse — like candlelight in a cathedral, with Blood God flash ────── */
+#app { animation: wh-ember 10s ease-in-out infinite; }
+@keyframes wh-ember {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,144,10,.22), inset 0 0 28px rgba(200,144,10,.15), inset 0 0 8px rgba(139,0,0,.1); }
+  28% { box-shadow: 0 0 0 1px rgba(200,144,10,.48), inset 0 0 44px rgba(200,144,10,.26), inset 0 0 14px rgba(139,0,0,.18); }
+  29% { box-shadow: 0 0 0 1px rgba(200,144,10,.14), inset 0 0 16px rgba(200,144,10,.07); }
+  30% { box-shadow: 0 0 0 1px rgba(200,144,10,.40), inset 0 0 36px rgba(200,144,10,.22); }
+  /* Blood God flash — Khorne demands tribute */
+  76% { box-shadow: 0 0 0 1px rgba(200,144,10,.35), inset 0 0 32px rgba(200,144,10,.18); }
+  77% { box-shadow: 0 0 0 1px rgba(139,0,0,.72), inset 0 0 44px rgba(139,0,0,.22), 0 0 18px rgba(139,0,0,.18); }
+  78% { box-shadow: 0 0 0 1px rgba(200,144,10,.26), inset 0 0 22px rgba(200,144,10,.11); }
+}
+
 /* ── Header — heavy gold bottom border, imperial authority ─────────────────── */
 #header {
   border-bottom: 2px solid rgba(200, 144, 10, 0.55);
   box-shadow: 0 2px 12px rgba(200, 144, 10, 0.2), 0 1px 0 rgba(139, 0, 0, 0.3);
 }
 
-/* ── Header left bar — deep blood red, war-seal color ──────────────────────── */
+/* ── Header left bar — imperial gold fading to blood red (heraldic gradient) ── */
 #header::before {
-  background: linear-gradient(to bottom, #8B0000, rgba(139, 0, 0, 0.3));
-  box-shadow: 0 0 8px rgba(139, 0, 0, 0.8), 0 0 20px rgba(139, 0, 0, 0.4);
+  width: 6px;
+  background: linear-gradient(to bottom, #D4A820 0%, #C8900A 52%, #8B0000 100%);
+  box-shadow: 0 0 10px rgba(200,144,10,.8), 0 0 24px rgba(200,144,10,.4), 2px 0 16px rgba(139,0,0,.3);
 }
 
 /* ── Parchment crosshatch scanlines — barely visible grain ─────────────────── */
@@ -124,7 +138,7 @@
   pointer-events: none;
 }
 
-/* ── Imperial Aquila — great eagle watermark behind tiles ───────────────────── */
+/* ── Imperial Aquila — great eagle watermark, rotating like a prayer wheel ──── */
 #grid-container::before {
   content: '☩';
   position: absolute;
@@ -141,9 +155,13 @@
   text-shadow:
     0 0 40px rgba(200, 144, 10, 0.04),
     0 0 80px rgba(200, 144, 10, 0.02);
-  /* Augmented with radial gold bloom behind the sigil */
   background:
     radial-gradient(ellipse 55% 55% at 50% 50%, rgba(200, 144, 10, 0.04) 0%, transparent 70%);
+  animation: wh-aquila-turn 40s linear infinite;
+}
+@keyframes wh-aquila-turn {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 /* ── Gothic gold border filaments at grid edges ─────────────────────────────── */
