@@ -3,6 +3,13 @@ const { app, ipcMain } = require('electron');
 
 let _win = null;
 
+// Guard: only send if the window is still alive
+function send(channel, ...args) {
+  if (_win && !_win.isDestroyed() && _win.webContents && !_win.webContents.isDestroyed()) {
+    _win.webContents.send(channel, ...args);
+  }
+}
+
 function setupUpdater(win) {
   _win = win;
 
@@ -10,27 +17,27 @@ function setupUpdater(win) {
   autoUpdater.autoInstallOnAppQuit = false;
 
   autoUpdater.on('checking-for-update', () => {
-    _win.webContents.send('update-checking');
+    send('update-checking');
   });
 
   autoUpdater.on('update-available', (info) => {
-    _win.webContents.send('update-available', { version: info.version });
+    send('update-available', { version: info.version });
   });
 
   autoUpdater.on('update-not-available', () => {
-    _win.webContents.send('update-not-available');
+    send('update-not-available');
   });
 
   autoUpdater.on('download-progress', (progress) => {
-    _win.webContents.send('update-progress', Math.floor(progress.percent));
+    send('update-progress', Math.floor(progress.percent));
   });
 
   autoUpdater.on('update-downloaded', () => {
-    _win.webContents.send('update-ready');
+    send('update-ready');
   });
 
   autoUpdater.on('error', (err) => {
-    _win.webContents.send('update-error', err.message);
+    send('update-error', err.message);
   });
 
   ipcMain.handle('download-update', () => autoUpdater.downloadUpdate());
@@ -49,11 +56,11 @@ function setupUpdater(win) {
 function checkForUpdates() {
   if (!app.isPackaged) {
     // In dev mode just send "up to date"
-    if (_win) _win.webContents.send('update-not-available');
+    send('update-not-available');
     return;
   }
   autoUpdater.checkForUpdates().catch((err) => {
-    if (_win) _win.webContents.send('update-error', err.message);
+    send('update-error', err.message);
   });
 }
 

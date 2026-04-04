@@ -1,15 +1,17 @@
-/* global require */
-const { ipcRenderer, webUtils } = require('electron');
-const { version: APP_VERSION } = require('../../package.json');
+/* global api */
+const APP_VERSION = window.api.version;
 
 // ── State ────────────────────────────────────────────────────────────────────
 let apps = [];
 let settings = {};
 let editMode = false;
 let installedApps = [];
-let reorderState = null;   // active drag-to-reorder operation
+let reorderState = null;      // active drag-to-reorder operation
 let suppressNextClick = false; // prevent launch-on-click after a drag
 let bannerInterval = null;
+let bannerFadeTimer = null;   // inner fade setTimeout — cleared on theme change
+let autoDismissTimer = null;  // update banner auto-dismiss timer
+let refreshingIcons = false;  // guard against concurrent refreshMissingIcons calls
 
 // ── Banner quotes (3 per theme) ───────────────────────────────────────────────
 const THEME_BANNERS = {
@@ -310,10 +312,13 @@ const THEME_BANNERS = {
   ],
 };
 
+// Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
+const VALID_THEMES = new Set(Object.keys(THEME_BANNERS));
+
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
-  apps = await ipcRenderer.invoke('get-apps');
-  settings = await ipcRenderer.invoke('get-settings');
+  apps     = await window.api.invoke('get-apps');
+  settings = await window.api.invoke('get-settings');
   applySettings();
   renderGrid();
   setupDragDrop();
@@ -326,10 +331,12 @@ async function init() {
 }
 
 async function refreshMissingIcons() {
+  if (refreshingIcons) return;
   const missing = apps.filter(a => a.path && (a.path.startsWith('shell:') || /^[a-z][a-z0-9+.-]*:\/\//i.test(a.path)) && !a.iconDataUrl);
   if (missing.length === 0) return;
+  refreshingIcons = true;
   try {
-    const installed = await ipcRenderer.invoke('get-installed-apps');
+    const installed = await window.api.invoke('get-installed-apps');
     let changed = false;
     for (const appItem of missing) {
       const appId = appItem.path.startsWith('shell:') ? appItem.path.replace('shell:AppsFolder\\', '') : appItem.path;
@@ -345,6 +352,8 @@ async function refreshMissingIcons() {
     }
   } catch (e) {
     console.error('refreshMissingIcons failed:', e);
+  } finally {
+    refreshingIcons = false;
   }
 }
 
@@ -451,7 +460,7 @@ function startRename(appItem, labelEl) {
 
 // ── Actions ──────────────────────────────────────────────────────────────────
 async function launchApp(filePath) {
-  await ipcRenderer.invoke('launch-app', filePath);
+  await window.api.invoke('launch-app', filePath);
 }
 
 function enterEditMode() {
@@ -469,7 +478,7 @@ function exitEditMode() {
 
 async function addAppFromDialog() {
   try {
-    const appItem = await ipcRenderer.invoke('add-app-dialog');
+    const appItem = await window.api.invoke('add-app-dialog');
     if (!appItem) return;
     apps.push(appItem);
     await saveApps();
@@ -486,7 +495,7 @@ async function removeApp(id) {
 }
 
 async function saveApps() {
-  await ipcRenderer.invoke('save-apps', apps);
+  await window.api.invoke('save-apps', apps);
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────────
@@ -497,7 +506,8 @@ function applySettings() {
   document.getElementById('icon-size-val').textContent = size + 'px';
   document.getElementById('chk-startup').checked = settings.startWithWindows !== false;
 
-  const theme = settings.theme || 'cyberpunk';
+  const rawTheme = settings.theme || 'cyberpunk';
+  const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
   document.getElementById('theme-stylesheet').href = `styles/themes/${theme}.css`;
   document.getElementById('theme-select').value = theme;
   startBannerCycle(theme);
@@ -505,6 +515,10 @@ function applySettings() {
 
 function startBannerCycle(theme) {
   clearInterval(bannerInterval);
+  clearTimeout(bannerFadeTimer);
+  bannerInterval = null;
+  bannerFadeTimer = null;
+
   const quotes = THEME_BANNERS[theme];
   if (!quotes) return;
 
@@ -515,7 +529,7 @@ function startBannerCycle(theme) {
 
   bannerInterval = setInterval(() => {
     textEl.style.opacity = '0';
-    setTimeout(() => {
+    bannerFadeTimer = setTimeout(() => {
       idx = (idx + 1) % quotes.length;
       textEl.textContent = quotes[idx];
       textEl.style.opacity = '1';
@@ -528,13 +542,13 @@ document.getElementById('slider-icon-size').addEventListener('input', async (e) 
   document.getElementById('icon-size-val').textContent = size + 'px';
   document.documentElement.style.setProperty('--icon-size', size + 'px');
   settings.iconSize = size;
-  await ipcRenderer.invoke('save-settings', settings);
+  await window.api.invoke('save-settings', settings);
 });
 
 document.getElementById('chk-startup').addEventListener('change', async (e) => {
   settings.startWithWindows = e.target.checked;
-  await ipcRenderer.invoke('save-settings', settings);
-  await ipcRenderer.invoke('set-auto-launch', e.target.checked);
+  await window.api.invoke('save-settings', settings);
+  await window.api.invoke('set-auto-launch', e.target.checked);
 });
 
 // ── Drag & Drop ────────────────────────────────────────────────────────────────
@@ -559,10 +573,10 @@ function setupDragDrop() {
     try {
       const files = Array.from(e.dataTransfer.files);
       for (const file of files) {
-        const filePath = webUtils.getPathForFile(file);
+        const filePath = window.api.getPathForFile(file);
         const ext = filePath.split('.').pop().toLowerCase();
         if (ext === 'exe' || ext === 'lnk') {
-          const appItem = await ipcRenderer.invoke('add-app-from-path', filePath);
+          const appItem = await window.api.invoke('add-app-from-path', filePath);
           if (appItem && !apps.find(a => a.path === appItem.path)) {
             apps.push(appItem);
           }
@@ -706,7 +720,7 @@ async function openInstalledAppsPicker() {
   pickerEl.classList.remove('hidden');
 
   try {
-    installedApps = await ipcRenderer.invoke('get-installed-apps');
+    installedApps = await window.api.invoke('get-installed-apps');
   } catch (e) {
     console.error('get-installed-apps failed:', e);
     installedApps = [];
@@ -750,7 +764,7 @@ function renderPickerList(items) {
 
     el.addEventListener('click', async () => {
       try {
-        const appItem = await ipcRenderer.invoke('add-app-from-appid', {
+        const appItem = await window.api.invoke('add-app-from-appid', {
           name: item.name,
           appId: item.appId,
           iconDataUrl: item.iconDataUrl
@@ -795,39 +809,43 @@ function setupContextMenu() {
 
 // ── Update banner ─────────────────────────────────────────────────────────────
 function setupUpdateListeners() {
-  ipcRenderer.on('update-checking', () => {
+  window.api.on('update-checking', () => {
     showUpdateBanner('CHECKING FOR UPDATES...', []);
   });
 
-  ipcRenderer.on('update-available', (_, info) => {
+  window.api.on('update-available', (info) => {
     showUpdateBanner(
       `UPDATE AVAILABLE — v${info.version}`,
       [{ label: 'DOWNLOAD', action: 'download' }]
     );
   });
 
-  ipcRenderer.on('update-progress', (_, pct) => {
+  window.api.on('update-progress', (pct) => {
     document.getElementById('update-text').textContent = `DOWNLOADING... ${pct}%`;
   });
 
-  ipcRenderer.on('update-ready', () => {
+  window.api.on('update-ready', () => {
     showUpdateBanner(
       'UPDATE READY — WILL INSTALL AND RESTART',
       [{ label: 'INSTALL NOW', action: 'install' }]
     );
   });
 
-  ipcRenderer.on('update-not-available', () => {
+  window.api.on('update-not-available', () => {
     showUpdateBanner('SYSTEM IS UP TO DATE', [], 3000);
   });
 
-  ipcRenderer.on('update-error', (_, msg) => {
+  window.api.on('update-error', (msg) => {
     showUpdateBanner(`UPDATE ERROR: ${msg}`, [], 6000);
     console.warn('Update error:', msg);
   });
 }
 
 function showUpdateBanner(text, actions, autoDismissMs = 0) {
+  // Clear any previous auto-dismiss so a new banner can't be dismissed by a stale timer
+  clearTimeout(autoDismissTimer);
+  autoDismissTimer = null;
+
   const banner = document.getElementById('update-banner');
   const textEl = document.getElementById('update-text');
   const actionsEl = document.getElementById('update-actions');
@@ -843,9 +861,9 @@ function showUpdateBanner(text, actions, autoDismissMs = 0) {
       if (action === 'download') {
         btn.textContent = 'DOWNLOADING...';
         btn.disabled = true;
-        await ipcRenderer.invoke('download-update');
+        await window.api.invoke('download-update');
       } else if (action === 'install') {
-        await ipcRenderer.invoke('install-update');
+        await window.api.invoke('install-update');
       }
     });
     actionsEl.appendChild(btn);
@@ -862,11 +880,13 @@ function showUpdateBanner(text, actions, autoDismissMs = 0) {
   banner.classList.remove('hidden');
 
   if (autoDismissMs > 0) {
-    setTimeout(hideUpdateBanner, autoDismissMs);
+    autoDismissTimer = setTimeout(hideUpdateBanner, autoDismissMs);
   }
 }
 
 function hideUpdateBanner() {
+  clearTimeout(autoDismissTimer);
+  autoDismissTimer = null;
   document.getElementById('update-banner').classList.add('hidden');
 }
 
@@ -876,7 +896,7 @@ document.getElementById('btn-settings').addEventListener('click', () => {
 });
 
 document.getElementById('btn-hide').addEventListener('click', () => {
-  ipcRenderer.invoke('hide-window');
+  window.api.invoke('hide-window');
 });
 
 document.getElementById('btn-close-settings').addEventListener('click', () => {
@@ -884,7 +904,7 @@ document.getElementById('btn-close-settings').addEventListener('click', () => {
 });
 
 document.getElementById('btn-check-update').addEventListener('click', () => {
-  ipcRenderer.invoke('check-update');
+  window.api.invoke('check-update');
   document.getElementById('settings-overlay').classList.add('hidden');
 });
 
@@ -896,7 +916,7 @@ document.getElementById('btn-done-edit').addEventListener('click', exitEditMode)
 document.getElementById('theme-select').addEventListener('change', async (e) => {
   settings.theme = e.target.value;
   applySettings();
-  await ipcRenderer.invoke('save-settings', settings);
+  await window.api.invoke('save-settings', settings);
 });
 
 document.getElementById('btn-random-theme').addEventListener('click', async () => {
@@ -905,7 +925,7 @@ document.getElementById('btn-random-theme').addEventListener('click', async () =
   const others = themes.filter(t => t !== current);
   settings.theme = others[Math.floor(Math.random() * others.length)];
   applySettings();
-  await ipcRenderer.invoke('save-settings', settings);
+  await window.api.invoke('save-settings', settings);
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────

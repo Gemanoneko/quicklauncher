@@ -5,6 +5,7 @@ const fs = require('fs');
 const os = require('os');
 
 let sendToBottomScriptPath = null;
+let sendToBottomLastHwnd = null; // cache: only rewrite the script when hwnd changes
 
 function createWindow(store) {
   const settings = store.get('settings');
@@ -35,9 +36,9 @@ function createWindow(store) {
     alwaysOnTop: false,
     focusable: true,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
     }
   });
 
@@ -53,19 +54,27 @@ function createWindow(store) {
     sendToBottom(win);
   });
 
-  // Save position on move
+  // Debounce position saves — fired on every pixel during drag without this
+  let moveTimer = null;
   win.on('moved', () => {
-    const [x, y] = win.getPosition();
-    const s = store.get('settings');
-    store.set('settings', { ...s, windowPosition: { x, y } });
+    clearTimeout(moveTimer);
+    moveTimer = setTimeout(() => {
+      const [x, y] = win.getPosition();
+      const s = store.get('settings');
+      store.set('settings', { ...s, windowPosition: { x, y } });
+    }, 400);
   });
 
-  // Save size on resize and re-anchor to desktop
+  // Debounce size saves — same reason
+  let resizeTimer = null;
   win.on('resize', () => {
-    const [width, height] = win.getSize();
-    const s = store.get('settings');
-    store.set('settings', { ...s, windowSize: { width, height } });
-    sendToBottom(win);
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const [width, height] = win.getSize();
+      const s = store.get('settings');
+      store.set('settings', { ...s, windowSize: { width, height } });
+      sendToBottom(win);
+    }, 400);
   });
 
   // Open DevTools in dev mode only
@@ -97,8 +106,15 @@ function _sendToBottomNow(win) {
     const hwnd = hwndBuf.length >= 8
       ? hwndBuf.readBigUInt64LE(0)
       : BigInt(hwndBuf.readUInt32LE(0));
+    const hwndStr = hwnd.toString();
 
-    const script = `Add-Type -TypeDefinition @'
+    if (!sendToBottomScriptPath) {
+      sendToBottomScriptPath = path.join(os.tmpdir(), 'ql-bottom.ps1');
+    }
+
+    // The HWND is stable for the window's lifetime; only rewrite when it changes.
+    if (sendToBottomLastHwnd !== hwndStr) {
+      const script = `Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 public class WinPos {
@@ -106,14 +122,12 @@ public class WinPos {
     public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 }
 '@
-$hwnd = [IntPtr][long]${hwnd.toString()}
+$hwnd = [IntPtr][long]${hwndStr}
 [WinPos]::SetWindowPos($hwnd, [IntPtr]1, 0, 0, 0, 0, 0x0013)
 `;
-
-    if (!sendToBottomScriptPath) {
-      sendToBottomScriptPath = path.join(os.tmpdir(), 'ql-bottom.ps1');
+      fs.writeFileSync(sendToBottomScriptPath, script, 'utf8');
+      sendToBottomLastHwnd = hwndStr;
     }
-    fs.writeFileSync(sendToBottomScriptPath, script, 'utf8');
 
     execFile('powershell.exe', [
       '-ExecutionPolicy', 'Bypass',

@@ -2,8 +2,23 @@ const { ipcMain, dialog, shell, app, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
+const { randomUUID } = require('crypto');
 const { sendToBottom } = require('./window');
 const { checkForUpdates } = require('./updater');
+
+// All theme identifiers that exist as CSS files. Used to validate save-settings input.
+const VALID_THEMES = new Set([
+  'cyberpunk', 'blade-runner', 'alien', 'tron', 'lcars', 'pip-boy', 'dune',
+  'x-files', 'mass-effect', 'deus-ex', 'ghost-shell', 'matrix', 'warhammer',
+  'dead-space', 'half-life', 'terminator', 'portal',
+  'star-wars-rebel', 'star-wars-empire', 'star-wars-republic',
+  'doctor-who', 'akira', 'evangelion', '2001', 'silent-hill', 'stalker',
+  'resident-evil', 'the-expanse', 'event-horizon',
+  'hogwarts', 'ministry-of-magic', 'slytherin',
+  'rivendell', 'shire', 'mordor',
+  'scp', 'alan-wake', 'control', 'twin-peaks', 'lovecraft', 'the-sandman',
+  'persona-5', 'the-witcher', 'diablo', 'soma', 'stranger-things', 'fatal-frame',
+]);
 
 // C# type injected into PowerShell for high-quality icon/thumbnail extraction.
 const ICON_HELPER_CS = `
@@ -182,21 +197,72 @@ function resolveIconPath(p) {
   return null;
 }
 
+// Guard against concurrent get-installed-apps invocations (e.g. rapidly opening the picker).
+// Returns the in-flight promise if one is already running.
+let installedAppsPromise = null;
+
 function setupIPC(win, store, electronApp) {
 
   ipcMain.handle('get-apps', () => store.get('apps'));
 
   ipcMain.handle('save-apps', (_, apps) => {
-    store.set('apps', apps);
+    if (!Array.isArray(apps)) return;
+    // Validate and strip to known shape; silently drop malformed entries
+    const sanitized = apps
+      .filter(a => a && typeof a === 'object')
+      .map(a => ({
+        id:          typeof a.id          === 'string' ? a.id          : '',
+        name:        typeof a.name        === 'string' ? a.name.slice(0, 100) : '',
+        path:        typeof a.path        === 'string' ? a.path        : '',
+        iconDataUrl: typeof a.iconDataUrl === 'string' ? a.iconDataUrl : '',
+      }))
+      .filter(a => a.id && a.path);
+    store.set('apps', sanitized);
   });
 
   ipcMain.handle('get-settings', () => store.get('settings'));
 
   ipcMain.handle('save-settings', (_, settings) => {
-    store.set('settings', settings);
+    if (!settings || typeof settings !== 'object' || Array.isArray(settings)) return;
+    const current = store.get('settings');
+    const sanitized = { ...current };
+
+    if (typeof settings.iconSize === 'number'
+        && settings.iconSize >= 32 && settings.iconSize <= 128) {
+      sanitized.iconSize = settings.iconSize;
+    }
+    if (typeof settings.startWithWindows === 'boolean') {
+      sanitized.startWithWindows = settings.startWithWindows;
+    }
+    if (typeof settings.theme === 'string' && VALID_THEMES.has(settings.theme)) {
+      sanitized.theme = settings.theme;
+    }
+    if (settings.windowPosition && typeof settings.windowPosition === 'object') {
+      const { x, y } = settings.windowPosition;
+      if (typeof x === 'number' && typeof y === 'number') {
+        sanitized.windowPosition = { x: Math.round(x), y: Math.round(y) };
+      }
+    }
+    if (settings.windowSize && typeof settings.windowSize === 'object') {
+      const { width, height } = settings.windowSize;
+      if (typeof width === 'number' && typeof height === 'number'
+          && width >= 180 && height >= 150) {
+        sanitized.windowSize = { width: Math.round(width), height: Math.round(height) };
+      }
+    }
+    store.set('settings', sanitized);
   });
 
   ipcMain.handle('launch-app', (_, filePath) => {
+    if (typeof filePath !== 'string' || !filePath) return;
+
+    // Only launch paths that are in the stored app list, or known-safe protocol URIs
+    const storedApps = store.get('apps') || [];
+    const isKnown = storedApps.some(a => a.path === filePath)
+      || filePath.startsWith('shell:')
+      || filePath.startsWith('steam://');
+    if (!isKnown) return;
+
     if (filePath.startsWith('shell:') || filePath.startsWith('steam://')) {
       // Use explorer.exe for shell: URIs (Store apps) and steam:// URLs
       execFile('explorer.exe', [filePath], { windowsHide: false, stdio: 'pipe' }, () => {});
@@ -208,15 +274,17 @@ function setupIPC(win, store, electronApp) {
   });
 
   ipcMain.handle('get-installed-apps', () => {
-    return new Promise((resolve) => {
+    if (installedAppsPromise) return installedAppsPromise;
+
+    installedAppsPromise = new Promise((resolve) => {
       const ps = `
 $startDirs = @([Environment]::GetFolderPath('ApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs', [Environment]::GetFolderPath('CommonApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs')
 $wsh = New-Object -ComObject WScript.Shell
 $pkgMap = @{}
 Get-AppxPackage -ErrorAction SilentlyContinue | ForEach-Object { $pkgMap[$_.PackageFamilyName] = $_ }
 $steamInstall = $null
-try { $steamInstall = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Valve\Steam' -EA SilentlyContinue).InstallPath } catch {}
-if (-not $steamInstall) { try { $steamInstall = (Get-ItemProperty 'HKLM:\SOFTWARE\Valve\Steam' -EA SilentlyContinue).InstallPath } catch {} }
+try { $steamInstall = (Get-ItemProperty 'HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam' -EA SilentlyContinue).InstallPath } catch {}
+if (-not $steamInstall) { try { $steamInstall = (Get-ItemProperty 'HKLM:\\SOFTWARE\\Valve\\Steam' -EA SilentlyContinue).InstallPath } catch {} }
 try {
   Add-Type -TypeDefinition @'
 ${ICON_HELPER_CS}
@@ -224,16 +292,16 @@ ${ICON_HELPER_CS}
 } catch {}
 $apps = Get-StartApps | ForEach-Object {
   $appId = $_.AppID; $name = $_.Name; $iconPath = $null; $exePath = $null
-  if ($appId -match '^steam://rungameid/(\d+)$') {
+  if ($appId -match '^steam://rungameid/(\\d+)$') {
     # Steam game: use library cache icon (most reliable), fall back to Uninstall registry
     $steamId = $Matches[1]
     if ($steamInstall) {
-      $cacheIcon = Join-Path $steamInstall ("appcache\librarycache\" + $steamId + "_icon.jpg")
+      $cacheIcon = Join-Path $steamInstall ("appcache\\librarycache\\" + $steamId + "_icon.jpg")
       if (Test-Path $cacheIcon) { $iconPath = $cacheIcon }
     }
     if (-not $iconPath) {
       try {
-        $reg = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App $steamId" -ErrorAction SilentlyContinue
+        $reg = Get-ItemProperty "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App $steamId" -ErrorAction SilentlyContinue
         if ($reg -and $reg.DisplayIcon) {
           $iconExe = ($reg.DisplayIcon -split ',')[0].Trim('" ')
           if ($iconExe -and (Test-Path $iconExe)) { $exePath = $iconExe }
@@ -268,8 +336,8 @@ $apps = Get-StartApps | ForEach-Object {
             # Prefer highest-resolution scaled/targetsize variant
             $found = Get-ChildItem -Path $fullDir -Filter "$logoBase*$logoExt" -EA SilentlyContinue |
                      Sort-Object {
-                       if ($_.Name -match 'targetsize-(\d+)') { [int]$Matches[1] * -1 }
-                       elseif ($_.Name -match 'scale-(\d+)')  { [int]$Matches[1] * -1 }
+                       if ($_.Name -match 'targetsize-(\\d+)') { [int]$Matches[1] * -1 }
+                       elseif ($_.Name -match 'scale-(\\d+)')  { [int]$Matches[1] * -1 }
                        else { 0 }
                      } | Select-Object -First 1
             if ($found) { $iconPath = $found.FullName }
@@ -292,7 +360,7 @@ $apps = Get-StartApps | ForEach-Object {
              Where-Object { $_.BaseName -ieq $name -or $name -ilike ('*' + $_.BaseName + '*') -or $_.BaseName -ilike ('*' + $name + '*') } | Select-Object -First 1
       if ($lnk) {
         $sc = $wsh.CreateShortcut($lnk.FullName)
-        if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\s*,') {
+        if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\\s*,') {
           $iconExe = ($sc.IconLocation -split ',')[0].Trim()
           if ($iconExe -and (Test-Path $iconExe)) { $exePath = $iconExe }
         }
@@ -305,10 +373,10 @@ $apps = Get-StartApps | ForEach-Object {
       }
     } catch {}
   }
-  # Resolve GUID-based AUMID like {GUID}\path\app.exe (e.g. BOINC, older Win32 apps)
-  if (-not $iconPath -and -not $exePath -and $appId -match '^\{[0-9A-Fa-f-]+\}\\\\(.+\.exe)$') {
+  # Resolve GUID-based AUMID like {GUID}\\path\\app.exe (e.g. BOINC, older Win32 apps)
+  if (-not $iconPath -and -not $exePath -and $appId -match '^\\{[0-9A-Fa-f-]+\\}\\\\(.+\\.exe)$') {
     $relPath = $Matches[1]
-    $searchDirs = @($env:ProgramFiles, \${env:ProgramFiles(x86)}, "$env:LOCALAPPDATA\Programs")
+    $searchDirs = @($env:ProgramFiles, ${env:ProgramFiles(x86)}, "$env:LOCALAPPDATA\\Programs")
     foreach ($dir in $searchDirs) {
       if ($dir) {
         $fullPath = Join-Path $dir $relPath
@@ -322,8 +390,8 @@ $apps = Get-StartApps | ForEach-Object {
   }
   # Last-resort for AppX apps where WindowsApps is inaccessible: ask the shell for the icon
   $shellIconB64 = $null
-  if (-not $iconPath -and -not $exeIconB64 -and $appId -match '^[^!\\]+![^!\\]+$') {
-    try { $shellIconB64 = [IconHelper]::GetThumbnailBase64("shell:AppsFolder\$appId") } catch {}
+  if (-not $iconPath -and -not $exeIconB64 -and $appId -match '^[^!\\\\]+![^!\\\\]+$') {
+    try { $shellIconB64 = [IconHelper]::GetThumbnailBase64("shell:AppsFolder\\$appId") } catch {}
   }
   [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath; ExeIconB64=$exeIconB64; ShellIconB64=$shellIconB64 }
 }
@@ -333,6 +401,7 @@ $apps | ConvertTo-Json -Depth 2
         ['-NoProfile', '-NonInteractive', '-Command', ps],
         { windowsHide: true, stdio: 'pipe', timeout: 25000 },
         async (err, stdout) => {
+          installedAppsPromise = null;
           if (err || !stdout) { resolve([]); return; }
           try {
             let data = JSON.parse(stdout.trim());
@@ -379,13 +448,15 @@ $apps | ConvertTo-Json -Depth 2
         }
       );
     });
+
+    return installedAppsPromise;
   });
 
   ipcMain.handle('add-app-from-appid', (_, { name, appId, iconDataUrl }) => {
     // Steam URLs and other protocol-based IDs are stored as-is; everything else uses shell:AppsFolder
     const appPath = /^[a-z][a-z0-9+.-]*:\/\//i.test(appId) ? appId : `shell:AppsFolder\\${appId}`;
     return {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      id: randomUUID(),
       name,
       path: appPath,
       iconDataUrl: iconDataUrl || ''
@@ -405,8 +476,12 @@ $apps | ConvertTo-Json -Depth 2
   });
 
   ipcMain.handle('add-app-from-path', async (_, filePath) => {
+    if (typeof filePath !== 'string') return null;
     const ext = path.extname(filePath).toLowerCase();
     if (ext !== '.exe' && ext !== '.lnk') return null;
+    try {
+      if (!fs.existsSync(filePath)) return null;
+    } catch { return null; }
     return buildAppEntry(filePath);
   });
 
@@ -482,18 +557,18 @@ function removeSolidBackground(img) {
 }
 
 // Extract a shell thumbnail (folder stack preview, file preview) via IShellItemImageFactory.
+// Path is passed via environment variable to avoid PowerShell injection via special characters.
 function getFolderThumbnailBase64(folderPath) {
   return new Promise((resolve) => {
-    const escaped = folderPath.replace(/'/g, "''");
     const ps = `try {
   Add-Type -TypeDefinition @'
 ${ICON_HELPER_CS}
 '@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue
 } catch {}
-$b = [IconHelper]::GetThumbnailBase64('${escaped}')
+$b = [IconHelper]::GetThumbnailBase64($env:QL_PATH)
 if ($b) { Write-Output $b }`;
     execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
-      { windowsHide: true, stdio: 'pipe', timeout: 15000 },
+      { windowsHide: true, stdio: 'pipe', timeout: 15000, env: { ...process.env, QL_PATH: folderPath } },
       (err, stdout) => resolve(stdout ? stdout.trim() : null)
     );
   });
@@ -502,13 +577,13 @@ if ($b) { Write-Output $b }`;
 // Resolve a .lnk shortcut's icon path and target via PowerShell WScript.Shell.
 // This is safer than Electron's shell.readShortcutLink(), which can hard-crash the
 // main process on MSIX/AppX-generated shortcuts (the COM error is not catchable in JS).
+// Path is passed via environment variable to avoid PowerShell injection.
 function resolveShortcutLink(lnkPath) {
   return new Promise((resolve) => {
-    const escaped = lnkPath.replace(/'/g, "''");
     const ps = `
 $wsh = New-Object -ComObject WScript.Shell
 try {
-  $sc = $wsh.CreateShortcut('${escaped}')
+  $sc = $wsh.CreateShortcut($env:QL_PATH)
   $icon = $null; $target = $null
   if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\\s*,') {
     $p = (($sc.IconLocation -split ',')[0]).Trim()
@@ -521,7 +596,7 @@ try {
   @{ Icon = $icon; Target = $target } | ConvertTo-Json -Compress
 } catch { '{}' }`;
     execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
-      { windowsHide: true, stdio: 'pipe', timeout: 8000 },
+      { windowsHide: true, stdio: 'pipe', timeout: 8000, env: { ...process.env, QL_PATH: lnkPath } },
       (err, stdout) => {
         if (err || !stdout) { resolve(null); return; }
         try {
@@ -534,19 +609,18 @@ try {
 }
 
 // Extract a 256×256 icon from an executable via the Windows jumbo image list.
-// Spawns a short PowerShell process (~1-2 s first call due to C# compilation).
+// Path is passed via environment variable to avoid PowerShell injection.
 function getJumboIconBase64(exePath) {
   return new Promise((resolve) => {
-    const escaped = exePath.replace(/'/g, "''");
     const ps = `try {
   Add-Type -TypeDefinition @'
 ${ICON_HELPER_CS}
 '@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue
 } catch {}
-$b = [IconHelper]::GetBase64('${escaped}')
+$b = [IconHelper]::GetBase64($env:QL_PATH)
 if ($b) { Write-Output $b }`;
     execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
-      { windowsHide: true, stdio: 'pipe', timeout: 15000 },
+      { windowsHide: true, stdio: 'pipe', timeout: 15000, env: { ...process.env, QL_PATH: exePath } },
       (err, stdout) => resolve(stdout ? stdout.trim() : null)
     );
   });
@@ -554,7 +628,7 @@ if ($b) { Write-Output $b }`;
 
 async function buildAppEntry(filePath) {
   const name = path.basename(filePath, path.extname(filePath));
-  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const id = randomUUID();
 
   // For .lnk files, resolve the icon source via PowerShell WScript.Shell.
   // (Replaces Electron's shell.readShortcutLink which hard-crashes on MSIX shortcuts.)

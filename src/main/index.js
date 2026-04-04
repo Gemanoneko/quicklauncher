@@ -37,7 +37,7 @@ app.on('second-instance', () => {
   }
 });
 
-// Keep running in tray when all windows closed
-app.on('window-all-closed', (e) => {
-  e.preventDefault();
+// Keep running in tray when all windows are closed
+app.on('window-all-closed', () => {
+  // Intentionally empty — prevents the default quit so the tray icon stays alive
 });
