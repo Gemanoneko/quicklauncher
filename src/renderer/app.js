@@ -121,7 +121,10 @@ function startRename(appItem, labelEl) {
   input.focus();
   input.select();
 
+  let cancelled = false;
+
   async function commit() {
+    if (cancelled) return;
     const newName = input.value.trim() || appItem.name;
     appItem.name = newName;
     labelEl.textContent = newName;
@@ -133,7 +136,7 @@ function startRename(appItem, labelEl) {
   input.addEventListener('blur', commit);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-    if (e.key === 'Escape') { input.replaceWith(labelEl); }
+    if (e.key === 'Escape') { cancelled = true; input.replaceWith(labelEl); }
   });
 }
 
@@ -225,20 +228,23 @@ function setupDragDrop() {
   body.addEventListener('drop', async (e) => {
     e.preventDefault();
     document.getElementById('app').classList.remove('drag-over');
-
-    const files = Array.from(e.dataTransfer.files);
-    for (const file of files) {
-      const filePath = webUtils.getPathForFile(file);
-      const ext = filePath.split('.').pop().toLowerCase();
-      if (ext === 'exe' || ext === 'lnk') {
-        const appItem = await ipcRenderer.invoke('add-app-from-path', filePath);
-        if (appItem && !apps.find(a => a.path === appItem.path)) {
-          apps.push(appItem);
+    try {
+      const files = Array.from(e.dataTransfer.files);
+      for (const file of files) {
+        const filePath = webUtils.getPathForFile(file);
+        const ext = filePath.split('.').pop().toLowerCase();
+        if (ext === 'exe' || ext === 'lnk') {
+          const appItem = await ipcRenderer.invoke('add-app-from-path', filePath);
+          if (appItem && !apps.find(a => a.path === appItem.path)) {
+            apps.push(appItem);
+          }
         }
       }
+      await saveApps();
+      renderGrid();
+    } catch (err) {
+      console.error('Drop failed:', err);
     }
-    await saveApps();
-    renderGrid();
   });
 }
 

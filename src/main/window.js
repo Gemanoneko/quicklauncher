@@ -76,13 +76,21 @@ function createWindow(store) {
   return win;
 }
 
-/**
- * Uses PowerShell + inline C# to call SetWindowPos(hwnd, HWND_BOTTOM, ...)
- * This places the window behind all normal windows, like a desktop widget.
- */
+let sendToBottomTimer = null;
+
+// Debounced: coalesces rapid blur/resize/launch calls into a single PS invocation.
+// Without debouncing, every window-blur event spawns a PowerShell process that
+// compiles C# — typically 1-2 s each, accumulating when switching windows rapidly.
 function sendToBottom(win) {
   if (process.platform !== 'win32') return;
+  clearTimeout(sendToBottomTimer);
+  sendToBottomTimer = setTimeout(() => {
+    sendToBottomTimer = null;
+    _sendToBottomNow(win);
+  }, 200);
+}
 
+function _sendToBottomNow(win) {
   try {
     const hwndBuf = win.getNativeWindowHandle();
     // On 64-bit Windows the HWND buffer is 8 bytes
@@ -90,8 +98,7 @@ function sendToBottom(win) {
       ? hwndBuf.readBigUInt64LE(0)
       : BigInt(hwndBuf.readUInt32LE(0));
 
-    const script = `
-Add-Type -TypeDefinition @'
+    const script = `Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 public class WinPos {
@@ -100,7 +107,6 @@ public class WinPos {
 }
 '@
 $hwnd = [IntPtr][long]${hwnd.toString()}
-# HWND_BOTTOM = 1, SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE = 0x0013
 [WinPos]::SetWindowPos($hwnd, [IntPtr]1, 0, 0, 0, 0, 0x0013)
 `;
 

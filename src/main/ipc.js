@@ -420,6 +420,54 @@ $apps | ConvertTo-Json -Depth 2
   ipcMain.handle('hide-window', () => win.hide());
 }
 
+// Remove a solid background color from a thumbnail image using BFS flood-fill from
+// the four corners. Works for any background color (black, white, grey, etc.).
+// Returns a new NativeImage with the background pixels made transparent, or the
+// original image if no solid background is detected.
+function removeSolidBackground(img) {
+  const { width: W, height: H } = img.getSize();
+  if (W < 4 || H < 4) return img;
+  const src = img.toBitmap(); // raw BGRA
+
+  const idx = (x, y) => (y * W + x) * 4;
+  const corner = (x, y) => { const i = idx(x, y); return [src[i], src[i+1], src[i+2], src[i+3]]; };
+  const corners = [corner(0,0), corner(W-1,0), corner(0,H-1), corner(W-1,H-1)];
+
+  // All corners must be opaque for solid-background detection
+  if (!corners.every(c => c[3] > 200)) return img;
+
+  // Average the corner colors to get the background reference
+  const bgB = Math.round(corners.reduce((s,c) => s+c[0], 0) / 4);
+  const bgG = Math.round(corners.reduce((s,c) => s+c[1], 0) / 4);
+  const bgR = Math.round(corners.reduce((s,c) => s+c[2], 0) / 4);
+  const tol = 22;
+  const isBg = (b, g, r, a) =>
+    a > 200 && Math.abs(b-bgB) < tol && Math.abs(g-bgG) < tol && Math.abs(r-bgR) < tol;
+
+  // All corners must agree on the same background color
+  if (!corners.every(c => isBg(c[0], c[1], c[2], c[3]))) return img;
+
+  // BFS flood-fill from the four corners to erase the background
+  const buf = Buffer.from(src);
+  const vis = new Uint8Array(W * H);
+  const q = [0, W-1, (H-1)*W, (H-1)*W + W-1];
+  q.forEach(p => (vis[p] = 1));
+
+  for (let qi = 0; qi < q.length; qi++) {
+    const p = q[qi];
+    const pi = p * 4;
+    if (!isBg(buf[pi], buf[pi+1], buf[pi+2], buf[pi+3])) continue;
+    buf[pi+3] = 0; // transparent
+    const x = p % W, y = (p / W) | 0;
+    if (x > 0     && !vis[p-1]) { vis[p-1] = 1; q.push(p-1); }
+    if (x < W-1   && !vis[p+1]) { vis[p+1] = 1; q.push(p+1); }
+    if (y > 0     && !vis[p-W]) { vis[p-W] = 1; q.push(p-W); }
+    if (y < H-1   && !vis[p+W]) { vis[p+W] = 1; q.push(p+W); }
+  }
+
+  return nativeImage.createFromBuffer(buf, { width: W, height: H });
+}
+
 // Extract a shell thumbnail (folder stack preview, file preview) via IShellItemImageFactory.
 function getFolderThumbnailBase64(folderPath) {
   return new Promise((resolve) => {
@@ -531,7 +579,8 @@ async function buildAppEntry(filePath) {
     const b64 = await getFolderThumbnailBase64(folderTarget);
     if (b64) {
       try {
-        const img = nativeImage.createFromBuffer(Buffer.from(b64, 'base64'));
+        const raw = nativeImage.createFromBuffer(Buffer.from(b64, 'base64'));
+        const img = removeSolidBackground(raw);
         if (!img.isEmpty()) iconDataUrl = img.toDataURL();
       } catch { /* fall through */ }
     }
