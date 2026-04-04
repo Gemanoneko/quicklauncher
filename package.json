@@ -6,7 +6,8 @@
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --win --publish always && node scripts/cleanup-releases.js",
+    "build": "electron-builder --win --publish always",
+    "postbuild": "node scripts/cleanup-releases.js",
     "pack": "electron-builder --win --publish never"
   },
   "build": {
