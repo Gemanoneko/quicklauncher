@@ -153,11 +153,13 @@
   93%       { text-shadow: 0 0 4px rgba(180,190,210,.40); }
 }
 
-/* ── App border: cold measured pulse ────────────────────────────────────────── */
-#app { animation: empire-border 12s ease-in-out infinite; }
+/* ── App border: cold measured pulse — Death Star power cycling ──────────────── */
+#app { animation: empire-border 10s ease-in-out infinite; }
 @keyframes empire-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(150,158,175,.22); }
-  50%      { box-shadow: 0 0 0 1px rgba(180,190,210,.45); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(150,158,175,.25), inset 0 0 20px rgba(150,158,175,.04); }
+  40%      { box-shadow: 0 0 0 1px rgba(180,190,210,.70), 0 0 18px rgba(180,190,210,.30), inset 0 0 40px rgba(160,168,185,.16); }
+  50%      { box-shadow: 0 0 0 2px rgba(200,210,230,.85), 0 0 28px rgba(200,210,230,.45), inset 0 0 55px rgba(180,190,210,.22); }
+  60%      { box-shadow: 0 0 0 1px rgba(180,190,210,.70), 0 0 18px rgba(180,190,210,.30), inset 0 0 40px rgba(160,168,185,.16); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

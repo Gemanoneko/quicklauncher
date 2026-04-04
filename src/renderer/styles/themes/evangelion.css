@@ -89,14 +89,14 @@
 }
 
 /* ── AT Field pulse — hexagonal barrier expands and contracts ───────────────── */
-#app { animation: ev-at-field 10s ease-in-out infinite; }
+#app { animation: ev-at-field 9s ease-in-out infinite; }
 @keyframes ev-at-field {
-  0%, 60%, 100% { box-shadow: none; }
-  65% { box-shadow: 0 0 0 1px rgba(224,88,0,.30), inset 0 0 18px rgba(200,70,0,.04); }
-  70% { box-shadow: 0 0 0 2px rgba(224,88,0,.50), 0 0 16px rgba(224,88,0,.14), inset 0 0 28px rgba(200,70,0,.07); }
-  75% { box-shadow: 0 0 0 1px rgba(204,0,0,.55), 0 0 24px rgba(204,0,0,.12), inset 0 0 22px rgba(204,0,0,.05); }
-  80% { box-shadow: 0 0 0 2px rgba(224,88,0,.38), inset 0 0 12px rgba(200,70,0,.04); }
-  85% { box-shadow: none; }
+  0%, 45%, 100% { box-shadow: none; }
+  55% { box-shadow: 0 0 0 1px rgba(224,88,0,.60), 0 0 14px rgba(224,88,0,.28), inset 0 0 20px rgba(200,70,0,.12); }
+  65% { box-shadow: 0 0 0 3px rgba(224,88,0,.85), 0 0 32px rgba(224,88,0,.50), inset 0 0 40px rgba(200,70,0,.22); }
+  70% { box-shadow: 0 0 0 2px rgba(204,0,0,.90), 0 0 40px rgba(204,0,0,.45), inset 0 0 36px rgba(204,0,0,.18); }
+  78% { box-shadow: 0 0 0 3px rgba(224,88,0,.70), 0 0 24px rgba(224,88,0,.38), inset 0 0 28px rgba(200,70,0,.16); }
+  88% { box-shadow: none; }
 }
 
 /* ── NERV terminal overlay + scanlines ──────────────────────────────────────── */

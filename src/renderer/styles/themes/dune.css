@@ -122,15 +122,15 @@
 }
 
 /* ── Shai-Hulud — sandworm passing beneath, deep amber glow rises and fades ── */
-#app { animation: dn-sandworm 18s ease-in-out infinite; }
+#app { animation: dn-sandworm 14s ease-in-out infinite; }
 @keyframes dn-sandworm {
-  0%, 60%, 100% { box-shadow: none; }
-  65% { box-shadow: 0 4px 20px rgba(200,144,80,.10); }
-  70% { box-shadow: 0 6px 35px rgba(200,144,80,.22), inset 0 -8px 20px rgba(160,100,40,.06); }
-  75% { box-shadow: 0 8px 50px rgba(200,144,80,.30), inset 0 -12px 30px rgba(160,100,40,.10); }
-  80% { box-shadow: 0 6px 35px rgba(200,144,80,.20), inset 0 -6px 16px rgba(160,100,40,.06); }
-  85% { box-shadow: 0 3px 14px rgba(200,144,80,.08); }
-  90% { box-shadow: none; }
+  0%, 50%, 100% { box-shadow: none; }
+  58% { box-shadow: 0 6px 30px rgba(200,144,80,.28), inset 0 -6px 20px rgba(160,100,40,.12); }
+  66% { box-shadow: 0 10px 55px rgba(200,144,80,.58), inset 0 -12px 40px rgba(160,100,40,.28); }
+  74% { box-shadow: 0 14px 80px rgba(200,144,80,.75), 0 20px 100px rgba(160,100,40,.40), inset 0 -16px 55px rgba(160,100,40,.35); }
+  82% { box-shadow: 0 10px 55px rgba(200,144,80,.55), inset 0 -10px 36px rgba(160,100,40,.24); }
+  90% { box-shadow: 0 5px 22px rgba(200,144,80,.20); }
+  96% { box-shadow: none; }
 }
 
 /* ── App border: warm amber pulse ──────────────────────────────────────────── */

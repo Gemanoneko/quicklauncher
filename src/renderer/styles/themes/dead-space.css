@@ -116,14 +116,15 @@
   animation: ds-rig-monitor 9s ease-in-out infinite;
 }
 @keyframes ds-rig-monitor {
-  0%, 100% { box-shadow: -2px 0 12px rgba(224,104,32,.30), inset 2px 0 10px rgba(224,104,32,.06); }
-  40% { box-shadow: -2px 0 22px rgba(224,104,32,.58), inset 2px 0 18px rgba(224,104,32,.14); }
-  41% { box-shadow: -2px 0 5px rgba(224,104,32,.12), inset 2px 0 3px rgba(224,104,32,.02); }
-  43% { box-shadow: -2px 0 18px rgba(224,104,32,.50), inset 2px 0 14px rgba(224,104,32,.11); }
-  /* Stasis module engaged — cold blue override */
-  83% { box-shadow: -2px 0 14px rgba(224,104,32,.42), inset 2px 0 12px rgba(224,104,32,.09); }
-  84% { box-shadow: -2px 0 24px rgba(0,120,220,.38), inset 2px 0 20px rgba(0,120,220,.12), 0 0 32px rgba(0,100,200,.14); }
-  85% { box-shadow: -2px 0 12px rgba(224,104,32,.32), inset 2px 0 10px rgba(224,104,32,.07); }
+  0%, 100% { box-shadow: -2px 0 16px rgba(224,104,32,.45), inset 2px 0 14px rgba(224,104,32,.10); }
+  35% { box-shadow: -2px 0 32px rgba(224,104,32,.80), inset 2px 0 28px rgba(224,104,32,.30); }
+  38% { box-shadow: -2px 0 8px rgba(224,104,32,.20), inset 2px 0 5px rgba(224,104,32,.05); }
+  41% { box-shadow: -2px 0 28px rgba(224,104,32,.72), inset 2px 0 24px rgba(224,104,32,.26); }
+  44% { box-shadow: -2px 0 16px rgba(224,104,32,.45), inset 2px 0 14px rgba(224,104,32,.10); }
+  /* Stasis module engaged — cold blue override flash */
+  80% { box-shadow: -2px 0 20px rgba(224,104,32,.60), inset 2px 0 18px rgba(224,104,32,.16); }
+  83% { box-shadow: -2px 0 40px rgba(0,140,255,.90), inset 2px 0 36px rgba(0,120,220,.40), 0 0 55px rgba(0,100,200,.35); }
+  85% { box-shadow: -2px 0 16px rgba(224,104,32,.45), inset 2px 0 14px rgba(224,104,32,.10); }
 }
 
 /* ── Header orange RIG-color left bar ─────────────────────────────────────── */

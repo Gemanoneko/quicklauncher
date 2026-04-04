@@ -205,16 +205,16 @@
 }
 
 /* ── Resonance cascade — dimensional bleed, orange-green border surge ───────── */
-#app { animation: hl-cascade 20s steps(1) infinite; }
+#app { animation: hl-cascade 16s steps(1) infinite; }
 @keyframes hl-cascade {
-  0%, 75%, 100% { box-shadow: none; }
-  76% { box-shadow: 0 0 0 1px rgba(222,128,0,.40), inset 0 0 16px rgba(222,128,0,.05); }
-  77% { box-shadow: 0 0 0 1px rgba(76,112,64,.55), inset 0 0 20px rgba(60,90,50,.06); }
-  78% { box-shadow: 0 0 0 2px rgba(222,128,0,.65), 0 0 18px rgba(222,128,0,.14), inset 0 0 30px rgba(222,128,0,.08); }
-  79% { box-shadow: 0 0 0 1px rgba(76,112,64,.45); }
-  80% { box-shadow: 0 0 0 2px rgba(222,128,0,.80), 0 0 24px rgba(222,128,0,.18); }
-  81% { box-shadow: 0 0 8px rgba(222,128,0,.20); }
-  82% { box-shadow: none; }
+  0%, 70%, 100% { box-shadow: none; }
+  71% { box-shadow: 0 0 0 2px rgba(222,128,0,.80), 0 0 20px rgba(222,128,0,.40), inset 0 0 30px rgba(222,128,0,.18); }
+  72% { box-shadow: 0 0 0 2px rgba(76,140,64,.85), 0 0 24px rgba(76,140,64,.45), inset 0 0 35px rgba(60,110,50,.20); }
+  73% { box-shadow: 0 0 0 3px rgba(222,128,0,.95), 0 0 36px rgba(222,128,0,.60), inset 0 0 50px rgba(222,128,0,.28); }
+  74% { box-shadow: 0 0 0 1px rgba(76,140,64,.60), 0 0 14px rgba(76,140,64,.30); }
+  75% { box-shadow: 0 0 0 3px rgba(222,128,0,.90), 0 0 40px rgba(222,128,0,.55), inset 0 0 45px rgba(222,128,0,.24); }
+  76% { box-shadow: 0 0 16px rgba(222,128,0,.35); }
+  77% { box-shadow: none; }
 }
 
 /* ── Static flicker — corrupted transmission through the resonance cascade ── */
