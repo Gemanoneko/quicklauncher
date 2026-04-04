@@ -1,0 +1,219 @@
+/* ══ DEUS EX ════════════════════════════════════════════════════════════════════
+   Mankind Divided. Neural augmentation. Transhumanist conspiracy.
+   Gold circuitry on near-black — the beauty and horror of augmented humanity.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       0px;
+  --app-clip:     polygon(0 18px,18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px));
+  --overlay-clip: polygon(0 18px,18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px));
+
+  /* ── Backgrounds ── */
+  --bg:           rgba(3, 2, 0, 0.94);
+  --panel-bg:     rgba(5, 3, 0, 0.97);
+  --overlay-bg:   rgba(3, 2, 0, 0.96);
+  --header-bg:    rgba(212, 165, 32, 0.04);
+
+  /* ── Typography ── */
+  --font:         'Consolas', 'Courier New', monospace;
+
+  /* ── Text ── */
+  --text:         #D0B870;
+  --text-dim:     rgba(208, 184, 112, 0.42);
+
+  /* ── Accents ── */
+  --accent-c:     #D4A520;   /* gold — primary */
+  --accent-m:     #F0C020;   /* bright amber — edit/destructive */
+  --accent-y:     #F0C020;   /* bright gold — updates */
+
+  /* ── Borders ── */
+  --border:       rgba(212, 165, 32, 0.18);
+  --border-h:     rgba(212, 165, 32, 0.52);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(212,165,32,.65),  0 0 18px rgba(212,165,32,.22);
+  --glow-m:       0 0 6px rgba(240,192,32,.70),  0 0 18px rgba(240,192,32,.25);
+  --glow-y:       0 0 6px rgba(240,192,32,.70),  0 0 18px rgba(240,192,32,.25);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 16px rgba(212,165,32,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(212,165,32,.08);
+
+  /* ── Title animation ── */
+  --title-anim:   aug-glitch 9s steps(1) infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(212, 165, 32, 0.06);
+  --tile-hover-border: rgba(212, 165, 32, 0.28);
+  --tile-hover-shadow: 0 0 12px rgba(212, 165, 32, 0.10);
+  --tile-active-bg:    rgba(212, 165, 32, 0.12);
+  --tile-icon-glow:    rgba(212,165,32,.40);
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(212, 165, 32, 0.09);
+  --btn-active-bg:  rgba(212, 165, 32, 0.18);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(212, 165, 32, 0.20);
+  --drop-icon-color:  rgba(212, 165, 32, 0.28);
+  --hint-sub-color:   rgba(212, 165, 32, 0.22);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(212, 165, 32, 0.32);
+  --rename-input-bg:  rgba(212, 165, 32, 0.07);
+
+  /* ── Edit bar (bright amber) ── */
+  --edit-bar-bg:          rgba(240, 192, 32, 0.06);
+  --edit-bar-border:      rgba(240, 192, 32, 0.30);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(240, 192, 32, 0.36);
+  --btn-done-hover-bg:    rgba(240, 192, 32, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(212, 165, 32, 0.36);
+
+  /* ── Update banner (bright gold) ── */
+  --update-bg:             rgba(240, 192, 32, 0.06);
+  --update-border:         rgba(240, 192, 32, 0.36);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(240, 192, 32, 0.30);
+  --update-btn-hover-bg:   rgba(240, 192, 32, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(240, 192, 32, 0.36);
+  --btn-close-hover-bg:   rgba(240, 192, 32, 0.09);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(212, 165, 32, 0.07);
+  --picker-item-hover-bg:  rgba(212, 165, 32, 0.07);
+  --picker-item-active-bg: rgba(212, 165, 32, 0.13);
+  --picker-placeholder-bg: rgba(212, 165, 32, 0.08);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(212, 165, 32, 0.16);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(200, 100, 0, 0.88);
+  --remove-btn-border:     #D4A520;
+}
+
+/* ── Title animation: aug-glitch (gold-toned) ──────────────────────────────── */
+@keyframes aug-glitch {
+  0%, 88%, 100% {
+    color: #D0B870;
+    text-shadow: 0 0 8px rgba(212,165,32,.45);
+    transform: none;
+    clip-path: none;
+  }
+  89% {
+    color: #F0D060;
+    text-shadow: 2px 0 0 rgba(240,192,32,.7), -1px 0 0 rgba(180,80,0,.4);
+    transform: translateX(2px);
+  }
+  90% {
+    color: #D0B870;
+    text-shadow: -2px 0 0 rgba(212,165,32,.6), 1px 0 0 rgba(200,100,0,.3);
+    transform: translateX(-1px);
+  }
+  91%, 95% {
+    color: #F0D060;
+    text-shadow: 0 0 12px rgba(240,192,32,.8), 0 0 30px rgba(212,165,32,.3);
+    transform: none;
+  }
+  96% {
+    color: #D0B870;
+    text-shadow: 3px 0 0 rgba(240,192,32,.5), -2px 0 0 rgba(160,80,0,.4);
+    transform: translateX(-2px);
+  }
+  97% {
+    color: #D0B870;
+    text-shadow: 0 0 6px rgba(212,165,32,.35);
+    transform: none;
+  }
+}
+
+/* ── App border: gold augmentation pulse ───────────────────────────────────── */
+@keyframes border-pulse {
+  0%, 100% { border-color: rgba(212,165,32,.18); box-shadow: none; }
+  50%       { border-color: rgba(212,165,32,.50); box-shadow: inset 0 0 16px rgba(212,165,32,.06); }
+}
+
+/* ── App::after — augmentation circuit dot-dash pattern ────────────────────── */
+#app::after {
+  background:
+    /* geometric circuit dots — very low opacity */
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'20'%20height%3D'20'%3E%3Ccircle%20cx%3D'10'%20cy%3D'10'%20r%3D'0.7'%20fill%3D'%23D4A520'%20fill-opacity%3D'0.06'%2F%3E%3Cline%20x1%3D'0'%20y1%3D'10'%20x2%3D'4'%20y2%3D'10'%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.04'%20stroke-width%3D'0.5'%2F%3E%3Cline%20x1%3D'16'%20y1%3D'10'%20x2%3D'20'%20y2%3D'10'%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.04'%20stroke-width%3D'0.5'%2F%3E%3Cline%20x1%3D'10'%20y1%3D'0'%20x2%3D'10'%20y2%3D'4'%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.04'%20stroke-width%3D'0.5'%2F%3E%3Cline%20x1%3D'10'%20y1%3D'16'%20x2%3D'10'%20y2%3D'20'%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.04'%20stroke-width%3D'0.5'%2F%3E%3C%2Fsvg%3E"),
+    /* vignette */
+    radial-gradient(ellipse 110% 100% at 50% 50%, transparent 52%, rgba(2,1,0,.48) 100%);
+  background-size: 20px 20px, auto;
+  opacity: 1;
+}
+
+/* ── Grid container: Jensen's HUD scan lines + gold corner markers ──────────── */
+#grid-container {
+  position: relative;
+}
+
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* horizontal HUD scan lines — thin gold at very low opacity */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 19px,
+      rgba(212,165,32,.024) 19px,
+      rgba(212,165,32,.024) 20px
+    ),
+    /* top glow — Jensen's HUD top bar feel */
+    linear-gradient(180deg,
+      rgba(212,165,32,.04) 0px,
+      rgba(212,165,32,.01) 40px,
+      transparent 80px
+    ),
+    /* bottom ground line */
+    linear-gradient(0deg,
+      rgba(212,165,32,.035) 0px,
+      transparent 32px
+    );
+  background-size: 100% 20px, 100% 100%, 100% 100%;
+}
+
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* SVG corner markers — augmented HUD registration marks */
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'100%25'%20height%3D'100%25'%3E%3Cg%20stroke%3D'%23D4A520'%20stroke-opacity%3D'0.12'%20stroke-width%3D'1'%20fill%3D'none'%3E%3Cpolyline%20points%3D'0,20%200,0%2020,0'%2F%3E%3Cpolyline%20points%3D'calc(100%25%20-%2020),0%20100%25,0%20100%25,20'%2F%3E%3Cpolyline%20points%3D'0,calc(100%25%20-%2020)%200,100%25%2020,100%25'%2F%3E%3Cpolyline%20points%3D'calc(100%25%20-%2020),100%25%20100%25,100%25%20100%25,calc(100%25%20-%2020)'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+#header {
+  border-bottom: 1px solid rgba(212, 165, 32, 0.22);
+  box-shadow: 0 2px 12px rgba(0,0,0,.40);
+}
+
+/* ── Header accent bar: amber-to-gold gradient ─────────────────────────────── */
+#header::before {
+  background: linear-gradient(180deg, #F0C020 0%, #D4A520 60%, rgba(212,165,32,.4) 100%);
+  box-shadow: 0 0 8px rgba(212,165,32,.55);
+}
+
+/* ── Overlay panel: same chamfered clip as app ─────────────────────────────── */
+.overlay-panel {
+  clip-path: polygon(0 18px,18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px)) !important;
+  border-left: 2px solid rgba(240,192,32,.35) !important;
+}

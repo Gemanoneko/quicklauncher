@@ -1,0 +1,172 @@
+/* ══ ALIEN ════════════════════════════════════════════════════════════════════
+   Weyland-Yutani corporate terminal — phosphor green on void black.
+   Cold military precision. Heavy CRT scanlines. No softness. No mercy.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg:                   #000200;
+  --panel-bg:             rgba(0, 2, 0, 0.98);
+  --overlay-bg:           rgba(0, 1, 0, 0.92);
+  --header-bg:            rgba(0, 4, 0, 0.97);
+
+  /* Typography */
+  --font:                 'Consolas', 'Courier New', monospace;
+  --text:                 #18A016;
+  --text-dim:             #0a5008;
+
+  /* Shape — hard rectangle, no softness */
+  --radius:               0px;
+  --app-clip:             none;
+  --overlay-clip:         none;
+
+  /* Accent palette — phosphor / dim / military olive */
+  --accent-c:             #1BC81B;
+  --accent-m:             #8AAA00;
+  --accent-y:             #AACC00;
+
+  /* Borders */
+  --border:               rgba(27, 200, 27, 0.2);
+  --border-h:             rgba(27, 200, 27, 0.65);
+
+  /* Glows */
+  --glow-c:               0 0 5px #1BC81B, 0 0 14px rgba(27, 200, 27, 0.4);
+  --glow-m:               0 0 5px #8AAA00, 0 0 14px rgba(138, 170, 0, 0.4);
+  --glow-y:               0 0 5px #AACC00, 0 0 14px rgba(170, 204, 0, 0.4);
+  --pulse-glow:           inset 0 0 18px rgba(27, 200, 27, 0.15), inset 0 0 4px rgba(27, 200, 27, 0.1);
+
+  /* Scanlines — heavy CRT */
+  --scanlines:            repeating-linear-gradient(
+                            to bottom,
+                            transparent 0px,
+                            transparent 2px,
+                            rgba(0, 0, 0, 0.45) 2px,
+                            rgba(0, 0, 0, 0.45) 3px
+                          );
+
+  /* Title animation — terminal blink */
+  --title-anim:           alien-blink 1.1s step-end infinite;
+
+  /* Tiles */
+  --tile-hover-bg:        rgba(27, 200, 27, 0.06);
+  --tile-hover-border:    #1BC81B;
+  --tile-hover-shadow:    0 0 8px rgba(27, 200, 27, 0.4), inset 0 0 6px rgba(27, 200, 27, 0.04);
+  --tile-active-bg:       rgba(27, 200, 27, 0.12);
+  --tile-icon-glow:       drop-shadow(0 0 5px #1BC81B) drop-shadow(0 0 10px rgba(27, 200, 27, 0.5));
+
+  /* Buttons */
+  --btn-hover-bg:         rgba(27, 200, 27, 0.08);
+  --btn-active-bg:        rgba(27, 200, 27, 0.15);
+
+  /* Drop hint */
+  --drop-hint-border:     rgba(27, 200, 27, 0.3);
+  --drop-icon-color:      rgba(27, 200, 27, 0.4);
+  --hint-sub-color:       #0a5008;
+
+  /* Rename */
+  --rename-dashed:        rgba(27, 200, 27, 0.45);
+  --rename-input-bg:      rgba(27, 200, 27, 0.04);
+
+  /* Edit bar — military olive */
+  --edit-bar-bg:          rgba(138, 170, 0, 0.07);
+  --edit-bar-border:      rgba(138, 170, 0, 0.55);
+  --edit-label-color:     #8AAA00;
+  --edit-label-glow:      0 0 6px rgba(138, 170, 0, 0.6), 0 0 16px rgba(138, 170, 0, 0.25);
+  --btn-done-color:       #8AAA00;
+  --btn-done-border:      rgba(138, 170, 0, 0.5);
+  --btn-done-hover-bg:    rgba(138, 170, 0, 0.1);
+  --btn-done-hover-glow:  0 0 8px rgba(138, 170, 0, 0.5);
+  --btn-add-border:       rgba(27, 200, 27, 0.35);
+
+  /* Update banner — olive yellow */
+  --update-bg:            rgba(170, 204, 0, 0.06);
+  --update-border:        rgba(170, 204, 0, 0.45);
+  --update-color:         #AACC00;
+  --update-btn-border:    rgba(170, 204, 0, 0.45);
+  --update-btn-hover-bg:  rgba(170, 204, 0, 0.08);
+  --update-btn-hover-glow: 0 0 8px rgba(170, 204, 0, 0.4);
+
+  /* Settings CLOSE — olive */
+  --btn-close-color:      #8AAA00;
+  --btn-close-border:     rgba(138, 170, 0, 0.45);
+  --btn-close-hover-bg:   rgba(138, 170, 0, 0.08);
+  --btn-close-hover-glow: 0 0 8px rgba(138, 170, 0, 0.45);
+
+  /* Picker / search */
+  --picker-search-bg:         rgba(27, 200, 27, 0.04);
+  --picker-item-hover-bg:     rgba(27, 200, 27, 0.07);
+  --picker-item-active-bg:    rgba(27, 200, 27, 0.13);
+  --picker-placeholder-bg:    rgba(27, 200, 27, 0.04);
+
+  /* Skin / remove */
+  --skin-btn-active-bg:   rgba(27, 200, 27, 0.12);
+  --remove-btn-bg:        rgba(138, 170, 0, 0.1);
+  --remove-btn-border:    rgba(138, 170, 0, 0.45);
+
+  /* Drag */
+  --drag-over-glow:       inset 0 0 20px rgba(27, 200, 27, 0.2);
+}
+
+/* ── Heavy CRT scanlines overlay ──────────────────────────────────────────── */
+#app::after {
+  content: '';
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.5) 2px,
+      rgba(0, 0, 0, 0.5) 3px
+    );
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* ── Header bright phosphor accent bar ────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #1BC81B, rgba(27, 200, 27, 0.4));
+  box-shadow: 0 0 10px #1BC81B, 0 0 24px rgba(27, 200, 27, 0.45);
+  width: 3px;
+}
+
+/* ── WEYLAND-YUTANI watermark + crosshatch grid ───────────────────────────── */
+#grid-container::before {
+  content: 'WEYLAND-YUTANI CORP';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 6px;
+  color: rgba(27, 200, 27, 0.04);
+  text-align: center;
+  white-space: nowrap;
+  transform: rotate(-30deg);
+  background:
+    /* subtle crosshatch */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 31px,
+      rgba(27, 200, 27, 0.03) 31px,
+      rgba(27, 200, 27, 0.03) 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 31px,
+      rgba(27, 200, 27, 0.03) 31px,
+      rgba(27, 200, 27, 0.03) 32px
+    );
+}
+
+/* ── Terminal cursor/blink animation ──────────────────────────────────────── */
+@keyframes alien-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}

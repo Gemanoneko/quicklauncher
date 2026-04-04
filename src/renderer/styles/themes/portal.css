@@ -1,0 +1,224 @@
+/* ══ PORTAL ═══════════════════════════════════════════════════════════════════
+   Aperture Science Enrichment Center / GLaDOS / Test Chambers.
+   Clean, clinical, scientific. Two portals: orange and blue.
+   The cake is a lie. But the CSS variables are very much real.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg:                   #0A0C14;
+  --panel-bg:             rgba(10, 12, 22, 0.98);
+  --overlay-bg:           rgba(8, 10, 18, 0.92);
+  --header-bg:            rgba(12, 14, 26, 0.97);
+
+  /* Typography — Aperture Science is clean corporate sans-serif */
+  --font:                 'Segoe UI', 'Arial', sans-serif;
+  --text:                 #C0CCD8;
+  --text-dim:             #4A5668;
+
+  /* Shape — rectangular test chambers */
+  --radius:               4px;
+  --app-clip:             none;
+  --overlay-clip:         none;
+
+  /* Accent palette — orange portal / blue portal / silver */
+  --accent-c:             #FF6600;
+  --accent-m:             #0060CC;
+  --accent-y:             #0088FF;
+
+  /* Borders */
+  --border:               rgba(192, 204, 216, 0.12);
+  --border-h:             rgba(255, 102, 0, 0.55);
+
+  /* Glows — portal energy fields */
+  --glow-c:               0 0 6px rgba(255, 102, 0, 0.7), 0 0 18px rgba(255, 102, 0, 0.28);
+  --glow-m:               0 0 6px rgba(0, 96, 204, 0.7), 0 0 18px rgba(0, 96, 204, 0.28);
+  --glow-y:               0 0 6px rgba(0, 136, 255, 0.7), 0 0 18px rgba(0, 136, 255, 0.28);
+  --pulse-glow:           inset 0 0 20px rgba(255, 102, 0, 0.08), inset 0 0 40px rgba(0, 96, 204, 0.06);
+
+  /* Scanlines — clean Aperture Science room, barely perceptible */
+  --scanlines:            repeating-linear-gradient(
+                            to bottom,
+                            transparent 0px,
+                            transparent 4px,
+                            rgba(0, 0, 0, 0.06) 4px,
+                            rgba(0, 0, 0, 0.06) 5px
+                          );
+
+  /* Title — slow portal color shift, orange to blue */
+  --title-anim:           portal-fade 6s ease-in-out infinite;
+
+  /* Tiles */
+  --tile-hover-bg:        rgba(255, 102, 0, 0.07);
+  --tile-hover-border:    #FF6600;
+  --tile-hover-shadow:    0 0 10px rgba(255, 102, 0, 0.35), inset 0 0 8px rgba(255, 102, 0, 0.05);
+  --tile-active-bg:       rgba(255, 102, 0, 0.12);
+  --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 102, 0, 0.75)) drop-shadow(0 0 12px rgba(255, 102, 0, 0.35));
+
+  /* Buttons */
+  --btn-hover-bg:         rgba(255, 102, 0, 0.1);
+  --btn-active-bg:        rgba(255, 102, 0, 0.17);
+
+  /* Drop hint */
+  --drop-hint-border:     rgba(192, 204, 216, 0.2);
+  --drop-icon-color:      rgba(255, 102, 0, 0.45);
+  --hint-sub-color:       #4A5668;
+
+  /* Rename */
+  --rename-dashed:        rgba(255, 102, 0, 0.45);
+  --rename-input-bg:      rgba(255, 102, 0, 0.06);
+
+  /* Edit bar — orange portal */
+  --edit-bar-bg:          rgba(255, 102, 0, 0.08);
+  --edit-bar-border:      rgba(255, 102, 0, 0.55);
+  --edit-label-color:     #FF6600;
+  --edit-label-glow:      0 0 8px rgba(255, 102, 0, 0.75), 0 0 20px rgba(255, 102, 0, 0.3);
+  --btn-done-color:       #FF6600;
+  --btn-done-border:      rgba(255, 102, 0, 0.55);
+  --btn-done-hover-bg:    rgba(255, 102, 0, 0.12);
+  --btn-done-hover-glow:  0 0 10px rgba(255, 102, 0, 0.55);
+  --btn-add-border:       rgba(0, 96, 204, 0.45);
+
+  /* Update banner — blue portal */
+  --update-bg:            rgba(0, 136, 255, 0.07);
+  --update-border:        rgba(0, 136, 255, 0.5);
+  --update-color:         #0088FF;
+  --update-btn-border:    rgba(0, 136, 255, 0.45);
+  --update-btn-hover-bg:  rgba(0, 136, 255, 0.1);
+  --update-btn-hover-glow: 0 0 10px rgba(0, 136, 255, 0.5);
+
+  /* Settings CLOSE — blue portal */
+  --btn-close-color:      #0060CC;
+  --btn-close-border:     rgba(0, 96, 204, 0.45);
+  --btn-close-hover-bg:   rgba(0, 96, 204, 0.1);
+  --btn-close-hover-glow: 0 0 10px rgba(0, 96, 204, 0.55);
+
+  /* Picker / search */
+  --picker-search-bg:         rgba(255, 102, 0, 0.05);
+  --picker-item-hover-bg:     rgba(255, 102, 0, 0.08);
+  --picker-item-active-bg:    rgba(255, 102, 0, 0.14);
+  --picker-placeholder-bg:    rgba(192, 204, 216, 0.05);
+
+  /* Skin / remove */
+  --skin-btn-active-bg:   rgba(255, 102, 0, 0.14);
+  --remove-btn-bg:        rgba(0, 96, 204, 0.14);
+  --remove-btn-border:    rgba(0, 96, 204, 0.5);
+
+  /* Drag */
+  --drag-over-glow:       inset 0 0 24px rgba(255, 102, 0, 0.22);
+}
+
+/* ── Header left bar — orange portal accent ──────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #FF6600, rgba(255, 102, 0, 0.25));
+  box-shadow: 0 0 8px rgba(255, 102, 0, 0.7), 0 0 20px rgba(255, 102, 0, 0.28);
+}
+
+/* ── Overlay panel — orange top stripe, dual portal ring shadows ─────────── */
+.overlay-panel {
+  border-top: 2px solid rgba(255, 102, 0, 0.55);
+  box-shadow:
+    0 -2px 12px rgba(255, 102, 0, 0.18),
+    /* orange portal ring decoration — left side */
+    -60px 0 0 -48px rgba(255, 102, 0, 0.35),
+    -60px 0 20px -48px rgba(255, 102, 0, 0.2),
+    /* blue portal ring decoration — right side */
+    60px 0 0 -48px rgba(0, 96, 204, 0.35),
+    60px 0 20px -48px rgba(0, 96, 204, 0.2);
+}
+
+/* ── Very faint scanlines at 0.04 opacity — clinical white room ──────────── */
+#app::after {
+  content: '';
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 4px,
+      rgba(0, 0, 0, 0.08) 4px,
+      rgba(0, 0, 0, 0.08) 5px
+    );
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ── Aperture Science hex tile floor — very subtle geometric grid ─────────── */
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52'%3E%3Cpolygon points='15,1 29,9 29,25 15,33 1,25 1,9' fill='none' stroke='rgba(192,204,216,0.06)' stroke-width='0.8'/%3E%3Cpolygon points='15,27 29,35 29,51 15,59 1,51 1,35' fill='none' stroke='rgba(192,204,216,0.06)' stroke-width='0.8'/%3E%3Cpolygon points='0,9 -14,17 -14,33 0,41 14,33 14,17' fill='none' stroke='rgba(192,204,216,0.06)' stroke-width='0.8'/%3E%3Cpolygon points='30,9 16,17 16,33 30,41 44,33 44,17' fill='none' stroke='rgba(192,204,216,0.06)' stroke-width='0.8'/%3E%3C/svg%3E"),
+    /* subtle top-to-bottom fade — room depth */
+    linear-gradient(
+      to bottom,
+      rgba(255, 102, 0, 0.025) 0%,
+      transparent 20%,
+      transparent 80%,
+      rgba(0, 96, 204, 0.02) 100%
+    );
+}
+
+/* ── Two portal circles — orange left, blue right ─────────────────────────── */
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* orange portal — left edge, partial semicircle */
+    radial-gradient(
+      circle 100px at -30px 50%,
+      transparent 80px,
+      rgba(255, 102, 0, 0.25) 80px,
+      rgba(255, 102, 0, 0.25) 88px,
+      rgba(255, 102, 0, 0.08) 88px,
+      rgba(255, 102, 0, 0.08) 98px,
+      transparent 98px
+    ),
+    /* orange portal inner glow */
+    radial-gradient(
+      circle 80px at -30px 50%,
+      rgba(255, 102, 0, 0.06) 0%,
+      transparent 100%
+    ),
+    /* blue portal — right edge, partial semicircle */
+    radial-gradient(
+      circle 100px at calc(100% + 30px) 50%,
+      transparent 80px,
+      rgba(0, 96, 204, 0.25) 80px,
+      rgba(0, 96, 204, 0.25) 88px,
+      rgba(0, 96, 204, 0.08) 88px,
+      rgba(0, 96, 204, 0.08) 98px,
+      transparent 98px
+    ),
+    /* blue portal inner glow */
+    radial-gradient(
+      circle 80px at calc(100% + 30px) 50%,
+      rgba(0, 96, 204, 0.06) 0%,
+      transparent 100%
+    );
+}
+
+/* ── Portal color cycle — orange to blue, slow and steady ───────────────── */
+@keyframes portal-fade {
+  0%, 100% {
+    text-shadow: 0 0 6px rgba(255, 102, 0, 0.7), 0 0 18px rgba(255, 102, 0, 0.3);
+    color: #FF6600;
+  }
+  25% {
+    text-shadow: 0 0 7px rgba(255, 120, 40, 0.65), 0 0 18px rgba(255, 100, 20, 0.28);
+    color: #FF7020;
+  }
+  50% {
+    text-shadow: 0 0 6px rgba(0, 96, 204, 0.7), 0 0 18px rgba(0, 96, 204, 0.3);
+    color: #4488FF;
+  }
+  75% {
+    text-shadow: 0 0 7px rgba(0, 80, 180, 0.65), 0 0 18px rgba(0, 80, 180, 0.28);
+    color: #2266DD;
+  }
+}

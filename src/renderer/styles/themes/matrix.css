@@ -1,0 +1,184 @@
+/* ══ MATRIX ═════════════════════════════════════════════════════════════════════
+   The Construct. Digital rain. Wake up, Neo.
+   Pure terminal green on black — the cold clarity of a simulated world.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           rgba(0, 2, 0, 0.96);
+  --panel-bg:     rgba(0, 3, 0, 0.98);
+  --overlay-bg:   rgba(0, 2, 0, 0.97);
+  --header-bg:    rgba(0, 255, 65, 0.03);
+
+  /* ── Typography ── */
+  --font:         'Consolas', 'Courier New', monospace;
+
+  /* ── Text ── */
+  --text:         #00CC33;
+  --text-dim:     rgba(0, 204, 51, 0.40);
+
+  /* ── Accents ── */
+  --accent-c:     #00FF41;   /* terminal green — primary */
+  --accent-m:     #008F11;   /* dim green — edit/destructive */
+  --accent-y:     #00FF41;   /* bright green — updates */
+
+  /* ── Borders ── */
+  --border:       rgba(0, 255, 65, 0.16);
+  --border-h:     rgba(0, 255, 65, 0.45);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(0,255,65,.65),   0 0 18px rgba(0,255,65,.20);
+  --glow-m:       0 0 4px rgba(0,143,17,.55),   0 0 12px rgba(0,143,17,.18);
+  --glow-y:       0 0 6px rgba(0,255,65,.65),   0 0 18px rgba(0,255,65,.20);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 12px rgba(0,255,65,.03);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(0,255,65,.06);
+
+  /* ── Title animation ── */
+  --title-anim:   none;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(0, 255, 65, 0.05);
+  --tile-hover-border: rgba(0, 255, 65, 0.22);
+  --tile-hover-shadow: 0 0 8px rgba(0, 255, 65, 0.08);
+  --tile-active-bg:    rgba(0, 255, 65, 0.10);
+  --tile-icon-glow:    rgba(0,255,65,.35);
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(0, 255, 65, 0.08);
+  --btn-active-bg:  rgba(0, 255, 65, 0.15);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(0, 255, 65, 0.16);
+  --drop-icon-color:  rgba(0, 255, 65, 0.22);
+  --hint-sub-color:   rgba(0, 255, 65, 0.18);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(0, 255, 65, 0.28);
+  --rename-input-bg:  rgba(0, 255, 65, 0.06);
+
+  /* ── Edit bar (dim green) ── */
+  --edit-bar-bg:          rgba(0, 143, 17, 0.07);
+  --edit-bar-border:      rgba(0, 143, 17, 0.32);
+  --edit-label-color:     #008F11;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #008F11;
+  --btn-done-border:      rgba(0, 143, 17, 0.35);
+  --btn-done-hover-bg:    rgba(0, 143, 17, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(0, 255, 65, 0.32);
+
+  /* ── Update banner (bright green) ── */
+  --update-bg:             rgba(0, 255, 65, 0.05);
+  --update-border:         rgba(0, 255, 65, 0.32);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(0, 255, 65, 0.28);
+  --update-btn-hover-bg:   rgba(0, 255, 65, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      #008F11;
+  --btn-close-border:     rgba(0, 143, 17, 0.35);
+  --btn-close-hover-bg:   rgba(0, 143, 17, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(0, 255, 65, 0.06);
+  --picker-item-hover-bg:  rgba(0, 255, 65, 0.06);
+  --picker-item-active-bg: rgba(0, 255, 65, 0.12);
+  --picker-placeholder-bg: rgba(0, 255, 65, 0.07);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(0, 255, 65, 0.13);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(0, 143, 17, 0.88);
+  --remove-btn-border:     #008F11;
+}
+
+/* ── App border: terminal green pulse ──────────────────────────────────────── */
+@keyframes border-pulse {
+  0%, 100% { border-color: rgba(0,255,65,.16); box-shadow: none; }
+  50%       { border-color: rgba(0,255,65,.42); box-shadow: inset 0 0 12px rgba(0,255,65,.03); }
+}
+
+/* ── App::after — ONLY very faint scanlines ─────────────────────────────────── */
+#app::after {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,.04) 2px,
+      rgba(0,0,0,.04) 3px
+    );
+  opacity: 1;
+}
+
+/* ── Grid container: THREE-LAYER digital rain ───────────────────────────────── */
+#grid-container {
+  position: relative;
+}
+
+/* Rain animation */
+@keyframes mx-rain {
+  to {
+    background-position:
+      0 160px,
+      11px calc(53px + 240px),
+      25px calc(107px + 320px);
+  }
+}
+
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  /* Three layers of digital rain SVGs at different scales and offsets */
+  background:
+    /* Layer 1 — narrow columns, fast-ish */
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'25'%20height%3D'160'%3E%3Ctext%20x%3D'12'%20y%3D'18'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.42'%20text-anchor%3D'middle'%3E%E3%82%A6%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'36'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.35'%20text-anchor%3D'middle'%3E3%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'54'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.28'%20text-anchor%3D'middle'%3E%E3%82%A3%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'72'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.20'%20text-anchor%3D'middle'%3E9%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'90'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.14'%20text-anchor%3D'middle'%3E%E3%82%B3%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'108'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.09'%20text-anchor%3D'middle'%3E7%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'126'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.05'%20text-anchor%3D'middle'%3E%E3%82%AA%3C%2Ftext%3E%3C%2Fsvg%3E"),
+    /* Layer 2 — medium columns */
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'38'%20height%3D'240'%3E%3Ctext%20x%3D'19'%20y%3D'20'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.38'%20text-anchor%3D'middle'%3E%E3%82%A1%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'42'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.32'%20text-anchor%3D'middle'%3E5%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'64'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.26'%20text-anchor%3D'middle'%3E%E3%82%A8%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'86'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.20'%20text-anchor%3D'middle'%3E1%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'108'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.15'%20text-anchor%3D'middle'%3E%E3%82%BD%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'130'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.10'%20text-anchor%3D'middle'%3E8%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'152'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.06'%20text-anchor%3D'middle'%3E%E3%82%B5%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'174'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.03'%20text-anchor%3D'middle'%3E0%3C%2Ftext%3E%3C%2Fsvg%3E"),
+    /* Layer 3 — wide columns, slow, deep */
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'52'%20height%3D'320'%3E%3Ctext%20x%3D'26'%20y%3D'22'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.36'%20text-anchor%3D'middle'%3E%E3%82%B3%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'46'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.30'%20text-anchor%3D'middle'%3E2%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'70'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.24'%20text-anchor%3D'middle'%3E%E3%82%A6%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'94'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.18'%20text-anchor%3D'middle'%3E4%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'118'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.14'%20text-anchor%3D'middle'%3E%E3%82%AA%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'142'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.10'%20text-anchor%3D'middle'%3E6%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'166'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.07'%20text-anchor%3D'middle'%3E%E3%82%A8%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'190'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.04'%20text-anchor%3D'middle'%3E1%3C%2Ftext%3E%3C%2Fsvg%3E");
+
+  background-size:  25px 160px, 38px 240px, 52px 320px;
+  background-position: 0 0, 11px 53px, 25px 107px;
+  animation: mx-rain 8s linear infinite;
+}
+
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* deep black bottom — characters falling into the void */
+  background:
+    linear-gradient(180deg, transparent 70%, rgba(0,2,0,.55) 100%),
+    /* very faint green glow — the simulation's ambient light */
+    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(0,20,0,.06) 0%, transparent 70%);
+}
+
+/* ── Header: terminal feel, green bottom line ───────────────────────────────── */
+#header {
+  border-bottom: 1px solid rgba(0, 255, 65, 0.18);
+  box-shadow: 0 1px 8px rgba(0,0,0,.60);
+}
+
+/* ── Header accent bar: terminal green ─────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(180deg, #00FF41 0%, rgba(0,255,65,.3) 100%);
+  box-shadow: 0 0 6px rgba(0,255,65,.5);
+}

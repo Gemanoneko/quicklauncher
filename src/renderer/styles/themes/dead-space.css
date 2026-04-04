@@ -1,0 +1,196 @@
+/* ══ DEAD SPACE ═══════════════════════════════════════════════════════════════
+   USG Ishimura / Isaac Clarke / RIG suit interface.
+   Stark void-black broken by the orange spine of survival.
+   Your suit is the only thing keeping you alive out here.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg:                   #050200;
+  --panel-bg:             rgba(8, 3, 0, 0.98);
+  --overlay-bg:           rgba(5, 2, 0, 0.92);
+  --header-bg:            rgba(10, 4, 0, 0.97);
+
+  /* Typography — monospace engineering terminal */
+  --font:                 Consolas, 'Courier New', monospace;
+  --text:                 #B0BCC8;
+  --text-dim:             #4A5560;
+
+  /* Shape — straight rectangular like the Ishimura's brutal corridors */
+  --radius:               2px;
+  --app-clip:             none;
+  --overlay-clip:         none;
+
+  /* Accent palette — RIG orange / dim system red / cold white */
+  --accent-c:             #E06820;
+  --accent-m:             #801000;
+  --accent-y:             #FF8C3A;
+
+  /* Borders */
+  --border:               rgba(224, 104, 32, 0.2);
+  --border-h:             rgba(224, 104, 32, 0.65);
+
+  /* Glows — suit HUD readout */
+  --glow-c:               0 0 5px rgba(224, 104, 32, 0.75), 0 0 16px rgba(224, 104, 32, 0.3);
+  --glow-m:               0 0 5px rgba(128, 16, 0, 0.8), 0 0 16px rgba(128, 16, 0, 0.35);
+  --glow-y:               0 0 5px rgba(255, 140, 58, 0.7), 0 0 16px rgba(255, 140, 58, 0.3);
+  --pulse-glow:           inset 0 0 20px rgba(224, 104, 32, 0.12), inset 0 0 5px rgba(128, 16, 0, 0.1);
+
+  /* Scanlines — dark horizontal bands, CRT suit display */
+  --scanlines:            repeating-linear-gradient(
+                            to bottom,
+                            transparent 0px,
+                            transparent 2px,
+                            rgba(0, 0, 0, 0.32) 2px,
+                            rgba(0, 0, 0, 0.32) 3px
+                          );
+
+  /* Title — slow warning pulse, like a suit alert */
+  --title-anim:           ds-pulse 3.5s ease-in-out infinite;
+
+  /* Tiles */
+  --tile-hover-bg:        rgba(224, 104, 32, 0.07);
+  --tile-hover-border:    #E06820;
+  --tile-hover-shadow:    0 0 10px rgba(224, 104, 32, 0.38), inset 0 0 8px rgba(224, 104, 32, 0.05);
+  --tile-active-bg:       rgba(224, 104, 32, 0.13);
+  --tile-icon-glow:       drop-shadow(0 0 5px rgba(224, 104, 32, 0.8)) drop-shadow(0 0 12px rgba(224, 104, 32, 0.4));
+
+  /* Buttons */
+  --btn-hover-bg:         rgba(224, 104, 32, 0.1);
+  --btn-active-bg:        rgba(224, 104, 32, 0.18);
+
+  /* Drop hint */
+  --drop-hint-border:     rgba(224, 104, 32, 0.3);
+  --drop-icon-color:      rgba(224, 104, 32, 0.45);
+  --hint-sub-color:       #4A5560;
+
+  /* Rename */
+  --rename-dashed:        rgba(224, 104, 32, 0.5);
+  --rename-input-bg:      rgba(224, 104, 32, 0.06);
+
+  /* Edit bar — dim system red (critical mode) */
+  --edit-bar-bg:          rgba(128, 16, 0, 0.1);
+  --edit-bar-border:      rgba(128, 16, 0, 0.65);
+  --edit-label-color:     #A02000;
+  --edit-label-glow:      0 0 8px rgba(128, 16, 0, 0.8), 0 0 20px rgba(128, 16, 0, 0.4);
+  --btn-done-color:       #A02000;
+  --btn-done-border:      rgba(128, 16, 0, 0.6);
+  --btn-done-hover-bg:    rgba(128, 16, 0, 0.14);
+  --btn-done-hover-glow:  0 0 10px rgba(128, 16, 0, 0.6);
+  --btn-add-border:       rgba(224, 104, 32, 0.45);
+
+  /* Update banner — bright RIG orange */
+  --update-bg:            rgba(255, 140, 58, 0.07);
+  --update-border:        rgba(255, 140, 58, 0.55);
+  --update-color:         #FF8C3A;
+  --update-btn-border:    rgba(255, 140, 58, 0.5);
+  --update-btn-hover-bg:  rgba(255, 140, 58, 0.1);
+  --update-btn-hover-glow: 0 0 10px rgba(255, 140, 58, 0.5);
+
+  /* Settings CLOSE — dim red */
+  --btn-close-color:      #A02000;
+  --btn-close-border:     rgba(128, 16, 0, 0.5);
+  --btn-close-hover-bg:   rgba(128, 16, 0, 0.1);
+  --btn-close-hover-glow: 0 0 10px rgba(128, 16, 0, 0.55);
+
+  /* Picker / search */
+  --picker-search-bg:         rgba(224, 104, 32, 0.05);
+  --picker-item-hover-bg:     rgba(224, 104, 32, 0.08);
+  --picker-item-active-bg:    rgba(224, 104, 32, 0.14);
+  --picker-placeholder-bg:    rgba(224, 104, 32, 0.06);
+
+  /* Skin / remove */
+  --skin-btn-active-bg:   rgba(224, 104, 32, 0.15);
+  --remove-btn-bg:        rgba(128, 16, 0, 0.14);
+  --remove-btn-border:    rgba(128, 16, 0, 0.55);
+
+  /* Drag */
+  --drag-over-glow:       inset 0 0 24px rgba(224, 104, 32, 0.25);
+}
+
+/* ── RIG spine — the orange left border, Isaac's lifeline ─────────────────── */
+#app {
+  border-left: 5px solid rgba(224, 104, 32, 0.8);
+  box-shadow: -2px 0 12px rgba(224, 104, 32, 0.3), inset 2px 0 10px rgba(224, 104, 32, 0.06);
+}
+
+/* ── Header orange RIG-color left bar ─────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #E06820, rgba(224, 104, 32, 0.25));
+  box-shadow: 0 0 8px rgba(224, 104, 32, 0.7), 0 0 20px rgba(224, 104, 32, 0.3);
+}
+
+/* ── Overlay panel — orange left border, suit HUD panel ──────────────────── */
+.overlay-panel {
+  border-left: 3px solid rgba(224, 104, 32, 0.7);
+  box-shadow: -2px 0 12px rgba(224, 104, 32, 0.2);
+}
+
+/* ── Dark horizontal scanlines overlay ───────────────────────────────────── */
+#app::after {
+  content: '';
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.25) 2px,
+      rgba(0, 0, 0, 0.25) 3px
+    );
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* ── RIG kinesis rings — concentric sonar-like circles in the grid ────────── */
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* kinesis concentric rings — centered */
+    radial-gradient(circle 20px at 50% 50%, transparent 18px, rgba(224, 104, 32, 0.07) 18px, rgba(224, 104, 32, 0.07) 20px, transparent 20px),
+    radial-gradient(circle 45px at 50% 50%, transparent 43px, rgba(224, 104, 32, 0.055) 43px, rgba(224, 104, 32, 0.055) 45px, transparent 45px),
+    radial-gradient(circle 78px at 50% 50%, transparent 76px, rgba(224, 104, 32, 0.04) 76px, rgba(224, 104, 32, 0.04) 78px, transparent 78px),
+    radial-gradient(circle 118px at 50% 50%, transparent 116px, rgba(224, 104, 32, 0.03) 116px, rgba(224, 104, 32, 0.03) 118px, transparent 118px),
+    radial-gradient(circle 165px at 50% 50%, transparent 163px, rgba(224, 104, 32, 0.02) 163px, rgba(224, 104, 32, 0.02) 165px, transparent 165px),
+    /* warm orange bloom at center */
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(224, 104, 32, 0.035) 0%, transparent 70%);
+}
+
+/* ── Space dust — tiny dim particles scattered in the void ───────────────── */
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ccircle cx='23' cy='47' r='1' fill='rgba(176,188,200,0.18)'/%3E%3Ccircle cx='87' cy='112' r='0.7' fill='rgba(176,188,200,0.12)'/%3E%3Ccircle cx='155' cy='28' r='1.2' fill='rgba(176,188,200,0.1)'/%3E%3Ccircle cx='201' cy='78' r='0.8' fill='rgba(176,188,200,0.15)'/%3E%3Ccircle cx='267' cy='144' r='1' fill='rgba(176,188,200,0.12)'/%3E%3Ccircle cx='42' cy='189' r='0.6' fill='rgba(176,188,200,0.14)'/%3E%3Ccircle cx='118' cy='235' r='1.1' fill='rgba(176,188,200,0.09)'/%3E%3Ccircle cx='178' cy='167' r='0.7' fill='rgba(176,188,200,0.16)'/%3E%3Ccircle cx='240' cy='212' r='0.9' fill='rgba(176,188,200,0.11)'/%3E%3Ccircle cx='70' cy='268' r='1' fill='rgba(176,188,200,0.13)'/%3E%3Ccircle cx='290' cy='55' r='0.7' fill='rgba(224,104,32,0.08)'/%3E%3Ccircle cx='133' cy='93' r='0.5' fill='rgba(224,104,32,0.07)'/%3E%3Ccircle cx='214' cy='251' r='0.8' fill='rgba(224,104,32,0.06)'/%3E%3C/svg%3E");
+  opacity: 1;
+}
+
+/* ── RIG suit warning pulse — orange, like suit health bar ───────────────── */
+@keyframes ds-pulse {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(224, 104, 32, 0.6), 0 0 14px rgba(224, 104, 32, 0.25);
+    opacity: 1;
+  }
+  40% {
+    text-shadow: 0 0 8px rgba(224, 104, 32, 0.85), 0 0 22px rgba(224, 104, 32, 0.45), 0 0 40px rgba(224, 104, 32, 0.15);
+    opacity: 0.95;
+  }
+  42% {
+    text-shadow: 0 0 4px rgba(224, 104, 32, 0.4), 0 0 8px rgba(224, 104, 32, 0.15);
+    opacity: 0.85;
+  }
+  44% {
+    text-shadow: 0 0 8px rgba(224, 104, 32, 0.8), 0 0 20px rgba(224, 104, 32, 0.4);
+    opacity: 0.98;
+  }
+  70% {
+    text-shadow: 0 0 6px rgba(224, 104, 32, 0.65), 0 0 16px rgba(224, 104, 32, 0.3);
+    opacity: 0.93;
+  }
+}

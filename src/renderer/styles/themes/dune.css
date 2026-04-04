@@ -1,0 +1,203 @@
+/* ══ DUNE ══════════════════════════════════════════════════════════════════════
+   Arrakis. The desert planet. Sand, spice, and ancient power.
+   Warm stone and parchment — the ancient-future aesthetic of Frank Herbert.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           rgba(10, 6, 0, 0.93);
+  --panel-bg:     rgba(18, 10, 2, 0.97);
+  --overlay-bg:   rgba(10, 6, 0, 0.95);
+  --header-bg:    rgba(200, 144, 80, 0.05);
+
+  /* ── Typography ── */
+  --font:         'Segoe UI', Georgia, serif;
+
+  /* ── Text ── */
+  --text:         #C0A870;
+  --text-dim:     rgba(192, 168, 112, 0.45);
+
+  /* ── Accents ── */
+  --accent-c:     #C89050;   /* sand gold — primary */
+  --accent-m:     #C04000;   /* spice orange — edit/destructive */
+  --accent-y:     #D4A020;   /* bright gold — updates */
+
+  /* ── Borders ── */
+  --border:       rgba(200, 144, 80, 0.18);
+  --border-h:     rgba(200, 144, 80, 0.50);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(200,144,80,.65),  0 0 18px rgba(200,144,80,.22);
+  --glow-m:       0 0 6px rgba(192,64,0,.65),    0 0 18px rgba(192,64,0,.22);
+  --glow-y:       0 0 6px rgba(212,160,32,.65),  0 0 18px rgba(212,160,32,.22);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 14px rgba(200,144,80,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(200,144,80,.08);
+
+  /* ── Title animation ── */
+  --title-anim:   dune-glow 6s ease-in-out infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(200, 144, 80, 0.06);
+  --tile-hover-border: rgba(200, 144, 80, 0.28);
+  --tile-hover-shadow: 0 0 12px rgba(200, 144, 80, 0.10);
+  --tile-active-bg:    rgba(200, 144, 80, 0.12);
+  --tile-icon-glow:    rgba(200,144,80,.38);
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(200, 144, 80, 0.09);
+  --btn-active-bg:  rgba(200, 144, 80, 0.18);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(200, 144, 80, 0.20);
+  --drop-icon-color:  rgba(200, 144, 80, 0.28);
+  --hint-sub-color:   rgba(200, 144, 80, 0.22);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(200, 144, 80, 0.32);
+  --rename-input-bg:  rgba(200, 144, 80, 0.07);
+
+  /* ── Edit bar (spice orange) ── */
+  --edit-bar-bg:          rgba(192, 64, 0, 0.07);
+  --edit-bar-border:      rgba(192, 64, 0, 0.32);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(192, 64, 0, 0.38);
+  --btn-done-hover-bg:    rgba(192, 64, 0, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(200, 144, 80, 0.38);
+
+  /* ── Update banner (bright gold) ── */
+  --update-bg:             rgba(212, 160, 32, 0.07);
+  --update-border:         rgba(212, 160, 32, 0.38);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(212, 160, 32, 0.32);
+  --update-btn-hover-bg:   rgba(212, 160, 32, 0.11);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(192, 64, 0, 0.38);
+  --btn-close-hover-bg:   rgba(192, 64, 0, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(200, 144, 80, 0.07);
+  --picker-item-hover-bg:  rgba(200, 144, 80, 0.08);
+  --picker-item-active-bg: rgba(200, 144, 80, 0.14);
+  --picker-placeholder-bg: rgba(200, 144, 80, 0.08);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(200, 144, 80, 0.16);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(192, 64, 0, 0.88);
+  --remove-btn-border:     var(--accent-m);
+}
+
+/* ── Title animation: slow warm gold pulse ─────────────────────────────────── */
+@keyframes dune-glow {
+  0%, 100% {
+    color: #C89050;
+    text-shadow: 0 0 8px rgba(200,144,80,.50), 0 0 20px rgba(200,144,80,.18);
+  }
+  40% {
+    color: #E8C880;
+    text-shadow: 0 0 12px rgba(232,200,128,.70), 0 0 30px rgba(200,144,80,.35);
+  }
+  70% {
+    color: #C87830;
+    text-shadow: 0 0 6px rgba(200,120,48,.45), 0 0 16px rgba(192,64,0,.20);
+  }
+}
+
+/* ── App border: warm amber pulse ──────────────────────────────────────────── */
+@keyframes border-pulse {
+  0%, 100% { border-color: rgba(200,144,80,.18); box-shadow: none; }
+  50%       { border-color: rgba(200,144,80,.50); box-shadow: inset 0 0 14px rgba(200,144,80,.06); }
+}
+
+/* ── App::after — sand grain texture + warm vignette ──────────────────────── */
+#app::after {
+  background:
+    /* warm brown edge vignette */
+    radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgba(8,3,0,.55) 100%),
+    radial-gradient(ellipse 60% 80% at 0% 50%, rgba(6,2,0,.40) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(6,2,0,.40) 0%, transparent 60%),
+    /* sand grain — SVG noise at very low opacity */
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'80'%20height%3D'80'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.75'%20numOctaves%3D'4'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'80'%20height%3D'80'%20filter%3D'url(%23n)'%20opacity%3D'0.06'%2F%3E%3C%2Fsvg%3E");
+  background-size: auto, auto, auto, 80px 80px;
+  opacity: 1;
+}
+
+/* ── Grid container: desert heat haze atmospheric bands ───────────────────── */
+#grid-container {
+  position: relative;
+}
+
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* warm rising heat — top band */
+    linear-gradient(180deg,
+      rgba(200,144,80,.03) 0%,
+      rgba(192,100,20,.015) 20%,
+      transparent 40%
+    ),
+    /* mid-horizon warmth */
+    linear-gradient(180deg,
+      transparent 30%,
+      rgba(180,80,8,.018) 55%,
+      rgba(200,120,30,.012) 70%,
+      transparent 90%
+    ),
+    /* dune topographic lines — very faint horizontal banding */
+    repeating-linear-gradient(180deg,
+      transparent 0px,
+      transparent 28px,
+      rgba(200,144,80,.022) 28px,
+      rgba(200,144,80,.022) 29px,
+      transparent 29px,
+      transparent 58px,
+      rgba(160,100,40,.014) 58px,
+      rgba(160,100,40,.014) 59px
+    ),
+    /* subtle warm ground glow at bottom */
+    radial-gradient(ellipse 90% 30% at 50% 100%, rgba(160,80,10,.06) 0%, transparent 70%);
+  background-size: 100% 100%, 100% 100%, 100% 58px, 100% 100%;
+}
+
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* spice dust — scattered warm particles at far bottom */
+  background:
+    radial-gradient(ellipse 120% 18% at 50% 100%, rgba(192,80,0,.04) 0%, transparent 100%);
+}
+
+/* ── Header: warm amber bottom border ─────────────────────────────────────── */
+#header {
+  border-bottom: 1px solid rgba(200,144,80,.22);
+  box-shadow: 0 2px 12px rgba(160,80,0,.08);
+}
+
+/* ── Header accent bar: warm gold ─────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(180deg, #D4A020 0%, #C04000 100%);
+  box-shadow: 0 0 6px rgba(200,144,80,.5);
+}

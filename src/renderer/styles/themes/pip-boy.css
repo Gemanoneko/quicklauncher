@@ -1,0 +1,238 @@
+/* ══ PIP-BOY ══════════════════════════════════════════════════════════════════
+   Fallout Pip-Boy 3000 — phosphor green glow on dark vault void.
+   CRT screen curvature, screen static flicker, Vault-Tec geometric grid.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg:                   #020500;
+  --panel-bg:             rgba(2, 5, 0, 0.98);
+  --overlay-bg:           rgba(1, 3, 0, 0.92);
+  --header-bg:            rgba(2, 6, 1, 0.96);
+
+  /* Typography */
+  --font:                 'Consolas', 'Courier New', monospace;
+  --text:                 #78A800;
+  --text-dim:             #3a5800;
+
+  /* Shape */
+  --radius:               6px;
+  --app-clip:             none;
+  --overlay-clip:         none;
+
+  /* Accent palette — bright green / dim green / mid green */
+  --accent-c:             #92C800;
+  --accent-m:             #64A000;
+  --accent-y:             #B0D800;
+
+  /* Borders */
+  --border:               rgba(146, 200, 0, 0.18);
+  --border-h:             rgba(146, 200, 0, 0.55);
+
+  /* Glows */
+  --glow-c:               0 0 6px rgba(146, 200, 0, 0.6), 0 0 18px rgba(146, 200, 0, 0.3);
+  --glow-m:               0 0 6px rgba(100, 160, 0, 0.6), 0 0 16px rgba(100, 160, 0, 0.3);
+  --glow-y:               0 0 6px rgba(176, 216, 0, 0.6), 0 0 16px rgba(176, 216, 0, 0.3);
+  --pulse-glow:           inset 0 0 20px rgba(146, 200, 0, 0.12), inset 0 0 5px rgba(146, 200, 0, 0.08);
+
+  /* Scanlines — phosphor CRT */
+  --scanlines:            repeating-linear-gradient(
+                            to bottom,
+                            transparent 0px,
+                            transparent 3px,
+                            rgba(0, 0, 0, 0.3) 3px,
+                            rgba(0, 0, 0, 0.3) 4px
+                          );
+
+  /* Title animation — Pip-Boy screen flicker */
+  --title-anim:           pipboy-flicker 7s ease-in-out infinite;
+
+  /* Tiles */
+  --tile-hover-bg:        rgba(146, 200, 0, 0.07);
+  --tile-hover-border:    #92C800;
+  --tile-hover-shadow:    0 0 8px rgba(146, 200, 0, 0.45), inset 0 0 7px rgba(146, 200, 0, 0.05);
+  --tile-active-bg:       rgba(146, 200, 0, 0.13);
+  --tile-icon-glow:       drop-shadow(0 0 5px #92C800) drop-shadow(0 0 12px rgba(146, 200, 0, 0.5));
+
+  /* Buttons */
+  --btn-hover-bg:         rgba(146, 200, 0, 0.09);
+  --btn-active-bg:        rgba(146, 200, 0, 0.16);
+
+  /* Drop hint */
+  --drop-hint-border:     rgba(146, 200, 0, 0.3);
+  --drop-icon-color:      rgba(146, 200, 0, 0.4);
+  --hint-sub-color:       #3a5800;
+
+  /* Rename */
+  --rename-dashed:        rgba(146, 200, 0, 0.4);
+  --rename-input-bg:      rgba(146, 200, 0, 0.04);
+
+  /* Edit bar — dim green variant */
+  --edit-bar-bg:          rgba(100, 160, 0, 0.07);
+  --edit-bar-border:      rgba(100, 160, 0, 0.5);
+  --edit-label-color:     #64A000;
+  --edit-label-glow:      0 0 6px rgba(100, 160, 0, 0.6), 0 0 16px rgba(100, 160, 0, 0.25);
+  --btn-done-color:       #64A000;
+  --btn-done-border:      rgba(100, 160, 0, 0.5);
+  --btn-done-hover-bg:    rgba(100, 160, 0, 0.1);
+  --btn-done-hover-glow:  0 0 8px rgba(100, 160, 0, 0.5);
+  --btn-add-border:       rgba(146, 200, 0, 0.38);
+
+  /* Update banner — bright green */
+  --update-bg:            rgba(176, 216, 0, 0.06);
+  --update-border:        rgba(176, 216, 0, 0.45);
+  --update-color:         #B0D800;
+  --update-btn-border:    rgba(176, 216, 0, 0.45);
+  --update-btn-hover-bg:  rgba(176, 216, 0, 0.08);
+  --update-btn-hover-glow: 0 0 8px rgba(176, 216, 0, 0.4);
+
+  /* Settings CLOSE — dim green */
+  --btn-close-color:      #64A000;
+  --btn-close-border:     rgba(100, 160, 0, 0.45);
+  --btn-close-hover-bg:   rgba(100, 160, 0, 0.08);
+  --btn-close-hover-glow: 0 0 8px rgba(100, 160, 0, 0.45);
+
+  /* Picker / search */
+  --picker-search-bg:         rgba(146, 200, 0, 0.04);
+  --picker-item-hover-bg:     rgba(146, 200, 0, 0.07);
+  --picker-item-active-bg:    rgba(146, 200, 0, 0.13);
+  --picker-placeholder-bg:    rgba(146, 200, 0, 0.04);
+
+  /* Skin / remove */
+  --skin-btn-active-bg:   rgba(146, 200, 0, 0.12);
+  --remove-btn-bg:        rgba(100, 160, 0, 0.1);
+  --remove-btn-border:    rgba(100, 160, 0, 0.4);
+
+  /* Drag */
+  --drag-over-glow:       inset 0 0 20px rgba(146, 200, 0, 0.2);
+}
+
+/* ── CRT curvature vignette + scanlines overlay ───────────────────────────── */
+#app::after {
+  content: '';
+  background:
+    /* CRT barrel distortion vignette — dark edges, light center */
+    radial-gradient(
+      ellipse 95% 95% at 50% 50%,
+      transparent 40%,
+      rgba(0, 0, 0, 0.25) 70%,
+      rgba(0, 0, 0, 0.65) 100%
+    ),
+    /* subtle corner darkening */
+    radial-gradient(
+      ellipse 50% 50% at 0% 0%,
+      rgba(0, 0, 0, 0.4) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 50% at 100% 0%,
+      rgba(0, 0, 0, 0.4) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 50% at 0% 100%,
+      rgba(0, 0, 0, 0.4) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 50% at 100% 100%,
+      rgba(0, 0, 0, 0.4) 0%,
+      transparent 60%
+    ),
+    /* phosphor scanlines */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.28) 3px,
+      rgba(0, 0, 0, 0.28) 4px
+    );
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* ── Header bright green bar ──────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #92C800, rgba(146, 200, 0, 0.35));
+  box-shadow: 0 0 10px rgba(146, 200, 0, 0.65), 0 0 22px rgba(146, 200, 0, 0.25);
+}
+
+/* ── VAULT-TEC geometric grid pattern behind tiles ────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* Vault-Tec diamond/hexagonal grid suggestion */
+    repeating-linear-gradient(
+      60deg,
+      transparent 0px,
+      transparent 29px,
+      rgba(146, 200, 0, 0.04) 29px,
+      rgba(146, 200, 0, 0.04) 30px
+    ),
+    repeating-linear-gradient(
+      -60deg,
+      transparent 0px,
+      transparent 29px,
+      rgba(146, 200, 0, 0.04) 29px,
+      rgba(146, 200, 0, 0.04) 30px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 29px,
+      rgba(146, 200, 0, 0.03) 29px,
+      rgba(146, 200, 0, 0.03) 30px
+    ),
+    /* phosphor center glow on background */
+    radial-gradient(
+      ellipse 80% 70% at 50% 50%,
+      rgba(146, 200, 0, 0.03) 0%,
+      transparent 70%
+    );
+}
+
+/* ── Pip-Boy screen static/flicker animation ──────────────────────────────── */
+@keyframes pipboy-flicker {
+  0%, 88%, 100% {
+    text-shadow: 0 0 6px rgba(146, 200, 0, 0.7), 0 0 16px rgba(146, 200, 0, 0.35);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  89% {
+    text-shadow: 0 0 6px rgba(146, 200, 0, 0.7), 0 0 16px rgba(146, 200, 0, 0.35);
+    opacity: 0.6;
+    filter: brightness(0.5);
+  }
+  89.5% {
+    text-shadow: 0 0 8px rgba(146, 200, 0, 0.9), 0 0 22px rgba(146, 200, 0, 0.5);
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+  90% {
+    text-shadow: 0 0 6px rgba(146, 200, 0, 0.7), 0 0 16px rgba(146, 200, 0, 0.35);
+    opacity: 0.7;
+    filter: brightness(0.65);
+  }
+  90.5% {
+    text-shadow: 0 0 6px rgba(146, 200, 0, 0.7), 0 0 16px rgba(146, 200, 0, 0.35);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  94% {
+    text-shadow: 0 0 6px rgba(146, 200, 0, 0.7), 0 0 16px rgba(146, 200, 0, 0.35);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  94.3% {
+    opacity: 0.8;
+    filter: brightness(0.75);
+  }
+  94.6% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}

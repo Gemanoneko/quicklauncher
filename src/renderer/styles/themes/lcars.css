@@ -1,0 +1,168 @@
+/* ══ LCARS ════════════════════════════════════════════════════════════════════
+   Star Trek TNG — Library Computer Access/Retrieval System.
+   Warm amber + purple + teal color blocks. Rounded everywhere. Steady display.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg:                   #000000;
+  --panel-bg:             rgba(0, 0, 0, 0.97);
+  --overlay-bg:           rgba(0, 0, 0, 0.9);
+  --header-bg:            rgba(10, 5, 0, 0.98);
+
+  /* Typography */
+  --font:                 'Arial', 'Helvetica', sans-serif;
+  --text:                 #FFCC44;
+  --text-dim:             #886622;
+
+  /* Shape — rounded everywhere */
+  --radius:               16px;
+  --app-clip:             none;
+  --overlay-clip:         none;
+
+  /* Accent palette — LCARS orange / purple / teal */
+  --accent-c:             #FF9900;
+  --accent-m:             #CC88FF;
+  --accent-y:             #66CCCC;
+
+  /* Borders */
+  --border:               rgba(255, 153, 0, 0.2);
+  --border-h:             rgba(255, 153, 0, 0.6);
+
+  /* Glows */
+  --glow-c:               0 0 8px rgba(255, 153, 0, 0.5), 0 0 20px rgba(255, 153, 0, 0.2);
+  --glow-m:               0 0 8px rgba(204, 136, 255, 0.5), 0 0 20px rgba(204, 136, 255, 0.2);
+  --glow-y:               0 0 8px rgba(102, 204, 204, 0.5), 0 0 20px rgba(102, 204, 204, 0.2);
+  --pulse-glow:           inset 0 0 20px rgba(255, 153, 0, 0.1);
+
+  /* No scanlines — LCARS is a clean display */
+  --scanlines:            none;
+
+  /* Title animation — none, LCARS displays are steady */
+  --title-anim:           none;
+
+  /* Tiles */
+  --tile-hover-bg:        rgba(255, 153, 0, 0.08);
+  --tile-hover-border:    #FF9900;
+  --tile-hover-shadow:    0 0 10px rgba(255, 153, 0, 0.35), inset 0 0 8px rgba(255, 153, 0, 0.05);
+  --tile-active-bg:       rgba(255, 153, 0, 0.15);
+  --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 153, 0, 0.6)) drop-shadow(0 0 12px rgba(255, 153, 0, 0.3));
+
+  /* Buttons */
+  --btn-hover-bg:         rgba(255, 153, 0, 0.1);
+  --btn-active-bg:        rgba(255, 153, 0, 0.18);
+
+  /* Drop hint */
+  --drop-hint-border:     rgba(255, 153, 0, 0.35);
+  --drop-icon-color:      rgba(255, 153, 0, 0.45);
+  --hint-sub-color:       #886622;
+
+  /* Rename */
+  --rename-dashed:        rgba(255, 153, 0, 0.5);
+  --rename-input-bg:      rgba(255, 153, 0, 0.05);
+
+  /* Edit bar — purple */
+  --edit-bar-bg:          rgba(204, 136, 255, 0.07);
+  --edit-bar-border:      rgba(204, 136, 255, 0.55);
+  --edit-label-color:     #CC88FF;
+  --edit-label-glow:      0 0 8px rgba(204, 136, 255, 0.55), 0 0 18px rgba(204, 136, 255, 0.2);
+  --btn-done-color:       #CC88FF;
+  --btn-done-border:      rgba(204, 136, 255, 0.55);
+  --btn-done-hover-bg:    rgba(204, 136, 255, 0.1);
+  --btn-done-hover-glow:  0 0 10px rgba(204, 136, 255, 0.5);
+  --btn-add-border:       rgba(255, 153, 0, 0.45);
+
+  /* Update banner — teal */
+  --update-bg:            rgba(102, 204, 204, 0.06);
+  --update-border:        rgba(102, 204, 204, 0.5);
+  --update-color:         #66CCCC;
+  --update-btn-border:    rgba(102, 204, 204, 0.5);
+  --update-btn-hover-bg:  rgba(102, 204, 204, 0.1);
+  --update-btn-hover-glow: 0 0 10px rgba(102, 204, 204, 0.45);
+
+  /* Settings CLOSE — red alert */
+  --btn-close-color:      #CC3333;
+  --btn-close-border:     rgba(204, 51, 51, 0.5);
+  --btn-close-hover-bg:   rgba(204, 51, 51, 0.1);
+  --btn-close-hover-glow: 0 0 10px rgba(204, 51, 51, 0.5);
+
+  /* Picker / search */
+  --picker-search-bg:         rgba(255, 153, 0, 0.05);
+  --picker-item-hover-bg:     rgba(255, 153, 0, 0.09);
+  --picker-item-active-bg:    rgba(255, 153, 0, 0.16);
+  --picker-placeholder-bg:    rgba(255, 153, 0, 0.05);
+
+  /* Skin / remove */
+  --skin-btn-active-bg:   rgba(255, 153, 0, 0.15);
+  --remove-btn-bg:        rgba(204, 51, 51, 0.12);
+  --remove-btn-border:    rgba(204, 51, 51, 0.45);
+
+  /* Drag */
+  --drag-over-glow:       inset 0 0 22px rgba(255, 153, 0, 0.2);
+}
+
+/* ── LCARS thick left bar — pill shape, 8px wide ──────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom,
+    #FF9900 0%,
+    #FF9900 30%,
+    #CC88FF 30%,
+    #CC88FF 65%,
+    #66CCCC 65%,
+    #66CCCC 100%
+  );
+  width: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 12px rgba(255, 153, 0, 0.4), 0 0 6px rgba(204, 136, 255, 0.3);
+}
+
+/* ── LCARS color stripes in grid area ─────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* bottom LCARS horizontal color bands */
+    linear-gradient(
+      to top,
+      rgba(255, 153, 0, 0.07) 0px,
+      rgba(255, 153, 0, 0.07) 4px,
+      rgba(204, 136, 255, 0.07) 4px,
+      rgba(204, 136, 255, 0.07) 8px,
+      rgba(204, 51, 51, 0.06) 8px,
+      rgba(204, 51, 51, 0.06) 12px,
+      rgba(102, 204, 204, 0.06) 12px,
+      rgba(102, 204, 204, 0.06) 16px,
+      transparent 16px
+    ),
+    /* top LCARS horizontal bands */
+    linear-gradient(
+      to bottom,
+      rgba(255, 153, 0, 0.05) 0px,
+      rgba(255, 153, 0, 0.05) 4px,
+      rgba(102, 204, 204, 0.05) 4px,
+      rgba(102, 204, 204, 0.05) 8px,
+      transparent 8px
+    ),
+    /* subtle warm radial background warmth */
+    radial-gradient(
+      ellipse 70% 60% at 50% 50%,
+      rgba(255, 153, 0, 0.03) 0%,
+      transparent 70%
+    );
+}
+
+/* ── Overlay panel rounded with orange top border ─────────────────────────── */
+.overlay-panel {
+  border-radius: 16px;
+  border-top: 3px solid rgba(255, 153, 0, 0.7);
+  box-shadow: 0 0 30px rgba(255, 153, 0, 0.15), 0 0 60px rgba(0, 0, 0, 0.8);
+}
+
+/* ── App rounded container ────────────────────────────────────────────────── */
+#app {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 153, 0, 0.25);
+}

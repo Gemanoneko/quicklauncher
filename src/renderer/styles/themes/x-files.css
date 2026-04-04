@@ -1,0 +1,198 @@
+/* ══ X-FILES ════════════════════════════════════════════════════════════════════
+   The Truth Is Out There. FBI paranoia. Government surveillance.
+   Cold teal and institutional red — the weight of classified knowledge.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           rgba(2, 4, 8, 0.93);
+  --panel-bg:     rgba(3, 6, 12, 0.97);
+  --overlay-bg:   rgba(2, 4, 8, 0.95);
+  --header-bg:    rgba(0, 176, 160, 0.04);
+
+  /* ── Typography ── */
+  --font:         'Consolas', 'Courier New', monospace;
+
+  /* ── Text ── */
+  --text:         #A0B4C0;
+  --text-dim:     rgba(160, 180, 192, 0.42);
+
+  /* ── Accents ── */
+  --accent-c:     #00B0A0;   /* FBI teal — primary */
+  --accent-m:     #C02828;   /* FBI red — edit/destructive */
+  --accent-y:     #00B0A0;   /* teal — updates */
+
+  /* ── Borders ── */
+  --border:       rgba(0, 176, 160, 0.16);
+  --border-h:     rgba(0, 176, 160, 0.48);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(0,176,160,.65),  0 0 18px rgba(0,176,160,.22);
+  --glow-m:       0 0 6px rgba(192,40,40,.65),  0 0 18px rgba(192,40,40,.22);
+  --glow-y:       0 0 6px rgba(0,176,160,.65),  0 0 18px rgba(0,176,160,.22);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 12px rgba(0,176,160,.04);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(0,176,160,.07);
+
+  /* ── Title animation ── */
+  --title-anim:   x-pulse 7s ease-in-out infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(0, 176, 160, 0.055);
+  --tile-hover-border: rgba(0, 176, 160, 0.24);
+  --tile-hover-shadow: 0 0 10px rgba(0, 176, 160, 0.09);
+  --tile-active-bg:    rgba(0, 176, 160, 0.11);
+  --tile-icon-glow:    rgba(0,176,160,.38);
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(0, 176, 160, 0.09);
+  --btn-active-bg:  rgba(0, 176, 160, 0.18);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(0, 176, 160, 0.18);
+  --drop-icon-color:  rgba(0, 176, 160, 0.25);
+  --hint-sub-color:   rgba(0, 176, 160, 0.20);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(0, 176, 160, 0.30);
+  --rename-input-bg:  rgba(0, 176, 160, 0.07);
+
+  /* ── Edit bar (FBI red) ── */
+  --edit-bar-bg:          rgba(192, 40, 40, 0.06);
+  --edit-bar-border:      rgba(192, 40, 40, 0.30);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(192, 40, 40, 0.35);
+  --btn-done-hover-bg:    rgba(192, 40, 40, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(0, 176, 160, 0.35);
+
+  /* ── Update banner (teal) ── */
+  --update-bg:             rgba(0, 176, 160, 0.06);
+  --update-border:         rgba(0, 176, 160, 0.35);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(0, 176, 160, 0.30);
+  --update-btn-hover-bg:   rgba(0, 176, 160, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(192, 40, 40, 0.35);
+  --btn-close-hover-bg:   rgba(192, 40, 40, 0.09);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(0, 176, 160, 0.07);
+  --picker-item-hover-bg:  rgba(0, 176, 160, 0.07);
+  --picker-item-active-bg: rgba(0, 176, 160, 0.13);
+  --picker-placeholder-bg: rgba(0, 176, 160, 0.08);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(0, 176, 160, 0.15);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(192, 40, 40, 0.88);
+  --remove-btn-border:     var(--accent-m);
+}
+
+/* ── Title animation: ominous slow teal/red pulse ──────────────────────────── */
+@keyframes x-pulse {
+  0%, 100% {
+    color: #A0B4C0;
+    text-shadow: 0 0 8px rgba(0,176,160,.40);
+  }
+  25% {
+    color: #00C0B0;
+    text-shadow: 0 0 12px rgba(0,176,160,.65), 0 0 28px rgba(0,176,160,.20);
+  }
+  65% {
+    color: #C84040;
+    text-shadow: 0 0 10px rgba(192,40,40,.55), 0 0 24px rgba(192,40,40,.18);
+  }
+  80% {
+    color: #A0B4C0;
+    text-shadow: none;
+  }
+}
+
+/* ── App border: cold teal pulse ───────────────────────────────────────────── */
+@keyframes border-pulse {
+  0%, 100% { border-color: rgba(0,176,160,.16); box-shadow: none; }
+  50%       { border-color: rgba(0,176,160,.45); box-shadow: inset 0 0 12px rgba(0,176,160,.04); }
+}
+
+/* ── App::after — noise texture + faint scanlines ──────────────────────────── */
+#app::after {
+  background:
+    /* surveillance scanlines — very faint */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,.04) 2px,
+      rgba(0,0,0,.04) 3px
+    ),
+    /* edge darkness — vignette */
+    radial-gradient(ellipse 110% 100% at 50% 50%, transparent 50%, rgba(0,0,0,.50) 100%);
+  opacity: 1;
+}
+
+/* ── Grid container: CLASSIFIED watermark + horizontal rule pattern ─────────── */
+#grid-container {
+  position: relative;
+}
+
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* CLASSIFIED text watermark — SVG at very low opacity */
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'320'%20height%3D'120'%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'36'%20font-weight%3D'bold'%20fill%3D'%23C02828'%20fill-opacity%3D'0.04'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%20transform%3D'rotate(-12%20160%2060)'%3ECLASSIFIED%3C%2Ftext%3E%3C%2Fsvg%3E"),
+    /* FBI horizontal rule grid — institutional bureaucratic feel */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 34px,
+      rgba(0,176,160,.018) 34px,
+      rgba(0,176,160,.018) 35px
+    ),
+    /* subtle left-edge accent — cold blue */
+    linear-gradient(90deg, rgba(0,176,160,.04) 0px, transparent 40px),
+    /* cold overall tint */
+    radial-gradient(ellipse 100% 80% at 50% 0%, rgba(0,20,24,.08) 0%, transparent 70%);
+  background-size: 320px 120px, 100% 35px, 100% 100%, 100% 100%;
+}
+
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Bottom fade — shadow of something hidden below */
+  background: radial-gradient(ellipse 80% 25% at 50% 100%, rgba(192,40,40,.03) 0%, transparent 100%);
+}
+
+/* ── Header: FBI red stripe at top + teal bottom glow ─────────────────────── */
+#header {
+  border-top: 2px solid rgba(192, 40, 40, 0.50);
+  border-bottom: 1px solid rgba(0, 176, 160, 0.18);
+  box-shadow: 0 2px 10px rgba(0,0,0,.30);
+}
+
+/* ── Header accent bar: teal ───────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(180deg, #00B0A0 0%, rgba(0,176,160,.4) 100%);
+  box-shadow: 0 0 6px rgba(0,176,160,.5);
+}

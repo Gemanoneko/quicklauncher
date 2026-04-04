@@ -1,0 +1,201 @@
+/* ══ CYBERPUNK ════════════════════════════════════════════════════════════════
+   Cyberpunk 2077 Night City — neon cyan + magenta on near-black void.
+   Chamfered octagon silhouette, glitch title, pulsing neon border.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg:                   #040210;
+  --panel-bg:             rgba(4, 2, 18, 0.97);
+  --overlay-bg:           rgba(2, 1, 10, 0.88);
+  --header-bg:            rgba(6, 2, 28, 0.95);
+
+  /* Typography */
+  --font:                 'Consolas', 'Courier New', monospace;
+  --text:                 #c8f0ff;
+  --text-dim:             #4a7080;
+
+  /* Shape */
+  --radius:               3px;
+  --app-clip:             polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
+  --overlay-clip:         polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
+
+  /* Accent palette — cyan / magenta / yellow */
+  --accent-c:             #00f0ff;
+  --accent-m:             #ff00aa;
+  --accent-y:             #e8ff00;
+
+  /* Borders */
+  --border:               rgba(0, 240, 255, 0.18);
+  --border-h:             rgba(0, 240, 255, 0.65);
+
+  /* Glows */
+  --glow-c:               0 0 6px #00f0ff, 0 0 18px rgba(0, 240, 255, 0.45);
+  --glow-m:               0 0 6px #ff00aa, 0 0 18px rgba(255, 0, 170, 0.45);
+  --glow-y:               0 0 6px #e8ff00, 0 0 18px rgba(232, 255, 0, 0.45);
+  --pulse-glow:           inset 0 0 22px rgba(0, 240, 255, 0.25), inset 0 0 6px rgba(255, 0, 170, 0.12);
+
+  /* Scanlines */
+  --scanlines:            repeating-linear-gradient(
+                            to bottom,
+                            transparent 0px,
+                            transparent 3px,
+                            rgba(0, 0, 0, 0.28) 3px,
+                            rgba(0, 0, 0, 0.28) 4px
+                          );
+
+  /* Title animation */
+  --title-anim:           cp-glitch 6s infinite;
+
+  /* Tiles */
+  --tile-hover-bg:        rgba(0, 240, 255, 0.07);
+  --tile-hover-border:    #00f0ff;
+  --tile-hover-shadow:    0 0 10px rgba(0, 240, 255, 0.4), inset 0 0 8px rgba(0, 240, 255, 0.06);
+  --tile-active-bg:       rgba(0, 240, 255, 0.14);
+  --tile-icon-glow:       drop-shadow(0 0 6px #00f0ff) drop-shadow(0 0 12px rgba(0, 240, 255, 0.6));
+
+  /* Buttons */
+  --btn-hover-bg:         rgba(0, 240, 255, 0.1);
+  --btn-active-bg:        rgba(0, 240, 255, 0.18);
+
+  /* Drop hint */
+  --drop-hint-border:     rgba(0, 240, 255, 0.35);
+  --drop-icon-color:      rgba(0, 240, 255, 0.45);
+  --hint-sub-color:       #4a7080;
+
+  /* Rename */
+  --rename-dashed:        rgba(0, 240, 255, 0.5);
+  --rename-input-bg:      rgba(0, 240, 255, 0.06);
+
+  /* Edit bar — magenta */
+  --edit-bar-bg:          rgba(255, 0, 170, 0.08);
+  --edit-bar-border:      rgba(255, 0, 170, 0.6);
+  --edit-label-color:     #ff00aa;
+  --edit-label-glow:      0 0 8px #ff00aa, 0 0 20px rgba(255, 0, 170, 0.5);
+  --btn-done-color:       #ff00aa;
+  --btn-done-border:      rgba(255, 0, 170, 0.6);
+  --btn-done-hover-bg:    rgba(255, 0, 170, 0.12);
+  --btn-done-hover-glow:  0 0 10px rgba(255, 0, 170, 0.6);
+  --btn-add-border:       rgba(0, 240, 255, 0.45);
+
+  /* Update banner — yellow */
+  --update-bg:            rgba(232, 255, 0, 0.06);
+  --update-border:        rgba(232, 255, 0, 0.55);
+  --update-color:         #e8ff00;
+  --update-btn-border:    rgba(232, 255, 0, 0.55);
+  --update-btn-hover-bg:  rgba(232, 255, 0, 0.1);
+  --update-btn-hover-glow: 0 0 10px rgba(232, 255, 0, 0.55);
+
+  /* Settings CLOSE — magenta */
+  --btn-close-color:      #ff00aa;
+  --btn-close-border:     rgba(255, 0, 170, 0.5);
+  --btn-close-hover-bg:   rgba(255, 0, 170, 0.1);
+  --btn-close-hover-glow: 0 0 10px rgba(255, 0, 170, 0.6);
+
+  /* Picker / search */
+  --picker-search-bg:         rgba(0, 240, 255, 0.05);
+  --picker-item-hover-bg:     rgba(0, 240, 255, 0.08);
+  --picker-item-active-bg:    rgba(0, 240, 255, 0.15);
+  --picker-placeholder-bg:    rgba(0, 240, 255, 0.06);
+
+  /* Skin / remove */
+  --skin-btn-active-bg:   rgba(0, 240, 255, 0.15);
+  --remove-btn-bg:        rgba(255, 0, 170, 0.12);
+  --remove-btn-border:    rgba(255, 0, 170, 0.55);
+
+  /* Drag */
+  --drag-over-glow:       inset 0 0 24px rgba(0, 240, 255, 0.3);
+}
+
+/* ── Scanline overlay ──────────────────────────────────────────────────────── */
+#app::after {
+  content: '';
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.22) 3px,
+      rgba(0, 0, 0, 0.22) 4px
+    );
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* ── Header cyan left bar ──────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #00f0ff, rgba(0, 240, 255, 0.3));
+  box-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.5);
+}
+
+/* ── Grid corner brackets ──────────────────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* top-left bracket */
+    linear-gradient(to right,  rgba(0, 240, 255, 0.35) 0px, rgba(0, 240, 255, 0.35) 2px, transparent 2px) 8px 8px / 18px 2px no-repeat,
+    linear-gradient(to bottom, rgba(0, 240, 255, 0.35) 0px, rgba(0, 240, 255, 0.35) 2px, transparent 2px) 8px 8px / 2px 18px no-repeat,
+    /* top-right bracket */
+    linear-gradient(to left,   rgba(0, 240, 255, 0.35) 0px, rgba(0, 240, 255, 0.35) 2px, transparent 2px) calc(100% - 8px) 8px / 18px 2px no-repeat,
+    linear-gradient(to bottom, rgba(0, 240, 255, 0.35) 0px, rgba(0, 240, 255, 0.35) 2px, transparent 2px) calc(100% - 9px) 8px / 2px 18px no-repeat,
+    /* bottom-left bracket */
+    linear-gradient(to right,  rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) 8px calc(100% - 8px) / 18px 2px no-repeat,
+    linear-gradient(to top,    rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) 8px calc(100% - 8px) / 2px 18px no-repeat,
+    /* bottom-right bracket */
+    linear-gradient(to left,   rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) calc(100% - 8px) calc(100% - 8px) / 18px 2px no-repeat,
+    linear-gradient(to top,    rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) calc(100% - 9px) calc(100% - 8px) / 2px 18px no-repeat;
+}
+
+/* ── Grid faint horizontal grid lines ─────────────────────────────────────── */
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 63px,
+    rgba(0, 240, 255, 0.04) 63px,
+    rgba(0, 240, 255, 0.04) 64px
+  );
+}
+
+/* ── Glitch keyframes ──────────────────────────────────────────────────────── */
+@keyframes cp-glitch {
+  0%, 90%, 100% {
+    text-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.6);
+    transform: translate(0, 0);
+    clip-path: none;
+  }
+  91% {
+    text-shadow: -3px 0 #ff00aa, 3px 0 #00f0ff;
+    transform: translate(-2px, 0);
+    clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+  }
+  92% {
+    text-shadow: 3px 0 #ff00aa, -3px 0 #00f0ff;
+    transform: translate(2px, 0);
+    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+  }
+  93% {
+    text-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.6);
+    transform: translate(0, 0);
+    clip-path: none;
+  }
+  95% {
+    text-shadow: -2px 0 #ff00aa, 2px 0 #e8ff00;
+    transform: translate(1px, 0);
+    clip-path: polygon(0 45%, 100% 45%, 100% 55%, 0 55%);
+  }
+  96% {
+    text-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.6);
+    transform: translate(0, 0);
+    clip-path: none;
+  }
+}

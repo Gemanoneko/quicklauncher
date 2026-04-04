@@ -198,7 +198,7 @@ function applySettings() {
   document.getElementById('chk-startup').checked = settings.startWithWindows !== false;
 
   const theme = settings.theme || 'cyberpunk';
-  document.documentElement.className = theme !== 'cyberpunk' ? 'theme-' + theme : '';
+  document.getElementById('theme-stylesheet').href = `styles/themes/${theme}.css`;
   document.querySelectorAll('.skin-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.theme === theme);
   });

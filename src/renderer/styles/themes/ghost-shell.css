@@ -1,0 +1,215 @@
+/* ══ GHOST IN THE SHELL ═════════════════════════════════════════════════════════
+   Section 9. Major Kusanagi. Where does the ghost end and the shell begin?
+   Cyber-teal and neural purple — asymmetric corporate tech of a posthuman city.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       0px;
+  --app-clip:     polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  --overlay-clip: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+
+  /* ── Backgrounds ── */
+  --bg:           rgba(3, 6, 18, 0.93);
+  --panel-bg:     rgba(4, 7, 22, 0.97);
+  --overlay-bg:   rgba(3, 6, 18, 0.95);
+  --header-bg:    rgba(0, 224, 200, 0.04);
+
+  /* ── Typography ── */
+  --font:         'Consolas', 'Courier New', monospace;
+
+  /* ── Text ── */
+  --text:         #A0D8D0;
+  --text-dim:     rgba(160, 216, 208, 0.42);
+
+  /* ── Accents ── */
+  --accent-c:     #00E0C8;   /* cyber-teal — primary */
+  --accent-m:     #8040D0;   /* neural purple — edit/destructive */
+  --accent-y:     #00E0C8;   /* teal — updates */
+
+  /* ── Borders ── */
+  --border:       rgba(0, 224, 200, 0.16);
+  --border-h:     rgba(0, 224, 200, 0.50);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(0,224,200,.65),  0 0 18px rgba(0,224,200,.22);
+  --glow-m:       0 0 6px rgba(128,64,208,.65), 0 0 18px rgba(128,64,208,.22);
+  --glow-y:       0 0 6px rgba(0,224,200,.65),  0 0 18px rgba(0,224,200,.22);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 14px rgba(0,224,200,.04);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(0,224,200,.08);
+
+  /* ── Title animation ── */
+  --title-anim:   ghost-data 4s steps(1) infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(0, 224, 200, 0.055);
+  --tile-hover-border: rgba(0, 224, 200, 0.26);
+  --tile-hover-shadow: 0 0 10px rgba(0, 224, 200, 0.09);
+  --tile-active-bg:    rgba(0, 224, 200, 0.11);
+  --tile-icon-glow:    rgba(0,224,200,.40);
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(0, 224, 200, 0.09);
+  --btn-active-bg:  rgba(0, 224, 200, 0.18);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(0, 224, 200, 0.18);
+  --drop-icon-color:  rgba(0, 224, 200, 0.25);
+  --hint-sub-color:   rgba(0, 224, 200, 0.20);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(0, 224, 200, 0.30);
+  --rename-input-bg:  rgba(0, 224, 200, 0.07);
+
+  /* ── Edit bar (neural purple) ── */
+  --edit-bar-bg:          rgba(128, 64, 208, 0.07);
+  --edit-bar-border:      rgba(128, 64, 208, 0.30);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(128, 64, 208, 0.35);
+  --btn-done-hover-bg:    rgba(128, 64, 208, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(0, 224, 200, 0.35);
+
+  /* ── Update banner (bright teal) ── */
+  --update-bg:             rgba(0, 224, 200, 0.06);
+  --update-border:         rgba(0, 224, 200, 0.35);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(0, 224, 200, 0.30);
+  --update-btn-hover-bg:   rgba(0, 224, 200, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(128, 64, 208, 0.35);
+  --btn-close-hover-bg:   rgba(128, 64, 208, 0.09);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(0, 224, 200, 0.07);
+  --picker-item-hover-bg:  rgba(0, 224, 200, 0.07);
+  --picker-item-active-bg: rgba(0, 224, 200, 0.13);
+  --picker-placeholder-bg: rgba(0, 224, 200, 0.08);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(0, 224, 200, 0.15);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(128, 64, 208, 0.88);
+  --remove-btn-border:     var(--accent-m);
+}
+
+/* ── Title animation: ghost-data — rapid character shimmer ─────────────────── */
+@keyframes ghost-data {
+  0%, 92%, 100% {
+    color: #A0D8D0;
+    text-shadow: 0 0 8px rgba(0,224,200,.40);
+    opacity: 1;
+  }
+  93% {
+    color: #00FFE8;
+    text-shadow: 0 0 12px rgba(0,224,200,.80), 0 0 28px rgba(0,224,200,.30);
+    opacity: 0.85;
+  }
+  94% {
+    color: #C080FF;
+    text-shadow: 2px 0 0 rgba(0,224,200,.5), -2px 0 0 rgba(128,64,208,.6);
+    opacity: 0.95;
+  }
+  95% {
+    color: #A0D8D0;
+    text-shadow: 0 0 6px rgba(0,224,200,.35);
+    opacity: 1;
+  }
+  96% {
+    color: #00FFE8;
+    text-shadow: -1px 0 rgba(128,64,208,.5), 1px 0 rgba(0,224,200,.5);
+    opacity: 0.9;
+  }
+  97% {
+    color: #A0D8D0;
+    text-shadow: 0 0 8px rgba(0,224,200,.40);
+    opacity: 1;
+  }
+}
+
+/* ── App border: teal asymmetric pulse ─────────────────────────────────────── */
+@keyframes border-pulse {
+  0%, 100% { border-color: rgba(0,224,200,.16); box-shadow: none; }
+  50%       { border-color: rgba(0,224,200,.50); box-shadow: inset 0 0 14px rgba(0,224,200,.05); }
+}
+
+/* ── App::after — very faint hex neural grid ────────────────────────────────── */
+#app::after {
+  background:
+    /* hexagonal neural net at 0.03 opacity */
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'52'%20height%3D'60'%3E%3Cg%20stroke%3D'%2300E0C8'%20stroke-opacity%3D'0.05'%20stroke-width%3D'0.7'%20fill%3D'none'%3E%3Cpolygon%20points%3D'26,2%2050,15%2050,45%2026,58%202,45%202,15'%2F%3E%3Cpolygon%20points%3D'26,12%2042,21%2042,39%2026,48%2010,39%2010,21'%2F%3E%3Cline%20x1%3D'26'%20y1%3D'2'%20x2%3D'26'%20y2%3D'12'%2F%3E%3Cline%20x1%3D'50'%20y1%3D'15'%20x2%3D'42'%20y2%3D'21'%2F%3E%3Cline%20x1%3D'50'%20y1%3D'45'%20x2%3D'42'%20y2%3D'39'%2F%3E%3Cline%20x1%3D'26'%20y1%3D'58'%20x2%3D'26'%20y2%3D'48'%2F%3E%3Cline%20x1%3D'2'%20y1%3D'45'%20x2%3D'10'%20y2%3D'39'%2F%3E%3Cline%20x1%3D'2'%20y1%3D'15'%20x2%3D'10'%20y2%3D'21'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
+    /* edge vignette */
+    radial-gradient(ellipse 110% 100% at 50% 50%, transparent 48%, rgba(0,0,8,.52) 100%);
+  background-size: 52px 60px, auto;
+  opacity: 1;
+}
+
+/* ── Grid container: Section 9 targeting reticles ──────────────────────────── */
+#grid-container {
+  position: relative;
+}
+
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* targeting reticle — centered radial with crosshair */
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'200'%20height%3D'200'%3E%3Cg%20stroke%3D'%2300E0C8'%20stroke-opacity%3D'0.05'%20stroke-width%3D'0.8'%20fill%3D'none'%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'60'%2F%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'36'%2F%3E%3Ccircle%20cx%3D'100'%20cy%3D'100'%20r%3D'8'%2F%3E%3Cline%20x1%3D'100'%20y1%3D'36'%20x2%3D'100'%20y2%3D'58'%2F%3E%3Cline%20x1%3D'100'%20y1%3D'142'%20x2%3D'100'%20y2%3D'164'%2F%3E%3Cline%20x1%3D'36'%20y1%3D'100'%20x2%3D'58'%20y2%3D'100'%2F%3E%3Cline%20x1%3D'142'%20y1%3D'100'%20x2%3D'164'%20y2%3D'100'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
+    /* teal horizontal scan lines at very low opacity */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 23px,
+      rgba(0,224,200,.036) 23px,
+      rgba(0,224,200,.036) 24px
+    ),
+    /* neural purple deep background hint */
+    radial-gradient(ellipse 80% 60% at 80% 40%, rgba(64,20,120,.06) 0%, transparent 60%),
+    /* teal top glow */
+    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(0,80,70,.08) 0%, transparent 60%);
+  background-size: 200px 200px, 100% 24px, 100% 100%, 100% 100%;
+  background-position: center center, 0 0, 0 0, 0 0;
+}
+
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* purple neural overlay — bottom corner bloom */
+  background:
+    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(80,20,160,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(0,180,160,.04) 0%, transparent 50%);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+#header {
+  border-bottom: 1px solid rgba(0, 224, 200, 0.20);
+  box-shadow: 0 2px 12px rgba(0,0,0,.40);
+}
+
+/* ── Header accent bar: teal-to-purple gradient ────────────────────────────── */
+#header::before {
+  background: linear-gradient(180deg, #00E0C8 0%, #8040D0 100%);
+  box-shadow: 0 0 8px rgba(0,224,200,.5);
+}
+
+/* ── Overlay panel: same asymmetric clip ───────────────────────────────────── */
+.overlay-panel {
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px)) !important;
+  border-left: 2px solid rgba(128,64,208,.45) !important;
+}

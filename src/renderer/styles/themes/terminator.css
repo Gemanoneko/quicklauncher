@@ -1,0 +1,248 @@
+/* ══ TERMINATOR ════════════════════════════════════════════════════════════════
+   Skynet / T-800 HUD / Endoskeleton targeting system.
+   Pure red on absolute black. You have been targeted. Acquisition: COMPLETE.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg:                   #020000;
+  --panel-bg:             rgba(4, 0, 0, 0.99);
+  --overlay-bg:           rgba(2, 0, 0, 0.94);
+  --header-bg:            rgba(10, 2, 2, 0.97);
+
+  /* Typography — targeting computer monospace */
+  --font:                 Consolas, 'Courier New', monospace;
+  --text:                 #D09090;
+  --text-dim:             #602020;
+
+  /* Shape — rectangular targeting scanner, no chamfer */
+  --radius:               0px;
+  --app-clip:             none;
+  --overlay-clip:         none;
+
+  /* Accent palette — targeting red / dim red / bright alert red */
+  --accent-c:             #FF2000;
+  --accent-m:             #880000;
+  --accent-y:             #FF5040;
+
+  /* Borders */
+  --border:               rgba(255, 32, 0, 0.2);
+  --border-h:             rgba(255, 32, 0, 0.65);
+
+  /* Glows — targeting lock indicator */
+  --glow-c:               0 0 5px rgba(255, 32, 0, 0.8), 0 0 16px rgba(255, 32, 0, 0.35), 0 0 32px rgba(255, 32, 0, 0.1);
+  --glow-m:               0 0 5px rgba(136, 0, 0, 0.85), 0 0 14px rgba(136, 0, 0, 0.4);
+  --glow-y:               0 0 5px rgba(255, 80, 64, 0.75), 0 0 16px rgba(255, 80, 64, 0.3);
+  --pulse-glow:           inset 0 0 22px rgba(255, 32, 0, 0.1), inset 0 0 5px rgba(136, 0, 0, 0.12);
+
+  /* Scanlines — dim red CRT display, endoskeleton HUD */
+  --scanlines:            repeating-linear-gradient(
+                            to bottom,
+                            transparent 0px,
+                            transparent 2px,
+                            rgba(0, 0, 0, 0.35) 2px,
+                            rgba(0, 0, 0, 0.35) 3px
+                          );
+
+  /* Title — targeting acquisition lock animation */
+  --title-anim:           t-scan 5s steps(1) infinite;
+
+  /* Tiles */
+  --tile-hover-bg:        rgba(255, 32, 0, 0.07);
+  --tile-hover-border:    #FF2000;
+  --tile-hover-shadow:    0 0 10px rgba(255, 32, 0, 0.4), inset 0 0 8px rgba(255, 32, 0, 0.05);
+  --tile-active-bg:       rgba(255, 32, 0, 0.13);
+  --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 32, 0, 0.85)) drop-shadow(0 0 12px rgba(255, 32, 0, 0.4));
+
+  /* Buttons */
+  --btn-hover-bg:         rgba(255, 32, 0, 0.1);
+  --btn-active-bg:        rgba(255, 32, 0, 0.18);
+
+  /* Drop hint */
+  --drop-hint-border:     rgba(255, 32, 0, 0.3);
+  --drop-icon-color:      rgba(255, 32, 0, 0.45);
+  --hint-sub-color:       #602020;
+
+  /* Rename */
+  --rename-dashed:        rgba(255, 32, 0, 0.5);
+  --rename-input-bg:      rgba(255, 32, 0, 0.06);
+
+  /* Edit bar — blood mode */
+  --edit-bar-bg:          rgba(136, 0, 0, 0.12);
+  --edit-bar-border:      rgba(136, 0, 0, 0.65);
+  --edit-label-color:     #CC1000;
+  --edit-label-glow:      0 0 8px rgba(136, 0, 0, 0.85), 0 0 20px rgba(136, 0, 0, 0.4);
+  --btn-done-color:       #CC1000;
+  --btn-done-border:      rgba(136, 0, 0, 0.6);
+  --btn-done-hover-bg:    rgba(136, 0, 0, 0.14);
+  --btn-done-hover-glow:  0 0 10px rgba(136, 0, 0, 0.65);
+  --btn-add-border:       rgba(255, 32, 0, 0.4);
+
+  /* Update banner — bright targeting red */
+  --update-bg:            rgba(255, 80, 64, 0.07);
+  --update-border:        rgba(255, 80, 64, 0.55);
+  --update-color:         #FF5040;
+  --update-btn-border:    rgba(255, 80, 64, 0.5);
+  --update-btn-hover-bg:  rgba(255, 80, 64, 0.1);
+  --update-btn-hover-glow: 0 0 10px rgba(255, 80, 64, 0.55);
+
+  /* Settings CLOSE — dim red */
+  --btn-close-color:      #CC1000;
+  --btn-close-border:     rgba(136, 0, 0, 0.5);
+  --btn-close-hover-bg:   rgba(136, 0, 0, 0.1);
+  --btn-close-hover-glow: 0 0 10px rgba(136, 0, 0, 0.6);
+
+  /* Picker / search */
+  --picker-search-bg:         rgba(255, 32, 0, 0.05);
+  --picker-item-hover-bg:     rgba(255, 32, 0, 0.08);
+  --picker-item-active-bg:    rgba(255, 32, 0, 0.14);
+  --picker-placeholder-bg:    rgba(255, 32, 0, 0.06);
+
+  /* Skin / remove */
+  --skin-btn-active-bg:   rgba(255, 32, 0, 0.14);
+  --remove-btn-bg:        rgba(136, 0, 0, 0.16);
+  --remove-btn-border:    rgba(136, 0, 0, 0.6);
+
+  /* Drag */
+  --drag-over-glow:       inset 0 0 24px rgba(255, 32, 0, 0.25);
+}
+
+/* ── Header — dim red background, T-800 visual cortex feed ──────────────── */
+#header {
+  background: rgba(18, 2, 2, 0.97);
+  border-bottom: 1px solid rgba(255, 32, 0, 0.25);
+}
+
+/* ── Header left bar — bright targeting red ──────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #FF2000, rgba(255, 32, 0, 0.25));
+  box-shadow: 0 0 8px rgba(255, 32, 0, 0.8), 0 0 20px rgba(255, 32, 0, 0.35);
+}
+
+/* ── Overlay panel — red border, threat assessment terminal ─────────────── */
+.overlay-panel {
+  border: 1px solid rgba(255, 32, 0, 0.45);
+  box-shadow: 0 0 20px rgba(255, 32, 0, 0.12), inset 0 0 20px rgba(136, 0, 0, 0.05);
+}
+
+/* ── Very faint scanline overlay — machine vision CRT ───────────────────── */
+#app::after {
+  content: '';
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.3) 2px,
+      rgba(0, 0, 0, 0.3) 3px
+    );
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* ── Targeting HUD — reticle grid, crosshair, scan sweep ────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  animation: t-sweep 5s linear infinite;
+  background:
+    /* center crosshair — horizontal arm */
+    linear-gradient(to right, transparent 0, transparent calc(50% - 20px), rgba(255, 32, 0, 0.12) calc(50% - 20px), rgba(255, 32, 0, 0.12) calc(50% - 1px), transparent calc(50% - 1px), transparent calc(50% + 1px), rgba(255, 32, 0, 0.12) calc(50% + 1px), rgba(255, 32, 0, 0.12) calc(50% + 20px), transparent calc(50% + 20px)) 0 50% / 100% 1px no-repeat,
+    /* center crosshair — vertical arm */
+    linear-gradient(to bottom, transparent 0, transparent calc(50% - 20px), rgba(255, 32, 0, 0.12) calc(50% - 20px), rgba(255, 32, 0, 0.12) calc(50% - 1px), transparent calc(50% - 1px), transparent calc(50% + 1px), rgba(255, 32, 0, 0.12) calc(50% + 1px), rgba(255, 32, 0, 0.12) calc(50% + 20px), transparent calc(50% + 20px)) 50% 0 / 1px 100% no-repeat,
+    /* outer targeting ring */
+    radial-gradient(circle 55px at 50% 50%, transparent 53px, rgba(255, 32, 0, 0.09) 53px, rgba(255, 32, 0, 0.09) 55px, transparent 55px),
+    /* inner targeting ring */
+    radial-gradient(circle 30px at 50% 50%, transparent 28px, rgba(255, 32, 0, 0.11) 28px, rgba(255, 32, 0, 0.11) 30px, transparent 30px),
+    /* sparse HUD grid */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 79px,
+      rgba(255, 32, 0, 0.04) 79px,
+      rgba(255, 32, 0, 0.04) 80px
+    ),
+    repeating-linear-gradient(
+      to right,
+      transparent 0px,
+      transparent 79px,
+      rgba(255, 32, 0, 0.03) 79px,
+      rgba(255, 32, 0, 0.03) 80px
+    );
+}
+
+/* ── Targeting corner brackets — threat containment frame ───────────────── */
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* TL horizontal */
+    linear-gradient(to right,  rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) 10px 10px / 20px 2px no-repeat,
+    /* TL vertical */
+    linear-gradient(to bottom, rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) 10px 10px / 2px 20px no-repeat,
+    /* TR horizontal */
+    linear-gradient(to left,   rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) calc(100% - 10px) 10px / 20px 2px no-repeat,
+    /* TR vertical */
+    linear-gradient(to bottom, rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) calc(100% - 11px) 10px / 2px 20px no-repeat,
+    /* BL horizontal */
+    linear-gradient(to right,  rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) 10px calc(100% - 10px) / 20px 2px no-repeat,
+    /* BL vertical */
+    linear-gradient(to top,    rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) 10px calc(100% - 10px) / 2px 20px no-repeat,
+    /* BR horizontal */
+    linear-gradient(to left,   rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) calc(100% - 10px) calc(100% - 10px) / 20px 2px no-repeat,
+    /* BR vertical */
+    linear-gradient(to top,    rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) calc(100% - 11px) calc(100% - 10px) / 2px 20px no-repeat;
+}
+
+/* ── T-800 slow scan sweep across the grid ───────────────────────────────── */
+@keyframes t-sweep {
+  0%   { background-position-y: 0, 0, center, center, 0, 0, 10px, 10px, calc(100% - 10px), calc(100% - 10px); }
+  100% { background-position-y: 0, 0, center, center, 0, 0, 10px, 10px, calc(100% - 10px), calc(100% - 10px); }
+}
+
+/* ── Targeting acquisition lock animation ────────────────────────────────── */
+@keyframes t-scan {
+  0%, 78%, 100% {
+    text-shadow: 0 0 5px rgba(255, 32, 0, 0.65), 0 0 14px rgba(255, 32, 0, 0.28);
+    opacity: 1;
+    letter-spacing: 4px;
+  }
+  /* acquisition phase — brief letter-spacing shift, like lock-on */
+  79% {
+    text-shadow: 0 0 8px rgba(255, 32, 0, 0.9), 0 0 22px rgba(255, 32, 0, 0.5);
+    opacity: 0.7;
+    letter-spacing: 6px;
+  }
+  80% {
+    text-shadow: 1px 0 rgba(255, 80, 64, 0.9), -1px 0 rgba(136, 0, 0, 0.9);
+    opacity: 1;
+    letter-spacing: 3px;
+  }
+  81% {
+    text-shadow: -2px 0 rgba(255, 32, 0, 0.9), 2px 0 rgba(255, 80, 64, 0.5);
+    opacity: 0.9;
+    letter-spacing: 5px;
+  }
+  82% {
+    text-shadow: 0 0 5px rgba(255, 32, 0, 0.65), 0 0 14px rgba(255, 32, 0, 0.28);
+    opacity: 1;
+    letter-spacing: 4px;
+  }
+  /* lock confirm — brief bright flash */
+  90% {
+    text-shadow: 0 0 10px rgba(255, 32, 0, 1), 0 0 28px rgba(255, 32, 0, 0.6), 0 0 50px rgba(255, 32, 0, 0.2);
+    opacity: 1;
+    letter-spacing: 4px;
+  }
+  91% {
+    text-shadow: 0 0 5px rgba(255, 32, 0, 0.65), 0 0 14px rgba(255, 32, 0, 0.28);
+    opacity: 1;
+    letter-spacing: 4px;
+  }
+}

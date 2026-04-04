@@ -1,0 +1,200 @@
+/* ══ MASS EFFECT ════════════════════════════════════════════════════════════════
+   Systems Alliance. N7. The Normandy. Epic space opera at the edge of extinction.
+   Alliance blue and N7 red — clean military precision against the void.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       2px;
+  --app-clip:     polygon(0 8px,8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px));
+  --overlay-clip: polygon(0 8px,8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px));
+
+  /* ── Backgrounds ── */
+  --bg:           rgba(0, 5, 8, 0.93);
+  --panel-bg:     rgba(0, 6, 12, 0.97);
+  --overlay-bg:   rgba(0, 5, 8, 0.95);
+  --header-bg:    rgba(0, 184, 236, 0.04);
+
+  /* ── Typography ── */
+  --font:         'Segoe UI', 'Arial', sans-serif;
+
+  /* ── Text ── */
+  --text:         #C8DCF0;
+  --text-dim:     rgba(200, 220, 240, 0.42);
+
+  /* ── Accents ── */
+  --accent-c:     #00B8EC;   /* Alliance blue — primary */
+  --accent-m:     #C0001C;   /* N7 red — edit/destructive */
+  --accent-y:     #00B8EC;   /* Alliance blue — updates */
+
+  /* ── Borders ── */
+  --border:       rgba(0, 184, 236, 0.16);
+  --border-h:     rgba(0, 184, 236, 0.52);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(0,184,236,.65),  0 0 18px rgba(0,184,236,.22);
+  --glow-m:       0 0 6px rgba(192,0,28,.65),   0 0 18px rgba(192,0,28,.22);
+  --glow-y:       0 0 6px rgba(0,184,236,.65),  0 0 18px rgba(0,184,236,.22);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 14px rgba(0,184,236,.04);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(0,184,236,.08);
+
+  /* ── Title animation ── */
+  --title-anim:   mass-effect-scan 5s ease-in-out infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(0, 184, 236, 0.055);
+  --tile-hover-border: rgba(0, 184, 236, 0.24);
+  --tile-hover-shadow: 0 0 10px rgba(0, 184, 236, 0.09);
+  --tile-active-bg:    rgba(0, 184, 236, 0.11);
+  --tile-icon-glow:    rgba(0,184,236,.38);
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(0, 184, 236, 0.09);
+  --btn-active-bg:  rgba(0, 184, 236, 0.18);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(0, 184, 236, 0.18);
+  --drop-icon-color:  rgba(0, 184, 236, 0.25);
+  --hint-sub-color:   rgba(0, 184, 236, 0.20);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(0, 184, 236, 0.30);
+  --rename-input-bg:  rgba(0, 184, 236, 0.07);
+
+  /* ── Edit bar (N7 red) ── */
+  --edit-bar-bg:          rgba(192, 0, 28, 0.06);
+  --edit-bar-border:      rgba(192, 0, 28, 0.30);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(192, 0, 28, 0.35);
+  --btn-done-hover-bg:    rgba(192, 0, 28, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(0, 184, 236, 0.35);
+
+  /* ── Update banner (Alliance blue) ── */
+  --update-bg:             rgba(0, 184, 236, 0.06);
+  --update-border:         rgba(0, 184, 236, 0.35);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(0, 184, 236, 0.30);
+  --update-btn-hover-bg:   rgba(0, 184, 236, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(192, 0, 28, 0.35);
+  --btn-close-hover-bg:   rgba(192, 0, 28, 0.09);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(0, 184, 236, 0.07);
+  --picker-item-hover-bg:  rgba(0, 184, 236, 0.07);
+  --picker-item-active-bg: rgba(0, 184, 236, 0.13);
+  --picker-placeholder-bg: rgba(0, 184, 236, 0.08);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(0, 184, 236, 0.15);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(192, 0, 28, 0.88);
+  --remove-btn-border:     var(--accent-m);
+}
+
+/* ── Title animation: slow blue scan line sweep ────────────────────────────── */
+@keyframes mass-effect-scan {
+  0%, 100% {
+    color: #C8DCF0;
+    text-shadow: 0 0 6px rgba(0,184,236,.35);
+  }
+  40% {
+    color: #00C8FF;
+    text-shadow: 0 0 10px rgba(0,184,236,.70), 0 0 24px rgba(0,184,236,.25);
+  }
+  55% {
+    color: #E0F0FF;
+    text-shadow: 0 0 14px rgba(0,200,255,.60), 0 0 32px rgba(0,184,236,.18);
+  }
+}
+
+/* ── App border: blue Alliance pulse ───────────────────────────────────────── */
+@keyframes border-pulse {
+  0%, 100% { border-color: rgba(0,184,236,.16); box-shadow: none; }
+  50%       { border-color: rgba(0,184,236,.50); box-shadow: inset 0 0 14px rgba(0,184,236,.05); }
+}
+
+/* ── App::after — nothing (clean space-opera look) ─────────────────────────── */
+#app::after {
+  background: none;
+}
+
+/* ── Grid container: holographic blue grid + N7 edge stripe ────────────────── */
+#grid-container {
+  position: relative;
+}
+
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Holographic grid — very faint repeating lines in Alliance blue */
+  background:
+    /* vertical grid lines */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 39px,
+      rgba(0,184,236,.032) 39px,
+      rgba(0,184,236,.032) 40px
+    ),
+    /* horizontal grid lines */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 39px,
+      rgba(0,184,236,.025) 39px,
+      rgba(0,184,236,.025) 40px
+    ),
+    /* top-down blue glow — like looking up from the Normandy CIC */
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,40,80,.12) 0%, transparent 70%);
+  background-size: 40px 40px, 40px 40px, 100% 100%;
+}
+
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* N7 diagonal red stripe — far left edge, thin bar fading out */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(192,0,28,.10) 0px,
+      rgba(192,0,28,.06) 2px,
+      rgba(192,0,28,.02) 5px,
+      transparent 18px
+    );
+}
+
+/* ── Header: N7 red stripe on left accent bar ───────────────────────────────── */
+#header {
+  border-bottom: 1px solid rgba(0, 184, 236, 0.20);
+  box-shadow: 0 2px 12px rgba(0,0,0,.35);
+}
+
+/* ── Header::before — 6px wide N7 red bar ─────────────────────────────────── */
+#header::before {
+  width: 6px;
+  background: linear-gradient(180deg, #C0001C 0%, rgba(192,0,28,.5) 100%);
+  box-shadow: 0 0 8px rgba(192,0,28,.6), 2px 0 12px rgba(192,0,28,.2);
+}
+
+/* ── Overlay panel: N7 red left border ─────────────────────────────────────── */
+.overlay-panel {
+  border-left: 3px solid rgba(192, 0, 28, 0.60) !important;
+}

@@ -1,0 +1,197 @@
+/* ══ TRON ══════════════════════════════════════════════════════════════════════
+   Tron Legacy — electric blue circuit traces on deep blue-black space.
+   Perfect right angles. Light grid. Orange identity disc accents.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bg:                   #000814;
+  --panel-bg:             rgba(0, 8, 20, 0.97);
+  --overlay-bg:           rgba(0, 5, 14, 0.9);
+  --header-bg:            rgba(0, 6, 18, 0.96);
+
+  /* Typography */
+  --font:                 'Consolas', 'Courier New', monospace;
+  --text:                 #A8E0F0;
+  --text-dim:             #2a5060;
+
+  /* Shape — perfect rectangles */
+  --radius:               0px;
+  --app-clip:             none;
+  --overlay-clip:         none;
+
+  /* Accent palette — electric blue / orange / white */
+  --accent-c:             #6DE8FF;
+  --accent-m:             #FF7F00;
+  --accent-y:             #FFFFFF;
+
+  /* Borders */
+  --border:               rgba(109, 232, 255, 0.18);
+  --border-h:             rgba(109, 232, 255, 0.6);
+
+  /* Glows */
+  --glow-c:               0 0 6px #6DE8FF, 0 0 16px rgba(109, 232, 255, 0.4);
+  --glow-m:               0 0 6px #FF7F00, 0 0 16px rgba(255, 127, 0, 0.4);
+  --glow-y:               0 0 6px #ffffff, 0 0 16px rgba(255, 255, 255, 0.3);
+  --pulse-glow:           inset 0 0 20px rgba(109, 232, 255, 0.18), inset 0 0 5px rgba(109, 232, 255, 0.1);
+
+  /* Scanlines — very faint blue horizontal */
+  --scanlines:            repeating-linear-gradient(
+                            to bottom,
+                            transparent 0px,
+                            transparent 5px,
+                            rgba(109, 232, 255, 0.025) 5px,
+                            rgba(109, 232, 255, 0.025) 6px
+                          );
+
+  /* Title animation — slow blue pulse */
+  --title-anim:           tron-pulse 3s ease-in-out infinite;
+
+  /* Tiles */
+  --tile-hover-bg:        rgba(109, 232, 255, 0.06);
+  --tile-hover-border:    #6DE8FF;
+  --tile-hover-shadow:    0 0 10px rgba(109, 232, 255, 0.4), inset 0 0 8px rgba(109, 232, 255, 0.05);
+  --tile-active-bg:       rgba(109, 232, 255, 0.12);
+  --tile-icon-glow:       drop-shadow(0 0 5px #6DE8FF) drop-shadow(0 0 12px rgba(109, 232, 255, 0.5));
+
+  /* Buttons */
+  --btn-hover-bg:         rgba(109, 232, 255, 0.08);
+  --btn-active-bg:        rgba(109, 232, 255, 0.15);
+
+  /* Drop hint */
+  --drop-hint-border:     rgba(109, 232, 255, 0.3);
+  --drop-icon-color:      rgba(109, 232, 255, 0.4);
+  --hint-sub-color:       #2a5060;
+
+  /* Rename */
+  --rename-dashed:        rgba(109, 232, 255, 0.45);
+  --rename-input-bg:      rgba(109, 232, 255, 0.04);
+
+  /* Edit bar — orange identity disc */
+  --edit-bar-bg:          rgba(255, 127, 0, 0.07);
+  --edit-bar-border:      rgba(255, 127, 0, 0.55);
+  --edit-label-color:     #FF7F00;
+  --edit-label-glow:      0 0 7px rgba(255, 127, 0, 0.7), 0 0 18px rgba(255, 127, 0, 0.3);
+  --btn-done-color:       #FF7F00;
+  --btn-done-border:      rgba(255, 127, 0, 0.55);
+  --btn-done-hover-bg:    rgba(255, 127, 0, 0.1);
+  --btn-done-hover-glow:  0 0 10px rgba(255, 127, 0, 0.55);
+  --btn-add-border:       rgba(109, 232, 255, 0.4);
+
+  /* Update banner — white/blue */
+  --update-bg:            rgba(109, 232, 255, 0.05);
+  --update-border:        rgba(109, 232, 255, 0.45);
+  --update-color:         #6DE8FF;
+  --update-btn-border:    rgba(109, 232, 255, 0.45);
+  --update-btn-hover-bg:  rgba(109, 232, 255, 0.08);
+  --update-btn-hover-glow: 0 0 10px rgba(109, 232, 255, 0.45);
+
+  /* Settings CLOSE — orange */
+  --btn-close-color:      #FF7F00;
+  --btn-close-border:     rgba(255, 127, 0, 0.45);
+  --btn-close-hover-bg:   rgba(255, 127, 0, 0.08);
+  --btn-close-hover-glow: 0 0 10px rgba(255, 127, 0, 0.5);
+
+  /* Picker / search */
+  --picker-search-bg:         rgba(109, 232, 255, 0.04);
+  --picker-item-hover-bg:     rgba(109, 232, 255, 0.07);
+  --picker-item-active-bg:    rgba(109, 232, 255, 0.13);
+  --picker-placeholder-bg:    rgba(109, 232, 255, 0.04);
+
+  /* Skin / remove */
+  --skin-btn-active-bg:   rgba(109, 232, 255, 0.12);
+  --remove-btn-bg:        rgba(255, 127, 0, 0.1);
+  --remove-btn-border:    rgba(255, 127, 0, 0.45);
+
+  /* Drag */
+  --drag-over-glow:       inset 0 0 22px rgba(109, 232, 255, 0.25);
+}
+
+/* ── Very faint blue scanlines overlay ────────────────────────────────────── */
+#app::after {
+  content: '';
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 5px,
+      rgba(109, 232, 255, 0.022) 5px,
+      rgba(109, 232, 255, 0.022) 6px
+    );
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* ── Header orange identity bar (differentiates from Cyberpunk cyan) ──────── */
+#header::before {
+  background: linear-gradient(to bottom, #FF7F00, rgba(255, 127, 0, 0.3));
+  box-shadow: 0 0 10px rgba(255, 127, 0, 0.7), 0 0 22px rgba(255, 127, 0, 0.3);
+}
+
+/* ── Circuit grid in grid area ────────────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* vertical circuit lines */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 63px,
+      rgba(109, 232, 255, 0.05) 63px,
+      rgba(109, 232, 255, 0.05) 64px
+    ),
+    /* horizontal circuit lines */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 63px,
+      rgba(109, 232, 255, 0.05) 63px,
+      rgba(109, 232, 255, 0.05) 64px
+    ),
+    /* top-edge blue glow band */
+    linear-gradient(
+      to bottom,
+      rgba(109, 232, 255, 0.06) 0px,
+      transparent 16px
+    ),
+    /* bottom-edge blue glow band */
+    linear-gradient(
+      to top,
+      rgba(109, 232, 255, 0.06) 0px,
+      transparent 16px
+    );
+}
+
+/* ── Subtle orange circuit traces (decorative) ────────────────────────────── */
+#grid-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* diagonal trace hints — very subtle */
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 95px,
+      rgba(255, 127, 0, 0.025) 95px,
+      rgba(255, 127, 0, 0.025) 96px
+    );
+}
+
+/* ── Title slow blue pulse ────────────────────────────────────────────────── */
+@keyframes tron-pulse {
+  0%, 100% {
+    text-shadow: 0 0 6px rgba(109, 232, 255, 0.6), 0 0 18px rgba(109, 232, 255, 0.25);
+    opacity: 1;
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(109, 232, 255, 0.9), 0 0 30px rgba(109, 232, 255, 0.5), 0 0 50px rgba(109, 232, 255, 0.2);
+    opacity: 0.95;
+  }
+}
