@@ -245,7 +245,7 @@ $apps = Get-StartApps | ForEach-Object {
     try {
       $pkg = $pkgMap[$pfn]
       if ($pkg) {
-        [xml]$mf = Get-Content "$($pkg.InstallLocation)\\AppxManifest.xml" -EA SilentlyContinue
+        $mf = Get-AppxPackageManifest -Package $pkg.PackageFullName -EA SilentlyContinue
         # Application may be a single node or an array — always work with the first entry
         $appNodes = $mf.Package.Applications.Application
         $appNode  = if ($appNodes -is [System.Array]) { $appNodes[0] } else { $appNodes }
@@ -320,7 +320,12 @@ $apps = Get-StartApps | ForEach-Object {
   if ($exePath -and -not $iconPath) {
     try { $exeIconB64 = [IconHelper]::GetBase64($exePath) } catch {}
   }
-  [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath; ExeIconB64=$exeIconB64 }
+  # Last-resort for AppX apps where WindowsApps is inaccessible: ask the shell for the icon
+  $shellIconB64 = $null
+  if (-not $iconPath -and -not $exeIconB64 -and $appId -match '^[^!\\]+![^!\\]+$') {
+    try { $shellIconB64 = [IconHelper]::GetThumbnailBase64("shell:AppsFolder\$appId") } catch {}
+  }
+  [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath; ExeIconB64=$exeIconB64; ShellIconB64=$shellIconB64 }
 }
 $apps | ConvertTo-Json -Depth 2
 `;
@@ -337,7 +342,7 @@ $apps | ConvertTo-Json -Depth 2
                 // Skip document/URL shortcuts dumped into the Start Menu by installers
                 && !/\.(txt|htm|html|pdf|rtf|url|chm|doc|docx|md)(\b|$)/i.test(item.AppID)
                 // Must have an icon source, OR be a known launchable protocol (Steam/AppX etc.)
-                && (item.IconPath || item.ExePath || item.ExeIconB64
+                && (item.IconPath || item.ExePath || item.ExeIconB64 || item.ShellIconB64
                     || /^steam:\/\//.test(item.AppID)
                     || /^[^!\\]+![^!\\]+$/.test(item.AppID)))
               .sort((a, b) => a.Name.localeCompare(b.Name));
@@ -353,6 +358,11 @@ $apps | ConvertTo-Json -Depth 2
               } else if (item.ExeIconB64) {
                 try {
                   const img = trimIcon(nativeImage.createFromBuffer(Buffer.from(item.ExeIconB64, 'base64')));
+                  if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+                } catch { /* skip */ }
+              } else if (item.ShellIconB64) {
+                try {
+                  const img = trimIcon(nativeImage.createFromBuffer(Buffer.from(item.ShellIconB64, 'base64')));
                   if (!img.isEmpty()) iconDataUrl = img.toDataURL();
                 } catch { /* skip */ }
               }
