@@ -54,6 +54,7 @@
   --tile-hover-shadow:    0 0 10px rgba(222, 128, 0, 0.38), inset 0 0 8px rgba(222, 128, 0, 0.05);
   --tile-active-bg:       rgba(222, 128, 0, 0.13);
   --tile-icon-glow:       drop-shadow(0 0 5px rgba(222, 128, 0, 0.8)) drop-shadow(0 0 12px rgba(222, 128, 0, 0.4));
+  --tile-icon-fx:         saturate(0.7) brightness(0.85);
 
   /* Buttons */
   --btn-hover-bg:         rgba(222, 128, 0, 0.1);
@@ -201,6 +202,19 @@
       rgba(76, 112, 64, 0.04) 95px,
       rgba(76, 112, 64, 0.04) 96px
     );
+}
+
+/* ── Resonance cascade — dimensional bleed, orange-green border surge ───────── */
+#app { animation: hl-cascade 20s steps(1) infinite; }
+@keyframes hl-cascade {
+  0%, 75%, 100% { box-shadow: none; }
+  76% { box-shadow: 0 0 0 1px rgba(222,128,0,.40), inset 0 0 16px rgba(222,128,0,.05); }
+  77% { box-shadow: 0 0 0 1px rgba(76,112,64,.55), inset 0 0 20px rgba(60,90,50,.06); }
+  78% { box-shadow: 0 0 0 2px rgba(222,128,0,.65), 0 0 18px rgba(222,128,0,.14), inset 0 0 30px rgba(222,128,0,.08); }
+  79% { box-shadow: 0 0 0 1px rgba(76,112,64,.45); }
+  80% { box-shadow: 0 0 0 2px rgba(222,128,0,.80), 0 0 24px rgba(222,128,0,.18); }
+  81% { box-shadow: 0 0 8px rgba(222,128,0,.20); }
+  82% { box-shadow: none; }
 }
 
 /* ── Static flicker — corrupted transmission through the resonance cascade ── */

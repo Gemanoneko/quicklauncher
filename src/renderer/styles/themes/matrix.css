@@ -49,7 +49,7 @@
   --tile-hover-border: rgba(0, 255, 65, 0.22);
   --tile-hover-shadow: 0 0 8px rgba(0, 255, 65, 0.08);
   --tile-active-bg:    rgba(0, 255, 65, 0.10);
-  --tile-icon-glow:    rgba(0,255,65,.35);
+  --tile-icon-glow:    drop-shadow(0 0 7px rgba(0,255,65,.35));
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(0, 255, 65, 0.08);

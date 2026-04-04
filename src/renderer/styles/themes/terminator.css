@@ -53,6 +53,8 @@
   --tile-hover-shadow:    0 0 10px rgba(255, 32, 0, 0.4), inset 0 0 8px rgba(255, 32, 0, 0.05);
   --tile-active-bg:       rgba(255, 32, 0, 0.13);
   --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 32, 0, 0.85)) drop-shadow(0 0 12px rgba(255, 32, 0, 0.4));
+  --tile-icon-fx:         grayscale(0.65) brightness(0.88);
+  --tile-icon-shape:      polygon(0 22%, 22% 0, 78% 0, 100% 22%, 100% 78%, 78% 100%, 22% 100%, 0 78%);
 
   /* Buttons */
   --btn-hover-bg:         rgba(255, 32, 0, 0.1);
@@ -105,6 +107,19 @@
 
   /* Drag */
   --drag-over-glow:       inset 0 0 24px rgba(255, 32, 0, 0.25);
+}
+
+/* ── Acquisition lock — border flares red on target confirmed ────────────── */
+#app { animation: t-acquire 14s steps(1) infinite; }
+@keyframes t-acquire {
+  0%, 72%, 100% { box-shadow: none; }
+  73% { box-shadow: 0 0 0 1px rgba(255,32,0,.65), inset 0 0 20px rgba(255,32,0,.06); }
+  74% { box-shadow: 0 0 0 1px rgba(255,32,0,.35); }
+  75% { box-shadow: 0 0 0 2px rgba(255,32,0,.85), inset 0 0 30px rgba(255,32,0,.10); }
+  76% { box-shadow: 0 0 0 1px rgba(255,32,0,.45); }
+  77% { box-shadow: none; }
+  90% { box-shadow: 0 0 0 1px rgba(255,80,64,.55), inset 0 0 16px rgba(255,80,64,.05); }
+  91% { box-shadow: none; }
 }
 
 /* ── Header — dim red background, T-800 visual cortex feed ──────────────── */

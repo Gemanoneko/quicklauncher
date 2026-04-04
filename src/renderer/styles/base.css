@@ -57,7 +57,9 @@
   --tile-hover-border: rgba(0, 240, 255, 0.22);
   --tile-hover-shadow: 0 0 10px rgba(0, 240, 255, 0.08);
   --tile-active-bg:    rgba(0, 240, 255, 0.11);
-  --tile-icon-glow:    rgba(0,240,255,.35);
+  --tile-icon-glow:    drop-shadow(0 0 7px rgba(0,240,255,.35));
+  --tile-icon-fx:      ;
+  --tile-icon-shape:   none;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(0, 240, 255, 0.09);
@@ -280,15 +282,16 @@ button:active { background: var(--btn-active-bg); }
 .tile-icon-wrap {
   position: relative; width: var(--icon-size); height: var(--icon-size);
   display: flex; align-items: center; justify-content: center;
+  clip-path: var(--tile-icon-shape);
 }
 .tile-icon {
   width: var(--icon-size); height: var(--icon-size);
   object-fit: contain;
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,.6));
+  filter: var(--tile-icon-fx) drop-shadow(0 2px 5px rgba(0,0,0,.6));
   transition: filter .12s; pointer-events: none;
 }
 .app-tile:hover .tile-icon {
-  filter: drop-shadow(0 0 7px var(--tile-icon-glow)) drop-shadow(0 2px 5px rgba(0,0,0,.6));
+  filter: var(--tile-icon-fx) var(--tile-icon-glow) drop-shadow(0 2px 5px rgba(0,0,0,.6));
 }
 
 .tile-label {
