@@ -38,6 +38,7 @@ function createWindow(store) {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: false,          // preload needs require() to load package.json for version
       preload: path.join(__dirname, 'preload.js'),
     }
   });
