@@ -1976,6 +1976,745 @@ html.theme-x-files .skin-btn.active  { background: rgba(0,176,160,0.14); }
 html.theme-x-files .overlay-panel  { background: rgba(4,6,16,0.99); border: 1px solid rgba(0,176,160,0.18); border-top: 3px solid rgba(192,40,40,0.4); }
 html.theme-x-files .overlay-title  { font-family: 'Courier New', monospace; letter-spacing: 3px; color: var(--accent-c); border-bottom: 1px solid rgba(0,176,160,0.22); }
 
+/* ══ MASS EFFECT theme ════════════════════════════════════════════════════════════
+   SSV Normandy SR-2. Citadel clean-future. Holographic panels, N7 discipline.
+   Normandy blue holo-light against deep space black. The N7 stripe never fades.  */
+html.theme-mass-effect {
+  --bg:        rgba(0, 4, 12, 0.97);
+  --panel-bg:  rgba(0, 6, 18, 0.99);
+  --accent-c:  #00b8ec;   /* Normandy holo-blue */
+  --accent-m:  #c0001c;   /* N7 red */
+  --accent-y:  #ddf0ff;   /* Alliance white */
+  --text:      #72b8d8;
+  --text-dim:  rgba(114, 184, 216, 0.36);
+  --border:    rgba(0, 184, 236, 0.18);
+  --border-h:  rgba(0, 184, 236, 0.55);
+  --glow-c:    0 0 6px rgba(0,184,236,.70), 0 0 22px rgba(0,184,236,.25);
+  --glow-m:    0 0 6px rgba(192,0,28,.70),  0 0 22px rgba(192,0,28,.25);
+  --glow-y:    0 0 4px rgba(221,240,255,.55),0 0 14px rgba(221,240,255,.20);
+  --radius:    3px;
+  font-family: 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+}
+
+/* Holo-panel with N7 red left accent stripe */
+html.theme-mass-effect #app {
+  clip-path: none;
+  border-radius: 3px;
+  border: 1px solid rgba(0,184,236,0.22);
+  border-left: 5px solid #c0001c;
+  box-shadow: 0 0 40px rgba(0,184,236,0.06), inset 1px 0 0 rgba(0,184,236,0.08);
+}
+
+/* Animated border: holo-panel lock-on pulse */
+html.theme-mass-effect #app::before {
+  clip-path: none;
+  border-radius: 3px;
+  animation: me-holo-lock 6s ease-in-out infinite;
+}
+@keyframes me-holo-lock {
+  0%,100% { border-color: rgba(0,184,236,0.14); box-shadow: none; }
+  50%      { border-color: rgba(0,184,236,0.40); box-shadow: inset 0 0 30px rgba(0,184,236,0.04); }
+}
+
+html.theme-mass-effect .overlay { clip-path: none; border-radius: 3px; }
+
+/* Hexagonal holoscreen tile + thin scanlines */
+html.theme-mass-effect #app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='40'%3E%3Cpolygon points='23,1 44,11 44,29 23,39 2,29 2,11' fill='none' stroke='rgba(0,184,236,0.07)' stroke-width='0.8'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,184,236,0.025) 3px, rgba(0,184,236,0.025) 4px),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,184,236,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(192,0,28,0.03) 0%, transparent 60%);
+  background-size: 46px 40px, 100% 4px, 100% 100%, 100% 100%;
+  animation: me-hex-breathe 8s ease-in-out infinite;
+}
+@keyframes me-hex-breathe {
+  0%,100% { opacity: 0.9; }
+  50%      { opacity: 1.0; }
+}
+
+/* Header: Normandy terminal style */
+html.theme-mass-effect #header {
+  background: rgba(0,184,236,0.04);
+  border-bottom: 1px solid rgba(0,184,236,0.20);
+  box-shadow: 0 1px 20px rgba(0,184,236,0.08);
+}
+html.theme-mass-effect #header::before {
+  background: linear-gradient(180deg, #c0001c 0%, #800010 100%);
+  box-shadow: none;
+  width: 3px;
+  animation: me-n7-flicker 12s step-start infinite;
+}
+@keyframes me-n7-flicker {
+  0%,92%,100% { opacity: 1; }
+  94%         { opacity: 0.4; }
+  96%         { opacity: 1; }
+  98%         { opacity: 0.7; }
+}
+html.theme-mass-effect #header::after {
+  content: 'SSV NORMANDY  SR-2  ///  ALLIANCE';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 7.5px;
+  letter-spacing: 2px;
+  font-family: 'Segoe UI', sans-serif;
+  color: rgba(0,184,236,0.52);
+  pointer-events: none;
+}
+
+/* Title: clean, wide-tracked, holo glow */
+html.theme-mass-effect #title {
+  font-family: 'Segoe UI', 'Calibri', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 5px;
+  text-shadow: var(--glow-c);
+  animation: me-title-pulse 8s ease-in-out infinite;
+}
+html.theme-mass-effect .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
+@keyframes me-title-pulse {
+  0%,100% { opacity: 1; text-shadow: var(--glow-c); }
+  50%     { opacity: 0.88; text-shadow: 0 0 8px rgba(0,184,236,.4), 0 0 30px rgba(0,184,236,.15); }
+}
+
+/* Grid background: Alliance tactical readout (right-aligned) + Spectre mandala */
+html.theme-mass-effect #grid-container { position: relative; background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(0,184,236,0.04) 0%, transparent 70%); }
+html.theme-mass-effect #grid-container::before {
+  content: 'MASS RELAY\ANETWORK\A  ACTIVE\A\ACITADEL\ASTATION\A  ONLINE\A\ANORMANDY\ASYSTEMS\A  NOMINAL\A\ASPECTRE\ACLEARANCE';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  line-height: 1.7;
+  color: rgba(0,184,236,0.13);
+  text-align: right;
+  padding: 10px 16px 0 0;
+}
+/* Spectre symbol: concentric rings + rotating outer ring */
+html.theme-mass-effect #grid-container::after {
+  content: '';
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,184,236,0.14);
+  box-shadow:
+    0 0 0 5px rgba(0,184,236,0.06),
+    0 0 0 12px rgba(0,184,236,0.04),
+    0 0 0 22px rgba(192,0,28,0.04),
+    0 0 0 35px rgba(0,184,236,0.03);
+  pointer-events: none;
+  z-index: 0;
+  animation: me-spectre-spin 30s linear infinite;
+}
+@keyframes me-spectre-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+html.theme-mass-effect #app-grid  { position: relative; z-index: 2; }
+html.theme-mass-effect #drop-hint { z-index: 2; }
+
+/* Tiles: holo-panel hover */
+html.theme-mass-effect .app-tile:hover  { background: rgba(0,184,236,0.06); border-color: rgba(0,184,236,0.35); box-shadow: 0 0 14px rgba(0,184,236,0.10); }
+html.theme-mass-effect .app-tile:active { background: rgba(0,184,236,0.12); }
+html.theme-mass-effect .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 8px rgba(0,184,236,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.75));
+}
+
+/* Edit bar: mission loadout */
+html.theme-mass-effect #edit-bar            { position: relative; background: rgba(192,0,28,0.06); border-top-color: rgba(192,0,28,0.30); }
+html.theme-mass-effect #edit-bar::after     { content: 'MISSION LOADOUT'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 7px; letter-spacing: 3px; color: rgba(192,0,28,0.38); pointer-events: none; }
+html.theme-mass-effect .edit-label          { color: var(--accent-m); text-shadow: var(--glow-m); }
+html.theme-mass-effect #btn-done-edit        { color: var(--accent-m); border-color: rgba(192,0,28,0.35); }
+html.theme-mass-effect #btn-done-edit:hover  { background: rgba(192,0,28,0.09); border-color: var(--accent-m); }
+
+/* Buttons */
+html.theme-mass-effect button:hover  { background: rgba(0,184,236,0.08); }
+html.theme-mass-effect button:active { background: rgba(0,184,236,0.16); }
+
+/* Picker */
+html.theme-mass-effect .picker-item:hover    { background: rgba(0,184,236,0.06); }
+html.theme-mass-effect .picker-item:active   { background: rgba(0,184,236,0.12); }
+html.theme-mass-effect .picker-search        { background: rgba(0,184,236,0.05); }
+html.theme-mass-effect .picker-search:focus  { border-color: rgba(0,184,236,0.45); box-shadow: var(--glow-c); }
+html.theme-mass-effect .picker-icon-placeholder { background: rgba(0,184,236,0.07); }
+html.theme-mass-effect .picker-loading       { letter-spacing: 3px; color: rgba(0,184,236,0.55); }
+
+/* Misc */
+html.theme-mass-effect .drop-hint-inner  { border-color: rgba(0,184,236,0.20); }
+html.theme-mass-effect .hint-sub         { color: rgba(0,184,236,0.25); }
+html.theme-mass-effect .rename-input     { background: rgba(0,184,236,0.07); }
+html.theme-mass-effect #update-banner    { background: rgba(221,240,255,0.04); border-top-color: rgba(221,240,255,0.22); }
+html.theme-mass-effect .skin-btn.active  { background: rgba(0,184,236,0.16); border-color: var(--accent-c); }
+
+/* Overlay: N7 holographic panel */
+html.theme-mass-effect .overlay-panel  { background: rgba(0,5,14,0.99); border: 1px solid rgba(0,184,236,0.20); border-left: 5px solid #c0001c; }
+html.theme-mass-effect .overlay-title  { font-family: 'Segoe UI', sans-serif; font-weight: 600; letter-spacing: 4px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 1px solid rgba(0,184,236,0.22); }
+html.theme-mass-effect .picker-panel   { border-left: 5px solid #c0001c; }
+html.theme-mass-effect .overlay-footer { border-top-color: rgba(0,184,236,0.18); }
+html.theme-mass-effect .setting-row label { color: rgba(0,184,236,0.55); letter-spacing: 2px; font-weight: 600; }
+
+/* ══ DEUS EX theme ════════════════════════════════════════════════════════════════
+   Jensen's Aug. Sarif Industries. Pure black and gold. A conspiracy in plain sight.
+   Chamfered corners. Triangle hatching. The machine never forgets.               */
+html.theme-deus-ex {
+  --bg:        rgba(0, 0, 0, 0.98);
+  --panel-bg:  rgba(3, 2, 0, 0.99);
+  --accent-c:  #d4a520;   /* aug gold */
+  --accent-m:  #8b6800;   /* shadow bronze */
+  --accent-y:  #f0cc60;   /* pale gold */
+  --text:      #907038;
+  --text-dim:  rgba(144, 112, 56, 0.36);
+  --border:    rgba(212,165,32,0.16);
+  --border-h:  rgba(212,165,32,0.48);
+  --glow-c:    0 0 5px rgba(212,165,32,.70), 0 0 18px rgba(212,165,32,.25);
+  --glow-m:    0 0 5px rgba(139,104,0,.70),  0 0 18px rgba(139,104,0,.25);
+  --glow-y:    0 0 4px rgba(240,204,96,.60), 0 0 16px rgba(240,204,96,.22);
+  --radius:    0px;
+  font-family: 'Impact', 'Arial Narrow', 'Arial', sans-serif;
+}
+
+/* Signature chamfered corners — pure Deus Ex UI geometry */
+html.theme-deus-ex #app {
+  clip-path: polygon(14px 0%, 100% 0%, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0% 100%, 0% 14px);
+  border-radius: 0;
+  border: 1px solid rgba(212,165,32,0.22);
+  box-shadow: inset 0 0 60px rgba(212,165,32,0.03);
+}
+
+/* Animated gold corner-accent trace */
+html.theme-deus-ex #app::before {
+  clip-path: polygon(14px 0%, 100% 0%, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0% 100%, 0% 14px);
+  border-radius: 0;
+  animation: dx-aug-boot 9s ease-in-out infinite;
+}
+@keyframes dx-aug-boot {
+  0%,78%,100% { border-color: rgba(212,165,32,0.16); }
+  82%         { border-color: rgba(212,165,32,0.06); }
+  85%         { border-color: rgba(212,165,32,0.55); box-shadow: inset 0 0 40px rgba(212,165,32,0.06); }
+  88%         { border-color: rgba(212,165,32,0.30); }
+}
+
+html.theme-deus-ex .overlay { clip-path: polygon(14px 0%, 100% 0%, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0% 100%, 0% 14px); border-radius: 0; }
+
+/* Diagonal triangle hatching — the Deus Ex signature texture */
+html.theme-deus-ex #app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpolygon points='0,0 20,0 0,20' fill='rgba(212,165,32,0.055)'/%3E%3Cpolygon points='60,60 40,60 60,40' fill='rgba(212,165,32,0.055)'/%3E%3Cpolygon points='30,0 60,0 60,30' fill='rgba(212,165,32,0.030)'/%3E%3Cpolygon points='0,60 30,60 0,30' fill='rgba(212,165,32,0.030)'/%3E%3Cline x1='0' y1='0' x2='60' y2='60' stroke='rgba(212,165,32,0.04)' stroke-width='0.5'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 80% at 0% 50%, rgba(212,165,32,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 100% at 100% 50%, rgba(139,104,0,0.03) 0%, transparent 50%);
+  background-size: 60px 60px, 100% 100%, 100% 100%;
+  animation: dx-tri-drift 20s linear infinite;
+}
+@keyframes dx-tri-drift {
+  from { background-position: 0 0, center, center; }
+  to   { background-position: 60px 60px, center, center; }
+}
+
+/* Header: Sarif Industries console */
+html.theme-deus-ex #header {
+  background: rgba(212,165,32,0.04);
+  border-bottom: 1px solid rgba(212,165,32,0.22);
+  box-shadow: 0 1px 16px rgba(212,165,32,0.08);
+}
+html.theme-deus-ex #header::before {
+  background: var(--accent-c);
+  box-shadow: var(--glow-c);
+  animation: dx-bar-flicker 11s step-start infinite;
+}
+@keyframes dx-bar-flicker {
+  0%,88%,100% { opacity: 1; }
+  90%         { opacity: 0.3; }
+  92%         { opacity: 1; }
+  94%         { opacity: 0.6; }
+  96%         { opacity: 1; }
+}
+html.theme-deus-ex #header::after {
+  content: 'SARIF INDUSTRIES  //  AUG v3.1  //  ONLINE';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Impact', 'Arial Narrow', sans-serif;
+  font-size: 7.5px;
+  letter-spacing: 2px;
+  color: rgba(212,165,32,0.50);
+  pointer-events: none;
+}
+
+/* Title: condensed geometric — augment or obsolete */
+html.theme-deus-ex #title {
+  font-family: 'Impact', 'Arial Narrow', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 6px;
+  text-shadow: var(--glow-c);
+  animation: dx-title-aug 9s ease-in-out infinite;
+}
+html.theme-deus-ex .accent { color: var(--accent-y); text-shadow: var(--glow-y); }
+@keyframes dx-title-aug {
+  0%,76%,100% { opacity: 1; text-shadow: var(--glow-c); }
+  79%         { opacity: 0.3; text-shadow: none; }
+  82%         { opacity: 1; text-shadow: var(--glow-c), 0 0 40px rgba(212,165,32,0.6); }
+  85%         { opacity: 0.7; }
+  88%         { opacity: 1; text-shadow: var(--glow-c); }
+}
+
+/* Grid: conspiracy manifest (right-aligned) + triangle corner accent */
+html.theme-deus-ex #grid-container { position: relative; background: radial-gradient(ellipse 50% 60% at 0% 100%, rgba(212,165,32,0.04) 0%, transparent 60%); }
+html.theme-deus-ex #grid-container::before {
+  content: 'ILLUMINATI\A\AAUGMENT\AOR\AOBSOLETE\A\AADAM JENSEN\ADOSSIER\A\ACONSPIRACY\APROTOCOL\A  ACTIVE';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Impact', 'Arial Narrow', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  line-height: 1.5;
+  color: rgba(212,165,32,0.10);
+  text-align: right;
+  padding: 10px 16px 0 0;
+}
+/* Gold triangle cluster — bottom-left, geometric Deus Ex corner bracket */
+html.theme-deus-ex #grid-container::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 55px 55px;
+  border-color: transparent transparent rgba(212,165,32,0.12) transparent;
+  pointer-events: none;
+  z-index: 0;
+  box-shadow:
+    15px -15px 0 0 rgba(212,165,32,0.07),
+    30px -30px 0 0 rgba(212,165,32,0.04);
+  animation: dx-corner-pulse 7s ease-in-out infinite;
+}
+@keyframes dx-corner-pulse {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.55; }
+}
+html.theme-deus-ex #app-grid  { position: relative; z-index: 2; }
+html.theme-deus-ex #drop-hint { z-index: 2; }
+
+/* Tiles: sharp, no radius, aug-target hover */
+html.theme-deus-ex .app-tile              { border-radius: 0; }
+html.theme-deus-ex .app-tile:hover        { background: rgba(212,165,32,0.06); border-color: rgba(212,165,32,0.38); box-shadow: 0 0 12px rgba(212,165,32,0.10); clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px); }
+html.theme-deus-ex .app-tile:active       { background: rgba(212,165,32,0.12); transform: none; }
+html.theme-deus-ex .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 7px rgba(212,165,32,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.85));
+}
+
+/* Edit bar: breach protocol */
+html.theme-deus-ex #edit-bar             { position: relative; background: rgba(139,104,0,0.07); border-top-color: rgba(139,104,0,0.35); clip-path: polygon(0 0,100% 0,100% 100%,10px 100%,0 calc(100% - 10px)); }
+html.theme-deus-ex #edit-bar::after      { content: 'BREACH AUTHORIZED'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Impact', sans-serif; font-size: 8px; letter-spacing: 3px; color: rgba(212,165,32,0.38); pointer-events: none; }
+html.theme-deus-ex .edit-label           { color: var(--accent-y); text-shadow: var(--glow-y); letter-spacing: 3px; }
+
+/* Buttons */
+html.theme-deus-ex button              { border-radius: 0; }
+html.theme-deus-ex button:hover        { background: rgba(212,165,32,0.09); border-color: rgba(212,165,32,0.45); box-shadow: var(--glow-c); }
+html.theme-deus-ex button:active       { background: rgba(212,165,32,0.18); }
+html.theme-deus-ex .btn-remove         { border-radius: 0; background: rgba(212,165,32,0.80); border-color: var(--accent-c); color: #000; }
+html.theme-deus-ex .btn-remove:hover   { background: var(--accent-c); }
+
+/* Picker */
+html.theme-deus-ex .picker-item          { border-radius: 0; }
+html.theme-deus-ex .picker-item:hover    { background: rgba(212,165,32,0.07); }
+html.theme-deus-ex .picker-item:active   { background: rgba(212,165,32,0.14); }
+html.theme-deus-ex .picker-search        { border-radius: 0; background: rgba(212,165,32,0.05); }
+html.theme-deus-ex .picker-search:focus  { border-color: rgba(212,165,32,0.48); box-shadow: var(--glow-c); }
+html.theme-deus-ex .picker-icon-placeholder { border-radius: 0; background: rgba(212,165,32,0.08); }
+html.theme-deus-ex .picker-loading       { font-family: 'Impact', sans-serif; letter-spacing: 3px; color: rgba(212,165,32,0.55); }
+
+/* Misc */
+html.theme-deus-ex .drop-hint-inner     { border-color: rgba(212,165,32,0.20); border-radius: 0; clip-path: polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px); }
+html.theme-deus-ex .hint-sub            { color: rgba(212,165,32,0.25); }
+html.theme-deus-ex .rename-input        { border-radius: 0; background: rgba(212,165,32,0.07); }
+html.theme-deus-ex #update-banner       { background: rgba(240,204,96,0.05); border-top-color: rgba(240,204,96,0.28); }
+html.theme-deus-ex .skin-btn            { border-radius: 0; }
+html.theme-deus-ex .skin-btn.active     { background: rgba(212,165,32,0.16); border-color: var(--accent-c); }
+
+/* Overlay: aug interface panel */
+html.theme-deus-ex .overlay-panel  { background: rgba(3,2,0,0.99); border: 1px solid rgba(212,165,32,0.22); clip-path: polygon(14px 0%,100% 0%,100% calc(100% - 14px),calc(100% - 14px) 100%,0% 100%,0% 14px); }
+html.theme-deus-ex .overlay-title  { font-family: 'Impact', 'Arial Narrow', sans-serif; letter-spacing: 5px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 1px solid rgba(212,165,32,0.25); }
+html.theme-deus-ex .overlay-footer { border-top-color: rgba(212,165,32,0.18); }
+html.theme-deus-ex .setting-row label { color: rgba(212,165,32,0.58); letter-spacing: 3px; font-family: 'Impact', sans-serif; }
+
+/* ══ GHOST IN THE SHELL theme ════════════════════════════════════════════════════
+   Section 9. 公安9課. Ghost Protocol active. The net is vast and infinite.
+   Asymmetric tactical chassis. Tachikoma-blue. Electric teal on deep navy.       */
+html.theme-ghost-shell {
+  --bg:        rgba(2, 5, 15, 0.96);
+  --panel-bg:  rgba(3, 6, 18, 0.98);
+  --accent-c:  #00e0c8;   /* Section 9 teal */
+  --accent-m:  #e02040;   /* Section 9 red */
+  --accent-y:  #80d0f0;   /* ghost blue */
+  --text:      #5898b8;
+  --text-dim:  rgba(88, 152, 184, 0.36);
+  --border:    rgba(0, 224, 200, 0.16);
+  --border-h:  rgba(0, 224, 200, 0.50);
+  --glow-c:    0 0 5px rgba(0,224,200,.70), 0 0 18px rgba(0,224,200,.25);
+  --glow-m:    0 0 5px rgba(224,32,64,.70), 0 0 18px rgba(224,32,64,.25);
+  --glow-y:    0 0 4px rgba(128,208,240,.55),0 0 14px rgba(128,208,240,.20);
+  --radius:    0px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* Asymmetric tactical body — top-right and bottom-left cuts */
+html.theme-ghost-shell #app {
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  border-radius: 0;
+  border: 1px solid rgba(0,224,200,0.22);
+  box-shadow: 0 0 30px rgba(0,224,200,0.06), inset 0 0 40px rgba(0,224,200,0.02);
+}
+
+/* Data-stream border: teal signal pulses around the frame */
+html.theme-ghost-shell #app::before {
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  border-radius: 0;
+  animation: gs-signal 5s ease-in-out infinite;
+}
+@keyframes gs-signal {
+  0%,100% { border-color: rgba(0,224,200,0.16); }
+  25%     { border-color: rgba(0,224,200,0.45); box-shadow: inset 0 0 30px rgba(0,224,200,0.04); }
+  50%     { border-color: rgba(0,224,200,0.16); }
+  75%     { border-color: rgba(224,32,64,0.22); }
+}
+
+html.theme-ghost-shell .overlay { clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); border-radius: 0; }
+
+/* Circuit trace overlay + upward-drifting data stream */
+html.theme-ghost-shell #app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Crect x='0' y='15' width='14' height='1' fill='rgba(0,224,200,0.07)'/%3E%3Crect x='15' y='0' width='1' height='14' fill='rgba(0,224,200,0.07)'/%3E%3Crect x='18' y='15' width='14' height='1' fill='rgba(0,224,200,0.05)'/%3E%3Crect x='15' y='18' width='1' height='14' fill='rgba(0,224,200,0.05)'/%3E%3Ccircle cx='15' cy='15' r='1.5' fill='rgba(0,224,200,0.12)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,224,200,0.02) 2px, rgba(0,224,200,0.02) 3px),
+    radial-gradient(ellipse 60% 80% at 100% 0%, rgba(224,32,64,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 80% at 0% 100%, rgba(0,224,200,0.04) 0%, transparent 55%);
+  background-size: 32px 32px, 100% 3px, 100% 100%, 100% 100%;
+  animation: gs-data-drift 15s linear infinite;
+}
+@keyframes gs-data-drift {
+  from { background-position: 0 0,    0 0, center, center; }
+  to   { background-position: 0 -320px, 0 0, center, center; }
+}
+
+/* Header: Section 9 tactical */
+html.theme-ghost-shell #header {
+  background: rgba(0,224,200,0.04);
+  border-bottom: 1px solid rgba(0,224,200,0.22);
+}
+html.theme-ghost-shell #header::before {
+  background: linear-gradient(180deg, var(--accent-c) 50%, var(--accent-m) 100%);
+  box-shadow: var(--glow-c);
+  animation: gs-bar-pulse 4s ease-in-out infinite;
+}
+@keyframes gs-bar-pulse {
+  0%,100% { box-shadow: var(--glow-c); }
+  50%     { box-shadow: var(--glow-m); }
+}
+html.theme-ghost-shell #header::after {
+  content: 'SECTION 9  //  公安9課  //  TACHIKOMA LINK';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: rgba(0,224,200,0.50);
+  pointer-events: none;
+}
+
+/* Title: tactical monospace, ghost-line interference */
+html.theme-ghost-shell #title {
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 4px;
+  text-shadow: var(--glow-c);
+  animation: gs-ghost-flicker 8s ease-in-out infinite;
+}
+html.theme-ghost-shell .accent { color: var(--accent-m); text-shadow: var(--glow-m); }
+@keyframes gs-ghost-flicker {
+  0%,80%,100% { opacity: 1; filter: none; }
+  82%         { opacity: 0.4; filter: blur(0.8px) hue-rotate(30deg); }
+  84%         { opacity: 1; filter: none; }
+  86%         { opacity: 0.7; }
+  88%         { opacity: 1; }
+}
+
+/* Grid: tactical readout left + Japanese right + Section 9 emblem */
+html.theme-ghost-shell #grid-container { position: relative; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,224,200,0.03) 0%, transparent 70%); }
+html.theme-ghost-shell #grid-container::before {
+  content: 'GHOST ONLINE\A公安9課\A\A電脳接続\ATACHIKOMA\A  UNIT 03\A\APROJECT\A  2501\APUPPET\A  MASTER\A\ALINK\A  ESTAB.';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Consolas', monospace;
+  font-size: 9px;
+  line-height: 1.65;
+  color: rgba(0,224,200,0.12);
+  padding: 10px 0 0 12px;
+}
+/* Section 9 emblem — diagonal cross-hair reticle at bottom-right */
+html.theme-ghost-shell #grid-container::after {
+  content: '';
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 70px;
+  height: 70px;
+  border: 1px solid rgba(0,224,200,0.14);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  pointer-events: none;
+  z-index: 0;
+  box-shadow: inset 0 0 20px rgba(0,224,200,0.06);
+  animation: gs-reticle-spin 20s linear infinite;
+}
+@keyframes gs-reticle-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+html.theme-ghost-shell #app-grid  { position: relative; z-index: 2; }
+html.theme-ghost-shell #drop-hint { z-index: 2; }
+
+/* Tiles: flat tactical, no radius */
+html.theme-ghost-shell .app-tile              { border-radius: 0; }
+html.theme-ghost-shell .app-tile:hover        { background: rgba(0,224,200,0.06); border-color: rgba(0,224,200,0.38); box-shadow: 0 0 14px rgba(0,224,200,0.10); }
+html.theme-ghost-shell .app-tile:active       { background: rgba(0,224,200,0.12); transform: none; }
+html.theme-ghost-shell .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 8px rgba(0,224,200,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.80));
+}
+
+/* Edit bar: ghost hack */
+html.theme-ghost-shell #edit-bar            { position: relative; background: rgba(224,32,64,0.05); border-top-color: rgba(224,32,64,0.28); }
+html.theme-ghost-shell #edit-bar::after     { content: 'GHOST HACK  //  接続中'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Consolas', monospace; font-size: 7.5px; letter-spacing: 2px; color: rgba(224,32,64,0.40); pointer-events: none; }
+html.theme-ghost-shell .edit-label          { color: var(--accent-m); text-shadow: var(--glow-m); }
+html.theme-ghost-shell #btn-done-edit        { color: var(--accent-c); border-color: rgba(0,224,200,0.35); }
+html.theme-ghost-shell #btn-done-edit:hover  { background: rgba(0,224,200,0.09); }
+
+/* Buttons */
+html.theme-ghost-shell button              { border-radius: 0; }
+html.theme-ghost-shell button:hover        { background: rgba(0,224,200,0.08); box-shadow: none; }
+html.theme-ghost-shell button:active       { background: rgba(0,224,200,0.16); }
+html.theme-ghost-shell .btn-remove         { border-radius: 0; background: rgba(224,32,64,0.80); border-color: var(--accent-m); }
+html.theme-ghost-shell .btn-remove:hover   { background: var(--accent-m); }
+
+/* Picker */
+html.theme-ghost-shell .picker-item          { border-radius: 0; }
+html.theme-ghost-shell .picker-item:hover    { background: rgba(0,224,200,0.07); }
+html.theme-ghost-shell .picker-item:active   { background: rgba(0,224,200,0.14); }
+html.theme-ghost-shell .picker-search        { border-radius: 0; background: rgba(0,224,200,0.05); }
+html.theme-ghost-shell .picker-search:focus  { border-color: rgba(0,224,200,0.45); box-shadow: var(--glow-c); }
+html.theme-ghost-shell .picker-icon-placeholder { border-radius: 0; background: rgba(0,224,200,0.07); }
+html.theme-ghost-shell .picker-loading       { font-family: 'Consolas', monospace; letter-spacing: 3px; color: rgba(0,224,200,0.55); }
+
+/* Misc */
+html.theme-ghost-shell .drop-hint-inner  { border-color: rgba(0,224,200,0.20); border-radius: 0; }
+html.theme-ghost-shell .hint-sub         { color: rgba(0,224,200,0.25); }
+html.theme-ghost-shell .rename-input     { border-radius: 0; background: rgba(0,224,200,0.06); }
+html.theme-ghost-shell #update-banner    { background: rgba(128,208,240,0.04); border-top-color: rgba(128,208,240,0.22); }
+html.theme-ghost-shell .skin-btn         { border-radius: 0; }
+html.theme-ghost-shell .skin-btn.active  { background: rgba(0,224,200,0.15); border-color: var(--accent-c); }
+
+/* Overlay: Section 9 briefing panel */
+html.theme-ghost-shell .overlay-panel  { background: rgba(3,6,18,0.99); border: 1px solid rgba(0,224,200,0.20); clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
+html.theme-ghost-shell .overlay-title  { font-family: 'Consolas', monospace; letter-spacing: 4px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 1px solid rgba(0,224,200,0.24); }
+html.theme-ghost-shell .overlay-footer { border-top-color: rgba(0,224,200,0.18); }
+html.theme-ghost-shell .setting-row label { color: rgba(0,224,200,0.55); letter-spacing: 2px; font-family: 'Consolas', monospace; }
+
+/* ══ MATRIX theme ════════════════════════════════════════════════════════════════
+   The Construct. Digital rain. Cascading green on void black.
+   Monochrome, minimalist, and inexorable. There is no spoon.                     */
+html.theme-matrix {
+  --bg:        rgba(0, 0, 0, 0.98);
+  --panel-bg:  rgba(0, 2, 0, 0.99);
+  --accent-c:  #00ff41;   /* Matrix green */
+  --accent-m:  #008f11;   /* dark matrix */
+  --accent-y:  #a8ff80;   /* pale phosphor */
+  --text:      #00b020;
+  --text-dim:  rgba(0, 176, 32, 0.36);
+  --border:    rgba(0,255,65,0.18);
+  --border-h:  rgba(0,255,65,0.50);
+  --glow-c:    0 0 4px rgba(0,255,65,.80), 0 0 14px rgba(0,255,65,.30);
+  --glow-m:    0 0 4px rgba(0,143,17,.80), 0 0 14px rgba(0,143,17,.30);
+  --glow-y:    0 0 3px rgba(168,255,128,.70),0 0 12px rgba(168,255,128,.25);
+  --radius:    0px;
+  font-family: 'Courier New', 'Courier', monospace;
+}
+
+/* The Construct — pure void rectangle */
+html.theme-matrix #app {
+  clip-path: none;
+  border-radius: 0;
+  border: 1px solid rgba(0,255,65,0.22);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.95), inset 0 0 60px rgba(0,255,65,0.02);
+}
+
+/* Pulsing green border — heartbeat of the Matrix */
+html.theme-matrix #app::before {
+  clip-path: none;
+  border-radius: 0;
+  animation: mx-pulse 4s ease-in-out infinite;
+}
+@keyframes mx-pulse {
+  0%,100% { border-color: rgba(0,255,65,0.18); }
+  50%     { border-color: rgba(0,255,65,0.45); box-shadow: inset 0 0 30px rgba(0,255,65,0.04); }
+}
+
+html.theme-matrix .overlay { clip-path: none; border-radius: 0; border-top: 2px solid rgba(0,255,65,0.35); }
+
+/* Digital rain — 3 layers of falling characters at different speeds/densities */
+html.theme-matrix #app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='160'%3E%3Ctext x='4' y='14' font-family='monospace' font-size='13' fill='rgba(220,255,200,0.95)'%3E7%3C/text%3E%3Ctext x='4' y='28' font-family='monospace' font-size='13' fill='rgba(0,255,65,0.80)'%3ET%3C/text%3E%3Ctext x='4' y='42' font-family='monospace' font-size='13' fill='rgba(0,240,60,0.60)'%3E4%3C/text%3E%3Ctext x='4' y='56' font-family='monospace' font-size='13' fill='rgba(0,215,54,0.42)'%3EZ%3C/text%3E%3Ctext x='4' y='70' font-family='monospace' font-size='13' fill='rgba(0,188,47,0.27)'%3E9%3C/text%3E%3Ctext x='4' y='84' font-family='monospace' font-size='13' fill='rgba(0,162,41,0.16)'%3E1%3C/text%3E%3Ctext x='4' y='98' font-family='monospace' font-size='13' fill='rgba(0,136,34,0.09)'%3ED%3C/text%3E%3Ctext x='4' y='112' font-family='monospace' font-size='13' fill='rgba(0,110,27,0.05)'%3EX%3C/text%3E%3Ctext x='4' y='126' font-family='monospace' font-size='13' fill='rgba(0,84,21,0.02)'%3EE%3C/text%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='240'%3E%3Ctext x='5' y='20' font-family='monospace' font-size='13' fill='rgba(190,255,170,0.88)'%3EA%3C/text%3E%3Ctext x='5' y='40' font-family='monospace' font-size='13' fill='rgba(0,255,65,0.72)'%3E0%3C/text%3E%3Ctext x='5' y='60' font-family='monospace' font-size='13' fill='rgba(0,238,60,0.54)'%3EN%3C/text%3E%3Ctext x='5' y='80' font-family='monospace' font-size='13' fill='rgba(0,215,54,0.38)'%3E8%3C/text%3E%3Ctext x='5' y='100' font-family='monospace' font-size='13' fill='rgba(0,188,47,0.25)'%3E5%3C/text%3E%3Ctext x='5' y='120' font-family='monospace' font-size='13' fill='rgba(0,162,41,0.15)'%3EK%3C/text%3E%3Ctext x='5' y='140' font-family='monospace' font-size='13' fill='rgba(0,136,34,0.09)'%3E3%3C/text%3E%3Ctext x='5' y='160' font-family='monospace' font-size='13' fill='rgba(0,110,27,0.05)'%3EY%3C/text%3E%3Ctext x='5' y='180' font-family='monospace' font-size='13' fill='rgba(0,84,21,0.03)'%3EQ%3C/text%3E%3Ctext x='5' y='200' font-family='monospace' font-size='13' fill='rgba(0,58,15,0.01)'%3EJ%3C/text%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='320'%3E%3Ctext x='6' y='20' font-family='monospace' font-size='14' fill='rgba(160,255,120,0.60)'%3EB%3C/text%3E%3Ctext x='6' y='40' font-family='monospace' font-size='14' fill='rgba(0,230,57,0.45)'%3E6%3C/text%3E%3Ctext x='6' y='60' font-family='monospace' font-size='14' fill='rgba(0,208,52,0.32)'%3EW%3C/text%3E%3Ctext x='6' y='80' font-family='monospace' font-size='14' fill='rgba(0,184,46,0.21)'%3EH%3C/text%3E%3Ctext x='6' y='100' font-family='monospace' font-size='14' fill='rgba(0,160,40,0.14)'%3EG%3C/text%3E%3Ctext x='6' y='120' font-family='monospace' font-size='14' fill='rgba(0,138,34,0.09)'%3EM%3C/text%3E%3Ctext x='6' y='140' font-family='monospace' font-size='14' fill='rgba(0,114,28,0.05)'%3ES%3C/text%3E%3Ctext x='6' y='160' font-family='monospace' font-size='14' fill='rgba(0,90,22,0.03)'%3EP%3C/text%3E%3Ctext x='6' y='180' font-family='monospace' font-size='14' fill='rgba(0,66,16,0.01)'%3EC%3C/text%3E%3C/svg%3E");
+  background-size: 25px 160px, 38px 240px, 52px 320px;
+  animation: mx-rain 8s linear infinite;
+}
+/* LCM(160,240,320)=960 → perfect 8s loop at 120px/s */
+@keyframes mx-rain {
+  from { background-position: 0 0,    11px 53px,  25px 107px; }
+  to   { background-position: 0 960px, 11px 1013px, 25px 1067px; }
+}
+
+/* Header: construct terminal */
+html.theme-matrix #header {
+  background: transparent;
+  border-bottom: 1px solid rgba(0,255,65,0.22);
+}
+html.theme-matrix #header::before { background: var(--accent-c); box-shadow: var(--glow-c); }
+html.theme-matrix #header::after {
+  content: 'THE MATRIX  HAS YOU  ///  FOLLOW THE WHITE RABBIT';
+  position: absolute;
+  right: 75px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Courier New', monospace;
+  font-size: 7px;
+  letter-spacing: 1.5px;
+  color: rgba(0,255,65,0.45);
+  pointer-events: none;
+}
+
+/* Title: typewriter green — QUICK.LAUNCH in the Matrix */
+html.theme-matrix #title {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 4px;
+  text-shadow: var(--glow-c);
+  animation: mx-title-glitch 10s ease-in-out infinite;
+}
+html.theme-matrix .accent { color: var(--accent-y); text-shadow: var(--glow-y); }
+@keyframes mx-title-glitch {
+  0%,82%,100% { opacity: 1; transform: none; filter: none; }
+  84%         { opacity: 0.2; transform: translateX(2px); filter: blur(0.5px); }
+  86%         { opacity: 1; transform: none; filter: none; }
+  88%         { opacity: 0.6; transform: translateX(-1px); }
+  90%         { opacity: 1; transform: none; }
+}
+
+/* Grid: decode stream (left-aligned, scrolling text) + "THERE IS NO SPOON" watermark */
+html.theme-matrix #grid-container { position: relative; }
+html.theme-matrix #grid-container::before {
+  content: 'WAKE UP, NEO...\A\ATHE MATRIX\AHAS YOU\A\AKNOCK KNOCK\A\AFOLLOW THE\AWHITE RABBIT\A\ATHERE IS\ANO SPOON\A\AFREE YOUR MIND';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  white-space: pre;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  line-height: 1.65;
+  color: rgba(0,255,65,0.10);
+  text-align: right;
+  padding: 10px 16px 0 0;
+  animation: mx-decode 16s ease-in-out infinite;
+}
+@keyframes mx-decode {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.55; }
+}
+/* Construct room: pure white flash horizon at center — like the loading construct */
+html.theme-matrix #grid-container::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,255,65,0.08) 20%, rgba(0,255,65,0.20) 50%, rgba(0,255,65,0.08) 80%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+  animation: mx-horizon 6s ease-in-out infinite;
+}
+@keyframes mx-horizon {
+  0%,100% { opacity: 0.6; transform: scaleX(1); }
+  50%     { opacity: 1.0; transform: scaleX(1.05); box-shadow: 0 0 12px rgba(0,255,65,0.15); }
+}
+html.theme-matrix #app-grid  { position: relative; z-index: 2; }
+html.theme-matrix #drop-hint { z-index: 2; }
+
+/* Tiles: pure monochrome, no radius */
+html.theme-matrix .app-tile              { border-radius: 0; }
+html.theme-matrix .app-tile:hover        { background: rgba(0,255,65,0.05); border-color: rgba(0,255,65,0.38); box-shadow: 0 0 10px rgba(0,255,65,0.08); }
+html.theme-matrix .app-tile:active       { background: rgba(0,255,65,0.10); transform: none; }
+html.theme-matrix .app-tile:hover .tile-icon {
+  filter: drop-shadow(0 0 7px rgba(0,255,65,.55)) drop-shadow(0 2px 4px rgba(0,0,0,.90));
+}
+
+/* Edit bar: "THERE IS NO SPOON" */
+html.theme-matrix #edit-bar             { position: relative; background: rgba(0,143,17,0.06); border-top-color: rgba(0,143,17,0.30); }
+html.theme-matrix #edit-bar::after      { content: 'THERE IS NO SPOON'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: 'Courier New', monospace; font-size: 8px; letter-spacing: 3px; color: rgba(0,255,65,0.35); pointer-events: none; }
+html.theme-matrix .edit-label           { color: var(--accent-c); text-shadow: var(--glow-c); letter-spacing: 2px; }
+
+/* Buttons */
+html.theme-matrix button              { border-radius: 0; }
+html.theme-matrix button:hover        { background: rgba(0,255,65,0.08); border-color: rgba(0,255,65,0.42); box-shadow: var(--glow-c); }
+html.theme-matrix button:active       { background: rgba(0,255,65,0.16); }
+html.theme-matrix .btn-remove         { border-radius: 0; background: rgba(0,143,17,0.85); border-color: var(--accent-m); }
+html.theme-matrix .btn-remove:hover   { background: var(--accent-c); color: #000; }
+
+/* Picker */
+html.theme-matrix .picker-item          { border-radius: 0; }
+html.theme-matrix .picker-item:hover    { background: rgba(0,255,65,0.06); }
+html.theme-matrix .picker-item:active   { background: rgba(0,255,65,0.12); }
+html.theme-matrix .picker-search        { border-radius: 0; background: rgba(0,255,65,0.05); }
+html.theme-matrix .picker-search:focus  { border-color: rgba(0,255,65,0.45); box-shadow: var(--glow-c); }
+html.theme-matrix .picker-icon-placeholder { border-radius: 0; background: rgba(0,255,65,0.07); }
+html.theme-matrix .picker-loading       { font-family: 'Courier New', monospace; letter-spacing: 3px; color: rgba(0,255,65,0.55); }
+
+/* Misc */
+html.theme-matrix .drop-hint-inner  { border-color: rgba(0,255,65,0.20); border-radius: 0; border-style: solid; }
+html.theme-matrix .hint-sub         { color: rgba(0,255,65,0.25); }
+html.theme-matrix .rename-input     { border-radius: 0; background: rgba(0,255,65,0.06); }
+html.theme-matrix #update-banner    { background: rgba(168,255,128,0.04); border-top-color: rgba(168,255,128,0.22); }
+html.theme-matrix .skin-btn         { border-radius: 0; }
+html.theme-matrix .skin-btn.active  { background: rgba(0,255,65,0.15); border-color: var(--accent-c); }
+
+/* Overlay: Construct terminal */
+html.theme-matrix .overlay-panel  { background: rgba(0,2,0,0.99); border: 1px solid rgba(0,255,65,0.22); }
+html.theme-matrix .overlay-title  { font-family: 'Courier New', monospace; letter-spacing: 4px; color: var(--accent-c); text-shadow: var(--glow-c); border-bottom: 1px solid rgba(0,255,65,0.22); }
+html.theme-matrix .overlay-footer { border-top-color: rgba(0,255,65,0.18); }
+html.theme-matrix .setting-row label { color: rgba(0,255,65,0.55); letter-spacing: 2px; font-family: 'Courier New', monospace; }
+
 /* ══ CYBERPUNK theme ══════════════════════════════════════════════════════════════
    Night City neon. The base stylesheet IS the cyberpunk theme.
    Nothing to override — this selector exists only for the skin-btn.active state. */
