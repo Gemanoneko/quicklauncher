@@ -336,6 +336,61 @@ const THEME_BANNERS = {
 // Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
 const VALID_THEMES = new Set(Object.keys(THEME_BANNERS));
 
+// Display labels for the searchable theme picker.
+const THEME_NAMES = {
+  'cyberpunk':           'CYBERPUNK',
+  'blade-runner':        'BLADE RUNNER',
+  'alien':               'ALIEN',
+  'tron':                'TRON',
+  'lcars':               'LCARS',
+  'pip-boy':             'PIP-BOY',
+  'dune':                'DUNE',
+  'x-files':             'X-FILES',
+  'mass-effect':         'MASS EFFECT',
+  'deus-ex':             'DEUS EX',
+  'ghost-shell':         'GHOST IN THE SHELL',
+  'matrix':              'MATRIX',
+  'warhammer':           'WARHAMMER 40K',
+  'dead-space':          'DEAD SPACE',
+  'half-life':           'HALF-LIFE',
+  'terminator':          'TERMINATOR',
+  'portal':              'PORTAL',
+  'star-wars-rebel':     'STAR WARS: REBEL ALLIANCE',
+  'star-wars-empire':    'STAR WARS: GALACTIC EMPIRE',
+  'star-wars-republic':  'STAR WARS: OLD REPUBLIC',
+  'doctor-who':          'DOCTOR WHO',
+  'akira':               'AKIRA',
+  'evangelion':          'EVANGELION',
+  '2001':                '2001: A SPACE ODYSSEY',
+  'silent-hill':         'SILENT HILL',
+  'stalker':             'S.T.A.L.K.E.R.',
+  'resident-evil':       'RESIDENT EVIL',
+  'the-expanse':         'THE EXPANSE',
+  'event-horizon':       'EVENT HORIZON',
+  'hogwarts':            'HOGWARTS: MARAUDER\'S MAP',
+  'ministry-of-magic':   'MINISTRY OF MAGIC',
+  'gryffindor':          'GRYFFINDOR',
+  'ravenclaw':           'RAVENCLAW',
+  'hufflepuff':          'HUFFLEPUFF',
+  'slytherin':           'SLYTHERIN: DARK ARTS',
+  'rivendell':           'RIVENDELL',
+  'shire':               'THE SHIRE',
+  'mordor':              'MORDOR',
+  'scp':                 'SCP FOUNDATION',
+  'alan-wake':           'ALAN WAKE',
+  'control':             'CONTROL: THE BUREAU',
+  'twin-peaks':          'TWIN PEAKS',
+  'lovecraft':           'LOVECRAFTIAN',
+  'the-sandman':         'THE SANDMAN',
+  'persona-5':           'PERSONA 5',
+  'the-witcher':         'THE WITCHER',
+  'diablo':              'DIABLO',
+  'soma':                'SOMA',
+  'stranger-things':     'STRANGER THINGS',
+  'fatal-frame':         'FATAL FRAME',
+};
+const ALL_THEMES = Object.keys(THEME_BANNERS);
+
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
   apps     = await window.api.invoke('get-apps');
@@ -530,7 +585,7 @@ function applySettings() {
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
   document.getElementById('theme-stylesheet').href = `styles/themes/${theme}.css`;
-  document.getElementById('theme-select').value = theme;
+  document.getElementById('theme-search').value = THEME_NAMES[theme] || theme.toUpperCase();
   startBannerCycle(theme);
 }
 
@@ -933,17 +988,85 @@ document.getElementById('btn-add-edit').addEventListener('click', addAppFromDial
 document.getElementById('btn-add-installed').addEventListener('click', openInstalledAppsPicker);
 document.getElementById('btn-done-edit').addEventListener('click', exitEditMode);
 
-// ── Skin selection ────────────────────────────────────────────────────────────
-document.getElementById('theme-select').addEventListener('change', async (e) => {
-  settings.theme = e.target.value;
-  applySettings();
-  await window.api.invoke('save-settings', settings);
-});
+// ── Skin selection (searchable picker) ───────────────────────────────────────
+(function () {
+  const searchEl = document.getElementById('theme-search');
+  const listEl   = document.getElementById('theme-picker-list');
+
+  function buildList(filter) {
+    const q = (filter || '').toLowerCase().trim();
+    const matches = q
+      ? ALL_THEMES.filter(k => (THEME_NAMES[k] || k).toLowerCase().includes(q))
+      : ALL_THEMES;
+
+    listEl.innerHTML = '';
+    if (matches.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'theme-picker-empty';
+      empty.textContent = 'NO MATCHES';
+      listEl.appendChild(empty);
+      return;
+    }
+    const current = settings.theme || 'cyberpunk';
+    matches.forEach(key => {
+      const item = document.createElement('div');
+      item.className = 'theme-picker-item' + (key === current ? ' selected' : '');
+      item.dataset.value = key;
+      item.textContent = THEME_NAMES[key] || key.toUpperCase();
+      item.addEventListener('mousedown', async (e) => {
+        e.preventDefault();
+        settings.theme = key;
+        applySettings();
+        await window.api.invoke('save-settings', settings);
+        closePicker();
+      });
+      listEl.appendChild(item);
+    });
+  }
+
+  function openPicker() {
+    buildList(searchEl.value);
+    listEl.classList.remove('hidden');
+    const sel = listEl.querySelector('.theme-picker-item.selected');
+    if (sel) sel.scrollIntoView({ block: 'nearest' });
+  }
+
+  function closePicker() {
+    listEl.classList.add('hidden');
+    const theme = settings.theme || 'cyberpunk';
+    searchEl.value = THEME_NAMES[theme] || theme.toUpperCase();
+  }
+
+  function moveActive(dir) {
+    const items = [...listEl.querySelectorAll('.theme-picker-item')];
+    if (!items.length) return;
+    const cur = listEl.querySelector('.theme-picker-item.active');
+    let idx = items.indexOf(cur) + dir;
+    idx = Math.max(0, Math.min(items.length - 1, idx));
+    items.forEach(i => i.classList.remove('active'));
+    items[idx].classList.add('active');
+    items[idx].scrollIntoView({ block: 'nearest' });
+  }
+
+  searchEl.addEventListener('focus', () => openPicker());
+  searchEl.addEventListener('input', () => buildList(searchEl.value));
+  searchEl.addEventListener('blur',  () => setTimeout(closePicker, 150));
+  searchEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape')    { closePicker(); searchEl.blur(); return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1);  return; }
+    if (e.key === 'ArrowUp')   { e.preventDefault(); moveActive(-1); return; }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const active = listEl.querySelector('.theme-picker-item.active')
+                  || listEl.querySelector('.theme-picker-item');
+      if (active) active.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    }
+  });
+})();
 
 document.getElementById('btn-random-theme').addEventListener('click', async () => {
-  const themes = [...document.querySelectorAll('#theme-select option')].map(o => o.value);
   const current = settings.theme || 'cyberpunk';
-  const others = themes.filter(t => t !== current);
+  const others = ALL_THEMES.filter(t => t !== current);
   settings.theme = others[Math.floor(Math.random() * others.length)];
   applySettings();
   await window.api.invoke('save-settings', settings);

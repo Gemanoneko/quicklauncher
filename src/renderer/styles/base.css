@@ -513,39 +513,49 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 /* ── Utilities ───────────────────────────────────────────────────────────────── */
 .hidden { display: none !important; }
 
-/* ── Theme dropdown ──────────────────────────────────────────────────────────── */
-.theme-select {
-  width: 100%;
+/* ── Theme picker (searchable) ───────────────────────────────────────────────── */
+.theme-picker { position: relative; }
+.theme-search {
+  width: 100%; box-sizing: border-box;
   background: var(--panel-bg);
   border: 1px solid var(--border);
   color: var(--accent-c);
   font-family: var(--font);
-  font-size: 10px;
-  letter-spacing: 1.5px;
+  font-size: 10px; letter-spacing: 1.5px;
   padding: 5px 28px 5px 10px;
   border-radius: var(--radius);
-  cursor: pointer;
   outline: none;
-  appearance: none;
-  -webkit-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.5)'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: calc(100% - 10px) 50%;
   transition: border-color .12s, box-shadow .12s;
+  cursor: pointer;
 }
-.theme-select:hover {
-  border-color: var(--border-h);
-  box-shadow: var(--glow-c);
-}
-.theme-select:focus {
-  border-color: var(--accent-c);
-  box-shadow: var(--glow-c);
-}
-.theme-select option {
+.theme-search:hover { border-color: var(--border-h); box-shadow: var(--glow-c); }
+.theme-search:focus { border-color: var(--accent-c); box-shadow: var(--glow-c); cursor: text; }
+.theme-picker-list {
+  position: absolute; top: calc(100% + 3px); left: 0; right: 0; z-index: 400;
   background: var(--panel-bg);
-  color: var(--text);
-  font-family: var(--font);
-  letter-spacing: 1px;
+  border: 1px solid var(--accent-c);
+  box-shadow: var(--glow-c);
+  border-radius: var(--radius);
+  max-height: 200px; overflow-y: auto;
+}
+.theme-picker-list::-webkit-scrollbar { width: 4px; }
+.theme-picker-list::-webkit-scrollbar-track { background: transparent; }
+.theme-picker-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.theme-picker-item {
+  padding: 6px 10px;
+  font-family: var(--font); font-size: 10px; letter-spacing: 1.5px;
+  color: var(--text); cursor: pointer;
+  transition: background .08s, color .08s;
+}
+.theme-picker-item:hover,
+.theme-picker-item.active { background: var(--picker-item-hover-bg); color: var(--accent-c); }
+.theme-picker-item.selected { background: var(--picker-item-active-bg); color: var(--accent-c); }
+.theme-picker-empty {
+  padding: 12px 10px; text-align: center;
+  font-family: var(--font); font-size: 10px; letter-spacing: 1.5px; color: var(--text-dim);
 }
 
 /* ── Tile drag-to-reorder ────────────────────────────────────────────────────── */
