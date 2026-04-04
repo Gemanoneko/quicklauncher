@@ -238,8 +238,8 @@
 
 #grid-container::after {
   content: 'THE EMPEROR\APROTECTS\A\AFOR THE\AIMPERIUM\A\AOMNIS\AARCANUM\A\APURITY\ASEAL\AREQUIRED\A\AHERESY\ADETECTED';
-  display: flex; align-items: flex-start; justify-content: flex-end;
-  padding: 10px 12px 0 0;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
   font-size: 9px; line-height: 1.6; text-align: right;
   color: rgba(200, 144, 10, 0.10); white-space: pre;

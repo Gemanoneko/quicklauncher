@@ -208,8 +208,8 @@
 
 #grid-container::after {
   content: 'CASE: X-73841\AAGENT: MULDER, F.\ACLASSIFICATION:\AEYES ONLY\A\ATHE TRUTH\AIS OUT THERE\A\ATRUST NO ONE\A\AI WANT TO\ABELIEVE\A\ACASE STATUS:\AOPEN';
-  display: flex; align-items: flex-start; justify-content: flex-end;
-  padding: 10px 12px 0 0;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
   font-family: 'Courier New', Courier, monospace;
   font-size: 8px; line-height: 1.6; text-align: right;
   color: rgba(0, 176, 160, 0.10); white-space: pre;

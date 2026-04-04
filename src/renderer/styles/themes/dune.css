@@ -213,11 +213,11 @@
 
 #grid-container::after {
   content: 'THE SPICE\AMUST FLOW\A\AFEAR IS THE\AMIND-KILLER\A\AARRAKIS\ADUNE\A\ASHAI-HULUD\AAWAKENS';
-  display: flex; align-items: flex-start; justify-content: flex-end;
-  padding: 10px 12px 0 0;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 22px; line-height: 1.5; text-align: right;
-  color: rgba(200, 136, 64, 0.10); white-space: pre;
+  font-size: 13px; line-height: 1.7; text-align: right;
+  color: rgba(200, 136, 64, 0.12); white-space: pre;
   animation: du-breathe 7s ease-in-out infinite;
 }
 

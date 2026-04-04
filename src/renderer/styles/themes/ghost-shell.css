@@ -224,8 +224,8 @@
 
 #grid-container::after {
   content: 'GHOST ONLINE\A公安9課\A\A電脳接続\ATACHIKOMA\A  UNIT 03\A\APROJECT\A  2501\APUPPET\A  MASTER\A\ALINK\A  ESTAB.';
-  display: flex; align-items: flex-start; justify-content: flex-start;
-  padding: 10px 0 0 12px;
+  display: flex; align-items: flex-end; justify-content: flex-start;
+  padding: 0 0 10px 12px;
   font-size: 8.5px; line-height: 1.6; text-align: left;
   color: rgba(0, 224, 200, 0.10); white-space: pre;
 }

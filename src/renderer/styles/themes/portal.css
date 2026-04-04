@@ -233,8 +233,8 @@
 
 #grid-container::after {
   content: 'FOR SCIENCE\A\ATHE CAKE\AIS A LIE\A\ATESTING IN\APROGRESS\A\ASUBJECT\ACOMPLIANCE:\ANOMINAL\A\ATHINK WITH\APORTALS';
-  display: flex; align-items: flex-start; justify-content: flex-end;
-  padding: 10px 12px 0 0;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
   font-size: 8.5px; line-height: 1.6; text-align: right;
   color: rgba(224, 232, 240, 0.08); white-space: pre;
 }

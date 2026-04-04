@@ -256,8 +256,8 @@
 
 #grid-container::after {
   content: 'HEV SUIT ONLINE\A\AABNORMAL\AMATERIAL\ARESONANCE\A\ABLACK MESA\ARESEARCH\AFACILITY\A\ARESONANCE\ACASCADE\ADETECTED\A\AEVACUATE';
-  display: flex; align-items: flex-start; justify-content: flex-start;
-  padding: 10px 0 0 12px;
+  display: flex; align-items: flex-end; justify-content: flex-start;
+  padding: 0 0 10px 12px;
   font-family: Consolas, 'Courier New', monospace;
   font-size: 8.5px; line-height: 1.6; text-align: left;
   color: rgba(222, 160, 0, 0.12); white-space: pre;

@@ -205,8 +205,8 @@
 
 #grid-container::after {
   content: 'NECROMORPH\AWARNING\A\AINTEGRITY:\ACRITICAL\A\AMAKE US\AWHOLE\A\ADELETE YOUR\AMARKERS\A\ASTASIS: LOW\AOXYGEN: LOW';
-  display: flex; align-items: flex-start; justify-content: flex-start;
-  padding: 10px 0 0 12px;
+  display: flex; align-items: flex-end; justify-content: flex-start;
+  padding: 0 0 10px 12px;
   font-size: 9px; line-height: 1.6; text-align: left; font-weight: 600;
   color: rgba(224, 104, 32, 0.12); white-space: pre;
 }

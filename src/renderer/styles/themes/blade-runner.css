@@ -215,11 +215,11 @@
 
 #grid-container::after {
   content: 'TYRELL\ACORP.\A\AMORE\AHUMAN\ATHAN\AHUMAN\A\AOFF-WORLD\ACOLONIES\A\AREPLICANT\ARETIREMENT';
-  display: flex; align-items: flex-start; justify-content: flex-end;
-  padding: 10px 12px 0 0;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 22px; line-height: 1.4; text-align: right;
-  color: rgba(224, 122, 0, 0.12); white-space: pre;
+  font-size: 13px; line-height: 1.7; text-align: right;
+  color: rgba(224, 122, 0, 0.14); white-space: pre;
   background: none;
 }
 

@@ -258,8 +258,8 @@
 
 #grid-container::after {
   content: 'THREAT LEVEL\AMAXIMUM\A\ATERMINATE\AWITH EXTREME\APREJUDICE\A\AHUMANS:\AHOSTILE\A\APRIORITY:\ATY1\A\ASKYNET\AONLINE';
-  display: flex; align-items: flex-start; justify-content: flex-end;
-  padding: 10px 12px 0 0;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
   font-size: 9px; line-height: 1.6; text-align: right;
   color: rgba(255, 32, 0, 0.10); white-space: pre;
 }

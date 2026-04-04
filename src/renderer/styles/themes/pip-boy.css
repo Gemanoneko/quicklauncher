@@ -248,8 +248,8 @@
 
 #grid-container::after {
   content: 'S.P.E.C.I.A.L.\A\ASTR  10\APER   8\AEND   9\ACHA   6\AINT   7\AAGI   8\ALCK   5\A\AWAR NEVER\ACHANGES.';
-  display: flex; align-items: flex-start; justify-content: flex-end;
-  padding: 10px 12px 0 0;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 9px; line-height: 1.6; text-align: right;
   color: rgba(146, 200, 0, 0.12); white-space: pre;
