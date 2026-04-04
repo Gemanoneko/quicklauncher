@@ -450,12 +450,15 @@ function removeSolidBackground(img) {
   const bgB = Math.round(corners.reduce((s,c) => s+c[0], 0) / 4);
   const bgG = Math.round(corners.reduce((s,c) => s+c[1], 0) / 4);
   const bgR = Math.round(corners.reduce((s,c) => s+c[2], 0) / 4);
-  const tol = 22;
+  // Use a wider tolerance for near-black or near-white backgrounds — anti-aliasing
+  // fringing at folder icon edges can push corner pixels several units off pure black/white.
+  const tol = (bgR + bgG + bgB < 80 || bgR + bgG + bgB > 680) ? 40 : 22;
   const isBg = (b, g, r, a) =>
     a > 200 && Math.abs(b-bgB) < tol && Math.abs(g-bgG) < tol && Math.abs(r-bgR) < tol;
 
-  // All corners must agree on the same background color
-  if (!corners.every(c => isBg(c[0], c[1], c[2], c[3]))) return img;
+  // At least 3 of 4 corners must agree on the background color (1 corner may be occluded
+  // by a folder icon edge, especially on near-full-bleed folder thumbnail images).
+  if (corners.filter(c => isBg(c[0], c[1], c[2], c[3])).length < 3) return img;
 
   // BFS flood-fill from the four corners to erase the background
   const buf = Buffer.from(src);
