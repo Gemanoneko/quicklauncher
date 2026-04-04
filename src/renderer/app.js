@@ -199,9 +199,7 @@ function applySettings() {
 
   const theme = settings.theme || 'cyberpunk';
   document.getElementById('theme-stylesheet').href = `styles/themes/${theme}.css`;
-  document.querySelectorAll('.skin-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.theme === theme);
-  });
+  document.getElementById('theme-select').value = theme;
 }
 
 document.getElementById('slider-icon-size').addEventListener('input', async (e) => {
@@ -574,16 +572,14 @@ document.getElementById('btn-add-installed').addEventListener('click', openInsta
 document.getElementById('btn-done-edit').addEventListener('click', exitEditMode);
 
 // ── Skin selection ────────────────────────────────────────────────────────────
-document.querySelectorAll('.skin-btn').forEach(btn => {
-  btn.addEventListener('click', async () => {
-    settings.theme = btn.dataset.theme;
-    applySettings();
-    await ipcRenderer.invoke('save-settings', settings);
-  });
+document.getElementById('theme-select').addEventListener('change', async (e) => {
+  settings.theme = e.target.value;
+  applySettings();
+  await ipcRenderer.invoke('save-settings', settings);
 });
 
 document.getElementById('btn-random-theme').addEventListener('click', async () => {
-  const themes = [...document.querySelectorAll('.skin-btn[data-theme]')].map(b => b.dataset.theme);
+  const themes = [...document.querySelectorAll('#theme-select option')].map(o => o.value);
   const current = settings.theme || 'cyberpunk';
   const others = themes.filter(t => t !== current);
   settings.theme = others[Math.floor(Math.random() * others.length)];
