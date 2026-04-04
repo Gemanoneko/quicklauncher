@@ -183,6 +183,14 @@ html, body {
   box-shadow: var(--glow-c);
 }
 
+/* Constrain theme flavor text to never overlap the header control buttons.
+   Themes define content/position/color; we add the right-side boundary here
+   so it applies to every theme without touching each file individually. */
+#header::after {
+  right: 100px;
+  overflow: hidden;
+}
+
 #title-area { display: flex; flex-direction: column; gap: 1px; }
 
 #title {

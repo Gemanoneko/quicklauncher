@@ -14,19 +14,19 @@
   --header-bg:    rgba(80, 0, 0, 0.04);
 
   --font:         'Segoe UI', Georgia, serif;
-  --text:         #604848;
-  --text-dim:     rgba(80, 48, 45, 0.45);
+  --text:         #907060;
+  --text-dim:     rgba(140, 100, 88, 0.50);
 
-  --accent-c:     #660000;   /* void blood */
-  --accent-m:     #440000;   /* deeper void */
-  --accent-y:     #502830;   /* corrupted grey */
+  --accent-c:     #991111;   /* void blood — lifted for legibility */
+  --accent-m:     #660000;   /* deeper void */
+  --accent-y:     #704040;   /* corrupted rust */
 
-  --border:       rgba(80, 0, 0, 0.28);
-  --border-h:     rgba(110, 0, 0, 0.55);
+  --border:       rgba(110, 15, 15, 0.35);
+  --border-h:     rgba(150, 20, 20, 0.60);
 
-  --glow-c:       0 0 6px rgba(102,0,0,.55), 0 0 18px rgba(102,0,0,.18);
-  --glow-m:       0 0 6px rgba(68,0,0,.50), 0 0 16px rgba(68,0,0,.15);
-  --glow-y:       0 0 5px rgba(80,40,48,.40), 0 0 14px rgba(80,40,48,.12);
+  --glow-c:       0 0 7px rgba(153,17,17,.60), 0 0 20px rgba(153,17,17,.22);
+  --glow-m:       0 0 6px rgba(102,0,0,.52), 0 0 18px rgba(102,0,0,.16);
+  --glow-y:       0 0 5px rgba(112,64,64,.45), 0 0 14px rgba(112,64,64,.14);
 
   --pulse-glow:   inset 0 0 24px rgba(80,0,0,.08);
   --scanlines:    repeating-linear-gradient(
@@ -54,12 +54,12 @@
   --rename-dashed:    rgba(102, 0, 0, 0.38);
   --rename-input-bg:  rgba(80, 0, 0, 0.09);
 
-  --edit-bar-bg:          rgba(68, 0, 0, 0.10);
-  --edit-bar-border:      rgba(80, 0, 0, 0.45);
-  --edit-label-color:     #660000;
+  --edit-bar-bg:          rgba(100, 15, 15, 0.10);
+  --edit-bar-border:      rgba(120, 20, 20, 0.48);
+  --edit-label-color:     #991111;
   --edit-label-glow:      var(--glow-c);
-  --btn-done-color:       #660000;
-  --btn-done-border:      rgba(102, 0, 0, 0.45);
+  --btn-done-color:       #991111;
+  --btn-done-border:      rgba(153, 17, 17, 0.48);
   --btn-done-hover-bg:    rgba(102, 0, 0, 0.12);
   --btn-done-hover-glow:  var(--glow-c);
   --btn-add-border:       rgba(80, 0, 0, 0.42);
@@ -71,9 +71,9 @@
   --update-btn-hover-bg:   rgba(80, 40, 48, 0.09);
   --update-btn-hover-glow: var(--glow-y);
 
-  --btn-close-color:      #660000;
-  --btn-close-border:     rgba(102, 0, 0, 0.40);
-  --btn-close-hover-bg:   rgba(102, 0, 0, 0.12);
+  --btn-close-color:      #991111;
+  --btn-close-border:     rgba(153, 17, 17, 0.42);
+  --btn-close-hover-bg:   rgba(153, 17, 17, 0.13);
   --btn-close-hover-glow: var(--glow-c);
 
   --picker-search-bg:      rgba(80, 0, 0, 0.09);
@@ -98,8 +98,8 @@
       rgba(80, 0, 0, 0.018) 8px, rgba(80, 0, 0, 0.018) 9px,
       transparent 9px, transparent 55px
     ),
-    /* void collapse vignette — heavier than normal */
-    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 28%, rgba(1, 0, 0, 0.80) 100%),
+    /* void collapse vignette */
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 45%, rgba(1, 0, 0, 0.72) 100%),
     /* blood seep from edges */
     radial-gradient(ellipse 60% 40% at 0% 100%, rgba(70, 0, 0, 0.10) 0%, transparent 65%),
     radial-gradient(ellipse 60% 40% at 100% 0%, rgba(60, 0, 0, 0.08) 0%, transparent 65%);
@@ -160,13 +160,13 @@
 
 /* ── Title animation: corrupted void glitch ─────────────────────────────────── */
 @keyframes void-corrupt {
-  0%, 100%  { text-shadow: 0 0 6px rgba(102,0,0,.50), 0 0 18px rgba(102,0,0,.16); color: #660000; opacity: 1; }
-  75%       { text-shadow: 0 0 6px rgba(102,0,0,.50), 0 0 18px rgba(102,0,0,.16); color: #660000; opacity: 1; }
-  76%       { color: #880000; opacity: 0.4; text-shadow: 0 0 2px rgba(140,0,0,.30); }
-  77%       { color: #440000; opacity: 0.9; text-shadow: 3px 0 rgba(80,0,0,.70), -2px 0 rgba(60,20,0,.50); }
-  78%       { color: #660000; opacity: 1; text-shadow: 0 0 8px rgba(102,0,0,.60), 0 0 22px rgba(102,0,0,.20); }
+  0%, 100%  { text-shadow: 0 0 7px rgba(153,17,17,.58), 0 0 20px rgba(153,17,17,.20); color: #991111; opacity: 1; }
+  75%       { text-shadow: 0 0 7px rgba(153,17,17,.58), 0 0 20px rgba(153,17,17,.20); color: #991111; opacity: 1; }
+  76%       { color: #BB2020; opacity: 0.4; text-shadow: 0 0 2px rgba(160,20,20,.35); }
+  77%       { color: #660000; opacity: 0.9; text-shadow: 3px 0 rgba(120,0,0,.70), -2px 0 rgba(80,20,0,.50); }
+  78%       { color: #991111; opacity: 1; text-shadow: 0 0 10px rgba(153,17,17,.65), 0 0 24px rgba(153,17,17,.24); }
   79%       { opacity: 0.7; }
-  80%       { opacity: 1; text-shadow: 0 0 6px rgba(102,0,0,.50), 0 0 18px rgba(102,0,0,.16); color: #660000; }
+  80%       { opacity: 1; text-shadow: 0 0 7px rgba(153,17,17,.58), 0 0 20px rgba(153,17,17,.20); color: #991111; }
 }
 
 /* ── App: the border feels wrong ────────────────────────────────────────────── */
@@ -181,5 +181,5 @@
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 0, 0, 0.99); border-top-color: rgba(80, 0, 0, 0.28); }
-#theme-banner::before { content: '⊘'; color: #660000; font-size: 20px; opacity: 0.80; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(90, 0, 0, 0.58); }
+#theme-banner::before { content: '⊘'; color: #991111; font-size: 20px; opacity: 0.88; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(140, 20, 20, 0.65); }

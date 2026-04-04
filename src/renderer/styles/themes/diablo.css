@@ -98,8 +98,8 @@
       rgba(180, 20, 0, 0.018) 8px, rgba(180, 20, 0, 0.018) 9px,
       transparent 9px, transparent 48px
     ),
-    /* heavy blood-black vignette */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 25%, rgba(3, 0, 0, 0.88) 100%),
+    /* blood-black vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 45%, rgba(3, 0, 0, 0.75) 100%),
     /* ember seep from bottom */
     radial-gradient(ellipse 75% 32% at 50% 100%, rgba(160, 30, 0, 0.09) 0%, transparent 68%),
     /* dark corners */
