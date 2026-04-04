@@ -688,7 +688,6 @@ input[type="range"] {
   box-shadow: var(--glow-c);
   color: #fff;
 }
-
 /* ── Tile drag-to-reorder ────────────────────────────────────────────────────── */
 /* Grab cursor signals draggability */
 .app-tile { cursor: grab; }

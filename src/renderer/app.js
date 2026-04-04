@@ -582,5 +582,14 @@ document.querySelectorAll('.skin-btn').forEach(btn => {
   });
 });
 
+document.getElementById('btn-random-theme').addEventListener('click', async () => {
+  const themes = [...document.querySelectorAll('.skin-btn[data-theme]')].map(b => b.dataset.theme);
+  const current = settings.theme || 'cyberpunk';
+  const others = themes.filter(t => t !== current);
+  settings.theme = others[Math.floor(Math.random() * others.length)];
+  applySettings();
+  await ipcRenderer.invoke('save-settings', settings);
+});
+
 // ── Start ─────────────────────────────────────────────────────────────────────
 init();
