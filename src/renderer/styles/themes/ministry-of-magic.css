@@ -1,0 +1,161 @@
+/* ══ MINISTRY OF MAGIC ════════════════════════════════════════════════════════
+   Floo Network connected. Enchanted memos in flight. Dark emerald art deco —
+   the magical civil service at the end of a very long winding staircase.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #020806;
+  --panel-bg:     rgba(3, 12, 8, 0.98);
+  --overlay-bg:   rgba(2, 8, 5, 0.96);
+  --header-bg:    rgba(0, 80, 50, 0.05);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #80A090;
+  --text-dim:     rgba(100, 140, 115, 0.45);
+
+  --accent-c:     #007858;   /* Ministry emerald */
+  --accent-m:     #B08820;   /* enchanted bronze */
+  --accent-y:     #604080;   /* magical purple */
+
+  --border:       rgba(0, 100, 70, 0.22);
+  --border-h:     rgba(0, 130, 90, 0.52);
+
+  --glow-c:       0 0 7px rgba(0,120,88,.60), 0 0 20px rgba(0,120,88,.20);
+  --glow-m:       0 0 7px rgba(176,136,32,.60), 0 0 20px rgba(176,136,32,.20);
+  --glow-y:       0 0 7px rgba(96,64,128,.55), 0 0 18px rgba(96,64,128,.18);
+
+  --pulse-glow:   inset 0 0 20px rgba(0,100,70,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(0,120,88,.10);
+
+  --title-anim:   ministry-shimmer 7s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(0, 100, 70, 0.08);
+  --tile-hover-border: rgba(0, 130, 90, 0.36);
+  --tile-hover-shadow: 0 0 12px rgba(0, 120, 88, 0.20);
+  --tile-active-bg:    rgba(0, 100, 70, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(0,120,88,.58)) drop-shadow(0 0 14px rgba(0,120,88,.24));
+
+  --btn-hover-bg:   rgba(0, 100, 70, 0.10);
+  --btn-active-bg:  rgba(0, 100, 70, 0.20);
+
+  --drop-hint-border: rgba(0, 100, 70, 0.26);
+  --drop-icon-color:  rgba(0, 120, 88, 0.38);
+  --hint-sub-color:   rgba(80, 120, 100, 0.42);
+
+  --rename-dashed:    rgba(0, 120, 88, 0.40);
+  --rename-input-bg:  rgba(0, 100, 70, 0.07);
+
+  --edit-bar-bg:          rgba(176, 136, 32, 0.07);
+  --edit-bar-border:      rgba(176, 136, 32, 0.40);
+  --edit-label-color:     #B08820;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #B08820;
+  --btn-done-border:      rgba(176, 136, 32, 0.42);
+  --btn-done-hover-bg:    rgba(176, 136, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(0, 120, 88, 0.40);
+
+  --update-bg:             rgba(96, 64, 128, 0.06);
+  --update-border:         rgba(96, 64, 128, 0.36);
+  --update-color:          #604080;
+  --update-btn-border:     rgba(96, 64, 128, 0.32);
+  --update-btn-hover-bg:   rgba(96, 64, 128, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #B08820;
+  --btn-close-border:     rgba(176, 136, 32, 0.38);
+  --btn-close-hover-bg:   rgba(176, 136, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(0, 100, 70, 0.07);
+  --picker-item-hover-bg:  rgba(0, 100, 70, 0.08);
+  --picker-item-active-bg: rgba(0, 100, 70, 0.15);
+  --picker-placeholder-bg: rgba(0, 100, 70, 0.07);
+
+  --skin-btn-active-bg:    rgba(0, 100, 70, 0.16);
+  --remove-btn-bg:         rgba(176, 136, 32, 0.90);
+  --remove-btn-border:     #B08820;
+}
+
+/* ── Art deco emerald tile pattern + enchanted glow ─────────────────────────── */
+#app::after {
+  background:
+    /* art deco vertical lines */
+    repeating-linear-gradient(90deg,
+      transparent 0px, transparent 39px,
+      rgba(0, 100, 70, 0.028) 39px, rgba(0, 100, 70, 0.028) 40px
+    ),
+    /* art deco horizontal bands */
+    repeating-linear-gradient(0deg,
+      transparent 0px, transparent 19px,
+      rgba(0, 80, 55, 0.018) 19px, rgba(0, 80, 55, 0.018) 20px
+    ),
+    /* emerald vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(1, 5, 3, 0.75) 100%),
+    /* ministry emerald ambient */
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(0, 60, 40, 0.05) 0%, transparent 70%);
+  background-size: 40px 100%, 100% 20px, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header emerald accent bar ──────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #007858, rgba(0, 100, 70, 0.28));
+  box-shadow: 0 0 10px rgba(0, 120, 88, 0.55), 0 0 24px rgba(0, 120, 88, 0.18);
+}
+
+/* ── Grid: enchanted memo atmosphere ────────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 20%, rgba(0, 80, 55, 0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 50% 85%, rgba(0, 60, 40, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 80% at 10% 50%, rgba(0, 50, 35, 0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 80% at 90% 50%, rgba(0, 50, 35, 0.04) 0%, transparent 55%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'MINISTRY OF MAGIC  //  DEPT. OF MYSTERIES  //  LEVEL SEVEN';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 120, 88, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'MINISTRY\AOF MAGIC\A\AMAGICAL\ALAW\AENFORCEMENT\A\ADEPT. OF\AMYSTERIES\A\ACLASSIFIED';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(0, 100, 70, 0.11); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'AUROR DIVISION  —  AUTHORIZED PERSONNEL ONLY';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(176, 136, 32, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; letter-spacing: 5px; }
+
+/* ── Title animation: emerald enchantment shimmer ───────────────────────────── */
+@keyframes ministry-shimmer {
+  0%, 100% { text-shadow: 0 0 7px rgba(0,120,88,.55), 0 0 20px rgba(0,120,88,.20); color: #007858; }
+  40%       { text-shadow: 0 0 12px rgba(0,160,110,.80), 0 0 30px rgba(0,120,88,.38); color: #009A70; }
+  70%       { text-shadow: 0 0 8px rgba(0,100,70,.55), 0 0 18px rgba(176,136,32,.18); color: #007050; }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(2, 7, 4, 0.98); border-top-color: rgba(0, 100, 70, 0.22); }
+#theme-banner::before { content: '⊞'; color: #007858; font-size: 18px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(0, 110, 78, 0.60); }

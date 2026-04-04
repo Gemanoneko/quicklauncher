@@ -1,0 +1,192 @@
+/* ══ DIABLO ════════════════════════════════════════════════════════════════════
+   Hell has been unleashed upon Sanctuary. Hellfire gothic — cathedral vaults
+   and demon blood. Prime Evil awakens. The horadric seal is broken.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #060000;
+  --panel-bg:     rgba(10, 0, 0, 0.98);
+  --overlay-bg:   rgba(6, 0, 0, 0.96);
+  --header-bg:    rgba(204, 0, 0, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #804040;
+  --text-dim:     rgba(110, 50, 40, 0.45);
+
+  --accent-c:     #CC0000;   /* hellfire red */
+  --accent-m:     #FF4400;   /* ember orange */
+  --accent-y:     #604000;   /* burnt cathedral gold */
+
+  --border:       rgba(160, 0, 0, 0.25);
+  --border-h:     rgba(204, 0, 0, 0.55);
+
+  --glow-c:       0 0 8px rgba(204,0,0,.70), 0 0 24px rgba(204,0,0,.25);
+  --glow-m:       0 0 8px rgba(255,68,0,.65), 0 0 22px rgba(255,68,0,.22);
+  --glow-y:       0 0 6px rgba(96,64,0,.55), 0 0 18px rgba(96,64,0,.18);
+
+  --pulse-glow:   inset 0 0 22px rgba(180,0,0,.08);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 3px,
+                    rgba(100, 0, 0, 0.038) 3px, rgba(100, 0, 0, 0.038) 4px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(204,0,0,.11);
+
+  --title-anim:   hellfire-flicker 4s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(160, 0, 0, 0.09);
+  --tile-hover-border: rgba(204, 0, 0, 0.45);
+  --tile-hover-shadow: 0 0 12px rgba(204, 0, 0, 0.26);
+  --tile-active-bg:    rgba(160, 0, 0, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(204,0,0,.68)) drop-shadow(0 0 14px rgba(255,68,0,.28));
+
+  --btn-hover-bg:   rgba(160, 0, 0, 0.12);
+  --btn-active-bg:  rgba(160, 0, 0, 0.22);
+
+  --drop-hint-border: rgba(160, 0, 0, 0.28);
+  --drop-icon-color:  rgba(204, 0, 0, 0.40);
+  --hint-sub-color:   rgba(130, 60, 40, 0.38);
+
+  --rename-dashed:    rgba(204, 0, 0, 0.42);
+  --rename-input-bg:  rgba(160, 0, 0, 0.08);
+
+  --edit-bar-bg:          rgba(255, 68, 0, 0.06);
+  --edit-bar-border:      rgba(255, 68, 0, 0.38);
+  --edit-label-color:     #FF4400;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #FF4400;
+  --btn-done-border:      rgba(255, 68, 0, 0.40);
+  --btn-done-hover-bg:    rgba(255, 68, 0, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(204, 0, 0, 0.46);
+
+  --update-bg:             rgba(96, 64, 0, 0.07);
+  --update-border:         rgba(96, 64, 0, 0.36);
+  --update-color:          #604000;
+  --update-btn-border:     rgba(96, 64, 0, 0.30);
+  --update-btn-hover-bg:   rgba(96, 64, 0, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #CC0000;
+  --btn-close-border:     rgba(204, 0, 0, 0.42);
+  --btn-close-hover-bg:   rgba(204, 0, 0, 0.11);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(160, 0, 0, 0.08);
+  --picker-item-hover-bg:  rgba(160, 0, 0, 0.09);
+  --picker-item-active-bg: rgba(160, 0, 0, 0.17);
+  --picker-placeholder-bg: rgba(160, 0, 0, 0.08);
+
+  --skin-btn-active-bg:    rgba(160, 0, 0, 0.18);
+  --remove-btn-bg:         rgba(255, 68, 0, 0.88);
+  --remove-btn-border:     #FF4400;
+}
+
+/* ── Heavy noise grain + diagonal fire streaks + blood-black vignette ────────── */
+#app::after {
+  background:
+    /* dark warm noise grain */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.8 0 0 0 0.02  0.4 0 0 0 0  0.3 0 0 0 0  0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* diagonal fire streaks */
+    repeating-linear-gradient(
+      115deg,
+      transparent 0px, transparent 8px,
+      rgba(180, 20, 0, 0.018) 8px, rgba(180, 20, 0, 0.018) 9px,
+      transparent 9px, transparent 48px
+    ),
+    /* heavy blood-black vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 25%, rgba(3, 0, 0, 0.88) 100%),
+    /* ember seep from bottom */
+    radial-gradient(ellipse 75% 32% at 50% 100%, rgba(160, 30, 0, 0.09) 0%, transparent 68%),
+    /* dark corners */
+    radial-gradient(ellipse 45% 55% at 0% 0%, rgba(40, 0, 0, 0.06) 0%, transparent 55%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── App: dramatic hell-red border pulse ────────────────────────────────────── */
+#app { animation: diablo-border 7s ease-in-out infinite; }
+@keyframes diablo-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(160,0,0,.35), inset 0 0 20px rgba(160,0,0,.06); }
+  10%      { box-shadow: 0 0 0 1px rgba(204,0,0,.70), inset 0 0 30px rgba(204,0,0,.10); }
+  11%      { box-shadow: 0 0 0 1px rgba(160,0,0,.10), inset 0 0 10px rgba(160,0,0,.02); }
+  12%      { box-shadow: 0 0 0 1px rgba(204,0,0,.55), inset 0 0 24px rgba(204,0,0,.08); }
+  13%      { box-shadow: 0 0 0 1px rgba(160,0,0,.20), inset 0 0 14px rgba(160,0,0,.03); }
+  40%      { box-shadow: 0 0 0 1px rgba(160,0,0,.28), inset 0 0 16px rgba(160,0,0,.04); }
+  /* re-ignition */
+  75%      { box-shadow: 0 0 0 1px rgba(160,0,0,.28), inset 0 0 16px rgba(160,0,0,.04); }
+  78%      { box-shadow: 0 0 0 2px rgba(255,68,0,.35), inset 0 0 26px rgba(255,68,0,.07); }
+  80%      { box-shadow: 0 0 0 1px rgba(204,0,0,.50), inset 0 0 22px rgba(204,0,0,.07); }
+}
+
+/* ── Header hellfire red bar with strong glow ───────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #CC0000, rgba(160, 0, 0, 0.28));
+  box-shadow: 0 0 12px rgba(204, 0, 0, 0.75), 0 0 32px rgba(204, 0, 0, 0.28);
+}
+
+/* ── Grid: cathedral arch — stained glass top + ember lava bottom + dark cols ── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* stained glass red ambient from top */
+    linear-gradient(to bottom, rgba(180, 0, 0, 0.08) 0%, rgba(140, 0, 0, 0.03) 22%, transparent 48%),
+    /* ember lava from bottom */
+    linear-gradient(to top, rgba(200, 40, 0, 0.09) 0%, rgba(160, 20, 0, 0.04) 22%, transparent 50%),
+    /* dark cathedral side columns */
+    radial-gradient(ellipse 38% 100% at 0% 50%, rgba(3, 0, 0, 0.20) 0%, transparent 62%),
+    radial-gradient(ellipse 38% 100% at 100% 50%, rgba(3, 0, 0, 0.20) 0%, transparent 62%),
+    /* central altar faint amber bloom */
+    radial-gradient(ellipse 50% 40% at 50% 90%, rgba(140, 60, 0, 0.05) 0%, transparent 65%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'SANCTUARY  //  CATHEDRAL OF LIGHT  //  PRIME EVIL DETECTED';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(204, 0, 0, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'DIABLO\ALORD OF\ATERROR\A\ASANCTUARY\AFALLS\A\AULTIMATE\AEVIL\AAWAKENS\A\ANEPHALEM';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(160, 0, 0, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'HORADRIC AUTHORIZATION REQUIRED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(255, 68, 0, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title animation: hellfire-flicker ──────────────────────────────────────── */
+@keyframes hellfire-flicker {
+  0%, 100%  { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); opacity: 1; }
+  60%       { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); opacity: 1; }
+  62%       { text-shadow: 0 0 12px rgba(255,68,0,.85), 0 0 32px rgba(255,68,0,.40); opacity: 0.9; }
+  63%       { opacity: 0.5; text-shadow: none; }
+  64%       { opacity: 1; text-shadow: 0 0 16px rgba(255,100,0,.90), 0 0 40px rgba(204,0,0,.50); }
+  65%       { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); }
+  85%       { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); opacity: 1; }
+  87%       { text-shadow: 0 0 10px rgba(255,68,0,.75), 0 0 28px rgba(255,68,0,.30); }
+  88%       { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(6, 0, 0, 0.98); border-top-color: rgba(160, 0, 0, 0.28); }
+#theme-banner::before { content: '✵'; color: #CC0000; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(180, 0, 0, 0.58); }

@@ -1,0 +1,204 @@
+/* ══ CONTROL ═══════════════════════════════════════════════════════════════════
+   The Oldest House. The Federal Bureau of Control. Brutalist concrete and
+   Bureau red. The Hiss is speaking. Altered Items have been detected.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #040404;
+  --panel-bg:     rgba(6, 6, 6, 0.99);
+  --overlay-bg:   rgba(4, 4, 4, 0.97);
+  --header-bg:    rgba(204, 17, 0, 0.03);
+
+  /* ── Typography ── */
+  --font:         'Segoe UI', 'Arial', sans-serif;
+
+  /* ── Text ── */
+  --text:         #787878;
+  --text-dim:     rgba(100, 100, 100, 0.45);
+
+  /* ── Accents ── */
+  --accent-c:     #CC1100;   /* Bureau red */
+  --accent-m:     #505050;   /* brutalist concrete grey */
+  --accent-y:     #802000;   /* dark ember */
+
+  /* ── Borders ── */
+  --border:       rgba(180, 30, 10, 0.20);
+  --border-h:     rgba(204, 17, 0, 0.48);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(204,17,0,.60),  0 0 18px rgba(204,17,0,.20);
+  --glow-m:       0 0 5px rgba(80,80,80,.45),  0 0 14px rgba(80,80,80,.14);
+  --glow-y:       0 0 5px rgba(128,32,0,.45),  0 0 14px rgba(128,32,0,.14);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 18px rgba(180,20,0,.05);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 2px,
+                    rgba(30, 0, 0, 0.04) 2px, rgba(30, 0, 0, 0.04) 3px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(204,17,0,.09);
+
+  /* ── Title animation ── */
+  --title-anim:   hiss-distort 9s steps(1) infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(180, 20, 0, 0.08);
+  --tile-hover-border: rgba(204, 17, 0, 0.38);
+  --tile-hover-shadow: 0 0 10px rgba(204, 17, 0, 0.18);
+  --tile-active-bg:    rgba(180, 20, 0, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(204,17,0,.52)) drop-shadow(0 0 10px rgba(180,20,0,.20));
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(180, 20, 0, 0.10);
+  --btn-active-bg:  rgba(180, 20, 0, 0.20);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(180, 20, 0, 0.25);
+  --drop-icon-color:  rgba(204, 17, 0, 0.32);
+  --hint-sub-color:   rgba(120, 80, 60, 0.35);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(204, 17, 0, 0.36);
+  --rename-input-bg:  rgba(180, 20, 0, 0.07);
+
+  /* ── Edit bar (Bureau red) ── */
+  --edit-bar-bg:          rgba(204, 17, 0, 0.07);
+  --edit-bar-border:      rgba(204, 17, 0, 0.38);
+  --edit-label-color:     var(--accent-c);
+  --edit-label-glow:      var(--glow-c);
+  --btn-done-color:       var(--accent-c);
+  --btn-done-border:      rgba(204, 17, 0, 0.42);
+  --btn-done-hover-bg:    rgba(204, 17, 0, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(80, 80, 80, 0.38);
+
+  /* ── Update banner (concrete grey) ── */
+  --update-bg:             rgba(80, 80, 80, 0.07);
+  --update-border:         rgba(80, 80, 80, 0.32);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(80, 80, 80, 0.28);
+  --update-btn-hover-bg:   rgba(80, 80, 80, 0.10);
+  --update-btn-hover-glow: var(--glow-m);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(204, 17, 0, 0.38);
+  --btn-close-hover-bg:   rgba(204, 17, 0, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(180, 20, 0, 0.07);
+  --picker-item-hover-bg:  rgba(180, 20, 0, 0.08);
+  --picker-item-active-bg: rgba(180, 20, 0, 0.15);
+  --picker-placeholder-bg: rgba(180, 20, 0, 0.07);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(180, 20, 0, 0.18);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(204, 17, 0, 0.90);
+  --remove-btn-border:     var(--accent-c);
+}
+
+/* ── Heavy noise + vignette + Hiss red corner bleeds ─────────────────────────── */
+#app::after {
+  background:
+    /* heavy black&white noise grain — brutalist texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='0.11'/%3E%3C/svg%3E"),
+    /* heavy vignette — concrete walls closing in */
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 25%, rgba(2, 2, 2, 0.84) 100%),
+    /* Hiss corruption — red bleed, bottom-left */
+    radial-gradient(ellipse 50% 35% at 0% 100%, rgba(180, 10, 0, 0.08) 0%, transparent 65%),
+    /* Hiss corruption — red bleed, top-right */
+    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(160, 8, 0, 0.06) 0%, transparent 60%);
+  background-size: 250px 250px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header Bureau red accent bar ────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #CC1100, rgba(160, 14, 0, 0.22));
+  box-shadow: 0 0 8px rgba(204, 17, 0, 0.55), 0 0 20px rgba(180, 10, 0, 0.18);
+}
+
+/* ── Grid: brutalist concrete slab feel — thick horizontal dividers ───────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* thick brutalist horizontal dividers — concrete slab */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 58px,
+      rgba(60, 60, 60, 0.030) 58px, rgba(60, 60, 60, 0.030) 60px
+    ),
+    /* ambient darkness from sides — concrete walls */
+    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(2, 2, 2, 0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(2, 2, 2, 0.22) 0%, transparent 65%),
+    /* subtle red undertone from top — Bureau authority */
+    linear-gradient(to bottom, rgba(160, 10, 0, 0.04) 0%, transparent 22%);
+  background-size: 100% 60px, 100% 100%, 100% 100%, 100% 100%;
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'OLDEST HOUSE  //  FEDERAL BUREAU OF CONTROL  //  DIRECTOR\'S OFFICE';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 300;
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(180, 20, 0, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE\AOLDEST\AHOUSE\A\ATHE\AFEDERAL\ABUREAU\AOF\ACONTROL\A\AHISS\APRESENCE\ADETECTED';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 300;
+  font-size: 10px; line-height: 1.7; text-align: right;
+  color: rgba(140, 20, 0, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'HISS CONTAMINATION — ALTERED ITEM DETECTED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 300;
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(204, 17, 0, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 6px; font-weight: 300; }
+
+/* ── Title animation: Hiss-like glitch distortion ────────────────────────────── */
+@keyframes hiss-distort {
+  0%, 100% { color: #787878; text-shadow: 0 0 4px rgba(204,17,0,.22), 0 0 12px rgba(204,17,0,.08); opacity: 1; }
+  80%       { color: #787878; text-shadow: 0 0 4px rgba(204,17,0,.22); opacity: 1; }
+  82%       { color: #CC1100; text-shadow: 0 0 8px rgba(204,17,0,.70), 0 0 22px rgba(204,17,0,.28); opacity: 1; transform: translateX(1px); }
+  83%       { color: #787878; text-shadow: none; opacity: 0.6; transform: translateX(-1px); }
+  84%       { color: #CC1100; text-shadow: 0 0 6px rgba(204,17,0,.55); opacity: 0.9; transform: translateX(0); }
+  85%       { color: #787878; text-shadow: 0 0 4px rgba(204,17,0,.22); opacity: 1; }
+  93%       { color: #787878; opacity: 1; }
+  94%       { color: #505050; text-shadow: 2px 0 rgba(204,17,0,.40), -1px 0 rgba(60,60,60,.50); opacity: 0.8; }
+  95%       { color: #787878; text-shadow: 0 0 4px rgba(204,17,0,.22); opacity: 1; }
+}
+
+/* ── App: Hiss presence — subtle 12s cycle with red distortion flashes ───────── */
+#app { animation: control-hiss 12s ease-in-out infinite; }
+@keyframes control-hiss {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(180,20,0,.22), inset 0 0 28px rgba(180,20,0,.04); }
+  40%      { box-shadow: 0 0 0 1px rgba(204,17,0,.38), inset 0 0 28px rgba(204,17,0,.07); }
+  41%      { box-shadow: 0 0 0 1px rgba(80,80,80,.12), inset 0 0 18px rgba(40,40,40,.03); }
+  42%      { box-shadow: 0 0 0 1px rgba(204,17,0,.32), inset 0 0 25px rgba(204,17,0,.06); }
+  70%      { box-shadow: 0 0 0 1px rgba(160,15,0,.18), inset 0 0 24px rgba(160,15,0,.03); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(3, 3, 3, 0.99); border-top-color: rgba(180, 20, 0, 0.25); }
+#theme-banner::before { content: '▲'; color: #CC1100; font-size: 16px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 300; color: rgba(120, 80, 70, 0.55); }

@@ -1,0 +1,167 @@
+/* ══ HOGWARTS: MARAUDER'S MAP ══════════════════════════════════════════════════
+   I solemnly swear that I am up to no good. Aged parchment, warm candlelight,
+   inked brass — the map shows all, footprints and all.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #060400;
+  --panel-bg:     rgba(10, 7, 2, 0.97);
+  --overlay-bg:   rgba(6, 4, 1, 0.95);
+  --header-bg:    rgba(180, 120, 30, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #B09060;
+  --text-dim:     rgba(160, 128, 80, 0.45);
+
+  --accent-c:     #C89040;   /* aged brass/gold */
+  --accent-m:     #8B2810;   /* deep maroon */
+  --accent-y:     #D4A820;   /* warm parchment gold */
+
+  --border:       rgba(180, 120, 30, 0.22);
+  --border-h:     rgba(200, 144, 50, 0.55);
+
+  --glow-c:       0 0 7px rgba(200,144,64,.60), 0 0 20px rgba(200,144,64,.20);
+  --glow-m:       0 0 7px rgba(139,40,16,.55), 0 0 18px rgba(139,40,16,.18);
+  --glow-y:       0 0 7px rgba(212,168,32,.60), 0 0 20px rgba(212,168,32,.20);
+
+  --pulse-glow:   inset 0 0 20px rgba(180,120,30,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(200,144,50,.10);
+
+  --title-anim:   map-reveal 6s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(180, 120, 30, 0.07);
+  --tile-hover-border: rgba(200, 144, 50, 0.38);
+  --tile-hover-shadow: 0 0 12px rgba(200, 144, 64, 0.20);
+  --tile-active-bg:    rgba(180, 120, 30, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,144,64,.58)) drop-shadow(0 0 14px rgba(200,144,64,.24));
+
+  --btn-hover-bg:   rgba(180, 120, 30, 0.10);
+  --btn-active-bg:  rgba(180, 120, 30, 0.20);
+
+  --drop-hint-border: rgba(180, 120, 30, 0.25);
+  --drop-icon-color:  rgba(200, 144, 50, 0.38);
+  --hint-sub-color:   rgba(140, 100, 50, 0.42);
+
+  --rename-dashed:    rgba(200, 144, 50, 0.42);
+  --rename-input-bg:  rgba(180, 120, 30, 0.07);
+
+  --edit-bar-bg:          rgba(139, 40, 16, 0.07);
+  --edit-bar-border:      rgba(139, 40, 16, 0.40);
+  --edit-label-color:     #8B2810;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #8B2810;
+  --btn-done-border:      rgba(139, 40, 16, 0.42);
+  --btn-done-hover-bg:    rgba(139, 40, 16, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(200, 144, 50, 0.40);
+
+  --update-bg:             rgba(212, 168, 32, 0.06);
+  --update-border:         rgba(212, 168, 32, 0.38);
+  --update-color:          #D4A820;
+  --update-btn-border:     rgba(212, 168, 32, 0.35);
+  --update-btn-hover-bg:   rgba(212, 168, 32, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #8B2810;
+  --btn-close-border:     rgba(139, 40, 16, 0.38);
+  --btn-close-hover-bg:   rgba(139, 40, 16, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(180, 120, 30, 0.07);
+  --picker-item-hover-bg:  rgba(180, 120, 30, 0.08);
+  --picker-item-active-bg: rgba(180, 120, 30, 0.15);
+  --picker-placeholder-bg: rgba(180, 120, 30, 0.07);
+
+  --skin-btn-active-bg:    rgba(180, 120, 30, 0.16);
+  --remove-btn-bg:         rgba(139, 40, 16, 0.90);
+  --remove-btn-border:     #8B2810;
+}
+
+/* ── Parchment grain + ink line texture + warm candlelight vignette ──────────── */
+#app::after {
+  background:
+    /* parchment noise */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.7 0 0 0 0 0.5 0 0 0 0 0.2 0 0 0 9 -6'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+    /* map ink horizontal lines — aged manuscript feel */
+    repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 29px,
+      rgba(160, 100, 20, 0.025) 29px, rgba(160, 100, 20, 0.025) 30px
+    ),
+    /* warm candlelight vignette */
+    radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(4, 2, 0, 0.72) 100%),
+    /* top candlelight amber */
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(180, 110, 20, 0.07) 0%, transparent 65%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header brass accent bar ─────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #C89040, rgba(180, 120, 30, 0.28));
+  box-shadow: 0 0 10px rgba(200, 144, 64, 0.55), 0 0 24px rgba(200, 144, 64, 0.18);
+}
+
+/* ── Grid: parchment warmth + ink mist ─────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* warm amber glow from top (candles above) */
+    linear-gradient(to bottom, rgba(160, 100, 20, 0.06) 0%, transparent 35%),
+    /* warm pooling at bottom */
+    linear-gradient(to top, rgba(180, 110, 20, 0.06) 0%, rgba(150, 90, 15, 0.03) 20%, transparent 50%),
+    /* side darkness like a candlelit room */
+    radial-gradient(ellipse 40% 100% at 0% 50%, rgba(3, 2, 0, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 100% at 100% 50%, rgba(3, 2, 0, 0.14) 0%, transparent 60%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'HOGWARTS  //  MARAUDER\'S MAP  //  MISCHIEF MANAGED';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 144, 64, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'MARAUDER\'S\AMAP\A\AI SOLEMNLY\ASWEAR\AI AM UP\ATO NO GOOD\A\AMISCHIEF\AMANAGED';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 13px; line-height: 1.7; text-align: right;
+  color: rgba(180, 120, 40, 0.12); white-space: pre;
+  animation: map-breathe 8s ease-in-out infinite;
+}
+
+@keyframes map-breathe {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1.0; }
+}
+
+#edit-bar::after {
+  content: 'ALOHOMORA  —  AUTHORIZED ACCESS';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(139, 40, 16, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+
+/* ── Title animation: map ink reveal shimmer ─────────────────────────────────── */
+@keyframes map-reveal {
+  0%, 100% { text-shadow: 0 0 7px rgba(200,144,64,.55), 0 0 20px rgba(200,144,64,.20); color: #C89040; }
+  40%       { text-shadow: 0 0 12px rgba(220,168,80,.80), 0 0 30px rgba(200,144,64,.38); color: #D8A850; }
+  70%       { text-shadow: 0 0 6px rgba(180,110,30,.50), 0 0 16px rgba(139,40,16,.22); color: #B8803A; }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(7, 5, 1, 0.97); border-top-color: rgba(180, 120, 30, 0.22); }
+#theme-banner::before { content: '⊛'; color: #C89040; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(180, 120, 40, 0.60); }

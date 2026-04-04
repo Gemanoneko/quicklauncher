@@ -1,0 +1,188 @@
+/* ══ PERSONA 5 ════════════════════════════════════════════════════════════════
+   Phantom Thieves of Hearts. Bold. Loud. Rebellious. The Metaverse bleeds
+   into reality — aggressive red on pure black, electric and unapologetic.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #090000;
+  --panel-bg:     rgba(12, 0, 0, 0.98);
+  --overlay-bg:   rgba(9, 0, 0, 0.96);
+  --header-bg:    rgba(255, 16, 32, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #C8C8C8;
+  --text-dim:     rgba(160, 160, 160, 0.45);
+
+  --accent-c:     #FF1020;   /* Phantom Red */
+  --accent-m:     #E0E0E0;   /* high contrast white */
+  --accent-y:     #FFCC00;   /* electric yellow */
+
+  --border:       rgba(220, 0, 20, 0.22);
+  --border-h:     rgba(255, 16, 32, 0.60);
+
+  --glow-c:       0 0 8px rgba(255,16,32,.80), 0 0 24px rgba(255,16,32,.30);
+  --glow-m:       0 0 8px rgba(224,224,224,.65), 0 0 24px rgba(224,224,224,.20);
+  --glow-y:       0 0 8px rgba(255,204,0,.75), 0 0 24px rgba(255,204,0,.25);
+
+  --pulse-glow:   inset 0 0 24px rgba(255,16,32,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(255,16,32,.12);
+
+  --title-anim:   phantom-strike 3s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(255, 16, 32, 0.08);
+  --tile-hover-border: rgba(255, 16, 32, 0.50);
+  --tile-hover-shadow: 0 0 14px rgba(255, 16, 32, 0.30);
+  --tile-active-bg:    rgba(255, 16, 32, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(255,16,32,.75)) drop-shadow(0 0 14px rgba(255,16,32,.30));
+
+  --btn-hover-bg:   rgba(255, 16, 32, 0.12);
+  --btn-active-bg:  rgba(255, 16, 32, 0.22);
+
+  --drop-hint-border: rgba(255, 16, 32, 0.30);
+  --drop-icon-color:  rgba(255, 16, 32, 0.45);
+  --hint-sub-color:   rgba(180, 180, 180, 0.38);
+
+  --rename-dashed:    rgba(255, 16, 32, 0.45);
+  --rename-input-bg:  rgba(255, 16, 32, 0.07);
+
+  --edit-bar-bg:          rgba(224, 224, 224, 0.05);
+  --edit-bar-border:      rgba(224, 224, 224, 0.35);
+  --edit-label-color:     #E0E0E0;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #E0E0E0;
+  --btn-done-border:      rgba(224, 224, 224, 0.40);
+  --btn-done-hover-bg:    rgba(224, 224, 224, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(255, 16, 32, 0.48);
+
+  --update-bg:             rgba(255, 204, 0, 0.06);
+  --update-border:         rgba(255, 204, 0, 0.38);
+  --update-color:          #FFCC00;
+  --update-btn-border:     rgba(255, 204, 0, 0.32);
+  --update-btn-hover-bg:   rgba(255, 204, 0, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #FF1020;
+  --btn-close-border:     rgba(255, 16, 32, 0.45);
+  --btn-close-hover-bg:   rgba(255, 16, 32, 0.12);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(255, 16, 32, 0.07);
+  --picker-item-hover-bg:  rgba(255, 16, 32, 0.08);
+  --picker-item-active-bg: rgba(255, 16, 32, 0.16);
+  --picker-placeholder-bg: rgba(255, 16, 32, 0.07);
+
+  --skin-btn-active-bg:    rgba(255, 16, 32, 0.18);
+  --remove-btn-bg:         rgba(224, 224, 224, 0.90);
+  --remove-btn-border:     #E0E0E0;
+}
+
+/* ── Diagonal speed lines + dark vignette + red corner bleeds ───────────────── */
+#app::after {
+  background:
+    /* aggressive diagonal speed lines */
+    repeating-linear-gradient(
+      110deg,
+      transparent 0px, transparent 5px,
+      rgba(255, 16, 32, 0.022) 5px, rgba(255, 16, 32, 0.022) 6px,
+      transparent 6px, transparent 38px
+    ),
+    /* secondary fine lines */
+    repeating-linear-gradient(
+      110deg,
+      transparent 0px, transparent 14px,
+      rgba(255, 255, 255, 0.008) 14px, rgba(255, 255, 255, 0.008) 15px,
+      transparent 15px, transparent 50px
+    ),
+    /* heavy dark vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 30%, rgba(5, 0, 0, 0.82) 100%),
+    /* red corner bleeds */
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(200, 0, 16, 0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(200, 0, 16, 0.07) 0%, transparent 60%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── App: aggressive border pulse ───────────────────────────────────────────── */
+#app { animation: phantom-border 4s steps(1) infinite; }
+@keyframes phantom-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(220,0,20,.40), inset 0 0 20px rgba(220,0,20,.06); }
+  20%      { box-shadow: 0 0 0 1px rgba(255,16,32,.80), inset 0 0 28px rgba(255,16,32,.10); }
+  21%      { box-shadow: 0 0 0 1px rgba(220,0,20,.15), inset 0 0 10px rgba(220,0,20,.02); }
+  22%      { box-shadow: 0 0 0 1px rgba(255,16,32,.65), inset 0 0 22px rgba(255,16,32,.08); }
+  60%      { box-shadow: 0 0 0 1px rgba(220,0,20,.35), inset 0 0 18px rgba(220,0,20,.05); }
+  80%      { box-shadow: 0 0 0 2px rgba(255,204,0,.15), inset 0 0 16px rgba(255,16,32,.04); }
+}
+
+/* ── Header pure red bar with strong glow ───────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #FF1020, rgba(200, 0, 16, 0.28));
+  box-shadow: 0 0 12px rgba(255, 16, 32, 0.80), 0 0 32px rgba(255, 16, 32, 0.30);
+}
+
+/* ── Grid: bold horizontal Metaverse bars + red seep ───────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* bold horizontal energy bars from top */
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 16, 32, 0.030) 0px, rgba(255, 16, 32, 0.030) 1px,
+      transparent 1px, transparent 28px
+    ),
+    /* red seep from bottom */
+    linear-gradient(to top, rgba(200, 0, 16, 0.10) 0%, rgba(180, 0, 12, 0.04) 20%, transparent 50%),
+    /* subtle top energy */
+    linear-gradient(to bottom, rgba(255, 16, 32, 0.05) 0%, transparent 25%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'PHANTOM THIEVES  //  METAVERSE  //  STEAL THE TREASURE';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(255, 16, 32, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'PHANTOM\ATHIEVES\AOF HEARTS\A\AAWAKENING\A\ASTEAL\ATHEIR\AHEART\A\AHEED THE\ACALL';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 12px; letter-spacing: 3px; line-height: 1.7; text-align: right;
+  color: rgba(200, 0, 16, 0.11); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'HEIST MODE ENGAGED — CALLING CARD DELIVERED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 8px; letter-spacing: 2px; color: rgba(255, 16, 32, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 6px; }
+
+/* ── Title animation: phantom-strike ────────────────────────────────────────── */
+@keyframes phantom-strike {
+  0%, 100%  { text-shadow: 0 0 8px rgba(255,16,32,.75), 0 0 24px rgba(255,16,32,.28); opacity: 1; }
+  70%       { text-shadow: 0 0 8px rgba(255,16,32,.75), 0 0 24px rgba(255,16,32,.28); opacity: 1; }
+  72%       { text-shadow: 4px 0 rgba(255,16,32,.9), -4px 0 rgba(224,224,224,.7), 0 0 32px rgba(255,16,32,.60); opacity: 0.85; }
+  73%       { text-shadow: -3px 0 rgba(255,204,0,.8), 3px 0 rgba(255,16,32,.9); opacity: 1; }
+  74%       { text-shadow: 0 0 14px rgba(255,255,255,.90), 0 0 40px rgba(255,16,32,.55); }
+  75%       { text-shadow: 0 0 8px rgba(255,16,32,.75), 0 0 24px rgba(255,16,32,.28); opacity: 1; }
+  90%       { text-shadow: 0 0 8px rgba(255,16,32,.75), 0 0 24px rgba(255,16,32,.28); opacity: 1; }
+  91%       { opacity: 0.3; text-shadow: none; }
+  92%       { opacity: 1; text-shadow: 0 0 10px rgba(255,16,32,.90), 0 0 28px rgba(255,16,32,.40); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(9, 0, 0, 0.98); border-top-color: rgba(220, 0, 20, 0.28); }
+#theme-banner::before { content: '♠'; color: #FF1020; font-size: 22px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 2px; color: rgba(220, 16, 32, 0.60); }

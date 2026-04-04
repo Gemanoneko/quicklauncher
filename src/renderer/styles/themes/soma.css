@@ -1,0 +1,183 @@
+/* ══ SOMA ══════════════════════════════════════════════════════════════════════
+   PATHOS-II. Deep sea. 2104. The WAU wants to help you. Consciousness transfer
+   protocol active. Submarine hull. Abyssal darkness. SCAN complete.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #020608;
+  --panel-bg:     rgba(2, 6, 10, 0.98);
+  --overlay-bg:   rgba(2, 6, 8, 0.96);
+  --header-bg:    rgba(0, 138, 154, 0.04);
+
+  --font:         'Segoe UI', 'Consolas', monospace;
+  --text:         #607888;
+  --text-dim:     rgba(70, 100, 115, 0.45);
+
+  --accent-c:     #008A9A;   /* deep-sea teal/cyan */
+  --accent-m:     #0A5A70;   /* abyssal dark teal */
+  --accent-y:     #607080;   /* industrial grey-blue */
+
+  --border:       rgba(0, 120, 140, 0.22);
+  --border-h:     rgba(0, 150, 175, 0.50);
+
+  --glow-c:       0 0 7px rgba(0,138,154,.60), 0 0 22px rgba(0,138,154,.20);
+  --glow-m:       0 0 7px rgba(10,90,112,.58), 0 0 20px rgba(10,90,112,.18);
+  --glow-y:       0 0 6px rgba(96,112,128,.48), 0 0 18px rgba(96,112,128,.16);
+
+  --pulse-glow:   inset 0 0 22px rgba(0,138,154,.06);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 3px,
+                    rgba(0, 120, 140, 0.032) 3px, rgba(0, 120, 140, 0.032) 4px
+                  );
+  --drag-over-glow: inset 0 0 22px rgba(0,138,154,.10);
+
+  --title-anim:   wau-scan 6s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(0, 120, 140, 0.08);
+  --tile-hover-border: rgba(0, 150, 175, 0.42);
+  --tile-hover-shadow: 0 0 12px rgba(0, 138, 154, 0.22);
+  --tile-active-bg:    rgba(0, 120, 140, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(0,138,154,.58)) drop-shadow(0 0 12px rgba(0,138,154,.22));
+
+  --btn-hover-bg:   rgba(0, 120, 140, 0.10);
+  --btn-active-bg:  rgba(0, 120, 140, 0.20);
+
+  --drop-hint-border: rgba(0, 120, 140, 0.26);
+  --drop-icon-color:  rgba(0, 138, 154, 0.36);
+  --hint-sub-color:   rgba(70, 105, 120, 0.36);
+
+  --rename-dashed:    rgba(0, 138, 154, 0.38);
+  --rename-input-bg:  rgba(0, 120, 140, 0.07);
+
+  --edit-bar-bg:          rgba(10, 90, 112, 0.07);
+  --edit-bar-border:      rgba(10, 90, 112, 0.40);
+  --edit-label-color:     #0A5A70;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #008A9A;
+  --btn-done-border:      rgba(0, 138, 154, 0.42);
+  --btn-done-hover-bg:    rgba(0, 138, 154, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(0, 120, 140, 0.44);
+
+  --update-bg:             rgba(96, 112, 128, 0.07);
+  --update-border:         rgba(96, 112, 128, 0.35);
+  --update-color:          #607080;
+  --update-btn-border:     rgba(96, 112, 128, 0.28);
+  --update-btn-hover-bg:   rgba(96, 112, 128, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #008A9A;
+  --btn-close-border:     rgba(0, 138, 154, 0.40);
+  --btn-close-hover-bg:   rgba(0, 138, 154, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(0, 120, 140, 0.07);
+  --picker-item-hover-bg:  rgba(0, 120, 140, 0.08);
+  --picker-item-active-bg: rgba(0, 120, 140, 0.16);
+  --picker-placeholder-bg: rgba(0, 120, 140, 0.07);
+
+  --skin-btn-active-bg:    rgba(0, 120, 140, 0.17);
+  --remove-btn-bg:         rgba(10, 90, 112, 0.90);
+  --remove-btn-border:     #0A5A70;
+}
+
+/* ── Heavy ocean noise + water-pressure scan lines + deep teal vignette ─────── */
+#app::after {
+  background:
+    /* dark ocean noise texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.2 0 0 0 0  0.5 0 0 0 0.015  0.6 0 0 0 0.025  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* horizontal water-pressure scan bands */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 18px,
+      rgba(0, 120, 140, 0.018) 18px, rgba(0, 120, 140, 0.018) 19px,
+      transparent 19px, transparent 42px
+    ),
+    /* deep ocean vignette — darkness from below */
+    radial-gradient(ellipse 95% 85% at 50% 60%, transparent 30%, rgba(1, 3, 5, 0.88) 100%),
+    /* cold teal ambient top */
+    radial-gradient(ellipse 80% 28% at 50% 0%, rgba(0, 80, 100, 0.06) 0%, transparent 65%),
+    /* abyssal bottom dark */
+    radial-gradient(ellipse 100% 35% at 50% 100%, rgba(0, 2, 4, 0.35) 0%, transparent 70%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header deep teal bar ───────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #008A9A, rgba(0, 100, 120, 0.25));
+  box-shadow: 0 0 10px rgba(0, 138, 154, 0.55), 0 0 28px rgba(0, 138, 154, 0.18);
+}
+
+/* ── Grid: submarine hull horizontal panels + abyssal darkness + teal terminal ─ */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* submarine hull horizontal panel lines */
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 100, 120, 0.022) 0px, rgba(0, 100, 120, 0.022) 1px,
+      transparent 1px, transparent 36px
+    ),
+    /* teal terminal glow at top */
+    linear-gradient(to bottom, rgba(0, 138, 154, 0.06) 0%, transparent 28%),
+    /* deep abyssal darkness at edges */
+    radial-gradient(ellipse 38% 100% at 0% 50%, rgba(1, 3, 5, 0.20) 0%, transparent 65%),
+    radial-gradient(ellipse 38% 100% at 100% 50%, rgba(1, 3, 5, 0.20) 0%, transparent 65%),
+    /* depth pressure from bottom */
+    linear-gradient(to top, rgba(0, 20, 30, 0.12) 0%, transparent 40%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'PATHOS-II  //  DEEP SEA STATION  //  WAU SYSTEMS ONLINE';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 138, 154, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'PATHOS-II\A\ASCAN\ACOMPLETE\A\ATHE WAU\AWANTS\ATO HELP\A\ADEEP SEA\ASTATION\ATIHN ALPHA';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Consolas', monospace;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(0, 120, 140, 0.11); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'CONSCIOUSNESS SCAN IN PROGRESS — DO NOT DISCONNECT';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8px; letter-spacing: 2px; color: rgba(0, 138, 154, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Consolas', monospace; letter-spacing: 5px; }
+
+/* ── Title animation: wau-scan ──────────────────────────────────────────────── */
+@keyframes wau-scan {
+  0%, 100%  { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); opacity: 1; }
+  40%       { text-shadow: 0 0 9px rgba(0,160,180,.65), 0 0 28px rgba(0,138,154,.24); opacity: 1; }
+  /* WAU corruption warning flicker */
+  70%       { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); opacity: 1; }
+  72%       { opacity: 0.45; text-shadow: 0 0 4px rgba(0,138,154,.30); }
+  73%       { opacity: 1; text-shadow: 0 0 12px rgba(0,200,220,.80), 0 0 34px rgba(0,138,154,.40); }
+  74%       { opacity: 0.70; }
+  75%       { opacity: 1; text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); }
+  88%       { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); opacity: 1; }
+  90%       { text-shadow: 0 0 10px rgba(0,180,200,.70), 0 0 30px rgba(0,138,154,.30); }
+  92%       { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(2, 5, 8, 0.98); border-top-color: rgba(0, 120, 140, 0.26); }
+#theme-banner::before { content: '≋'; color: #008A9A; font-size: 20px; }
+#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(0, 130, 148, 0.58); }

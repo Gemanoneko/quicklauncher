@@ -1,0 +1,175 @@
+/* ══ MORDOR ═══════════════════════════════════════════════════════════════════
+   One does not simply walk into Mordor. Ash plains, iron ramparts, and the
+   Eye of Sauron above Barad-dûr. Cracked volcanic ember on blackened steel.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #060300;
+  --panel-bg:     rgba(10, 5, 1, 0.98);
+  --overlay-bg:   rgba(6, 3, 0, 0.96);
+  --header-bg:    rgba(180, 60, 0, 0.04);
+
+  --font:         'Segoe UI', Georgia, serif;
+  --text:         #806040;
+  --text-dim:     rgba(110, 80, 48, 0.45);
+
+  --accent-c:     #CC4800;   /* volcanic ember */
+  --accent-m:     #880000;   /* lava red */
+  --accent-y:     #604020;   /* burnt iron */
+
+  --border:       rgba(160, 55, 0, 0.25);
+  --border-h:     rgba(200, 70, 0, 0.55);
+
+  --glow-c:       0 0 8px rgba(204,72,0,.65), 0 0 22px rgba(204,72,0,.22);
+  --glow-m:       0 0 7px rgba(136,0,0,.60), 0 0 20px rgba(136,0,0,.20);
+  --glow-y:       0 0 6px rgba(96,64,32,.50), 0 0 16px rgba(96,64,32,.16);
+
+  --pulse-glow:   inset 0 0 24px rgba(160,55,0,.08);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 4px,
+                    rgba(140, 40, 0, 0.025) 4px, rgba(140, 40, 0, 0.025) 5px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(204,72,0,.12);
+
+  --title-anim:   eye-of-sauron 5s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(160, 55, 0, 0.08);
+  --tile-hover-border: rgba(200, 70, 0, 0.42);
+  --tile-hover-shadow: 0 0 14px rgba(204, 72, 0, 0.28);
+  --tile-active-bg:    rgba(160, 55, 0, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(204,72,0,.65)) drop-shadow(0 0 14px rgba(204,72,0,.28));
+
+  --btn-hover-bg:   rgba(160, 55, 0, 0.12);
+  --btn-active-bg:  rgba(160, 55, 0, 0.22);
+
+  --drop-hint-border: rgba(160, 55, 0, 0.28);
+  --drop-icon-color:  rgba(204, 72, 0, 0.40);
+  --hint-sub-color:   rgba(120, 70, 30, 0.42);
+
+  --rename-dashed:    rgba(204, 72, 0, 0.42);
+  --rename-input-bg:  rgba(160, 55, 0, 0.08);
+
+  --edit-bar-bg:          rgba(136, 0, 0, 0.08);
+  --edit-bar-border:      rgba(136, 0, 0, 0.45);
+  --edit-label-color:     #880000;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #CC4800;
+  --btn-done-border:      rgba(204, 72, 0, 0.45);
+  --btn-done-hover-bg:    rgba(204, 72, 0, 0.12);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(160, 55, 0, 0.42);
+
+  --update-bg:             rgba(96, 64, 32, 0.06);
+  --update-border:         rgba(96, 64, 32, 0.34);
+  --update-color:          #604020;
+  --update-btn-border:     rgba(96, 64, 32, 0.30);
+  --update-btn-hover-bg:   rgba(96, 64, 32, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #CC4800;
+  --btn-close-border:     rgba(204, 72, 0, 0.42);
+  --btn-close-hover-bg:   rgba(204, 72, 0, 0.12);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(160, 55, 0, 0.08);
+  --picker-item-hover-bg:  rgba(160, 55, 0, 0.09);
+  --picker-item-active-bg: rgba(160, 55, 0, 0.16);
+  --picker-placeholder-bg: rgba(160, 55, 0, 0.08);
+
+  --skin-btn-active-bg:    rgba(160, 55, 0, 0.18);
+  --remove-btn-bg:         rgba(136, 0, 0, 0.90);
+  --remove-btn-border:     #880000;
+}
+
+/* ── Volcanic ash + ember glow + cracked ground ─────────────────────────────── */
+#app::after {
+  background:
+    /* ash grain — volcanic pumice */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E"),
+    /* diagonal fire streaks */
+    repeating-linear-gradient(
+      106deg,
+      transparent 0px, transparent 5px,
+      rgba(180, 55, 0, 0.020) 5px, rgba(180, 55, 0, 0.020) 6px,
+      transparent 6px, transparent 42px
+    ),
+    /* heavy vignette — ash clouds */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 32%, rgba(4, 1, 0, 0.80) 100%),
+    /* ember glow from below — Mount Doom */
+    radial-gradient(ellipse 80% 35% at 50% 100%, rgba(180, 50, 0, 0.12) 0%, transparent 70%),
+    /* Eye of Sauron ambient top */
+    radial-gradient(ellipse 50% 40% at 50% 0%, rgba(160, 40, 0, 0.07) 0%, transparent 65%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header molten ember accent bar ─────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #CC4800, rgba(160, 55, 0, 0.25));
+  box-shadow: 0 0 12px rgba(204, 72, 0, 0.65), 0 0 28px rgba(204, 72, 0, 0.22);
+}
+
+/* ── Grid: ash plain + ember seep ───────────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* ash from top */
+    linear-gradient(to bottom, rgba(140, 40, 0, 0.07) 0%, transparent 30%),
+    /* lava seep from bottom */
+    linear-gradient(to top, rgba(180, 50, 0, 0.10) 0%, rgba(140, 35, 0, 0.05) 20%, transparent 50%),
+    /* side darkness */
+    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(4, 1, 0, 0.20) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(4, 1, 0, 0.20) 0%, transparent 60%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'MORDOR  //  BARAD-DÛR  //  THE EYE IS UPON YOU';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 72, 0, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'MORDOR\A\AONE DOES\ANOT SIMPLY\AWALK\AINTO\AMORDOR\A\ABARAD-DÛR\A\AMOUNT DOOM';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(160, 50, 0, 0.12); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'ASH NAZG DURBATULÛK';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(136, 0, 0, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; letter-spacing: 5px; }
+
+/* ── Title animation: Eye of Sauron glow ────────────────────────────────────── */
+@keyframes eye-of-sauron {
+  0%, 100% { text-shadow: 0 0 8px rgba(204,72,0,.60), 0 0 22px rgba(204,72,0,.22); color: #CC4800; }
+  50%       { text-shadow: 0 0 14px rgba(220,80,0,.90), 0 0 36px rgba(200,60,0,.40); color: #E05000; }
+}
+
+/* ── App: volcanic border pulse ─────────────────────────────────────────────── */
+#app { animation: mordor-border 6s ease-in-out infinite; }
+@keyframes mordor-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(160,55,0,.35), inset 0 0 30px rgba(160,55,0,.06); }
+  50%       { box-shadow: 0 0 0 1px rgba(204,72,0,.60), inset 0 0 40px rgba(180,50,0,.10); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(8, 3, 0, 0.98); border-top-color: rgba(160, 55, 0, 0.25); }
+#theme-banner::before { content: '◈'; color: #CC4800; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; color: rgba(180, 60, 0, 0.60); }

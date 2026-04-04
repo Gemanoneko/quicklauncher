@@ -1,0 +1,195 @@
+/* ══ SCP FOUNDATION ════════════════════════════════════════════════════════════
+   Secure. Contain. Protect. Institutional black and clinical grey.
+   Containment protocols active. Level 4 clearance required.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #030303;
+  --panel-bg:     rgba(5, 5, 5, 0.99);
+  --overlay-bg:   rgba(3, 3, 3, 0.97);
+  --header-bg:    rgba(150, 150, 150, 0.03);
+
+  /* ── Typography ── */
+  --font:         'Consolas', monospace;
+
+  /* ── Text ── */
+  --text:         #888888;
+  --text-dim:     rgba(110, 110, 110, 0.45);
+
+  /* ── Accents ── */
+  --accent-c:     #BBBBBB;   /* clinical documentation white-grey */
+  --accent-m:     #CC0000;   /* containment breach red */
+  --accent-y:     #444444;   /* dark grey */
+
+  /* ── Borders ── */
+  --border:       rgba(150, 150, 150, 0.18);
+  --border-h:     rgba(180, 180, 180, 0.45);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 5px rgba(187,187,187,.38), 0 0 14px rgba(187,187,187,.12);
+  --glow-m:       0 0 6px rgba(204,0,0,.55),     0 0 18px rgba(204,0,0,.18);
+  --glow-y:       0 0 4px rgba(68,68,68,.35),    0 0 12px rgba(68,68,68,.10);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 16px rgba(150,150,150,.03);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 3px,
+                    rgba(120, 120, 120, 0.025) 3px, rgba(120, 120, 120, 0.025) 4px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(187,187,187,.06);
+
+  /* ── Title animation ── */
+  --title-anim:   scp-blink 5s steps(1) infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(150, 150, 150, 0.06);
+  --tile-hover-border: rgba(180, 180, 180, 0.30);
+  --tile-hover-shadow: 0 0 8px rgba(187, 187, 187, 0.10);
+  --tile-active-bg:    rgba(150, 150, 150, 0.12);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(187,187,187,.35)) drop-shadow(0 0 8px rgba(150,150,150,.14));
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(150, 150, 150, 0.08);
+  --btn-active-bg:  rgba(150, 150, 150, 0.16);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(150, 150, 150, 0.22);
+  --drop-icon-color:  rgba(187, 187, 187, 0.28);
+  --hint-sub-color:   rgba(120, 120, 120, 0.30);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(187, 187, 187, 0.32);
+  --rename-input-bg:  rgba(150, 150, 150, 0.06);
+
+  /* ── Edit bar (containment breach red) ── */
+  --edit-bar-bg:          rgba(204, 0, 0, 0.06);
+  --edit-bar-border:      rgba(204, 0, 0, 0.32);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(204, 0, 0, 0.38);
+  --btn-done-hover-bg:    rgba(204, 0, 0, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(150, 150, 150, 0.35);
+
+  /* ── Update banner (grey) ── */
+  --update-bg:             rgba(68, 68, 68, 0.07);
+  --update-border:         rgba(68, 68, 68, 0.35);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(68, 68, 68, 0.28);
+  --update-btn-hover-bg:   rgba(68, 68, 68, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(204, 0, 0, 0.35);
+  --btn-close-hover-bg:   rgba(204, 0, 0, 0.09);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(150, 150, 150, 0.06);
+  --picker-item-hover-bg:  rgba(150, 150, 150, 0.07);
+  --picker-item-active-bg: rgba(150, 150, 150, 0.13);
+  --picker-placeholder-bg: rgba(150, 150, 150, 0.07);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(150, 150, 150, 0.15);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(204, 0, 0, 0.88);
+  --remove-btn-border:     var(--accent-m);
+}
+
+/* ── Clinical noise + vignette + containment red corner seep ─────────────────── */
+#app::after {
+  background:
+    /* fine monochrome noise grain — institutional sterility */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E"),
+    /* heavy containment vignette */
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.82) 100%),
+    /* subtle containment red — corner seep, bottom-right breach */
+    radial-gradient(ellipse 45% 35% at 100% 100%, rgba(160, 0, 0, 0.06) 0%, transparent 65%),
+    /* secondary red — top-left */
+    radial-gradient(ellipse 35% 25% at 0% 0%, rgba(140, 0, 0, 0.04) 0%, transparent 60%);
+  background-size: 180px 180px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header clinical grey-white accent bar ───────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #BBBBBB, rgba(140, 140, 140, 0.25));
+  box-shadow: 0 0 6px rgba(187, 187, 187, 0.40), 0 0 16px rgba(150, 150, 150, 0.12);
+}
+
+/* ── Grid: institutional graph paper lines ───────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* horizontal graph lines — very faint */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 39px,
+      rgba(150, 150, 150, 0.020) 39px, rgba(150, 150, 150, 0.020) 40px
+    ),
+    /* vertical graph lines — very faint */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 39px,
+      rgba(150, 150, 150, 0.012) 39px, rgba(150, 150, 150, 0.012) 40px
+    ),
+    /* top institutional fade */
+    linear-gradient(to bottom, rgba(130, 130, 130, 0.03) 0%, transparent 25%),
+    /* bottom containment red bleed */
+    linear-gradient(to top, rgba(150, 0, 0, 0.04) 0%, transparent 30%);
+  background-size: 100% 40px, 40px 100%, 100% 100%, 100% 100%;
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'SCP FOUNDATION  //  CONTAINMENT PROTOCOL  //  LEVEL 4 CLEARANCE';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(150, 150, 150, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'SCP\AFOUNDATION\A\ASECURE\ACONTAIN\APROTECT\A\ACLASS:\AKETER\AEUCLID\ASAFE';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Consolas', monospace;
+  font-size: 11px; line-height: 1.7; text-align: right;
+  color: rgba(130, 130, 130, 0.09); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'UNAUTHORIZED ACCESS — CONTAINMENT BREACH IMMINENT';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(204, 0, 0, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Consolas', monospace; letter-spacing: 6px; }
+
+/* ── Title animation: slow clinical ID blink ─────────────────────────────────── */
+@keyframes scp-blink {
+  0%, 100% { color: #888888; text-shadow: 0 0 5px rgba(187,187,187,.28), 0 0 12px rgba(187,187,187,.08); opacity: 1; }
+  85%       { color: #888888; text-shadow: 0 0 5px rgba(187,187,187,.28), 0 0 12px rgba(187,187,187,.08); opacity: 1; }
+  87%       { color: #BBBBBB; text-shadow: 0 0 8px rgba(187,187,187,.55), 0 0 20px rgba(187,187,187,.18); opacity: 1; }
+  89%       { color: #CC0000; text-shadow: 0 0 6px rgba(204,0,0,.60), 0 0 16px rgba(204,0,0,.22); opacity: 0.85; }
+  91%       { color: #888888; text-shadow: 0 0 4px rgba(187,187,187,.20); opacity: 1; }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(2, 2, 2, 0.99); border-top-color: rgba(150, 150, 150, 0.20); }
+#theme-banner::before { content: '◼'; color: #CC0000; font-size: 18px; }
+#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(130, 130, 130, 0.55); }

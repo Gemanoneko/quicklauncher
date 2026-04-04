@@ -1,0 +1,172 @@
+/* ══ FATAL FRAME ══════════════════════════════════════════════════════════════
+   Project Zero. Spirit Photography. Shrine maidens and Camera Obscura lenses.
+   Old photograph grain, concentric ghost rings, cold shrine night. The Rift.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #030408;
+  --panel-bg:     rgba(3, 4, 10, 0.98);
+  --overlay-bg:   rgba(3, 4, 8, 0.96);
+  --header-bg:    rgba(80, 96, 160, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #8090B0;
+  --text-dim:     rgba(100, 110, 140, 0.45);
+
+  --accent-c:     #5060A0;   /* spirit photography indigo-blue */
+  --accent-m:     #C0A0C0;   /* ectoplasmic silver-violet */
+  --accent-y:     #302840;   /* deep ritual purple */
+
+  --border:       rgba(70, 80, 140, 0.22);
+  --border-h:     rgba(90, 100, 175, 0.50);
+
+  --glow-c:       0 0 7px rgba(80,96,160,.55), 0 0 22px rgba(80,96,160,.18);
+  --glow-m:       0 0 7px rgba(192,160,192,.50), 0 0 20px rgba(192,160,192,.16);
+  --glow-y:       0 0 5px rgba(48,40,64,.48), 0 0 16px rgba(48,40,64,.15);
+
+  --pulse-glow:   inset 0 0 20px rgba(80,96,160,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(80,96,160,.09);
+
+  --title-anim:   spirit-photo 8s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(70, 80, 140, 0.08);
+  --tile-hover-border: rgba(90, 100, 175, 0.42);
+  --tile-hover-shadow: 0 0 12px rgba(80, 96, 160, 0.20);
+  --tile-active-bg:    rgba(70, 80, 140, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(80,96,160,.52)) drop-shadow(0 0 12px rgba(192,160,192,.20));
+
+  --btn-hover-bg:   rgba(70, 80, 140, 0.10);
+  --btn-active-bg:  rgba(70, 80, 140, 0.20);
+
+  --drop-hint-border: rgba(70, 80, 140, 0.26);
+  --drop-icon-color:  rgba(80, 96, 160, 0.35);
+  --hint-sub-color:   rgba(110, 115, 145, 0.35);
+
+  --rename-dashed:    rgba(80, 96, 160, 0.38);
+  --rename-input-bg:  rgba(70, 80, 140, 0.07);
+
+  --edit-bar-bg:          rgba(192, 160, 192, 0.05);
+  --edit-bar-border:      rgba(192, 160, 192, 0.35);
+  --edit-label-color:     #C0A0C0;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #5060A0;
+  --btn-done-border:      rgba(80, 96, 160, 0.40);
+  --btn-done-hover-bg:    rgba(80, 96, 160, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(70, 80, 140, 0.42);
+
+  --update-bg:             rgba(48, 40, 64, 0.08);
+  --update-border:         rgba(48, 40, 64, 0.36);
+  --update-color:          #302840;
+  --update-btn-border:     rgba(48, 40, 64, 0.30);
+  --update-btn-hover-bg:   rgba(48, 40, 64, 0.12);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #5060A0;
+  --btn-close-border:     rgba(80, 96, 160, 0.38);
+  --btn-close-hover-bg:   rgba(80, 96, 160, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(70, 80, 140, 0.07);
+  --picker-item-hover-bg:  rgba(70, 80, 140, 0.08);
+  --picker-item-active-bg: rgba(70, 80, 140, 0.15);
+  --picker-placeholder-bg: rgba(70, 80, 140, 0.07);
+
+  --skin-btn-active-bg:    rgba(70, 80, 140, 0.17);
+  --remove-btn-bg:         rgba(192, 160, 192, 0.88);
+  --remove-btn-border:     #C0A0C0;
+}
+
+/* ── Old photograph grain + concentric spirit rings + heavy shrine vignette ─── */
+#app::after {
+  background:
+    /* old photograph grain — warm tinted */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.5 0 0 0 0.008  0.5 0 0 0 0.010  0.8 0 0 0 0.018  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='190' height='190' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* spirit/ghost concentric ring emanation — outer */
+    radial-gradient(circle 55% at 50% 50%, transparent 40%, rgba(60,70,130,.024) 41%, transparent 44%),
+    /* spirit ring — middle */
+    radial-gradient(circle 38% at 50% 50%, transparent 32%, rgba(60,70,130,.018) 33%, transparent 36%),
+    /* heavy dark shrine vignette */
+    radial-gradient(ellipse 95% 88% at 50% 50%, transparent 28%, rgba(1, 2, 5, 0.90) 100%),
+    /* cold indigo corner hazes */
+    radial-gradient(ellipse 50% 40% at 0% 0%, rgba(40, 50, 110, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(40, 50, 110, 0.05) 0%, transparent 55%);
+  background-size: 190px 190px, auto, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header spirit indigo bar ────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #5060A0, rgba(60, 72, 130, 0.25));
+  box-shadow: 0 0 10px rgba(80, 96, 160, 0.50), 0 0 26px rgba(80, 96, 160, 0.16);
+}
+
+/* ── Grid: shrine lattice — radial ring patterns + cold top haze + indigo depth */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* ghost emanation radial ring patterns */
+    radial-gradient(circle 48% at 50% 55%, transparent 36%, rgba(60,70,130,.018) 37%, transparent 40%),
+    radial-gradient(circle 70% at 50% 55%, transparent 55%, rgba(60,70,130,.012) 56%, transparent 59%),
+    /* cold top haze */
+    linear-gradient(to bottom, rgba(60, 72, 140, 0.06) 0%, transparent 30%),
+    /* indigo side depth */
+    radial-gradient(ellipse 36% 100% at 0% 50%, rgba(1, 2, 5, 0.18) 0%, transparent 62%),
+    radial-gradient(ellipse 36% 100% at 100% 50%, rgba(1, 2, 5, 0.18) 0%, transparent 62%),
+    /* deep shrine bottom shadow */
+    linear-gradient(to top, rgba(10, 8, 20, 0.10) 0%, transparent 40%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'PROJECT ZERO  //  HIMURO MANSION  //  CAMERA OBSCURA READY';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(80, 96, 160, 0.44);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'PROJECT\AZERO\A\ASPIRIT\APHOTOGRAPHY\A\AFATAL\AFRAME\A\ACAMERA\AOBSCURA\A\ATHE RIFT';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(60, 72, 130, 0.09); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'FATAL FRAME — DO NOT LOOK DIRECTLY AT THE SPIRIT';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(80, 96, 160, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+
+/* ── Title animation: spirit-photo ──────────────────────────────────────────── */
+@keyframes spirit-photo {
+  0%, 100%  { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); opacity: 1; }
+  40%       { text-shadow: 0 0 9px rgba(90,108,175,.60), 0 0 28px rgba(80,96,160,.22); }
+  /* camera flash — brief white-out */
+  70%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); opacity: 1; }
+  72%       { text-shadow: 0 0 18px rgba(220,220,255,.95), 0 0 50px rgba(160,170,255,.60); opacity: 1; }
+  73%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); opacity: 0.55; }
+  74%       { opacity: 1; text-shadow: 0 0 10px rgba(192,160,192,.65), 0 0 30px rgba(80,96,160,.28); }
+  75%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); opacity: 1; }
+  /* secondary slow fade */
+  88%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); }
+  94%       { text-shadow: 0 0 8px rgba(100,115,180,.58), 0 0 24px rgba(80,96,160,.22); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(3, 3, 8, 0.98); border-top-color: rgba(70, 80, 140, 0.26); }
+#theme-banner::before { content: '✿'; color: #5060A0; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(72, 88, 150, 0.58); }

@@ -1,0 +1,171 @@
+/* ══ THE WITCHER ══════════════════════════════════════════════════════════════
+   Alchemy, contracts, and the monsters between. Medieval manuscript meets
+   dark fantasy — parchment gold, blood-contract red, Witcher school green.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #050400;
+  --panel-bg:     rgba(8, 6, 0, 0.98);
+  --overlay-bg:   rgba(5, 4, 0, 0.96);
+  --header-bg:    rgba(192, 160, 32, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #A09060;
+  --text-dim:     rgba(140, 120, 70, 0.45);
+
+  --accent-c:     #C0A020;   /* alchemy gold */
+  --accent-m:     #8B3020;   /* blood contract red */
+  --accent-y:     #406020;   /* Witcher school green */
+
+  --border:       rgba(180, 150, 30, 0.22);
+  --border-h:     rgba(192, 160, 32, 0.52);
+
+  --glow-c:       0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20);
+  --glow-m:       0 0 7px rgba(139,48,32,.60), 0 0 20px rgba(139,48,32,.20);
+  --glow-y:       0 0 7px rgba(64,96,32,.55), 0 0 20px rgba(64,96,32,.18);
+
+  --pulse-glow:   inset 0 0 22px rgba(192,160,32,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(192,160,32,.09);
+
+  --title-anim:   witcher-signs 8s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(180, 150, 30, 0.08);
+  --tile-hover-border: rgba(192, 160, 32, 0.42);
+  --tile-hover-shadow: 0 0 12px rgba(192, 160, 32, 0.22);
+  --tile-active-bg:    rgba(180, 150, 30, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(192,160,32,.58)) drop-shadow(0 0 12px rgba(192,160,32,.22));
+
+  --btn-hover-bg:   rgba(180, 150, 30, 0.10);
+  --btn-active-bg:  rgba(180, 150, 30, 0.20);
+
+  --drop-hint-border: rgba(180, 150, 30, 0.28);
+  --drop-icon-color:  rgba(192, 160, 32, 0.38);
+  --hint-sub-color:   rgba(140, 110, 55, 0.38);
+
+  --rename-dashed:    rgba(192, 160, 32, 0.40);
+  --rename-input-bg:  rgba(180, 150, 30, 0.07);
+
+  --edit-bar-bg:          rgba(139, 48, 32, 0.07);
+  --edit-bar-border:      rgba(139, 48, 32, 0.40);
+  --edit-label-color:     #8B3020;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C0A020;
+  --btn-done-border:      rgba(192, 160, 32, 0.42);
+  --btn-done-hover-bg:    rgba(192, 160, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(180, 150, 30, 0.42);
+
+  --update-bg:             rgba(64, 96, 32, 0.06);
+  --update-border:         rgba(64, 96, 32, 0.36);
+  --update-color:          #406020;
+  --update-btn-border:     rgba(64, 96, 32, 0.30);
+  --update-btn-hover-bg:   rgba(64, 96, 32, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #C0A020;
+  --btn-close-border:     rgba(192, 160, 32, 0.40);
+  --btn-close-hover-bg:   rgba(192, 160, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(180, 150, 30, 0.07);
+  --picker-item-hover-bg:  rgba(180, 150, 30, 0.08);
+  --picker-item-active-bg: rgba(180, 150, 30, 0.15);
+  --picker-placeholder-bg: rgba(180, 150, 30, 0.07);
+
+  --skin-btn-active-bg:    rgba(180, 150, 30, 0.17);
+  --remove-btn-bg:         rgba(139, 48, 32, 0.90);
+  --remove-btn-border:     #8B3020;
+}
+
+/* ── Parchment grain + heavy forest vignette + campfire bottom glow ─────────── */
+#app::after {
+  background:
+    /* warm parchment grain texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0.5 0 0 0  0.8 0.5 0 0 0  0.3 0.2 0 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* heavy dark forest vignette */
+    radial-gradient(ellipse 95% 85% at 50% 50%, transparent 30%, rgba(2, 2, 0, 0.84) 100%),
+    /* campfire amber glow from bottom */
+    radial-gradient(ellipse 70% 30% at 50% 100%, rgba(160, 100, 8, 0.07) 0%, transparent 65%),
+    /* cold forest top */
+    radial-gradient(ellipse 80% 25% at 50% 0%, rgba(20, 30, 8, 0.06) 0%, transparent 60%);
+  background-size: 180px 180px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header alchemy gold bar ────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #C0A020, rgba(160, 130, 16, 0.28));
+  box-shadow: 0 0 10px rgba(192, 160, 32, 0.55), 0 0 28px rgba(192, 160, 32, 0.18);
+}
+
+/* ── Grid: scrollwork radial glows + campfire amber + forest edges ───────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* faint radial scrollwork ambient from center */
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(192, 160, 32, 0.025) 0%, transparent 70%),
+    /* campfire amber warmth at bottom */
+    linear-gradient(to top, rgba(160, 100, 8, 0.08) 0%, rgba(140, 90, 6, 0.03) 25%, transparent 55%),
+    /* dark forest left edge */
+    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(2, 2, 0, 0.16) 0%, transparent 60%),
+    /* dark forest right edge */
+    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(2, 2, 0, 0.16) 0%, transparent 60%),
+    /* faint gold top */
+    linear-gradient(to bottom, rgba(192, 160, 32, 0.04) 0%, transparent 22%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'THE WITCHER  //  MONSTER CONTRACT  //  BY ORDER OF THE GUILD';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(192, 160, 32, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE\AWITCHER\A\AMONSTER\ACONTRACT\A\AALCHEMY\ASIGNS\A\AKAER\AMORHEN';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(160, 130, 16, 0.11); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'SIGN CHARGED  —  AARD OR IGNI?';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(192, 160, 32, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+
+/* ── Title animation: witcher-signs ─────────────────────────────────────────── */
+@keyframes witcher-signs {
+  /* Igni — fire orange */
+  0%        { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
+  15%       { text-shadow: 0 0 9px rgba(220,120,20,.70), 0 0 28px rgba(220,100,10,.25); color: #C09040; }
+  /* Aard — silver */
+  33%       { text-shadow: 0 0 7px rgba(180,190,200,.55), 0 0 22px rgba(160,175,185,.18); color: #B0B8C0; }
+  /* Quen — gold */
+  55%       { text-shadow: 0 0 8px rgba(192,160,32,.65), 0 0 26px rgba(192,160,32,.22); color: #C0A020; }
+  75%       { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
+  /* brief sign flash */
+  90%       { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
+  92%       { text-shadow: 0 0 14px rgba(255,200,50,.80), 0 0 36px rgba(192,160,32,.40); }
+  93%       { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
+  100%      { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(5, 4, 0, 0.98); border-top-color: rgba(180, 150, 30, 0.26); }
+#theme-banner::before { content: '⚔'; color: #C0A020; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(180, 148, 28, 0.58); }

@@ -1,0 +1,190 @@
+/* ══ ALAN WAKE ════════════════════════════════════════════════════════════════
+   Bright Falls. Manuscript pages and flashlight warmth against the dark.
+   The Taken are close. Keep the light on — it's the only thing that matters.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #050300;
+  --panel-bg:     rgba(8, 5, 1, 0.98);
+  --overlay-bg:   rgba(5, 3, 0, 0.96);
+  --header-bg:    rgba(232, 184, 48, 0.03);
+
+  /* ── Typography ── */
+  --font:         Georgia, 'Times New Roman', serif;
+
+  /* ── Text ── */
+  --text:         #A09070;
+  --text-dim:     rgba(150, 130, 90, 0.45);
+
+  /* ── Accents ── */
+  --accent-c:     #E8B830;   /* flashlight yellow-gold */
+  --accent-m:     #CC2010;   /* horror red */
+  --accent-y:     #8B7040;   /* aged manuscript gold */
+
+  /* ── Borders ── */
+  --border:       rgba(200, 160, 60, 0.16);
+  --border-h:     rgba(232, 184, 48, 0.45);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 7px rgba(232,184,48,.65), 0 0 22px rgba(232,184,48,.22);
+  --glow-m:       0 0 6px rgba(204,32,16,.60),  0 0 18px rgba(204,32,16,.20);
+  --glow-y:       0 0 5px rgba(139,112,64,.50), 0 0 16px rgba(139,112,64,.16);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 20px rgba(200,160,60,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(232,184,48,.08);
+
+  /* ── Title animation ── */
+  --title-anim:   wake-typewriter 6s steps(1) infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(200, 160, 60, 0.07);
+  --tile-hover-border: rgba(232, 184, 48, 0.32);
+  --tile-hover-shadow: 0 0 12px rgba(232, 184, 48, 0.16);
+  --tile-active-bg:    rgba(200, 160, 60, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(232,184,48,.60)) drop-shadow(0 0 12px rgba(200,160,60,.24));
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(200, 160, 60, 0.09);
+  --btn-active-bg:  rgba(200, 160, 60, 0.18);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(200, 160, 60, 0.22);
+  --drop-icon-color:  rgba(232, 184, 48, 0.30);
+  --hint-sub-color:   rgba(160, 130, 80, 0.35);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(232, 184, 48, 0.38);
+  --rename-input-bg:  rgba(200, 160, 60, 0.07);
+
+  /* ── Edit bar (horror red) ── */
+  --edit-bar-bg:          rgba(204, 32, 16, 0.07);
+  --edit-bar-border:      rgba(204, 32, 16, 0.35);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(204, 32, 16, 0.40);
+  --btn-done-hover-bg:    rgba(204, 32, 16, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(200, 160, 60, 0.38);
+
+  /* ── Update banner (aged gold) ── */
+  --update-bg:             rgba(139, 112, 64, 0.07);
+  --update-border:         rgba(139, 112, 64, 0.35);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(139, 112, 64, 0.30);
+  --update-btn-hover-bg:   rgba(139, 112, 64, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(204, 32, 16, 0.38);
+  --btn-close-hover-bg:   rgba(204, 32, 16, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(200, 160, 60, 0.07);
+  --picker-item-hover-bg:  rgba(200, 160, 60, 0.08);
+  --picker-item-active-bg: rgba(200, 160, 60, 0.14);
+  --picker-placeholder-bg: rgba(200, 160, 60, 0.08);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(200, 160, 60, 0.16);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(204, 32, 16, 0.88);
+  --remove-btn-border:     var(--accent-m);
+}
+
+/* ── Paper grain + warm vignette + flashlight warmth from bottom-left ────────── */
+#app::after {
+  background:
+    /* paper grain texture — warm brown tint */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.6 0.4 0 0 0.04 0.4 0.3 0 0 0.02 0.2 0.1 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+    /* heavy dark vignette */
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 28%, rgba(2, 1, 0, 0.84) 100%),
+    /* flashlight warmth — bottom-left glow */
+    radial-gradient(ellipse 55% 40% at 0% 100%, rgba(180, 130, 30, 0.07) 0%, transparent 65%),
+    /* subtle dark right edge */
+    radial-gradient(ellipse 30% 80% at 100% 50%, rgba(3, 2, 0, 0.18) 0%, transparent 60%);
+  background-size: 220px 220px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header amber-gold accent bar ────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #E8B830, rgba(200, 155, 35, 0.30));
+  box-shadow: 0 0 8px rgba(232, 184, 48, 0.55), 0 0 22px rgba(200, 155, 35, 0.18);
+}
+
+/* ── Grid: manuscript typewriter lines + warm amber top glow ─────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* manuscript horizontal lines — typewriter paper */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 27px,
+      rgba(180, 140, 50, 0.022) 27px, rgba(180, 140, 50, 0.022) 28px
+    ),
+    /* warm amber top glow */
+    linear-gradient(to bottom, rgba(200, 155, 35, 0.06) 0%, transparent 28%),
+    /* darkness from edges */
+    radial-gradient(ellipse 40% 100% at 0% 50%, rgba(2, 1, 0, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 100% at 100% 50%, rgba(2, 1, 0, 0.14) 0%, transparent 60%);
+  background-size: 100% 28px, 100% 100%, 100% 100%, 100% 100%;
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'BRIGHT FALLS  //  MANUSCRIPT PAGE  //  THE DARKNESS IS COMING';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 155, 50, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'ALAN\AWAKE\A\ABRIGHT\AFALLS\A\APAGE\A1 OF\UNKNOWN\A\ATHE\ADARKNESS\ARETURNS';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(160, 120, 45, 0.11); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'WRITER\'S WORKSHOP  —  WORD OF POWER REQUIRED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(204, 32, 16, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+
+/* ── Title animation: typewriter clack / occasional glitch ───────────────────── */
+@keyframes wake-typewriter {
+  0%, 100% { color: #A09070; text-shadow: 0 0 6px rgba(232,184,48,.30), 0 0 16px rgba(232,184,48,.10); opacity: 1; }
+  70%       { color: #A09070; text-shadow: 0 0 6px rgba(232,184,48,.30); opacity: 1; }
+  72%       { color: #E8B830; text-shadow: 0 0 10px rgba(232,184,48,.65), 0 0 28px rgba(232,184,48,.22); opacity: 1; }
+  73%       { color: #A09070; text-shadow: none; opacity: 0.5; }
+  74%       { color: #E8B830; text-shadow: 0 0 8px rgba(232,184,48,.50); opacity: 1; }
+  75%       { color: #A09070; text-shadow: 0 0 6px rgba(232,184,48,.30); opacity: 1; }
+  92%       { color: #A09070; opacity: 1; }
+  93%       { color: #CC2010; text-shadow: 0 0 6px rgba(204,32,16,.50); opacity: 0.7; }
+  94%       { color: #A09070; text-shadow: 0 0 6px rgba(232,184,48,.30); opacity: 1; }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(4, 2, 0, 0.98); border-top-color: rgba(200, 160, 60, 0.20); }
+#theme-banner::before { content: '✦'; color: #E8B830; font-size: 18px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(180, 145, 55, 0.58); }

@@ -1,0 +1,195 @@
+/* ══ LOVECRAFTIAN ═══════════════════════════════════════════════════════════════
+   The forbidden archive. Providence. Ink on aged parchment and the cold
+   geometry of things that should not be. Do not read aloud. Ph'nglui mglw'nafh.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #030408;
+  --panel-bg:     rgba(4, 5, 12, 0.99);
+  --overlay-bg:   rgba(3, 4, 8, 0.97);
+  --header-bg:    rgba(64, 80, 160, 0.03);
+
+  /* ── Typography ── */
+  --font:         Georgia, 'Times New Roman', serif;
+
+  /* ── Text ── */
+  --text:         #7080A0;
+  --text-dim:     rgba(90, 100, 130, 0.45);
+
+  /* ── Accents ── */
+  --accent-c:     #4050A0;   /* deep archive blue */
+  --accent-m:     #806020;   /* aged document gold */
+  --accent-y:     #302040;   /* cosmic violet-black */
+
+  /* ── Borders ── */
+  --border:       rgba(64, 80, 160, 0.18);
+  --border-h:     rgba(80, 100, 180, 0.42);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(64,80,160,.50),  0 0 18px rgba(64,80,160,.16);
+  --glow-m:       0 0 6px rgba(128,96,32,.50),  0 0 18px rgba(128,96,32,.16);
+  --glow-y:       0 0 5px rgba(48,32,64,.40),   0 0 14px rgba(48,32,64,.12);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 18px rgba(50,60,120,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(64,80,160,.07);
+
+  /* ── Title animation ── */
+  --title-anim:   cosmic-madness 9s ease-in-out infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(50, 65, 130, 0.08);
+  --tile-hover-border: rgba(80, 100, 180, 0.32);
+  --tile-hover-shadow: 0 0 10px rgba(64, 80, 160, 0.14);
+  --tile-active-bg:    rgba(50, 65, 130, 0.15);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(64,80,160,.45)) drop-shadow(0 0 10px rgba(50,65,130,.18));
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(50, 65, 130, 0.09);
+  --btn-active-bg:  rgba(50, 65, 130, 0.18);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(64, 80, 160, 0.22);
+  --drop-icon-color:  rgba(80, 100, 180, 0.28);
+  --hint-sub-color:   rgba(90, 100, 130, 0.32);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(64, 80, 160, 0.35);
+  --rename-input-bg:  rgba(50, 65, 130, 0.07);
+
+  /* ── Edit bar (aged gold) ── */
+  --edit-bar-bg:          rgba(128, 96, 32, 0.07);
+  --edit-bar-border:      rgba(128, 96, 32, 0.35);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(128, 96, 32, 0.40);
+  --btn-done-hover-bg:    rgba(128, 96, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(64, 80, 160, 0.38);
+
+  /* ── Update banner (archive blue) ── */
+  --update-bg:             rgba(64, 80, 160, 0.06);
+  --update-border:         rgba(64, 80, 160, 0.32);
+  --update-color:          var(--accent-c);
+  --update-btn-border:     rgba(64, 80, 160, 0.28);
+  --update-btn-hover-bg:   rgba(64, 80, 160, 0.09);
+  --update-btn-hover-glow: var(--glow-c);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(128, 96, 32, 0.35);
+  --btn-close-hover-bg:   rgba(128, 96, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(50, 65, 130, 0.07);
+  --picker-item-hover-bg:  rgba(50, 65, 130, 0.08);
+  --picker-item-active-bg: rgba(50, 65, 130, 0.14);
+  --picker-placeholder-bg: rgba(50, 65, 130, 0.07);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(50, 65, 130, 0.16);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(128, 96, 32, 0.88);
+  --remove-btn-border:     var(--accent-m);
+}
+
+/* ── Aged parchment grain (blue-black tint) + void vignette + cosmic corners ──── */
+#app::after {
+  background:
+    /* aged paper grain — tinted cosmic blue-black */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.76' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.1 0.1 0.3 0 0.01 0.1 0.1 0.3 0 0.01 0.2 0.2 0.5 0 0.02 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E"),
+    /* heavy void vignette */
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 28%, rgba(1, 2, 6, 0.84) 100%),
+    /* cosmic corner emanations — deep blue radial */
+    radial-gradient(ellipse 40% 35% at 0% 0%, rgba(30, 40, 100, 0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 35% at 100% 100%, rgba(25, 35, 90, 0.06) 0%, transparent 65%),
+    /* cosmic void center depth */
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(10, 14, 40, 0.04) 0%, transparent 70%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header deep archive blue accent bar ─────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #4050A0, rgba(50, 65, 130, 0.22));
+  box-shadow: 0 0 6px rgba(64, 80, 160, 0.45), 0 0 18px rgba(50, 65, 130, 0.14);
+}
+
+/* ── Grid: star map — faint concentric forbidden geometry ────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* concentric diagram suggestion — very faint blue circular rings */
+    radial-gradient(circle at 50% 50%, transparent 44px, rgba(50,65,130,.018) 45px, transparent 46px),
+    radial-gradient(circle at 50% 50%, transparent 89px, rgba(50,65,130,.014) 90px, transparent 91px),
+    radial-gradient(circle at 50% 50%, transparent 134px, rgba(50,65,130,.010) 135px, transparent 136px),
+    radial-gradient(circle at 50% 50%, transparent 179px, rgba(50,65,130,.008) 180px, transparent 181px),
+    /* fine star-map grid — very faint */
+    repeating-linear-gradient(0deg,
+      transparent 0px, transparent 59px,
+      rgba(40, 55, 110, 0.014) 59px, rgba(40, 55, 110, 0.014) 60px
+    ),
+    repeating-linear-gradient(90deg,
+      transparent 0px, transparent 59px,
+      rgba(40, 55, 110, 0.010) 59px, rgba(40, 55, 110, 0.010) 60px
+    ),
+    /* deep cosmic ambient */
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(15, 20, 55, 0.05) 0%, transparent 70%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 60px, 60px 100%, 100% 100%;
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'PROVIDENCE  //  R\'LYEH ARCHIVES  //  DO NOT READ ALOUD';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(80, 100, 170, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE CALL\AOF\ACTHULHU\A\APH\'NGLUI\AMGLW\'NAFH\ACTHULHU\AR\'LYEH\A\AWGAH\'NAGL\AFHTAGN';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 11px; line-height: 1.7; text-align: right;
+  color: rgba(50, 65, 130, 0.09); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'NECRONOMICON — AUTHORIZED ACCESS DENIED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(100, 120, 180, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title animation: slow cosmic color swirl + mad glitch ───────────────────── */
+@keyframes cosmic-madness {
+  0%   { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); opacity: 1; }
+  20%  { color: #8090C0; text-shadow: 0 0 8px rgba(80,100,180,.45), 0 0 22px rgba(64,80,160,.16); opacity: 0.95; }
+  40%  { color: #9080A0; text-shadow: 0 0 7px rgba(120,80,140,.40), 0 0 18px rgba(100,60,120,.14); opacity: 0.98; }
+  60%  { color: #6070A0; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 14px rgba(50,65,130,.12); opacity: 1; }
+  78%  { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.35); opacity: 1; }
+  80%  { color: #C0A040; text-shadow: 0 0 4px rgba(192,160,64,.50); opacity: 0.7; transform: skewX(2deg); }
+  81%  { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.38); opacity: 1; transform: skewX(0); }
+  100% { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); opacity: 1; }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(2, 3, 7, 0.99); border-top-color: rgba(64, 80, 160, 0.22); }
+#theme-banner::before { content: '∴'; color: #4050A0; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(80, 100, 160, 0.55); }

@@ -1,0 +1,194 @@
+/* ══ TWIN PEAKS ════════════════════════════════════════════════════════════════
+   The Black Lodge. Red curtains and dark wood. Fire walk with me.
+   The owls are not what they seem. Coffee. Diane. Twenty-five years later.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #050102;
+  --panel-bg:     rgba(8, 2, 3, 0.99);
+  --overlay-bg:   rgba(5, 1, 2, 0.97);
+  --header-bg:    rgba(136, 0, 0, 0.04);
+
+  /* ── Typography ── */
+  --font:         Georgia, 'Times New Roman', serif;
+
+  /* ── Text ── */
+  --text:         #C09070;
+  --text-dim:     rgba(170, 120, 80, 0.45);
+
+  /* ── Accents ── */
+  --accent-c:     #880000;   /* deep curtain red */
+  --accent-m:     #3A1A08;   /* dark mahogany wood */
+  --accent-y:     #D4B860;   /* diner coffee / fluorescent cream */
+
+  /* ── Borders ── */
+  --border:       rgba(120, 20, 10, 0.22);
+  --border-h:     rgba(150, 30, 15, 0.50);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 7px rgba(136,0,0,.60),    0 0 20px rgba(136,0,0,.20);
+  --glow-m:       0 0 5px rgba(58,26,8,.45),    0 0 14px rgba(58,26,8,.14);
+  --glow-y:       0 0 6px rgba(212,184,96,.50), 0 0 18px rgba(212,184,96,.16);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 22px rgba(100,0,0,.07);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 3px,
+                    rgba(60, 10, 5, 0.035) 3px, rgba(60, 10, 5, 0.035) 4px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(136,0,0,.10);
+
+  /* ── Title animation ── */
+  --title-anim:   lodge-pulse 7s ease-in-out infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(110, 10, 5, 0.09);
+  --tile-hover-border: rgba(140, 20, 10, 0.38);
+  --tile-hover-shadow: 0 0 12px rgba(136, 0, 0, 0.18);
+  --tile-active-bg:    rgba(110, 10, 5, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(136,0,0,.52)) drop-shadow(0 0 12px rgba(100,0,0,.20));
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(110, 10, 5, 0.10);
+  --btn-active-bg:  rgba(110, 10, 5, 0.20);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(110, 10, 5, 0.28);
+  --drop-icon-color:  rgba(136, 0, 0, 0.32);
+  --hint-sub-color:   rgba(160, 100, 60, 0.35);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(136, 0, 0, 0.38);
+  --rename-input-bg:  rgba(110, 10, 5, 0.08);
+
+  /* ── Edit bar (dark mahogany) ── */
+  --edit-bar-bg:          rgba(58, 26, 8, 0.10);
+  --edit-bar-border:      rgba(100, 40, 15, 0.40);
+  --edit-label-color:     #D4B860;
+  --edit-label-glow:      var(--glow-y);
+  --btn-done-color:       #D4B860;
+  --btn-done-border:      rgba(212, 184, 96, 0.38);
+  --btn-done-hover-bg:    rgba(212, 184, 96, 0.09);
+  --btn-done-hover-glow:  var(--glow-y);
+  --btn-add-border:       rgba(136, 0, 0, 0.38);
+
+  /* ── Update banner (coffee cream) ── */
+  --update-bg:             rgba(212, 184, 96, 0.06);
+  --update-border:         rgba(212, 184, 96, 0.32);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(212, 184, 96, 0.28);
+  --update-btn-hover-bg:   rgba(212, 184, 96, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(136, 0, 0, 0.38);
+  --btn-close-hover-bg:   rgba(110, 0, 0, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(110, 10, 5, 0.08);
+  --picker-item-hover-bg:  rgba(110, 10, 5, 0.09);
+  --picker-item-active-bg: rgba(110, 10, 5, 0.16);
+  --picker-placeholder-bg: rgba(110, 10, 5, 0.08);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(110, 10, 5, 0.18);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(136, 0, 0, 0.90);
+  --remove-btn-border:     var(--accent-c);
+}
+
+/* ── Heavy film grain + diagonal curtain pattern + deep red-black vignette ───── */
+#app::after {
+  background:
+    /* heavy film grain — 16mm Pacific Northwest cinema */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E"),
+    /* diagonal curtain pattern — faint red chevron */
+    repeating-linear-gradient(
+      -60deg,
+      transparent 0px, transparent 12px,
+      rgba(100, 0, 0, 0.018) 12px, rgba(100, 0, 0, 0.018) 14px,
+      transparent 14px, transparent 26px
+    ),
+    /* heavy red-black vignette */
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 22%, rgba(3, 0, 1, 0.85) 100%),
+    /* curtain warmth from sides */
+    radial-gradient(ellipse 25% 100% at 0% 50%, rgba(80, 0, 0, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 25% 100% at 100% 50%, rgba(80, 0, 0, 0.07) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header deep curtain red accent bar ──────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #880000, rgba(100, 0, 0, 0.22));
+  box-shadow: 0 0 8px rgba(136, 0, 0, 0.55), 0 0 22px rgba(100, 0, 0, 0.18);
+}
+
+/* ── Grid: dark wood panel + warm curtain ambient ────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* warm red ambient from sides — curtains bleed */
+    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(80, 0, 0, 0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(80, 0, 0, 0.08) 0%, transparent 65%),
+    /* dark wood — very dark with warm undertone */
+    linear-gradient(to bottom, rgba(60, 5, 2, 0.06) 0%, rgba(30, 3, 1, 0.08) 100%),
+    /* bottom curtain light */
+    radial-gradient(ellipse 70% 30% at 50% 100%, rgba(80, 0, 0, 0.06) 0%, transparent 65%);
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'TWIN PEAKS  //  BLACK LODGE  //  THE OWLS ARE NOT WHAT THEY SEEM';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(140, 80, 40, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'BLACK\ALODGE\A\AFIRE\AWALK\AWITH ME\A\ATHE OWL\AAWAITS\A\ATWENTY-FIVE\AYEARS\ALATER';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(110, 10, 5, 0.12); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'DIANE, I\'M ENTERING EDIT MODE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 140, 60, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+
+/* ── Title animation: slow deep red pulse + backward-speech flicker ───────────── */
+@keyframes lodge-pulse {
+  0%, 100% { color: #C09070; text-shadow: 0 0 7px rgba(136,0,0,.40), 0 0 20px rgba(136,0,0,.14); opacity: 1; }
+  40%       { color: #C09070; text-shadow: 0 0 10px rgba(136,0,0,.55), 0 0 28px rgba(136,0,0,.20); opacity: 0.95; }
+  70%       { color: #C09070; text-shadow: 0 0 6px rgba(136,0,0,.38); opacity: 1; }
+  88%       { color: #C09070; opacity: 1; }
+  89%       { color: #D4B860; text-shadow: 0 0 6px rgba(212,184,96,.45); opacity: 0.8; transform: scaleX(-1); }
+  90%       { color: #C09070; text-shadow: 0 0 7px rgba(136,0,0,.40); opacity: 1; transform: scaleX(1); }
+  91%       { color: #880000; text-shadow: 0 0 10px rgba(136,0,0,.65); opacity: 0.9; }
+  92%       { color: #C09070; text-shadow: 0 0 7px rgba(136,0,0,.40); opacity: 1; }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(4, 1, 2, 0.99); border-top-color: rgba(110, 10, 5, 0.25); }
+#theme-banner::before { content: '◑'; color: #880000; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(130, 30, 15, 0.58); }

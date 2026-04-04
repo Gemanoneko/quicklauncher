@@ -1,0 +1,163 @@
+/* ══ RIVENDELL ════════════════════════════════════════════════════════════════
+   Imladris. The Last Homely House East of the Sea. Silver-blue moonlight,
+   elven linework, starlight on still water. The most beautiful skin.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #030508;
+  --panel-bg:     rgba(5, 8, 14, 0.97);
+  --overlay-bg:   rgba(3, 5, 10, 0.95);
+  --header-bg:    rgba(80, 110, 170, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #9AAAC8;
+  --text-dim:     rgba(130, 150, 185, 0.45);
+
+  --accent-c:     #6080B8;   /* elven silver-blue */
+  --accent-m:     #C0A840;   /* warm elven gold */
+  --accent-y:     #4060A0;   /* deep starlight blue */
+
+  --border:       rgba(80, 110, 170, 0.22);
+  --border-h:     rgba(100, 138, 205, 0.52);
+
+  --glow-c:       0 0 8px rgba(96,128,184,.60), 0 0 22px rgba(96,128,184,.20);
+  --glow-m:       0 0 8px rgba(192,168,64,.60), 0 0 22px rgba(192,168,64,.20);
+  --glow-y:       0 0 7px rgba(64,96,160,.55), 0 0 20px rgba(64,96,160,.18);
+
+  --pulse-glow:   inset 0 0 22px rgba(80,110,170,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(96,128,184,.10);
+
+  --title-anim:   rivendell-moonlight 7s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(80, 110, 170, 0.07);
+  --tile-hover-border: rgba(100, 138, 205, 0.35);
+  --tile-hover-shadow: 0 0 14px rgba(96, 128, 184, 0.20);
+  --tile-active-bg:    rgba(80, 110, 170, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 7px rgba(96,128,184,.60)) drop-shadow(0 0 16px rgba(96,128,184,.25));
+
+  --btn-hover-bg:   rgba(80, 110, 170, 0.10);
+  --btn-active-bg:  rgba(80, 110, 170, 0.20);
+
+  --drop-hint-border: rgba(80, 110, 170, 0.25);
+  --drop-icon-color:  rgba(96, 128, 184, 0.38);
+  --hint-sub-color:   rgba(100, 130, 170, 0.42);
+
+  --rename-dashed:    rgba(96, 128, 184, 0.40);
+  --rename-input-bg:  rgba(80, 110, 170, 0.07);
+
+  --edit-bar-bg:          rgba(192, 168, 64, 0.07);
+  --edit-bar-border:      rgba(192, 168, 64, 0.38);
+  --edit-label-color:     #C0A840;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C0A840;
+  --btn-done-border:      rgba(192, 168, 64, 0.40);
+  --btn-done-hover-bg:    rgba(192, 168, 64, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(96, 128, 184, 0.40);
+
+  --update-bg:             rgba(64, 96, 160, 0.06);
+  --update-border:         rgba(80, 118, 185, 0.36);
+  --update-color:          #4060A0;
+  --update-btn-border:     rgba(64, 96, 160, 0.32);
+  --update-btn-hover-bg:   rgba(64, 96, 160, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #C0A840;
+  --btn-close-border:     rgba(192, 168, 64, 0.38);
+  --btn-close-hover-bg:   rgba(192, 168, 64, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(80, 110, 170, 0.07);
+  --picker-item-hover-bg:  rgba(80, 110, 170, 0.08);
+  --picker-item-active-bg: rgba(80, 110, 170, 0.15);
+  --picker-placeholder-bg: rgba(80, 110, 170, 0.07);
+
+  --skin-btn-active-bg:    rgba(80, 110, 170, 0.16);
+  --remove-btn-bg:         rgba(192, 168, 64, 0.88);
+  --remove-btn-border:     #C0A840;
+}
+
+/* ── Starfield + elven moonlight + still water reflection ────────────────────── */
+#app::after {
+  background:
+    /* distant star field */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.5 0 0 0 0 0.65 0 0 0 0 1.0 0 0 0 16 -12'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E"),
+    /* moonlit vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 38%, rgba(2, 3, 8, 0.72) 100%),
+    /* elven blue ambient light */
+    radial-gradient(ellipse 70% 55% at 50% 25%, rgba(60, 90, 160, 0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 50% 85%, rgba(80, 100, 150, 0.05) 0%, transparent 60%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header silver-blue elven accent bar ────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #6080B8, rgba(80, 110, 170, 0.28));
+  box-shadow: 0 0 10px rgba(96, 128, 184, 0.55), 0 0 26px rgba(96, 128, 184, 0.20);
+}
+
+/* ── Grid: elven waterfall mist + star reflection ───────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 25%, rgba(60, 90, 160, 0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 80% 75%, rgba(80, 110, 170, 0.05) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(50, 75, 140, 0.03) 0%, transparent 55%),
+    /* elven horizontal archway lines */
+    repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 79px,
+      rgba(80, 110, 170, 0.018) 79px, rgba(80, 110, 170, 0.018) 80px
+    );
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'RIVENDELL  //  IMLADRIS  //  THE LAST HOMELY HOUSE';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(96, 128, 184, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'RIVENDELL\AIMLADRIS\A\AELROND\AHALF-ELVEN\A\ATHE LAST\AHOMELY\AHOUSE\A\ATHE MISTY\AMOUNTAINS';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 13px; line-height: 1.7; text-align: right;
+  color: rgba(80, 110, 170, 0.11); white-space: pre;
+  animation: rivendell-breathe 9s ease-in-out infinite;
+}
+
+@keyframes rivendell-breathe {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1.0; }
+}
+
+#edit-bar::after {
+  content: 'THE COUNCIL OF ELROND  —  FELLOWSHIP ASSEMBLED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(192, 168, 64, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title animation: moonlight on still water ──────────────────────────────── */
+@keyframes rivendell-moonlight {
+  0%, 100% { text-shadow: 0 0 8px rgba(96,128,184,.55), 0 0 22px rgba(96,128,184,.20); color: #6080B8; }
+  35%       { text-shadow: 0 0 14px rgba(130,160,220,.85), 0 0 35px rgba(96,128,184,.40); color: #80A0D8; }
+  70%       { text-shadow: 0 0 10px rgba(192,168,64,.55), 0 0 24px rgba(80,110,170,.22); color: #9090C0; }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(3, 4, 9, 0.97); border-top-color: rgba(80, 110, 170, 0.22); }
+#theme-banner::before { content: '✧'; color: #6080B8; font-size: 22px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(80, 120, 180, 0.60); }
