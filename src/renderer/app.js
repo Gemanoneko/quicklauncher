@@ -7,6 +7,8 @@ let apps = [];
 let settings = {};
 let editMode = false;
 let installedApps = [];
+let reorderState = null;   // active drag-to-reorder operation
+let suppressNextClick = false; // prevent launch-on-click after a drag
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
@@ -15,6 +17,7 @@ async function init() {
   applySettings();
   renderGrid();
   setupDragDrop();
+  setupTileReorder();
   setupContextMenu();
   setupUpdateListeners();
   document.getElementById('app-version').textContent = `v${APP_VERSION}`;
@@ -107,7 +110,10 @@ function createAppTile(appItem) {
   tile.appendChild(label);
 
   if (!editMode) {
-    tile.addEventListener('click', () => launchApp(appItem.path));
+    tile.addEventListener('click', () => {
+      if (suppressNextClick) return;
+      launchApp(appItem.path);
+    });
   }
 
   return tile;
@@ -249,6 +255,123 @@ function setupDragDrop() {
       console.error('Drop failed:', err);
     }
   });
+}
+
+// ── Tile drag-to-reorder ──────────────────────────────────────────────────────
+function setupTileReorder() {
+  const grid = document.getElementById('app-grid');
+
+  grid.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    const tile = e.target.closest('.app-tile');
+    if (!tile) return;
+    // Let remove button and rename label handle their own clicks
+    if (e.target.closest('.btn-remove') || e.target.closest('.renameable') || e.target.closest('.rename-input')) return;
+
+    e.preventDefault(); // prevent text selection
+
+    reorderState = {
+      srcEl: tile,
+      ghost: null,
+      startX: e.clientX,
+      startY: e.clientY,
+      dragging: false
+    };
+  });
+
+  document.addEventListener('mousemove', handleReorderMove);
+  document.addEventListener('mouseup', handleReorderUp);
+  window.addEventListener('blur', cancelReorder);
+}
+
+function handleReorderMove(e) {
+  if (!reorderState) return;
+
+  if (!reorderState.dragging) {
+    if (Math.hypot(e.clientX - reorderState.startX, e.clientY - reorderState.startY) < 6) return;
+
+    // Cross the threshold — begin drag
+    reorderState.dragging = true;
+    document.body.classList.add('ql-dragging');
+
+    const src = reorderState.srcEl;
+    const rect = src.getBoundingClientRect();
+
+    // Build ghost from live tile
+    const ghost = src.cloneNode(true);
+    ghost.removeAttribute('data-id');
+    ghost.className = 'app-tile drag-ghost';
+    ghost.style.width  = rect.width  + 'px';
+    ghost.style.height = rect.height + 'px';
+    ghost.style.left   = rect.left   + 'px';
+    ghost.style.top    = rect.top    + 'px';
+    document.body.appendChild(ghost);
+    reorderState.ghost = ghost;
+
+    src.classList.add('tile-drag-source');
+  }
+
+  // Move ghost to cursor (centered)
+  const g = reorderState.ghost;
+  g.style.left = (e.clientX - parseFloat(g.style.width)  / 2) + 'px';
+  g.style.top  = (e.clientY - parseFloat(g.style.height) / 2) + 'px';
+
+  // Find which tile the cursor is over (ghost has pointer-events:none)
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const overTile = el?.closest('.app-tile');
+  const grid = document.getElementById('app-grid');
+
+  if (overTile && grid.contains(overTile) && overTile !== reorderState.srcEl) {
+    const all = [...grid.querySelectorAll('.app-tile')];
+    const srcPos  = all.indexOf(reorderState.srcEl);
+    const overPos = all.indexOf(overTile);
+    if (srcPos !== overPos) {
+      // Shift: move the source placeholder to its new slot
+      if (overPos > srcPos) overTile.after(reorderState.srcEl);
+      else                  overTile.before(reorderState.srcEl);
+    }
+  }
+}
+
+async function handleReorderUp() {
+  if (!reorderState) return;
+  const state = reorderState;
+  reorderState = null;
+
+  document.body.classList.remove('ql-dragging');
+
+  if (!state.dragging) return;
+
+  // Kill ghost, restore tile
+  state.ghost?.remove();
+  state.srcEl.classList.remove('tile-drag-source');
+
+  // Suppress the click that fires immediately after mouseup
+  suppressNextClick = true;
+  setTimeout(() => { suppressNextClick = false; }, 50);
+
+  // Derive new order from DOM positions
+  const grid = document.getElementById('app-grid');
+  const allTiles = [...grid.querySelectorAll('.app-tile')];
+  const newIndex = allTiles.indexOf(state.srcEl);
+  const oldIndex = apps.findIndex(a => a.id === state.srcEl.dataset.id);
+
+  if (newIndex !== -1 && oldIndex !== -1 && newIndex !== oldIndex) {
+    const [moved] = apps.splice(oldIndex, 1);
+    apps.splice(newIndex, 0, moved);
+    await saveApps();
+  }
+
+  renderGrid(); // canonical re-render from apps array
+}
+
+function cancelReorder() {
+  if (!reorderState?.dragging) { reorderState = null; return; }
+  reorderState.ghost?.remove();
+  reorderState.srcEl.classList.remove('tile-drag-source');
+  document.body.classList.remove('ql-dragging');
+  reorderState = null;
+  renderGrid(); // restore original order
 }
 
 // ── Installed apps picker ─────────────────────────────────────────────────────
