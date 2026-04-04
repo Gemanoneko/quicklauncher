@@ -1,0 +1,160 @@
+/* ══ 2001: A SPACE ODYSSEY ════════════════════════════════════════════════════
+   HAL 9000 is operational. Discovery One approaches Jupiter. Ultra-minimal,
+   sterile, clinical — the only warmth is HAL's red eye, watching.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #020306;
+  --panel-bg:     rgba(4, 6, 12, 0.98);
+  --overlay-bg:   rgba(2, 3, 8, 0.96);
+  --header-bg:    rgba(160, 180, 210, 0.03);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #8090A8;
+  --text-dim:     rgba(100, 118, 145, 0.45);
+
+  --accent-c:     #9AAEC8;   /* Discovery blue-white */
+  --accent-m:     #CC0000;   /* HAL red */
+  --accent-y:     #708090;   /* cold grey */
+
+  --border:       rgba(120, 145, 175, 0.18);
+  --border-h:     rgba(150, 175, 210, 0.45);
+
+  --glow-c:       0 0 5px rgba(154,174,200,.50), 0 0 14px rgba(154,174,200,.16);
+  --glow-m:       0 0 6px rgba(204,0,0,.65), 0 0 18px rgba(204,0,0,.20);
+  --glow-y:       0 0 5px rgba(112,128,144,.45), 0 0 12px rgba(112,128,144,.14);
+
+  --pulse-glow:   inset 0 0 12px rgba(120,145,175,.04);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 20px rgba(150,175,210,.08);
+
+  --title-anim:   hal-watch 10s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(120, 145, 175, 0.06);
+  --tile-hover-border: rgba(150, 175, 210, 0.28);
+  --tile-hover-shadow: 0 0 8px rgba(154, 174, 200, 0.14);
+  --tile-active-bg:    rgba(120, 145, 175, 0.12);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(154,174,200,.50));
+
+  --btn-hover-bg:   rgba(120, 145, 175, 0.08);
+  --btn-active-bg:  rgba(120, 145, 175, 0.16);
+
+  --drop-hint-border: rgba(120, 145, 175, 0.20);
+  --drop-icon-color:  rgba(154, 174, 200, 0.28);
+  --hint-sub-color:   rgba(100, 118, 145, 0.32);
+
+  --rename-dashed:    rgba(154, 174, 200, 0.28);
+  --rename-input-bg:  rgba(120, 145, 175, 0.06);
+
+  --edit-bar-bg:          rgba(204, 0, 0, 0.06);
+  --edit-bar-border:      rgba(204, 0, 0, 0.35);
+  --edit-label-color:     #CC0000;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #CC0000;
+  --btn-done-border:      rgba(204, 0, 0, 0.38);
+  --btn-done-hover-bg:    rgba(204, 0, 0, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(150, 175, 210, 0.28);
+
+  --update-bg:             rgba(112, 128, 144, 0.05);
+  --update-border:         rgba(140, 160, 185, 0.28);
+  --update-color:          #708090;
+  --update-btn-border:     rgba(112, 128, 144, 0.25);
+  --update-btn-hover-bg:   rgba(112, 128, 144, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #CC0000;
+  --btn-close-border:     rgba(204, 0, 0, 0.35);
+  --btn-close-hover-bg:   rgba(204, 0, 0, 0.08);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(120, 145, 175, 0.06);
+  --picker-item-hover-bg:  rgba(120, 145, 175, 0.07);
+  --picker-item-active-bg: rgba(120, 145, 175, 0.13);
+  --picker-placeholder-bg: rgba(120, 145, 175, 0.07);
+
+  --skin-btn-active-bg:    rgba(120, 145, 175, 0.14);
+  --remove-btn-bg:         rgba(204, 0, 0, 0.88);
+  --remove-btn-border:     #CC0000;
+}
+
+/* ── Minimal: clean geometry, no noise — the void between stars ─────────────── */
+#app::after {
+  background:
+    /* HAL's subtle red vignette corner */
+    radial-gradient(ellipse 40% 40% at 0% 0%, rgba(180, 0, 0, 0.03) 0%, transparent 70%),
+    /* deep space vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 45%, rgba(1, 2, 5, 0.70) 100%),
+    /* cold top edge */
+    linear-gradient(to bottom, rgba(120, 145, 175, 0.04) 0%, transparent 20%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header cold silver bar ──────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #9AAEC8, rgba(120, 145, 175, 0.20));
+  box-shadow: 0 0 6px rgba(154, 174, 200, 0.40);
+}
+
+/* ── Grid: Discovery One hull geometry — minimal lines ──────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* HAL red ambient center — he's watching */
+    radial-gradient(circle at 50% 40%, rgba(180, 0, 0, 0.04) 0%, transparent 35%),
+    /* cold clinical floor line */
+    linear-gradient(to top, rgba(120, 145, 175, 0.04) 0%, transparent 20%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'DISCOVERY ONE  //  2001  //  HAL 9000 OPERATIONAL';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 8.5px; letter-spacing: 2.5px; color: rgba(140, 165, 195, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'DISCOVERY\AONE\A\AHAL 9000\AOPERATIONAL\A\AJUPITER\AAND BEYOND\ATHE INFINITE';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', sans-serif; letter-spacing: 2px;
+  font-size: 12px; line-height: 1.8; text-align: right;
+  color: rgba(120, 145, 175, 0.09); white-space: pre;
+}
+
+#edit-bar::after {
+  content: "I'M AFRAID I CAN'T ALLOW THAT";
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(204, 0, 0, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', sans-serif; letter-spacing: 5px; font-weight: 300; }
+
+/* ── Title animation: HAL's patient, watching glow ──────────────────────────── */
+@keyframes hal-watch {
+  0%, 100% { text-shadow: 0 0 4px rgba(154,174,200,.45); color: #9AAEC8; }
+  45%      { text-shadow: 0 0 4px rgba(154,174,200,.45); color: #9AAEC8; }
+  50%      { text-shadow: 0 0 6px rgba(204,0,0,.55), 0 0 18px rgba(204,0,0,.18); color: #CC5050; }
+  55%      { text-shadow: 0 0 4px rgba(154,174,200,.45); color: #9AAEC8; }
+}
+
+/* ── App border: clinical precision ──────────────────────────────────────────── */
+#app { animation: hal-border 10s ease-in-out infinite; }
+@keyframes hal-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(120,145,175,.20); }
+  50%      { box-shadow: 0 0 0 1px rgba(150,175,210,.38); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(2, 3, 8, 0.98); border-top-color: rgba(120, 145, 175, 0.18); }
+#theme-banner::before { content: '⊙'; color: #CC0000; font-size: 20px; opacity: 0.8; }
+#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(110, 130, 160, 0.55); }

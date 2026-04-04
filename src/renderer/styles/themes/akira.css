@@ -1,0 +1,179 @@
+/* ══ AKIRA ════════════════════════════════════════════════════════════════════
+   Neo-Tokyo 2019. Speed. Power. The city on fire and one kid at the center
+   of it all. Aggressive red neon on urban black. TETSUO.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #080004;
+  --panel-bg:     rgba(12, 2, 6, 0.98);
+  --overlay-bg:   rgba(8, 0, 4, 0.96);
+  --header-bg:    rgba(220, 0, 20, 0.04);
+
+  --font:         'Segoe UI', 'Consolas', monospace;
+  --text:         #C8B8A0;
+  --text-dim:     rgba(180, 150, 120, 0.45);
+
+  --accent-c:     #E01020;   /* Akira red */
+  --accent-m:     #00A8FF;   /* electric cyan-blue */
+  --accent-y:     #FF8000;   /* capsule orange */
+
+  --border:       rgba(200, 0, 20, 0.22);
+  --border-h:     rgba(220, 10, 30, 0.60);
+
+  --glow-c:       0 0 8px rgba(224,16,32,.70), 0 0 24px rgba(224,16,32,.25);
+  --glow-m:       0 0 8px rgba(0,168,255,.70), 0 0 24px rgba(0,168,255,.25);
+  --glow-y:       0 0 8px rgba(255,128,0,.70), 0 0 24px rgba(255,128,0,.25);
+
+  --pulse-glow:   inset 0 0 24px rgba(220,0,20,.08);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 3px,
+                    rgba(220, 0, 20, 0.025) 3px, rgba(220, 0, 20, 0.025) 4px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(224,16,32,.12);
+
+  --title-anim:   akira-burst 3s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(200, 0, 20, 0.08);
+  --tile-hover-border: rgba(224, 16, 32, 0.45);
+  --tile-hover-shadow: 0 0 14px rgba(224, 16, 32, 0.30);
+  --tile-active-bg:    rgba(200, 0, 20, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(224,16,32,.70)) drop-shadow(0 0 14px rgba(224,16,32,.30));
+
+  --btn-hover-bg:   rgba(200, 0, 20, 0.12);
+  --btn-active-bg:  rgba(200, 0, 20, 0.22);
+
+  --drop-hint-border: rgba(200, 0, 20, 0.28);
+  --drop-icon-color:  rgba(224, 16, 32, 0.40);
+  --hint-sub-color:   rgba(160, 100, 80, 0.40);
+
+  --rename-dashed:    rgba(224, 16, 32, 0.45);
+  --rename-input-bg:  rgba(200, 0, 20, 0.07);
+
+  --edit-bar-bg:          rgba(0, 168, 255, 0.06);
+  --edit-bar-border:      rgba(0, 168, 255, 0.40);
+  --edit-label-color:     #00A8FF;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #00A8FF;
+  --btn-done-border:      rgba(0, 168, 255, 0.42);
+  --btn-done-hover-bg:    rgba(0, 168, 255, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(224, 16, 32, 0.45);
+
+  --update-bg:             rgba(255, 128, 0, 0.06);
+  --update-border:         rgba(255, 128, 0, 0.40);
+  --update-color:          #FF8000;
+  --update-btn-border:     rgba(255, 128, 0, 0.38);
+  --update-btn-hover-bg:   rgba(255, 128, 0, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #00A8FF;
+  --btn-close-border:     rgba(0, 168, 255, 0.38);
+  --btn-close-hover-bg:   rgba(0, 168, 255, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(200, 0, 20, 0.07);
+  --picker-item-hover-bg:  rgba(200, 0, 20, 0.08);
+  --picker-item-active-bg: rgba(200, 0, 20, 0.15);
+  --picker-placeholder-bg: rgba(200, 0, 20, 0.07);
+
+  --skin-btn-active-bg:    rgba(200, 0, 20, 0.17);
+  --remove-btn-bg:         rgba(0, 168, 255, 0.88);
+  --remove-btn-border:     #00A8FF;
+}
+
+/* ── Urban neon + speed lines overlay ──────────────────────────────────────── */
+#app::after {
+  background:
+    /* diagonal speed lines */
+    repeating-linear-gradient(
+      108deg,
+      transparent 0px, transparent 6px,
+      rgba(220, 0, 20, 0.018) 6px, rgba(220, 0, 20, 0.018) 7px,
+      transparent 7px, transparent 40px
+    ),
+    /* scanlines */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 3px,
+      rgba(200, 0, 16, 0.022) 3px, rgba(200, 0, 16, 0.022) 4px
+    ),
+    /* vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 35%, rgba(4, 0, 2, 0.75) 100%),
+    /* red neon bleed from bottom */
+    radial-gradient(ellipse 80% 30% at 50% 100%, rgba(180, 0, 16, 0.08) 0%, transparent 70%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header red neon accent bar ─────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #E01020, rgba(180, 0, 16, 0.25));
+  box-shadow: 0 0 12px rgba(224, 16, 32, 0.70), 0 0 28px rgba(224, 16, 32, 0.25);
+}
+
+/* ── Grid: red urban heat ────────────────────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(180, 0, 16, 0.06) 0%, transparent 30%),
+    linear-gradient(to top, rgba(200, 0, 20, 0.09) 0%, rgba(160, 0, 16, 0.04) 20%, transparent 50%),
+    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 50%, rgba(120, 0, 10, 0.04) 100%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'NEO-TOKYO  //  2019  //  CAPSULE GANG';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 9px; letter-spacing: 2px; color: rgba(220, 16, 32, 0.50);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'NEO-TOKYO\A\ATETSUO!\A\AKANEDA!\A\ACAPSULE\AGANG\A\A2019';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Consolas', monospace; letter-spacing: 2px;
+  font-size: 13px; line-height: 1.7; text-align: right;
+  color: rgba(200, 10, 24, 0.13); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'POWER LEVEL EXCEEDS CONTAINMENT';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8px; letter-spacing: 2px; color: rgba(0, 168, 255, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Consolas', monospace; letter-spacing: 6px; font-weight: 700; }
+
+/* ── Title animation: energy burst ──────────────────────────────────────────── */
+@keyframes akira-burst {
+  0%, 100%  { text-shadow: 0 0 8px rgba(224,16,32,.70), 0 0 24px rgba(224,16,32,.25); }
+  88%       { text-shadow: 0 0 8px rgba(224,16,32,.70), 0 0 24px rgba(224,16,32,.25); }
+  89%       { text-shadow: 3px 0 rgba(0,168,255,.8), -3px 0 rgba(224,16,32,.8), 0 0 30px rgba(224,16,32,.5); }
+  90%       { text-shadow: -2px 0 rgba(0,168,255,.7), 2px 0 rgba(255,128,0,.7); }
+  91%       { text-shadow: 0 0 12px rgba(224,16,32,.90), 0 0 36px rgba(224,16,32,.40); }
+  92%       { text-shadow: 0 0 8px rgba(224,16,32,.70), 0 0 24px rgba(224,16,32,.25); }
+}
+
+/* ── App: aggressive border pulse ───────────────────────────────────────────── */
+#app { animation: akira-border 5s ease-in-out infinite; }
+@keyframes akira-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,0,20,.35), inset 0 0 20px rgba(200,0,20,.05); }
+  15%      { box-shadow: 0 0 0 1px rgba(224,16,32,.65), inset 0 0 24px rgba(224,16,32,.08); }
+  16%      { box-shadow: 0 0 0 1px rgba(200,0,20,.15), inset 0 0 14px rgba(200,0,20,.02); }
+  17%      { box-shadow: 0 0 0 1px rgba(224,16,32,.55), inset 0 0 20px rgba(224,16,32,.06); }
+  50%      { box-shadow: 0 0 0 1px rgba(200,0,20,.30), inset 0 0 18px rgba(200,0,20,.04); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(8, 0, 4, 0.98); border-top-color: rgba(220, 10, 30, 0.25); }
+#theme-banner::before { content: '◉'; color: #E01020; font-size: 20px; }
+#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(200, 20, 36, 0.60); }

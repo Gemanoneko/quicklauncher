@@ -1,0 +1,185 @@
+/* ══ EVENT HORIZON ════════════════════════════════════════════════════════════
+   Where we're going, we don't need eyes to see. The ship went somewhere.
+   Something came back. Liberate tutemet ex infernis.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #020000;
+  --panel-bg:     rgba(5, 1, 1, 0.99);
+  --overlay-bg:   rgba(3, 0, 0, 0.97);
+  --header-bg:    rgba(80, 0, 0, 0.04);
+
+  --font:         'Segoe UI', Georgia, serif;
+  --text:         #604848;
+  --text-dim:     rgba(80, 48, 45, 0.45);
+
+  --accent-c:     #660000;   /* void blood */
+  --accent-m:     #440000;   /* deeper void */
+  --accent-y:     #502830;   /* corrupted grey */
+
+  --border:       rgba(80, 0, 0, 0.28);
+  --border-h:     rgba(110, 0, 0, 0.55);
+
+  --glow-c:       0 0 6px rgba(102,0,0,.55), 0 0 18px rgba(102,0,0,.18);
+  --glow-m:       0 0 6px rgba(68,0,0,.50), 0 0 16px rgba(68,0,0,.15);
+  --glow-y:       0 0 5px rgba(80,40,48,.40), 0 0 14px rgba(80,40,48,.12);
+
+  --pulse-glow:   inset 0 0 24px rgba(80,0,0,.08);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 2px,
+                    rgba(60, 0, 0, 0.04) 2px, rgba(60, 0, 0, 0.04) 3px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(102,0,0,.12);
+
+  --title-anim:   void-corrupt 8s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(80, 0, 0, 0.10);
+  --tile-hover-border: rgba(110, 0, 0, 0.42);
+  --tile-hover-shadow: 0 0 12px rgba(102, 0, 0, 0.22);
+  --tile-active-bg:    rgba(80, 0, 0, 0.20);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(102,0,0,.55)) drop-shadow(0 0 12px rgba(80,0,0,.22));
+
+  --btn-hover-bg:   rgba(80, 0, 0, 0.12);
+  --btn-active-bg:  rgba(80, 0, 0, 0.24);
+
+  --drop-hint-border: rgba(80, 0, 0, 0.30);
+  --drop-icon-color:  rgba(102, 0, 0, 0.38);
+  --hint-sub-color:   rgba(70, 35, 32, 0.40);
+
+  --rename-dashed:    rgba(102, 0, 0, 0.38);
+  --rename-input-bg:  rgba(80, 0, 0, 0.09);
+
+  --edit-bar-bg:          rgba(68, 0, 0, 0.10);
+  --edit-bar-border:      rgba(80, 0, 0, 0.45);
+  --edit-label-color:     #660000;
+  --edit-label-glow:      var(--glow-c);
+  --btn-done-color:       #660000;
+  --btn-done-border:      rgba(102, 0, 0, 0.45);
+  --btn-done-hover-bg:    rgba(102, 0, 0, 0.12);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(80, 0, 0, 0.42);
+
+  --update-bg:             rgba(80, 40, 48, 0.06);
+  --update-border:         rgba(80, 40, 48, 0.30);
+  --update-color:          #502830;
+  --update-btn-border:     rgba(80, 40, 48, 0.25);
+  --update-btn-hover-bg:   rgba(80, 40, 48, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #660000;
+  --btn-close-border:     rgba(102, 0, 0, 0.40);
+  --btn-close-hover-bg:   rgba(102, 0, 0, 0.12);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(80, 0, 0, 0.09);
+  --picker-item-hover-bg:  rgba(80, 0, 0, 0.10);
+  --picker-item-active-bg: rgba(80, 0, 0, 0.18);
+  --picker-placeholder-bg: rgba(80, 0, 0, 0.09);
+
+  --skin-btn-active-bg:    rgba(80, 0, 0, 0.20);
+  --remove-btn-bg:         rgba(80, 0, 0, 0.92);
+  --remove-btn-border:     #440000;
+}
+
+/* ── The void. Heavy grain, blood mist, something wrong ─────────────────────── */
+#app::after {
+  background:
+    /* heavy void grain */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.13'/%3E%3C/svg%3E"),
+    /* diagonal corruption streaks */
+    repeating-linear-gradient(
+      98deg,
+      transparent 0px, transparent 8px,
+      rgba(80, 0, 0, 0.018) 8px, rgba(80, 0, 0, 0.018) 9px,
+      transparent 9px, transparent 55px
+    ),
+    /* void collapse vignette — heavier than normal */
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 28%, rgba(1, 0, 0, 0.80) 100%),
+    /* blood seep from edges */
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(70, 0, 0, 0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(60, 0, 0, 0.08) 0%, transparent 65%);
+  background-size: 300px 300px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — dark blood accent bar ─────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #660000, rgba(70, 0, 0, 0.20));
+  box-shadow: 0 0 8px rgba(102, 0, 0, 0.50), 0 0 20px rgba(80, 0, 0, 0.16);
+}
+
+/* ── Grid: void compression — darkness closing in ───────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 80% at 0% 50%, rgba(3, 0, 0, 0.25) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(3, 0, 0, 0.25) 0%, transparent 65%),
+    linear-gradient(to top, rgba(80, 0, 0, 0.08) 0%, transparent 30%),
+    linear-gradient(to bottom, rgba(70, 0, 0, 0.06) 0%, transparent 25%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'EVENT HORIZON  //  2047  //  LIBERATE TUTEMET EX INFERNIS';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(100, 0, 0, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'WHERE WE\ARE GOING\A\AWE DON\'T\ANEED EYES\ATO SEE\A\ASAVE\AYOURSELF\AFROM HELL';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(80, 0, 0, 0.12); white-space: pre;
+  animation: void-breathe 11s ease-in-out infinite;
+}
+
+@keyframes void-breathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1.0; }
+}
+
+#edit-bar::after {
+  content: 'THE SHIP KNOWS THE WAY';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(100, 0, 0, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+
+/* ── Title animation: corrupted void glitch ─────────────────────────────────── */
+@keyframes void-corrupt {
+  0%, 100%  { text-shadow: 0 0 6px rgba(102,0,0,.50), 0 0 18px rgba(102,0,0,.16); color: #660000; opacity: 1; }
+  75%       { text-shadow: 0 0 6px rgba(102,0,0,.50), 0 0 18px rgba(102,0,0,.16); color: #660000; opacity: 1; }
+  76%       { color: #880000; opacity: 0.4; text-shadow: 0 0 2px rgba(140,0,0,.30); }
+  77%       { color: #440000; opacity: 0.9; text-shadow: 3px 0 rgba(80,0,0,.70), -2px 0 rgba(60,20,0,.50); }
+  78%       { color: #660000; opacity: 1; text-shadow: 0 0 8px rgba(102,0,0,.60), 0 0 22px rgba(102,0,0,.20); }
+  79%       { opacity: 0.7; }
+  80%       { opacity: 1; text-shadow: 0 0 6px rgba(102,0,0,.50), 0 0 18px rgba(102,0,0,.16); color: #660000; }
+}
+
+/* ── App: the border feels wrong ────────────────────────────────────────────── */
+#app { animation: void-border 11s ease-in-out infinite; }
+@keyframes void-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(80,0,0,.30), inset 0 0 30px rgba(80,0,0,.06); }
+  30%      { box-shadow: 0 0 0 1px rgba(100,0,0,.50), inset 0 0 30px rgba(100,0,0,.09); }
+  31%      { box-shadow: 0 0 0 1px rgba(60,0,0,.15), inset 0 0 20px rgba(60,0,0,.03); }
+  32%      { box-shadow: 0 0 0 1px rgba(100,0,0,.45), inset 0 0 28px rgba(100,0,0,.08); }
+  60%      { box-shadow: 0 0 0 1px rgba(80,0,0,.25), inset 0 0 30px rgba(80,0,0,.05); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(3, 0, 0, 0.99); border-top-color: rgba(80, 0, 0, 0.28); }
+#theme-banner::before { content: '⊘'; color: #660000; font-size: 20px; opacity: 0.80; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(90, 0, 0, 0.58); }

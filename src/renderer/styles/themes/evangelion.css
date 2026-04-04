@@ -1,0 +1,168 @@
+/* ══ EVANGELION ═══════════════════════════════════════════════════════════════
+   NERV. Geofront. Evangelion Unit-01. Warning overlays and terminal green
+   on Instrumentality black. The Human Instrumentality Project is underway.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #030308;
+  --panel-bg:     rgba(5, 5, 12, 0.98);
+  --overlay-bg:   rgba(3, 3, 8, 0.96);
+  --header-bg:    rgba(220, 80, 0, 0.04);
+
+  --font:         'Segoe UI', 'Consolas', monospace;
+  --text:         #C0A840;
+  --text-dim:     rgba(180, 150, 50, 0.45);
+
+  --accent-c:     #E05800;   /* NERV orange */
+  --accent-m:     #CC0000;   /* warning red */
+  --accent-y:     #00C000;   /* terminal green */
+
+  --border:       rgba(200, 70, 0, 0.22);
+  --border-h:     rgba(220, 90, 0, 0.55);
+
+  --glow-c:       0 0 7px rgba(224,88,0,.65), 0 0 20px rgba(224,88,0,.22);
+  --glow-m:       0 0 7px rgba(204,0,0,.65), 0 0 20px rgba(204,0,0,.22);
+  --glow-y:       0 0 7px rgba(0,192,0,.65), 0 0 20px rgba(0,192,0,.22);
+
+  --pulse-glow:   inset 0 0 20px rgba(200,70,0,.07);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 2px,
+                    rgba(200, 70, 0, 0.03) 2px, rgba(200, 70, 0, 0.03) 3px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(224,88,0,.10);
+
+  --title-anim:   nerv-alert 7s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(200, 70, 0, 0.08);
+  --tile-hover-border: rgba(224, 88, 0, 0.40);
+  --tile-hover-shadow: 0 0 12px rgba(224, 88, 0, 0.22);
+  --tile-active-bg:    rgba(200, 70, 0, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(224,88,0,.65)) drop-shadow(0 0 12px rgba(224,88,0,.28));
+
+  --btn-hover-bg:   rgba(200, 70, 0, 0.10);
+  --btn-active-bg:  rgba(200, 70, 0, 0.20);
+
+  --drop-hint-border: rgba(200, 70, 0, 0.25);
+  --drop-icon-color:  rgba(224, 88, 0, 0.38);
+  --hint-sub-color:   rgba(160, 110, 20, 0.40);
+
+  --rename-dashed:    rgba(224, 88, 0, 0.42);
+  --rename-input-bg:  rgba(200, 70, 0, 0.07);
+
+  --edit-bar-bg:          rgba(204, 0, 0, 0.07);
+  --edit-bar-border:      rgba(204, 0, 0, 0.42);
+  --edit-label-color:     #CC0000;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #CC0000;
+  --btn-done-border:      rgba(204, 0, 0, 0.44);
+  --btn-done-hover-bg:    rgba(204, 0, 0, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(224, 88, 0, 0.42);
+
+  --update-bg:             rgba(0, 192, 0, 0.06);
+  --update-border:         rgba(0, 192, 0, 0.38);
+  --update-color:          #00C000;
+  --update-btn-border:     rgba(0, 192, 0, 0.35);
+  --update-btn-hover-bg:   rgba(0, 192, 0, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #CC0000;
+  --btn-close-border:     rgba(204, 0, 0, 0.40);
+  --btn-close-hover-bg:   rgba(204, 0, 0, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(200, 70, 0, 0.07);
+  --picker-item-hover-bg:  rgba(200, 70, 0, 0.08);
+  --picker-item-active-bg: rgba(200, 70, 0, 0.15);
+  --picker-placeholder-bg: rgba(200, 70, 0, 0.07);
+
+  --skin-btn-active-bg:    rgba(200, 70, 0, 0.17);
+  --remove-btn-bg:         rgba(204, 0, 0, 0.88);
+  --remove-btn-border:     #CC0000;
+}
+
+/* ── NERV terminal overlay + scanlines ──────────────────────────────────────── */
+#app::after {
+  background:
+    /* NERV cross pattern — very faint */
+    repeating-linear-gradient(0deg,
+      transparent 0px, transparent 59px,
+      rgba(200, 70, 0, 0.025) 59px, rgba(200, 70, 0, 0.025) 60px
+    ),
+    repeating-linear-gradient(90deg,
+      transparent 0px, transparent 59px,
+      rgba(200, 70, 0, 0.018) 59px, rgba(200, 70, 0, 0.018) 60px
+    ),
+    /* scanlines */
+    repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 2px,
+      rgba(180, 60, 0, 0.025) 2px, rgba(180, 60, 0, 0.025) 3px
+    ),
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(2, 2, 6, 0.72) 100%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header NERV orange accent bar ─────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #E05800, rgba(200, 70, 0, 0.28));
+  box-shadow: 0 0 10px rgba(224, 88, 0, 0.60), 0 0 24px rgba(224, 88, 0, 0.20);
+}
+
+/* ── Grid: hexagonal NERV pattern + terminal glow ───────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(180, 60, 0, 0.06) 0%, transparent 30%),
+    linear-gradient(to top, rgba(204, 0, 0, 0.06) 0%, rgba(160, 40, 0, 0.03) 18%, transparent 45%),
+    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(180, 50, 0, 0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 70% at 10% 50%, rgba(0, 160, 0, 0.02) 0%, transparent 60%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'NERV HQ  //  GEOFRONT  //  UNIT-01 SYNCHRONIZED';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(220, 90, 0, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'NERV\AGEOFRONT\A\AUNIT-01\AAWAKENS\A\AHUMAN\AINSTRUMENTALITY\APROJECT\A\AINITIATED';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Consolas', monospace; letter-spacing: 1.5px;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(200, 70, 0, 0.12); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'SYNCHRONIZATION RATE  —  87.4%';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8px; letter-spacing: 2px; color: rgba(204, 0, 0, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Consolas', monospace; letter-spacing: 5px; }
+
+/* ── Title animation: NERV alert ─────────────────────────────────────────────── */
+@keyframes nerv-alert {
+  0%, 100%  { text-shadow: 0 0 7px rgba(224,88,0,.60), 0 0 20px rgba(224,88,0,.22); color: #E05800; }
+  85%       { text-shadow: 0 0 7px rgba(224,88,0,.60), 0 0 20px rgba(224,88,0,.22); color: #E05800; }
+  86%       { text-shadow: 0 0 4px rgba(204,0,0,.90), 0 0 16px rgba(204,0,0,.50); color: #CC0000; }
+  87%       { text-shadow: 0 0 7px rgba(224,88,0,.60), 0 0 20px rgba(224,88,0,.22); color: #E05800; }
+  88%       { text-shadow: 0 0 4px rgba(204,0,0,.85); color: #CC0000; }
+  89%       { text-shadow: 0 0 7px rgba(224,88,0,.60), 0 0 20px rgba(224,88,0,.22); color: #E05800; }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(3, 3, 8, 0.98); border-top-color: rgba(200, 70, 0, 0.22); }
+#theme-banner::before { content: '⬡'; color: #E05800; font-size: 20px; }
+#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(192, 100, 0, 0.60); }

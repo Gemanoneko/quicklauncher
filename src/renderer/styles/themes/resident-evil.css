@@ -1,0 +1,156 @@
+/* ══ RESIDENT EVIL ════════════════════════════════════════════════════════════
+   Umbrella Corporation. Raccoon City. T-Virus containment — failed.
+   Clean corporate horror. The lab looks sterile until it isn't.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #040408;
+  --panel-bg:     rgba(6, 6, 12, 0.98);
+  --overlay-bg:   rgba(4, 4, 8, 0.96);
+  --header-bg:    rgba(180, 0, 0, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #9AA0AA;
+  --text-dim:     rgba(130, 140, 155, 0.45);
+
+  --accent-c:     #BB0000;   /* Umbrella red */
+  --accent-m:     #880000;   /* dark blood red */
+  --accent-y:     #8090A0;   /* clinical grey */
+
+  --border:       rgba(160, 0, 0, 0.22);
+  --border-h:     rgba(190, 0, 0, 0.52);
+
+  --glow-c:       0 0 6px rgba(187,0,0,.60), 0 0 18px rgba(187,0,0,.20);
+  --glow-m:       0 0 6px rgba(136,0,0,.55), 0 0 18px rgba(136,0,0,.18);
+  --glow-y:       0 0 5px rgba(128,144,160,.45), 0 0 14px rgba(128,144,160,.14);
+
+  --pulse-glow:   inset 0 0 18px rgba(160,0,0,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(187,0,0,.10);
+
+  --title-anim:   umbrella-pulse 6s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(160, 0, 0, 0.07);
+  --tile-hover-border: rgba(190, 0, 0, 0.38);
+  --tile-hover-shadow: 0 0 12px rgba(187, 0, 0, 0.20);
+  --tile-active-bg:    rgba(160, 0, 0, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(187,0,0,.58)) drop-shadow(0 0 12px rgba(187,0,0,.24));
+
+  --btn-hover-bg:   rgba(160, 0, 0, 0.10);
+  --btn-active-bg:  rgba(160, 0, 0, 0.20);
+
+  --drop-hint-border: rgba(160, 0, 0, 0.25);
+  --drop-icon-color:  rgba(187, 0, 0, 0.35);
+  --hint-sub-color:   rgba(110, 120, 135, 0.38);
+
+  --rename-dashed:    rgba(187, 0, 0, 0.40);
+  --rename-input-bg:  rgba(160, 0, 0, 0.07);
+
+  --edit-bar-bg:          rgba(136, 0, 0, 0.07);
+  --edit-bar-border:      rgba(136, 0, 0, 0.40);
+  --edit-label-color:     #880000;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #BB0000;
+  --btn-done-border:      rgba(187, 0, 0, 0.42);
+  --btn-done-hover-bg:    rgba(187, 0, 0, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(160, 0, 0, 0.40);
+
+  --update-bg:             rgba(128, 144, 160, 0.05);
+  --update-border:         rgba(140, 155, 175, 0.28);
+  --update-color:          #8090A0;
+  --update-btn-border:     rgba(128, 144, 160, 0.25);
+  --update-btn-hover-bg:   rgba(128, 144, 160, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #BB0000;
+  --btn-close-border:     rgba(187, 0, 0, 0.38);
+  --btn-close-hover-bg:   rgba(187, 0, 0, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(160, 0, 0, 0.07);
+  --picker-item-hover-bg:  rgba(160, 0, 0, 0.08);
+  --picker-item-active-bg: rgba(160, 0, 0, 0.14);
+  --picker-placeholder-bg: rgba(160, 0, 0, 0.07);
+
+  --skin-btn-active-bg:    rgba(160, 0, 0, 0.16);
+  --remove-btn-bg:         rgba(136, 0, 0, 0.90);
+  --remove-btn-border:     #880000;
+}
+
+/* ── Sterile lab + biohazard warning overlay ────────────────────────────────── */
+#app::after {
+  background:
+    /* Umbrella crosshair geometry — very faint */
+    radial-gradient(circle at 50% 50%, transparent 28%, rgba(160,0,0,.025) 29%, transparent 30%),
+    radial-gradient(circle at 50% 50%, transparent 55%, rgba(160,0,0,.018) 56%, transparent 57%),
+    /* vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 42%, rgba(2, 2, 5, 0.72) 100%),
+    /* red corner seep — biohazard warning feel */
+    radial-gradient(ellipse 30% 30% at 0% 0%, rgba(160,0,0,.05) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 30% at 100% 100%, rgba(160,0,0,.04) 0%, transparent 60%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header Umbrella red accent bar ─────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #BB0000, rgba(160, 0, 0, 0.25));
+  box-shadow: 0 0 10px rgba(187, 0, 0, 0.58), 0 0 24px rgba(187, 0, 0, 0.18);
+}
+
+/* ── Grid: clean lab geometry ───────────────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0px, transparent 99px,
+      rgba(160, 0, 0, 0.018) 99px, rgba(160, 0, 0, 0.018) 100px
+    ),
+    linear-gradient(to top, rgba(140, 0, 0, 0.05) 0%, transparent 25%),
+    linear-gradient(to bottom, rgba(130, 0, 0, 0.04) 0%, transparent 20%);
+  background-size: 100px 100%, 100% 100%, 100% 100%;
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'UMBRELLA CORP  //  RACCOON CITY  //  BIOHAZARD ALERT';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(180, 0, 0, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'UMBRELLA\ACORPORATION\A\AT-VIRUS\ACONTAINMENT\AFAILED\A\ARACCOON\ACITY';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', sans-serif; letter-spacing: 2px;
+  font-size: 12px; line-height: 1.8; text-align: right;
+  color: rgba(160, 0, 0, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'LEVEL  4  BIOHAZARD  —  AUTHORIZED  ONLY';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(136, 0, 0, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', sans-serif; letter-spacing: 5px; font-weight: 400; }
+
+/* ── Title animation ─────────────────────────────────────────────────────────── */
+@keyframes umbrella-pulse {
+  0%, 100% { text-shadow: 0 0 6px rgba(187,0,0,.55), 0 0 18px rgba(187,0,0,.18); opacity: 1; }
+  50%       { text-shadow: 0 0 10px rgba(187,0,0,.80), 0 0 28px rgba(187,0,0,.32); opacity: 0.92; }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(4, 3, 6, 0.98); border-top-color: rgba(160, 0, 0, 0.22); }
+#theme-banner::before { content: '☣'; color: #BB0000; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 2.5px; color: rgba(160, 0, 0, 0.58); }

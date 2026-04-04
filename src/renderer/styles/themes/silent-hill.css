@@ -1,0 +1,170 @@
+/* ══ SILENT HILL ══════════════════════════════════════════════════════════════
+   The Otherworld. Rust and blood and fog. Industrial horror — corroded metal,
+   chain-link and siren. Beautiful in the most cursed possible way.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #060302;
+  --panel-bg:     rgba(10, 5, 3, 0.98);
+  --overlay-bg:   rgba(6, 3, 2, 0.96);
+  --header-bg:    rgba(100, 30, 10, 0.04);
+
+  --font:         'Segoe UI', Georgia, serif;
+  --text:         #907060;
+  --text-dim:     rgba(130, 90, 65, 0.45);
+
+  --accent-c:     #802010;   /* corroded rust */
+  --accent-m:     #5A1008;   /* deep blood */
+  --accent-y:     #706040;   /* corroded grey-gold */
+
+  --border:       rgba(100, 30, 10, 0.25);
+  --border-h:     rgba(130, 40, 15, 0.55);
+
+  --glow-c:       0 0 6px rgba(128,32,16,.55), 0 0 18px rgba(128,32,16,.18);
+  --glow-m:       0 0 6px rgba(90,16,8,.55), 0 0 18px rgba(90,16,8,.18);
+  --glow-y:       0 0 6px rgba(112,96,64,.45), 0 0 16px rgba(112,96,64,.14);
+
+  --pulse-glow:   inset 0 0 20px rgba(90,20,8,.07);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 3px,
+                    rgba(80, 20, 8, 0.04) 3px, rgba(80, 20, 8, 0.04) 4px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(128,32,16,.10);
+
+  --title-anim:   sh-flicker 6s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(100, 30, 10, 0.09);
+  --tile-hover-border: rgba(130, 40, 15, 0.40);
+  --tile-hover-shadow: 0 0 10px rgba(128, 32, 16, 0.18);
+  --tile-active-bg:    rgba(100, 30, 10, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(128,32,16,.50)) drop-shadow(0 0 10px rgba(90,16,8,.22));
+
+  --btn-hover-bg:   rgba(100, 30, 10, 0.10);
+  --btn-active-bg:  rgba(100, 30, 10, 0.20);
+
+  --drop-hint-border: rgba(100, 30, 10, 0.28);
+  --drop-icon-color:  rgba(128, 32, 16, 0.35);
+  --hint-sub-color:   rgba(100, 70, 45, 0.38);
+
+  --rename-dashed:    rgba(128, 32, 16, 0.38);
+  --rename-input-bg:  rgba(100, 30, 10, 0.08);
+
+  --edit-bar-bg:          rgba(90, 16, 8, 0.09);
+  --edit-bar-border:      rgba(90, 16, 8, 0.45);
+  --edit-label-color:     #5A1008;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #802010;
+  --btn-done-border:      rgba(128, 32, 16, 0.42);
+  --btn-done-hover-bg:    rgba(128, 32, 16, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(100, 30, 10, 0.42);
+
+  --update-bg:             rgba(112, 96, 64, 0.06);
+  --update-border:         rgba(112, 96, 64, 0.32);
+  --update-color:          #706040;
+  --update-btn-border:     rgba(112, 96, 64, 0.28);
+  --update-btn-hover-bg:   rgba(112, 96, 64, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #802010;
+  --btn-close-border:     rgba(128, 32, 16, 0.40);
+  --btn-close-hover-bg:   rgba(128, 32, 16, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(100, 30, 10, 0.08);
+  --picker-item-hover-bg:  rgba(100, 30, 10, 0.09);
+  --picker-item-active-bg: rgba(100, 30, 10, 0.16);
+  --picker-placeholder-bg: rgba(100, 30, 10, 0.08);
+
+  --skin-btn-active-bg:    rgba(100, 30, 10, 0.18);
+  --remove-btn-bg:         rgba(90, 16, 8, 0.90);
+  --remove-btn-border:     #5A1008;
+}
+
+/* ── Rust grain + fog + blood vignette ──────────────────────────────────────── */
+#app::after {
+  background:
+    /* heavy film grain / rust texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.10'/%3E%3C/svg%3E"),
+    /* diagonal rust streaks */
+    repeating-linear-gradient(
+      102deg,
+      transparent 0px, transparent 4px,
+      rgba(100, 20, 8, 0.020) 4px, rgba(100, 20, 8, 0.020) 5px,
+      transparent 5px, transparent 32px
+    ),
+    /* blood vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 35%, rgba(4, 1, 0, 0.78) 100%),
+    /* bottom red seep */
+    radial-gradient(ellipse 80% 30% at 50% 100%, rgba(80, 12, 4, 0.08) 0%, transparent 70%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header rust accent bar ─────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #802010, rgba(100, 25, 10, 0.25));
+  box-shadow: 0 0 8px rgba(128, 32, 16, 0.45), 0 0 20px rgba(90, 16, 8, 0.15);
+}
+
+/* ── Grid: fog layers + rust bleed ─────────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* fog from top */
+    linear-gradient(to bottom, rgba(80, 20, 8, 0.08) 0%, rgba(60, 15, 6, 0.04) 20%, transparent 50%),
+    /* rust seep from bottom */
+    linear-gradient(to top, rgba(100, 20, 8, 0.07) 0%, rgba(80, 15, 5, 0.03) 20%, transparent 50%),
+    /* side darkness */
+    radial-gradient(ellipse 40% 100% at 0% 50%, rgba(4, 1, 0, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 100% at 100% 50%, rgba(4, 1, 0, 0.18) 0%, transparent 60%);
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'SILENT HILL  //  THE OTHERWORLD  //  SIREN ACTIVE';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(120, 40, 16, 0.48);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'SILENT\AHILL\A\ATHERE WAS A\AHOLE HERE\AIT IS GONE\ANOW\A\AALESSA\AWATCHES';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(100, 28, 10, 0.12); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'PYRAMID HEAD APPROACHES';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(90, 16, 8, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+
+/* ── Title animation: fog-flicker ────────────────────────────────────────────── */
+@keyframes sh-flicker {
+  0%, 100%  { text-shadow: 0 0 6px rgba(128,32,16,.50), 0 0 18px rgba(128,32,16,.18); opacity: 1; }
+  80%       { text-shadow: 0 0 6px rgba(128,32,16,.50), 0 0 18px rgba(128,32,16,.18); opacity: 1; }
+  82%       { opacity: 0.4; text-shadow: none; }
+  83%       { opacity: 1; text-shadow: 0 0 8px rgba(128,32,16,.65), 0 0 22px rgba(128,32,16,.25); }
+  84%       { opacity: 0.6; }
+  85%       { opacity: 1; text-shadow: 0 0 6px rgba(128,32,16,.50), 0 0 18px rgba(128,32,16,.18); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(6, 3, 1, 0.98); border-top-color: rgba(100, 28, 10, 0.25); }
+#theme-banner::before { content: '✝'; color: #802010; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(110, 60, 30, 0.58); }

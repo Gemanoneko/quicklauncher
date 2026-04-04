@@ -1,0 +1,158 @@
+/* ══ STAR WARS: REBEL ALLIANCE ════════════════════════════════════════════════
+   Hope against the Empire. Orange flight suits, starfields, and courage.
+   Warm amber glow on the void of space — victory at any cost.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #060508;
+  --panel-bg:     rgba(10, 8, 12, 0.97);
+  --overlay-bg:   rgba(6, 5, 8, 0.94);
+  --header-bg:    rgba(200, 80, 0, 0.04);
+
+  --font:         'Segoe UI', 'Consolas', monospace;
+  --text:         #C0A870;
+  --text-dim:     rgba(180, 150, 80, 0.45);
+
+  --accent-c:     #E06000;   /* Rebel orange */
+  --accent-m:     #FF3030;   /* alert red */
+  --accent-y:     #D0A020;   /* warm gold */
+
+  --border:       rgba(200, 80, 0, 0.20);
+  --border-h:     rgba(224, 96, 0, 0.55);
+
+  --glow-c:       0 0 7px rgba(224,96,0,.65), 0 0 20px rgba(224,96,0,.22);
+  --glow-m:       0 0 7px rgba(255,48,48,.65), 0 0 20px rgba(255,48,48,.22);
+  --glow-y:       0 0 7px rgba(208,160,32,.65), 0 0 20px rgba(208,160,32,.22);
+
+  --pulse-glow:   inset 0 0 20px rgba(224,96,0,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(224,96,0,.12);
+
+  --title-anim:   rebel-pulse 5s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(200, 80, 0, 0.07);
+  --tile-hover-border: rgba(224, 96, 0, 0.35);
+  --tile-hover-shadow: 0 0 12px rgba(224, 96, 0, 0.20);
+  --tile-active-bg:    rgba(200, 80, 0, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(224,96,0,.60)) drop-shadow(0 0 12px rgba(224,96,0,.25));
+
+  --btn-hover-bg:   rgba(200, 80, 0, 0.10);
+  --btn-active-bg:  rgba(200, 80, 0, 0.20);
+
+  --drop-hint-border: rgba(200, 80, 0, 0.25);
+  --drop-icon-color:  rgba(224, 96, 0, 0.35);
+  --hint-sub-color:   rgba(180, 120, 40, 0.40);
+
+  --rename-dashed:    rgba(224, 96, 0, 0.40);
+  --rename-input-bg:  rgba(224, 96, 0, 0.06);
+
+  --edit-bar-bg:          rgba(255, 48, 48, 0.06);
+  --edit-bar-border:      rgba(255, 48, 48, 0.40);
+  --edit-label-color:     #FF3030;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #FF3030;
+  --btn-done-border:      rgba(255, 48, 48, 0.40);
+  --btn-done-hover-bg:    rgba(255, 48, 48, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(224, 96, 0, 0.40);
+
+  --update-bg:             rgba(208, 160, 32, 0.06);
+  --update-border:         rgba(208, 160, 32, 0.38);
+  --update-color:          #D0A020;
+  --update-btn-border:     rgba(208, 160, 32, 0.35);
+  --update-btn-hover-bg:   rgba(208, 160, 32, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #FF3030;
+  --btn-close-border:     rgba(255, 48, 48, 0.38);
+  --btn-close-hover-bg:   rgba(255, 48, 48, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(224, 96, 0, 0.06);
+  --picker-item-hover-bg:  rgba(224, 96, 0, 0.08);
+  --picker-item-active-bg: rgba(224, 96, 0, 0.14);
+  --picker-placeholder-bg: rgba(224, 96, 0, 0.06);
+
+  --skin-btn-active-bg:    rgba(224, 96, 0, 0.16);
+  --remove-btn-bg:         rgba(255, 48, 48, 0.88);
+  --remove-btn-border:     #FF3030;
+}
+
+/* ── Starfield + orange vignette ───────────────────────────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.9 0 0 0 0 0.55 0 0 0 0 0 0 0 0 14 -10'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(4, 2, 6, 0.75) 100%),
+    radial-gradient(ellipse 60% 60% at 50% 100%, rgba(160, 50, 0, 0.06) 0%, transparent 70%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Orange accent bar ────────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #E06000, rgba(200, 80, 0, 0.30));
+  box-shadow: 0 0 10px rgba(224, 96, 0, 0.55), 0 0 24px rgba(224, 96, 0, 0.18);
+}
+
+/* ── Grid: starfield warmth + horizon glow ─────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(180, 60, 0, 0.05) 0%, transparent 35%),
+    linear-gradient(to top, rgba(200, 80, 0, 0.08) 0%, rgba(180, 60, 0, 0.03) 22%, transparent 50%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(160, 60, 0, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 15% 40%, rgba(140, 50, 0, 0.04) 0%, transparent 60%);
+}
+
+/* ── Watermark ─────────────────────────────────────────────────────────────── */
+#grid-container::after {
+  content: 'REBEL\AALLIANCE\A\AMANY BOTHANS\ADIED\A\AYAVIN IV\A\AHOPE';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Consolas', monospace; letter-spacing: 2px;
+  font-size: 13px; line-height: 1.7; text-align: right;
+  color: rgba(200, 100, 0, 0.11); white-space: pre;
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'REBEL ALLIANCE  //  YAVIN IV  //  FREEDOM OR DEATH';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 100, 0, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'REBEL\AALLIANCE\A\AMANY BOTHANS\ADIED\A\AYAVIN IV\A\AHOPE';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Consolas', monospace; letter-spacing: 2px;
+  font-size: 13px; line-height: 1.7; text-align: right;
+  color: rgba(200, 100, 0, 0.11); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'BATTLE STATION APPROACH VECTOR';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8px; letter-spacing: 2px; color: rgba(255, 48, 48, 0.35);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Consolas', monospace; letter-spacing: 5px; }
+
+/* ── Title animation ─────────────────────────────────────────────────────────── */
+@keyframes rebel-pulse {
+  0%, 100% { text-shadow: 0 0 7px rgba(224,96,0,.55), 0 0 18px rgba(224,96,0,.20); opacity: 1; }
+  50%       { text-shadow: 0 0 12px rgba(224,96,0,.85), 0 0 32px rgba(224,96,0,.35); opacity: 0.92; }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(8, 5, 2, 0.97); border-top-color: rgba(224, 96, 0, 0.20); }
+#theme-banner::before { content: '✦'; color: #E06000; font-size: 18px; }
+#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(192, 120, 0, 0.60); }

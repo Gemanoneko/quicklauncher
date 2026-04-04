@@ -1,0 +1,164 @@
+/* ══ THE EXPANSE ══════════════════════════════════════════════════════════════
+   The Rocinante. The Belt. Practical near-future ship UI — no nonsense,
+   no glamour. Physics still works out here. Inyalowda.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #030507;
+  --panel-bg:     rgba(5, 8, 12, 0.98);
+  --overlay-bg:   rgba(3, 5, 8, 0.96);
+  --header-bg:    rgba(50, 90, 140, 0.04);
+
+  --font:         'Segoe UI', 'Consolas', monospace;
+  --text:         #8090A8;
+  --text-dim:     rgba(100, 120, 150, 0.45);
+
+  --accent-c:     #3A7A9C;   /* ship blue / Belter teal */
+  --accent-m:     #AA2010;   /* MCRN red */
+  --accent-y:     #607888;   /* tech grey-blue */
+
+  --border:       rgba(50, 100, 140, 0.22);
+  --border-h:     rgba(60, 120, 165, 0.52);
+
+  --glow-c:       0 0 6px rgba(58,122,156,.58), 0 0 18px rgba(58,122,156,.18);
+  --glow-m:       0 0 6px rgba(170,32,16,.58), 0 0 18px rgba(170,32,16,.18);
+  --glow-y:       0 0 5px rgba(96,120,136,.50), 0 0 16px rgba(96,120,136,.15);
+
+  --pulse-glow:   inset 0 0 18px rgba(50,100,140,.06);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 3px,
+                    rgba(50, 90, 130, 0.020) 3px, rgba(50, 90, 130, 0.020) 4px
+                  );
+  --drag-over-glow: inset 0 0 22px rgba(58,122,156,.10);
+
+  --title-anim:   expanse-scan 7s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(50, 100, 140, 0.07);
+  --tile-hover-border: rgba(60, 120, 165, 0.32);
+  --tile-hover-shadow: 0 0 12px rgba(58, 122, 156, 0.16);
+  --tile-active-bg:    rgba(50, 100, 140, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(58,122,156,.55)) drop-shadow(0 0 12px rgba(58,122,156,.22));
+
+  --btn-hover-bg:   rgba(50, 100, 140, 0.10);
+  --btn-active-bg:  rgba(50, 100, 140, 0.20);
+
+  --drop-hint-border: rgba(50, 100, 140, 0.25);
+  --drop-icon-color:  rgba(58, 122, 156, 0.35);
+  --hint-sub-color:   rgba(80, 110, 140, 0.38);
+
+  --rename-dashed:    rgba(58, 122, 156, 0.38);
+  --rename-input-bg:  rgba(50, 100, 140, 0.07);
+
+  --edit-bar-bg:          rgba(170, 32, 16, 0.07);
+  --edit-bar-border:      rgba(170, 32, 16, 0.38);
+  --edit-label-color:     #AA2010;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #AA2010;
+  --btn-done-border:      rgba(170, 32, 16, 0.40);
+  --btn-done-hover-bg:    rgba(170, 32, 16, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(58, 122, 156, 0.38);
+
+  --update-bg:             rgba(96, 120, 136, 0.05);
+  --update-border:         rgba(110, 135, 155, 0.28);
+  --update-color:          #607888;
+  --update-btn-border:     rgba(96, 120, 136, 0.25);
+  --update-btn-hover-bg:   rgba(96, 120, 136, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #AA2010;
+  --btn-close-border:     rgba(170, 32, 16, 0.38);
+  --btn-close-hover-bg:   rgba(170, 32, 16, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(50, 100, 140, 0.07);
+  --picker-item-hover-bg:  rgba(50, 100, 140, 0.08);
+  --picker-item-active-bg: rgba(50, 100, 140, 0.14);
+  --picker-placeholder-bg: rgba(50, 100, 140, 0.07);
+
+  --skin-btn-active-bg:    rgba(50, 100, 140, 0.16);
+  --remove-btn-bg:         rgba(170, 32, 16, 0.88);
+  --remove-btn-border:     #AA2010;
+}
+
+/* ── Ship hull overlay — practical, functional ──────────────────────────────── */
+#app::after {
+  background:
+    /* horizontal hull panel lines */
+    repeating-linear-gradient(0deg,
+      transparent 0px, transparent 19px,
+      rgba(50, 90, 130, 0.022) 19px, rgba(50, 90, 130, 0.022) 20px
+    ),
+    /* scanlines */
+    repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 3px,
+      rgba(40, 80, 115, 0.018) 3px, rgba(40, 80, 115, 0.018) 4px
+    ),
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 42%, rgba(1, 3, 5, 0.70) 100%);
+  background-size: 100% 20px, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header teal accent bar ──────────────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #3A7A9C, rgba(50, 100, 140, 0.28));
+  box-shadow: 0 0 8px rgba(58, 122, 156, 0.52), 0 0 20px rgba(58, 122, 156, 0.16);
+}
+
+/* ── Grid: ship panel grid + deep space ambient ─────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0px, transparent 79px,
+      rgba(50, 90, 130, 0.018) 79px, rgba(50, 90, 130, 0.018) 80px
+    ),
+    linear-gradient(to bottom, rgba(40, 80, 120, 0.05) 0%, transparent 30%),
+    linear-gradient(to top, rgba(140, 20, 10, 0.04) 0%, rgba(100, 15, 8, 0.02) 15%, transparent 40%);
+  background-size: 80px 100%, 100% 100%, 100% 100%;
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'ROCINANTE  //  RING GATE  //  INYALOWDA';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(58, 122, 156, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'ROCINANTE\A\ABELTER\ACREWE\A\ARING GATE\AAPPROACH\A\AINYALOWDA\A\AMCRN';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Consolas', monospace; letter-spacing: 1.5px;
+  font-size: 12px; line-height: 1.7; text-align: right;
+  color: rgba(50, 100, 140, 0.11); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'WEAPONS FREE  —  RETURNING FIRE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', monospace;
+  font-size: 8px; letter-spacing: 2px; color: rgba(170, 32, 16, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Consolas', monospace; letter-spacing: 5px; }
+
+/* ── Title animation: nav scan ───────────────────────────────────────────────── */
+@keyframes expanse-scan {
+  0%, 100% { text-shadow: 0 0 6px rgba(58,122,156,.55), 0 0 18px rgba(58,122,156,.18); opacity: 1; }
+  50%       { text-shadow: 0 0 10px rgba(58,122,156,.78), 0 0 26px rgba(58,122,156,.32); opacity: 0.94; }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(3, 5, 8, 0.98); border-top-color: rgba(50, 100, 140, 0.22); }
+#theme-banner::before { content: '⊗'; color: #3A7A9C; font-size: 20px; }
+#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(50, 110, 148, 0.58); }

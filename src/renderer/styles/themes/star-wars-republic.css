@@ -1,0 +1,159 @@
+/* ══ STAR WARS: OLD REPUBLIC ══════════════════════════════════════════════════
+   An elegant weapon, for a more civilized age. Ancient Force energy,
+   Jedi blue and violet, warm gold — the light side of a thousand years.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #05040C;
+  --panel-bg:     rgba(8, 6, 16, 0.97);
+  --overlay-bg:   rgba(5, 4, 12, 0.95);
+  --header-bg:    rgba(80, 60, 180, 0.04);
+
+  --font:         'Segoe UI', Georgia, serif;
+  --text:         #9A90C8;
+  --text-dim:     rgba(140, 120, 180, 0.45);
+
+  --accent-c:     #5878E0;   /* Jedi blue */
+  --accent-m:     #C040A0;   /* Force violet */
+  --accent-y:     #C0A030;   /* ancient gold */
+
+  --border:       rgba(80, 100, 200, 0.22);
+  --border-h:     rgba(100, 130, 220, 0.55);
+
+  --glow-c:       0 0 7px rgba(88,120,224,.65), 0 0 20px rgba(88,120,224,.22);
+  --glow-m:       0 0 7px rgba(192,64,160,.65), 0 0 20px rgba(192,64,160,.22);
+  --glow-y:       0 0 7px rgba(192,160,48,.65), 0 0 20px rgba(192,160,48,.22);
+
+  --pulse-glow:   inset 0 0 20px rgba(80,100,200,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(80,100,200,.10);
+
+  --title-anim:   republic-glow 6s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(70, 90, 190, 0.08);
+  --tile-hover-border: rgba(100, 130, 220, 0.35);
+  --tile-hover-shadow: 0 0 14px rgba(88, 120, 224, 0.18);
+  --tile-active-bg:    rgba(70, 90, 190, 0.15);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(88,120,224,.60)) drop-shadow(0 0 14px rgba(88,120,224,.25));
+
+  --btn-hover-bg:   rgba(70, 90, 190, 0.10);
+  --btn-active-bg:  rgba(70, 90, 190, 0.20);
+
+  --drop-hint-border: rgba(80, 100, 200, 0.25);
+  --drop-icon-color:  rgba(88, 120, 224, 0.35);
+  --hint-sub-color:   rgba(120, 100, 160, 0.40);
+
+  --rename-dashed:    rgba(88, 120, 224, 0.40);
+  --rename-input-bg:  rgba(70, 90, 190, 0.07);
+
+  --edit-bar-bg:          rgba(192, 64, 160, 0.07);
+  --edit-bar-border:      rgba(192, 64, 160, 0.38);
+  --edit-label-color:     #C040A0;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C040A0;
+  --btn-done-border:      rgba(192, 64, 160, 0.40);
+  --btn-done-hover-bg:    rgba(192, 64, 160, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(88, 120, 224, 0.40);
+
+  --update-bg:             rgba(192, 160, 48, 0.06);
+  --update-border:         rgba(192, 160, 48, 0.38);
+  --update-color:          #C0A030;
+  --update-btn-border:     rgba(192, 160, 48, 0.35);
+  --update-btn-hover-bg:   rgba(192, 160, 48, 0.10);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #C040A0;
+  --btn-close-border:     rgba(192, 64, 160, 0.38);
+  --btn-close-hover-bg:   rgba(192, 64, 160, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(70, 90, 190, 0.07);
+  --picker-item-hover-bg:  rgba(70, 90, 190, 0.08);
+  --picker-item-active-bg: rgba(70, 90, 190, 0.15);
+  --picker-placeholder-bg: rgba(70, 90, 190, 0.07);
+
+  --skin-btn-active-bg:    rgba(70, 90, 190, 0.16);
+  --remove-btn-bg:         rgba(192, 64, 160, 0.88);
+  --remove-btn-border:     #C040A0;
+}
+
+/* ── Force energy overlay — violet mist + void vignette ────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(3, 2, 10, 0.70) 100%),
+    radial-gradient(ellipse 70% 60% at 30% 20%, rgba(60, 40, 160, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(80, 20, 120, 0.05) 0%, transparent 60%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header blue Force accent bar ───────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #5878E0, rgba(80, 100, 200, 0.30));
+  box-shadow: 0 0 10px rgba(88, 120, 224, 0.55), 0 0 24px rgba(88, 120, 224, 0.18);
+}
+
+/* ── Grid: Force energy ambient glow ────────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(60, 80, 180, 0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 80% 70%, rgba(80, 30, 140, 0.05) 0%, transparent 65%),
+    linear-gradient(to top, rgba(70, 50, 160, 0.05) 0%, transparent 40%),
+    repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 58px,
+      rgba(80, 100, 200, 0.015) 58px, rgba(80, 100, 200, 0.015) 59px
+    );
+}
+
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'JEDI ORDER  //  CORUSCANT  //  PEACE THROUGH THE FORCE';
+  position: absolute; left: 155px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(88, 120, 224, 0.45);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'JEDI ORDER\A\ATHERE IS NO\AEMOTION\ATHERE IS PEACE\A\ATHE FORCE\AWILL GUIDE US\A\ACORUSCANT';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 13px; line-height: 1.7; text-align: right;
+  color: rgba(80, 100, 200, 0.11); white-space: pre;
+  animation: republic-breathe 8s ease-in-out infinite;
+}
+
+@keyframes republic-breathe {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+#edit-bar::after {
+  content: 'JEDI COUNCIL AUTHORIZATION REQUIRED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(192, 64, 160, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title animation: Force glow ─────────────────────────────────────────────── */
+@keyframes republic-glow {
+  0%, 100% { text-shadow: 0 0 7px rgba(88,120,224,.55), 0 0 18px rgba(88,120,224,.20); color: #5878E0; }
+  40%       { text-shadow: 0 0 12px rgba(120,150,255,.80), 0 0 30px rgba(88,120,224,.40); color: #8090F0; }
+  70%       { text-shadow: 0 0 8px rgba(160,80,200,.55), 0 0 22px rgba(130,60,180,.25); color: #9060D0; }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(4, 3, 10, 0.97); border-top-color: rgba(80, 100, 200, 0.22); }
+#theme-banner::before { content: '✦'; color: #5878E0; font-size: 18px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(100, 120, 200, 0.60); }
