@@ -199,3 +199,7 @@
   content: '_';
   animation: alien-blink 1.1s step-start infinite;
 }
+
+/* ── Banner ────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(0, 2, 0, 0.98); border-top-color: rgba(27, 200, 27, 0.22); }
+#theme-banner::before { content: '☣'; color: #1BC81B; font-size: 20px; }

@@ -245,3 +245,8 @@
 }
 
 #title { font-family: Impact, Arial, sans-serif; font-size: 12px; letter-spacing: 3px; }
+
+/* ── Banner ────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(4, 3, 0, 0.97); border-top-color: rgba(212, 165, 32, 0.22); }
+#theme-banner::before { content: '△'; color: #D4A520; font-size: 22px; font-family: Impact, Arial, sans-serif; }
+#theme-banner-text { font-family: Impact, Arial, sans-serif; color: rgba(208, 184, 112, 0.55); letter-spacing: 3px; }

@@ -210,3 +210,8 @@
 }
 
 #title { font-family: 'Courier New', Courier, monospace; }
+
+/* ── Banner ────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(0, 2, 0, 0.98); border-top-color: rgba(0, 255, 65, 0.16); }
+#theme-banner::before { content: '〓'; color: #00FF41; font-size: 20px; font-family: 'Courier New', monospace; }
+#theme-banner-text { font-family: 'Courier New', Courier, monospace; color: rgba(0, 200, 50, 0.55); }

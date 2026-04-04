@@ -236,3 +236,8 @@
   font-size: 8px; letter-spacing: 2px; color: rgba(128, 64, 208, 0.40);
   pointer-events: none; white-space: nowrap;
 }
+
+/* ── Banner ────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(0, 2, 8, 0.97); border-top-color: rgba(0, 224, 200, 0.18); }
+#theme-banner::before { content: '公'; color: #00E0C8; font-size: 20px; }
+#theme-banner-text { color: rgba(160, 216, 208, 0.55); }

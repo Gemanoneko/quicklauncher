@@ -270,3 +270,8 @@
   font-size: 8px; letter-spacing: 2px; color: rgba(222, 128, 0, 0.38);
   pointer-events: none; white-space: nowrap;
 }
+
+/* ── Banner ────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(2, 2, 0, 0.97); border-top-color: rgba(76, 112, 64, 0.35); border-top-width: 2px; }
+#theme-banner::before { content: 'Λ'; color: #DEB000; font-size: 24px; font-family: Consolas, monospace; font-weight: bold; }
+#theme-banner-text { font-family: Consolas, 'Courier New', monospace; color: rgba(200, 160, 60, 0.55); }

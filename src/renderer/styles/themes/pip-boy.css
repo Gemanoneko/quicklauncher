@@ -265,3 +265,8 @@
 }
 
 #title { font-family: 'Arial Black', Arial, sans-serif; letter-spacing: 3px; }
+
+/* ── Banner ────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(0, 4, 0, 0.97); border-top-color: rgba(146, 200, 0, 0.25); }
+#theme-banner::before { content: '☢'; color: #92C800; font-size: 20px; }
+#theme-banner-text { font-family: 'Arial Black', Arial, sans-serif; color: rgba(120, 180, 0, 0.60); }

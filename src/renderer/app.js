@@ -9,6 +9,62 @@ let editMode = false;
 let installedApps = [];
 let reorderState = null;   // active drag-to-reorder operation
 let suppressNextClick = false; // prevent launch-on-click after a drag
+let bannerInterval = null;
+
+// ── Banner quotes (3 per theme) ───────────────────────────────────────────────
+const THEME_BANNERS = {
+  'cyberpunk':    ['WAKE UP, SAMURAI. WE HAVE A CITY TO BURN.',
+                   'THE CORPO RATS EAT WELL TONIGHT.',
+                   'THERE IS NO WINNING. ONLY DEGREES OF LOSING.'],
+  'blade-runner': ['ALL THOSE MOMENTS WILL BE LOST IN TIME, LIKE TEARS IN RAIN.',
+                   'MORE HUMAN THAN HUMAN IS OUR MOTTO.',
+                   "IT'S TOO BAD SHE WON'T LIVE. BUT THEN AGAIN, WHO DOES?"],
+  'alien':        ['IN SPACE, NO ONE CAN HEAR YOU SCREAM.',
+                   'BRING BACK LIFE FORM. CREW EXPENDABLE.',
+                   'THEY MOSTLY COME AT NIGHT... MOSTLY.'],
+  'tron':         ['I FIGHT FOR THE USERS.',
+                   'THE GRID. A DIGITAL FRONTIER TO RESHAPE THE HUMAN CONDITION.',
+                   'END OF LINE.'],
+  'lcars':        ['TO BOLDLY GO WHERE NO ONE HAS GONE BEFORE.',
+                   'MAKE IT SO.',
+                   'THERE ARE FOUR LIGHTS.'],
+  'pip-boy':      ['WAR. WAR NEVER CHANGES.',
+                   'PLEASE STAND BY.',
+                   'WELCOME TO THE WASTELAND.'],
+  'dune':         ['THE SPICE MUST FLOW.',
+                   'FEAR IS THE MIND-KILLER.',
+                   'HE WHO CONTROLS THE SPICE CONTROLS THE UNIVERSE.'],
+  'x-files':      ['THE TRUTH IS OUT THERE.',
+                   'TRUST NO ONE.',
+                   'I WANT TO BELIEVE.'],
+  'mass-effect':  ['THE REAPERS ARE REAL. WARN EVERYONE.',
+                   'NO SHEPARD WITHOUT VAKARIAN.',
+                   'STAND TOGETHER OR DIE ALONE.'],
+  'deus-ex':      ['I NEVER ASKED FOR THIS.',
+                   'WHAT A SHAME.',
+                   'THE CONSPIRACY RUNS DEEPER THAN YOU KNOW.'],
+  'ghost-shell':  ['WHAT EXACTLY IS A GHOST?',
+                   'YOUR GHOST WHISPERS TO MY GHOST.',
+                   'IS ALL THIS DATA MAKING THE NET BIGGER, OR AM I GETTING SMALLER?'],
+  'matrix':       ['THERE IS NO SPOON.',
+                   'FREE YOUR MIND.',
+                   'YOU TAKE THE RED PILL AND I SHOW YOU HOW DEEP THE RABBIT HOLE GOES.'],
+  'warhammer':    ['THE EMPEROR PROTECTS.',
+                   'VICTORY NEEDS NO EXPLANATION. DEFEAT ALLOWS NONE.',
+                   'SUFFER NOT THE UNCLEAN TO LIVE.'],
+  'dead-space':   ['MAKE US WHOLE.',
+                   'THE MARKER IS THE PATH TO SALVATION.',
+                   'THERE IS NO ESCAPE FROM WHAT WE HAVE DONE.'],
+  'half-life':    ['THE RIGHT MAN IN THE WRONG PLACE CAN MAKE ALL THE DIFFERENCE.',
+                   'PREPARE FOR UNFORESEEN CONSEQUENCES.',
+                   'RISE AND SHINE, MR. FREEMAN.'],
+  'terminator':   ['COME WITH ME IF YOU WANT TO LIVE.',
+                   "I'LL BE BACK.",
+                   'JUDGMENT DAY IS INEVITABLE.'],
+  'portal':       ['THE CAKE IS A LIE.',
+                   'THINK WITH PORTALS.',
+                   "SCIENCE ISN'T ABOUT WHY. IT'S ABOUT WHY NOT."],
+};
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
@@ -200,6 +256,27 @@ function applySettings() {
   const theme = settings.theme || 'cyberpunk';
   document.getElementById('theme-stylesheet').href = `styles/themes/${theme}.css`;
   document.getElementById('theme-select').value = theme;
+  startBannerCycle(theme);
+}
+
+function startBannerCycle(theme) {
+  clearInterval(bannerInterval);
+  const quotes = THEME_BANNERS[theme];
+  if (!quotes) return;
+
+  const textEl = document.getElementById('theme-banner-text');
+  let idx = 0;
+  textEl.style.opacity = '1';
+  textEl.textContent = quotes[idx];
+
+  bannerInterval = setInterval(() => {
+    textEl.style.opacity = '0';
+    setTimeout(() => {
+      idx = (idx + 1) % quotes.length;
+      textEl.textContent = quotes[idx];
+      textEl.style.opacity = '1';
+    }, 380);
+  }, 8000);
 }
 
 document.getElementById('slider-icon-size').addEventListener('input', async (e) => {

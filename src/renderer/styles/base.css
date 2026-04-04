@@ -331,6 +331,43 @@ button:active { background: var(--btn-active-bg); }
 .drop-icon { font-size: 28px; color: var(--drop-icon-color); margin-bottom: 8px; }
 .hint-sub  { font-size: 9px; letter-spacing: 1px; color: var(--hint-sub-color); }
 
+/* ── Theme banner ────────────────────────────────────────────────────────────── */
+#theme-banner {
+  height: 44px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-top: 1px solid var(--border);
+  background: var(--panel-bg);
+  overflow: hidden;
+}
+
+/* Left symbol — each theme sets content and color */
+#theme-banner::before {
+  content: '';
+  flex-shrink: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent-c);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+#theme-banner-text {
+  flex: 1;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  font-family: var(--font);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.35s ease;
+}
+
 /* ── Edit bar ────────────────────────────────────────────────────────────────── */
 #edit-bar {
   height: var(--edit-bar-h);

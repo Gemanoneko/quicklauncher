@@ -254,3 +254,8 @@
 }
 
 #title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: bold; letter-spacing: 5px; }
+
+/* ── Banner ────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(4, 2, 0, 0.98); border-top-color: rgba(200, 144, 10, 0.30); }
+#theme-banner::before { content: '☩'; color: #C8900A; font-size: 22px; font-family: Georgia, serif; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 144, 10, 0.55); }
