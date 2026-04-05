@@ -164,3 +164,40 @@
 #theme-banner { background: rgba(2, 3, 8, 0.98); border-top-color: rgba(120, 145, 175, 0.18); }
 #theme-banner::before { content: '⊙'; color: #CC0000; font-size: 20px; opacity: 0.8; }
 #theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(110, 130, 160, 0.55); }
+
+/* ── Stargate sequence — prismatic color bands drifting through the void ── */
+#particles {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 80px,
+      rgba(154,174,200,0.03) 80px,
+      rgba(154,174,200,0.03) 82px,
+      transparent 82px,
+      transparent 120px,
+      rgba(204,0,0,0.02) 120px,
+      rgba(204,0,0,0.02) 122px,
+      transparent 122px,
+      transparent 200px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 140px,
+      rgba(112,128,144,0.025) 140px,
+      rgba(112,128,144,0.025) 143px,
+      transparent 143px,
+      transparent 220px,
+      rgba(154,174,200,0.02) 220px,
+      rgba(154,174,200,0.02) 222px,
+      transparent 222px,
+      transparent 350px
+    );
+  background-size: 100% 200px, 100% 350px;
+  animation: hal-stargate 8s linear infinite;
+}
+@keyframes hal-stargate {
+  from { background-position: 0 -200px, 0 -350px; }
+  to   { background-position: 0 0, 0 0; }
+}

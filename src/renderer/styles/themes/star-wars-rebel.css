@@ -162,3 +162,16 @@
 #theme-banner { background: rgba(8, 5, 2, 0.97); border-top-color: rgba(224, 96, 0, 0.20); }
 #theme-banner::before { content: '✦'; color: #E06000; font-size: 18px; }
 #theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(192, 120, 0, 0.60); }
+
+/* ── Rebel star field — warm stars past the X-wing canopy ───────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ccircle cx='25' cy='40' r='0.8' fill='rgba(224,170,100,0.30)'/%3E%3Ccircle cx='85' cy='95' r='0.5' fill='rgba(200,180,160,0.22)'/%3E%3Ccircle cx='155' cy='155' r='0.6' fill='rgba(224,170,100,0.26)'/%3E%3Ccircle cx='115' cy='25' r='0.4' fill='rgba(200,180,160,0.18)'/%3E%3Ccircle cx='45' cy='175' r='0.7' fill='rgba(208,160,32,0.24)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ccircle cx='35' cy='55' r='0.6' fill='rgba(200,160,120,0.14)'/%3E%3Ccircle cx='140' cy='145' r='0.4' fill='rgba(224,170,100,0.10)'/%3E%3Ccircle cx='245' cy='235' r='0.5' fill='rgba(200,160,120,0.12)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 200px, 300px 300px;
+  animation: rebel-starfield 14s linear infinite;
+}
+@keyframes rebel-starfield {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: -200px 25px, -100px 12px; }
+}

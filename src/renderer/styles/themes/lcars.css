@@ -206,3 +206,17 @@
 #theme-banner { background: rgba(0, 0, 0, 0.97); border-top-color: rgba(255, 153, 0, 0.35); border-top-width: 3px; }
 #theme-banner::before { content: '◉'; color: #FF9900; font-size: 20px; }
 #theme-banner-text { font-family: Arial, Helvetica, sans-serif; font-weight: bold; color: rgba(255, 200, 60, 0.55); }
+
+/* ── LCARS data flow — color blocks streaming through channels ───────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='300'%3E%3Crect x='2' y='20' width='8' height='12' rx='4' fill='rgba(255,153,0,0.14)'/%3E%3Crect x='2' y='90' width='8' height='8' rx='4' fill='rgba(204,136,255,0.12)'/%3E%3Crect x='2' y='170' width='8' height='14' rx='4' fill='rgba(102,204,204,0.10)'/%3E%3Crect x='2' y='250' width='8' height='10' rx='4' fill='rgba(255,153,0,0.12)'/%3E%3C/svg%3E") repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='450'%3E%3Crect x='2' y='40' width='8' height='16' rx='4' fill='rgba(204,136,255,0.10)'/%3E%3Crect x='2' y='160' width='8' height='10' rx='4' fill='rgba(102,204,204,0.08)'/%3E%3Crect x='2' y='300' width='8' height='12' rx='4' fill='rgba(204,51,51,0.07)'/%3E%3Crect x='2' y='400' width='8' height='8' rx='4' fill='rgba(255,153,0,0.09)'/%3E%3C/svg%3E") repeat-y;
+  background-size: 40px 300px, 40px 450px;
+  background-position-x: 0, 0;
+  animation: lcars-dataflow 4s linear infinite;
+}
+@keyframes lcars-dataflow {
+  from { background-position: 0 -300px, 0 -450px; }
+  to   { background-position: 0 0, 0 0; }
+}

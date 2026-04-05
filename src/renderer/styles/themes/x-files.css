@@ -246,3 +246,20 @@
 #theme-banner { background: rgba(0, 2, 4, 0.97); border-top-color: rgba(0, 176, 160, 0.18); }
 #theme-banner::before { content: '✦'; color: #C02828; font-size: 18px; }
 #theme-banner-text { font-family: 'Courier New', Courier, monospace; color: rgba(160, 180, 192, 0.55); }
+
+/* ── Flashlight sweep — truth-seeking beam scanning the dark ─────────────── */
+#particles {
+  background:
+    radial-gradient(
+      ellipse 35% 100% at 50% 0%,
+      rgba(0,176,160,0.06) 0%,
+      rgba(0,176,160,0.03) 40%,
+      transparent 70%
+    ) no-repeat;
+  background-size: 100% 100%;
+  animation: xfiles-beam 7s ease-in-out infinite;
+}
+@keyframes xfiles-beam {
+  0%, 100% { background-position: -60% 0; }
+  50%      { background-position: 160% 0; }
+}
