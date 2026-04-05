@@ -723,4 +723,4 @@ async function buildAppEntry(filePath) {
   return { id, name, path: filePath, iconDataUrl };
 }
 
-module.exports = { setupIPC };
+module.exports = { setupIPC, VALID_THEMES };

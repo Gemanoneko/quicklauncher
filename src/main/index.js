@@ -12,12 +12,16 @@ const { createWindow } = require('./window');
 const Store = require('./store');
 const { setupTray } = require('./tray');
 const { setupUpdater } = require('./updater');
-const { setupIPC } = require('./ipc');
+const { setupIPC, VALID_THEMES } = require('./ipc');
 
 let mainWindow = null;
 const store = new Store();
 
 app.whenReady().then(() => {
+  const themes = [...VALID_THEMES];
+  const s = store.get('settings');
+  store.set('settings', { ...s, theme: themes[Math.floor(Math.random() * themes.length)] });
+
   mainWindow = createWindow(store);
   setupTray(mainWindow, app, store);
   setupIPC(mainWindow, store, app);
