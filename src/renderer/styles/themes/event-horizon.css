@@ -43,6 +43,8 @@
   --tile-hover-shadow: 0 0 12px rgba(102, 0, 0, 0.22);
   --tile-active-bg:    rgba(80, 0, 0, 0.20);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(102,0,0,.55)) drop-shadow(0 0 12px rgba(80,0,0,.22));
+  --tile-icon-fx:      grayscale(0.35) contrast(1.25) brightness(0.82);
+  --tile-icon-shape:   circle(46% at 50% 50%);
 
   --btn-hover-bg:   rgba(80, 0, 0, 0.12);
   --btn-active-bg:  rgba(80, 0, 0, 0.24);

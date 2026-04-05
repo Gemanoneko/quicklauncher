@@ -43,6 +43,8 @@
   --tile-hover-shadow: 0 0 12px rgba(0, 138, 154, 0.22);
   --tile-active-bg:    rgba(0, 120, 140, 0.16);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(0,138,154,.58)) drop-shadow(0 0 12px rgba(0,138,154,.22));
+  --tile-icon-fx:      brightness(0.85) saturate(0.7) contrast(1.1);
+  --tile-icon-shape:   circle(46% at 50% 50%);
 
   --btn-hover-bg:   rgba(0, 120, 140, 0.10);
   --btn-active-bg:  rgba(0, 120, 140, 0.20);
@@ -175,6 +177,16 @@
   88%       { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); opacity: 1; }
   90%       { text-shadow: 0 0 10px rgba(0,180,200,.70), 0 0 30px rgba(0,138,154,.30); }
   92%       { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); }
+}
+
+/* ── Consciousness heartbeat — WAU monitor pulse ────────────────────────── */
+#app { animation: soma-heartbeat 4s ease-in-out infinite; }
+@keyframes soma-heartbeat {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(0,120,140,.22), inset 0 0 18px rgba(0,120,140,.04); }
+  25%      { box-shadow: 0 0 0 1px rgba(0,138,154,.50), inset 0 0 28px rgba(0,138,154,.09); }
+  28%      { box-shadow: 0 0 0 1px rgba(0,120,140,.18), inset 0 0 14px rgba(0,120,140,.03); }
+  38%      { box-shadow: 0 0 0 1px rgba(0,138,154,.42), inset 0 0 24px rgba(0,138,154,.07); }
+  42%      { box-shadow: 0 0 0 1px rgba(0,120,140,.22), inset 0 0 18px rgba(0,120,140,.04); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

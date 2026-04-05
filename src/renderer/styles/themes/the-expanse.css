@@ -43,6 +43,8 @@
   --tile-hover-shadow: 0 0 12px rgba(58, 122, 156, 0.16);
   --tile-active-bg:    rgba(50, 100, 140, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(58,122,156,.55)) drop-shadow(0 0 12px rgba(58,122,156,.22));
+  --tile-icon-fx:      brightness(0.92) saturate(0.8) contrast(1.08);
+  --tile-icon-shape:   polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
 
   --btn-hover-bg:   rgba(50, 100, 140, 0.10);
   --btn-active-bg:  rgba(50, 100, 140, 0.20);
@@ -156,6 +158,16 @@
 @keyframes expanse-scan {
   0%, 100% { text-shadow: 0 0 6px rgba(58,122,156,.55), 0 0 18px rgba(58,122,156,.18); opacity: 1; }
   50%       { text-shadow: 0 0 10px rgba(58,122,156,.78), 0 0 26px rgba(58,122,156,.32); opacity: 0.94; }
+}
+
+/* ── Proximity beacon — Rocinante transponder pulse ─────────────────────── */
+#app { animation: expanse-beacon 8s ease-in-out infinite; }
+@keyframes expanse-beacon {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(50,100,140,.22), inset 0 0 16px rgba(50,100,140,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(58,122,156,.48), inset 0 0 24px rgba(58,122,156,.08); }
+  36%      { box-shadow: 0 0 0 1px rgba(170,32,16,.30),  inset 0 0 18px rgba(170,32,16,.05); }
+  37%      { box-shadow: 0 0 0 1px rgba(58,122,156,.42), inset 0 0 22px rgba(58,122,156,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(50,100,140,.28), inset 0 0 18px rgba(50,100,140,.05); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

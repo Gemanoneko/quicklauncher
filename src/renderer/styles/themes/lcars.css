@@ -47,6 +47,8 @@
   --tile-hover-shadow:    0 0 10px rgba(255, 153, 0, 0.35), inset 0 0 8px rgba(255, 153, 0, 0.05);
   --tile-active-bg:       rgba(255, 153, 0, 0.15);
   --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 153, 0, 0.6)) drop-shadow(0 0 12px rgba(255, 153, 0, 0.3));
+  --tile-icon-fx:         saturate(1.2) brightness(1.1);
+  --tile-icon-shape:      inset(2% round 14px);
 
   /* Buttons */
   --btn-hover-bg:         rgba(255, 153, 0, 0.1);
@@ -152,10 +154,19 @@
   box-shadow: 0 0 30px rgba(255, 153, 0, 0.15), 0 0 60px rgba(0, 0, 0, 0.8);
 }
 
-/* ── App rounded container ────────────────────────────────────────────────── */
+/* ── App rounded container + LCARS system alert ──────────────────────────── */
 #app {
   border-radius: 16px;
   border: 1px solid rgba(255, 153, 0, 0.25);
+  animation: lcars-alert 10s ease-in-out infinite;
+}
+@keyframes lcars-alert {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255,153,0,.20); }
+  40%      { box-shadow: 0 0 0 1px rgba(255,153,0,.40), inset 0 0 20px rgba(255,153,0,.06); }
+  41%      { box-shadow: 0 0 0 1px rgba(204,136,255,.35), inset 0 0 18px rgba(204,136,255,.05); }
+  42%      { box-shadow: 0 0 0 1px rgba(255,153,0,.45), inset 0 0 22px rgba(255,153,0,.07); }
+  80%      { box-shadow: 0 0 0 1px rgba(102,204,204,.38), inset 0 0 18px rgba(102,204,204,.05); }
+  81%      { box-shadow: 0 0 0 1px rgba(255,153,0,.30), inset 0 0 14px rgba(255,153,0,.04); }
 }
 
 /* ── Flavor content ────────────────────────────────────────────────────────── */
