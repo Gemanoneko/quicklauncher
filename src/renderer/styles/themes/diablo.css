@@ -49,6 +49,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
+  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(160, 0, 0, 0.12);
   --btn-active-bg:  rgba(160, 0, 0, 0.22);

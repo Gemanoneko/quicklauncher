@@ -56,6 +56,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-glow 4s ease-in-out infinite;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(0, 224, 200, 0.09);

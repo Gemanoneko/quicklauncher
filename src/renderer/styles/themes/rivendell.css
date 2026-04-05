@@ -45,6 +45,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(80, 110, 170, 0.10);
   --btn-active-bg:  rgba(80, 110, 170, 0.20);
@@ -174,7 +175,7 @@
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 4, 9, 0.97); border-top-color: rgba(80, 110, 170, 0.22); }
-#theme-banner::before { content: '✧'; color: #6080B8; font-size: 22px; }
+#theme-banner::before { content: '✶'; color: #6080B8; font-size: 22px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(80, 120, 180, 0.60); }
 
 /* ── Starlight fireflies — silver-blue motes on still water ─────────────── */

@@ -54,6 +54,7 @@
   --tile-label-transform: uppercase;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
 
   /* Buttons */
   --btn-hover-bg:         rgba(200, 144, 10, 0.1);

@@ -45,6 +45,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
+  --banner-icon-anim:    banner-glow 4s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(160, 40, 20, 0.10);
   --btn-active-bg:  rgba(160, 40, 20, 0.20);
@@ -169,7 +170,7 @@
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(6, 1, 0, 0.98); border-top-color: rgba(160, 40, 20, 0.24); }
-#theme-banner::before { content: '✦'; color: #C89020; font-size: 20px; }
+#theme-banner::before { content: '⚜'; color: #C89020; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 110, 30, 0.65); }
 
 /* ── Gryffindor magic — scarlet and gold sparkles from the hearth ────────── */

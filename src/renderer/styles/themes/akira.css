@@ -49,6 +49,7 @@
   --tile-label-transform: uppercase;
   --tile-label-weight:    700;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-throb 3s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(200, 0, 20, 0.12);
   --btn-active-bg:  rgba(200, 0, 20, 0.22);

@@ -45,6 +45,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-glow 5s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(70, 90, 190, 0.10);
   --btn-active-bg:  rgba(70, 90, 190, 0.20);
@@ -171,7 +172,7 @@
 }
 
 #theme-banner { background: rgba(4, 3, 10, 0.97); border-top-color: rgba(80, 100, 200, 0.22); }
-#theme-banner::before { content: '✦'; color: #5878E0; font-size: 18px; }
+#theme-banner::before { content: '☆'; color: #5878E0; font-size: 18px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(100, 120, 200, 0.60); }
 
 /* ── Republic star field — ancient Force-lit stars ───────────────────────── */

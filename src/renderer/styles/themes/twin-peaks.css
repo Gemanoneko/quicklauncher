@@ -60,6 +60,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(110, 10, 5, 0.10);

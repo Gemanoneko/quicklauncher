@@ -49,6 +49,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(160, 55, 0, 0.12);
   --btn-active-bg:  rgba(160, 55, 0, 0.22);
@@ -177,7 +178,7 @@
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(8, 3, 0, 0.98); border-top-color: rgba(160, 55, 0, 0.25); }
-#theme-banner::before { content: '◈'; color: #CC4800; font-size: 20px; }
+#theme-banner::before { content: '◬'; color: #CC4800; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; color: rgba(180, 60, 0, 0.60); }
 
 /* ── Mount Doom — ash fall + ember rise ──────────────────────────────────── */

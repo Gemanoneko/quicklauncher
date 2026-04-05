@@ -59,6 +59,7 @@
   --tile-label-transform: uppercase;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-glow 3s ease-in-out infinite;
 
   /* Buttons */
   --btn-hover-bg:         rgba(109, 232, 255, 0.08);
@@ -189,7 +190,7 @@
 
 /* ── Banner ────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(0, 4, 12, 0.97); border-top-color: rgba(109, 232, 255, 0.18); }
-#theme-banner::before { content: '⬡'; color: #6DE8FF; font-size: 20px; }
+#theme-banner::before { content: '◇'; color: #6DE8FF; font-size: 20px; }
 #theme-banner-text { color: rgba(168, 224, 240, 0.55); }
 
 /* ── Identity disc grid pulse — programme cycling on the grid ────────────── */

@@ -53,6 +53,7 @@
   --tile-label-transform: uppercase;
   --tile-label-weight:    700;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 3s ease-in-out infinite;
 
   /* Buttons */
   --btn-hover-bg:         rgba(255, 153, 0, 0.1);
@@ -204,7 +205,7 @@
 
 /* ── Banner ────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(0, 0, 0, 0.97); border-top-color: rgba(255, 153, 0, 0.35); border-top-width: 3px; }
-#theme-banner::before { content: '◉'; color: #FF9900; font-size: 20px; }
+#theme-banner::before { content: '▮'; color: #FF9900; font-size: 20px; }
 #theme-banner-text { font-family: Arial, Helvetica, sans-serif; font-weight: bold; color: rgba(255, 200, 60, 0.55); }
 
 /* ── LCARS data flow — color blocks streaming through channels ───────────── */

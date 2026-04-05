@@ -45,6 +45,7 @@
   --tile-label-transform: uppercase;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-glow 4s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(200, 80, 0, 0.10);
   --btn-active-bg:  rgba(200, 80, 0, 0.20);
@@ -160,7 +161,7 @@
 }
 
 #theme-banner { background: rgba(8, 5, 2, 0.97); border-top-color: rgba(224, 96, 0, 0.20); }
-#theme-banner::before { content: '✦'; color: #E06000; font-size: 18px; }
+#theme-banner::before { content: '✪'; color: #E06000; font-size: 18px; }
 #theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(192, 120, 0, 0.60); }
 
 /* ── Rebel star field — warm stars past the X-wing canopy ───────────────── */

@@ -45,6 +45,7 @@
   --tile-label-transform: uppercase;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(160, 0, 0, 0.10);
   --btn-active-bg:  rgba(160, 0, 0, 0.20);
@@ -168,7 +169,7 @@
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(4, 3, 6, 0.98); border-top-color: rgba(160, 0, 0, 0.22); }
-#theme-banner::before { content: '☣'; color: #BB0000; font-size: 20px; }
+#theme-banner::before { content: '⬢'; color: #BB0000; font-size: 20px; }
 #theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 2.5px; color: rgba(160, 0, 0, 0.58); }
 
 /* ── Biohazard scan — T-Virus containment sweep ──────────────────────────── */

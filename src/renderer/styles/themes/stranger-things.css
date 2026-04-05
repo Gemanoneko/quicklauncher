@@ -49,6 +49,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --banner-icon-anim:    banner-flicker 5s steps(1) infinite;
 
   --btn-hover-bg:   rgba(200, 0, 80, 0.11);
   --btn-active-bg:  rgba(200, 0, 80, 0.21);
@@ -181,7 +182,7 @@
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(5, 0, 5, 0.98); border-top-color: rgba(180, 0, 100, 0.28); }
-#theme-banner::before { content: '⬡'; color: #9900CC; font-size: 20px; }
+#theme-banner::before { content: '▽'; color: #9900CC; font-size: 20px; }
 #theme-banner-text { font-family: 'Consolas', monospace; color: rgba(200, 0, 120, 0.58); }
 
 /* ── The Gate opening — Upside Down bleeds through ──────────────────────── */

@@ -45,6 +45,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(180, 130, 20, 0.09);
   --btn-active-bg:  rgba(180, 130, 20, 0.18);
@@ -172,7 +173,7 @@
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(5, 3, 0, 0.98); border-top-color: rgba(180, 130, 20, 0.22); }
-#theme-banner::before { content: '✿'; color: #D09020; font-size: 20px; }
+#theme-banner::before { content: '❋'; color: #D09020; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 140, 30, 0.65); }
 
 /* ── Hufflepuff magic — warm golden pollen near the kitchens ─────────────── */

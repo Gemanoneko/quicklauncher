@@ -45,6 +45,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
 
   --btn-hover-bg:   rgba(88, 110, 30, 0.10);
   --btn-active-bg:  rgba(88, 110, 30, 0.20);
@@ -174,7 +175,7 @@
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(4, 6, 1, 0.97); border-top-color: rgba(88, 110, 30, 0.22); }
-#theme-banner::before { content: '⊙'; color: #D0A040; font-size: 20px; }
+#theme-banner::before { content: '⌂'; color: #D0A040; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(104, 128, 40, 0.60); }
 
 /* ── Hobbiton fireflies — golden pollen motes in warm lamplight ─────────── */

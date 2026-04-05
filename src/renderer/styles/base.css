@@ -389,7 +389,7 @@ button:active { background: var(--btn-active-bg); }
   overflow: hidden;
 }
 
-/* Left symbol — each theme sets content and color */
+/* Left symbol — each theme sets content, color, and animation */
 #theme-banner::before {
   content: '';
   flex-shrink: 0;
@@ -398,7 +398,15 @@ button:active { background: var(--btn-active-bg); }
   color: var(--accent-c);
   opacity: 0.55;
   pointer-events: none;
+  animation: var(--banner-icon-anim, none);
 }
+
+/* Shared banner icon animation keyframes */
+@keyframes banner-glow   { 0%,100% { text-shadow: none; opacity: 0.55; } 50% { text-shadow: 0 0 8px currentColor; opacity: 0.85; } }
+@keyframes banner-pulse  { 0%,100% { opacity: 0.45; } 50% { opacity: 0.9; } }
+@keyframes banner-blink  { 0%,49% { opacity: 0.7; } 50%,89% { opacity: 0.2; } 90%,100% { opacity: 0.7; } }
+@keyframes banner-throb  { 0%,100% { transform: scale(1); opacity: 0.55; } 50% { transform: scale(1.2); opacity: 0.85; } }
+@keyframes banner-flicker { 0%,88%,100% { opacity: 0.55; } 90% { opacity: 0.9; } 92% { opacity: 0.2; } 94% { opacity: 0.8; } }
 
 #theme-banner-text {
   flex: 1;

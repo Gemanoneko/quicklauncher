@@ -45,6 +45,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
+  --banner-icon-anim:    banner-flicker 5s steps(1) infinite;
 
   --btn-hover-bg:   rgba(70, 80, 140, 0.10);
   --btn-active-bg:  rgba(70, 80, 140, 0.20);
