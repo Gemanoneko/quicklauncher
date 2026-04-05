@@ -143,6 +143,15 @@ html, body {
   display: flex; flex-direction: column; overflow: hidden;
 }
 
+/* Particle layer — themes override with animated backgrounds */
+#particles {
+  position: absolute; inset: 0;
+  clip-path: inherit;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
 /* Animated border */
 #app::before {
   content: '';

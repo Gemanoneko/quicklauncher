@@ -294,3 +294,16 @@
   border: 1px solid var(--tile-hover-border);
 }
 .app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+
+/* ── Battle ash — falling through cathedral candlelight ─────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='400'%3E%3Ccircle cx='25' cy='50' r='1.5' fill='rgba(160,130,80,0.16)'/%3E%3Ccircle cx='80' cy='160' r='1' fill='rgba(120,100,60,0.12)'/%3E%3Ccircle cx='140' cy='300' r='1.8' fill='rgba(140,110,70,0.14)'/%3E%3Ccircle cx='60' cy='360' r='1.2' fill='rgba(100,80,50,0.10)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='600'%3E%3Ccircle cx='40' cy='80' r='2' fill='rgba(140,100,50,0.09)'/%3E%3Ccircle cx='130' cy='260' r='1.5' fill='rgba(120,85,40,0.07)'/%3E%3Ccircle cx='210' cy='460' r='2.5' fill='rgba(160,120,60,0.06)'/%3E%3C/svg%3E") repeat;
+  background-size: 180px 400px, 260px 600px;
+  animation: wh-battle-ash 10s linear infinite;
+}
+@keyframes wh-battle-ash {
+  from { background-position: 0 -400px, 15px -600px; }
+  to   { background-position: 20px 0, -10px 0; }
+}

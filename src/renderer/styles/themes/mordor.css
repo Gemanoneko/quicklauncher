@@ -179,3 +179,16 @@
 #theme-banner { background: rgba(8, 3, 0, 0.98); border-top-color: rgba(160, 55, 0, 0.25); }
 #theme-banner::before { content: '◈'; color: #CC4800; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; color: rgba(180, 60, 0, 0.60); }
+
+/* ── Mount Doom — ash fall + ember rise ──────────────────────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='30' cy='50' r='1.5' fill='rgba(80,60,40,0.20)'/%3E%3Ccircle cx='100' cy='160' r='1' fill='rgba(60,45,30,0.16)'/%3E%3Ccircle cx='160' cy='300' r='1.8' fill='rgba(70,50,35,0.14)'/%3E%3Ccircle cx='70' cy='370' r='1.2' fill='rgba(90,65,45,0.18)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='350'%3E%3Ccircle cx='25' cy='50' r='1.5' fill='rgba(255,100,20,0.30)'/%3E%3Ccircle cx='80' cy='150' r='1' fill='rgba(204,72,0,0.25)'/%3E%3Ccircle cx='130' cy='270' r='2' fill='rgba(255,80,10,0.20)'/%3E%3Ccircle cx='50' cy='310' r='0.8' fill='rgba(255,120,30,0.28)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 160px 350px;
+  animation: mordor-ash 8s linear infinite;
+}
+@keyframes mordor-ash {
+  from { background-position: 0 -400px, 10px 0; }
+  to   { background-position: 20px 0, -10px -350px; }
+}
