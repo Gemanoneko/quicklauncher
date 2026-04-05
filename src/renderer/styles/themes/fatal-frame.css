@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 12px rgba(80, 96, 160, 0.20);
   --tile-active-bg:    rgba(70, 80, 140, 0.16);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(80,96,160,.52)) drop-shadow(0 0 12px rgba(192,160,192,.20));
+  --tile-icon-fx:      grayscale(0.3) brightness(0.88) contrast(1.12);
+  --tile-icon-shape:   inset(5%);
 
   --btn-hover-bg:   rgba(70, 80, 140, 0.10);
   --btn-active-bg:  rgba(70, 80, 140, 0.20);
@@ -164,6 +166,18 @@
   /* secondary slow fade */
   88%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); }
   94%       { text-shadow: 0 0 8px rgba(100,115,180,.58), 0 0 24px rgba(80,96,160,.22); }
+}
+
+/* ── Camera Obscura shutter — spirit presence flash ─────────────────────── */
+#app { animation: spirit-shutter 9s ease-in-out infinite; }
+@keyframes spirit-shutter {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(70,80,140,.22), inset 0 0 18px rgba(70,80,140,.04); }
+  40%      { box-shadow: 0 0 0 1px rgba(80,96,160,.40), inset 0 0 24px rgba(80,96,160,.07); }
+  /* camera flash */
+  70%      { box-shadow: 0 0 0 1px rgba(80,96,160,.30), inset 0 0 18px rgba(80,96,160,.05); }
+  72%      { box-shadow: 0 0 0 2px rgba(220,220,255,.55), inset 0 0 40px rgba(192,160,192,.12); }
+  73%      { box-shadow: 0 0 0 1px rgba(192,160,192,.35), inset 0 0 22px rgba(192,160,192,.06); }
+  74%      { box-shadow: 0 0 0 1px rgba(70,80,140,.22), inset 0 0 18px rgba(70,80,140,.04); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

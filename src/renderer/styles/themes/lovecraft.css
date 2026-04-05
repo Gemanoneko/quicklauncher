@@ -50,6 +50,8 @@
   --tile-hover-shadow: 0 0 10px rgba(64, 80, 160, 0.14);
   --tile-active-bg:    rgba(50, 65, 130, 0.15);
   --tile-icon-glow:    drop-shadow(0 0 4px rgba(64,80,160,.45)) drop-shadow(0 0 10px rgba(50,65,130,.18));
+  --tile-icon-fx:      brightness(0.85) saturate(0.65) contrast(1.15);
+  --tile-icon-shape:   none;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(50, 65, 130, 0.09);
@@ -187,6 +189,17 @@
   80%  { color: #C0A040; text-shadow: 0 0 4px rgba(192,160,64,.50); opacity: 0.7; transform: skewX(2deg); }
   81%  { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.38); opacity: 1; transform: skewX(0); }
   100% { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); opacity: 1; }
+}
+
+/* ── Cosmic horror — sanity eroding presence ────────────────────────────── */
+#app { animation: cosmic-pulse 11s ease-in-out infinite; }
+@keyframes cosmic-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(50,65,130,.18), inset 0 0 20px rgba(50,65,130,.04); }
+  30%      { box-shadow: 0 0 0 1px rgba(64,80,160,.42), inset 0 0 28px rgba(64,80,160,.07); }
+  31%      { box-shadow: 0 0 0 1px rgba(128,96,32,.25), inset 0 0 22px rgba(128,96,32,.05); }
+  32%      { box-shadow: 0 0 0 1px rgba(64,80,160,.35), inset 0 0 24px rgba(64,80,160,.06); }
+  65%      { box-shadow: 0 0 0 1px rgba(48,32,64,.30), inset 0 0 22px rgba(48,32,64,.05); }
+  66%      { box-shadow: 0 0 0 1px rgba(50,65,130,.22), inset 0 0 18px rgba(50,65,130,.04); }
 }
 
 /* ── Banner ──────────────────────────────────────────────────────────────────── */

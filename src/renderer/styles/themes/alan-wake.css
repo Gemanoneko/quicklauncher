@@ -50,6 +50,8 @@
   --tile-hover-shadow: 0 0 12px rgba(232, 184, 48, 0.16);
   --tile-active-bg:    rgba(200, 160, 60, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(232,184,48,.60)) drop-shadow(0 0 12px rgba(200,160,60,.24));
+  --tile-icon-fx:      brightness(0.9) contrast(1.15) sepia(0.2);
+  --tile-icon-shape:   none;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(200, 160, 60, 0.09);
@@ -182,6 +184,17 @@
   92%       { color: #A09070; opacity: 1; }
   93%       { color: #CC2010; text-shadow: 0 0 6px rgba(204,32,16,.50); opacity: 0.7; }
   94%       { color: #A09070; text-shadow: 0 0 6px rgba(232,184,48,.30); opacity: 1; }
+}
+
+/* ── Flashlight flicker — the darkness is close ─────────────────────────── */
+#app { animation: wake-flashlight 5s ease-in-out infinite; }
+@keyframes wake-flashlight {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,160,60,.18), inset 0 0 18px rgba(200,160,60,.04); }
+  30%      { box-shadow: 0 0 0 1px rgba(232,184,48,.42), inset 0 0 26px rgba(232,184,48,.08); }
+  32%      { box-shadow: 0 0 0 1px rgba(200,160,60,.12), inset 0 0 12px rgba(200,160,60,.02); }
+  34%      { box-shadow: 0 0 0 1px rgba(232,184,48,.48), inset 0 0 28px rgba(232,184,48,.09); }
+  36%      { box-shadow: 0 0 0 1px rgba(200,160,60,.22), inset 0 0 16px rgba(200,160,60,.04); }
+  70%      { box-shadow: 0 0 0 1px rgba(200,160,60,.18), inset 0 0 18px rgba(200,160,60,.04); }
 }
 
 /* ── Banner ──────────────────────────────────────────────────────────────────── */

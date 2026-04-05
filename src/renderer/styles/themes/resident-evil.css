@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 12px rgba(187, 0, 0, 0.20);
   --tile-active-bg:    rgba(160, 0, 0, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(187,0,0,.58)) drop-shadow(0 0 12px rgba(187,0,0,.24));
+  --tile-icon-fx:      saturate(0.7) brightness(0.92) contrast(1.15);
+  --tile-icon-shape:   polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
 
   --btn-hover-bg:   rgba(160, 0, 0, 0.10);
   --btn-active-bg:  rgba(160, 0, 0, 0.20);
@@ -148,6 +150,16 @@
 @keyframes umbrella-pulse {
   0%, 100% { text-shadow: 0 0 6px rgba(187,0,0,.55), 0 0 18px rgba(187,0,0,.18); opacity: 1; }
   50%       { text-shadow: 0 0 10px rgba(187,0,0,.80), 0 0 28px rgba(187,0,0,.32); opacity: 0.92; }
+}
+
+/* ── T-Virus containment warning — Umbrella facility breach ─────────────── */
+#app { animation: umbrella-containment 8s ease-in-out infinite; }
+@keyframes umbrella-containment {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(160,0,0,.22), inset 0 0 18px rgba(160,0,0,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(187,0,0,.52), inset 0 0 26px rgba(187,0,0,.08); }
+  36%      { box-shadow: 0 0 0 1px rgba(128,144,160,.20), inset 0 0 16px rgba(128,144,160,.03); }
+  37%      { box-shadow: 0 0 0 1px rgba(187,0,0,.45), inset 0 0 22px rgba(187,0,0,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(136,0,0,.30), inset 0 0 18px rgba(136,0,0,.04); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

@@ -54,6 +54,8 @@
   --tile-hover-shadow: 0 0 12px rgba(136, 0, 0, 0.18);
   --tile-active-bg:    rgba(110, 10, 5, 0.18);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(136,0,0,.52)) drop-shadow(0 0 12px rgba(100,0,0,.20));
+  --tile-icon-fx:      sepia(0.35) brightness(0.92) contrast(1.1);
+  --tile-icon-shape:   none;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(110, 10, 5, 0.10);
@@ -186,6 +188,16 @@
   90%       { color: #C09070; text-shadow: 0 0 7px rgba(136,0,0,.40); opacity: 1; transform: scaleX(1); }
   91%       { color: #880000; text-shadow: 0 0 10px rgba(136,0,0,.65); opacity: 0.9; }
   92%       { color: #C09070; text-shadow: 0 0 7px rgba(136,0,0,.40); opacity: 1; }
+}
+
+/* ── Black Lodge curtain — red flicker between worlds ───────────────────── */
+#app { animation: lodge-curtain 8s ease-in-out infinite; }
+@keyframes lodge-curtain {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(110,10,5,.22), inset 0 0 20px rgba(100,0,0,.05); }
+  35%      { box-shadow: 0 0 0 1px rgba(136,0,0,.48), inset 0 0 28px rgba(136,0,0,.08); }
+  36%      { box-shadow: 0 0 0 1px rgba(212,184,96,.25), inset 0 0 18px rgba(212,184,96,.04); }
+  37%      { box-shadow: 0 0 0 1px rgba(136,0,0,.40), inset 0 0 24px rgba(136,0,0,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(100,0,0,.28), inset 0 0 20px rgba(100,0,0,.05); }
 }
 
 /* ── Banner ──────────────────────────────────────────────────────────────────── */

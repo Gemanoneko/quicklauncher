@@ -54,6 +54,8 @@
   --tile-hover-shadow: 0 0 8px rgba(187, 187, 187, 0.10);
   --tile-active-bg:    rgba(150, 150, 150, 0.12);
   --tile-icon-glow:    drop-shadow(0 0 4px rgba(187,187,187,.35)) drop-shadow(0 0 8px rgba(150,150,150,.14));
+  --tile-icon-fx:      grayscale(0.4) brightness(0.9) contrast(1.1);
+  --tile-icon-shape:   inset(3%);
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(150, 150, 150, 0.08);
@@ -187,6 +189,17 @@
   87%       { color: #BBBBBB; text-shadow: 0 0 8px rgba(187,187,187,.55), 0 0 20px rgba(187,187,187,.18); opacity: 1; }
   89%       { color: #CC0000; text-shadow: 0 0 6px rgba(204,0,0,.60), 0 0 16px rgba(204,0,0,.22); opacity: 0.85; }
   91%       { color: #888888; text-shadow: 0 0 4px rgba(187,187,187,.20); opacity: 1; }
+}
+
+/* ── Containment breach alert — institutional flash ─────────────────────── */
+#app { animation: scp-containment 10s steps(1) infinite; }
+@keyframes scp-containment {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(150,150,150,.18); }
+  78%      { box-shadow: 0 0 0 1px rgba(150,150,150,.18); }
+  79%      { box-shadow: 0 0 0 1px rgba(204,0,0,.55), inset 0 0 20px rgba(204,0,0,.06); }
+  80%      { box-shadow: 0 0 0 1px rgba(150,150,150,.30); }
+  81%      { box-shadow: 0 0 0 1px rgba(204,0,0,.45), inset 0 0 16px rgba(204,0,0,.05); }
+  82%      { box-shadow: 0 0 0 1px rgba(150,150,150,.18); }
 }
 
 /* ── Banner ──────────────────────────────────────────────────────────────────── */
