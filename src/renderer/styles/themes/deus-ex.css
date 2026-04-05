@@ -50,6 +50,8 @@
   --tile-hover-shadow: 0 0 12px rgba(212, 165, 32, 0.10);
   --tile-active-bg:    rgba(212, 165, 32, 0.12);
   --tile-icon-glow:    drop-shadow(0 0 7px rgba(212,165,32,.40));
+  --tile-icon-fx:      sepia(0.25) brightness(1.12) contrast(1.08);
+  --tile-icon-shape:   polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(212, 165, 32, 0.09);

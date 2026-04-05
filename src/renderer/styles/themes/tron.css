@@ -53,6 +53,8 @@
   --tile-hover-shadow:    0 0 10px rgba(109, 232, 255, 0.4), inset 0 0 8px rgba(109, 232, 255, 0.05);
   --tile-active-bg:       rgba(109, 232, 255, 0.12);
   --tile-icon-glow:       drop-shadow(0 0 5px #6DE8FF) drop-shadow(0 0 12px rgba(109, 232, 255, 0.5));
+  --tile-icon-fx:         brightness(1.15) saturate(1.1) contrast(1.05);
+  --tile-icon-shape:      polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
 
   /* Buttons */
   --btn-hover-bg:         rgba(109, 232, 255, 0.08);
@@ -185,6 +187,18 @@
 #theme-banner { background: rgba(0, 4, 12, 0.97); border-top-color: rgba(109, 232, 255, 0.18); }
 #theme-banner::before { content: '⬡'; color: #6DE8FF; font-size: 20px; }
 #theme-banner-text { color: rgba(168, 224, 240, 0.55); }
+
+/* ── Identity disc grid pulse — programme cycling on the grid ────────────── */
+#app { animation: tron-grid-pulse 6s ease-in-out infinite; }
+@keyframes tron-grid-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(109,232,255,.18), inset 0 0 16px rgba(109,232,255,.04); }
+  33%      { box-shadow: 0 0 0 1px rgba(109,232,255,.45), inset 0 0 26px rgba(109,232,255,.09); }
+  34%      { box-shadow: 0 0 0 1px rgba(255,127,0,.30),   inset 0 0 20px rgba(255,127,0,.06); }
+  35%      { box-shadow: 0 0 0 1px rgba(109,232,255,.38), inset 0 0 22px rgba(109,232,255,.07); }
+  66%      { box-shadow: 0 0 0 1px rgba(109,232,255,.32), inset 0 0 20px rgba(109,232,255,.06); }
+  67%      { box-shadow: 0 0 0 1px rgba(255,127,0,.48),   inset 0 0 28px rgba(255,127,0,.09); }
+  68%      { box-shadow: 0 0 0 1px rgba(109,232,255,.42), inset 0 0 24px rgba(109,232,255,.08); }
+}
 
 /* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
 #header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }

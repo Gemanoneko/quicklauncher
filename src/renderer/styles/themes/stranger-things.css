@@ -43,6 +43,8 @@
   --tile-hover-shadow: 0 0 14px rgba(255, 0, 102, 0.28);
   --tile-active-bg:    rgba(200, 0, 80, 0.16);
   --tile-icon-glow:    drop-shadow(0 0 6px rgba(255,0,102,.70)) drop-shadow(0 0 14px rgba(153,0,204,.28));
+  --tile-icon-fx:      brightness(0.88) saturate(0.80);
+  --tile-icon-shape:   none;
 
   --btn-hover-bg:   rgba(200, 0, 80, 0.11);
   --btn-active-bg:  rgba(200, 0, 80, 0.21);
@@ -177,3 +179,16 @@
 #theme-banner { background: rgba(5, 0, 5, 0.98); border-top-color: rgba(180, 0, 100, 0.28); }
 #theme-banner::before { content: '⬡'; color: #9900CC; font-size: 20px; }
 #theme-banner-text { font-family: 'Consolas', monospace; color: rgba(200, 0, 120, 0.58); }
+
+/* ── The Gate opening — Upside Down bleeds through ──────────────────────── */
+#app { animation: st-gate-bleed 9s ease-in-out infinite; }
+@keyframes st-gate-bleed {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,0,80,.22), inset 0 0 18px rgba(200,0,80,.04); }
+  30%      { box-shadow: 0 0 0 1px rgba(255,0,102,.50), inset 0 0 26px rgba(255,0,102,.08); }
+  31%      { box-shadow: 0 0 0 1px rgba(153,0,204,.35), inset 0 0 20px rgba(153,0,204,.06); }
+  32%      { box-shadow: 0 0 0 1px rgba(255,0,102,.62), inset 0 0 32px rgba(255,0,102,.10); }
+  33%      { box-shadow: 0 0 0 1px rgba(200,0,80,.25),  inset 0 0 16px rgba(200,0,80,.04); }
+  70%      { box-shadow: 0 0 0 1px rgba(153,0,204,.45), inset 0 0 24px rgba(153,0,204,.07); }
+  71%      { box-shadow: 0 0 0 1px rgba(200,0,80,.20),  inset 0 0 14px rgba(200,0,80,.03); }
+  72%      { box-shadow: 0 0 0 1px rgba(153,0,204,.58), inset 0 0 30px rgba(153,0,204,.09); }
+}

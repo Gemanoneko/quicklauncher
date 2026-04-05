@@ -53,6 +53,8 @@
   --tile-hover-shadow:    0 0 10px rgba(0, 240, 255, 0.4), inset 0 0 8px rgba(0, 240, 255, 0.06);
   --tile-active-bg:       rgba(0, 240, 255, 0.14);
   --tile-icon-glow:       drop-shadow(0 0 6px #00f0ff) drop-shadow(0 0 12px rgba(0, 240, 255, 0.6));
+  --tile-icon-fx:         saturate(1.5) contrast(1.15);
+  --tile-icon-shape:      polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
 
   /* Buttons */
   --btn-hover-bg:         rgba(0, 240, 255, 0.1);
@@ -226,6 +228,19 @@
 /* ── Banner ────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(0, 4, 14, 0.95); border-top-color: rgba(0, 240, 255, 0.18); }
 #theme-banner::before { content: '◈'; color: #00f0ff; font-size: 20px; }
+
+/* ── Night City neon surge — corp billboard overload ────────────────────── */
+#app { animation: cp-neon-surge 7s ease-in-out infinite; }
+@keyframes cp-neon-surge {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(0,240,255,.18), inset 0 0 18px rgba(0,240,255,.04); }
+  25%      { box-shadow: 0 0 0 1px rgba(0,240,255,.45), inset 0 0 28px rgba(0,240,255,.08); }
+  26%      { box-shadow: 0 0 0 1px rgba(255,0,170,.35), inset 0 0 22px rgba(255,0,170,.06); }
+  27%      { box-shadow: 0 0 0 1px rgba(0,240,255,.55), inset 0 0 32px rgba(0,240,255,.10); }
+  28%      { box-shadow: 0 0 0 1px rgba(0,240,255,.22), inset 0 0 16px rgba(0,240,255,.04); }
+  75%      { box-shadow: 0 0 0 1px rgba(255,0,170,.42), inset 0 0 26px rgba(255,0,170,.07); }
+  76%      { box-shadow: 0 0 0 1px rgba(232,255,0,.28), inset 0 0 20px rgba(232,255,0,.05); }
+  77%      { box-shadow: 0 0 0 1px rgba(255,0,170,.52), inset 0 0 30px rgba(255,0,170,.09); }
+}
 
 /* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
 #header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }
