@@ -19,7 +19,7 @@
   --font:         Georgia, 'Times New Roman', serif;
 
   /* ── Text ── */
-  --text:         #C09070;
+  --text:         #D0A080;
   --text-dim:     rgba(170, 120, 80, 0.45);
 
   /* ── Accents ── */
@@ -28,8 +28,8 @@
   --accent-y:     #D4B860;   /* diner coffee / fluorescent cream */
 
   /* ── Borders ── */
-  --border:       rgba(120, 20, 10, 0.22);
-  --border-h:     rgba(150, 30, 15, 0.50);
+  --border:       rgba(130, 25, 12, 0.32);
+  --border-h:     rgba(160, 35, 18, 0.62);
 
   /* ── Glows ── */
   --glow-c:       0 0 7px rgba(136,0,0,.60),    0 0 20px rgba(136,0,0,.20);
@@ -161,7 +161,7 @@
   content: 'TWIN PEAKS  //  BLACK LODGE  //  THE OWLS ARE NOT WHAT THEY SEEM';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(140, 80, 40, 0.45);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(160, 95, 50, 0.58);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -209,7 +209,7 @@
 /* ── Banner ──────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(4, 1, 2, 0.99); border-top-color: rgba(110, 10, 5, 0.25); }
 #theme-banner::before { content: '◑'; color: #880000; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(130, 30, 15, 0.58); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(155, 50, 30, 0.72); }
 
 /* ── Black Lodge curtain sway — red ambient light shifting side to side ──── */
 #particles {

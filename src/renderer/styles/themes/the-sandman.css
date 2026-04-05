@@ -19,8 +19,8 @@
   --font:         Georgia, 'Times New Roman', serif;
 
   /* ── Text ── */
-  --text:         #8070B0;
-  --text-dim:     rgba(100, 90, 140, 0.45);
+  --text:         #9888C8;
+  --text-dim:     rgba(130, 115, 170, 0.50);
 
   /* ── Accents ── */
   --accent-c:     #6040C0;   /* Morpheus violet */
@@ -28,8 +28,8 @@
   --accent-y:     #202040;   /* void indigo */
 
   /* ── Borders ── */
-  --border:       rgba(96, 64, 192, 0.18);
-  --border-h:     rgba(120, 80, 220, 0.45);
+  --border:       rgba(96, 64, 192, 0.28);
+  --border-h:     rgba(120, 80, 220, 0.58);
 
   /* ── Glows ── */
   --glow-c:       0 0 7px rgba(96,64,192,.60),   0 0 22px rgba(96,64,192,.20);
@@ -155,7 +155,7 @@
   content: 'THE SANDMAN  //  THE DREAMING  //  DREAM TAKES HIS THRONE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(100, 75, 180, 0.45);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(100, 75, 180, 0.57);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -197,7 +197,7 @@
 /* ── Banner ──────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(2, 2, 7, 0.99); border-top-color: rgba(96, 64, 192, 0.22); }
 #theme-banner::before { content: '✴'; color: #6040C0; font-size: 18px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(100, 75, 170, 0.58); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(100, 75, 170, 0.73); }
 
 /* ── Dream sand — violet motes spiraling through the Dreaming ───────────── */
 #particles {

@@ -14,15 +14,15 @@
   --header-bg:    rgba(100, 30, 10, 0.04);
 
   --font:         'Segoe UI', Georgia, serif;
-  --text:         #907060;
-  --text-dim:     rgba(130, 90, 65, 0.45);
+  --text:         #A08070;
+  --text-dim:     rgba(140, 100, 80, 0.50);
 
   --accent-c:     #802010;   /* corroded rust */
   --accent-m:     #5A1008;   /* deep blood */
   --accent-y:     #706040;   /* corroded grey-gold */
 
-  --border:       rgba(100, 30, 10, 0.25);
-  --border-h:     rgba(130, 40, 15, 0.55);
+  --border:       rgba(120, 35, 15, 0.35);
+  --border-h:     rgba(140, 40, 20, 0.60);
 
   --glow-c:       0 0 6px rgba(128,32,16,.55), 0 0 18px rgba(128,32,16,.18);
   --glow-m:       0 0 6px rgba(90,16,8,.55), 0 0 18px rgba(90,16,8,.18);
@@ -152,7 +152,7 @@
   content: 'SILENT HILL  //  THE OTHERWORLD  //  SIREN ACTIVE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(120, 40, 16, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(120, 40, 16, 0.60);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -188,7 +188,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(6, 3, 1, 0.98); border-top-color: rgba(100, 28, 10, 0.25); }
 #theme-banner::before { content: '✝'; color: #802010; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(110, 60, 30, 0.58); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(110, 60, 30, 0.73); }
 
 /* ── Phase 4E: tile flicker ──────────────────────────────────────────────── */
 .app-tile::before {

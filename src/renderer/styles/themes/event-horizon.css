@@ -14,15 +14,15 @@
   --header-bg:    rgba(80, 0, 0, 0.04);
 
   --font:         'Segoe UI', Georgia, serif;
-  --text:         #907060;
-  --text-dim:     rgba(140, 100, 88, 0.50);
+  --text:         #B08878;
+  --text-dim:     rgba(170, 120, 100, 0.55);
 
   --accent-c:     #991111;   /* void blood — lifted for legibility */
   --accent-m:     #660000;   /* deeper void */
   --accent-y:     #704040;   /* corrupted rust */
 
-  --border:       rgba(110, 15, 15, 0.35);
-  --border-h:     rgba(150, 20, 20, 0.60);
+  --border:       rgba(130, 20, 20, 0.45);
+  --border-h:     rgba(170, 30, 30, 0.72);
 
   --glow-c:       0 0 7px rgba(153,17,17,.60), 0 0 20px rgba(153,17,17,.22);
   --glow-m:       0 0 6px rgba(102,0,0,.52), 0 0 18px rgba(102,0,0,.16);
@@ -137,7 +137,7 @@
   content: 'EVENT HORIZON  //  2047  //  LIBERATE TUTEMET EX INFERNIS';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(100, 0, 0, 0.48);
+  font-size: 8px; letter-spacing: 2px; color: rgba(130, 15, 15, 0.60);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -190,7 +190,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 0, 0, 0.99); border-top-color: rgba(80, 0, 0, 0.28); }
 #theme-banner::before { content: '⊘'; color: #991111; font-size: 20px; opacity: 0.88; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(140, 20, 20, 0.65); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(165, 40, 40, 0.75); }
 
 /* ── Gravity drive — void distortion pulse expanding from the core ────────── */
 #particles {

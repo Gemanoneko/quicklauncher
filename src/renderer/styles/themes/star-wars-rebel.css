@@ -14,15 +14,15 @@
   --header-bg:    rgba(200, 80, 0, 0.04);
 
   --font:         'Segoe UI', 'Consolas', monospace;
-  --text:         #C0A870;
+  --text:         #D0B880;
   --text-dim:     rgba(180, 150, 80, 0.45);
 
   --accent-c:     #E06000;   /* Rebel orange */
   --accent-m:     #FF3030;   /* alert red */
   --accent-y:     #D0A020;   /* warm gold */
 
-  --border:       rgba(200, 80, 0, 0.20);
-  --border-h:     rgba(224, 96, 0, 0.55);
+  --border:       rgba(200, 80, 0, 0.28);
+  --border-h:     rgba(224, 96, 0, 0.65);
 
   --glow-c:       0 0 7px rgba(224,96,0,.65), 0 0 20px rgba(224,96,0,.22);
   --glow-m:       0 0 7px rgba(255,48,48,.65), 0 0 20px rgba(255,48,48,.22);
@@ -121,7 +121,7 @@
   content: 'REBEL ALLIANCE  //  YAVIN IV  //  FREEDOM OR DEATH';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 100, 0, 0.45);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 100, 0, 0.53);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -163,7 +163,7 @@
 
 #theme-banner { background: rgba(8, 5, 2, 0.97); border-top-color: rgba(224, 96, 0, 0.20); }
 #theme-banner::before { content: '✪'; color: #E06000; font-size: 18px; }
-#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(192, 120, 0, 0.60); }
+#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(192, 120, 0, 0.70); }
 
 /* ── Rebel star field — warm stars past the X-wing canopy ───────────────── */
 #particles {
