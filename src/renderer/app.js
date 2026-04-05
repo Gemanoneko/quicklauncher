@@ -585,7 +585,7 @@ function applySettings() {
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
   document.getElementById('theme-stylesheet').href = `styles/themes/${theme}.css`;
-  document.getElementById('theme-search').value = THEME_NAMES[theme] || theme.toUpperCase();
+  document.getElementById('theme-search').value = '';
   startBannerCycle(theme);
 }
 
@@ -884,37 +884,40 @@ function setupContextMenu() {
 }
 
 // ── Update banner ─────────────────────────────────────────────────────────────
+let _offUpdateListeners = null;
+
 function setupUpdateListeners() {
-  window.api.on('update-checking', () => {
-    showUpdateBanner('CHECKING FOR UPDATES...', []);
-  });
+  if (_offUpdateListeners) _offUpdateListeners();
 
-  window.api.on('update-available', (info) => {
-    showUpdateBanner(
-      `UPDATE AVAILABLE — v${info.version}`,
-      [{ label: 'DOWNLOAD', action: 'download' }]
-    );
-  });
+  const offs = [
+    window.api.on('update-checking', () => {
+      showUpdateBanner('CHECKING FOR UPDATES...', []);
+    }),
+    window.api.on('update-available', (info) => {
+      showUpdateBanner(
+        `UPDATE AVAILABLE — v${info.version}`,
+        [{ label: 'DOWNLOAD', action: 'download' }]
+      );
+    }),
+    window.api.on('update-progress', (pct) => {
+      document.getElementById('update-text').textContent = `DOWNLOADING... ${pct}%`;
+    }),
+    window.api.on('update-ready', () => {
+      showUpdateBanner(
+        'UPDATE READY — WILL INSTALL AND RESTART',
+        [{ label: 'INSTALL NOW', action: 'install' }]
+      );
+    }),
+    window.api.on('update-not-available', () => {
+      showUpdateBanner('SYSTEM IS UP TO DATE', [], 3000);
+    }),
+    window.api.on('update-error', (msg) => {
+      showUpdateBanner(`UPDATE ERROR: ${msg}`, [], 6000);
+      console.warn('Update error:', msg);
+    }),
+  ];
 
-  window.api.on('update-progress', (pct) => {
-    document.getElementById('update-text').textContent = `DOWNLOADING... ${pct}%`;
-  });
-
-  window.api.on('update-ready', () => {
-    showUpdateBanner(
-      'UPDATE READY — WILL INSTALL AND RESTART',
-      [{ label: 'INSTALL NOW', action: 'install' }]
-    );
-  });
-
-  window.api.on('update-not-available', () => {
-    showUpdateBanner('SYSTEM IS UP TO DATE', [], 3000);
-  });
-
-  window.api.on('update-error', (msg) => {
-    showUpdateBanner(`UPDATE ERROR: ${msg}`, [], 6000);
-    console.warn('Update error:', msg);
-  });
+  _offUpdateListeners = () => offs.forEach(off => off());
 }
 
 function showUpdateBanner(text, actions, autoDismissMs = 0) {
@@ -1033,8 +1036,7 @@ document.getElementById('btn-done-edit').addEventListener('click', exitEditMode)
 
   function closePicker() {
     listEl.classList.add('hidden');
-    const theme = settings.theme || 'cyberpunk';
-    searchEl.value = THEME_NAMES[theme] || theme.toUpperCase();
+    searchEl.value = '';
   }
 
   function moveActive(dir) {

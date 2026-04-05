@@ -6,19 +6,13 @@ const { randomUUID } = require('crypto');
 const { sendToBottom } = require('./window');
 const { checkForUpdates } = require('./updater');
 
-// All theme identifiers that exist as CSS files. Used to validate save-settings input.
-const VALID_THEMES = new Set([
-  'cyberpunk', 'blade-runner', 'alien', 'tron', 'lcars', 'pip-boy', 'dune',
-  'x-files', 'mass-effect', 'deus-ex', 'ghost-shell', 'matrix', 'warhammer',
-  'dead-space', 'half-life', 'terminator', 'portal',
-  'star-wars-rebel', 'star-wars-empire', 'star-wars-republic',
-  'doctor-who', 'akira', 'evangelion', '2001', 'silent-hill', 'stalker',
-  'resident-evil', 'the-expanse', 'event-horizon',
-  'hogwarts', 'ministry-of-magic', 'gryffindor', 'ravenclaw', 'hufflepuff', 'slytherin',
-  'rivendell', 'shire', 'mordor',
-  'scp', 'alan-wake', 'control', 'twin-peaks', 'lovecraft', 'the-sandman',
-  'persona-5', 'the-witcher', 'diablo', 'soma', 'stranger-things', 'fatal-frame',
-]);
+// Derive valid theme identifiers from the CSS files on disk.
+// This automatically stays in sync when themes are added or removed.
+const VALID_THEMES = new Set(
+  fs.readdirSync(path.join(__dirname, '../renderer/styles/themes'))
+    .filter(f => f.endsWith('.css'))
+    .map(f => f.slice(0, -4))
+);
 
 // C# type injected into PowerShell for high-quality icon/thumbnail extraction.
 const ICON_HELPER_CS = `

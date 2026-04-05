@@ -41,13 +41,15 @@ contextBridge.exposeInMainWorld('api', {
     return ipcRenderer.invoke(channel, ...args);
   },
 
-  /** One-way IPC: subscribe to a main-process event. */
+  /** One-way IPC: subscribe to a main-process event. Returns an unsubscribe function. */
   on(channel, fn) {
     if (!ON_CHANNELS.has(channel)) {
       throw new Error(`Blocked IPC channel: ${channel}`);
     }
     // Strip the internal Electron event object so callers receive plain arguments.
-    ipcRenderer.on(channel, (_event, ...args) => fn(...args));
+    const wrapper = (_event, ...args) => fn(...args);
+    ipcRenderer.on(channel, wrapper);
+    return () => ipcRenderer.removeListener(channel, wrapper);
   },
 
   /** Resolve a File object to its filesystem path (drag-and-drop). */

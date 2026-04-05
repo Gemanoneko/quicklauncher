@@ -1,5 +1,7 @@
 const { Tray, Menu, nativeImage } = require('electron');
 const path = require('path');
+const { sendToBottom } = require('./window');
+const { checkForUpdates } = require('./updater');
 
 let tray = null;
 
@@ -25,7 +27,6 @@ function setupTray(win, electronApp, store) {
           win.hide();
         } else {
           win.show();
-          const { sendToBottom } = require('./window');
           sendToBottom(win);
         }
       }
@@ -33,10 +34,7 @@ function setupTray(win, electronApp, store) {
     { type: 'separator' },
     {
       label: 'Check for Updates',
-      click: () => {
-        const { checkForUpdates } = require('./updater');
-        checkForUpdates();
-      }
+      click: () => checkForUpdates()
     }
   ]);
 
@@ -47,7 +45,6 @@ function setupTray(win, electronApp, store) {
       win.hide();
     } else {
       win.show();
-      const { sendToBottom } = require('./window');
       sendToBottom(win);
     }
   });

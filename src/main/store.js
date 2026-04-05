@@ -39,11 +39,12 @@ class Store {
   }
 
   _save() {
-    try {
-      fs.writeFileSync(this.dataPath, JSON.stringify(this.data, null, 2), 'utf8');
-    } catch (e) {
-      console.error('Failed to save store:', e);
-    }
+    clearTimeout(this._saveTimer);
+    this._saveTimer = setTimeout(() => {
+      fs.writeFile(this.dataPath, JSON.stringify(this.data, null, 2), 'utf8', (err) => {
+        if (err) console.error('Failed to save store:', err);
+      });
+    }, 100);
   }
 }
 
