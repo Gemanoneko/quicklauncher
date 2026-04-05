@@ -176,3 +176,16 @@
 #theme-banner { background: rgba(3, 4, 9, 0.97); border-top-color: rgba(80, 110, 170, 0.22); }
 #theme-banner::before { content: '✧'; color: #6080B8; font-size: 22px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(80, 120, 180, 0.60); }
+
+/* ── Starlight fireflies — silver-blue motes on still water ─────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='400'%3E%3Ccircle cx='35' cy='60' r='1.5' fill='rgba(96,128,184,0.30)'/%3E%3Ccircle cx='110' cy='180' r='1' fill='rgba(130,160,220,0.22)'/%3E%3Ccircle cx='180' cy='320' r='1.8' fill='rgba(96,128,184,0.18)'/%3E%3Ccircle cx='70' cy='260' r='0.8' fill='rgba(192,168,64,0.20)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='550'%3E%3Ccircle cx='50' cy='90' r='2' fill='rgba(130,160,220,0.14)'/%3E%3Ccircle cx='160' cy='250' r='1.2' fill='rgba(96,128,184,0.12)'/%3E%3Ccircle cx='240' cy='420' r='2.2' fill='rgba(192,168,64,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 220px 400px, 300px 550px;
+  animation: rivendell-fireflies 16s linear infinite;
+}
+@keyframes rivendell-fireflies {
+  from { background-position: 0 0, 20px 0; }
+  to   { background-position: 40px -400px, -30px -550px; }
+}

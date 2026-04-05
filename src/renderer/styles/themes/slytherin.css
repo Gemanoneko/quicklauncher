@@ -181,3 +181,16 @@
 #theme-banner { background: rgba(3, 5, 3, 0.98); border-top-color: rgba(20, 100, 40, 0.22); }
 #theme-banner::before { content: '◐'; color: #188040; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(20, 110, 50, 0.58); }
+
+/* ── Slytherin magic — emerald and silver motes in the dungeon ───────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='420'%3E%3Ccircle cx='32' cy='60' r='1.2' fill='rgba(24,128,64,0.24)'/%3E%3Ccircle cx='108' cy='180' r='0.8' fill='rgba(144,144,144,0.18)'/%3E%3Ccircle cx='172' cy='320' r='1.5' fill='rgba(24,128,64,0.16)'/%3E%3Ccircle cx='58' cy='385' r='1' fill='rgba(48,96,80,0.20)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='290' height='590'%3E%3Ccircle cx='50' cy='100' r='1.8' fill='rgba(24,128,64,0.10)'/%3E%3Ccircle cx='155' cy='290' r='1.2' fill='rgba(144,144,144,0.08)'/%3E%3Ccircle cx='235' cy='470' r='2' fill='rgba(48,96,80,0.07)'/%3E%3C/svg%3E") repeat;
+  background-size: 210px 420px, 290px 590px;
+  animation: slytherin-sparkles 15s linear infinite;
+}
+@keyframes slytherin-sparkles {
+  from { background-position: 0 0, 16px 0; }
+  to   { background-position: 28px -420px, -18px -590px; }
+}

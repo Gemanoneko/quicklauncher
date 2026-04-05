@@ -183,3 +183,16 @@
 #theme-banner { background: rgba(4, 6, 3, 0.98); border-top-color: rgba(150, 150, 0, 0.20); }
 #theme-banner::before { content: '☢'; color: #AAAA00; font-size: 20px; }
 #theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(140, 140, 0, 0.58); }
+
+/* ── Zone anomaly shimmer — radioactive particles in the air ────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='420'%3E%3Ccircle cx='30' cy='60' r='1.5' fill='rgba(170,170,0,0.22)'/%3E%3Ccircle cx='100' cy='180' r='1' fill='rgba(144,64,32,0.16)'/%3E%3Ccircle cx='160' cy='320' r='1.8' fill='rgba(170,170,0,0.14)'/%3E%3Ccircle cx='65' cy='380' r='0.8' fill='rgba(80,112,48,0.18)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='580'%3E%3Ccircle cx='45' cy='100' r='2' fill='rgba(170,170,0,0.12)'/%3E%3Ccircle cx='150' cy='280' r='1.5' fill='rgba(144,64,32,0.08)'/%3E%3Ccircle cx='220' cy='460' r='2.2' fill='rgba(80,112,48,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 420px, 280px 580px;
+  animation: zone-shimmer 12s linear infinite;
+}
+@keyframes zone-shimmer {
+  from { background-position: 0 0, 18px 0; }
+  to   { background-position: -35px -420px, 28px -580px; }
+}

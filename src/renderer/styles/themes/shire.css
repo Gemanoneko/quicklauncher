@@ -176,3 +176,16 @@
 #theme-banner { background: rgba(4, 6, 1, 0.97); border-top-color: rgba(88, 110, 30, 0.22); }
 #theme-banner::before { content: '⊙'; color: #D0A040; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(104, 128, 40, 0.60); }
+
+/* ── Hobbiton fireflies — golden pollen motes in warm lamplight ─────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='380'%3E%3Ccircle cx='30' cy='50' r='1.5' fill='rgba(208,160,64,0.30)'/%3E%3Ccircle cx='100' cy='160' r='1' fill='rgba(160,120,30,0.24)'/%3E%3Ccircle cx='160' cy='280' r='1.8' fill='rgba(208,160,64,0.20)'/%3E%3Ccircle cx='60' cy='340' r='0.8' fill='rgba(104,128,48,0.18)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='520'%3E%3Ccircle cx='45' cy='80' r='2' fill='rgba(208,160,64,0.14)'/%3E%3Ccircle cx='150' cy='230' r='1.5' fill='rgba(160,104,32,0.12)'/%3E%3Ccircle cx='220' cy='400' r='2.2' fill='rgba(104,128,48,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 380px, 280px 520px;
+  animation: shire-fireflies 14s linear infinite;
+}
+@keyframes shire-fireflies {
+  from { background-position: 0 0, 15px 0; }
+  to   { background-position: -35px -380px, 25px -520px; }
+}

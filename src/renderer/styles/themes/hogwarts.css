@@ -181,3 +181,16 @@
 #theme-banner { background: rgba(7, 5, 1, 0.97); border-top-color: rgba(180, 120, 30, 0.22); }
 #theme-banner::before { content: '⊛'; color: #C89040; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(180, 120, 40, 0.60); }
+
+/* ── Great Hall magic — golden sparkles drifting from enchanted ceiling ──── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='420'%3E%3Ccircle cx='28' cy='55' r='1.2' fill='rgba(200,144,64,0.28)'/%3E%3Ccircle cx='95' cy='170' r='0.8' fill='rgba(212,168,32,0.22)'/%3E%3Ccircle cx='160' cy='310' r='1.5' fill='rgba(200,144,64,0.18)'/%3E%3Ccircle cx='55' cy='380' r='1' fill='rgba(139,40,16,0.14)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='290' height='580'%3E%3Ccircle cx='50' cy='100' r='1.8' fill='rgba(212,168,32,0.12)'/%3E%3Ccircle cx='150' cy='280' r='1.2' fill='rgba(200,144,64,0.10)'/%3E%3Ccircle cx='230' cy='460' r='2' fill='rgba(180,120,30,0.08)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 420px, 290px 580px;
+  animation: hogwarts-sparkles 12s linear infinite;
+}
+@keyframes hogwarts-sparkles {
+  from { background-position: 0 -420px, 20px -580px; }
+  to   { background-position: 30px 0, -15px 0; }
+}

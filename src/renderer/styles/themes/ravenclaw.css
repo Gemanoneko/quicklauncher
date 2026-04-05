@@ -176,3 +176,16 @@
 #theme-banner { background: rgba(2, 3, 9, 0.97); border-top-color: rgba(64, 104, 176, 0.22); }
 #theme-banner::before { content: '✧'; color: #4068B0; font-size: 22px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(70, 110, 185, 0.65); }
+
+/* ── Ravenclaw magic — moonlit blue and bronze sparkles ──────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='420'%3E%3Ccircle cx='32' cy='60' r='1.2' fill='rgba(64,104,176,0.26)'/%3E%3Ccircle cx='105' cy='180' r='0.8' fill='rgba(154,112,48,0.20)'/%3E%3Ccircle cx='170' cy='320' r='1.5' fill='rgba(64,104,176,0.16)'/%3E%3Ccircle cx='60' cy='380' r='1' fill='rgba(96,112,160,0.22)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='290' height='580'%3E%3Ccircle cx='48' cy='100' r='1.8' fill='rgba(64,104,176,0.12)'/%3E%3Ccircle cx='155' cy='280' r='1.2' fill='rgba(154,112,48,0.10)'/%3E%3Ccircle cx='230' cy='460' r='2' fill='rgba(96,112,160,0.08)'/%3E%3C/svg%3E") repeat;
+  background-size: 210px 420px, 290px 580px;
+  animation: ravenclaw-sparkles 14s linear infinite;
+}
+@keyframes ravenclaw-sparkles {
+  from { background-position: 0 -420px, 15px -580px; }
+  to   { background-position: -30px 0, 20px 0; }
+}
