@@ -19,8 +19,8 @@
   --font:         'Segoe UI', 'Arial', sans-serif;
 
   /* ── Text ── */
-  --text:         #787878;
-  --text-dim:     rgba(100, 100, 100, 0.45);
+  --text:         #A09090;
+  --text-dim:     rgba(140, 120, 110, 0.50);
 
   /* ── Accents ── */
   --accent-c:     #CC1100;   /* Bureau red */
@@ -28,8 +28,8 @@
   --accent-y:     #802000;   /* dark ember */
 
   /* ── Borders ── */
-  --border:       rgba(180, 30, 10, 0.20);
-  --border-h:     rgba(204, 17, 0, 0.48);
+  --border:       rgba(180, 30, 10, 0.30);
+  --border-h:     rgba(204, 17, 0, 0.62);
 
   /* ── Glows ── */
   --glow-c:       0 0 6px rgba(204,17,0,.60),  0 0 18px rgba(204,17,0,.20);
@@ -58,7 +58,7 @@
   --tile-icon-shape:   polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   --tile-label-spacing:   2px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    300;
+  --tile-label-weight:    400;
   --tile-label-style:     normal;
   --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
   --app-entrance-anim:   entrance-zoom 1.5s ease-out forwards;
@@ -123,17 +123,17 @@
     /* heavy vignette — concrete walls closing in */
     radial-gradient(ellipse 100% 95% at 50% 50%, transparent 25%, rgba(2, 2, 2, 0.84) 100%),
     /* Hiss corruption — red bleed, bottom-left */
-    radial-gradient(ellipse 50% 35% at 0% 100%, rgba(180, 10, 0, 0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 0% 100%, rgba(180, 10, 0, 0.12) 0%, transparent 65%),
     /* Hiss corruption — red bleed, top-right */
-    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(160, 8, 0, 0.06) 0%, transparent 60%);
+    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(160, 8, 0, 0.10) 0%, transparent 60%);
   background-size: 250px 250px, auto, auto, auto;
   opacity: 1; pointer-events: none;
 }
 
 /* ── Header Bureau red accent bar ────────────────────────────────────────────── */
 #header::before {
-  background: linear-gradient(to bottom, #CC1100, rgba(160, 14, 0, 0.22));
-  box-shadow: 0 0 8px rgba(204, 17, 0, 0.55), 0 0 20px rgba(180, 10, 0, 0.18);
+  background: linear-gradient(to bottom, #CC1100, rgba(160, 14, 0, 0.30));
+  box-shadow: 0 0 10px rgba(204, 17, 0, 0.70), 0 0 24px rgba(180, 10, 0, 0.25);
 }
 
 /* ── Grid: brutalist concrete slab feel — thick horizontal dividers ───────────── */
@@ -160,7 +160,7 @@
   content: 'OLDEST HOUSE  //  FEDERAL BUREAU OF CONTROL  //  DIRECTOR\'S OFFICE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 300;
-  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(180, 20, 0, 0.42);
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(200, 40, 10, 0.55);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -170,7 +170,7 @@
   padding: 0 12px 10px 0;
   font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 300;
   font-size: 10px; line-height: 1.7; text-align: right;
-  color: rgba(140, 20, 0, 0.10); white-space: pre;
+  color: rgba(160, 30, 0, 0.14); white-space: pre;
 }
 
 #edit-bar::after {
@@ -185,8 +185,8 @@
 
 /* ── Title animation: Hiss-like glitch distortion ────────────────────────────── */
 @keyframes hiss-distort {
-  0%, 100% { color: #787878; text-shadow: 0 0 4px rgba(204,17,0,.22), 0 0 12px rgba(204,17,0,.08); opacity: 1; }
-  80%       { color: #787878; text-shadow: 0 0 4px rgba(204,17,0,.22); opacity: 1; }
+  0%, 100% { color: #A09090; text-shadow: 0 0 4px rgba(204,17,0,.28), 0 0 12px rgba(204,17,0,.12); opacity: 1; }
+  80%       { color: #A09090; text-shadow: 0 0 4px rgba(204,17,0,.28); opacity: 1; }
   82%       { color: #CC1100; text-shadow: 0 0 8px rgba(204,17,0,.70), 0 0 22px rgba(204,17,0,.28); opacity: 1; transform: translateX(1px); }
   83%       { color: #787878; text-shadow: none; opacity: 0.6; transform: translateX(-1px); }
   84%       { color: #CC1100; text-shadow: 0 0 6px rgba(204,17,0,.55); opacity: 0.9; transform: translateX(0); }
@@ -207,9 +207,9 @@
 }
 
 /* ── Banner ──────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(3, 3, 3, 0.99); border-top-color: rgba(180, 20, 0, 0.25); }
+#theme-banner { background: rgba(3, 3, 3, 0.99); border-top-color: rgba(180, 20, 0, 0.40); }
 #theme-banner::before { content: '▲'; color: #CC1100; font-size: 16px; }
-#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 300; color: rgba(120, 80, 70, 0.55); }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 400; color: rgba(160, 100, 80, 0.72); }
 
 /* ── Hiss presence — corrupted debris floating upward ───────────────────── */
 #particles {
