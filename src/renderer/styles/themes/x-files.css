@@ -50,6 +50,8 @@
   --tile-hover-shadow: 0 0 10px rgba(0, 176, 160, 0.09);
   --tile-active-bg:    rgba(0, 176, 160, 0.11);
   --tile-icon-glow:    drop-shadow(0 0 7px rgba(0,176,160,.38));
+  --tile-icon-fx:      brightness(0.9) saturate(0.8) contrast(1.12);
+  --tile-icon-shape:   none;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(0, 176, 160, 0.09);
@@ -226,6 +228,17 @@
 #title { font-family: 'Courier New', Courier, monospace; }
 
 /* ── Banner ────────────────────────────────────────────────────────────────── */
+/* ── Classified — FBI surveillance teal/red flash ───────────────────────── */
+#app { animation: xfiles-classified 10s steps(1) infinite; }
+@keyframes xfiles-classified {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(0,176,160,.18); }
+  75%      { box-shadow: 0 0 0 1px rgba(0,176,160,.18); }
+  76%      { box-shadow: 0 0 0 1px rgba(0,176,160,.48), inset 0 0 22px rgba(0,176,160,.06); }
+  77%      { box-shadow: 0 0 0 1px rgba(192,40,40,.35), inset 0 0 18px rgba(192,40,40,.04); }
+  78%      { box-shadow: 0 0 0 1px rgba(0,176,160,.42), inset 0 0 20px rgba(0,176,160,.05); }
+  79%      { box-shadow: 0 0 0 1px rgba(0,176,160,.18); }
+}
+
 #theme-banner { background: rgba(0, 2, 4, 0.97); border-top-color: rgba(0, 176, 160, 0.18); }
 #theme-banner::before { content: '✦'; color: #C02828; font-size: 18px; }
 #theme-banner-text { font-family: 'Courier New', Courier, monospace; color: rgba(160, 180, 192, 0.55); }

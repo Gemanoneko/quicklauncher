@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 12px rgba(224, 96, 0, 0.20);
   --tile-active-bg:    rgba(200, 80, 0, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(224,96,0,.60)) drop-shadow(0 0 12px rgba(224,96,0,.25));
+  --tile-icon-fx:      brightness(1.05) saturate(1.15) contrast(1.08);
+  --tile-icon-shape:   polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
 
   --btn-hover-bg:   rgba(200, 80, 0, 0.10);
   --btn-active-bg:  rgba(200, 80, 0, 0.20);
@@ -143,6 +145,16 @@
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
+/* ── Rebel hope — warm orange transponder pulse ─────────────────────────── */
+#app { animation: rebel-hope 7s ease-in-out infinite; }
+@keyframes rebel-hope {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,80,0,.22), inset 0 0 18px rgba(200,80,0,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(224,96,0,.50), inset 0 0 28px rgba(224,96,0,.08); }
+  36%      { box-shadow: 0 0 0 1px rgba(208,160,32,.28), inset 0 0 20px rgba(208,160,32,.05); }
+  37%      { box-shadow: 0 0 0 1px rgba(224,96,0,.42), inset 0 0 24px rgba(224,96,0,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(200,80,0,.28), inset 0 0 18px rgba(200,80,0,.04); }
+}
+
 #theme-banner { background: rgba(8, 5, 2, 0.97); border-top-color: rgba(224, 96, 0, 0.20); }
 #theme-banner::before { content: '✦'; color: #E06000; font-size: 18px; }
 #theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(192, 120, 0, 0.60); }

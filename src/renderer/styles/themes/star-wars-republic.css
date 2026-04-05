@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 14px rgba(88, 120, 224, 0.18);
   --tile-active-bg:    rgba(70, 90, 190, 0.15);
   --tile-icon-glow:    drop-shadow(0 0 6px rgba(88,120,224,.60)) drop-shadow(0 0 14px rgba(88,120,224,.25));
+  --tile-icon-fx:      brightness(1.05) saturate(1.2);
+  --tile-icon-shape:   circle(46% at 50% 50%);
 
   --btn-hover-bg:   rgba(70, 90, 190, 0.10);
   --btn-active-bg:  rgba(70, 90, 190, 0.20);
@@ -154,6 +156,16 @@
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
+/* ── Force energy — Jedi blue/violet meditation pulse ───────────────────── */
+#app { animation: republic-force 8s ease-in-out infinite; }
+@keyframes republic-force {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(80,100,200,.22), inset 0 0 18px rgba(80,100,200,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(88,120,224,.48), inset 0 0 28px rgba(88,120,224,.08); }
+  36%      { box-shadow: 0 0 0 1px rgba(192,64,160,.25), inset 0 0 20px rgba(192,64,160,.04); }
+  37%      { box-shadow: 0 0 0 1px rgba(88,120,224,.42), inset 0 0 24px rgba(88,120,224,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(192,160,48,.28), inset 0 0 20px rgba(192,160,48,.05); }
+}
+
 #theme-banner { background: rgba(4, 3, 10, 0.97); border-top-color: rgba(80, 100, 200, 0.22); }
 #theme-banner::before { content: '✦'; color: #5878E0; font-size: 18px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(100, 120, 200, 0.60); }

@@ -43,6 +43,8 @@
   --tile-hover-shadow: 0 0 12px rgba(170, 170, 0, 0.20);
   --tile-active-bg:    rgba(140, 140, 0, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(170,170,0,.60)) drop-shadow(0 0 12px rgba(170,170,0,.25));
+  --tile-icon-fx:      brightness(0.85) saturate(0.7) contrast(1.2);
+  --tile-icon-shape:   none;
 
   --btn-hover-bg:   rgba(140, 140, 0, 0.10);
   --btn-active-bg:  rgba(140, 140, 0, 0.20);
@@ -164,6 +166,16 @@
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
+/* ── Zone anomaly — radiation detector pulse ────────────────────────────── */
+#app { animation: zone-anomaly 7s ease-in-out infinite; }
+@keyframes zone-anomaly {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(150,150,0,.22), inset 0 0 18px rgba(150,150,0,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(170,170,0,.50), inset 0 0 26px rgba(170,170,0,.08); }
+  36%      { box-shadow: 0 0 0 1px rgba(144,64,32,.28), inset 0 0 18px rgba(144,64,32,.05); }
+  37%      { box-shadow: 0 0 0 1px rgba(170,170,0,.42), inset 0 0 22px rgba(170,170,0,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(80,112,48,.28), inset 0 0 20px rgba(80,112,48,.05); }
+}
+
 #theme-banner { background: rgba(4, 6, 3, 0.98); border-top-color: rgba(150, 150, 0, 0.20); }
 #theme-banner::before { content: '☢'; color: #AAAA00; font-size: 20px; }
 #theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(140, 140, 0, 0.58); }
