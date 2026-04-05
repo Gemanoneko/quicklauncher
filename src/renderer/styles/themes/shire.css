@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 12px rgba(104, 128, 48, 0.20);
   --tile-active-bg:    rgba(88, 110, 30, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 6px rgba(208,160,64,.58)) drop-shadow(0 0 14px rgba(104,128,48,.25));
+  --tile-icon-fx:      brightness(1.1) saturate(1.15) sepia(0.1);
+  --tile-icon-shape:   circle(46% at 50% 50%);
 
   --btn-hover-bg:   rgba(88, 110, 30, 0.10);
   --btn-active-bg:  rgba(88, 110, 30, 0.20);
@@ -155,6 +157,15 @@
   0%, 100% { text-shadow: 0 0 7px rgba(104,128,48,.52), 0 0 18px rgba(104,128,48,.18); color: #688030; }
   40%       { text-shadow: 0 0 12px rgba(208,160,64,.75), 0 0 28px rgba(160,120,40,.35); color: #D0A040; }
   70%       { text-shadow: 0 0 8px rgba(104,128,48,.50), 0 0 20px rgba(104,128,48,.18); color: #789040; }
+}
+
+/* ── Hobbit-hole lantern — gentle warm glow ─────────────────────────────── */
+#app { animation: shire-lantern 8s ease-in-out infinite; }
+@keyframes shire-lantern {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(88,110,30,.22), inset 0 0 18px rgba(88,110,30,.04); }
+  40%      { box-shadow: 0 0 0 1px rgba(208,160,64,.42), inset 0 0 28px rgba(208,160,64,.07); }
+  60%      { box-shadow: 0 0 0 1px rgba(104,128,48,.35), inset 0 0 22px rgba(104,128,48,.06); }
+  80%      { box-shadow: 0 0 0 1px rgba(160,104,32,.30), inset 0 0 20px rgba(160,104,32,.05); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

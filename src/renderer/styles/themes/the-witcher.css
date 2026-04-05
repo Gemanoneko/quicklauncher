@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 12px rgba(192, 160, 32, 0.22);
   --tile-active-bg:    rgba(180, 150, 30, 0.16);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(192,160,32,.58)) drop-shadow(0 0 12px rgba(192,160,32,.22));
+  --tile-icon-fx:      sepia(0.25) brightness(1.05) contrast(1.1);
+  --tile-icon-shape:   circle(46% at 50% 50%);
 
   --btn-hover-bg:   rgba(180, 150, 30, 0.10);
   --btn-active-bg:  rgba(180, 150, 30, 0.20);
@@ -163,6 +165,16 @@
   92%       { text-shadow: 0 0 14px rgba(255,200,50,.80), 0 0 36px rgba(192,160,32,.40); }
   93%       { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
   100%      { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
+}
+
+/* ── Witcher sign pulse — Quen shield shimmer ───────────────────────────── */
+#app { animation: witcher-sign-pulse 7s ease-in-out infinite; }
+@keyframes witcher-sign-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(180,150,30,.22), inset 0 0 18px rgba(180,150,30,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(192,160,32,.50), inset 0 0 28px rgba(192,160,32,.08); }
+  36%      { box-shadow: 0 0 0 1px rgba(64,96,32,.28), inset 0 0 20px rgba(64,96,32,.05); }
+  37%      { box-shadow: 0 0 0 1px rgba(192,160,32,.42), inset 0 0 24px rgba(192,160,32,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(139,48,32,.30), inset 0 0 20px rgba(139,48,32,.05); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

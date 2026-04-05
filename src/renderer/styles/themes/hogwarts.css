@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 12px rgba(200, 144, 64, 0.20);
   --tile-active-bg:    rgba(180, 120, 30, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,144,64,.58)) drop-shadow(0 0 14px rgba(200,144,64,.24));
+  --tile-icon-fx:      sepia(0.3) brightness(1.05) contrast(1.08);
+  --tile-icon-shape:   polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
 
   --btn-hover-bg:   rgba(180, 120, 30, 0.10);
   --btn-active-bg:  rgba(180, 120, 30, 0.20);
@@ -159,6 +161,16 @@
   0%, 100% { text-shadow: 0 0 7px rgba(200,144,64,.55), 0 0 20px rgba(200,144,64,.20); color: #C89040; }
   40%       { text-shadow: 0 0 12px rgba(220,168,80,.80), 0 0 30px rgba(200,144,64,.38); color: #D8A850; }
   70%       { text-shadow: 0 0 6px rgba(180,110,30,.50), 0 0 16px rgba(139,40,16,.22); color: #B8803A; }
+}
+
+/* ── Candlelight flicker — Great Hall ambience ──────────────────────────── */
+#app { animation: hogwarts-candle 6s ease-in-out infinite; }
+@keyframes hogwarts-candle {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(180,120,30,.22), inset 0 0 18px rgba(180,120,30,.04); }
+  30%      { box-shadow: 0 0 0 1px rgba(200,144,64,.48), inset 0 0 26px rgba(200,144,64,.08); }
+  32%      { box-shadow: 0 0 0 1px rgba(180,120,30,.18), inset 0 0 14px rgba(180,120,30,.03); }
+  35%      { box-shadow: 0 0 0 1px rgba(200,144,64,.42), inset 0 0 24px rgba(200,144,64,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(139,40,16,.28), inset 0 0 20px rgba(139,40,16,.04); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

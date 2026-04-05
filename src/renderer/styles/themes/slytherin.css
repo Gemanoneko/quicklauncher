@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 12px rgba(24, 128, 64, 0.18);
   --tile-active-bg:    rgba(20, 100, 40, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 6px rgba(24,128,64,.55)) drop-shadow(0 0 14px rgba(24,128,64,.22));
+  --tile-icon-fx:      brightness(0.9) saturate(0.85) contrast(1.15);
+  --tile-icon-shape:   polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 
   --btn-hover-bg:   rgba(20, 100, 40, 0.10);
   --btn-active-bg:  rgba(20, 100, 40, 0.20);
@@ -159,6 +161,16 @@
   0%, 100% { text-shadow: 0 0 7px rgba(24,128,64,.52), 0 0 18px rgba(24,128,64,.18); color: #188040; }
   35%       { text-shadow: 0 0 10px rgba(160,160,160,.60), 0 0 24px rgba(144,144,144,.25); color: #A0A0A0; }
   65%       { text-shadow: 0 0 8px rgba(24,128,64,.55), 0 0 20px rgba(48,96,80,.22); color: #188040; }
+}
+
+/* ── Serpent presence — cold emerald pulse ───────────────────────────────── */
+#app { animation: slytherin-serpent 9s ease-in-out infinite; }
+@keyframes slytherin-serpent {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(20,100,40,.22), inset 0 0 18px rgba(20,100,40,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(24,128,64,.48), inset 0 0 26px rgba(24,128,64,.08); }
+  36%      { box-shadow: 0 0 0 1px rgba(144,144,144,.20), inset 0 0 16px rgba(144,144,144,.03); }
+  37%      { box-shadow: 0 0 0 1px rgba(24,128,64,.40), inset 0 0 22px rgba(24,128,64,.07); }
+  70%      { box-shadow: 0 0 0 1px rgba(48,96,80,.28), inset 0 0 20px rgba(48,96,80,.05); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

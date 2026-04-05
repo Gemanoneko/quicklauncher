@@ -39,6 +39,8 @@
   --tile-hover-shadow: 0 0 14px rgba(96, 128, 184, 0.20);
   --tile-active-bg:    rgba(80, 110, 170, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 7px rgba(96,128,184,.60)) drop-shadow(0 0 16px rgba(96,128,184,.25));
+  --tile-icon-fx:      brightness(1.1) saturate(1.2);
+  --tile-icon-shape:   circle(46% at 50% 50%);
 
   --btn-hover-bg:   rgba(80, 110, 170, 0.10);
   --btn-active-bg:  rgba(80, 110, 170, 0.20);
@@ -155,6 +157,15 @@
   0%, 100% { text-shadow: 0 0 8px rgba(96,128,184,.55), 0 0 22px rgba(96,128,184,.20); color: #6080B8; }
   35%       { text-shadow: 0 0 14px rgba(130,160,220,.85), 0 0 35px rgba(96,128,184,.40); color: #80A0D8; }
   70%       { text-shadow: 0 0 10px rgba(192,168,64,.55), 0 0 24px rgba(80,110,170,.22); color: #9090C0; }
+}
+
+/* ── Elven starlight — silver-blue moonrise pulse ───────────────────────── */
+#app { animation: rivendell-starlight 9s ease-in-out infinite; }
+@keyframes rivendell-starlight {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(80,110,170,.22), inset 0 0 20px rgba(80,110,170,.04); }
+  40%      { box-shadow: 0 0 0 1px rgba(96,128,184,.48), inset 0 0 30px rgba(96,128,184,.08); }
+  60%      { box-shadow: 0 0 0 1px rgba(192,168,64,.28), inset 0 0 22px rgba(192,168,64,.05); }
+  80%      { box-shadow: 0 0 0 1px rgba(80,110,170,.35), inset 0 0 24px rgba(80,110,170,.06); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
