@@ -56,6 +56,10 @@
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(136,0,0,.52)) drop-shadow(0 0 12px rgba(100,0,0,.20));
   --tile-icon-fx:      sepia(0.35) brightness(0.92) contrast(1.1);
   --tile-icon-shape:   none;
+  --tile-label-spacing:   0.6px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(110, 10, 5, 0.10);

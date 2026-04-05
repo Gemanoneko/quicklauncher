@@ -61,6 +61,12 @@
   --tile-icon-fx:      ;
   --tile-icon-shape:   none;
 
+  /* ── Tile label typography ── */
+  --tile-label-spacing:   0.4px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(0, 240, 255, 0.09);
   --btn-active-bg:  rgba(0, 240, 255, 0.18);
@@ -309,7 +315,10 @@ button:active { background: var(--btn-active-bg); }
 }
 
 .tile-label {
-  font-size: 10px; letter-spacing: 0.4px;
+  font-size: 10px; letter-spacing: var(--tile-label-spacing);
+  text-transform: var(--tile-label-transform);
+  font-weight: var(--tile-label-weight);
+  font-style: var(--tile-label-style);
   color: var(--text); text-align: center;
   margin-top: 5px;
   max-width: calc(var(--icon-size) + 28px);

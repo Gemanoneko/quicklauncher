@@ -55,6 +55,10 @@
   --tile-active-bg:       rgba(255, 102, 0, 0.12);
   --tile-icon-fx:         brightness(1.1) contrast(1.1) saturate(1.15);
   --tile-icon-shape:      circle(46% at 50% 50%);
+  --tile-label-spacing:   1.2px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
   --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 102, 0, 0.75)) drop-shadow(0 0 12px rgba(255, 102, 0, 0.35));
 
   /* Buttons */
