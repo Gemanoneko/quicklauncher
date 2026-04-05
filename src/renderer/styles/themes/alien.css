@@ -59,6 +59,7 @@
   --tile-label-transform: uppercase;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --app-entrance-anim:   entrance-glitch 1s ease-out forwards;
 
   /* Buttons */
   --btn-hover-bg:         rgba(27, 200, 27, 0.08);

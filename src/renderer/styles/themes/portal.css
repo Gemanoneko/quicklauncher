@@ -59,6 +59,7 @@
   --tile-label-transform: uppercase;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --app-entrance-anim:   entrance-zoom 1.2s ease-out forwards;
   --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 102, 0, 0.75)) drop-shadow(0 0 12px rgba(255, 102, 0, 0.35));
 
   /* Buttons */

@@ -46,6 +46,7 @@
   --tile-label-weight:    400;
   --tile-label-style:     italic;
   --banner-icon-anim:    banner-flicker 5s steps(1) infinite;
+  --app-entrance-anim:   entrance-zoom 1.8s ease-out forwards;
 
   --btn-hover-bg:   rgba(70, 80, 140, 0.10);
   --btn-active-bg:  rgba(70, 80, 140, 0.20);

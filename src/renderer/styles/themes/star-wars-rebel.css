@@ -46,6 +46,7 @@
   --tile-label-weight:    400;
   --tile-label-style:     normal;
   --banner-icon-anim:    banner-glow 4s ease-in-out infinite;
+  --app-entrance-anim:   entrance-flash 1s ease-out forwards;
 
   --btn-hover-bg:   rgba(200, 80, 0, 0.10);
   --btn-active-bg:  rgba(200, 80, 0, 0.20);

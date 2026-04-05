@@ -60,6 +60,7 @@
   --tile-label-weight:    400;
   --tile-label-style:     normal;
   --banner-icon-anim:    banner-blink 1.5s step-end infinite;
+  --app-entrance-anim:   entrance-glitch 1s ease-out forwards;
 
   /* Buttons */
   --btn-hover-bg:         rgba(146, 200, 0, 0.09);

@@ -50,6 +50,7 @@
   --tile-label-weight:    400;
   --tile-label-style:     italic;
   --banner-icon-anim:    banner-throb 5s ease-in-out infinite;
+  --app-entrance-anim:   entrance-zoom 2s ease-out forwards;
 
   --btn-hover-bg:   rgba(80, 0, 0, 0.12);
   --btn-active-bg:  rgba(80, 0, 0, 0.24);

@@ -57,6 +57,7 @@
   --tile-label-weight:    400;
   --tile-label-style:     italic;
   --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(200, 144, 80, 0.09);

@@ -46,6 +46,7 @@
   --tile-label-weight:    300;
   --tile-label-style:     normal;
   --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-zoom 2s ease-out forwards;
 
   --btn-hover-bg:   rgba(120, 145, 175, 0.08);
   --btn-active-bg:  rgba(120, 145, 175, 0.16);
