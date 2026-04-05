@@ -272,6 +272,8 @@ function setupIPC(win, store, electronApp) {
 
     installedAppsPromise = new Promise((resolve) => {
       const ps = `
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
 $startDirs = @([Environment]::GetFolderPath('ApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs', [Environment]::GetFolderPath('CommonApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs')
 $wsh = New-Object -ComObject WScript.Shell
 $pkgMap = @{}
@@ -389,11 +391,37 @@ $apps = Get-StartApps | ForEach-Object {
   }
   [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath; ExeIconB64=$exeIconB64; ShellIconB64=$shellIconB64 }
 }
+# Fallback: Get-StartApps returned nothing (broken on some Windows 11 builds).
+# Scan Start Menu .lnk files directly as a reliable alternative.
+if (-not $apps -or @($apps).Count -eq 0) {
+  $apps = Get-ChildItem -Path $startDirs -Filter '*.lnk' -Recurse -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -notmatch '^\s*$' } |
+    ForEach-Object {
+      $lnkFile = $_
+      $name = [IO.Path]::GetFileNameWithoutExtension($lnkFile.Name)
+      $exePath = $null; $exeIconB64 = $null
+      try {
+        $sc = $wsh.CreateShortcut($lnkFile.FullName)
+        if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\s*,') {
+          $p = ($sc.IconLocation -split ',')[0].Trim()
+          $p = [Environment]::ExpandEnvironmentVariables($p)
+          if ($p -and (Test-Path $p)) { $exePath = $p }
+        }
+        if (-not $exePath -and $sc.TargetPath) {
+          $p = [Environment]::ExpandEnvironmentVariables($sc.TargetPath)
+          try { if ($p -and (Test-Path $p)) { $exePath = $p } } catch {}
+        }
+        if (-not $exePath) { $exePath = $lnkFile.FullName }
+        try { $exeIconB64 = [IconHelper]::GetBase64($exePath) } catch {}
+      } catch {}
+      [PSCustomObject]@{ Name=$name; AppID=$lnkFile.FullName; IconPath=$null; ExePath=$exePath; ExeIconB64=$exeIconB64; ShellIconB64=$null }
+    }
+}
 $apps | ConvertTo-Json -Depth 2
 `;
       execFile('powershell.exe',
         ['-NoProfile', '-NonInteractive', '-Command', ps],
-        { windowsHide: true, stdio: 'pipe', timeout: 25000 },
+        { windowsHide: true, stdio: 'pipe', timeout: 45000, maxBuffer: 64 * 1024 * 1024 },
         async (err, stdout) => {
           installedAppsPromise = null;
           if (err || !stdout) { resolve([]); return; }
