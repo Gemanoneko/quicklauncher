@@ -513,6 +513,7 @@ $apps | ConvertTo-Json -Depth 2
   });
 
   ipcMain.handle('set-auto-launch', (_, enabled) => {
+    if (!electronApp.isPackaged) return; // dev builds must not touch the startup registry
     electronApp.setLoginItemSettings({
       openAtLogin: enabled,
       path: electronApp.getPath('exe')

@@ -23,12 +23,15 @@ app.whenReady().then(() => {
   setupIPC(mainWindow, store, app);
   setupUpdater(mainWindow);
 
-  // Apply auto-launch preference
-  const settings = store.get('settings');
-  app.setLoginItemSettings({
-    openAtLogin: settings.startWithWindows !== false,
-    path: app.getPath('exe')
-  });
+  // Apply auto-launch preference (packaged builds only — dev builds use the
+  // bare Electron binary as exe path, which would register the wrong entry)
+  if (app.isPackaged) {
+    const settings = store.get('settings');
+    app.setLoginItemSettings({
+      openAtLogin: settings.startWithWindows !== false,
+      path: app.getPath('exe')
+    });
+  }
 });
 
 app.on('second-instance', () => {
