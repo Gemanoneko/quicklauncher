@@ -185,3 +185,13 @@
 #theme-banner { background: rgba(0, 4, 12, 0.97); border-top-color: rgba(109, 232, 255, 0.18); }
 #theme-banner::before { content: '⬡'; color: #6DE8FF; font-size: 20px; }
 #theme-banner-text { color: rgba(168, 224, 240, 0.55); }
+
+/* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
+#header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: var(--tile-hover-bg);
+}
+.app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }

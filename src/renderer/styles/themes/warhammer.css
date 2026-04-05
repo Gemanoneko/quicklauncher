@@ -277,3 +277,14 @@
 #theme-banner { background: rgba(4, 2, 0, 0.98); border-top-color: rgba(200, 144, 10, 0.30); }
 #theme-banner::before { content: '☩'; color: #C8900A; font-size: 22px; font-family: Georgia, serif; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 144, 10, 0.55); }
+
+/* ── Phase 4E: tile radial ring ──────────────────────────────────────────── */
+.app-tile::before {
+  width: 20px; height: 20px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

@@ -272,3 +272,14 @@
   50% { color: #0060CC; opacity: 0.6; }
 }
 #theme-banner-text { color: rgba(192, 204, 216, 0.50); }
+
+/* ── Phase 4E: tile radial ring ──────────────────────────────────────────── */
+.app-tile::before {
+  width: 20px; height: 20px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

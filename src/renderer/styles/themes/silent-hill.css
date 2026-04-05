@@ -183,3 +183,12 @@
 #theme-banner { background: rgba(6, 3, 1, 0.98); border-top-color: rgba(100, 28, 10, 0.25); }
 #theme-banner::before { content: '✝'; color: #802010; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(110, 60, 30, 0.58); }
+
+/* ── Phase 4E: tile flicker ──────────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: var(--tile-hover-bg);
+}
+.app-tile:hover::before { animation: tile-flicker .8s steps(1) forwards; }

@@ -227,3 +227,13 @@
 #theme-banner { background: rgba(8, 4, 0, 0.97); border-top-color: rgba(224, 122, 0, 0.22); }
 #theme-banner::before { content: '⊙'; color: #E07A00; font-size: 22px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(168, 128, 80, 0.65); }
+
+/* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
+#header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: var(--tile-hover-bg);
+}
+.app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }

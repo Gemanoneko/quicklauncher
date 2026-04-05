@@ -211,3 +211,12 @@
 /* ── Banner ────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(0, 2, 0, 0.98); border-top-color: rgba(27, 200, 27, 0.22); }
 #theme-banner::before { content: '☣'; color: #1BC81B; font-size: 20px; }
+
+/* ── Phase 4E: tile flicker ──────────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: var(--tile-hover-bg);
+}
+.app-tile:hover::before { animation: tile-flicker .8s steps(1) forwards; }

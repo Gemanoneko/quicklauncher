@@ -226,3 +226,13 @@
 /* ── Banner ────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(0, 4, 14, 0.95); border-top-color: rgba(0, 240, 255, 0.18); }
 #theme-banner::before { content: '◈'; color: #00f0ff; font-size: 20px; }
+
+/* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
+#header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: var(--tile-hover-bg);
+}
+.app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }

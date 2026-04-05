@@ -242,3 +242,13 @@
 #theme-banner { background: rgba(0, 4, 10, 0.97); border-top-color: rgba(0, 184, 236, 0.20); border-left: 3px solid rgba(192, 0, 28, 0.6); }
 #theme-banner::before { content: '⊕'; color: #00B8EC; font-size: 20px; }
 #theme-banner-text { color: rgba(200, 220, 240, 0.55); }
+
+/* ── Phase 4D/E: header strobe + tile scan ───────────────────────────────── */
+#header::before { animation: hdr-bar-strobe 8s steps(1) infinite; }
+.app-tile::before {
+  width: 100%; height: 3px;
+  left: 0; top: -3px;
+  transform: none;
+  background: var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }

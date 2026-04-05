@@ -230,3 +230,13 @@
 #theme-banner { background: rgba(0, 2, 0, 0.98); border-top-color: rgba(0, 255, 65, 0.16); }
 #theme-banner::before { content: '〓'; color: #00FF41; font-size: 20px; font-family: 'Courier New', monospace; }
 #theme-banner-text { font-family: 'Courier New', Courier, monospace; color: rgba(0, 200, 50, 0.55); }
+
+/* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
+#header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: var(--tile-hover-bg);
+}
+.app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }
