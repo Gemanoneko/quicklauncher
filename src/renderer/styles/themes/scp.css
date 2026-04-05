@@ -210,3 +210,16 @@
 #theme-banner { background: rgba(2, 2, 2, 0.99); border-top-color: rgba(150, 150, 150, 0.20); }
 #theme-banner::before { content: '◼'; color: #CC0000; font-size: 18px; }
 #theme-banner-text { font-family: 'Consolas', monospace; color: rgba(130, 130, 130, 0.55); }
+
+/* ── Containment scan — classified redaction sweep ───────────────────────── */
+#particles {
+  background:
+    linear-gradient(to bottom, transparent 0px, rgba(0,0,0,0.06) 8px, rgba(0,0,0,0.12) 20px, rgba(0,0,0,0.06) 32px, transparent 40px) no-repeat,
+    linear-gradient(to bottom, transparent 0px, rgba(204,0,0,0.03) 4px, rgba(204,0,0,0.06) 10px, rgba(204,0,0,0.03) 16px, transparent 20px) no-repeat;
+  background-size: 100% 40px, 100% 20px;
+  animation: scp-redact 8s linear infinite;
+}
+@keyframes scp-redact {
+  from { background-position: 0 -40px, 0 calc(100% + 20px); }
+  to   { background-position: 0 calc(100% + 40px), 0 -20px; }
+}

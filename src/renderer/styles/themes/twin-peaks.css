@@ -208,3 +208,15 @@
 #theme-banner { background: rgba(4, 1, 2, 0.99); border-top-color: rgba(110, 10, 5, 0.25); }
 #theme-banner::before { content: '◑'; color: #880000; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(130, 30, 15, 0.58); }
+
+/* ── Black Lodge curtain sway — red ambient light shifting side to side ──── */
+#particles {
+  background:
+    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(136,0,0,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(136,0,0,0.07) 0%, transparent 60%);
+  animation: lodge-sway 8s ease-in-out infinite;
+}
+@keyframes lodge-sway {
+  0%, 100% { opacity: 0.3; background-position: -12% 0, 112% 0; }
+  50%      { opacity: 1; background-position: 6% 0, 94% 0; }
+}

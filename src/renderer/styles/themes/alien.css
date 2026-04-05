@@ -226,3 +226,22 @@
   background: var(--tile-hover-bg);
 }
 .app-tile:hover::before { animation: tile-flicker .8s steps(1) forwards; }
+
+/* ── Motion tracker contacts — detected blips pulsing with sweep ─────────── */
+#particles {
+  background:
+    radial-gradient(circle 4px at 46% 43%, rgba(27,200,27,0.55) 0%, transparent 100%),
+    radial-gradient(circle 3px at 54% 57%, rgba(27,200,27,0.45) 0%, transparent 100%),
+    radial-gradient(circle 3px at 40% 62%, rgba(27,200,27,0.35) 0%, transparent 100%),
+    radial-gradient(circle 2.5px at 57% 36%, rgba(27,200,27,0.40) 0%, transparent 100%),
+    radial-gradient(circle 2px at 48% 68%, rgba(27,200,27,0.30) 0%, transparent 100%);
+  animation: alien-blips 5s ease-in-out infinite;
+}
+@keyframes alien-blips {
+  0%, 12% { opacity: 0; }
+  18%     { opacity: 0.9; }
+  35%     { opacity: 0.55; }
+  55%     { opacity: 0.25; }
+  75%     { opacity: 0.08; }
+  88%, 100% { opacity: 0; }
+}

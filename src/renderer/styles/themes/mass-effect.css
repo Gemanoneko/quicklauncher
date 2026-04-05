@@ -258,3 +258,16 @@
   background: var(--tile-hover-border);
 }
 .app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }
+
+/* ── Normandy holographic grid — Alliance blue grid shimmer ──────────────── */
+#particles {
+  background:
+    repeating-linear-gradient(90deg, transparent 0px, transparent 39px, rgba(0,184,236,0.03) 39px, rgba(0,184,236,0.03) 40px),
+    repeating-linear-gradient(0deg, transparent 0px, transparent 39px, rgba(0,184,236,0.02) 39px, rgba(0,184,236,0.02) 40px);
+  background-size: 40px 100%, 100% 40px;
+  animation: me-holo-shimmer 5s ease-in-out infinite;
+}
+@keyframes me-holo-shimmer {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}

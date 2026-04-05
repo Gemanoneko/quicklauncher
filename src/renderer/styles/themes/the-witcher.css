@@ -185,3 +185,16 @@
 #theme-banner { background: rgba(5, 4, 0, 0.98); border-top-color: rgba(180, 150, 30, 0.26); }
 #theme-banner::before { content: '⚔'; color: #C0A020; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(180, 148, 28, 0.58); }
+
+/* ── Campfire embers — warm sparks rising from the hearth ────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='300'%3E%3Ccircle cx='20' cy='50' r='1.2' fill='rgba(192,160,32,0.30)'/%3E%3Ccircle cx='65' cy='140' r='0.8' fill='rgba(160,100,8,0.25)'/%3E%3Ccircle cx='110' cy='240' r='1.5' fill='rgba(192,160,32,0.20)'/%3E%3Ccircle cx='45' cy='280' r='0.7' fill='rgba(139,48,32,0.22)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='450'%3E%3Ccircle cx='35' cy='70' r='1.5' fill='rgba(192,160,32,0.16)'/%3E%3Ccircle cx='110' cy='210' r='1' fill='rgba(160,100,8,0.12)'/%3E%3Ccircle cx='170' cy='370' r='2' fill='rgba(64,96,32,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 140px 300px, 200px 450px;
+  animation: witcher-embers 8s linear infinite;
+}
+@keyframes witcher-embers {
+  from { background-position: 0 0, -15px 0; }
+  to   { background-position: 12px -300px, 8px -450px; }
+}

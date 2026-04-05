@@ -170,3 +170,15 @@
 #theme-banner { background: rgba(4, 3, 6, 0.98); border-top-color: rgba(160, 0, 0, 0.22); }
 #theme-banner::before { content: '☣'; color: #BB0000; font-size: 20px; }
 #theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 2.5px; color: rgba(160, 0, 0, 0.58); }
+
+/* ── Biohazard scan — T-Virus containment sweep ──────────────────────────── */
+#particles {
+  background:
+    linear-gradient(to bottom, transparent 0px, rgba(187,0,0,0.04) 12px, rgba(187,0,0,0.10) 30px, rgba(187,0,0,0.04) 48px, transparent 60px) no-repeat;
+  background-size: 100% 60px;
+  animation: re-biohazard-scan 6s linear infinite;
+}
+@keyframes re-biohazard-scan {
+  from { background-position: 0 -60px; }
+  to   { background-position: 0 calc(100% + 60px); }
+}

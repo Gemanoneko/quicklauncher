@@ -189,3 +189,15 @@
 #theme-banner { background: rgba(3, 0, 0, 0.99); border-top-color: rgba(80, 0, 0, 0.28); }
 #theme-banner::before { content: '⊘'; color: #991111; font-size: 20px; opacity: 0.88; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(140, 20, 20, 0.65); }
+
+/* ── Gravity drive — void distortion pulse expanding from the core ────────── */
+#particles {
+  background: radial-gradient(circle at 50% 50%, rgba(80,0,0,0.10) 0%, transparent 25%, transparent 88%, rgba(60,0,0,0.06) 92%, transparent 96%) no-repeat;
+  background-size: 100% 100%;
+  background-position: 50% 50%;
+  animation: void-distortion 9s ease-in-out infinite;
+}
+@keyframes void-distortion {
+  0%, 100% { background-size: 80% 80%; opacity: 0.4; }
+  50%      { background-size: 220% 220%; opacity: 1; }
+}

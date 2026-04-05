@@ -188,3 +188,16 @@
   border: 1px solid var(--tile-hover-border);
 }
 .app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+
+/* ── TARDIS materialization — blue pulse wave expanding outward ───────────── */
+#particles {
+  background: radial-gradient(circle at 50% 50%, transparent 0%, transparent 38%, rgba(0,112,192,0.12) 40%, rgba(0,112,192,0.06) 42%, transparent 44%) no-repeat;
+  background-size: 0% 0%;
+  background-position: 50% 50%;
+  animation: tardis-pulse 5s ease-out infinite;
+}
+@keyframes tardis-pulse {
+  0%   { background-size: 0% 0%; opacity: 0.9; }
+  70%  { background-size: 350% 350%; opacity: 0; }
+  100% { background-size: 0% 0%; opacity: 0; }
+}

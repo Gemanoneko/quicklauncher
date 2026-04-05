@@ -291,3 +291,16 @@
   background: var(--tile-hover-bg);
 }
 .app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }
+
+/* ── Augmentation grid — gold circuit lines pulsing with power cycle ─────── */
+#particles {
+  background:
+    repeating-linear-gradient(0deg, transparent 0px, transparent 23px, rgba(212,165,32,0.04) 23px, rgba(212,165,32,0.04) 24px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 23px, rgba(212,165,32,0.025) 23px, rgba(212,165,32,0.025) 24px);
+  background-size: 100% 24px, 24px 100%;
+  animation: aug-grid-pulse 8s ease-in-out infinite;
+}
+@keyframes aug-grid-pulse {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 1; }
+}

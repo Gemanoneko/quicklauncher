@@ -271,3 +271,22 @@
   background: var(--tile-hover-bg);
 }
 .app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }
+
+/* ── Neural data stream — Section 9 download in progress ─────────────────── */
+#particles {
+  background:
+    repeating-linear-gradient(0deg,
+      transparent 0px, transparent 22px,
+      rgba(0,224,200,0.035) 22px, rgba(0,224,200,0.035) 23px
+    ),
+    repeating-linear-gradient(0deg,
+      transparent 0px, transparent 37px,
+      rgba(128,64,208,0.025) 37px, rgba(128,64,208,0.025) 38px
+    );
+  background-size: 100% 23px, 100% 38px;
+  animation: gits-neural 8s linear infinite;
+}
+@keyframes gits-neural {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 0 -23px, 0 38px; }
+}
