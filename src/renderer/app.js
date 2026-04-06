@@ -373,6 +373,13 @@ const THEME_BANNERS = {
     'DRACARYS.',
     'A LANNISTER ALWAYS PAYS HIS DEBTS.',
   ],
+  'amnesia': [
+    'REMEMBER. YOU CHOSE THIS.',
+    'THE SHADOW IS COMING FOR YOU, DANIEL.',
+    'DO NOT LOOK THEM IN THE EYES. STAY SANE.',
+    'WHAT HAVE YOU DONE TO YOUR SOUL, DANIEL?',
+    'THE DARKNESS WILL CONSUME WHAT REMAINS OF YOU.',
+  ],
 };
 
 // Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
@@ -436,6 +443,7 @@ const THEME_NAMES = {
   'eve-online':          'EVE ONLINE',
   'indiana-jones':       'INDIANA JONES',
   'game-of-thrones':     'GAME OF THRONES',
+  'amnesia':             'AMNESIA',
 };
 const ALL_THEMES = Object.keys(THEME_BANNERS);
 

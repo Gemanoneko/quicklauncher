@@ -1,0 +1,249 @@
+/* ══ AMNESIA ══════════════════════════════════════════════════════════════════
+   Brennenburg Castle. The Dark Descent. The Shadow pursues.
+   A man who erased his own memory to escape what he had done.
+   The light is dying. The Gatherers are near. Stay sane — or lose everything.
+   Remember. You chose this.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #050302;
+  --panel-bg:     rgba(8, 5, 3, 0.99);
+  --overlay-bg:   rgba(5, 3, 2, 0.97);
+  --header-bg:    rgba(80, 50, 15, 0.04);
+
+  /* ── Typography ── */
+  --font:         Georgia, 'Times New Roman', serif;
+
+  /* ── Text ── */
+  --text:         #C8A870;
+  --text-dim:     rgba(160, 120, 60, 0.45);
+
+  /* ── Accents ── */
+  --accent-c:     #C87830;   /* lantern flame amber */
+  --accent-m:     #8B5020;   /* dark wood brown */
+  --accent-y:     #F0D080;   /* pale candlelight */
+
+  /* ── Borders ── */
+  --border:       rgba(140, 90, 35, 0.22);
+  --border-h:     rgba(180, 120, 50, 0.55);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 7px rgba(200,120,48,.65),  0 0 20px rgba(160,90,30,.22);
+  --glow-m:       0 0 6px rgba(139,80,32,.55),   0 0 16px rgba(100,60,20,.18);
+  --glow-y:       0 0 7px rgba(240,208,128,.55), 0 0 20px rgba(200,160,80,.18);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 22px rgba(100,60,20,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(180,110,40,.10);
+
+  /* ── Title animation ── */
+  --title-anim:   amnesia-flicker 11s ease-in-out infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(100, 65, 20, 0.09);
+  --tile-hover-border: rgba(180, 120, 50, 0.45);
+  --tile-hover-shadow: 0 0 12px rgba(180, 120, 50, 0.20);
+  --tile-active-bg:    rgba(100, 65, 20, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,130,50,.55)) drop-shadow(0 0 14px rgba(160,90,30,.22));
+  --tile-icon-fx:      sepia(0.35) contrast(1.05) brightness(0.88) saturate(0.78);
+  --tile-icon-shape:   polygon(0% 28%, 12% 10%, 35% 2%, 50% 0%, 65% 2%, 88% 10%, 100% 28%, 100% 100%, 0% 100%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(100, 65, 20, 0.10);
+  --btn-active-bg:  rgba(100, 65, 20, 0.20);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(100, 65, 20, 0.25);
+  --drop-icon-color:  rgba(180, 120, 50, 0.35);
+  --hint-sub-color:   rgba(140, 95, 40, 0.32);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(180, 120, 50, 0.40);
+  --rename-input-bg:  rgba(100, 65, 20, 0.07);
+
+  /* ── Edit bar ── */
+  --edit-bar-bg:          rgba(139, 80, 32, 0.07);
+  --edit-bar-border:      rgba(139, 80, 32, 0.42);
+  --edit-label-color:     #C8A870;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C8A870;
+  --btn-done-border:      rgba(200, 168, 112, 0.38);
+  --btn-done-hover-bg:    rgba(200, 168, 112, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(180, 120, 50, 0.38);
+
+  /* ── Update banner ── */
+  --update-bg:             rgba(240, 208, 128, 0.05);
+  --update-border:         rgba(240, 208, 128, 0.28);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(240, 208, 128, 0.22);
+  --update-btn-hover-bg:   rgba(240, 208, 128, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(200, 120, 48, 0.38);
+  --btn-close-hover-bg:   rgba(100, 65, 20, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(100, 65, 20, 0.07);
+  --picker-item-hover-bg:  rgba(100, 65, 20, 0.09);
+  --picker-item-active-bg: rgba(100, 65, 20, 0.17);
+  --picker-placeholder-bg: rgba(100, 65, 20, 0.07);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(100, 65, 20, 0.17);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(200, 120, 48, 0.88);
+  --remove-btn-border:     var(--accent-c);
+}
+
+/* ── Sepia stone grain + slab lines + candle glow + shadow descent + vignette ── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.35 0.25 0.12 0 0 0.28 0.20 0.10 0 0 0.15 0.10 0.08 0 0 0 0 0 0.13 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(80,50,15,0.025) 20px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(0,0,0,0.030) 60px),
+    radial-gradient(ellipse 35% 45% at 0% 100%, rgba(180,100,30,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,0,0,0.20) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 96% at 50% 50%, transparent 15%, rgba(5,3,2,0.92) 100%);
+  background-size: 200px 200px, auto, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header lantern amber accent bar ─────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #C87830, rgba(160, 90, 25, 0.25));
+  box-shadow: 0 0 9px rgba(200,120,48,0.65), 0 0 26px rgba(160,90,30,0.22);
+}
+
+/* ── Grid: Brennenburg Castle Dungeon Schematic ──────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0;
+  z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(160,110,50,0.55)' stroke-width='1.4'/%3E%3Crect x='13' y='13' width='474' height='354' fill='none' stroke='rgba(140,90,40,0.22)' stroke-width='0.5'/%3E%3Cline x1='8' y1='32' x2='8' y2='8' stroke='rgba(160,110,50,0.65)' stroke-width='1.5'/%3E%3Cline x1='8' y1='8' x2='32' y2='8' stroke='rgba(160,110,50,0.65)' stroke-width='1.5'/%3E%3Cline x1='492' y1='8' x2='468' y2='8' stroke='rgba(160,110,50,0.65)' stroke-width='1.5'/%3E%3Cline x1='492' y1='8' x2='492' y2='32' stroke='rgba(160,110,50,0.65)' stroke-width='1.5'/%3E%3Cline x1='8' y1='348' x2='8' y2='372' stroke='rgba(160,110,50,0.65)' stroke-width='1.5'/%3E%3Cline x1='8' y1='372' x2='32' y2='372' stroke='rgba(160,110,50,0.65)' stroke-width='1.5'/%3E%3Cline x1='492' y1='372' x2='468' y2='372' stroke='rgba(160,110,50,0.65)' stroke-width='1.5'/%3E%3Cline x1='492' y1='348' x2='492' y2='372' stroke='rgba(160,110,50,0.65)' stroke-width='1.5'/%3E%3Cline x1='133' y1='13' x2='133' y2='367' stroke='rgba(160,110,50,1)' stroke-width='0.3' opacity='0.10'/%3E%3Cline x1='250' y1='13' x2='250' y2='367' stroke='rgba(160,110,50,1)' stroke-width='0.3' opacity='0.08'/%3E%3Cline x1='367' y1='13' x2='367' y2='367' stroke='rgba(160,110,50,1)' stroke-width='0.3' opacity='0.10'/%3E%3Cline x1='13' y1='127' x2='487' y2='127' stroke='rgba(160,110,50,1)' stroke-width='0.3' opacity='0.10'/%3E%3Cline x1='13' y1='253' x2='487' y2='253' stroke='rgba(160,110,50,1)' stroke-width='0.3' opacity='0.10'/%3E%3Ccircle cx='38' cy='25' r='0.8' fill='rgba(200,150,70,0.25)'/%3E%3Ccircle cx='110' cy='18' r='1' fill='rgba(180,130,55,0.20)'/%3E%3Ccircle cx='200' cy='38' r='0.8' fill='rgba(160,110,45,0.18)'/%3E%3Ccircle cx='318' cy='22' r='1' fill='rgba(200,160,75,0.22)'/%3E%3Ccircle cx='428' cy='30' r='0.8' fill='rgba(180,135,60,0.20)'/%3E%3Ccircle cx='468' cy='15' r='1.2' fill='rgba(200,150,70,0.18)'/%3E%3Ccircle cx='65' cy='80' r='0.8' fill='rgba(160,110,45,0.15)'/%3E%3Ccircle cx='450' cy='95' r='0.8' fill='rgba(180,130,55,0.14)'/%3E%3Ccircle cx='25' cy='110' r='1' fill='rgba(200,150,70,0.12)'/%3E%3Ccircle cx='480' cy='120' r='0.8' fill='rgba(160,110,45,0.14)'/%3E%3Ccircle cx='85' cy='45' r='1.5' fill='rgba(200,140,50,0.45)'/%3E%3Ccircle cx='418' cy='55' r='1.5' fill='rgba(200,140,50,0.38)'/%3E%3Ctext x='250' y='19' text-anchor='middle' font-family='serif' font-size='6.5' fill='rgba(160,110,50,0.55)' letter-spacing='3'%3EBRENNENBURG CASTLE SCHEMATIC%3C/text%3E%3Ctext x='250' y='28' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(140,95,40,0.28)' letter-spacing='1.5'%3EBARON ALEXANDER VON BRENNENBURG // ARCHIVE RESTRICTED%3C/text%3E%3Ctext x='48' y='43' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.55)' letter-spacing='1'%3ESANITY%3C/text%3E%3Crect x='34' y='48' width='28' height='75' fill='rgba(5,3,2,0.60)' stroke='rgba(160,110,50,0.40)' stroke-width='0.7'/%3E%3Crect x='37' y='51' width='22' height='11' fill='none' stroke='rgba(160,110,50,0.20)' stroke-width='0.5'/%3E%3Crect x='37' y='64' width='22' height='11' fill='none' stroke='rgba(160,110,50,0.18)' stroke-width='0.5'/%3E%3Crect x='37' y='77' width='22' height='11' fill='none' stroke='rgba(160,110,50,0.16)' stroke-width='0.5'/%3E%3Crect x='37' y='90' width='22' height='11' fill='none' stroke='rgba(160,110,50,0.15)' stroke-width='0.5'/%3E%3Crect x='37' y='103' width='22' height='13' fill='none' stroke='rgba(160,110,50,0.20)' stroke-width='0.5'/%3E%3Crect x='37' y='110' width='22' height='6' fill='rgba(200,50,30,0.50)'/%3E%3Ctext x='48' y='135' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(200,50,30,0.65)' letter-spacing='1'%3ECRITICAL%3C/text%3E%3Cpolygon points='222,38 278,38 290,56 282,82 250,100 218,82 210,56' fill='rgba(5,3,2,0.50)' stroke='rgba(160,110,50,0.42)' stroke-width='0.8'/%3E%3Cpolygon points='227,43 273,43 283,58 276,78 250,94 224,78 217,58' fill='none' stroke='rgba(140,90,40,0.22)' stroke-width='0.5'/%3E%3Cline x1='210' y1='68' x2='290' y2='68' stroke='rgba(160,110,50,0.28)' stroke-width='0.6'/%3E%3Cline x1='250' y1='38' x2='250' y2='100' stroke='rgba(160,110,50,0.28)' stroke-width='0.6'/%3E%3Cpolygon points='244,38 244,32 248,35 250,30 252,35 256,32 256,38' fill='rgba(180,130,55,0.45)' stroke='rgba(160,110,50,0.38)' stroke-width='0.5'/%3E%3Ctext x='250' y='113' text-anchor='middle' font-family='serif' font-size='5.5' fill='rgba(160,110,50,0.52)' letter-spacing='2' font-style='italic'%3EBRENNENBURG%3C/text%3E%3Ctext x='250' y='121' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(140,90,40,0.35)' letter-spacing='1'%3EEST. MDCXCIII%3C/text%3E%3Ccircle cx='452' cy='72' r='32' fill='none' stroke='rgba(160,110,50,0.10)' stroke-width='6'/%3E%3Ccircle cx='452' cy='72' r='26' fill='rgba(80,50,15,0.20)' stroke='rgba(180,130,55,0.42)' stroke-width='1.2'/%3E%3Ccircle cx='452' cy='72' r='20' fill='none' stroke='rgba(160,110,50,0.16)' stroke-width='0.5'/%3E%3Ccircle cx='452' cy='72' r='6' fill='rgba(200,150,60,0.30)' stroke='rgba(200,160,70,0.50)' stroke-width='0.8'/%3E%3Ccircle cx='452' cy='72' r='2' fill='rgba(220,180,80,0.65)'/%3E%3Cline x1='452' y1='46' x2='452' y2='52' stroke='rgba(160,110,50,0.35)' stroke-width='0.7'/%3E%3Cline x1='452' y1='92' x2='452' y2='98' stroke='rgba(160,110,50,0.30)' stroke-width='0.6'/%3E%3Cline x1='426' y1='72' x2='432' y2='72' stroke='rgba(160,110,50,0.30)' stroke-width='0.6'/%3E%3Cline x1='472' y1='72' x2='478' y2='72' stroke='rgba(160,110,50,0.30)' stroke-width='0.6'/%3E%3Cline x1='434' y1='54' x2='438' y2='58' stroke='rgba(160,110,50,0.22)' stroke-width='0.5'/%3E%3Cline x1='466' y1='86' x2='470' y2='90' stroke='rgba(160,110,50,0.20)' stroke-width='0.5'/%3E%3Cline x1='466' y1='54' x2='470' y2='58' stroke='rgba(160,110,50,0.20)' stroke-width='0.5'/%3E%3Cline x1='434' y1='86' x2='438' y2='90' stroke='rgba(160,110,50,0.20)' stroke-width='0.5'/%3E%3Ctext x='452' y='110' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.52)' letter-spacing='1'%3EVITAE ORB%3C/text%3E%3Ctext x='452' y='119' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(200,80,50,0.55)' letter-spacing='1'%3EALIGNMENT: UNSTABLE%3C/text%3E%3Crect x='30' y='135' width='445' height='225' fill='rgba(35,22,8,0.35)' stroke='rgba(160,110,50,0.58)' stroke-width='1.2'/%3E%3Crect x='30' y='135' width='445' height='22' fill='rgba(50,32,10,0.38)' stroke='rgba(160,110,50,0.38)' stroke-width='0.5'/%3E%3Ctext x='252' y='149' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.58)' letter-spacing='2'%3EENTRY HALL%3C/text%3E%3Cline x1='152' y1='157' x2='152' y2='360' stroke='rgba(160,110,50,0.45)' stroke-width='1.2'/%3E%3Cline x1='322' y1='157' x2='322' y2='360' stroke='rgba(160,110,50,0.45)' stroke-width='1.2'/%3E%3Cline x1='30' y1='258' x2='152' y2='258' stroke='rgba(160,110,50,0.38)' stroke-width='1.0'/%3E%3Cline x1='322' y1='258' x2='475' y2='258' stroke='rgba(160,110,50,0.38)' stroke-width='1.0'/%3E%3Cline x1='152' y1='308' x2='322' y2='308' stroke='rgba(160,110,50,0.32)' stroke-width='0.8'/%3E%3Cpath d='M 152,200 A 10,10 0 0 1 162,210' fill='none' stroke='rgba(160,110,50,0.38)' stroke-width='0.7'/%3E%3Cpath d='M 322,200 A 10,10 0 0 0 312,210' fill='none' stroke='rgba(160,110,50,0.35)' stroke-width='0.7'/%3E%3Cpath d='M 152,282 A 10,10 0 0 1 162,292' fill='none' stroke='rgba(160,110,50,0.32)' stroke-width='0.7'/%3E%3Ctext x='91' y='172' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.52)' letter-spacing='1'%3ESTUDY%3C/text%3E%3Crect x='52' y='188' width='24' height='14' fill='rgba(80,50,15,0.35)' stroke='rgba(160,110,50,0.28)' stroke-width='0.6'/%3E%3Cline x1='52' y1='195' x2='76' y2='195' stroke='rgba(160,110,50,0.18)' stroke-width='0.4'/%3E%3Cline x1='64' y1='188' x2='64' y2='202' stroke='rgba(160,110,50,0.18)' stroke-width='0.4'/%3E%3Cline x1='136' y1='164' x2='136' y2='252' stroke='rgba(160,110,50,0.15)' stroke-width='1.5'/%3E%3Cline x1='132' y1='174' x2='136' y2='174' stroke='rgba(160,110,50,0.28)' stroke-width='0.5'/%3E%3Cline x1='132' y1='184' x2='136' y2='184' stroke='rgba(160,110,50,0.25)' stroke-width='0.5'/%3E%3Cline x1='132' y1='194' x2='136' y2='194' stroke='rgba(160,110,50,0.22)' stroke-width='0.5'/%3E%3Cline x1='132' y1='204' x2='136' y2='204' stroke='rgba(160,110,50,0.20)' stroke-width='0.5'/%3E%3Cline x1='132' y1='214' x2='136' y2='214' stroke='rgba(160,110,50,0.18)' stroke-width='0.5'/%3E%3Cline x1='132' y1='224' x2='136' y2='224' stroke='rgba(160,110,50,0.16)' stroke-width='0.5'/%3E%3Cline x1='132' y1='234' x2='136' y2='234' stroke='rgba(160,110,50,0.15)' stroke-width='0.5'/%3E%3Cline x1='132' y1='244' x2='136' y2='244' stroke='rgba(160,110,50,0.14)' stroke-width='0.5'/%3E%3Cpolygon points='66,178 70,178 68,172' fill='rgba(220,150,50,0.48)' stroke='rgba(200,140,50,0.30)' stroke-width='0.3'/%3E%3Crect x='67' y='178' width='2' height='5' fill='rgba(160,110,50,0.42)'/%3E%3Ctext x='237' y='172' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.58)' letter-spacing='1'%3EGRAND HALL%3C/text%3E%3Ccircle cx='183' cy='200' r='5' fill='rgba(60,38,12,0.52)' stroke='rgba(160,110,50,0.42)' stroke-width='0.7'/%3E%3Ccircle cx='183' cy='275' r='5' fill='rgba(60,38,12,0.52)' stroke='rgba(160,110,50,0.40)' stroke-width='0.7'/%3E%3Ccircle cx='291' cy='200' r='5' fill='rgba(60,38,12,0.52)' stroke='rgba(160,110,50,0.40)' stroke-width='0.7'/%3E%3Ccircle cx='291' cy='275' r='5' fill='rgba(60,38,12,0.52)' stroke='rgba(160,110,50,0.38)' stroke-width='0.7'/%3E%3Ccircle cx='237' cy='195' r='6' fill='none' stroke='rgba(160,110,50,0.35)' stroke-width='0.6'/%3E%3Cline x1='231' y1='195' x2='243' y2='195' stroke='rgba(160,110,50,0.35)' stroke-width='0.6'/%3E%3Cline x1='237' y1='189' x2='237' y2='201' stroke='rgba(160,110,50,0.35)' stroke-width='0.6'/%3E%3Cpolygon points='229,190 232,190 230,186' fill='rgba(220,150,50,0.52)'/%3E%3Cpolygon points='242,190 245,190 243,186' fill='rgba(220,150,50,0.48)'/%3E%3Cpolygon points='229,200 232,200 230,204' fill='rgba(220,150,50,0.42)'/%3E%3Cpolygon points='242,200 245,200 243,204' fill='rgba(220,150,50,0.40)'/%3E%3Cpolygon points='237,248 244,262 230,262' fill='rgba(200,60,40,0.18)' stroke='rgba(200,60,40,0.58)' stroke-width='0.7'/%3E%3Ctext x='237' y='260' text-anchor='middle' font-family='monospace' font-size='6' fill='rgba(200,60,40,0.78)'%3E!%3C/text%3E%3Ctext x='237' y='275' text-anchor='middle' font-family='monospace' font-size='4.5' fill='rgba(200,60,40,0.58)'%3EGRUNT DETECTED%3C/text%3E%3Ctext x='398' y='172' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.50)' letter-spacing='1'%3ESTORAGE VAULT%3C/text%3E%3Ccircle cx='348' cy='202' r='7' fill='rgba(80,50,18,0.42)' stroke='rgba(160,110,50,0.32)' stroke-width='0.6'/%3E%3Ccircle cx='366' cy='207' r='7' fill='rgba(80,50,18,0.38)' stroke='rgba(160,110,50,0.28)' stroke-width='0.6'/%3E%3Ccircle cx='386' cy='200' r='7' fill='rgba(80,50,18,0.42)' stroke='rgba(160,110,50,0.30)' stroke-width='0.6'/%3E%3Ccircle cx='350' cy='224' r='6' fill='rgba(80,50,18,0.35)' stroke='rgba(160,110,50,0.24)' stroke-width='0.5'/%3E%3Ccircle cx='368' cy='227' r='5' fill='rgba(80,50,18,0.30)' stroke='rgba(160,110,50,0.20)' stroke-width='0.5'/%3E%3Cpolygon points='458,186 462,186 460,181' fill='rgba(220,150,50,0.42)'/%3E%3Crect x='459' y='186' width='2' height='5' fill='rgba(160,110,50,0.38)'/%3E%3Ctext x='398' y='245' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(160,110,50,0.40)'%3ETINDERBOXES: 3 // OIL: SCARCE%3C/text%3E%3Ctext x='91' y='272' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.48)' letter-spacing='1'%3EDUNGEON%3C/text%3E%3Cline x1='53' y1='280' x2='53' y2='342' stroke='rgba(160,110,50,0.38)' stroke-width='1.5'/%3E%3Cline x1='63' y1='280' x2='63' y2='342' stroke='rgba(160,110,50,0.32)' stroke-width='1.5'/%3E%3Cline x1='73' y1='280' x2='73' y2='342' stroke='rgba(160,110,50,0.30)' stroke-width='1.5'/%3E%3Cline x1='83' y1='280' x2='83' y2='342' stroke='rgba(160,110,50,0.26)' stroke-width='1.5'/%3E%3Cline x1='50' y1='282' x2='87' y2='282' stroke='rgba(160,110,50,0.25)' stroke-width='0.6'/%3E%3Cline x1='50' y1='340' x2='87' y2='340' stroke='rgba(160,110,50,0.22)' stroke-width='0.6'/%3E%3Cline x1='45' y1='320' x2='14' y2='338' stroke='rgba(50,25,8,0.65)' stroke-width='0.8' stroke-dasharray='3,4'/%3E%3Cline x1='48' y1='330' x2='16' y2='358' stroke='rgba(50,25,8,0.55)' stroke-width='0.7' stroke-dasharray='2,4'/%3E%3Cline x1='55' y1='340' x2='28' y2='368' stroke='rgba(50,25,8,0.48)' stroke-width='0.7' stroke-dasharray='2,5'/%3E%3Cline x1='42' y1='308' x2='12' y2='312' stroke='rgba(50,25,8,0.50)' stroke-width='0.6' stroke-dasharray='2,4'/%3E%3Cline x1='38' y1='295' x2='13' y2='290' stroke='rgba(50,25,8,0.42)' stroke-width='0.6' stroke-dasharray='2,5'/%3E%3Ctext x='110' y='356' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(200,60,40,0.55)'%3ESHADOW: NEAR%3C/text%3E%3Cpath d='M 30,347 Q 40,343 50,347 Q 60,351 70,347 Q 80,343 90,347 Q 100,351 110,347 Q 120,343 130,347 Q 141,351 152,347' fill='none' stroke='rgba(30,70,120,0.48)' stroke-width='0.8'/%3E%3Cpath d='M 30,352 Q 40,348 50,352 Q 60,356 70,352 Q 80,348 90,352 Q 100,356 110,352 Q 120,348 130,352 Q 141,356 152,352' fill='none' stroke='rgba(30,70,120,0.35)' stroke-width='0.7'/%3E%3Ctext x='237' y='322' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.45)' letter-spacing='1'%3EMACHINE ROOM%3C/text%3E%3Ccircle cx='195' cy='342' r='8' fill='none' stroke='rgba(160,110,50,0.35)' stroke-width='0.8'/%3E%3Ccircle cx='195' cy='342' r='4' fill='rgba(60,38,12,0.42)' stroke='rgba(160,110,50,0.28)' stroke-width='0.5'/%3E%3Cline x1='195' y1='330' x2='195' y2='334' stroke='rgba(160,110,50,0.30)' stroke-width='1.2'/%3E%3Cline x1='195' y1='350' x2='195' y2='354' stroke='rgba(160,110,50,0.28)' stroke-width='1.2'/%3E%3Cline x1='183' y1='342' x2='187' y2='342' stroke='rgba(160,110,50,0.28)' stroke-width='1.2'/%3E%3Cline x1='203' y1='342' x2='207' y2='342' stroke='rgba(160,110,50,0.28)' stroke-width='1.2'/%3E%3Cline x1='186' y1='333' x2='189' y2='336' stroke='rgba(160,110,50,0.22)' stroke-width='1.0'/%3E%3Cline x1='201' y1='348' x2='204' y2='351' stroke='rgba(160,110,50,0.20)' stroke-width='1.0'/%3E%3Cline x1='186' y1='351' x2='189' y2='348' stroke='rgba(160,110,50,0.20)' stroke-width='1.0'/%3E%3Cline x1='201' y1='336' x2='204' y2='333' stroke='rgba(160,110,50,0.20)' stroke-width='1.0'/%3E%3Ccircle cx='268' cy='335' r='5' fill='none' stroke='rgba(160,110,50,0.28)' stroke-width='0.6'/%3E%3Cline x1='263' y1='335' x2='273' y2='335' stroke='rgba(160,110,50,0.22)' stroke-width='0.5'/%3E%3Cline x1='268' y1='330' x2='268' y2='340' stroke='rgba(160,110,50,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 152,352 Q 165,348 178,352 Q 191,356 204,352 Q 217,348 230,352 Q 243,356 256,352 Q 269,348 282,352 Q 295,356 308,352 Q 315,350 322,352' fill='none' stroke='rgba(30,70,120,0.40)' stroke-width='0.7'/%3E%3Ctext x='398' y='272' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(160,110,50,0.58)' letter-spacing='1'%3EINNER SANCTUM%3C/text%3E%3Crect x='360' y='290' width='76' height='14' fill='rgba(50,30,10,0.52)' stroke='rgba(160,110,50,0.40)' stroke-width='0.7'/%3E%3Cline x1='398' y1='282' x2='398' y2='290' stroke='rgba(160,110,50,0.48)' stroke-width='0.8'/%3E%3Ccircle cx='398' cy='287' r='5' fill='rgba(100,65,18,0.48)' stroke='rgba(180,140,55,0.62)' stroke-width='0.8'/%3E%3Ccircle cx='398' cy='287' r='2' fill='rgba(220,170,70,0.58)'/%3E%3Ccircle cx='398' cy='325' r='22' fill='none' stroke='rgba(160,110,50,0.30)' stroke-width='0.7'/%3E%3Ccircle cx='398' cy='325' r='16' fill='rgba(28,14,4,0.38)' stroke='rgba(140,90,40,0.18)' stroke-width='0.4'/%3E%3Cpolygon points='398,304 402,312 394,312' fill='rgba(160,110,50,0.32)'/%3E%3Cpolygon points='398,346 402,338 394,338' fill='rgba(160,110,50,0.30)'/%3E%3Cpolygon points='377,325 385,321 385,329' fill='rgba(160,110,50,0.28)'/%3E%3Cpolygon points='419,325 411,321 411,329' fill='rgba(160,110,50,0.28)'/%3E%3Ctext x='398' y='355' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(200,80,40,0.68)'%3EPORTAL: ACTIVE%3C/text%3E%3Ctext x='398' y='363' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(160,110,50,0.45)'%3EORBS REQUIRED: 4%3C/text%3E%3Cline x1='152' y1='310' x2='322' y2='310' stroke='rgba(140,90,40,0.30)' stroke-width='0.7' stroke-dasharray='4,4'/%3E%3Ctext x='237' y='307' text-anchor='middle' font-family='monospace' font-size='4.5' fill='rgba(140,90,40,0.38)'%3ESECRET PASSAGE%3C/text%3E%3Ctext x='250' y='371' text-anchor='middle' font-family='serif' font-size='7.5' fill='rgba(160,110,50,0.55)' letter-spacing='3' font-style='italic'%3EBRENNENBURG CASTLE%3C/text%3E%3Ctext x='140' y='371' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(140,90,40,0.30)' letter-spacing='1'%3EDUNGEON MAP%3C/text%3E%3Ctext x='432' y='371' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(140,90,40,0.30)' letter-spacing='1'%3EBARON ARCHIVE%3C/text%3E%3C/svg%3E") center / 500px 380px no-repeat;
+  opacity: 0.72;
+  animation: amnesia-sanctum 11s ease-in-out infinite;
+}
+
+@keyframes amnesia-sanctum {
+  0%, 100% { opacity: 0.72; }
+  22%       { opacity: 0.82; }
+  60%       { opacity: 0.65; }
+  86%       { opacity: 0.65; }
+  88%       { opacity: 0.06; }
+  89%       { opacity: 0.85; }
+  92%       { opacity: 0.72; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'DANIEL  //  BRENNENBURG  //  THE SHADOW APPROACHES  //  STAY IN THE LIGHT';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(180, 130, 60, 0.72);
+  pointer-events: none; white-space: nowrap;
+}
+
+/* ── Brennenburg archive ghost text ─────────────────────────────────────────── */
+#grid-container::after {
+  content: 'BRENNENBURG ARCHIVE\ADANIEL // CASE FILE\A--------------------\ASANITY  : CRITICAL\ALANTERN : DYING\AORB SHARDS: 3 OF 7\ATINDERBOXES: 3\A--------------------\AGRUNT DETECTED\ASHADOW: CLOSING IN\APORTAL: ACTIVE\A--------------------\AREMEMBER\AYOU CHOSE THIS';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 8.5px; line-height: 1.65; text-align: right; letter-spacing: 1px;
+  color: rgba(120, 80, 28, 0.13); white-space: pre;
+  animation: amnesia-note 11s ease-in-out infinite;
+}
+
+@keyframes amnesia-note {
+  0%, 100% { color: rgba(120, 80, 28, 0.13); }
+  22%       { color: rgba(120, 80, 28, 0.17); }
+  60%       { color: rgba(120, 80, 28, 0.10); }
+  88%       { color: rgba(0, 0, 0, 0); }
+  89%       { color: rgba(120, 80, 28, 0.20); }
+  92%       { color: rgba(120, 80, 28, 0.13); }
+}
+
+#edit-bar::after {
+  content: 'REMEMBER. YOU CHOSE THIS.';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(180, 120, 50, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; letter-spacing: 5px; font-weight: 300; font-style: italic; }
+
+/* ── Title: lantern flicker — the light fails ────────────────────────────────── */
+@keyframes amnesia-flicker {
+  0%, 100% { color: #C8A870; text-shadow: 0 0 6px rgba(200,140,60,.50), 0 0 18px rgba(160,90,30,.20); opacity: 1; }
+  15%       { color: #E0C080; text-shadow: 0 0 14px rgba(220,160,70,.78), 0 0 32px rgba(180,120,50,.32); opacity: 0.96; }
+  18%       { color: #A07838; text-shadow: 0 0 3px rgba(160,100,40,.28); opacity: 0.88; }
+  20%       { color: #C8A870; text-shadow: 0 0 6px rgba(200,140,60,.50); opacity: 1; }
+  52%       { color: #F0D080; text-shadow: 0 0 16px rgba(240,200,100,.82), 0 0 40px rgba(200,140,60,.35); opacity: 0.96; }
+  68%       { color: #A07838; text-shadow: 0 0 3px rgba(160,100,40,.28); opacity: 1; }
+  85%       { color: #9A7030; opacity: 1; }
+  88%       { color: #F8F0E0; text-shadow: 0 0 22px rgba(248,240,224,.98), 0 0 55px rgba(200,140,60,.75); opacity: 0.88; }
+  89%       { color: #C8A870; text-shadow: 0 0 6px rgba(200,140,60,.50); opacity: 1; }
+}
+
+/* ── App border: amber stone pulse — Shadow arrival at 88% ───────────────────── */
+#app { animation: amnesia-horror 11s ease-in-out infinite; }
+@keyframes amnesia-horror {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(140,90,30,.20), inset 0 0 24px rgba(100,60,18,.06); }
+  20%       { box-shadow: 0 0 0 1px rgba(200,130,50,.38), inset 0 0 32px rgba(160,100,35,.10); }
+  52%       { box-shadow: 0 0 0 1px rgba(200,140,55,.55), inset 0 0 44px rgba(180,110,40,.14); }
+  68%       { box-shadow: 0 0 0 1px rgba(80,50,15,.14), inset 0 0 18px rgba(60,35,10,.05); }
+  86%       { box-shadow: 0 0 0 1px rgba(60,35,10,.16), inset 0 0 20px rgba(40,20,5,.05); }
+  88%       { box-shadow: 0 0 0 2px rgba(248,240,224,.82), inset 0 0 68px rgba(200,140,60,.24), 0 0 28px rgba(240,200,80,.30); }
+  89%       { box-shadow: 0 0 0 1px rgba(200,130,50,.42), inset 0 0 32px rgba(160,100,35,.10); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(8, 5, 3, 0.99); border-top-color: rgba(140, 90, 30, 0.25); }
+#theme-banner::before { content: '◈'; color: #C87830; font-size: 18px; }
+#theme-banner-text { color: rgba(200, 158, 78, 0.78); }
+
+/* ── Gothic arch ring pulse from tile center ─────────────────────────────────── */
+.app-tile::before {
+  width: 20px; height: 20px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+
+/* ── Dust motes and candle ash drifting upward ───────────────────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='420'%3E%3Ccircle cx='28' cy='60' r='1.5' fill='rgba(200,140,55,0.20)'/%3E%3Ccircle cx='85' cy='180' r='1' fill='rgba(240,200,100,0.16)'/%3E%3Ccircle cx='148' cy='310' r='2' fill='rgba(180,120,45,0.14)'/%3E%3Ccircle cx='55' cy='380' r='1' fill='rgba(220,160,70,0.18)'/%3E%3Ccircle cx='162' cy='90' r='1.5' fill='rgba(160,100,35,0.14)'/%3E%3Ccircle cx='110' cy='240' r='1' fill='rgba(240,200,100,0.14)'/%3E%3Ccircle cx='38' cy='155' r='1.2' fill='rgba(200,140,55,0.16)'/%3E%3Ccircle cx='128' cy='340' r='1.8' fill='rgba(160,100,35,0.12)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='580'%3E%3Ccircle cx='40' cy='100' r='1' fill='rgba(180,120,45,0.12)'/%3E%3Ccircle cx='130' cy='280' r='1.5' fill='rgba(240,200,100,0.10)'/%3E%3Ccircle cx='220' cy='450' r='2' fill='rgba(160,100,35,0.10)'/%3E%3Ccircle cx='75' cy='530' r='1' fill='rgba(200,140,55,0.12)'/%3E%3Ccircle cx='195' cy='160' r='1.2' fill='rgba(220,160,70,0.13)'/%3E%3Ccircle cx='50' cy='380' r='1.5' fill='rgba(180,120,45,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 180px 420px, 260px 580px;
+  animation: amnesia-drift 20s linear infinite;
+}
+@keyframes amnesia-drift {
+  from { background-position: 0 0, 18px 0; }
+  to   { background-position: -10px -420px, 8px -580px; }
+}
