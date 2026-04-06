@@ -1,228 +1,236 @@
 /* ══ THE SHIRE ════════════════════════════════════════════════════════════════
-   In a hole in the ground there lived a hobbit. Warm lamplight, green
-   rolling hills, pipe-smoke and second breakfast. Insanely lovable.
+   The Shire Reckoning — Almanac of Hobbiton. Not a map. A meal wheel, a
+   pipe-weed botanical, the Shire Calendar, parchment grain, leaf-tile shapes.
+   In a hole in the ground there lived a hobbit. There and Back Again.
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --radius:       3px;
+  --radius:       2px;
   --app-clip:     none;
   --overlay-clip: none;
 
-  --bg:           #040600;
-  --panel-bg:     rgba(7, 10, 2, 0.97);
-  --overlay-bg:   rgba(4, 6, 1, 0.95);
-  --header-bg:    rgba(80, 100, 20, 0.05);
+  --bg:           #050700;
+  --panel-bg:     rgba(6, 8, 1, 0.99);
+  --overlay-bg:   rgba(4, 6, 1, 0.97);
+  --header-bg:    rgba(70, 95, 15, 0.04);
 
   --font:         Georgia, 'Times New Roman', serif;
-  --text:         #A8BE80;
-  --text-dim:     rgba(120, 140, 70, 0.45);
+  --text:         #A8C070;
+  --text-dim:     rgba(130, 160, 60, 0.45);
 
-  --accent-c:     #688030;   /* hobbit-hole green */
-  --accent-m:     #A06820;   /* pipe-smoke amber */
-  --accent-y:     #D0A040;   /* warm lantern gold */
+  --accent-c:     #7A9838;   /* living Shire green */
+  --accent-m:     #C87830;   /* pipe-smoke amber */
+  --accent-y:     #E8C050;   /* harvest lantern gold */
 
-  --border:       rgba(88, 110, 30, 0.22);
-  --border-h:     rgba(110, 140, 40, 0.52);
+  --border:       rgba(90, 120, 25, 0.22);
+  --border-h:     rgba(120, 155, 40, 0.55);
 
-  --glow-c:       0 0 7px rgba(104,128,48,.58), 0 0 20px rgba(104,128,48,.20);
-  --glow-m:       0 0 7px rgba(160,104,32,.58), 0 0 20px rgba(160,104,32,.20);
-  --glow-y:       0 0 7px rgba(208,160,64,.60), 0 0 20px rgba(208,160,64,.20);
+  --glow-c:       0 0 7px rgba(122,152,56,.62), 0 0 20px rgba(90,120,25,.22);
+  --glow-m:       0 0 7px rgba(200,120,48,.60), 0 0 20px rgba(160,90,30,.22);
+  --glow-y:       0 0 7px rgba(232,192,80,.60), 0 0 20px rgba(190,150,55,.20);
 
-  --pulse-glow:   inset 0 0 20px rgba(88,110,30,.06);
+  --pulse-glow:   inset 0 0 22px rgba(90,120,25,.06);
   --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(104,128,48,.10);
+  --drag-over-glow: inset 0 0 24px rgba(120,155,40,.10);
 
-  --title-anim:   shire-glow 6s ease-in-out infinite;
+  --title-anim:   shire-dawn 10s ease-in-out infinite;
 
-  --tile-hover-bg:     rgba(88, 110, 30, 0.07);
-  --tile-hover-border: rgba(110, 140, 40, 0.36);
-  --tile-hover-shadow: 0 0 12px rgba(104, 128, 48, 0.20);
-  --tile-active-bg:    rgba(88, 110, 30, 0.14);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(208,160,64,.58)) drop-shadow(0 0 14px rgba(104,128,48,.25));
-  --tile-icon-fx:      brightness(1.1) saturate(1.15) sepia(0.1);
-  --tile-icon-shape:   circle(46% at 50% 50%);
-  --tile-label-spacing:   0.5px;
+  --tile-hover-bg:     rgba(90, 120, 25, 0.08);
+  --tile-hover-border: rgba(140, 175, 50, 0.44);
+  --tile-hover-shadow: 0 0 12px rgba(120, 155, 40, 0.20);
+  --tile-active-bg:    rgba(90, 120, 25, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,190,80,.52)) drop-shadow(0 0 14px rgba(120,155,40,.22));
+  --tile-icon-fx:      brightness(1.05) saturate(1.1) sepia(0.08);
+  --tile-icon-shape:   polygon(50% 0%, 72% 12%, 90% 32%, 95% 58%, 82% 80%, 65% 95%, 50% 100%, 35% 95%, 18% 80%, 5% 58%, 10% 32%, 28% 12%);
+  --tile-label-spacing:   0.8px;
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
   --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
 
-  --btn-hover-bg:   rgba(88, 110, 30, 0.10);
-  --btn-active-bg:  rgba(88, 110, 30, 0.20);
+  --btn-hover-bg:   rgba(90, 120, 25, 0.10);
+  --btn-active-bg:  rgba(90, 120, 25, 0.20);
 
-  --drop-hint-border: rgba(88, 110, 30, 0.25);
-  --drop-icon-color:  rgba(104, 128, 48, 0.38);
-  --hint-sub-color:   rgba(110, 140, 60, 0.42);
+  --drop-hint-border: rgba(90, 120, 25, 0.25);
+  --drop-icon-color:  rgba(120, 155, 40, 0.35);
+  --hint-sub-color:   rgba(100, 135, 35, 0.32);
 
-  --rename-dashed:    rgba(104, 128, 48, 0.40);
-  --rename-input-bg:  rgba(88, 110, 30, 0.07);
+  --rename-dashed:    rgba(120, 155, 40, 0.40);
+  --rename-input-bg:  rgba(90, 120, 25, 0.07);
 
-  --edit-bar-bg:          rgba(160, 104, 32, 0.07);
-  --edit-bar-border:      rgba(160, 104, 32, 0.38);
-  --edit-label-color:     #A06820;
+  --edit-bar-bg:          rgba(200, 120, 48, 0.07);
+  --edit-bar-border:      rgba(200, 120, 48, 0.40);
+  --edit-label-color:     #C87830;
   --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #A06820;
-  --btn-done-border:      rgba(160, 104, 32, 0.40);
-  --btn-done-hover-bg:    rgba(160, 104, 32, 0.10);
+  --btn-done-color:       #C87830;
+  --btn-done-border:      rgba(200, 120, 48, 0.38);
+  --btn-done-hover-bg:    rgba(200, 120, 48, 0.09);
   --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(104, 128, 48, 0.40);
+  --btn-add-border:       rgba(120, 155, 40, 0.38);
 
-  --update-bg:             rgba(208, 160, 64, 0.06);
-  --update-border:         rgba(208, 160, 64, 0.36);
-  --update-color:          #D0A040;
-  --update-btn-border:     rgba(208, 160, 64, 0.32);
-  --update-btn-hover-bg:   rgba(208, 160, 64, 0.10);
+  --update-bg:             rgba(232, 192, 80, 0.05);
+  --update-border:         rgba(232, 192, 80, 0.28);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(232, 192, 80, 0.22);
+  --update-btn-hover-bg:   rgba(232, 192, 80, 0.08);
   --update-btn-hover-glow: var(--glow-y);
 
-  --btn-close-color:      #A06820;
-  --btn-close-border:     rgba(160, 104, 32, 0.38);
-  --btn-close-hover-bg:   rgba(160, 104, 32, 0.10);
+  --btn-close-color:      var(--accent-m);
+  --btn-close-border:     rgba(200, 120, 48, 0.38);
+  --btn-close-hover-bg:   rgba(200, 120, 48, 0.10);
   --btn-close-hover-glow: var(--glow-m);
 
-  --picker-search-bg:      rgba(88, 110, 30, 0.07);
-  --picker-item-hover-bg:  rgba(88, 110, 30, 0.08);
-  --picker-item-active-bg: rgba(88, 110, 30, 0.15);
-  --picker-placeholder-bg: rgba(88, 110, 30, 0.07);
+  --picker-search-bg:      rgba(90, 120, 25, 0.07);
+  --picker-item-hover-bg:  rgba(90, 120, 25, 0.08);
+  --picker-item-active-bg: rgba(90, 120, 25, 0.16);
+  --picker-placeholder-bg: rgba(90, 120, 25, 0.07);
 
-  --skin-btn-active-bg:    rgba(88, 110, 30, 0.16);
-  --remove-btn-bg:         rgba(160, 104, 32, 0.88);
-  --remove-btn-border:     #A06820;
+  --skin-btn-active-bg:    rgba(90, 120, 25, 0.16);
+  --remove-btn-bg:         rgba(200, 120, 48, 0.88);
+  --remove-btn-border:     var(--accent-m);
 }
 
-/* ── Green hills + warm lantern vignette ────────────────────────────────────── */
+/* ── Warm parchment grain + green hill glow + lantern hearth + vignette ──── */
 #app::after {
   background:
-    /* meadow noise grain */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.35 0 0 0 0 0.5 0 0 0 0 0.1 0 0 0 8 -5'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
-    /* warm lantern vignette — cozy, not dark */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 35%, rgba(3, 4, 1, 0.68) 100%),
-    /* green hill ambient */
-    radial-gradient(ellipse 80% 50% at 50% 80%, rgba(60, 90, 10, 0.07) 0%, transparent 65%),
-    /* warm lamplight from within */
-    radial-gradient(ellipse 50% 40% at 50% 30%, rgba(160, 120, 30, 0.05) 0%, transparent 60%);
-  background-size: 200px 200px, auto, auto, auto;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.25 0.32 0.10 0 0 0.30 0.38 0.12 0 0 0.08 0.10 0.05 0 0 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, transparent, transparent 21px, rgba(90,115,20,0.018) 22px),
+    radial-gradient(ellipse 70% 40% at 65% 0%, rgba(190,160,50,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(60,90,10,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 45% at 50% 50%, rgba(180,130,40,0.04) 0%, transparent 58%),
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 20%, rgba(3,5,1,0.75) 100%);
+  background-size: 200px 200px, auto, auto, auto, auto, auto;
   opacity: 1; pointer-events: none;
 }
 
-/* ── Header warm green accent bar ───────────────────────────────────────────── */
+/* ── Header: Shire green accent bar ─────────────────────────────────────────── */
 #header::before {
-  background: linear-gradient(to bottom, #688030, rgba(88, 110, 30, 0.28));
-  box-shadow: 0 0 10px rgba(104, 128, 48, 0.52), 0 0 24px rgba(104, 128, 48, 0.18);
+  background: linear-gradient(to bottom, #7A9838, rgba(90,120,25,0.25));
+  box-shadow: 0 0 9px rgba(122,152,56,0.62), 0 0 26px rgba(90,120,25,0.22);
 }
 
-/* ── Grid: Hobbiton — rolling hills with Bag End on the horizon ──────────────── */
+/* ── Grid: Shire Reckoning Almanac — Meal Wheel · Botanical · Calendar ──────── */
 #grid-container::before {
   content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Hill 1 — far left, closest to viewer */
-    radial-gradient(ellipse 55% 32% at 10% 100%, rgba(80,115,20,0.13) 0%, rgba(60,90,10,0.05) 45%, transparent 68%),
-    /* Hill 2 — center-left */
-    radial-gradient(ellipse 48% 28% at 35% 100%, rgba(72,105,14,0.11) 0%, rgba(55,85,8,0.04) 42%, transparent 65%),
-    /* Hill 3 — center (Bag End hill — slightly taller) */
-    radial-gradient(ellipse 60% 38% at 58% 100%, rgba(75,110,16,0.14) 0%, rgba(58,90,10,0.06) 48%, transparent 70%),
-    /* Hill 4 — far right */
-    radial-gradient(ellipse 50% 30% at 88% 100%, rgba(78,112,18,0.12) 0%, rgba(58,88,8,0.05) 44%, transparent 66%),
-    /* Hill line — golden afternoon light catching the hilltops */
-    radial-gradient(ellipse 85% 18% at 50% 68%, rgba(160,130,30,0.07) 0%, transparent 60%),
-    /* Warm sky — afternoon sun glow from top */
-    radial-gradient(ellipse 65% 45% at 50% 0%, rgba(80,110,20,0.06) 0%, transparent 65%);
+  position: absolute; inset: 0;
+  z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(110,145,45,0.55)' stroke-width='1.4'/%3E%3Crect x='13' y='13' width='474' height='354' fill='none' stroke='rgba(90,120,25,0.22)' stroke-width='0.5'/%3E%3Cline x1='8' y1='32' x2='8' y2='8' stroke='rgba(110,145,45,0.65)' stroke-width='1.5'/%3E%3Cline x1='8' y1='8' x2='32' y2='8' stroke='rgba(110,145,45,0.65)' stroke-width='1.5'/%3E%3Cline x1='492' y1='8' x2='468' y2='8' stroke='rgba(110,145,45,0.65)' stroke-width='1.5'/%3E%3Cline x1='492' y1='8' x2='492' y2='32' stroke='rgba(110,145,45,0.65)' stroke-width='1.5'/%3E%3Cline x1='8' y1='348' x2='8' y2='372' stroke='rgba(110,145,45,0.65)' stroke-width='1.5'/%3E%3Cline x1='8' y1='372' x2='32' y2='372' stroke='rgba(110,145,45,0.65)' stroke-width='1.5'/%3E%3Cline x1='492' y1='372' x2='468' y2='372' stroke='rgba(110,145,45,0.65)' stroke-width='1.5'/%3E%3Cline x1='492' y1='348' x2='492' y2='372' stroke='rgba(110,145,45,0.65)' stroke-width='1.5'/%3E%3Cline x1='145' y1='13' x2='145' y2='367' stroke='rgba(90,120,25,0.08)' stroke-width='0.3'/%3E%3Cline x1='355' y1='13' x2='355' y2='367' stroke='rgba(90,120,25,0.08)' stroke-width='0.3'/%3E%3Cline x1='250' y1='13' x2='250' y2='367' stroke='rgba(90,120,25,0.05)' stroke-width='0.3'/%3E%3Cline x1='13' y1='120' x2='487' y2='120' stroke='rgba(90,120,25,0.06)' stroke-width='0.3'/%3E%3Cline x1='13' y1='270' x2='487' y2='270' stroke='rgba(90,120,25,0.06)' stroke-width='0.3'/%3E%3Ccircle cx='35' cy='25' r='0.8' fill='rgba(180,210,75,0.25)'/%3E%3Ccircle cx='108' cy='18' r='1' fill='rgba(155,185,60,0.20)'/%3E%3Ccircle cx='195' cy='34' r='0.8' fill='rgba(135,165,48,0.18)'/%3E%3Ccircle cx='312' cy='22' r='1' fill='rgba(172,198,72,0.22)'/%3E%3Ccircle cx='422' cy='30' r='0.8' fill='rgba(162,190,65,0.20)'/%3E%3Ccircle cx='465' cy='19' r='1.2' fill='rgba(180,205,75,0.18)'/%3E%3Ccircle cx='58' cy='88' r='0.8' fill='rgba(145,175,52,0.15)'/%3E%3Ccircle cx='450' cy='82' r='0.8' fill='rgba(152,180,58,0.14)'/%3E%3Ccircle cx='25' cy='172' r='1' fill='rgba(132,162,46,0.12)'/%3E%3Ccircle cx='478' cy='190' r='0.8' fill='rgba(162,192,65,0.14)'/%3E%3Ccircle cx='80' cy='358' r='1.5' fill='rgba(200,180,62,0.40)'/%3E%3Ccircle cx='420' cy='350' r='1.5' fill='rgba(192,175,58,0.35)'/%3E%3Ctext x='250' y='20' text-anchor='middle' font-family='serif' font-size='7' fill='rgba(110,145,45,0.58)' letter-spacing='3'%3ETHE SHIRE RECKONING%3C/text%3E%3Ctext x='250' y='29' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.32)' letter-spacing='1.5'%3EBAGSHOT ROW - HOBBITON - THIRD AGE 1401%3C/text%3E%3Ctext x='80' y='45' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(110,145,45,0.55)' letter-spacing='1'%3EPIPE-WEED NOTES%3C/text%3E%3Cline x1='22' y1='49' x2='138' y2='49' stroke='rgba(90,120,25,0.28)' stroke-width='0.6'/%3E%3Cpath d='M 80,65 C 98,68 112,83 114,100 C 116,118 108,133 100,145 C 108,151 116,162 110,172 C 104,182 88,196 80,200 C 72,196 56,182 50,172 C 44,162 52,151 60,145 C 52,133 44,118 46,100 C 48,83 62,68 80,65 Z' fill='rgba(55,85,12,0.22)' stroke='rgba(90,120,25,0.40)' stroke-width='0.8'/%3E%3Cline x1='80' y1='65' x2='80' y2='200' stroke='rgba(90,120,25,0.38)' stroke-width='0.7'/%3E%3Cline x1='80' y1='200' x2='80' y2='220' stroke='rgba(90,120,25,0.35)' stroke-width='0.9'/%3E%3Cline x1='80' y1='82' x2='108' y2='92' stroke='rgba(90,120,25,0.26)' stroke-width='0.4'/%3E%3Cline x1='80' y1='82' x2='52' y2='92' stroke='rgba(90,120,25,0.26)' stroke-width='0.4'/%3E%3Cline x1='80' y1='106' x2='112' y2='116' stroke='rgba(90,120,25,0.22)' stroke-width='0.4'/%3E%3Cline x1='80' y1='106' x2='48' y2='116' stroke='rgba(90,120,25,0.22)' stroke-width='0.4'/%3E%3Cline x1='80' y1='130' x2='108' y2='139' stroke='rgba(90,120,25,0.20)' stroke-width='0.4'/%3E%3Cline x1='80' y1='130' x2='52' y2='139' stroke='rgba(90,120,25,0.20)' stroke-width='0.4'/%3E%3Cline x1='80' y1='158' x2='102' y2='164' stroke='rgba(90,120,25,0.18)' stroke-width='0.4'/%3E%3Cline x1='80' y1='158' x2='58' y2='164' stroke='rgba(90,120,25,0.18)' stroke-width='0.4'/%3E%3Cpath d='M 80,65 C 86,55 96,52 98,62 C 92,70 83,68 80,65 Z' fill='rgba(55,85,12,0.20)' stroke='rgba(90,120,25,0.28)' stroke-width='0.4'/%3E%3Ctext x='80' y='232' text-anchor='middle' font-family='serif' font-size='7' fill='rgba(122,155,48,0.62)' letter-spacing='2' font-style='italic'%3EOld Toby%3C/text%3E%3Ctext x='80' y='243' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.42)' letter-spacing='1'%3ELONGBOTTOM LEAF%3C/text%3E%3Cline x1='22' y1='249' x2='138' y2='249' stroke='rgba(90,120,25,0.18)' stroke-width='0.5'/%3E%3Ctext x='26' y='260' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.45)'%3ESOIL  : RICH LOAM%3C/text%3E%3Ctext x='26' y='271' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.40)'%3EAROMA : SWEET%3C/text%3E%3Ctext x='26' y='282' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.38)'%3ESMOKE : CURLING%3C/text%3E%3Ctext x='26' y='293' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.35)'%3EPIPEFUL: MELLOW%3C/text%3E%3Ctext x='250' y='38' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(90,120,25,0.52)' letter-spacing='1.5'%3E7 MEALS OF THE SHIRE%3C/text%3E%3Ccircle cx='250' cy='195' r='75' fill='none' stroke='rgba(110,145,45,0.18)' stroke-width='0.4'/%3E%3Cline x1='323' y1='195' x2='327' y2='195' stroke='rgba(110,145,45,0.25)' stroke-width='0.5'/%3E%3Cline x1='313' y1='232' x2='317' y2='234' stroke='rgba(110,145,45,0.20)' stroke-width='0.5'/%3E%3Cline x1='287' y1='258' x2='289' y2='262' stroke='rgba(110,145,45,0.20)' stroke-width='0.5'/%3E%3Cline x1='250' y1='268' x2='250' y2='272' stroke='rgba(110,145,45,0.25)' stroke-width='0.5'/%3E%3Cline x1='213' y1='258' x2='211' y2='262' stroke='rgba(110,145,45,0.20)' stroke-width='0.5'/%3E%3Cline x1='187' y1='232' x2='183' y2='234' stroke='rgba(110,145,45,0.20)' stroke-width='0.5'/%3E%3Cline x1='177' y1='195' x2='173' y2='195' stroke='rgba(110,145,45,0.25)' stroke-width='0.5'/%3E%3Cline x1='187' y1='158' x2='183' y2='156' stroke='rgba(110,145,45,0.20)' stroke-width='0.5'/%3E%3Cline x1='213' y1='132' x2='211' y2='128' stroke='rgba(110,145,45,0.20)' stroke-width='0.5'/%3E%3Cline x1='250' y1='122' x2='250' y2='118' stroke='rgba(110,145,45,0.25)' stroke-width='0.5'/%3E%3Cline x1='287' y1='132' x2='289' y2='128' stroke='rgba(110,145,45,0.20)' stroke-width='0.5'/%3E%3Cline x1='313' y1='158' x2='317' y2='156' stroke='rgba(110,145,45,0.20)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='195' r='70' fill='rgba(40,65,8,0.22)' stroke='rgba(110,145,45,0.42)' stroke-width='0.9'/%3E%3Ccircle cx='250' cy='195' r='42' fill='rgba(30,50,5,0.30)' stroke='rgba(90,120,25,0.38)' stroke-width='0.7'/%3E%3Cline x1='250' y1='153' x2='250' y2='125' stroke='rgba(110,145,45,0.35)' stroke-width='0.6'/%3E%3Cline x1='283' y1='169' x2='305' y2='151' stroke='rgba(110,145,45,0.30)' stroke-width='0.6'/%3E%3Cline x1='291' y1='204' x2='318' y2='211' stroke='rgba(110,145,45,0.30)' stroke-width='0.6'/%3E%3Cline x1='268' y1='233' x2='280' y2='258' stroke='rgba(110,145,45,0.30)' stroke-width='0.6'/%3E%3Cline x1='232' y1='233' x2='220' y2='258' stroke='rgba(110,145,45,0.30)' stroke-width='0.6'/%3E%3Cline x1='209' y1='204' x2='182' y2='211' stroke='rgba(110,145,45,0.30)' stroke-width='0.6'/%3E%3Cline x1='217' y1='169' x2='195' y2='151' stroke='rgba(110,145,45,0.30)' stroke-width='0.6'/%3E%3Cline x1='250' y1='125' x2='250' y2='119' stroke='rgba(110,145,45,0.40)' stroke-width='0.7'/%3E%3Cline x1='305' y1='151' x2='309' y2='147' stroke='rgba(110,145,45,0.35)' stroke-width='0.7'/%3E%3Cline x1='318' y1='211' x2='324' y2='213' stroke='rgba(110,145,45,0.35)' stroke-width='0.7'/%3E%3Cline x1='280' y1='258' x2='283' y2='264' stroke='rgba(110,145,45,0.35)' stroke-width='0.7'/%3E%3Cline x1='220' y1='258' x2='217' y2='264' stroke='rgba(110,145,45,0.35)' stroke-width='0.7'/%3E%3Cline x1='182' y1='211' x2='176' y2='213' stroke='rgba(110,145,45,0.35)' stroke-width='0.7'/%3E%3Cline x1='195' y1='151' x2='191' y2='147' stroke='rgba(110,145,45,0.35)' stroke-width='0.7'/%3E%3Ccircle cx='250' cy='195' r='32' fill='rgba(20,35,4,0.35)' stroke='rgba(90,120,25,0.28)' stroke-width='0.5'/%3E%3Cline x1='250' y1='179' x2='250' y2='163' stroke='rgba(90,120,25,0.20)' stroke-width='0.4'/%3E%3Cline x1='263' y1='185' x2='275' y2='175' stroke='rgba(90,120,25,0.18)' stroke-width='0.4'/%3E%3Cline x1='266' y1='199' x2='281' y2='202' stroke='rgba(90,120,25,0.18)' stroke-width='0.4'/%3E%3Cline x1='257' y1='209' x2='264' y2='224' stroke='rgba(90,120,25,0.18)' stroke-width='0.4'/%3E%3Cline x1='243' y1='209' x2='236' y2='224' stroke='rgba(90,120,25,0.18)' stroke-width='0.4'/%3E%3Cline x1='234' y1='199' x2='219' y2='202' stroke='rgba(90,120,25,0.18)' stroke-width='0.4'/%3E%3Cline x1='238' y1='185' x2='225' y2='175' stroke='rgba(90,120,25,0.18)' stroke-width='0.4'/%3E%3Ccircle cx='250' cy='195' r='16' fill='rgba(45,75,10,0.45)' stroke='rgba(140,175,50,0.55)' stroke-width='1.0'/%3E%3Cpath d='M 235,195 A 15,15 0 0 0 265,195' fill='rgba(60,95,14,0.30)' stroke='rgba(110,145,45,0.30)' stroke-width='0.5'/%3E%3Cline x1='235' y1='195' x2='265' y2='195' stroke='rgba(140,175,50,0.38)' stroke-width='0.5'/%3E%3Ccircle cx='258' cy='195' r='2' fill='rgba(210,170,65,0.65)' stroke='rgba(200,180,80,0.50)' stroke-width='0.4'/%3E%3Ctext x='250' y='220' text-anchor='middle' font-family='serif' font-size='5.5' fill='rgba(110,145,45,0.52)' letter-spacing='2' font-style='italic'%3EBAG END%3C/text%3E%3Ctext x='286' y='118' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.62)' letter-spacing='0.5'%3EFIRST%3C/text%3E%3Ctext x='286' y='126' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.55)' letter-spacing='0.5'%3EBFAST%3C/text%3E%3Ctext x='332' y='174' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.58)' letter-spacing='0.5'%3E2ND%3C/text%3E%3Ctext x='332' y='182' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.52)' letter-spacing='0.5'%3EBFAST%3C/text%3E%3Ctext x='315' y='247' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.55)' letter-spacing='0.5'%3EELEVENSES%3C/text%3E%3Ctext x='250' y='278' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.55)' letter-spacing='0.5'%3ELUNCHEON%3C/text%3E%3Ctext x='185' y='247' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.55)' letter-spacing='0.5'%3EAFTN TEA%3C/text%3E%3Ctext x='168' y='174' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.58)' letter-spacing='0.5'%3EDINNER%3C/text%3E%3Ctext x='214' y='118' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(130,165,50,0.62)' letter-spacing='0.5'%3ESUPPER%3C/text%3E%3Ctext x='250' y='290' text-anchor='middle' font-family='monospace' font-size='4.5' fill='rgba(90,120,25,0.38)' letter-spacing='1'%3ESHIRE STANDARD MEAL SCHEDULE%3C/text%3E%3Ctext x='425' y='45' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(110,145,45,0.55)' letter-spacing='1'%3ESHIRE CALENDAR%3C/text%3E%3Cline x1='360' y1='49' x2='490' y2='49' stroke='rgba(90,120,25,0.28)' stroke-width='0.6'/%3E%3Ccircle cx='363' cy='59' r='2' fill='rgba(160,185,210,0.42)'/%3E%3Ctext x='370' y='62' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.52)'%3EAFTERYULE%3C/text%3E%3Ccircle cx='363' cy='76' r='2' fill='rgba(155,182,208,0.38)'/%3E%3Ctext x='370' y='79' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.48)'%3ESOLMATH%3C/text%3E%3Ccircle cx='363' cy='93' r='2' fill='rgba(140,190,80,0.42)'/%3E%3Ctext x='370' y='96' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.52)'%3ERETHE%3C/text%3E%3Ccircle cx='363' cy='110' r='2' fill='rgba(140,190,80,0.45)'/%3E%3Ctext x='370' y='113' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.52)'%3EASTRON%3C/text%3E%3Ccircle cx='363' cy='127' r='2' fill='rgba(140,190,80,0.42)'/%3E%3Ctext x='370' y='130' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.50)'%3ETHRIMIDGE%3C/text%3E%3Ccircle cx='363' cy='144' r='2' fill='rgba(200,185,65,0.42)'/%3E%3Ctext x='370' y='147' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.52)'%3EFORELITHE%3C/text%3E%3Ccircle cx='363' cy='161' r='2.5' fill='rgba(220,190,60,0.60)'/%3E%3Ctext x='370' y='164' font-family='monospace' font-size='5' fill='rgba(140,175,50,0.65)'%3ELITHE // MIDSUMMER%3C/text%3E%3Ccircle cx='363' cy='178' r='2' fill='rgba(200,185,65,0.38)'/%3E%3Ctext x='370' y='181' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.50)'%3EAFTERLITHE%3C/text%3E%3Ccircle cx='363' cy='195' r='2' fill='rgba(180,148,52,0.40)'/%3E%3Ctext x='370' y='198' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.48)'%3EWEDMATH%3C/text%3E%3Ccircle cx='363' cy='212' r='2' fill='rgba(190,132,48,0.42)'/%3E%3Ctext x='370' y='215' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.48)'%3EHALIMATH%3C/text%3E%3Ccircle cx='363' cy='229' r='2' fill='rgba(172,125,46,0.38)'/%3E%3Ctext x='370' y='232' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.46)'%3EWINTERFILTH%3C/text%3E%3Ccircle cx='363' cy='246' r='2' fill='rgba(155,182,208,0.35)'/%3E%3Ctext x='370' y='249' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.48)'%3EBLOTMATH%3C/text%3E%3Ccircle cx='363' cy='263' r='2' fill='rgba(160,185,210,0.42)'/%3E%3Ctext x='370' y='266' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.50)'%3EFOREYULE%3C/text%3E%3Cline x1='360' y1='272' x2='490' y2='272' stroke='rgba(90,120,25,0.18)' stroke-width='0.5'/%3E%3Ctext x='370' y='281' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.42)'%3EMIDWINTER: YULE 2%3C/text%3E%3Ctext x='370' y='292' font-family='monospace' font-size='5' fill='rgba(110,145,45,0.48)'%3EMISDSUMMER: LITHE 1%3C/text%3E%3Ctext x='370' y='302' font-family='monospace' font-size='4.5' fill='rgba(90,120,25,0.32)'%3EOVERLITHE: LEAP YEAR%3C/text%3E%3Cline x1='13' y1='308' x2='487' y2='308' stroke='rgba(90,120,25,0.35)' stroke-width='0.7'/%3E%3Ctext x='250' y='320' text-anchor='middle' font-family='monospace' font-size='5.5' fill='rgba(110,145,45,0.55)' letter-spacing='1.5'%3ESTATUS // BAGSHOT ROW%3C/text%3E%3Ctext x='25' y='333' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.45)'%3EPANTRY: WELL-STOCKED%3C/text%3E%3Ctext x='25' y='344' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.40)'%3EPIPE-WEED: OLD TOBY // SUPPLY: AMPLE%3C/text%3E%3Ctext x='25' y='355' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.38)'%3EGUEST EXPECTED: WIZARD (UNINVITED)%3C/text%3E%3Ctext x='487' y='333' text-anchor='end' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.40)'%3EWEATHER: FAIR%3C/text%3E%3Ctext x='487' y='344' text-anchor='end' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.35)'%3EWIND: SW LIGHT%3C/text%3E%3Ctext x='487' y='355' text-anchor='end' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.32)'%3EROAD: EVER ON%3C/text%3E%3Ctext x='250' y='370' text-anchor='middle' font-family='serif' font-size='7.5' fill='rgba(110,145,45,0.52)' letter-spacing='3' font-style='italic'%3EThe Shire%3C/text%3E%3Ctext x='110' y='370' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.28)' letter-spacing='1'%3EBAGSHOT ROW%3C/text%3E%3Ctext x='430' y='370' text-anchor='middle' font-family='monospace' font-size='5' fill='rgba(90,120,25,0.28)' letter-spacing='1'%3EHOBBITON%3C/text%3E%3C/svg%3E") center / 500px 380px no-repeat;
+  opacity: 0.72;
+  animation: shire-almanac 10s ease-in-out infinite;
 }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+@keyframes shire-almanac {
+  0%, 100% { opacity: 0.72; }
+  28%       { opacity: 0.82; }
+  65%       { opacity: 0.65; }
+  87%       { opacity: 0.65; }
+  88%       { opacity: 0.08; }
+  89%       { opacity: 0.88; }
+  92%       { opacity: 0.72; }
+}
+
+/* ── Header flavor text ──────────────────────────────────────────────────────── */
 #header::after {
-  content: 'THE SHIRE  //  HOBBITON  //  SECOND BREAKFAST PENDING';
+  content: 'BAGSHOT ROW  //  THIRD AGE 1401  //  THE ROAD GOES EVER ON  //  ELEVENSES PENDING';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(125, 155, 65, 0.65);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(155, 185, 70, 0.72);
   pointer-events: none; white-space: nowrap;
 }
 
+/* ── Meal schedule + Shire almanac ghost readout ────────────────────────────── */
 #grid-container::after {
-  content: 'THE SHIRE\AHOBBITON\A\AFIRST\ABREAKFAST\A\ASECOND\ABREAKFAST\A\AELEVENSES\A\ATHERE AND\ABACK AGAIN';
+  content: 'SHIRE RECKONING\ATHIRD AGE 1401\A--------------------\AFIRST BFAST : DONE\A2ND BFAST   : DONE\AELEVENSES   : DUE\ALUNCHEON    : 12:00\AAFTN TEA    : 16:30\ADINNER      : 19:00\ASUPPER      : 21:30\A--------------------\APANTRY: STOCKED\APIPE-WEED: OLD TOBY\AWIZARD: INBOUND\A--------------------\ATHERE AND\ABACK AGAIN';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.7; text-align: right;
-  color: rgba(88, 120, 30, 0.11); white-space: pre;
-  animation: shire-warmth 10s ease-in-out infinite;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 8.5px; line-height: 1.65; text-align: right; letter-spacing: 1px;
+  color: rgba(90, 120, 25, 0.13); white-space: pre;
+  animation: shire-readout 10s ease-in-out infinite;
 }
 
-@keyframes shire-warmth {
-  0%, 100% { opacity: 0.65; }
-  50% { opacity: 1.0; }
+@keyframes shire-readout {
+  0%, 100% { color: rgba(90, 120, 25, 0.13); }
+  28%       { color: rgba(90, 120, 25, 0.17); }
+  65%       { color: rgba(90, 120, 25, 0.10); }
+  88%       { color: rgba(0, 0, 0, 0); }
+  89%       { color: rgba(120, 160, 35, 0.22); }
+  92%       { color: rgba(90, 120, 25, 0.13); }
 }
 
 #edit-bar::after {
-  content: 'GANDALF HAS ARRIVED  —  PRECISELY ON TIME';
+  content: 'NOT ALL THOSE WHO WANDER ARE LOST  —  J.R.R. TOLKIEN';
   position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
   font-size: 8px; letter-spacing: 2px; color: rgba(160, 104, 32, 0.42);
   pointer-events: none; white-space: nowrap;
 }
 
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+#title { font-family: Georgia, 'Times New Roman', serif; letter-spacing: 5px; font-weight: 300; font-style: italic; }
 
-/* ── Title animation: warm lantern glow ─────────────────────────────────────── */
-@keyframes shire-glow {
-  0%, 100% { text-shadow: 0 0 7px rgba(104,128,48,.52), 0 0 18px rgba(104,128,48,.18); color: #688030; }
-  40%       { text-shadow: 0 0 12px rgba(208,160,64,.75), 0 0 28px rgba(160,120,40,.35); color: #D0A040; }
-  70%       { text-shadow: 0 0 8px rgba(104,128,48,.50), 0 0 20px rgba(104,128,48,.18); color: #789040; }
+/* ── Title: dawn breaks over the Shire — morning sunburst at 88% ─────────────── */
+@keyframes shire-dawn {
+  0%, 100% { color: #7A9838; text-shadow: 0 0 7px rgba(122,152,56,.52), 0 0 18px rgba(90,120,25,.18); }
+  30%       { color: #A0C040; text-shadow: 0 0 12px rgba(180,210,80,.72), 0 0 30px rgba(140,175,50,.32); }
+  65%       { color: #6A8828; text-shadow: 0 0 6px rgba(100,130,35,.40), 0 0 16px rgba(90,120,25,.15); }
+  88%       { color: #F5F0D8; text-shadow: 0 0 20px rgba(240,225,160,.95), 0 0 50px rgba(180,210,80,.65); opacity: 0.95; }
+  89%       { color: #8AB040; text-shadow: 0 0 8px rgba(140,175,50,.58), 0 0 20px rgba(90,120,25,.22); opacity: 1; }
 }
 
-/* ── Hobbit-hole lantern — gentle warm glow ─────────────────────────────── */
-#app { animation: shire-lantern 8s ease-in-out infinite; }
-@keyframes shire-lantern {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(88,110,30,.22), inset 0 0 18px rgba(88,110,30,.04); }
-  40%      { box-shadow: 0 0 0 1px rgba(208,160,64,.42), inset 0 0 28px rgba(208,160,64,.07); }
-  60%      { box-shadow: 0 0 0 1px rgba(104,128,48,.35), inset 0 0 22px rgba(104,128,48,.06); }
-  80%      { box-shadow: 0 0 0 1px rgba(160,104,32,.30), inset 0 0 20px rgba(160,104,32,.05); }
+/* ── App border: hobbit hearth glow — sunburst at 88% ───────────────────────── */
+#app { animation: shire-hearth 10s ease-in-out infinite; }
+@keyframes shire-hearth {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(90,120,25,.20), inset 0 0 24px rgba(60,90,10,.06); }
+  35%       { box-shadow: 0 0 0 1px rgba(140,175,50,.48), inset 0 0 38px rgba(100,130,35,.10); }
+  65%       { box-shadow: 0 0 0 1px rgba(200,160,50,.38), inset 0 0 32px rgba(180,130,40,.08); }
+  88%       { box-shadow: 0 0 0 2px rgba(250,245,220,.85), inset 0 0 62px rgba(200,180,80,.20), 0 0 24px rgba(180,210,80,.28); }
+  89%       { box-shadow: 0 0 0 1px rgba(140,175,50,.45), inset 0 0 32px rgba(90,120,25,.08); }
 }
 
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(4, 6, 1, 0.97); border-top-color: rgba(88, 110, 30, 0.22); }
-#theme-banner::before { content: '⌂'; color: #D0A040; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(125, 155, 55, 0.72); }
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(6, 8, 1, 0.99); border-top-color: rgba(90, 120, 25, 0.22); }
+#theme-banner::before { content: '✿'; color: #7A9838; font-size: 18px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(155, 192, 68, 0.80); }
 
-/* ── Hobbiton fireflies — glowing amber sparks above the meadow ──────────── */
-#particles {
-  background:
-    /* Firefly 1 — bright, 18% × 25% */
-    radial-gradient(circle at 18% 25%, rgba(230,170,40,0.55) 0px, rgba(208,150,30,0.28) 2px, rgba(180,130,20,0.08) 5px, transparent 9px),
-    /* Firefly 2 — 65% × 38% */
-    radial-gradient(circle at 65% 38%, rgba(220,160,35,0.50) 0px, rgba(200,140,25,0.24) 2px, transparent 7px),
-    /* Firefly 3 — 40% × 62% */
-    radial-gradient(circle at 40% 62%, rgba(225,165,38,0.48) 0px, rgba(205,145,28,0.22) 2px, rgba(180,125,18,0.07) 5px, transparent 8px),
-    /* Firefly 4 — dim, 82% × 55% */
-    radial-gradient(circle at 82% 55%, rgba(200,145,30,0.40) 0px, rgba(175,120,20,0.18) 2px, transparent 6px),
-    /* Firefly 5 — 12% × 72% */
-    radial-gradient(circle at 12% 72%, rgba(215,155,32,0.45) 0px, rgba(190,135,22,0.20) 2px, transparent 7px),
-    /* Firefly 6 — 55% × 18% */
-    radial-gradient(circle at 55% 18%, rgba(200,145,28,0.38) 0px, rgba(175,120,18,0.16) 2px, transparent 5px);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  animation: shire-fireflies 4s ease-in-out infinite;
-}
-@keyframes shire-fireflies {
-  0%, 100% { opacity: 0.9; }
-  18%       { opacity: 0.4; }
-  19%       { opacity: 1.0; }
-  42%       { opacity: 0.7; }
-  43%       { opacity: 0.2; }
-  44%       { opacity: 1.0; }
-  68%       { opacity: 0.8; }
-  69%       { opacity: 0.3; }
-  70%       { opacity: 1.0; }
-}
-
-/* ── Tile: warm round-window glow ────────────────────────────────────────── */
+/* ── Leaf-shape ring pulse from tile center ──────────────────────────────────── */
 .app-tile::before {
-  width: 18px; height: 18px;
+  width: 20px; height: 20px;
   left: 50%; top: 50%;
   transform: translate(-50%, -50%) scale(0);
   border-radius: 50%;
   background: transparent;
-  border: 1px solid rgba(208,160,64,0.50);
+  border: 1px solid rgba(200,185,70,0.52);
 }
 .app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+
+/* ── Floating pollen motes — golden sparks in the Shire afternoon ────────────── */
+#particles {
+  background:
+    radial-gradient(circle at 22% 30%, rgba(230,200,50,0.55) 0px, rgba(210,175,35,0.28) 2px, rgba(185,155,25,0.08) 5px, transparent 9px),
+    radial-gradient(circle at 68% 22%, rgba(220,195,45,0.48) 0px, rgba(195,165,30,0.22) 2px, transparent 7px),
+    radial-gradient(circle at 45% 65%, rgba(225,200,48,0.50) 0px, rgba(200,170,32,0.24) 2px, rgba(180,145,20,0.07) 5px, transparent 8px),
+    radial-gradient(circle at 84% 48%, rgba(200,180,40,0.40) 0px, rgba(175,150,25,0.18) 2px, transparent 6px),
+    radial-gradient(circle at 14% 75%, rgba(215,188,42,0.45) 0px, rgba(190,160,28,0.20) 2px, transparent 7px),
+    radial-gradient(circle at 58% 82%, rgba(208,182,38,0.42) 0px, rgba(182,155,24,0.18) 2px, transparent 6px),
+    radial-gradient(circle at 35% 15%, rgba(235,210,55,0.38) 0px, rgba(205,178,40,0.16) 2px, transparent 5px);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: shire-motes 5s ease-in-out infinite;
+}
+@keyframes shire-motes {
+  0%, 100% { opacity: 0.85; }
+  15%       { opacity: 0.35; }
+  16%       { opacity: 1.0; }
+  38%       { opacity: 0.65; }
+  39%       { opacity: 0.15; }
+  40%       { opacity: 1.0; }
+  62%       { opacity: 0.75; }
+  63%       { opacity: 0.30; }
+  64%       { opacity: 1.0; }
+  88%       { opacity: 0.0; }
+  89%       { opacity: 1.0; }
+}
