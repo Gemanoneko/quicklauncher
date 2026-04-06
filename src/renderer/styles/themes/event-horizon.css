@@ -121,15 +121,25 @@
   box-shadow: 0 0 8px rgba(102, 0, 0, 0.50), 0 0 20px rgba(80, 0, 0, 0.16);
 }
 
-/* ── Grid: void compression — darkness closing in ───────────────────────────── */
+/* ── Grid: Lewis's gravity drive — rings and singularity ────────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 60% 80% at 0% 50%, rgba(3, 0, 0, 0.25) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(3, 0, 0, 0.25) 0%, transparent 65%),
-    linear-gradient(to top, rgba(80, 0, 0, 0.08) 0%, transparent 30%),
-    linear-gradient(to bottom, rgba(70, 0, 0, 0.06) 0%, transparent 25%);
+    /* Gravity drive — 3 concentric rings, 4 cardinal spokes, void singularity */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Ccircle cx='250' cy='190' r='145' fill='none' stroke='rgba(80,0,0,0.16)' stroke-width='1'/%3E%3Ccircle cx='250' cy='190' r='95' fill='none' stroke='rgba(90,0,0,0.20)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='190' r='48' fill='none' stroke='rgba(100,0,0,0.24)' stroke-width='0.8'/%3E%3Cline x1='250' y1='44' x2='250' y2='142' stroke='rgba(70,0,0,0.15)' stroke-width='0.7'/%3E%3Cline x1='250' y1='238' x2='250' y2='336' stroke='rgba(70,0,0,0.15)' stroke-width='0.7'/%3E%3Cline x1='104' y1='190' x2='202' y2='190' stroke='rgba(70,0,0,0.15)' stroke-width='0.7'/%3E%3Cline x1='298' y1='190' x2='396' y2='190' stroke='rgba(70,0,0,0.15)' stroke-width='0.7'/%3E%3Ccircle cx='250' cy='190' r='10' fill='rgba(60,0,0,0.40)'/%3E%3Ccircle cx='250' cy='190' r='3' fill='rgba(80,0,0,0.65)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
+    /* side void compression */
+    radial-gradient(ellipse 55% 80% at 0% 50%, rgba(3, 0, 0, 0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 80% at 100% 50%, rgba(3, 0, 0, 0.22) 0%, transparent 65%);
+  animation: void-drive 14s steps(1) infinite;
+}
+@keyframes void-drive {
+  0%, 100%  { opacity: 0.85; }
+  75%       { opacity: 0.85; }
+  76%       { opacity: 0.10; }
+  77%       { opacity: 1.00; }
+  78%       { opacity: 0.30; }
+  79%       { opacity: 0.85; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -203,3 +213,13 @@
   0%, 100% { background-size: 80% 80%; opacity: 0.4; }
   50%      { background-size: 220% 220%; opacity: 1; }
 }
+
+/* ── Tile: void flicker ──────────────────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: transparent;
+  border: 1px solid rgba(100, 0, 0, 0.35);
+}
+.app-tile:hover::before { animation: tile-flicker .7s steps(1, end) infinite; }

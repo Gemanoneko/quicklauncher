@@ -118,18 +118,27 @@
   box-shadow: 0 0 8px rgba(58, 122, 156, 0.52), 0 0 20px rgba(58, 122, 156, 0.16);
 }
 
-/* ── Grid: ship panel grid + deep space ambient ─────────────────────────────── */
+/* ── Grid: Ring Gate — alien aperture in the void ───────────────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    repeating-linear-gradient(90deg,
-      transparent 0px, transparent 79px,
-      rgba(50, 90, 130, 0.018) 79px, rgba(50, 90, 130, 0.018) 80px
-    ),
-    linear-gradient(to bottom, rgba(40, 80, 120, 0.05) 0%, transparent 30%),
-    linear-gradient(to top, rgba(140, 20, 10, 0.04) 0%, rgba(100, 15, 8, 0.02) 15%, transparent 40%);
-  background-size: 80px 100%, 100% 100%, 100% 100%;
+    /* Ring Gate — outermost containment ring */
+    radial-gradient(circle at 50% 40%, transparent 118px, rgba(58,122,156,0.07) 119px, rgba(58,122,156,0.07) 123px, transparent 124px),
+    /* Ring Gate — second ring */
+    radial-gradient(circle at 50% 40%, transparent 84px, rgba(58,140,170,0.11) 85px, rgba(58,140,170,0.11) 89px, transparent 90px),
+    /* Ring Gate — third ring */
+    radial-gradient(circle at 50% 40%, transparent 52px, rgba(40,160,190,0.15) 53px, rgba(40,160,190,0.15) 57px, transparent 58px),
+    /* Ring Gate — innermost aperture ring (brightest — protomolecule teal) */
+    radial-gradient(circle at 50% 40%, transparent 26px, rgba(30,200,220,0.24) 27px, rgba(30,200,220,0.24) 32px, transparent 33px),
+    /* aperture inner glow */
+    radial-gradient(circle at 50% 40%, rgba(20,100,160,0.18) 0px, rgba(15,80,130,0.09) 24px, transparent 30px),
+    /* tactical crosshair — H line through gate center */
+    linear-gradient(to bottom, transparent calc(40% - 0.5px), rgba(40,140,170,0.08) calc(40% - 0.5px), rgba(40,140,170,0.08) calc(40% + 0.5px), transparent calc(40% + 0.5px)),
+    /* tactical crosshair — V line */
+    linear-gradient(to right, transparent calc(50% - 0.5px), rgba(40,140,170,0.06) calc(50% - 0.5px), rgba(40,140,170,0.06) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    /* deep space cold ambient */
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(10,30,70,0.08) 0%, transparent 65%);
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -166,14 +175,14 @@
   50%       { text-shadow: 0 0 10px rgba(58,122,156,.78), 0 0 26px rgba(58,122,156,.32); opacity: 0.94; }
 }
 
-/* ── Proximity beacon — Rocinante transponder pulse ─────────────────────── */
-#app { animation: expanse-beacon 8s ease-in-out infinite; }
-@keyframes expanse-beacon {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(50,100,140,.22), inset 0 0 16px rgba(50,100,140,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(58,122,156,.48), inset 0 0 24px rgba(58,122,156,.08); }
-  36%      { box-shadow: 0 0 0 1px rgba(170,32,16,.30),  inset 0 0 18px rgba(170,32,16,.05); }
-  37%      { box-shadow: 0 0 0 1px rgba(58,122,156,.42), inset 0 0 22px rgba(58,122,156,.07); }
-  70%      { box-shadow: 0 0 0 1px rgba(50,100,140,.28), inset 0 0 18px rgba(50,100,140,.05); }
+/* ── Ring Gate activation pulse ──────────────────────────────────────────── */
+#app { animation: expanse-gate 7s ease-in-out infinite; }
+@keyframes expanse-gate {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(50,100,140,.22), inset 0 0 20px rgba(50,100,140,.05); }
+  38%      { box-shadow: 0 0 0 1px rgba(30,200,220,.55), inset 0 0 32px rgba(30,180,210,.10); }
+  39%      { box-shadow: 0 0 0 1px rgba(170,32,16,.28),  inset 0 0 18px rgba(170,32,16,.04); }
+  40%      { box-shadow: 0 0 0 1px rgba(30,180,210,.48), inset 0 0 28px rgba(30,180,210,.08); }
+  70%      { box-shadow: 0 0 0 1px rgba(30,80,110,.18),  inset 0 0 16px rgba(30,80,110,.04); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
@@ -181,15 +190,30 @@
 #theme-banner::before { content: '⊗'; color: #3A7A9C; font-size: 20px; }
 #theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(50, 110, 148, 0.58); }
 
-/* ── Rocinante viewport — cold star field drifting past ──────────────────── */
+/* ── Ring Gate beacon ping — single ring expanding from aperture center ──── */
 #particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Ccircle cx='30' cy='45' r='0.7' fill='rgba(150,170,200,0.28)'/%3E%3Ccircle cx='100' cy='110' r='0.5' fill='rgba(150,170,200,0.20)'/%3E%3Ccircle cx='190' cy='180' r='0.6' fill='rgba(150,170,200,0.24)'/%3E%3Ccircle cx='140' cy='35' r='0.4' fill='rgba(170,32,16,0.14)'/%3E%3Ccircle cx='55' cy='210' r='0.5' fill='rgba(150,170,200,0.18)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='380' height='380'%3E%3Ccircle cx='50' cy='70' r='0.5' fill='rgba(130,150,180,0.12)'/%3E%3Ccircle cx='200' cy='190' r='0.4' fill='rgba(130,150,180,0.10)'/%3E%3Ccircle cx='310' cy='300' r='0.5' fill='rgba(130,150,180,0.08)'/%3E%3C/svg%3E") repeat;
-  background-size: 250px 250px, 380px 380px;
-  animation: expanse-drift 20s linear infinite;
+  background: radial-gradient(circle at center,
+    transparent 0%, transparent 17%,
+    rgba(30,200,220,0.35) 17%, rgba(30,200,220,0.35) 21%,
+    transparent 21%
+  );
+  background-size: 80px 80px;
+  background-position: 50% 40%;
+  background-repeat: no-repeat;
+  animation: roci-ping 4.5s ease-out infinite;
 }
-@keyframes expanse-drift {
-  from { background-position: 0 0, 0 0; }
-  to   { background-position: -250px 18px, -126px 8px; }
+@keyframes roci-ping {
+  0%   { background-size: 50px 50px; opacity: 1; }
+  72%  { background-size: 900px 900px; opacity: 0; }
+  73%  { background-size: 50px 50px; opacity: 0; }
+  100% { background-size: 50px 50px; opacity: 0; }
 }
+
+/* ── Tile: tactical sensor sweep ─────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 2px;
+  left: 0; top: -2px;
+  transform: none;
+  background: var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-scan-v .45s ease-in forwards; }

@@ -122,20 +122,32 @@
   box-shadow: 0 0 12px rgba(255, 0, 102, 0.78), 0 0 32px rgba(255, 0, 102, 0.28);
 }
 
-/* ── Grid: Upside Down atmospheric — purple ambient + string-light amber ─────── */
+/* ── Grid: Joyce's Christmas lights — "RUNRUNRUNRUN" ─────────────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* neon pink bloom at top */
-    linear-gradient(to bottom, rgba(200, 0, 80, 0.06) 0%, transparent 28%),
-    /* dark purple Upside Down ambient */
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(80, 0, 100, 0.025) 0%, transparent 70%),
-    /* warm string-light amber at bottom */
-    linear-gradient(to top, rgba(200, 120, 0, 0.07) 0%, rgba(180, 100, 0, 0.03) 22%, transparent 50%),
-    /* dark void edges */
-    radial-gradient(ellipse 36% 100% at 0% 50%, rgba(3, 0, 4, 0.18) 0%, transparent 62%),
-    radial-gradient(ellipse 36% 100% at 100% 50%, rgba(3, 0, 4, 0.18) 0%, transparent 62%);
+    /* Christmas lights string — the wall in the Byers house */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Cline x1='0' y1='172' x2='500' y2='170' stroke='%23604020' stroke-opacity='0.08' stroke-width='0.6'/%3E%3Ccircle cx='20' cy='172' r='5.5' fill='%23FFAA00' fill-opacity='0.22'/%3E%3Ccircle cx='20' cy='172' r='2.5' fill='%23FFCC40' fill-opacity='0.68'/%3E%3Ccircle cx='52' cy='171' r='5' fill='%23FF4400' fill-opacity='0.20'/%3E%3Ccircle cx='52' cy='171' r='2.2' fill='%23FF7040' fill-opacity='0.62'/%3E%3Ccircle cx='88' cy='173' r='5.5' fill='%23FFEE60' fill-opacity='0.20'/%3E%3Ccircle cx='88' cy='173' r='2.5' fill='%23FFEE90' fill-opacity='0.65'/%3E%3Ccircle cx='122' cy='170' r='5' fill='%23FFAA00' fill-opacity='0.22'/%3E%3Ccircle cx='122' cy='170' r='2.2' fill='%23FFCC40' fill-opacity='0.66'/%3E%3Ccircle cx='158' cy='172' r='5' fill='%23FF6600' fill-opacity='0.20'/%3E%3Ccircle cx='158' cy='172' r='2.2' fill='%23FF8840' fill-opacity='0.60'/%3E%3Ccircle cx='192' cy='171' r='5.5' fill='%23FFAA00' fill-opacity='0.22'/%3E%3Ccircle cx='192' cy='171' r='2.5' fill='%23FFCC40' fill-opacity='0.67'/%3E%3Ccircle cx='228' cy='173' r='5' fill='%23FFFFB0' fill-opacity='0.20'/%3E%3Ccircle cx='228' cy='173' r='2.2' fill='%23FFFFE0' fill-opacity='0.62'/%3E%3Ccircle cx='262' cy='170' r='5.5' fill='%23FF4400' fill-opacity='0.20'/%3E%3Ccircle cx='262' cy='170' r='2.5' fill='%23FF7040' fill-opacity='0.63'/%3E%3Ccircle cx='298' cy='172' r='5' fill='%23FFAA00' fill-opacity='0.23'/%3E%3Ccircle cx='298' cy='172' r='2.2' fill='%23FFCC40' fill-opacity='0.68'/%3E%3Ccircle cx='332' cy='171' r='5.5' fill='%23FF6600' fill-opacity='0.20'/%3E%3Ccircle cx='332' cy='171' r='2.5' fill='%23FF8840' fill-opacity='0.60'/%3E%3Ccircle cx='368' cy='173' r='5' fill='%23FFD040' fill-opacity='0.22'/%3E%3Ccircle cx='368' cy='173' r='2.2' fill='%23FFEC60' fill-opacity='0.65'/%3E%3Ccircle cx='402' cy='170' r='5.5' fill='%23FFAA00' fill-opacity='0.23'/%3E%3Ccircle cx='402' cy='170' r='2.5' fill='%23FFCC40' fill-opacity='0.68'/%3E%3Ccircle cx='438' cy='172' r='5' fill='%23FF4400' fill-opacity='0.20'/%3E%3Ccircle cx='438' cy='172' r='2.2' fill='%23FF7040' fill-opacity='0.62'/%3E%3Ccircle cx='472' cy='171' r='5.5' fill='%23FFAA00' fill-opacity='0.22'/%3E%3Ccircle cx='472' cy='171' r='2.5' fill='%23FFCC40' fill-opacity='0.66'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
+    /* neon pink bloom at top — the Gate */
+    linear-gradient(to bottom, rgba(200, 0, 80, 0.07) 0%, transparent 25%),
+    /* Upside Down dark vine ambient */
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(80, 0, 100, 0.03) 0%, transparent 70%),
+    /* warm string-light glow on the wall */
+    linear-gradient(to top, rgba(200, 120, 0, 0.06) 0%, rgba(180, 100, 0, 0.02) 18%, transparent 40%);
+}
+
+/* ── String lights flicker — the Upside Down signal ─────────────────────── */
+#grid-container::before { animation: st-lights 0.3s steps(1, end) infinite; }
+@keyframes st-lights {
+  0%   { opacity: 1; }
+  8%   { opacity: 0.6; }
+  9%   { opacity: 1; }
+  45%  { opacity: 1; }
+  46%  { opacity: 0.3; }
+  47%  { opacity: 1; }
+  82%  { opacity: 0.8; }
+  83%  { opacity: 1; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -199,15 +211,24 @@
   72%      { box-shadow: 0 0 0 1px rgba(153,0,204,.58), inset 0 0 30px rgba(153,0,204,.09); }
 }
 
-/* ── Upside Down spores — dark particles drifting from the gate ─────────── */
+/* ── Upside Down spores — dark organic particles drifting upward ─────────── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='500'%3E%3Ccircle cx='30' cy='70' r='2' fill='rgba(153,0,204,0.16)'/%3E%3Ccircle cx='100' cy='200' r='1.5' fill='rgba(200,0,80,0.12)'/%3E%3Ccircle cx='160' cy='350' r='2.5' fill='rgba(100,0,60,0.10)'/%3E%3Ccircle cx='70' cy='450' r='1.2' fill='rgba(153,0,204,0.14)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='700'%3E%3Ccircle cx='50' cy='100' r='2.5' fill='rgba(100,0,60,0.08)'/%3E%3Ccircle cx='140' cy='320' r='2' fill='rgba(153,0,204,0.06)'/%3E%3Ccircle cx='230' cy='550' r='3' fill='rgba(80,0,50,0.07)'/%3E%3C/svg%3E") repeat;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='500'%3E%3Cellipse cx='30' cy='70' rx='2.5' ry='1.5' fill='%239900CC' fill-opacity='0.22' transform='rotate(-15,30,70)'/%3E%3Ccircle cx='100' cy='200' r='2' fill='%23FF0066' fill-opacity='0.18'/%3E%3Cellipse cx='160' cy='350' rx='3' ry='2' fill='%23660066' fill-opacity='0.16' transform='rotate(20,160,350)'/%3E%3Ccircle cx='70' cy='450' r='1.5' fill='%23FFAA00' fill-opacity='0.20'/%3E%3Ccircle cx='140' cy='130' r='1.5' fill='%239900CC' fill-opacity='0.20'/%3E%3Cellipse cx='50' cy='290' rx='2' ry='1.2' fill='%23CC0066' fill-opacity='0.18' transform='rotate(8,50,290)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='700'%3E%3Ccircle cx='50' cy='100' r='3' fill='%236600AA' fill-opacity='0.12'/%3E%3Cellipse cx='140' cy='320' rx='2.5' ry='1.8' fill='%23FF0066' fill-opacity='0.10' transform='rotate(-10,140,320)'/%3E%3Ccircle cx='230' cy='550' r='3.5' fill='%23880044' fill-opacity='0.09'/%3E%3Ccircle cx='90' cy='480' r='1.8' fill='%23FFAA00' fill-opacity='0.14'/%3E%3C/svg%3E") repeat;
   background-size: 200px 500px, 280px 700px;
   animation: st-spores 12s linear infinite;
 }
 @keyframes st-spores {
-  from { background-position: 0 -500px, 15px -700px; }
+  from { background-position: 0 500px, 15px 700px; }
   to   { background-position: 25px 0, -10px 0; }
 }
+
+/* ── Tile: Upside Down glitch on hover ───────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: rgba(255,0,102,0.04);
+}
+.app-tile:hover::before { animation: tile-glitch .4s steps(1, end) forwards; }

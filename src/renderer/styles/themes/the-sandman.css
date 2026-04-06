@@ -133,21 +133,24 @@
   box-shadow: 0 0 8px rgba(96, 64, 192, 0.55), 0 0 22px rgba(80, 50, 160, 0.18);
 }
 
-/* ── Grid: dream constellation — violet/indigo ambient radials ───────────────── */
+/* ── Grid: Dreaming constellation — starfield with Dream's throne at center ──── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* dream constellation — radial violet/indigo ambient glows */
-    radial-gradient(circle at 25% 30%, rgba(60, 40, 120, 0.06) 0%, transparent 45%),
-    radial-gradient(circle at 75% 70%, rgba(50, 30, 100, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 60% 20%, rgba(80, 50, 140, 0.04) 0%, transparent 35%),
-    radial-gradient(circle at 15% 80%, rgba(40, 25, 90, 0.04) 0%, transparent 40%),
+    /* Dream constellation — star nodes connected by void-light threads */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Cline x1='250' y1='45' x2='148' y2='98' stroke='rgba(96,64,192,0.12)' stroke-width='0.8'/%3E%3Cline x1='250' y1='45' x2='362' y2='85' stroke='rgba(96,64,192,0.11)' stroke-width='0.8'/%3E%3Cline x1='148' y1='98' x2='82' y2='195' stroke='rgba(96,64,192,0.10)' stroke-width='0.7'/%3E%3Cline x1='362' y1='85' x2='418' y2='175' stroke='rgba(96,64,192,0.10)' stroke-width='0.7'/%3E%3Cline x1='82' y1='195' x2='168' y2='295' stroke='rgba(96,64,192,0.09)' stroke-width='0.7'/%3E%3Cline x1='418' y1='175' x2='352' y2='310' stroke='rgba(96,64,192,0.09)' stroke-width='0.7'/%3E%3Cline x1='168' y1='295' x2='250' y2='340' stroke='rgba(96,64,192,0.09)' stroke-width='0.6'/%3E%3Cline x1='352' y1='310' x2='250' y2='340' stroke='rgba(96,64,192,0.09)' stroke-width='0.6'/%3E%3Cline x1='148' y1='98' x2='250' y2='182' stroke='rgba(96,64,192,0.08)' stroke-width='0.6'/%3E%3Cline x1='362' y1='85' x2='250' y2='182' stroke='rgba(96,64,192,0.08)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='45' r='3' fill='rgba(192,128,32,0.45)'/%3E%3Ccircle cx='148' cy='98' r='2' fill='rgba(96,64,192,0.32)'/%3E%3Ccircle cx='362' cy='85' r='2.5' fill='rgba(96,64,192,0.30)'/%3E%3Ccircle cx='82' cy='195' r='1.8' fill='rgba(96,64,192,0.24)'/%3E%3Ccircle cx='418' cy='175' r='1.8' fill='rgba(96,64,192,0.24)'/%3E%3Ccircle cx='168' cy='295' r='2' fill='rgba(120,80,220,0.22)'/%3E%3Ccircle cx='352' cy='310' r='2' fill='rgba(120,80,220,0.22)'/%3E%3Ccircle cx='250' cy='340' r='2.5' fill='rgba(192,128,32,0.28)'/%3E%3Ccircle cx='250' cy='182' r='8' fill='none' stroke='rgba(96,64,192,0.20)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='182' r='3' fill='rgba(96,64,192,0.30)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
     /* void depth from edges */
     radial-gradient(ellipse 30% 100% at 0% 50%, rgba(2, 1, 8, 0.16) 0%, transparent 65%),
-    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(2, 1, 8, 0.16) 0%, transparent 65%),
-    /* dream floor — warm gold hint at bottom */
-    radial-gradient(ellipse 60% 25% at 50% 100%, rgba(120, 80, 20, 0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(2, 1, 8, 0.16) 0%, transparent 65%);
+  animation: dream-constellation 18s ease-in-out infinite;
+}
+@keyframes dream-constellation {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1.00; }
+  88%      { opacity: 0.85; }
+  89%      { opacity: 0.30; }
+  90%      { opacity: 0.90; }
 }
 
 /* ── Flavor content ──────────────────────────────────────────────────────────── */
@@ -211,3 +214,14 @@
   from { background-position: 0 0, 20px 0; }
   to   { background-position: 50px -440px, -35px -620px; }
 }
+
+/* ── Tile: dream radial ──────────────────────────────────────────────────────── */
+.app-tile::before {
+  width: 20px; height: 20px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(120, 80, 220, 0.38);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

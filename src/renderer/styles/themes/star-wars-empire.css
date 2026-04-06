@@ -105,21 +105,22 @@
   box-shadow: 0 0 6px rgba(180, 190, 210, 0.40);
 }
 
-/* ── Grid: Imperial geometric grid lines ────────────────────────────────────── */
+/* ── Grid: Death Star targeting disc — surface grid + superlaser reticle ────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    repeating-linear-gradient(90deg,
-      transparent 0px, transparent 79px,
-      rgba(160, 168, 184, 0.022) 79px, rgba(160, 168, 184, 0.022) 80px
-    ),
-    repeating-linear-gradient(0deg,
-      transparent 0px, transparent 39px,
-      rgba(160, 168, 184, 0.016) 39px, rgba(160, 168, 184, 0.016) 40px
-    ),
-    linear-gradient(to top, rgba(140, 148, 165, 0.04) 0%, transparent 30%);
-  background-size: 80px 100%, 100% 40px, 100% 100%;
+    /* Death Star SVG — sphere latitude/longitude grid + targeting dish */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Equatorial trench line --%3E%3Cellipse cx='250' cy='190' rx='170' ry='10' fill='none' stroke='rgba(160,168,184,0.09)' stroke-width='1'/%3E%3C!-- Latitude lines --%3E%3Cellipse cx='250' cy='155' rx='150' ry='8' fill='none' stroke='rgba(160,168,184,0.06)' stroke-width='0.7'/%3E%3Cellipse cx='250' cy='225' rx='150' ry='8' fill='none' stroke='rgba(160,168,184,0.06)' stroke-width='0.7'/%3E%3Cellipse cx='250' cy='120' rx='120' ry='6' fill='none' stroke='rgba(160,168,184,0.05)' stroke-width='0.6'/%3E%3Cellipse cx='250' cy='260' rx='120' ry='6' fill='none' stroke='rgba(160,168,184,0.05)' stroke-width='0.6'/%3E%3C!-- Longitude lines (vertical arcs simplified as lines) --%3E%3Cline x1='250' y1='20' x2='250' y2='360' stroke='rgba(160,168,184,0.07)' stroke-width='0.7'/%3E%3Cline x1='80' y1='20' x2='80' y2='360' stroke='rgba(160,168,184,0.04)' stroke-width='0.5'/%3E%3Cline x1='420' y1='20' x2='420' y2='360' stroke='rgba(160,168,184,0.04)' stroke-width='0.5'/%3E%3C!-- Superlaser targeting dish — upper hemisphere, slightly left --%3E%3Ccircle cx='198' cy='118' r='42' fill='none' stroke='rgba(180,190,210,0.12)' stroke-width='1'/%3E%3Ccircle cx='198' cy='118' r='28' fill='none' stroke='rgba(180,190,210,0.10)' stroke-width='0.8'/%3E%3Ccircle cx='198' cy='118' r='14' fill='none' stroke='rgba(180,190,210,0.14)' stroke-width='1'/%3E%3Ccircle cx='198' cy='118' r='5' fill='rgba(180,190,210,0.18)'/%3E%3C!-- Dish crosshair --%3E%3Cline x1='198' y1='72' x2='198' y2='165' stroke='rgba(160,168,184,0.09)' stroke-width='0.7'/%3E%3Cline x1='152' y1='118' x2='244' y2='118' stroke='rgba(160,168,184,0.09)' stroke-width='0.7'/%3E%3C!-- Imperial badge — octagon corner mark --%3E%3Cpolygon points='454,22 470,22 478,30 478,46 470,54 454,54 446,46 446,30' fill='none' stroke='rgba(180,190,210,0.14)' stroke-width='1'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
+    /* cold grey ambient */
+    radial-gradient(ellipse 80% 55% at 50% 50%, rgba(8, 8, 14, 0.04) 0%, transparent 70%);
+  animation: empire-grid 14s ease-in-out infinite;
+}
+@keyframes empire-grid {
+  0%, 100% { opacity: 0.85; }
+  48%       { opacity: 1.0; }
+  50%       { opacity: 1.2; }
+  52%       { opacity: 1.0; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */

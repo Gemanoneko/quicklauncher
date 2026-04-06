@@ -108,15 +108,31 @@
   box-shadow: 0 0 6px rgba(154, 174, 200, 0.40);
 }
 
-/* ── Grid: Discovery One hull geometry — minimal lines ──────────────────────── */
+/* ── Grid: HAL 9000 — the red eye, watching ─────────────────────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* HAL red ambient center — he's watching */
-    radial-gradient(circle at 50% 40%, rgba(180, 0, 0, 0.04) 0%, transparent 35%),
-    /* cold clinical floor line */
-    linear-gradient(to top, rgba(120, 145, 175, 0.04) 0%, transparent 20%);
+    /* HAL's outer iris ring */
+    radial-gradient(circle at 50% 42%, transparent 58px, rgba(200,0,0,0.14) 59px, rgba(200,0,0,0.14) 64px, transparent 65px),
+    /* HAL's inner iris ring */
+    radial-gradient(circle at 50% 42%, transparent 36px, rgba(220,0,0,0.20) 37px, rgba(220,0,0,0.20) 42px, transparent 43px),
+    /* HAL's pupil — central red point */
+    radial-gradient(circle at 50% 42%, rgba(255,40,0,0.28) 0px, rgba(220,0,0,0.18) 16px, rgba(180,0,0,0.08) 34px, transparent 40px),
+    /* lens flare — slight horizontal streak */
+    radial-gradient(ellipse 60% 8% at 50% 42%, rgba(200,0,0,0.06) 0%, transparent 100%),
+    /* cold Discovery hull ambient */
+    radial-gradient(ellipse 100% 70% at 50% 42%, rgba(8,12,24,0.08) 0%, transparent 80%),
+    /* floor line — clinical hospital white */
+    linear-gradient(to top, rgba(120,145,175,0.05) 0%, transparent 18%);
+  animation: hal-eye-pulse 8s ease-in-out infinite;
+}
+@keyframes hal-eye-pulse {
+  0%, 100% { opacity: 1; }
+  48%       { opacity: 0.7; }
+  50%       { opacity: 1; }
+  51%       { opacity: 0.4; }
+  52%       { opacity: 1; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -155,11 +171,16 @@
   55%      { text-shadow: 0 0 4px rgba(154,174,200,.45); color: #9AAEC8; }
 }
 
-/* ── App border: clinical precision ──────────────────────────────────────────── */
-#app { animation: hal-border 10s ease-in-out infinite; }
-@keyframes hal-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(120,145,175,.20); }
-  50%      { box-shadow: 0 0 0 1px rgba(150,175,210,.38); }
+/* ── App border: HAL's watchful patience — red flash in the dark ─────────────── */
+#app { animation: hal-watch-border 12s ease-in-out infinite; }
+@keyframes hal-watch-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(120,145,175,.18); }
+  44%      { box-shadow: 0 0 0 1px rgba(150,175,210,.32); }
+  46%      { box-shadow: 0 0 0 1px rgba(204,0,0,.35), inset 0 0 28px rgba(204,0,0,.06); }
+  47%      { box-shadow: 0 0 0 1px rgba(150,175,210,.28); }
+  89%      { box-shadow: 0 0 0 1px rgba(120,145,175,.18); }
+  90%      { box-shadow: 0 0 0 1px rgba(204,0,0,.22), inset 0 0 18px rgba(204,0,0,.04); }
+  91%      { box-shadow: 0 0 0 1px rgba(120,145,175,.18); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
@@ -167,39 +188,44 @@
 #theme-banner::before { content: '⊙'; color: #CC0000; font-size: 20px; opacity: 0.8; }
 #theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(110, 130, 160, 0.55); }
 
-/* ── Stargate sequence — prismatic color bands drifting through the void ── */
+/* ── Stargate sequence — Jupiter And Beyond The Infinite ─────────────────── */
 #particles {
   background:
-    repeating-linear-gradient(
-      180deg,
-      transparent 0px,
-      transparent 80px,
-      rgba(154,174,200,0.03) 80px,
-      rgba(154,174,200,0.03) 82px,
-      transparent 82px,
-      transparent 120px,
-      rgba(204,0,0,0.02) 120px,
-      rgba(204,0,0,0.02) 122px,
-      transparent 122px,
-      transparent 200px
+    repeating-linear-gradient(180deg,
+      transparent 0px, transparent 38px,
+      rgba(154,174,200,0.10) 38px, rgba(200,220,255,0.07) 40px,
+      transparent 42px, transparent 72px,
+      rgba(204,0,0,0.07) 72px, rgba(220,60,60,0.05) 74px,
+      transparent 76px, transparent 108px,
+      rgba(100,120,200,0.08) 108px, rgba(140,160,230,0.06) 110px,
+      transparent 112px, transparent 150px,
+      rgba(154,174,200,0.06) 150px, rgba(180,200,240,0.05) 152px,
+      transparent 154px, transparent 190px
     ),
-    repeating-linear-gradient(
-      180deg,
-      transparent 0px,
-      transparent 140px,
-      rgba(112,128,144,0.025) 140px,
-      rgba(112,128,144,0.025) 143px,
-      transparent 143px,
-      transparent 220px,
-      rgba(154,174,200,0.02) 220px,
-      rgba(154,174,200,0.02) 222px,
-      transparent 222px,
-      transparent 350px
+    repeating-linear-gradient(180deg,
+      transparent 0px, transparent 52px,
+      rgba(180,200,255,0.06) 52px, transparent 55px,
+      transparent 100px,
+      rgba(204,0,0,0.05) 100px, transparent 103px,
+      transparent 175px,
+      rgba(60,80,180,0.06) 175px, transparent 178px,
+      transparent 260px
     );
-  background-size: 100% 200px, 100% 350px;
-  animation: hal-stargate 8s linear infinite;
+  background-size: 100% 190px, 100% 260px;
+  animation: hal-stargate 6s linear infinite;
 }
 @keyframes hal-stargate {
-  from { background-position: 0 -200px, 0 -350px; }
-  to   { background-position: 0 0, 0 0; }
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 0 190px, 0 260px; }
 }
+
+/* ── Tile: HAL's watchful expanding ring ─────────────────────────────────── */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(204,0,0,0.50);
+}
+.app-tile:hover::before { animation: tile-radial .6s ease-out forwards; }

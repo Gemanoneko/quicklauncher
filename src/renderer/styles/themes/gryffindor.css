@@ -111,15 +111,28 @@
   box-shadow: 0 0 10px rgba(204, 48, 32, 0.60), 0 0 26px rgba(204, 48, 32, 0.20);
 }
 
-/* ── Grid: fireplace warmth pooling bottom, banner glow from top ─────────────── */
+/* ── Grid: Common room fireplace — three flame columns rising ────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 100% 38% at 50% 100%, rgba(160, 60, 0, 0.08) 0%, transparent 68%),
-    radial-gradient(ellipse 70% 28% at 50% 0%, rgba(140, 30, 10, 0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(3, 0, 0, 0.16) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(3, 0, 0, 0.16) 0%, transparent 60%);
+    /* Flame pillar — left */
+    radial-gradient(ellipse 14% 65% at 22% 100%, rgba(204,80,10,0.11) 0%, rgba(160,50,0,0.05) 45%, transparent 68%),
+    /* Flame pillar — center (main fire) */
+    radial-gradient(ellipse 22% 80% at 50% 100%, rgba(200,70,8,0.14) 0%, rgba(160,45,0,0.06) 50%, transparent 74%),
+    /* Flame pillar — right */
+    radial-gradient(ellipse 12% 58% at 78% 100%, rgba(200,85,12,0.10) 0%, rgba(150,55,0,0.04) 42%, transparent 64%),
+    /* Fireplace ember bed — orange base glow */
+    linear-gradient(to top, rgba(200,70,0,0.16) 0%, rgba(160,50,0,0.06) 18%, transparent 42%),
+    /* Warm light on ceiling — firelight reflection */
+    radial-gradient(ellipse 65% 35% at 50% 0%, rgba(180,60,10,0.05) 0%, transparent 62%);
+  animation: gryff-fire 1.4s ease-in-out infinite alternate;
+}
+@keyframes gryff-fire {
+  0%   { opacity: 0.72; }
+  30%  { opacity: 1.00; }
+  60%  { opacity: 0.82; }
+  100% { opacity: 0.90; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -174,15 +187,28 @@
 #theme-banner::before { content: '⚜'; color: #C89020; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 110, 30, 0.65); }
 
-/* ── Gryffindor magic — scarlet and gold sparkles from the hearth ────────── */
+/* ── Fawkes' embers — sparks popping from the hearth, scatter and die ────── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='30' cy='55' r='1.2' fill='rgba(200,144,32,0.28)'/%3E%3Ccircle cx='100' cy='170' r='0.8' fill='rgba(204,48,32,0.22)'/%3E%3Ccircle cx='160' cy='300' r='1.5' fill='rgba(200,144,32,0.18)'/%3E%3Ccircle cx='55' cy='360' r='1' fill='rgba(204,48,32,0.14)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='45' cy='90' r='1.8' fill='rgba(200,144,32,0.12)'/%3E%3Ccircle cx='150' cy='270' r='1.2' fill='rgba(204,48,32,0.10)'/%3E%3Ccircle cx='220' cy='440' r='2' fill='rgba(200,144,32,0.08)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 400px, 280px 560px;
-  animation: gryffindor-sparkles 12s linear infinite;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='360'%3E%3Crect x='28' y='15' width='4' height='1' fill='rgba(255,160,30,0.55)' rx='0.5'/%3E%3Crect x='90' y='80' width='3' height='1' fill='rgba(220,80,10,0.50)' rx='0.5'/%3E%3Crect x='145' y='40' width='5' height='1' fill='rgba(255,180,40,0.45)' rx='0.5'/%3E%3Crect x='60' y='160' width='3' height='1' fill='rgba(220,100,20,0.42)' rx='0.5'/%3E%3Crect x='120' y='240' width='4' height='1' fill='rgba(255,140,20,0.48)' rx='0.5'/%3E%3Crect x='38' y='310' width='3' height='1' fill='rgba(200,70,10,0.38)' rx='0.5'/%3E%3Ccircle cx='110' cy='120' r='1' fill='rgba(255,200,50,0.40)'/%3E%3Ccircle cx='72' cy='280' r='0.8' fill='rgba(220,80,10,0.35)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='520'%3E%3Crect x='50' y='35' width='5' height='1' fill='rgba(255,160,30,0.35)' rx='0.5'/%3E%3Crect x='160' y='120' width='3' height='1' fill='rgba(200,80,15,0.30)' rx='0.5'/%3E%3Crect x='220' y='290' width='4' height='1' fill='rgba(255,140,25,0.32)' rx='0.5'/%3E%3Crect x='85' y='400' width='6' height='1' fill='rgba(220,100,20,0.28)' rx='0.5'/%3E%3Ccircle cx='130' cy='220' r='1.2' fill='rgba(255,200,60,0.25)'/%3E%3C/svg%3E") repeat;
+  background-size: 180px 360px, 260px 520px;
+  animation: gryff-embers 0.25s steps(1, end) infinite;
 }
-@keyframes gryffindor-sparkles {
-  from { background-position: 0 -400px, 18px -560px; }
-  to   { background-position: 25px 0, -12px 0; }
+@keyframes gryff-embers {
+  0%   { background-position: 0 -360px,  12px -520px; }
+  20%  { background-position: 4px -300px, 18px -440px; }
+  40%  { background-position: -3px -230px, 8px -360px; }
+  60%  { background-position: 6px -150px, -5px -270px; }
+  80%  { background-position: -2px -80px,  15px -180px; }
+  100% { background-position: 3px 0,      -8px  -80px; }
 }
+
+/* ── Tile: fire flicker on hover ─────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: rgba(200,80,10,0.04);
+}
+.app-tile:hover::before { animation: tile-flicker .4s steps(1, end) forwards; }

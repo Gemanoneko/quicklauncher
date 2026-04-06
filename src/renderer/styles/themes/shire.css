@@ -111,17 +111,23 @@
   box-shadow: 0 0 10px rgba(104, 128, 48, 0.52), 0 0 24px rgba(104, 128, 48, 0.18);
 }
 
-/* ── Grid: rolling hills + lamp warmth ─────────────────────────────────────── */
+/* ── Grid: Hobbiton — rolling hills with Bag End on the horizon ──────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* rolling hill gradients */
-    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(60, 90, 10, 0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 70% 30% at 25% 80%, rgba(50, 80, 8, 0.05) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 30% at 75% 75%, rgba(50, 80, 8, 0.04) 0%, transparent 55%),
-    /* warm lamplight glow */
-    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(160, 120, 30, 0.04) 0%, transparent 60%);
+    /* Hill 1 — far left, closest to viewer */
+    radial-gradient(ellipse 55% 32% at 10% 100%, rgba(80,115,20,0.13) 0%, rgba(60,90,10,0.05) 45%, transparent 68%),
+    /* Hill 2 — center-left */
+    radial-gradient(ellipse 48% 28% at 35% 100%, rgba(72,105,14,0.11) 0%, rgba(55,85,8,0.04) 42%, transparent 65%),
+    /* Hill 3 — center (Bag End hill — slightly taller) */
+    radial-gradient(ellipse 60% 38% at 58% 100%, rgba(75,110,16,0.14) 0%, rgba(58,90,10,0.06) 48%, transparent 70%),
+    /* Hill 4 — far right */
+    radial-gradient(ellipse 50% 30% at 88% 100%, rgba(78,112,18,0.12) 0%, rgba(58,88,8,0.05) 44%, transparent 66%),
+    /* Hill line — golden afternoon light catching the hilltops */
+    radial-gradient(ellipse 85% 18% at 50% 68%, rgba(160,130,30,0.07) 0%, transparent 60%),
+    /* Warm sky — afternoon sun glow from top */
+    radial-gradient(ellipse 65% 45% at 50% 0%, rgba(80,110,20,0.06) 0%, transparent 65%);
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -179,15 +185,44 @@
 #theme-banner::before { content: '⌂'; color: #D0A040; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(104, 128, 40, 0.60); }
 
-/* ── Hobbiton fireflies — golden pollen motes in warm lamplight ─────────── */
+/* ── Hobbiton fireflies — glowing amber sparks above the meadow ──────────── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='380'%3E%3Ccircle cx='30' cy='50' r='1.5' fill='rgba(208,160,64,0.30)'/%3E%3Ccircle cx='100' cy='160' r='1' fill='rgba(160,120,30,0.24)'/%3E%3Ccircle cx='160' cy='280' r='1.8' fill='rgba(208,160,64,0.20)'/%3E%3Ccircle cx='60' cy='340' r='0.8' fill='rgba(104,128,48,0.18)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='520'%3E%3Ccircle cx='45' cy='80' r='2' fill='rgba(208,160,64,0.14)'/%3E%3Ccircle cx='150' cy='230' r='1.5' fill='rgba(160,104,32,0.12)'/%3E%3Ccircle cx='220' cy='400' r='2.2' fill='rgba(104,128,48,0.10)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 380px, 280px 520px;
-  animation: shire-fireflies 14s linear infinite;
+    /* Firefly 1 — bright, 18% × 25% */
+    radial-gradient(circle at 18% 25%, rgba(230,170,40,0.55) 0px, rgba(208,150,30,0.28) 2px, rgba(180,130,20,0.08) 5px, transparent 9px),
+    /* Firefly 2 — 65% × 38% */
+    radial-gradient(circle at 65% 38%, rgba(220,160,35,0.50) 0px, rgba(200,140,25,0.24) 2px, transparent 7px),
+    /* Firefly 3 — 40% × 62% */
+    radial-gradient(circle at 40% 62%, rgba(225,165,38,0.48) 0px, rgba(205,145,28,0.22) 2px, rgba(180,125,18,0.07) 5px, transparent 8px),
+    /* Firefly 4 — dim, 82% × 55% */
+    radial-gradient(circle at 82% 55%, rgba(200,145,30,0.40) 0px, rgba(175,120,20,0.18) 2px, transparent 6px),
+    /* Firefly 5 — 12% × 72% */
+    radial-gradient(circle at 12% 72%, rgba(215,155,32,0.45) 0px, rgba(190,135,22,0.20) 2px, transparent 7px),
+    /* Firefly 6 — 55% × 18% */
+    radial-gradient(circle at 55% 18%, rgba(200,145,28,0.38) 0px, rgba(175,120,18,0.16) 2px, transparent 5px);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: shire-fireflies 4s ease-in-out infinite;
 }
 @keyframes shire-fireflies {
-  from { background-position: 0 0, 15px 0; }
-  to   { background-position: -35px -380px, 25px -520px; }
+  0%, 100% { opacity: 0.9; }
+  18%       { opacity: 0.4; }
+  19%       { opacity: 1.0; }
+  42%       { opacity: 0.7; }
+  43%       { opacity: 0.2; }
+  44%       { opacity: 1.0; }
+  68%       { opacity: 0.8; }
+  69%       { opacity: 0.3; }
+  70%       { opacity: 1.0; }
 }
+
+/* ── Tile: warm round-window glow ────────────────────────────────────────── */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(208,160,64,0.50);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

@@ -114,18 +114,26 @@
   box-shadow: 0 0 10px rgba(200, 144, 64, 0.55), 0 0 24px rgba(200, 144, 64, 0.18);
 }
 
-/* ── Grid: parchment warmth + ink mist ─────────────────────────────────────── */
+/* ── Grid: Marauder's Map — castle corridors, stairways, and footprints ─────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
+    /* Marauder's Map SVG — hall outlines, corridors, walking footprints */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Great Hall outer wall --%3E%3Crect x='155' y='72' width='190' height='96' fill='none' stroke='rgba(180,120,30,0.11)' stroke-width='1'/%3E%3C!-- North Tower --%3E%3Crect x='28' y='38' width='55' height='130' fill='none' stroke='rgba(180,120,30,0.09)' stroke-width='1'/%3E%3C!-- Inner alcove --%3E%3Crect x='28' y='105' width='22' height='40' fill='none' stroke='rgba(180,120,30,0.07)' stroke-width='0.7'/%3E%3C!-- Corridor — North Tower to Great Hall --%3E%3Cline x1='83' y1='108' x2='155' y2='124' stroke='rgba(180,120,30,0.08)' stroke-width='0.8'/%3E%3C!-- Moving staircase --%3E%3Cline x1='195' y1='168' x2='225' y2='215' stroke='rgba(180,120,30,0.07)' stroke-width='0.8'/%3E%3Cline x1='225' y1='215' x2='270' y2='198' stroke='rgba(180,120,30,0.07)' stroke-width='0.8'/%3E%3C!-- East wing --%3E%3Crect x='348' y='198' width='110' height='72' fill='none' stroke='rgba(180,120,30,0.08)' stroke-width='0.8'/%3E%3Cline x1='345' y1='148' x2='380' y2='198' stroke='rgba(180,120,30,0.07)' stroke-width='0.7'/%3E%3C!-- Footprints — 8 pairs walking NE up the corridor --%3E%3Cellipse cx='188' cy='238' rx='5' ry='3' fill='rgba(180,120,30,0.18)' transform='rotate(-35,188,238)'/%3E%3Cellipse cx='196' cy='231' rx='5' ry='3' fill='rgba(180,120,30,0.18)' transform='rotate(-35,196,231)'/%3E%3Cellipse cx='208' cy='222' rx='5' ry='3' fill='rgba(180,120,30,0.15)' transform='rotate(-35,208,222)'/%3E%3Cellipse cx='216' cy='215' rx='5' ry='3' fill='rgba(180,120,30,0.15)' transform='rotate(-35,216,215)'/%3E%3Cellipse cx='228' cy='205' rx='5' ry='3' fill='rgba(180,120,30,0.12)' transform='rotate(-35,228,205)'/%3E%3Cellipse cx='236' cy='198' rx='5' ry='3' fill='rgba(180,120,30,0.12)' transform='rotate(-35,236,198)'/%3E%3Cellipse cx='248' cy='188' rx='5' ry='3' fill='rgba(180,120,30,0.09)' transform='rotate(-35,248,188)'/%3E%3Cellipse cx='256' cy='181' rx='5' ry='3' fill='rgba(180,120,30,0.09)' transform='rotate(-35,256,181)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
     /* warm amber glow from top (candles above) */
-    linear-gradient(to bottom, rgba(160, 100, 20, 0.06) 0%, transparent 35%),
-    /* warm pooling at bottom */
-    linear-gradient(to top, rgba(180, 110, 20, 0.06) 0%, rgba(150, 90, 15, 0.03) 20%, transparent 50%),
-    /* side darkness like a candlelit room */
-    radial-gradient(ellipse 40% 100% at 0% 50%, rgba(3, 2, 0, 0.14) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 100% at 100% 50%, rgba(3, 2, 0, 0.14) 0%, transparent 60%);
+    linear-gradient(to bottom, rgba(160, 100, 20, 0.05) 0%, transparent 32%),
+    /* candlelit pooling at bottom */
+    linear-gradient(to top, rgba(180, 110, 20, 0.05) 0%, rgba(150, 90, 15, 0.02) 18%, transparent 45%);
+  animation: map-flicker 7s steps(1) infinite;
+}
+@keyframes map-flicker {
+  0%, 100% { opacity: 0.85; }
+  60%       { opacity: 0.85; }
+  62%       { opacity: 0.5; }
+  63%       { opacity: 1.0; }
+  64%       { opacity: 0.8; }
+  65%       { opacity: 1.0; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -184,11 +192,13 @@
 #theme-banner::before { content: '⊛'; color: #C89040; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(180, 120, 40, 0.60); }
 
-/* ── Great Hall magic — golden sparkles drifting from enchanted ceiling ──── */
+/* ── Great Hall magic — golden 4-pointed star sparkles drifting from ceiling ─ */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='420'%3E%3Ccircle cx='28' cy='55' r='1.2' fill='rgba(200,144,64,0.28)'/%3E%3Ccircle cx='95' cy='170' r='0.8' fill='rgba(212,168,32,0.22)'/%3E%3Ccircle cx='160' cy='310' r='1.5' fill='rgba(200,144,64,0.18)'/%3E%3Ccircle cx='55' cy='380' r='1' fill='rgba(139,40,16,0.14)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='290' height='580'%3E%3Ccircle cx='50' cy='100' r='1.8' fill='rgba(212,168,32,0.12)'/%3E%3Ccircle cx='150' cy='280' r='1.2' fill='rgba(200,144,64,0.10)'/%3E%3Ccircle cx='230' cy='460' r='2' fill='rgba(180,120,30,0.08)'/%3E%3C/svg%3E") repeat;
+    /* Star sparkles layer 1 — bright, closer */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='420'%3E%3C!-- 4-pointed star sparkle --%3E%3Cpolygon points='28,50 30,55 28,60 26,55' fill='rgba(212,168,32,0.40)'/%3E%3Cpolygon points='28,55 33,57 28,55 23,57' fill='rgba(212,168,32,0.32)'/%3E%3Cpolygon points='95,165 97,170 95,175 93,170' fill='rgba(200,144,64,0.35)'/%3E%3Cpolygon points='95,170 100,172 95,170 90,172' fill='rgba(200,144,64,0.28)'/%3E%3Cpolygon points='160,305 162,310 160,315 158,310' fill='rgba(212,168,32,0.30)'/%3E%3Cpolygon points='160,310 165,312 160,310 155,312' fill='rgba(212,168,32,0.24)'/%3E%3Cpolygon points='55,375 57,380 55,385 53,380' fill='rgba(200,144,64,0.28)'/%3E%3Cpolygon points='55,380 60,382 55,380 50,382' fill='rgba(200,144,64,0.22)'/%3E%3C/svg%3E") repeat,
+    /* Star sparkles layer 2 — dimmer, farther */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='290' height='580'%3E%3Cpolygon points='50,96 52,100 50,104 48,100' fill='rgba(212,168,32,0.20)'/%3E%3Cpolygon points='50,100 55,102 50,100 45,102' fill='rgba(212,168,32,0.16)'/%3E%3Cpolygon points='150,276 152,280 150,284 148,280' fill='rgba(200,144,64,0.16)'/%3E%3Cpolygon points='150,280 155,282 150,280 145,282' fill='rgba(200,144,64,0.13)'/%3E%3Cpolygon points='230,456 232,460 230,464 228,460' fill='rgba(180,120,30,0.14)'/%3E%3Cpolygon points='230,460 235,462 230,460 225,462' fill='rgba(180,120,30,0.11)'/%3E%3C/svg%3E") repeat;
   background-size: 200px 420px, 290px 580px;
   animation: hogwarts-sparkles 12s linear infinite;
 }
@@ -196,3 +206,14 @@
   from { background-position: 0 -420px, 20px -580px; }
   to   { background-position: 30px 0, -15px 0; }
 }
+
+/* ── Tile: candle flicker ────────────────────────────────────────────────── */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(208,160,64,0.52);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

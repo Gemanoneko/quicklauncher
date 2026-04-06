@@ -223,3 +223,10 @@
   from { background-position: 0 0, 10px 0; }
   to   { background-position: -15px -400px, 20px -600px; }
 }
+
+/* ── Hiss corruption flicker ─────────────────────────────────────────────── */
+.app-tile::before {
+  background: transparent;
+  border: 1px solid rgba(204, 17, 0, 0.28);
+}
+.app-tile:hover::before { animation: tile-flicker .7s steps(1, end) infinite; }

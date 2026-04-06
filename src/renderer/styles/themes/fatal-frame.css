@@ -114,21 +114,23 @@
   box-shadow: 0 0 10px rgba(80, 96, 160, 0.50), 0 0 26px rgba(80, 96, 160, 0.16);
 }
 
-/* ── Grid: shrine lattice — radial ring patterns + cold top haze + indigo depth */
+/* ── Grid: Camera Obscura viewfinder + spirit emanation rings ─────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* ghost emanation radial ring patterns */
-    radial-gradient(circle 48% at 50% 55%, transparent 36%, rgba(60,70,130,.018) 37%, transparent 40%),
-    radial-gradient(circle 70% at 50% 55%, transparent 55%, rgba(60,70,130,.012) 56%, transparent 59%),
-    /* cold top haze */
-    linear-gradient(to bottom, rgba(60, 72, 140, 0.06) 0%, transparent 30%),
-    /* indigo side depth */
-    radial-gradient(ellipse 36% 100% at 0% 50%, rgba(1, 2, 5, 0.18) 0%, transparent 62%),
-    radial-gradient(ellipse 36% 100% at 100% 50%, rgba(1, 2, 5, 0.18) 0%, transparent 62%),
-    /* deep shrine bottom shadow */
-    linear-gradient(to top, rgba(10, 8, 20, 0.10) 0%, transparent 40%);
+    /* Camera Obscura viewfinder frame + crosshair */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Crect x='140' y='88' width='220' height='196' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='1' fill='none'/%3E%3Cline x1='140' y1='88' x2='162' y2='88' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='140' y1='88' x2='140' y2='110' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='360' y1='88' x2='338' y2='88' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='360' y1='88' x2='360' y2='110' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='140' y1='284' x2='162' y2='284' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='140' y1='284' x2='140' y2='262' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='360' y1='284' x2='338' y2='284' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='360' y1='284' x2='360' y2='262' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='186' r='3' fill='%234E60A8' fill-opacity='0.22'/%3E%3Cline x1='236' y1='186' x2='246' y2='186' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='0.8'/%3E%3Cline x1='254' y1='186' x2='264' y2='186' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='0.8'/%3E%3Cline x1='250' y1='172' x2='250' y2='182' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='0.8'/%3E%3Cline x1='250' y1='190' x2='250' y2='200' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='0.8'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
+    /* Spirit emanation ring 1 — inner */
+    radial-gradient(circle at 50% 50%, transparent 36%, rgba(70,82,155,0.05) 37%, rgba(70,82,155,0.05) 40%, transparent 41%),
+    /* Spirit ring 2 — outer */
+    radial-gradient(circle at 50% 50%, transparent 56%, rgba(60,70,140,0.035) 57%, rgba(60,70,140,0.035) 60%, transparent 61%),
+    /* Spirit ring 3 — far outer */
+    radial-gradient(circle at 50% 50%, transparent 76%, rgba(50,60,120,0.025) 77%, rgba(50,60,120,0.025) 80%, transparent 81%),
+    /* Cold shrine haze from top */
+    linear-gradient(to bottom, rgba(60, 72, 140, 0.07) 0%, transparent 28%),
+    /* Shrine depth */
+    linear-gradient(to top, rgba(8, 6, 18, 0.12) 0%, transparent 35%);
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -191,15 +193,26 @@
 #theme-banner::before { content: '✿'; color: #5060A0; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(72, 88, 150, 0.58); }
 
-/* ── Ghost orbs — pale spirit motes drifting through the shrine ─────────── */
+/* ── Spirit orbs — paranormal concentric-ring orbs, cold shrine glide ────── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='40' cy='70' r='2.5' fill='rgba(80,96,160,0.16)'/%3E%3Ccircle cx='120' cy='200' r='1.5' fill='rgba(192,160,192,0.12)'/%3E%3Ccircle cx='190' cy='350' r='3' fill='rgba(80,96,160,0.10)'/%3E%3Ccircle cx='70' cy='430' r='1.8' fill='rgba(160,170,220,0.14)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='650'%3E%3Ccircle cx='60' cy='120' r='3.5' fill='rgba(192,160,192,0.07)'/%3E%3Ccircle cx='170' cy='320' r='2.5' fill='rgba(80,96,160,0.06)'/%3E%3Ccircle cx='260' cy='530' r='4' fill='rgba(160,170,220,0.05)'/%3E%3C/svg%3E") repeat;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='40' cy='70' r='8' fill='%235060A0' fill-opacity='0.07'/%3E%3Ccircle cx='40' cy='70' r='4' fill='%235060A0' fill-opacity='0.12'/%3E%3Ccircle cx='40' cy='70' r='1.5' fill='%23C0B0D0' fill-opacity='0.35'/%3E%3Ccircle cx='120' cy='200' r='6' fill='%23C0A0C0' fill-opacity='0.06'/%3E%3Ccircle cx='120' cy='200' r='3' fill='%23C0A0C0' fill-opacity='0.11'/%3E%3Ccircle cx='120' cy='200' r='1.2' fill='%23E0D0E8' fill-opacity='0.30'/%3E%3Ccircle cx='190' cy='350' r='10' fill='%235060A0' fill-opacity='0.05'/%3E%3Ccircle cx='190' cy='350' r='5' fill='%235060A0' fill-opacity='0.10'/%3E%3Ccircle cx='190' cy='350' r='1.8' fill='%23A0A8D0' fill-opacity='0.32'/%3E%3Ccircle cx='70' cy='430' r='7' fill='%23C0A0C0' fill-opacity='0.06'/%3E%3Ccircle cx='70' cy='430' r='3.5' fill='%23C0A0C0' fill-opacity='0.10'/%3E%3Ccircle cx='70' cy='430' r='1.4' fill='%23E0C8E8' fill-opacity='0.28'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='650'%3E%3Ccircle cx='60' cy='120' r='9' fill='%23C0A0C0' fill-opacity='0.04'/%3E%3Ccircle cx='60' cy='120' r='4.5' fill='%23C0A0C0' fill-opacity='0.08'/%3E%3Ccircle cx='60' cy='120' r='1.8' fill='%23E0D0E8' fill-opacity='0.24'/%3E%3Ccircle cx='170' cy='320' r='7' fill='%235060A0' fill-opacity='0.05'/%3E%3Ccircle cx='170' cy='320' r='3.5' fill='%235060A0' fill-opacity='0.09'/%3E%3Ccircle cx='170' cy='320' r='1.4' fill='%23A0A8D0' fill-opacity='0.26'/%3E%3Ccircle cx='260' cy='530' r='11' fill='%23C0A0C0' fill-opacity='0.04'/%3E%3Ccircle cx='260' cy='530' r='5.5' fill='%23C0A0C0' fill-opacity='0.07'/%3E%3Ccircle cx='260' cy='530' r='2' fill='%23E0C8E8' fill-opacity='0.22'/%3E%3C/svg%3E") repeat;
   background-size: 240px 480px, 320px 650px;
-  animation: ghost-orbs 18s linear infinite;
+  animation: ghost-orbs 20s linear infinite;
 }
 @keyframes ghost-orbs {
   from { background-position: 0 0, 15px 0; }
-  to   { background-position: -30px -480px, 25px -650px; }
+  to   { background-position: -40px -480px, 30px -650px; }
 }
+
+/* ── Tile: spirit camera flash on hover ──────────────────────────────────── */
+.app-tile::before {
+  width: 20px; height: 20px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(192,160,192,0.60);
+}
+.app-tile:hover::before { animation: tile-radial .5s ease-out forwards; }

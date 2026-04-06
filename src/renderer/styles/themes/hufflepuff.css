@@ -113,15 +113,22 @@
   box-shadow: 0 0 10px rgba(208, 144, 32, 0.55), 0 0 26px rgba(208, 144, 32, 0.18);
 }
 
-/* ── Grid: warm burrow light — earthy depth, gentle and inviting ─────────────── */
+/* ── Grid: honeycomb — Hufflepuff's hexagonal burrow walls ───────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 90% 40% at 50% 100%, rgba(150, 90, 10, 0.07) 0%, transparent 65%),
-    radial-gradient(ellipse 65% 28% at 50% 0%, rgba(180, 130, 15, 0.05) 0%, transparent 55%),
-    radial-gradient(ellipse 32% 100% at 0% 50%, rgba(2, 1, 0, 0.14) 0%, transparent 60%),
-    radial-gradient(ellipse 32% 100% at 100% 50%, rgba(2, 1, 0, 0.14) 0%, transparent 60%);
+    /* Honeycomb — 60° diagonal lines */
+    repeating-linear-gradient(60deg, transparent 0px, transparent 10px, rgba(200,144,32,0.032) 10px, rgba(200,144,32,0.032) 11px),
+    /* Honeycomb — -60° diagonal lines */
+    repeating-linear-gradient(-60deg, transparent 0px, transparent 10px, rgba(190,135,28,0.028) 10px, rgba(190,135,28,0.028) 11px),
+    /* Honeycomb — vertical accent lines */
+    repeating-linear-gradient(90deg, transparent 0px, transparent 19px, rgba(180,120,20,0.018) 19px, rgba(180,120,20,0.018) 20px),
+    /* Warm kitchen center glow — hearth light from below */
+    radial-gradient(ellipse 80% 45% at 50% 100%, rgba(180,110,15,0.09) 0%, transparent 68%),
+    /* Sunlight through round window — from above */
+    radial-gradient(ellipse 50% 28% at 50% 0%, rgba(200,150,20,0.06) 0%, transparent 60%);
+  background-size: 100% 100%, 100% 100%, 20px 100%, 100% 100%, 100% 100%;
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -177,15 +184,26 @@
 #theme-banner::before { content: '❋'; color: #D09020; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 140, 30, 0.65); }
 
-/* ── Hufflepuff magic — warm golden pollen near the kitchens ─────────────── */
+/* ── Sunflower pollen — hexagonal golden motes drifting gently ───────────── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='400'%3E%3Ccircle cx='30' cy='55' r='1.2' fill='rgba(208,144,32,0.26)'/%3E%3Ccircle cx='105' cy='170' r='0.8' fill='rgba(96,64,32,0.18)'/%3E%3Ccircle cx='170' cy='300' r='1.5' fill='rgba(224,176,64,0.20)'/%3E%3Ccircle cx='55' cy='360' r='1' fill='rgba(208,144,32,0.16)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='290' height='560'%3E%3Ccircle cx='48' cy='90' r='1.8' fill='rgba(224,176,64,0.12)'/%3E%3Ccircle cx='150' cy='270' r='1.2' fill='rgba(208,144,32,0.10)'/%3E%3Ccircle cx='230' cy='440' r='2' fill='rgba(96,64,32,0.08)'/%3E%3C/svg%3E") repeat;
-  background-size: 210px 400px, 290px 560px;
-  animation: hufflepuff-sparkles 13s linear infinite;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2020/svg' width='220' height='420'%3E%3Cpolygon points='32,52 34,50 36,52 34,54' fill='rgba(224,176,64,0.38)'/%3E%3Cpolygon points='108,175 110,173 112,175 110,177' fill='rgba(208,144,32,0.30)'/%3E%3Cpolygon points='172,298 175,296 178,298 175,300' fill='rgba(224,176,64,0.32)'/%3E%3Cpolygon points='58,365 60,363 62,365 60,367' fill='rgba(200,130,28,0.28)'/%3E%3Cpolygon points='145,118 147,116 149,118 147,120' fill='rgba(224,176,64,0.26)'/%3E%3Ccircle cx='85' cy='240' r='1.5' fill='rgba(180,120,20,0.28)'/%3E%3Ccircle cx='195' cy='340' r='1' fill='rgba(208,144,32,0.22)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2020/svg' width='300' height='580'%3E%3Cpolygon points='52,88 55,85 58,88 55,91' fill='rgba(224,176,64,0.22)'/%3E%3Cpolygon points='155,270 158,267 161,270 158,273' fill='rgba(96,64,32,0.20)'/%3E%3Cpolygon points='238,445 241,442 244,445 241,448' fill='rgba(208,144,32,0.18)'/%3E%3Ccircle cx='110' cy='160' r='1.8' fill='rgba(224,176,64,0.16)'/%3E%3Ccircle cx='270' cy='380' r='1.2' fill='rgba(180,120,20,0.14)'/%3E%3C/svg%3E") repeat;
+  background-size: 220px 420px, 300px 580px;
+  animation: hufflepuff-pollen 16s linear infinite;
 }
-@keyframes hufflepuff-sparkles {
-  from { background-position: 0 -400px, 15px -560px; }
-  to   { background-position: -25px 0, 18px 0; }
+@keyframes hufflepuff-pollen {
+  from { background-position: 0 -420px, 22px -580px; }
+  to   { background-position: -18px 0, 8px 0; }
 }
+
+/* ── Tile: warm honey pulse on hover ─────────────────────────────────────── */
+.app-tile::before {
+  width: 16px; height: 16px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0) rotate(30deg);
+  border-radius: 0;
+  background: transparent;
+  border: 1px solid rgba(208,144,32,0.55);
+}
+.app-tile:hover::before { animation: tile-radial .5s ease-out forwards; }

@@ -120,18 +120,27 @@
   box-shadow: 0 0 8px rgba(24, 128, 64, 0.52), 0 0 22px rgba(24, 128, 64, 0.16);
 }
 
-/* ── Grid: dungeon depth + silver reflections ───────────────────────────────── */
+/* ── Grid: Black Lake caustics — underwater light shafts through dungeon ─────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 60% at 25% 30%, rgba(15, 80, 35, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 75% 70%, rgba(100, 100, 100, 0.03) 0%, transparent 55%),
-    linear-gradient(to top, rgba(15, 70, 30, 0.05) 0%, transparent 35%),
-    repeating-linear-gradient(to bottom,
-      transparent 0px, transparent 49px,
-      rgba(20, 100, 40, 0.014) 49px, rgba(20, 100, 40, 0.014) 50px
-    );
+    /* Water caustic — light shafts from the lake surface above */
+    radial-gradient(ellipse 7% 55% at 18% 0%, rgba(24,128,64,0.09) 0%, transparent 80%),
+    radial-gradient(ellipse 11% 70% at 38% 0%, rgba(24,128,64,0.11) 0%, transparent 75%),
+    radial-gradient(ellipse 6% 45% at 58% 0%, rgba(24,128,64,0.08) 0%, transparent 72%),
+    radial-gradient(ellipse 9% 60% at 78% 0%, rgba(24,128,64,0.10) 0%, transparent 78%),
+    radial-gradient(ellipse 5% 38% at 94% 0%, rgba(24,128,64,0.07) 0%, transparent 68%),
+    /* Snake-scale diagonal pattern */
+    repeating-linear-gradient(120deg, transparent 0px, transparent 14px, rgba(20,100,40,0.018) 14px, rgba(20,100,40,0.018) 15px),
+    repeating-linear-gradient(60deg,  transparent 0px, transparent 14px, rgba(144,144,144,0.010) 14px, rgba(144,144,144,0.010) 15px),
+    /* Dungeon ambient — lake-cold floor */
+    linear-gradient(to top, rgba(10,60,25,0.06) 0%, transparent 30%);
+  animation: slyth-caustic 5s ease-in-out infinite alternate;
+}
+@keyframes slyth-caustic {
+  0%   { opacity: 0.75; }
+  100% { opacity: 1.0; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -184,15 +193,26 @@
 #theme-banner::before { content: '◐'; color: #188040; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(20, 110, 50, 0.58); }
 
-/* ── Slytherin magic — emerald and silver motes in the dungeon ───────────── */
+/* ── Black Lake water caustic shimmers — light dancing on dungeon walls ───── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='420'%3E%3Ccircle cx='32' cy='60' r='1.2' fill='rgba(24,128,64,0.24)'/%3E%3Ccircle cx='108' cy='180' r='0.8' fill='rgba(144,144,144,0.18)'/%3E%3Ccircle cx='172' cy='320' r='1.5' fill='rgba(24,128,64,0.16)'/%3E%3Ccircle cx='58' cy='385' r='1' fill='rgba(48,96,80,0.20)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='290' height='590'%3E%3Ccircle cx='50' cy='100' r='1.8' fill='rgba(24,128,64,0.10)'/%3E%3Ccircle cx='155' cy='290' r='1.2' fill='rgba(144,144,144,0.08)'/%3E%3Ccircle cx='235' cy='470' r='2' fill='rgba(48,96,80,0.07)'/%3E%3C/svg%3E") repeat;
-  background-size: 210px 420px, 290px 590px;
-  animation: slytherin-sparkles 15s linear infinite;
+    /* Caustic shimmer layer 1 — wide irregular patches */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Cellipse cx='35' cy='60' rx='12' ry='3' fill='rgba(24,128,64,0.14)' transform='rotate(-12,35,60)'/%3E%3Cellipse cx='120' cy='190' rx='8' ry='2' fill='rgba(144,144,144,0.12)' transform='rotate(8,120,190)'/%3E%3Cellipse cx='185' cy='310' rx='14' ry='2.5' fill='rgba(24,128,64,0.10)' transform='rotate(-5,185,310)'/%3E%3Cellipse cx='65' cy='400' rx='9' ry='2' fill='rgba(48,96,80,0.13)' transform='rotate(15,65,400)'/%3E%3Cellipse cx='210' cy='140' rx='7' ry='1.5' fill='rgba(144,144,144,0.10)' transform='rotate(-8,210,140)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='600'%3E%3Cellipse cx='55' cy='90' rx='10' ry='2' fill='rgba(24,128,64,0.09)' transform='rotate(10,55,90)'/%3E%3Cellipse cx='160' cy='280' rx='16' ry='3' fill='rgba(48,96,80,0.07)' transform='rotate(-6,160,280)'/%3E%3Cellipse cx='260' cy='450' rx='8' ry='1.5' fill='rgba(144,144,144,0.08)' transform='rotate(12,260,450)'/%3E%3C/svg%3E") repeat;
+  background-size: 240px 480px, 320px 600px;
+  animation: slyth-shimmer 8s ease-in-out infinite alternate;
 }
-@keyframes slytherin-sparkles {
-  from { background-position: 0 0, 16px 0; }
-  to   { background-position: 28px -420px, -18px -590px; }
+@keyframes slyth-shimmer {
+  0%   { background-position: 0 0, 20px 0; opacity: 0.7; }
+  50%  { background-position: 8px -240px, 28px -300px; opacity: 1.0; }
+  100% { background-position: 16px -480px, 36px -600px; opacity: 0.75; }
 }
+
+/* ── Tile: silver gleam on hover ─────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 2px;
+  left: 0; top: -2px;
+  transform: none;
+  background: linear-gradient(90deg, transparent, var(--tile-hover-border), transparent);
+}
+.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }

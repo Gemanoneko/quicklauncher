@@ -133,26 +133,23 @@
   box-shadow: 0 0 8px rgba(56,136,204,0.60), 0 0 22px rgba(40,110,180,0.20);
 }
 
-/* ── Grid: tactical HUD overlay — precise coordinate grid ───────────────────── */
+/* ── Grid: New Eden Stargate — ring structure with wormhole singularity ─────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* vertical HUD grid lines */
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px, transparent 39px,
-      rgba(56,136,204,.022) 39px, rgba(56,136,204,.022) 40px
-    ),
-    /* horizontal HUD grid lines */
-    repeating-linear-gradient(
-      180deg,
-      transparent 0px, transparent 39px,
-      rgba(56,136,204,.018) 39px, rgba(56,136,204,.018) 40px
-    ),
+    /* Stargate — outer ring, inner ring, 8 support struts, 8 node anchors, wormhole core */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Ccircle cx='250' cy='190' r='130' fill='none' stroke='rgba(56,136,204,0.20)' stroke-width='1.2'/%3E%3Ccircle cx='250' cy='190' r='110' fill='none' stroke='rgba(56,136,204,0.14)' stroke-width='0.8'/%3E%3Cline x1='250' y1='190' x2='380' y2='190' stroke='rgba(40,110,180,0.12)' stroke-width='0.6'/%3E%3Cline x1='250' y1='190' x2='342' y2='282' stroke='rgba(40,110,180,0.12)' stroke-width='0.6'/%3E%3Cline x1='250' y1='190' x2='250' y2='320' stroke='rgba(40,110,180,0.12)' stroke-width='0.6'/%3E%3Cline x1='250' y1='190' x2='158' y2='282' stroke='rgba(40,110,180,0.12)' stroke-width='0.6'/%3E%3Cline x1='250' y1='190' x2='120' y2='190' stroke='rgba(40,110,180,0.12)' stroke-width='0.6'/%3E%3Cline x1='250' y1='190' x2='158' y2='98' stroke='rgba(40,110,180,0.12)' stroke-width='0.6'/%3E%3Cline x1='250' y1='190' x2='250' y2='60' stroke='rgba(40,110,180,0.12)' stroke-width='0.6'/%3E%3Cline x1='250' y1='190' x2='342' y2='98' stroke='rgba(40,110,180,0.12)' stroke-width='0.6'/%3E%3Ccircle cx='380' cy='190' r='4' fill='rgba(56,136,204,0.28)'/%3E%3Ccircle cx='342' cy='282' r='3.5' fill='rgba(56,136,204,0.24)'/%3E%3Ccircle cx='250' cy='320' r='4' fill='rgba(56,136,204,0.28)'/%3E%3Ccircle cx='158' cy='282' r='3.5' fill='rgba(56,136,204,0.24)'/%3E%3Ccircle cx='120' cy='190' r='4' fill='rgba(56,136,204,0.28)'/%3E%3Ccircle cx='158' cy='98' r='3.5' fill='rgba(56,136,204,0.24)'/%3E%3Ccircle cx='250' cy='60' r='4' fill='rgba(56,136,204,0.28)'/%3E%3Ccircle cx='342' cy='98' r='3.5' fill='rgba(56,136,204,0.24)'/%3E%3Ccircle cx='250' cy='190' r='20' fill='rgba(40,110,180,0.15)'/%3E%3Ccircle cx='250' cy='190' r='10' fill='rgba(56,136,204,0.20)'/%3E%3Ccircle cx='250' cy='190' r='4' fill='rgba(80,160,220,0.35)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
     /* cold starfield depth from top */
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(10, 30, 70, 0.10) 0%, transparent 70%);
-  background-size: 40px 40px, 40px 40px, 100% 100%;
+  animation: stargate-pulse 12s ease-in-out infinite;
+}
+@keyframes stargate-pulse {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1.00; }
+  88%      { opacity: 0.85; }
+  89%      { opacity: 0.30; }
+  90%      { opacity: 0.90; }
 }
 
 /* ── Flavor content ──────────────────────────────────────────────────────────── */

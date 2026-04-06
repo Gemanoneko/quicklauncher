@@ -165,27 +165,19 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  /* Holographic grid — very faint repeating lines in Alliance blue */
   background:
-    /* vertical grid lines */
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 39px,
-      rgba(0,184,236,.032) 39px,
-      rgba(0,184,236,.032) 40px
-    ),
-    /* horizontal grid lines */
-    repeating-linear-gradient(
-      180deg,
-      transparent 0px,
-      transparent 39px,
-      rgba(0,184,236,.025) 39px,
-      rgba(0,184,236,.025) 40px
-    ),
-    /* top-down blue glow — like looking up from the Normandy CIC */
+    /* Mass Relay — sweeping arms, central ring, Prothean core */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Cpath d='M 82,70 C 250,115 250,265 418,310' fill='none' stroke='rgba(0,184,236,0.22)' stroke-width='2'/%3E%3Cpath d='M 82,310 C 250,265 250,115 418,70' fill='none' stroke='rgba(0,184,236,0.22)' stroke-width='2'/%3E%3Ccircle cx='82' cy='70' r='5' fill='rgba(0,184,236,0.28)'/%3E%3Ccircle cx='418' cy='310' r='5' fill='rgba(0,184,236,0.28)'/%3E%3Ccircle cx='82' cy='310' r='5' fill='rgba(0,184,236,0.28)'/%3E%3Ccircle cx='418' cy='70' r='5' fill='rgba(0,184,236,0.28)'/%3E%3Ccircle cx='250' cy='190' r='28' fill='none' stroke='rgba(0,184,236,0.30)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='190' r='18' fill='none' stroke='rgba(0,184,236,0.20)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='190' r='10' fill='rgba(0,184,236,0.22)'/%3E%3Ccircle cx='250' cy='190' r='4' fill='rgba(0,220,255,0.45)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
+    /* top-down blue glow — Normandy CIC */
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,40,80,.12) 0%, transparent 70%);
-  background-size: 40px 40px, 40px 40px, 100% 100%;
+  animation: me-relay 10s ease-in-out infinite;
+}
+@keyframes me-relay {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1.00; }
+  88%      { opacity: 0.85; }
+  89%      { opacity: 0.35; }
+  90%      { opacity: 0.90; }
 }
 
 #grid-container::after {

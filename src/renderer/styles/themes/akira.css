@@ -123,14 +123,23 @@
   box-shadow: 0 0 12px rgba(224, 16, 32, 0.70), 0 0 28px rgba(224, 16, 32, 0.25);
 }
 
-/* ── Grid: red urban heat ────────────────────────────────────────────────────── */
+/* ── Grid: Neo-Tokyo speed lines — motorcycle pursuit, psychic vanishing point ── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    linear-gradient(to bottom, rgba(180, 0, 16, 0.06) 0%, transparent 30%),
-    linear-gradient(to top, rgba(200, 0, 20, 0.09) 0%, rgba(160, 0, 16, 0.04) 20%, transparent 50%),
-    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 50%, rgba(120, 0, 10, 0.04) 100%);
+    /* Speed lines SVG — radiating from center-bottom vanishing point like anime motorcycling */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Speed lines radiating from VP at bottom-center --%3E%3Cline x1='250' y1='350' x2='0' y2='0' stroke='rgba(220,10,24,0.07)' stroke-width='1'/%3E%3Cline x1='250' y1='350' x2='50' y2='0' stroke='rgba(220,10,24,0.06)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='125' y2='0' stroke='rgba(220,10,24,0.06)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='188' y2='0' stroke='rgba(220,10,24,0.07)' stroke-width='0.7'/%3E%3Cline x1='250' y1='350' x2='250' y2='0' stroke='rgba(220,10,24,0.08)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='312' y2='0' stroke='rgba(220,10,24,0.07)' stroke-width='0.7'/%3E%3Cline x1='250' y1='350' x2='375' y2='0' stroke='rgba(220,10,24,0.06)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='450' y2='0' stroke='rgba(220,10,24,0.06)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='500' y2='0' stroke='rgba(220,10,24,0.07)' stroke-width='1'/%3E%3C!-- Additional diagonal lines for density --%3E%3Cline x1='250' y1='350' x2='0' y2='90' stroke='rgba(220,10,24,0.04)' stroke-width='0.6'/%3E%3Cline x1='250' y1='350' x2='0' y2='190' stroke='rgba(220,10,24,0.04)' stroke-width='0.6'/%3E%3Cline x1='250' y1='350' x2='500' y2='90' stroke='rgba(220,10,24,0.04)' stroke-width='0.6'/%3E%3Cline x1='250' y1='350' x2='500' y2='190' stroke='rgba(220,10,24,0.04)' stroke-width='0.6'/%3E%3C!-- Vanishing point mark --%3E%3Ccircle cx='250' cy='350' r='5' fill='rgba(224,16,32,0.30)'/%3E%3Ccircle cx='250' cy='350' r='12' fill='none' stroke='rgba(220,10,24,0.15)' stroke-width='1'/%3E%3C/svg%3E") no-repeat 50% 100% / 100% 100%,
+    /* red neon bleed from bottom — the city below */
+    linear-gradient(to top, rgba(200, 0, 20, 0.10) 0%, rgba(160, 0, 16, 0.04) 20%, transparent 45%);
+  animation: akira-speed 3s ease-in-out infinite;
+}
+@keyframes akira-speed {
+  0%, 100% { opacity: 0.75; }
+  50%       { opacity: 1.0; }
+  88%       { opacity: 0.82; }
+  90%       { opacity: 0.25; }
+  91%       { opacity: 1.0; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -185,6 +194,16 @@
 #theme-banner { background: rgba(8, 0, 4, 0.98); border-top-color: rgba(220, 10, 30, 0.25); }
 #theme-banner::before { content: '◉'; color: #E01020; font-size: 20px; }
 #theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(200, 20, 36, 0.60); }
+
+/* ── Tile: psychic burst ─────────────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: transparent;
+  border: 1px solid rgba(220,10,24,0.28);
+}
+.app-tile:hover::before { animation: tile-flicker .6s steps(1, end) infinite; }
 
 /* ── Psychic shockwave — Tetsuo's power expanding outward ────────────────── */
 #particles {

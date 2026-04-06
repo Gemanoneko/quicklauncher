@@ -133,28 +133,23 @@
   box-shadow: 0 0 6px rgba(64, 80, 160, 0.45), 0 0 18px rgba(50, 65, 130, 0.14);
 }
 
-/* ── Grid: star map — faint concentric forbidden geometry ────────────────────── */
+/* ── Grid: Elder Sign — non-Euclidean forbidden geometry rising from R'lyeh ──── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* concentric diagram suggestion — very faint blue circular rings */
-    radial-gradient(circle at 50% 50%, transparent 44px, rgba(50,65,130,.018) 45px, transparent 46px),
-    radial-gradient(circle at 50% 50%, transparent 89px, rgba(50,65,130,.014) 90px, transparent 91px),
-    radial-gradient(circle at 50% 50%, transparent 134px, rgba(50,65,130,.010) 135px, transparent 136px),
-    radial-gradient(circle at 50% 50%, transparent 179px, rgba(50,65,130,.008) 180px, transparent 181px),
-    /* fine star-map grid — very faint */
-    repeating-linear-gradient(0deg,
-      transparent 0px, transparent 59px,
-      rgba(40, 55, 110, 0.014) 59px, rgba(40, 55, 110, 0.014) 60px
-    ),
-    repeating-linear-gradient(90deg,
-      transparent 0px, transparent 59px,
-      rgba(40, 55, 110, 0.010) 59px, rgba(40, 55, 110, 0.010) 60px
-    ),
-    /* deep cosmic ambient */
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(15, 20, 55, 0.05) 0%, transparent 70%);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 60px, 60px 100%, 100% 100%;
+    /* Elder Sign SVG — 5-pointed star with eye, tentacle suggestions, cosmic rings */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Outer void ring --%3E%3Ccircle cx='250' cy='190' r='145' fill='none' stroke='rgba(50,65,130,0.07)' stroke-width='0.8'/%3E%3C!-- Off-center inner ring — non-Euclidean --%3E%3Ccircle cx='255' cy='186' r='90' fill='none' stroke='rgba(50,65,130,0.09)' stroke-width='0.8'/%3E%3C!-- Elder Sign — 5-pointed star --%3E%3Cline x1='250' y1='62' x2='321' y2='287' stroke='rgba(64,80,160,0.12)' stroke-width='1'/%3E%3Cline x1='321' y1='287' x2='136' y2='153' stroke='rgba(64,80,160,0.12)' stroke-width='1'/%3E%3Cline x1='136' y1='153' x2='364' y2='153' stroke='rgba(64,80,160,0.12)' stroke-width='1'/%3E%3Cline x1='364' y1='153' x2='179' y2='287' stroke='rgba(64,80,160,0.12)' stroke-width='1'/%3E%3Cline x1='179' y1='287' x2='250' y2='62' stroke='rgba(64,80,160,0.12)' stroke-width='1'/%3E%3C!-- Central eye — Cthulhu's gaze --%3E%3Cellipse cx='250' cy='188' rx='14' ry='8' fill='none' stroke='rgba(80,96,180,0.18)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='188' r='4' fill='rgba(64,80,160,0.20)'/%3E%3C!-- Tentacle suggestion curves (arcs) --%3E%3Cpath d='M 250 333 Q 295 310 315 280' fill='none' stroke='rgba(50,65,130,0.07)' stroke-width='1'/%3E%3Cpath d='M 250 333 Q 208 312 188 280' fill='none' stroke='rgba(50,65,130,0.07)' stroke-width='1'/%3E%3C!-- Star vertex marks --%3E%3Ccircle cx='250' cy='62' r='3' fill='rgba(80,96,180,0.20)'/%3E%3Ccircle cx='364' cy='153' r='2.5' fill='rgba(80,96,180,0.16)'/%3E%3Ccircle cx='321' cy='287' r='2.5' fill='rgba(80,96,180,0.16)'/%3E%3Ccircle cx='179' cy='287' r='2.5' fill='rgba(80,96,180,0.16)'/%3E%3Ccircle cx='136' cy='153' r='2.5' fill='rgba(80,96,180,0.16)'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
+    /* deep cosmic ambient from center */
+    radial-gradient(ellipse 75% 55% at 50% 50%, rgba(15, 20, 55, 0.05) 0%, transparent 70%);
+  animation: elder-sign 12s ease-in-out infinite;
+}
+@keyframes elder-sign {
+  0%, 100% { opacity: 0.75; }
+  30%       { opacity: 1.0; }
+  78%       { opacity: 0.80; }
+  80%       { color: rgba(192,160,64,0.50); opacity: 0.4; }
+  81%       { opacity: 1.0; }
 }
 
 /* ── Flavor content ──────────────────────────────────────────────────────────── */
@@ -212,6 +207,17 @@
 #theme-banner { background: rgba(2, 3, 7, 0.99); border-top-color: rgba(64, 80, 160, 0.22); }
 #theme-banner::before { content: '∴'; color: #4050A0; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(80, 100, 160, 0.55); }
+
+/* ── Tile: sanity fracture ───────────────────────────────────────────────── */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(80,100,180,0.45);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
 
 /* ── Cosmic dust — eldritch motes drifting between the stars ────────────── */
 #particles {

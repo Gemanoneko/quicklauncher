@@ -110,20 +110,17 @@
   box-shadow: 0 0 10px rgba(64, 104, 176, 0.55), 0 0 26px rgba(64, 104, 176, 0.18);
 }
 
-/* ── Grid: elven archway lines — knowledge structured in stone ───────────────── */
+/* ── Grid: Aquila — the Eagle constellation for the wise ─────────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* horizontal shelf lines — like rows of books */
-    repeating-linear-gradient(to bottom,
-      transparent 0px, transparent 79px,
-      rgba(64, 104, 176, 0.016) 79px, rgba(64, 104, 176, 0.016) 80px
-    ),
-    radial-gradient(ellipse 75% 50% at 50% 20%, rgba(40, 70, 150, 0.05) 0%, transparent 62%),
-    radial-gradient(ellipse 50% 35% at 50% 90%, rgba(90, 65, 20, 0.04) 0%, transparent 58%),
-    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(2, 4, 12, 0.14) 0%, transparent 60%),
-    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(2, 4, 12, 0.14) 0%, transparent 60%);
+    /* Aquila constellation — stars and connecting lines */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='400'%3E%3Cg%3E%3Cline x1='148' y1='188' x2='190' y2='162' stroke='%234068B0' stroke-opacity='0.14' stroke-width='0.8'/%3E%3Cline x1='190' y1='162' x2='205' y2='148' stroke='%234068B0' stroke-opacity='0.17' stroke-width='1'/%3E%3Cline x1='205' y1='148' x2='232' y2='130' stroke='%234068B0' stroke-opacity='0.17' stroke-width='1'/%3E%3Cline x1='232' y1='130' x2='288' y2='124' stroke='%234068B0' stroke-opacity='0.12' stroke-width='0.8'/%3E%3Cline x1='205' y1='148' x2='262' y2='152' stroke='%234068B0' stroke-opacity='0.14' stroke-width='0.8'/%3E%3Cline x1='216' y1='122' x2='205' y2='148' stroke='%234068B0' stroke-opacity='0.13' stroke-width='0.8'/%3E%3Cline x1='205' y1='148' x2='244' y2='170' stroke='%234068B0' stroke-opacity='0.12' stroke-width='0.8'/%3E%3Ccircle cx='205' cy='148' r='3.5' fill='%239AB8FF' fill-opacity='0.48'/%3E%3Ccircle cx='190' cy='162' r='2' fill='%237898DC' fill-opacity='0.34'/%3E%3Ccircle cx='232' cy='130' r='2.2' fill='%236E91D7' fill-opacity='0.32'/%3E%3Ccircle cx='262' cy='152' r='1.8' fill='%236488D2' fill-opacity='0.28'/%3E%3Ccircle cx='148' cy='188' r='1.6' fill='%235E82CC' fill-opacity='0.26'/%3E%3Ccircle cx='288' cy='124' r='1.6' fill='%236E8CD5' fill-opacity='0.26'/%3E%3Ccircle cx='216' cy='122' r='1.6' fill='%236E8CD5' fill-opacity='0.28'/%3E%3Ccircle cx='244' cy='170' r='1.4' fill='%235C7EC6' fill-opacity='0.24'/%3E%3C/g%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
+    /* Moon ambient — Hogwarts astronomy tower glow */
+    radial-gradient(ellipse 65% 55% at 72% 15%, rgba(50,80,160,0.06) 0%, transparent 65%),
+    /* Bronze candlelight reflection from below */
+    radial-gradient(ellipse 55% 30% at 50% 100%, rgba(100,70,20,0.04) 0%, transparent 58%);
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -179,15 +176,26 @@
 #theme-banner::before { content: '✧'; color: #4068B0; font-size: 22px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(70, 110, 185, 0.65); }
 
-/* ── Ravenclaw magic — moonlit blue and bronze sparkles ──────────────────── */
+/* ── Astronomy tower stars — slow drift of the night sky ─────────────────── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='420'%3E%3Ccircle cx='32' cy='60' r='1.2' fill='rgba(64,104,176,0.26)'/%3E%3Ccircle cx='105' cy='180' r='0.8' fill='rgba(154,112,48,0.20)'/%3E%3Ccircle cx='170' cy='320' r='1.5' fill='rgba(64,104,176,0.16)'/%3E%3Ccircle cx='60' cy='380' r='1' fill='rgba(96,112,160,0.22)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='290' height='580'%3E%3Ccircle cx='48' cy='100' r='1.8' fill='rgba(64,104,176,0.12)'/%3E%3Ccircle cx='155' cy='280' r='1.2' fill='rgba(154,112,48,0.10)'/%3E%3Ccircle cx='230' cy='460' r='2' fill='rgba(96,112,160,0.08)'/%3E%3C/svg%3E") repeat;
-  background-size: 210px 420px, 290px 580px;
-  animation: ravenclaw-sparkles 14s linear infinite;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='460'%3E%3Ccircle cx='28' cy='45' r='1.8' fill='%239AB8FF' fill-opacity='0.38'/%3E%3Ccircle cx='95' cy='130' r='0.8' fill='%239AB8FF' fill-opacity='0.25'/%3E%3Ccircle cx='165' cy='240' r='2.2' fill='%237898DC' fill-opacity='0.28'/%3E%3Ccircle cx='55' cy='320' r='1' fill='%239A7030' fill-opacity='0.28'/%3E%3Ccircle cx='200' cy='85' r='1.2' fill='%239AB8FF' fill-opacity='0.22'/%3E%3Ccircle cx='130' cy='395' r='0.8' fill='%236080B8' fill-opacity='0.30'/%3E%3Ccircle cx='42' cy='210' r='0.6' fill='%239AB8FF' fill-opacity='0.20'/%3E%3Ccircle cx='185' cy='360' r='1.4' fill='%239A7030' fill-opacity='0.22'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='620'%3E%3Ccircle cx='60' cy='80' r='0.8' fill='%237898DC' fill-opacity='0.18'/%3E%3Ccircle cx='170' cy='220' r='2.5' fill='%239AB8FF' fill-opacity='0.16'/%3E%3Ccircle cx='260' cy='380' r='1' fill='%239A7030' fill-opacity='0.18'/%3E%3Ccircle cx='95' cy='500' r='1.5' fill='%236080B8' fill-opacity='0.15'/%3E%3C/svg%3E") repeat;
+  background-size: 240px 460px, 340px 620px;
+  animation: ravenclaw-stars 22s linear infinite;
 }
-@keyframes ravenclaw-sparkles {
-  from { background-position: 0 -420px, 15px -580px; }
-  to   { background-position: -30px 0, 20px 0; }
+@keyframes ravenclaw-stars {
+  from { background-position: 0 0, 20px 0; }
+  to   { background-position: -60px -200px, 30px -280px; }
 }
+
+/* ── Tile: eagle's-eye ring on hover ─────────────────────────────────────── */
+.app-tile::before {
+  width: 20px; height: 20px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(154,112,48,0.55);
+}
+.app-tile:hover::before { animation: tile-radial .5s ease-out forwards; }

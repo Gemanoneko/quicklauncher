@@ -265,3 +265,10 @@
   0%, 100% { background-position: -60% 0; }
   50%      { background-position: 160% 0; }
 }
+
+/* ── X-Files paranormal flicker ──────────────────────────────────────────── */
+.app-tile::before {
+  background: transparent;
+  border: 1px solid rgba(0, 176, 160, 0.28);
+}
+.app-tile:hover::before { animation: tile-flicker .8s steps(1, end) infinite; }

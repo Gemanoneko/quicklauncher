@@ -122,18 +122,31 @@
   box-shadow: 0 0 12px rgba(204, 72, 0, 0.65), 0 0 28px rgba(204, 72, 0, 0.22);
 }
 
-/* ── Grid: ash plain + ember seep ───────────────────────────────────────────── */
+/* ── Grid: The Eye of Sauron — ever watchful above Barad-dûr ─────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* ash from top */
-    linear-gradient(to bottom, rgba(140, 40, 0, 0.07) 0%, transparent 30%),
-    /* lava seep from bottom */
-    linear-gradient(to top, rgba(180, 50, 0, 0.10) 0%, rgba(140, 35, 0, 0.05) 20%, transparent 50%),
-    /* side darkness */
-    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(4, 1, 0, 0.20) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(4, 1, 0, 0.20) 0%, transparent 60%);
+    /* Eye outer ring — the great corona of fire */
+    radial-gradient(ellipse 42% 82% at 50% 46%, transparent 52%, rgba(170,45,0,0.15) 53%, rgba(150,35,0,0.15) 59%, transparent 60%),
+    /* Eye iris ring */
+    radial-gradient(ellipse 26% 56% at 50% 46%, transparent 30%, rgba(200,60,0,0.19) 31%, rgba(180,50,0,0.19) 38%, transparent 39%),
+    /* Eye inner glow — lava behind the iris */
+    radial-gradient(ellipse 16% 38% at 50% 46%, rgba(230,80,0,0.16) 0%, rgba(200,60,0,0.10) 55%, transparent 75%),
+    /* Pupil slit — the Eye's vertical cat-slit */
+    radial-gradient(ellipse 3.5% 28% at 50% 46%, rgba(255,120,0,0.30) 0%, rgba(230,90,0,0.18) 55%, transparent 80%),
+    /* Ash plain from top */
+    linear-gradient(to bottom, rgba(140, 40, 0, 0.07) 0%, transparent 28%),
+    /* Lava seep from Orodruin below */
+    linear-gradient(to top, rgba(180, 50, 0, 0.09) 0%, rgba(140, 35, 0, 0.04) 18%, transparent 45%);
+  animation: mordor-eye 4s ease-in-out infinite;
+}
+@keyframes mordor-eye {
+  0%, 100% { opacity: 0.85; }
+  50%       { opacity: 1.0; }
+  80%       { opacity: 0.9; }
+  82%       { opacity: 0.5; }
+  83%       { opacity: 1.0; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -182,15 +195,31 @@
 #theme-banner::before { content: '◬'; color: #CC4800; font-size: 20px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; color: rgba(180, 60, 0, 0.60); }
 
-/* ── Mount Doom — ash fall + ember rise ──────────────────────────────────── */
+/* ── Mount Doom — volcanic ash flakes fall + ember sparks rise ───────────── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='30' cy='50' r='1.5' fill='rgba(80,60,40,0.20)'/%3E%3Ccircle cx='100' cy='160' r='1' fill='rgba(60,45,30,0.16)'/%3E%3Ccircle cx='160' cy='300' r='1.8' fill='rgba(70,50,35,0.14)'/%3E%3Ccircle cx='70' cy='370' r='1.2' fill='rgba(90,65,45,0.18)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='350'%3E%3Ccircle cx='25' cy='50' r='1.5' fill='rgba(255,100,20,0.30)'/%3E%3Ccircle cx='80' cy='150' r='1' fill='rgba(204,72,0,0.25)'/%3E%3Ccircle cx='130' cy='270' r='2' fill='rgba(255,80,10,0.20)'/%3E%3Ccircle cx='50' cy='310' r='0.8' fill='rgba(255,120,30,0.28)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 400px, 160px 350px;
-  animation: mordor-ash 8s linear infinite;
+    /* Ash flakes — elongated grey-brown rectangles drifting down */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='420'%3E%3Crect x='18' y='30' width='6' height='2' rx='1' fill='rgba(90,65,45,0.28)' transform='rotate(-12,18,30)'/%3E%3Crect x='75' y='110' width='8' height='2' rx='1' fill='rgba(70,50,35,0.22)' transform='rotate(8,75,110)'/%3E%3Crect x='140' y='65' width='5' height='2' rx='1' fill='rgba(100,72,48,0.25)' transform='rotate(-5,140,65)'/%3E%3Crect x='55' y='200' width='7' height='2' rx='1' fill='rgba(80,58,38,0.20)' transform='rotate(15,55,200)'/%3E%3Crect x='185' y='155' width='6' height='2' rx='1' fill='rgba(88,62,42,0.24)' transform='rotate(-18,185,155)'/%3E%3Crect x='110' y='280' width='9' height='2' rx='1' fill='rgba(75,54,35,0.19)' transform='rotate(6,110,280)'/%3E%3Crect x='30' y='340' width='5' height='2' rx='1' fill='rgba(95,68,46,0.26)' transform='rotate(-10,30,340)'/%3E%3Crect x='170' y='360' width='7' height='2' rx='1' fill='rgba(82,58,38,0.21)' transform='rotate(20,170,360)'/%3E%3C/svg%3E") repeat,
+    /* Ember sparks — bright orange-red dots rising from below */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='380'%3E%3Ccircle cx='28' cy='340' r='1.8' fill='rgba(255,100,20,0.45)'/%3E%3Ccircle cx='90' cy='290' r='1.2' fill='rgba(204,72,0,0.38)'/%3E%3Ccircle cx='145' cy='355' r='2.2' fill='rgba(255,80,10,0.35)'/%3E%3Ccircle cx='55' cy='310' r='1' fill='rgba(255,130,30,0.42)'/%3E%3Ccircle cx='160' cy='270' r='1.5' fill='rgba(230,90,15,0.32)'/%3E%3Ccircle cx='105' cy='370' r='1.8' fill='rgba(255,110,25,0.40)'/%3E%3C/svg%3E") repeat;
+  background-size: 220px 420px, 180px 380px;
+  animation: mordor-ash 10s linear infinite, mordor-embers 7s linear infinite reverse;
 }
 @keyframes mordor-ash {
-  from { background-position: 0 -400px, 10px 0; }
-  to   { background-position: 20px 0, -10px -350px; }
+  from { background-position: 0 -420px, 0 0; }
+  to   { background-position: 30px 0,    0 0; }
 }
+@keyframes mordor-embers {
+  from { background-position: 0 0,          10px -380px; }
+  to   { background-position: 0 0,          -10px 0; }
+}
+
+/* ── Tile: volcanic ember shimmer ────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: transparent;
+  border: 1px solid rgba(204,72,0,0.30);
+}
+.app-tile:hover::before { animation: tile-flicker .8s steps(1, end) infinite; }

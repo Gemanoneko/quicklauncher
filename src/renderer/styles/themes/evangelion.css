@@ -132,15 +132,26 @@
   box-shadow: 0 0 10px rgba(224, 88, 0, 0.60), 0 0 24px rgba(224, 88, 0, 0.20);
 }
 
-/* ── Grid: hexagonal NERV pattern + terminal glow ───────────────────────────── */
+/* ── Grid: NERV targeting computer — diamond + crosshair + range arcs ───────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    linear-gradient(to bottom, rgba(180, 60, 0, 0.06) 0%, transparent 30%),
-    linear-gradient(to top, rgba(204, 0, 0, 0.06) 0%, rgba(160, 40, 0, 0.03) 18%, transparent 45%),
-    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(180, 50, 0, 0.05) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 70% at 10% 50%, rgba(0, 160, 0, 0.02) 0%, transparent 60%);
+    /* NERV targeting diamond SVG — outer diamond, inner diamond, crosshair, range arcs */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Outer targeting diamond --%3E%3Cpolygon points='250,22 468,190 250,358 32,190' fill='none' stroke='rgba(224,88,0,0.11)' stroke-width='1'/%3E%3C!-- Diamond vertex tick marks --%3E%3Cline x1='250' y1='22' x2='238' y2='33' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='250' y1='22' x2='262' y2='33' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='468' y1='190' x2='457' y2='178' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='468' y1='190' x2='457' y2='202' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='250' y1='358' x2='238' y2='347' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='250' y1='358' x2='262' y2='347' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='32' y1='190' x2='43' y2='178' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='32' y1='190' x2='43' y2='202' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3C!-- Crosshair — broken with center gap --%3E%3Cline x1='250' y1='22' x2='250' y2='162' stroke='rgba(224,88,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='250' y1='218' x2='250' y2='358' stroke='rgba(224,88,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='32' y1='190' x2='182' y2='190' stroke='rgba(224,88,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='318' y1='190' x2='468' y2='190' stroke='rgba(224,88,0,0.07)' stroke-width='0.5'/%3E%3C!-- Inner targeting diamond --%3E%3Cpolygon points='250,108 342,190 250,272 158,190' fill='none' stroke='rgba(224,88,0,0.17)' stroke-width='0.8'/%3E%3C!-- Center aim circle + dot --%3E%3Ccircle cx='250' cy='190' r='5' fill='none' stroke='rgba(224,88,0,0.40)' stroke-width='1'/%3E%3Ccircle cx='250' cy='190' r='1.8' fill='rgba(224,88,0,0.50)'/%3E%3C!-- Range arcs — radar sweep feel --%3E%3Cpath d='M 170 190 a 80 80 0 0 1 80 -80' fill='none' stroke='rgba(200,60,0,0.09)' stroke-width='0.5'/%3E%3Cpath d='M 130 190 a 120 120 0 0 1 120 -120' fill='none' stroke='rgba(200,60,0,0.06)' stroke-width='0.5'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
+    /* Ambient NERV orange — top terminal glow */
+    linear-gradient(to bottom, rgba(180, 60, 0, 0.05) 0%, transparent 28%),
+    /* Warning red — base seep */
+    linear-gradient(to top, rgba(204, 0, 0, 0.05) 0%, rgba(160, 40, 0, 0.02) 16%, transparent 38%);
+  animation: nerv-target 8s steps(1) infinite;
+}
+@keyframes nerv-target {
+  0%, 100% { opacity: 0.90; }
+  82%       { opacity: 0.90; }
+  83%       { opacity: 0.45; }
+  84%       { opacity: 1.0; }
+  85%       { opacity: 0.70; }
+  86%       { opacity: 1.0; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
