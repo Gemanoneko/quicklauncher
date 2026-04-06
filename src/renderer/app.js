@@ -688,8 +688,8 @@ function setupDragDrop() {
       const files = Array.from(e.dataTransfer.files);
       for (const file of files) {
         const filePath = window.api.getPathForFile(file);
-        const ext = filePath.split('.').pop().toLowerCase();
-        if (ext === 'exe' || ext === 'lnk') {
+        const lower = filePath.toLowerCase();
+        if (lower.endsWith('.exe') || lower.endsWith('.lnk')) {
           const appItem = await window.api.invoke('add-app-from-path', filePath);
           if (appItem && !apps.find(a => a.path === appItem.path)) {
             apps.push(appItem);
@@ -724,10 +724,11 @@ function setupTileReorder() {
       startY: e.clientY,
       dragging: false
     };
+    // Registered per-drag so they don't accumulate across calls
+    document.addEventListener('mousemove', handleReorderMove);
+    document.addEventListener('mouseup', handleReorderUp);
   });
 
-  document.addEventListener('mousemove', handleReorderMove);
-  document.addEventListener('mouseup', handleReorderUp);
   window.addEventListener('blur', cancelReorder);
 }
 
@@ -781,6 +782,8 @@ function handleReorderMove(e) {
 }
 
 async function handleReorderUp() {
+  document.removeEventListener('mousemove', handleReorderMove);
+  document.removeEventListener('mouseup', handleReorderUp);
   if (!reorderState) return;
   const state = reorderState;
   reorderState = null;
@@ -813,6 +816,8 @@ async function handleReorderUp() {
 }
 
 function cancelReorder() {
+  document.removeEventListener('mousemove', handleReorderMove);
+  document.removeEventListener('mouseup', handleReorderUp);
   if (!reorderState?.dragging) { reorderState = null; return; }
   reorderState.ghost?.remove();
   reorderState.srcEl.classList.remove('tile-drag-source');
@@ -1114,6 +1119,13 @@ document.getElementById('btn-random-theme').addEventListener('click', async () =
   settings.theme = others[Math.floor(Math.random() * others.length)];
   applySettings();
   await window.api.invoke('save-settings', settings);
+});
+
+// ── Cleanup on unload ─────────────────────────────────────────────────────────
+window.addEventListener('beforeunload', () => {
+  clearInterval(bannerInterval);
+  clearTimeout(bannerFadeTimer);
+  clearTimeout(autoDismissTimer);
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────

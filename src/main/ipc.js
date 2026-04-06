@@ -1,4 +1,4 @@
-const { ipcMain, dialog, shell, app, nativeImage } = require('electron');
+const { ipcMain, dialog, shell, app, nativeImage, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
@@ -434,8 +434,8 @@ $apps | ConvertTo-Json -Depth 2
                     || /^steam:\/\//.test(item.AppID)
                     || /^[^!\\]+![^!\\]+$/.test(item.AppID)))
               .sort((a, b) => a.Name.localeCompare(b.Name));
-            const result = [];
-            for (const item of items) {
+            // Process all items concurrently — getFileIcon calls are independent
+            const result = await Promise.all(items.map(async (item) => {
               let iconDataUrl = '';
               if (item.IconPath) {
                 try {
@@ -460,8 +460,8 @@ $apps | ConvertTo-Json -Depth 2
                   iconDataUrl = img.toDataURL();
                 } catch { /* skip */ }
               }
-              result.push({ name: item.Name, appId: item.AppID, iconDataUrl });
-            }
+              return { name: item.Name, appId: item.AppID, iconDataUrl };
+            }));
             resolve(result);
           } catch { resolve([]); }
         }
@@ -505,7 +505,11 @@ $apps | ConvertTo-Json -Depth 2
   });
 
   ipcMain.handle('resize-window', (_, { width, height }) => {
-    win.setContentSize(Math.max(width, 200), Math.max(height, 150));
+    const { width: sw, height: sh } = screen.getPrimaryDisplay().workAreaSize;
+    win.setContentSize(
+      Math.min(Math.max(width, 200), sw),
+      Math.min(Math.max(height, 150), sh)
+    );
   });
 
   ipcMain.handle('set-auto-launch', (_, enabled) => {
