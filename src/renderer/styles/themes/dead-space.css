@@ -1,61 +1,60 @@
-/* ══ DEAD SPACE ═══════════════════════════════════════════════════════════════
+/* ══ DEAD SPACE ════════════════════════════════════════════════════════════════
    USG Ishimura / Isaac Clarke / RIG suit interface.
-   Stark void-black broken by the orange spine of survival.
-   Your suit is the only thing keeping you alive out here.
+   Planet Cracker class vessel, Aegis VII sector. Hull integrity: CRITICAL.
+   Necromorphs detected on all decks. Make us whole.
+   Cut off their limbs. Stasis depleted. O2: 12 percent. Make us whole.
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Backgrounds */
-  --bg:                   #050200;
-  --panel-bg:             rgba(8, 3, 0, 0.98);
-  --overlay-bg:           rgba(5, 2, 0, 0.92);
-  --header-bg:            rgba(10, 4, 0, 0.97);
+  /* ── Backgrounds ── */
+  --bg:           #050200;
+  --panel-bg:     rgba(8, 3, 0, 0.98);
+  --overlay-bg:   rgba(5, 2, 0, 0.96);
+  --header-bg:    rgba(10, 4, 0, 0.97);
 
-  /* Typography — monospace engineering terminal */
-  --font:                 Consolas, 'Courier New', monospace;
-  --text:                 #B0BCC8;
-  --text-dim:             #4A5560;
+  /* ── Typography — monospace engineering terminal / RIG HUD ── */
+  --font:         Consolas, 'Courier New', monospace;
+  --text:         #B0BCC8;
+  --text-dim:     rgba(80, 95, 110, 0.55);
 
-  /* Shape — Ishimura viewport: top-right corner sheared like a blast door */
-  --radius:               2px;
-  --app-clip:             polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
-  --overlay-clip:         polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
+  /* ── Shape — Ishimura viewport: top-right sheared like a blast door ── */
+  --radius:       2px;
+  --app-clip:     polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
+  --overlay-clip: polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%);
 
-  /* Accent palette — RIG orange / dim system red / cold white */
-  --accent-c:             #E06820;
-  --accent-m:             #801000;
-  --accent-y:             #FF8C3A;
+  /* ── Accents ── */
+  --accent-c:     #E06820;   /* RIG orange — suit health spine */
+  --accent-m:     #801000;   /* necromorph blood / system critical */
+  --accent-y:     #FF8C3A;   /* suit alert / HUD highlight */
 
-  /* Borders */
-  --border:               rgba(224, 104, 32, 0.2);
-  --border-h:             rgba(224, 104, 32, 0.65);
+  /* ── Borders ── */
+  --border:       rgba(224, 104, 32, 0.20);
+  --border-h:     rgba(224, 104, 32, 0.65);
 
-  /* Glows — suit HUD readout */
-  --glow-c:               0 0 5px rgba(224, 104, 32, 0.75), 0 0 16px rgba(224, 104, 32, 0.3);
-  --glow-m:               0 0 5px rgba(128, 16, 0, 0.8), 0 0 16px rgba(128, 16, 0, 0.35);
-  --glow-y:               0 0 5px rgba(255, 140, 58, 0.7), 0 0 16px rgba(255, 140, 58, 0.3);
-  --pulse-glow:           inset 0 0 20px rgba(224, 104, 32, 0.12), inset 0 0 5px rgba(128, 16, 0, 0.1);
+  /* ── Glows ── */
+  --glow-c:       0 0 5px rgba(224,104,32,.75), 0 0 16px rgba(224,104,32,.30);
+  --glow-m:       0 0 5px rgba(128,16,0,.80),   0 0 16px rgba(128,16,0,.35);
+  --glow-y:       0 0 5px rgba(255,140,58,.70),  0 0 16px rgba(255,140,58,.30);
+  --pulse-glow:   inset 0 0 20px rgba(224,104,32,.12), inset 0 0 5px rgba(128,16,0,.10);
 
-  /* Scanlines — dark horizontal bands, CRT suit display */
-  --scanlines:            repeating-linear-gradient(
-                            to bottom,
-                            transparent 0px,
-                            transparent 2px,
-                            rgba(0, 0, 0, 0.32) 2px,
-                            rgba(0, 0, 0, 0.32) 3px
-                          );
+  /* ── Scanlines — dark CRT bands, suit display ── */
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 2px,
+                    rgba(0, 0, 0, 0.32) 2px, rgba(0, 0, 0, 0.32) 3px
+                  );
 
-  /* Title — slow warning pulse, like a suit alert */
-  --title-anim:           ds-pulse 3.5s ease-in-out infinite;
+  /* ── Title — slow warning pulse, suit health alert ── */
+  --title-anim:   ds-pulse 3.5s ease-in-out infinite;
 
-  /* Tiles */
-  --tile-hover-bg:        rgba(224, 104, 32, 0.07);
-  --tile-hover-border:    #E06820;
-  --tile-hover-shadow:    0 0 10px rgba(224, 104, 32, 0.38), inset 0 0 8px rgba(224, 104, 32, 0.05);
-  --tile-active-bg:       rgba(224, 104, 32, 0.13);
-  --tile-icon-glow:       drop-shadow(0 0 5px rgba(224, 104, 32, 0.8)) drop-shadow(0 0 12px rgba(224, 104, 32, 0.4));
-  --tile-icon-fx:         contrast(1.3) brightness(0.9);
-  --tile-icon-shape:      polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(224, 104, 32, 0.07);
+  --tile-hover-border: #E06820;
+  --tile-hover-shadow: 0 0 10px rgba(224,104,32,.38), inset 0 0 8px rgba(224,104,32,.05);
+  --tile-active-bg:    rgba(224, 104, 32, 0.13);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(224,104,32,.80)) drop-shadow(0 0 12px rgba(224,104,32,.40));
+  --tile-icon-fx:      contrast(1.3) brightness(0.9) saturate(0.85);
+  --tile-icon-shape:   polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
   --tile-label-spacing:   1.5px;
   --tile-label-transform: uppercase;
   --tile-label-weight:    600;
@@ -63,189 +62,220 @@
   --banner-icon-anim:    banner-throb 3.5s ease-in-out infinite;
   --app-entrance-anim:   entrance-flash 1s ease-out forwards;
 
-  /* Buttons */
-  --btn-hover-bg:         rgba(224, 104, 32, 0.1);
-  --btn-active-bg:        rgba(224, 104, 32, 0.18);
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(224, 104, 32, 0.10);
+  --btn-active-bg:  rgba(224, 104, 32, 0.18);
 
-  /* Drop hint */
-  --drop-hint-border:     rgba(224, 104, 32, 0.3);
-  --drop-icon-color:      rgba(224, 104, 32, 0.45);
-  --hint-sub-color:       #4A5560;
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(224, 104, 32, 0.30);
+  --drop-icon-color:  rgba(224, 104, 32, 0.45);
+  --hint-sub-color:   rgba(80, 95, 110, 0.55);
 
-  /* Rename */
-  --rename-dashed:        rgba(224, 104, 32, 0.5);
-  --rename-input-bg:      rgba(224, 104, 32, 0.06);
+  /* ── Rename ── */
+  --rename-dashed:    rgba(224, 104, 32, 0.50);
+  --rename-input-bg:  rgba(224, 104, 32, 0.06);
 
-  /* Edit bar — dim system red (critical mode) */
-  --edit-bar-bg:          rgba(128, 16, 0, 0.1);
+  /* ── Edit bar — critical system red ── */
+  --edit-bar-bg:          rgba(128, 16, 0, 0.10);
   --edit-bar-border:      rgba(128, 16, 0, 0.65);
   --edit-label-color:     #A02000;
-  --edit-label-glow:      0 0 8px rgba(128, 16, 0, 0.8), 0 0 20px rgba(128, 16, 0, 0.4);
+  --edit-label-glow:      0 0 8px rgba(128,16,0,.80), 0 0 20px rgba(128,16,0,.40);
   --btn-done-color:       #A02000;
-  --btn-done-border:      rgba(128, 16, 0, 0.6);
+  --btn-done-border:      rgba(128, 16, 0, 0.60);
   --btn-done-hover-bg:    rgba(128, 16, 0, 0.14);
-  --btn-done-hover-glow:  0 0 10px rgba(128, 16, 0, 0.6);
+  --btn-done-hover-glow:  0 0 10px rgba(128,16,0,.60);
   --btn-add-border:       rgba(224, 104, 32, 0.45);
 
-  /* Update banner — bright RIG orange */
-  --update-bg:            rgba(255, 140, 58, 0.07);
-  --update-border:        rgba(255, 140, 58, 0.55);
-  --update-color:         #FF8C3A;
-  --update-btn-border:    rgba(255, 140, 58, 0.5);
-  --update-btn-hover-bg:  rgba(255, 140, 58, 0.1);
-  --update-btn-hover-glow: 0 0 10px rgba(255, 140, 58, 0.5);
+  /* ── Update banner — RIG orange ── */
+  --update-bg:             rgba(255, 140, 58, 0.07);
+  --update-border:         rgba(255, 140, 58, 0.55);
+  --update-color:          #FF8C3A;
+  --update-btn-border:     rgba(255, 140, 58, 0.50);
+  --update-btn-hover-bg:   rgba(255, 140, 58, 0.10);
+  --update-btn-hover-glow: 0 0 10px rgba(255,140,58,.50);
 
-  /* Settings CLOSE — dim red */
+  /* ── Close / secondary buttons ── */
   --btn-close-color:      #A02000;
-  --btn-close-border:     rgba(128, 16, 0, 0.5);
-  --btn-close-hover-bg:   rgba(128, 16, 0, 0.1);
-  --btn-close-hover-glow: 0 0 10px rgba(128, 16, 0, 0.55);
+  --btn-close-border:     rgba(128, 16, 0, 0.50);
+  --btn-close-hover-bg:   rgba(128, 16, 0, 0.10);
+  --btn-close-hover-glow: 0 0 10px rgba(128,16,0,.55);
 
-  /* Picker / search */
-  --picker-search-bg:         rgba(224, 104, 32, 0.05);
-  --picker-item-hover-bg:     rgba(224, 104, 32, 0.08);
-  --picker-item-active-bg:    rgba(224, 104, 32, 0.14);
-  --picker-placeholder-bg:    rgba(224, 104, 32, 0.06);
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(224, 104, 32, 0.05);
+  --picker-item-hover-bg:  rgba(224, 104, 32, 0.08);
+  --picker-item-active-bg: rgba(224, 104, 32, 0.14);
+  --picker-placeholder-bg: rgba(224, 104, 32, 0.06);
 
-  /* Skin / remove */
-  --skin-btn-active-bg:   rgba(224, 104, 32, 0.15);
-  --remove-btn-bg:        rgba(128, 16, 0, 0.14);
-  --remove-btn-border:    rgba(128, 16, 0, 0.55);
+  /* ── Skin / remove ── */
+  --skin-btn-active-bg: rgba(224, 104, 32, 0.15);
+  --remove-btn-bg:      rgba(128, 16, 0, 0.14);
+  --remove-btn-border:  rgba(128, 16, 0, 0.55);
 
-  /* Drag */
-  --drag-over-glow:       inset 0 0 24px rgba(224, 104, 32, 0.25);
+  /* ── Drag ── */
+  --drag-over-glow: inset 0 0 24px rgba(224,104,32,.25);
 }
 
-/* ── RIG spine — the orange left border, Isaac's lifeline ─────────────────── */
-/* Health pulse with stasis field flash — orange beats, blue crisis flash */
+/* ── Hull texture: titanium grain + mortar grid + scanlines + void vignette ─── */
+#app::after {
+  background:
+    /* brushed metal hull grain — cold titanium, ISS-grade alloy */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.48 0.38 0.28 0 0  0.48 0.38 0.28 0 0  0.44 0.36 0.26 0 0  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* hull plate grid — structural bulkhead reinforcement at 40px intervals */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 39px,
+      rgba(224, 104, 32, 0.014) 39px, rgba(224, 104, 32, 0.014) 40px
+    ),
+    /* vertical load-bearing frames — engineering bay pillar shadows */
+    repeating-linear-gradient(
+      to right,
+      transparent 0px, transparent 79px,
+      rgba(0, 0, 0, 0.028) 79px, rgba(0, 0, 0, 0.028) 80px
+    ),
+    /* CRT scanlines — suit HUD display phosphor persistence */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 2px,
+      rgba(0, 0, 0, 0.25) 2px, rgba(0, 0, 0, 0.25) 3px
+    ),
+    /* deep space void vignette — blackness pressing in from the hull */
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 16%, rgba(2, 1, 0, 0.92) 100%),
+    /* RIG spine ambient — left-edge orange warmth from suit health bar */
+    radial-gradient(ellipse 18% 100% at 0% 50%, rgba(224, 104, 32, 0.06) 0%, transparent 68%);
+  background-size: 200px 200px, auto, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── RIG spine: orange left border — Isaac's lifeline ─────────────────────── */
 #app {
-  border-left: 5px solid rgba(224, 104, 32, 0.8);
-  box-shadow: -2px 0 12px rgba(224, 104, 32, 0.3), inset 2px 0 10px rgba(224, 104, 32, 0.06);
+  border-left: 5px solid rgba(224, 104, 32, 0.80);
+  box-shadow: -2px 0 12px rgba(224,104,32,.30), inset 2px 0 10px rgba(224,104,32,.06);
   animation: ds-rig-monitor 9s ease-in-out infinite;
 }
 @keyframes ds-rig-monitor {
   0%, 100% { box-shadow: -2px 0 16px rgba(224,104,32,.45), inset 2px 0 14px rgba(224,104,32,.10); }
-  35% { box-shadow: -2px 0 32px rgba(224,104,32,.80), inset 2px 0 28px rgba(224,104,32,.30); }
-  38% { box-shadow: -2px 0 8px rgba(224,104,32,.20), inset 2px 0 5px rgba(224,104,32,.05); }
-  41% { box-shadow: -2px 0 28px rgba(224,104,32,.72), inset 2px 0 24px rgba(224,104,32,.26); }
-  44% { box-shadow: -2px 0 16px rgba(224,104,32,.45), inset 2px 0 14px rgba(224,104,32,.10); }
-  /* Stasis module engaged — cold blue override flash */
-  80% { box-shadow: -2px 0 20px rgba(224,104,32,.60), inset 2px 0 18px rgba(224,104,32,.16); }
-  83% { box-shadow: -2px 0 40px rgba(0,140,255,.90), inset 2px 0 36px rgba(0,120,220,.40), 0 0 55px rgba(0,100,200,.35); }
-  85% { box-shadow: -2px 0 16px rgba(224,104,32,.45), inset 2px 0 14px rgba(224,104,32,.10); }
+  35%      { box-shadow: -2px 0 32px rgba(224,104,32,.80), inset 2px 0 28px rgba(224,104,32,.30); }
+  38%      { box-shadow: -2px 0 8px rgba(224,104,32,.20),  inset 2px 0 5px rgba(224,104,32,.05); }
+  41%      { box-shadow: -2px 0 28px rgba(224,104,32,.72), inset 2px 0 24px rgba(224,104,32,.26); }
+  44%      { box-shadow: -2px 0 16px rgba(224,104,32,.45), inset 2px 0 14px rgba(224,104,32,.10); }
+  /* Stasis module override — cold blue emergency flash */
+  80%      { box-shadow: -2px 0 20px rgba(224,104,32,.60), inset 2px 0 18px rgba(224,104,32,.16); }
+  83%      { box-shadow: -2px 0 40px rgba(0,140,255,.90),  inset 2px 0 36px rgba(0,120,220,.40), 0 0 55px rgba(0,100,200,.35); }
+  85%      { box-shadow: -2px 0 16px rgba(224,104,32,.45), inset 2px 0 14px rgba(224,104,32,.10); }
 }
 
 /* ── Header orange RIG-color left bar ─────────────────────────────────────── */
 #header::before {
   background: linear-gradient(to bottom, #E06820, rgba(224, 104, 32, 0.25));
-  box-shadow: 0 0 8px rgba(224, 104, 32, 0.7), 0 0 20px rgba(224, 104, 32, 0.3);
+  box-shadow: 0 0 8px rgba(224,104,32,.70), 0 0 20px rgba(224,104,32,.30);
+  animation: hdr-bar-strobe 8s steps(1) infinite;
 }
 
-/* ── Overlay panel — orange left border, suit HUD panel ──────────────────── */
+/* ── Overlay panel — RIG HUD left border ────────────────────────────────────── */
 .overlay-panel {
-  border-left: 3px solid rgba(224, 104, 32, 0.7);
-  box-shadow: -2px 0 12px rgba(224, 104, 32, 0.2);
+  border-left: 3px solid rgba(224, 104, 32, 0.70);
+  box-shadow: -2px 0 12px rgba(224,104,32,.20);
 }
 
-/* ── Dark horizontal scanlines overlay ───────────────────────────────────── */
-#app::after {
-  content: '';
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.25) 2px,
-      rgba(0, 0, 0, 0.25) 3px
-    );
-  opacity: 1;
-  pointer-events: none;
-}
-
-/* ── RIG kinesis rings — concentric sonar-like circles in the grid ────────── */
+/* ── Grid: USG Ishimura technical schematic — full ship blueprint ────────────── */
 #grid-container::before {
   content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* kinesis concentric rings — centered */
-    radial-gradient(circle 20px at 50% 50%, transparent 18px, rgba(224, 104, 32, 0.07) 18px, rgba(224, 104, 32, 0.07) 20px, transparent 20px),
-    radial-gradient(circle 45px at 50% 50%, transparent 43px, rgba(224, 104, 32, 0.055) 43px, rgba(224, 104, 32, 0.055) 45px, transparent 45px),
-    radial-gradient(circle 78px at 50% 50%, transparent 76px, rgba(224, 104, 32, 0.04) 76px, rgba(224, 104, 32, 0.04) 78px, transparent 78px),
-    radial-gradient(circle 118px at 50% 50%, transparent 116px, rgba(224, 104, 32, 0.03) 116px, rgba(224, 104, 32, 0.03) 118px, transparent 118px),
-    radial-gradient(circle 165px at 50% 50%, transparent 163px, rgba(224, 104, 32, 0.02) 163px, rgba(224, 104, 32, 0.02) 165px, transparent 165px),
-    /* warm orange bloom at center */
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(224, 104, 32, 0.035) 0%, transparent 70%);
+    /* Ishimura elevation blueprint — Planet Cracker class, Aegis VII sector */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(224,104,32,0.20)' stroke-width='1.2'/%3E%3Crect x='14' y='14' width='472' height='352' fill='none' stroke='rgba(224,104,32,0.10)' stroke-width='0.6'/%3E%3Cline x1='8' y1='25' x2='22' y2='25' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='22' y1='8' x2='22' y2='22' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='492' y1='25' x2='478' y2='25' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='478' y1='8' x2='478' y2='22' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='8' y1='355' x2='22' y2='355' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='22' y1='372' x2='22' y2='358' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='492' y1='355' x2='478' y2='355' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='478' y1='372' x2='478' y2='358' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='14' y1='96' x2='486' y2='96' stroke='rgba(224,104,32,0.038)' stroke-width='0.5'/%3E%3Cline x1='14' y1='192' x2='486' y2='192' stroke='rgba(224,104,32,0.038)' stroke-width='0.5'/%3E%3Cline x1='14' y1='288' x2='486' y2='288' stroke='rgba(224,104,32,0.038)' stroke-width='0.5'/%3E%3Cline x1='110' y1='14' x2='110' y2='366' stroke='rgba(224,104,32,0.038)' stroke-width='0.5'/%3E%3Cline x1='220' y1='14' x2='220' y2='366' stroke='rgba(224,104,32,0.038)' stroke-width='0.5'/%3E%3Cline x1='330' y1='14' x2='330' y2='366' stroke='rgba(224,104,32,0.038)' stroke-width='0.5'/%3E%3Cline x1='440' y1='14' x2='440' y2='366' stroke='rgba(224,104,32,0.038)' stroke-width='0.5'/%3E%3Ccircle cx='28' cy='32' r='0.8' fill='rgba(176,188,200,0.22)'/%3E%3Ccircle cx='72' cy='58' r='0.6' fill='rgba(176,188,200,0.16)'/%3E%3Ccircle cx='145' cy='22' r='1' fill='rgba(176,188,200,0.18)'/%3E%3Ccircle cx='195' cy='45' r='0.7' fill='rgba(176,188,200,0.14)'/%3E%3Ccircle cx='290' cy='28' r='0.8' fill='rgba(176,188,200,0.20)'/%3E%3Ccircle cx='355' cy='52' r='0.6' fill='rgba(176,188,200,0.15)'/%3E%3Ccircle cx='418' cy='30' r='1' fill='rgba(176,188,200,0.18)'/%3E%3Ccircle cx='472' cy='48' r='0.7' fill='rgba(176,188,200,0.14)'/%3E%3Ccircle cx='52' cy='118' r='0.8' fill='rgba(176,188,200,0.12)'/%3E%3Ccircle cx='385' cy='100' r='0.6' fill='rgba(176,188,200,0.16)'/%3E%3Ccircle cx='462' cy='118' r='0.9' fill='rgba(176,188,200,0.14)'/%3E%3Ccircle cx='18' cy='70' r='0.5' fill='rgba(224,104,32,0.12)'/%3E%3Ccircle cx='480' cy='80' r='0.7' fill='rgba(224,104,32,0.10)'/%3E%3Cpath d='M 15,370 Q 250,230 485,370' fill='none' stroke='rgba(140,80,30,0.12)' stroke-width='1.2'/%3E%3Cpath d='M 35,370 Q 250,248 465,370' fill='rgba(80,45,15,0.06)' stroke='rgba(160,90,35,0.10)' stroke-width='0.7'/%3E%3Cpath d='M 80,362 Q 180,340 280,345 Q 370,350 440,362' fill='none' stroke='rgba(120,65,20,0.08)' stroke-width='0.6'/%3E%3Cpath d='M 120,358 Q 220,342 320,344 Q 390,346 420,355' fill='none' stroke='rgba(120,65,20,0.06)' stroke-width='0.5'/%3E%3Cline x1='195' y1='228' x2='120' y2='340' stroke='rgba(224,104,32,0.08)' stroke-width='1' stroke-dasharray='3,8'/%3E%3Cline x1='218' y1='230' x2='185' y2='338' stroke='rgba(224,104,32,0.10)' stroke-width='1.2' stroke-dasharray='2,5'/%3E%3Cline x1='247' y1='232' x2='250' y2='342' stroke='rgba(224,104,32,0.13)' stroke-width='1.5' stroke-dasharray='2,4'/%3E%3Cline x1='276' y1='230' x2='318' y2='340' stroke='rgba(224,104,32,0.10)' stroke-width='1.2' stroke-dasharray='2,5'/%3E%3Cline x1='300' y1='228' x2='385' y2='338' stroke='rgba(224,104,32,0.08)' stroke-width='1' stroke-dasharray='3,8'/%3E%3Crect x='162' y='130' width='110' height='18' fill='rgba(224,104,32,0.06)' stroke='rgba(224,104,32,0.28)' stroke-width='0.7'/%3E%3Cline x1='210' y1='110' x2='210' y2='130' stroke='rgba(224,104,32,0.30)' stroke-width='0.8'/%3E%3Cline x1='192' y1='112' x2='228' y2='112' stroke='rgba(224,104,32,0.25)' stroke-width='0.6'/%3E%3Cline x1='198' y1='118' x2='222' y2='118' stroke='rgba(224,104,32,0.20)' stroke-width='0.5'/%3E%3Ccircle cx='178' cy='134' r='3.5' fill='none' stroke='rgba(224,104,32,0.32)' stroke-width='0.7'/%3E%3Ccircle cx='240' cy='134' r='3.5' fill='none' stroke='rgba(224,104,32,0.32)' stroke-width='0.7'/%3E%3Ccircle cx='258' cy='136' r='2' fill='none' stroke='rgba(224,104,32,0.25)' stroke-width='0.6'/%3E%3Cpolygon points='80,148 52,155 52,188 80,195' fill='rgba(224,104,32,0.05)' stroke='rgba(224,104,32,0.35)' stroke-width='0.8'/%3E%3Crect x='56' y='159' width='14' height='8' fill='rgba(224,104,32,0.08)' stroke='rgba(224,104,32,0.40)' stroke-width='0.7'/%3E%3Crect x='56' y='172' width='14' height='8' fill='rgba(224,104,32,0.08)' stroke='rgba(224,104,32,0.40)' stroke-width='0.7'/%3E%3Cline x1='68' y1='155' x2='80' y2='155' stroke='rgba(224,104,32,0.18)' stroke-width='0.5'/%3E%3Cline x1='65' y1='162' x2='80' y2='162' stroke='rgba(224,104,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='65' y1='172' x2='80' y2='172' stroke='rgba(224,104,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='68' y1='182' x2='80' y2='182' stroke='rgba(224,104,32,0.15)' stroke-width='0.5'/%3E%3Crect x='80' y='148' width='320' height='47' fill='rgba(224,104,32,0.04)' stroke='rgba(224,104,32,0.30)' stroke-width='0.9'/%3E%3Cline x1='80' y1='162' x2='400' y2='162' stroke='rgba(224,104,32,0.10)' stroke-width='0.5'/%3E%3Cline x1='80' y1='172' x2='400' y2='172' stroke='rgba(224,104,32,0.10)' stroke-width='0.5'/%3E%3Cline x1='80' y1='182' x2='400' y2='182' stroke='rgba(224,104,32,0.10)' stroke-width='0.5'/%3E%3Cline x1='122' y1='148' x2='122' y2='195' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='172' y1='148' x2='172' y2='195' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='248' y1='148' x2='248' y2='195' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='322' y1='148' x2='322' y2='195' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='372' y1='148' x2='372' y2='195' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Ctext x='90' y='175' font-family='Consolas,monospace' font-size='5.5' fill='rgba(224,104,32,0.45)' letter-spacing='0.5'%3EBRIDGE%3C/text%3E%3Ctext x='128' y='175' font-family='Consolas,monospace' font-size='5.5' fill='rgba(224,104,32,0.42)' letter-spacing='0.5'%3ECMD%3C/text%3E%3Ctext x='180' y='170' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.38)' letter-spacing='0.5'%3EMEDICAL%3C/text%3E%3Ctext x='258' y='170' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.38)' letter-spacing='0.5'%3EENGRG%3C/text%3E%3Ctext x='330' y='170' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.35)' letter-spacing='0.5'%3EMINING%3C/text%3E%3Ctext x='378' y='170' font-family='Consolas,monospace' font-size='4.5' fill='rgba(224,104,32,0.30)' letter-spacing='0.5'%3EDRIVES%3C/text%3E%3Cline x1='183' y1='152' x2='196' y2='162' stroke='rgba(200,20,10,0.55)' stroke-width='1'/%3E%3Cline x1='196' y1='152' x2='183' y2='162' stroke='rgba(200,20,10,0.55)' stroke-width='1'/%3E%3Cline x1='260' y1='152' x2='273' y2='162' stroke='rgba(200,20,10,0.48)' stroke-width='1'/%3E%3Cline x1='273' y1='152' x2='260' y2='162' stroke='rgba(200,20,10,0.48)' stroke-width='1'/%3E%3Ctext x='180' y='192' font-family='Consolas,monospace' font-size='4' fill='rgba(200,20,10,0.52)' letter-spacing='1'%3EBREACH%3C/text%3E%3Ctext x='256' y='192' font-family='Consolas,monospace' font-size='4' fill='rgba(200,20,10,0.48)' letter-spacing='1'%3EBREACH%3C/text%3E%3Crect x='172' y='195' width='155' height='33' fill='rgba(224,104,32,0.05)' stroke='rgba(224,104,32,0.28)' stroke-width='0.8'/%3E%3Cline x1='220' y1='195' x2='220' y2='228' stroke='rgba(224,104,32,0.14)' stroke-width='0.5'/%3E%3Cline x1='268' y1='195' x2='268' y2='228' stroke='rgba(224,104,32,0.14)' stroke-width='0.5'/%3E%3Cline x1='316' y1='195' x2='316' y2='228' stroke='rgba(224,104,32,0.14)' stroke-width='0.5'/%3E%3Ctext x='246' y='215' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.38)' text-anchor='middle' letter-spacing='1'%3EMINING BAY%3C/text%3E%3Crect x='185' y='224' width='8' height='4' fill='rgba(224,104,32,0.12)' stroke='rgba(224,104,32,0.35)' stroke-width='0.6'/%3E%3Crect x='200' y='224' width='8' height='4' fill='rgba(224,104,32,0.12)' stroke='rgba(224,104,32,0.35)' stroke-width='0.6'/%3E%3Crect x='240' y='224' width='10' height='5' fill='rgba(224,104,32,0.18)' stroke='rgba(224,104,32,0.45)' stroke-width='0.7'/%3E%3Crect x='285' y='224' width='8' height='4' fill='rgba(224,104,32,0.12)' stroke='rgba(224,104,32,0.35)' stroke-width='0.6'/%3E%3Crect x='300' y='224' width='8' height='4' fill='rgba(224,104,32,0.12)' stroke='rgba(224,104,32,0.35)' stroke-width='0.6'/%3E%3Crect x='400' y='143' width='42' height='57' fill='rgba(224,104,32,0.05)' stroke='rgba(224,104,32,0.32)' stroke-width='0.8'/%3E%3Cline x1='400' y1='162' x2='442' y2='162' stroke='rgba(224,104,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='400' y1='172' x2='442' y2='172' stroke='rgba(224,104,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='400' y1='183' x2='442' y2='183' stroke='rgba(224,104,32,0.15)' stroke-width='0.5'/%3E%3Ccircle cx='442' cy='155' r='5' fill='rgba(224,104,32,0.08)' stroke='rgba(224,104,32,0.38)' stroke-width='0.8'/%3E%3Ccircle cx='442' cy='171' r='5' fill='rgba(224,104,32,0.08)' stroke='rgba(224,104,32,0.38)' stroke-width='0.8'/%3E%3Ccircle cx='442' cy='187' r='5' fill='rgba(224,104,32,0.08)' stroke='rgba(224,104,32,0.38)' stroke-width='0.8'/%3E%3Crect x='400' y='128' width='30' height='15' fill='rgba(224,104,32,0.04)' stroke='rgba(224,104,32,0.25)' stroke-width='0.7'/%3E%3Crect x='400' y='200' width='30' height='15' fill='rgba(224,104,32,0.04)' stroke='rgba(224,104,32,0.25)' stroke-width='0.7'/%3E%3Cline x1='448' y1='148' x2='460' y2='145' stroke='rgba(224,104,32,0.12)' stroke-width='0.7'/%3E%3Cline x1='448' y1='155' x2='462' y2='152' stroke='rgba(224,104,32,0.15)' stroke-width='0.8'/%3E%3Cline x1='448' y1='163' x2='462' y2='165' stroke='rgba(224,104,32,0.18)' stroke-width='1'/%3E%3Cline x1='448' y1='171' x2='462' y2='174' stroke='rgba(224,104,32,0.18)' stroke-width='1'/%3E%3Cline x1='448' y1='179' x2='462' y2='182' stroke='rgba(224,104,32,0.15)' stroke-width='0.8'/%3E%3Cline x1='448' y1='187' x2='460' y2='190' stroke='rgba(224,104,32,0.12)' stroke-width='0.7'/%3E%3Cline x1='52' y1='242' x2='442' y2='242' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='52' y1='238' x2='52' y2='246' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='442' y1='238' x2='442' y2='246' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Ctext x='247' y='252' font-family='Consolas,monospace' font-size='5.5' fill='rgba(224,104,32,0.30)' text-anchor='middle' letter-spacing='1'%3E1.6 KM%3C/text%3E%3Cline x1='30' y1='148' x2='30' y2='195' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='26' y1='148' x2='34' y2='148' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='26' y1='195' x2='34' y2='195' stroke='rgba(224,104,32,0.18)' stroke-width='0.6'/%3E%3Crect x='420' y='244' width='50' height='6' fill='rgba(128,16,0,0.10)' stroke='rgba(180,20,10,0.35)' stroke-width='0.7'/%3E%3Cpolygon points='430,248 434,222 438,248' fill='rgba(128,16,0,0.08)' stroke='rgba(180,20,10,0.40)' stroke-width='0.7'/%3E%3Cpolygon points='452,248 456,222 460,248' fill='rgba(128,16,0,0.08)' stroke='rgba(180,20,10,0.40)' stroke-width='0.7'/%3E%3Cline x1='434' y1='222' x2='456' y2='222' stroke='rgba(180,20,10,0.35)' stroke-width='0.6'/%3E%3Cpolygon points='440,222 445,214 450,222' fill='rgba(128,16,0,0.12)' stroke='rgba(180,20,10,0.45)' stroke-width='0.7'/%3E%3Cline x1='430' y1='230' x2='438' y2='240' stroke='rgba(180,20,10,0.28)' stroke-width='0.5'/%3E%3Cline x1='438' y1='230' x2='430' y2='240' stroke='rgba(180,20,10,0.28)' stroke-width='0.5'/%3E%3Cline x1='452' y1='230' x2='460' y2='240' stroke='rgba(180,20,10,0.28)' stroke-width='0.5'/%3E%3Cline x1='460' y1='230' x2='452' y2='240' stroke='rgba(180,20,10,0.28)' stroke-width='0.5'/%3E%3Ccircle cx='445' cy='232' r='24' fill='none' stroke='rgba(128,16,0,0.12)' stroke-width='0.6' stroke-dasharray='2,4'/%3E%3Ctext x='445' y='264' font-family='Consolas,monospace' font-size='5' fill='rgba(180,20,10,0.42)' text-anchor='middle' letter-spacing='1.5'%3ETHE MARKER%3C/text%3E%3Ctext x='445' y='272' font-family='Consolas,monospace' font-size='4.5' fill='rgba(128,16,0,0.35)' text-anchor='middle' letter-spacing='0.5'%3EMAKE US WHOLE%3C/text%3E%3Ctext x='22' y='144' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.38)' letter-spacing='0.5'%3ESYS STATUS%3C/text%3E%3Cline x1='22' y1='147' x2='80' y2='147' stroke='rgba(224,104,32,0.22)' stroke-width='0.5'/%3E%3Ctext x='22' y='157' font-family='Consolas,monospace' font-size='4.5' fill='rgba(224,104,32,0.32)'%3EHULL: CRIT%3C/text%3E%3Ctext x='22' y='166' font-family='Consolas,monospace' font-size='4.5' fill='rgba(224,104,32,0.30)'%3EO2: CRIT%3C/text%3E%3Ctext x='22' y='175' font-family='Consolas,monospace' font-size='4.5' fill='rgba(128,16,0,0.40)'%3EBIOHAZ:HIGH%3C/text%3E%3Ctext x='22' y='184' font-family='Consolas,monospace' font-size='4.5' fill='rgba(224,104,32,0.28)'%3ESTASIS:NONE%3C/text%3E%3Cline x1='22' y1='187' x2='80' y2='187' stroke='rgba(224,104,32,0.18)' stroke-width='0.5'/%3E%3Ctext x='22' y='196' font-family='Consolas,monospace' font-size='4.5' fill='rgba(224,104,32,0.25)'%3ECREW:DEAD%3C/text%3E%3Ctext x='247' y='128' font-family='Consolas,monospace' font-size='9' fill='rgba(224,104,32,0.40)' letter-spacing='3' text-anchor='middle'%3EUSG ISHIMURA%3C/text%3E%3Ctext x='247' y='138' font-family='Consolas,monospace' font-size='5.5' fill='rgba(224,104,32,0.25)' letter-spacing='2' text-anchor='middle'%3EPLANET CRACKER CLASS  //  REGISTERED: TITAN STATION%3C/text%3E%3Ctext x='247' y='280' font-family='Consolas,monospace' font-size='7' fill='rgba(140,80,30,0.28)' letter-spacing='3' text-anchor='middle'%3EAEGIS VII%3C/text%3E%3Ctext x='247' y='290' font-family='Consolas,monospace' font-size='5' fill='rgba(100,55,18,0.22)' letter-spacing='1.5' text-anchor='middle'%3EPLANET CRACK OPERATION: ACTIVE%3C/text%3E%3Cline x1='28' y1='354' x2='108' y2='354' stroke='rgba(224,104,32,0.25)' stroke-width='0.8'/%3E%3Cline x1='28' y1='350' x2='28' y2='358' stroke='rgba(224,104,32,0.25)' stroke-width='0.8'/%3E%3Cline x1='68' y1='350' x2='68' y2='358' stroke='rgba(224,104,32,0.25)' stroke-width='0.8'/%3E%3Cline x1='108' y1='350' x2='108' y2='358' stroke='rgba(224,104,32,0.25)' stroke-width='0.8'/%3E%3Ctext x='68' y='347' font-family='Consolas,monospace' font-size='5.5' fill='rgba(224,104,32,0.30)' text-anchor='middle'%3E500M%3C/text%3E%3Cpath d='M 28,108 Q 247,52 472,108' fill='none' stroke='rgba(224,104,32,0.08)' stroke-width='0.7' stroke-dasharray='4,6'/%3E%3Ctext x='480' y='330' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.28)' text-anchor='end'%3ERIG UNIT: CLARKE-ISC-47%3C/text%3E%3Ctext x='480' y='338' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.25)' text-anchor='end'%3ESUIT INTEGRITY: CRITICAL%3C/text%3E%3Ctext x='480' y='346' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.22)' text-anchor='end'%3EHEALTH: 12 PCT  //  O2: 31 PCT%3C/text%3E%3Ctext x='480' y='354' font-family='Consolas,monospace' font-size='5' fill='rgba(128,16,0,0.35)' text-anchor='end'%3ENECROMORPH ALERT: DECK 7%3C/text%3E%3Ctext x='480' y='372' font-family='Consolas,monospace' font-size='5' fill='rgba(224,104,32,0.18)' text-anchor='end'%3EUSG ISHIMURA TECHNICAL LIBRARY  //  CONFIDENTIAL%3C/text%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
+    /* kinesis orange bloom at center */
+    radial-gradient(ellipse 38% 38% at 50% 46%, rgba(224,104,32,.028) 0%, transparent 68%),
+    /* deep space void on flanks */
+    radial-gradient(ellipse 22% 100% at 0% 50%, rgba(2,1,0,.08) 0%, transparent 55%),
+    radial-gradient(ellipse 22% 100% at 100% 50%, rgba(2,1,0,.08) 0%, transparent 55%);
+  animation: ds-schematic 12s ease-in-out infinite;
+}
+@keyframes ds-schematic {
+  0%, 100% { opacity: 0.88; }
+  50%       { opacity: 1.0; }
+  82%       { opacity: 0.92; }
+  83%       { opacity: 0.12; }   /* shipwide power surge / blackout */
+  84%       { opacity: 1.0; }
+  85%       { opacity: 0.68; }
+  86%       { opacity: 1.0; }
 }
 
-/* ── Space dust — tiny dim particles scattered in the void ───────────────── */
-#grid-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ccircle cx='23' cy='47' r='1' fill='rgba(176,188,200,0.18)'/%3E%3Ccircle cx='87' cy='112' r='0.7' fill='rgba(176,188,200,0.12)'/%3E%3Ccircle cx='155' cy='28' r='1.2' fill='rgba(176,188,200,0.1)'/%3E%3Ccircle cx='201' cy='78' r='0.8' fill='rgba(176,188,200,0.15)'/%3E%3Ccircle cx='267' cy='144' r='1' fill='rgba(176,188,200,0.12)'/%3E%3Ccircle cx='42' cy='189' r='0.6' fill='rgba(176,188,200,0.14)'/%3E%3Ccircle cx='118' cy='235' r='1.1' fill='rgba(176,188,200,0.09)'/%3E%3Ccircle cx='178' cy='167' r='0.7' fill='rgba(176,188,200,0.16)'/%3E%3Ccircle cx='240' cy='212' r='0.9' fill='rgba(176,188,200,0.11)'/%3E%3Ccircle cx='70' cy='268' r='1' fill='rgba(176,188,200,0.13)'/%3E%3Ccircle cx='290' cy='55' r='0.7' fill='rgba(224,104,32,0.08)'/%3E%3Ccircle cx='133' cy='93' r='0.5' fill='rgba(224,104,32,0.07)'/%3E%3Ccircle cx='214' cy='251' r='0.8' fill='rgba(224,104,32,0.06)'/%3E%3C/svg%3E");
-  opacity: 1;
-}
-
-/* ── RIG suit warning pulse — orange, like suit health bar ───────────────── */
-@keyframes ds-pulse {
-  0%, 100% {
-    text-shadow: 0 0 5px rgba(224, 104, 32, 0.6), 0 0 14px rgba(224, 104, 32, 0.25);
-    opacity: 1;
-  }
-  40% {
-    text-shadow: 0 0 8px rgba(224, 104, 32, 0.85), 0 0 22px rgba(224, 104, 32, 0.45), 0 0 40px rgba(224, 104, 32, 0.15);
-    opacity: 0.95;
-  }
-  42% {
-    text-shadow: 0 0 4px rgba(224, 104, 32, 0.4), 0 0 8px rgba(224, 104, 32, 0.15);
-    opacity: 0.85;
-  }
-  44% {
-    text-shadow: 0 0 8px rgba(224, 104, 32, 0.8), 0 0 20px rgba(224, 104, 32, 0.4);
-    opacity: 0.98;
-  }
-  70% {
-    text-shadow: 0 0 6px rgba(224, 104, 32, 0.65), 0 0 16px rgba(224, 104, 32, 0.3);
-    opacity: 0.93;
-  }
-}
-
-/* ── Flavor content ────────────────────────────────────────────────────────── */
+/* ── Flavor content ─────────────────────────────────────────────────────────── */
 #header::after {
-  content: 'RIG DIAGNOSTIC  //  USG ISHIMURA';
+  content: 'RIG DIAGNOSTIC  //  USG ISHIMURA  //  HULL INTEGRITY: CRITICAL';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-size: 8px; letter-spacing: 2px; color: rgba(224, 104, 32, 0.62);
   pointer-events: none; white-space: nowrap;
 }
 
+/* ── ASCII terminal diagnostic readout — RIG suit systems monitor ─────────── */
 #grid-container::after {
-  content: 'NECROMORPH\AWARNING\A\AINTEGRITY:\ACRITICAL\A\AMAKE US\AWHOLE\A\ADELETE YOUR\AMARKERS\A\ASTASIS: LOW\AOXYGEN: LOW';
+  content: 'USG ISHIMURA\APLANET CRACKER CLASS\A--------------------\AHULL    [=      ] CRIT\AO2      [==     ] 31pct\ASTASIS   [       ] NONE\ABIOHAZARD: CRITICAL\A--------------------\ADECK 7  : OFFLINE\ADECK 8  : BREACH\AMEDICAL : COMPROMISED\AENGRG   : ACTIVE\A--------------------\ANECRO STATUS: ACTIVE\AMAKE US WHOLE';
   display: flex; align-items: flex-end; justify-content: flex-start;
   padding: 0 0 10px 12px;
-  font-size: 9px; line-height: 1.6; text-align: left; font-weight: 600;
-  color: rgba(224, 104, 32, 0.12); white-space: pre;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 9px; line-height: 1.65; text-align: left; font-weight: 600;
+  color: rgba(224, 104, 32, 0.11); white-space: pre;
+  animation: ds-readout 11s ease-in-out infinite;
+}
+@keyframes ds-readout {
+  0%, 100% { opacity: 0.65; }
+  50%       { opacity: 1.0; }
+  83%       { opacity: 0.08; }   /* blackout syncs with schematic */
+  84%       { opacity: 1.0; }
 }
 
 #edit-bar::after {
-  content: 'STASIS MODULE ACTIVE';
+  content: 'STASIS MODULE: DEPLETED';
   position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
   font-size: 8px; letter-spacing: 2px; color: rgba(176, 0, 0, 0.45);
   pointer-events: none; white-space: nowrap;
 }
 
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 0, 0, 0.98); border-top-color: rgba(224, 104, 32, 0.22); border-left: 3px solid rgba(224, 104, 32, 0.6); }
-#theme-banner::before { content: '☠'; color: #E06820; font-size: 20px; }
-#theme-banner-text { color: rgba(200, 140, 80, 0.55); }
+/* ── RIG suit warning pulse — orange, like suit health bar heartbeat ──────── */
+@keyframes ds-pulse {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(224,104,32,.60), 0 0 14px rgba(224,104,32,.25);
+    opacity: 1;
+  }
+  40% {
+    text-shadow: 0 0 8px rgba(224,104,32,.85), 0 0 22px rgba(224,104,32,.45), 0 0 40px rgba(224,104,32,.15);
+    opacity: 0.95;
+  }
+  42% {
+    text-shadow: 0 0 4px rgba(224,104,32,.40), 0 0 8px rgba(224,104,32,.15);
+    opacity: 0.85;
+  }
+  44% {
+    text-shadow: 0 0 8px rgba(224,104,32,.80), 0 0 20px rgba(224,104,32,.40);
+    opacity: 0.98;
+  }
+  70% {
+    text-shadow: 0 0 6px rgba(224,104,32,.65), 0 0 16px rgba(224,104,32,.30);
+    opacity: 0.93;
+  }
+}
 
-/* ── Phase 4D/E: header strobe + tile scan ───────────────────────────────── */
-#header::before { animation: hdr-bar-strobe 8s steps(1) infinite; }
+/* ── Banner ─────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(2, 0, 0, 0.98); border-top-color: rgba(224,104,32,.22); border-left: 3px solid rgba(224,104,32,.60); }
+#theme-banner::before { content: '☠'; color: #E06820; font-size: 20px; }
+#theme-banner-text { color: rgba(224, 148, 80, 0.68); }
+
+/* ── Zero-G debris — hull fragments, spores and sparks drifting in the void ─ */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='500'%3E%3Ccircle cx='32' cy='75' r='1.5' fill='rgba(176,188,200,0.18)'/%3E%3Ccircle cx='108' cy='195' r='1' fill='rgba(176,188,200,0.14)'/%3E%3Ccircle cx='178' cy='318' r='2.2' fill='rgba(176,188,200,0.12)'/%3E%3Ccircle cx='58' cy='420' r='0.8' fill='rgba(176,188,200,0.16)'/%3E%3Ccircle cx='215' cy='138' r='1.2' fill='rgba(176,188,200,0.15)'/%3E%3Ccircle cx='82' cy='268' r='1.8' fill='rgba(176,188,200,0.11)'/%3E%3Ccircle cx='145' cy='355' r='1' fill='rgba(224,104,32,0.14)'/%3E%3Ccircle cx='192' cy='468' r='0.8' fill='rgba(224,104,32,0.10)'/%3E%3Ccircle cx='28' cy='345' r='2' fill='rgba(176,188,200,0.09)'/%3E%3Ccircle cx='228' cy='248' r='1.4' fill='rgba(176,188,200,0.12)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='700'%3E%3Ccircle cx='65' cy='125' r='1.8' fill='rgba(176,188,200,0.08)'/%3E%3Ccircle cx='188' cy='348' r='1.2' fill='rgba(224,104,32,0.07)'/%3E%3Ccircle cx='285' cy='572' r='2' fill='rgba(176,188,200,0.07)'/%3E%3Ccircle cx='118' cy='488' r='1' fill='rgba(176,188,200,0.09)'/%3E%3Ccircle cx='312' cy='215' r='0.8' fill='rgba(224,104,32,0.06)'/%3E%3Ccircle cx='48' cy='625' r='1.5' fill='rgba(176,188,200,0.06)'/%3E%3C/svg%3E") repeat;
+  background-size: 250px 500px, 350px 700px;
+  animation: ds-zerog-drift 20s linear infinite;
+}
+@keyframes ds-zerog-drift {
+  from { background-position: 0 0, 18px 0; }
+  to   { background-position: 38px -500px, -25px -700px; }
+}
+
+/* ── Tile hover — RIG diagnostic scan bar sweeps downward ──────────────────── */
 .app-tile::before {
   width: 100%; height: 3px;
   left: 0; top: -3px;
@@ -253,16 +283,3 @@
   background: var(--tile-hover-border);
 }
 .app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }
-
-/* ── Zero-G dust — floating debris in the void ──────────────────────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='500'%3E%3Ccircle cx='40' cy='80' r='1' fill='rgba(176,188,200,0.14)'/%3E%3Ccircle cx='120' cy='200' r='0.7' fill='rgba(176,188,200,0.10)'/%3E%3Ccircle cx='200' cy='350' r='1.2' fill='rgba(224,104,32,0.08)'/%3E%3Ccircle cx='80' cy='440' r='0.8' fill='rgba(176,188,200,0.12)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='700'%3E%3Ccircle cx='60' cy='120' r='1.5' fill='rgba(176,188,200,0.07)'/%3E%3Ccircle cx='180' cy='340' r='1' fill='rgba(224,104,32,0.05)'/%3E%3Ccircle cx='280' cy='560' r='1.8' fill='rgba(176,188,200,0.06)'/%3E%3C/svg%3E") repeat;
-  background-size: 250px 500px, 350px 700px;
-  animation: ds-zerog 18s linear infinite;
-}
-@keyframes ds-zerog {
-  from { background-position: 0 0, 20px 0; }
-  to   { background-position: 40px -500px, -30px -700px; }
-}
