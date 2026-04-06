@@ -66,6 +66,7 @@
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
+  --tile-label-shadow:    0 1px 4px rgba(0,0,0,.92), 0 0 8px rgba(0,0,0,.60);
 
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(0, 240, 255, 0.09);
@@ -253,7 +254,7 @@ html, body {
   text-shadow: var(--glow-c);
   animation: var(--title-anim);
 }
-#header-version { font-size: 8px; letter-spacing: 2px; color: var(--text-dim); line-height: 1; }
+#header-version { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); line-height: 1; }
 .accent { color: var(--accent-m); }
 
 @keyframes glitch-title {
@@ -359,13 +360,14 @@ button:active { background: var(--btn-active-bg); }
 }
 
 .tile-label {
-  font-size: 10px; letter-spacing: var(--tile-label-spacing);
+  font-size: 12px; letter-spacing: var(--tile-label-spacing);
   text-transform: var(--tile-label-transform);
   font-weight: var(--tile-label-weight);
   font-style: var(--tile-label-style);
   color: var(--text); text-align: center;
+  text-shadow: var(--tile-label-shadow);
   margin-top: 5px;
-  max-width: calc(var(--icon-size) + 28px);
+  max-width: calc(var(--icon-size) + 36px);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   line-height: 1.2;
 }
@@ -445,9 +447,9 @@ button:active { background: var(--btn-active-bg); }
 
 #theme-banner-text {
   flex: 1;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 2px;
-  color: var(--text-dim);
+  color: var(--text);
   font-family: var(--font);
   white-space: nowrap;
   overflow: hidden;
