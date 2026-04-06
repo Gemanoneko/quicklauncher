@@ -19,7 +19,7 @@
   --font:         'Consolas', monospace;
 
   /* ── Text ── */
-  --text:         #888888;
+  --text:         #AAAAAA;
   --text-dim:     rgba(110, 110, 110, 0.45);
 
   /* ── Accents ── */
@@ -182,11 +182,11 @@
 
 /* ── Title animation: slow clinical ID blink ─────────────────────────────────── */
 @keyframes scp-blink {
-  0%, 100% { color: #888888; text-shadow: 0 0 5px rgba(187,187,187,.28), 0 0 12px rgba(187,187,187,.08); opacity: 1; }
-  85%       { color: #888888; text-shadow: 0 0 5px rgba(187,187,187,.28), 0 0 12px rgba(187,187,187,.08); opacity: 1; }
+  0%, 100% { color: #AAAAAA; text-shadow: 0 0 5px rgba(187,187,187,.28), 0 0 12px rgba(187,187,187,.08); opacity: 1; }
+  85%       { color: #AAAAAA; text-shadow: 0 0 5px rgba(187,187,187,.28), 0 0 12px rgba(187,187,187,.08); opacity: 1; }
   87%       { color: #BBBBBB; text-shadow: 0 0 8px rgba(187,187,187,.55), 0 0 20px rgba(187,187,187,.18); opacity: 1; }
   89%       { color: #CC0000; text-shadow: 0 0 6px rgba(204,0,0,.60), 0 0 16px rgba(204,0,0,.22); opacity: 0.85; }
-  91%       { color: #888888; text-shadow: 0 0 4px rgba(187,187,187,.20); opacity: 1; }
+  91%       { color: #AAAAAA; text-shadow: 0 0 4px rgba(187,187,187,.20); opacity: 1; }
 }
 
 /* ── Containment breach alert — institutional flash ─────────────────────── */

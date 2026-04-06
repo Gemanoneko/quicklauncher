@@ -19,7 +19,7 @@
   --font:         Georgia, 'Times New Roman', serif;
 
   /* ── Text ── */
-  --text:         #7080A0;
+  --text:         #90A4C4;
   --text-dim:     rgba(90, 100, 130, 0.45);
 
   /* ── Accents ── */
@@ -182,14 +182,14 @@
 
 /* ── Title animation: slow cosmic color swirl + mad glitch ───────────────────── */
 @keyframes cosmic-madness {
-  0%   { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); opacity: 1; }
+  0%   { color: #90A4C4; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); opacity: 1; }
   20%  { color: #8090C0; text-shadow: 0 0 8px rgba(80,100,180,.45), 0 0 22px rgba(64,80,160,.16); opacity: 0.95; }
   40%  { color: #9080A0; text-shadow: 0 0 7px rgba(120,80,140,.40), 0 0 18px rgba(100,60,120,.14); opacity: 0.98; }
   60%  { color: #6070A0; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 14px rgba(50,65,130,.12); opacity: 1; }
-  78%  { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.35); opacity: 1; }
+  78%  { color: #90A4C4; text-shadow: 0 0 6px rgba(64,80,160,.35); opacity: 1; }
   80%  { color: #C0A040; text-shadow: 0 0 4px rgba(192,160,64,.50); opacity: 0.7; transform: skewX(2deg); }
-  81%  { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.38); opacity: 1; transform: skewX(0); }
-  100% { color: #7080A0; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); opacity: 1; }
+  81%  { color: #90A4C4; text-shadow: 0 0 6px rgba(64,80,160,.38); opacity: 1; transform: skewX(0); }
+  100% { color: #90A4C4; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); opacity: 1; }
 }
 
 /* ── Cosmic horror — sanity eroding presence ────────────────────────────── */

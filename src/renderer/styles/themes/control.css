@@ -19,7 +19,7 @@
   --font:         'Segoe UI', 'Arial', sans-serif;
 
   /* ── Text ── */
-  --text:         #A09090;
+  --text:         #BEA8A8;
   --text-dim:     rgba(140, 120, 110, 0.50);
 
   /* ── Accents ── */
@@ -185,8 +185,8 @@
 
 /* ── Title animation: Hiss-like glitch distortion ────────────────────────────── */
 @keyframes hiss-distort {
-  0%, 100% { color: #A09090; text-shadow: 0 0 4px rgba(204,17,0,.28), 0 0 12px rgba(204,17,0,.12); opacity: 1; }
-  80%       { color: #A09090; text-shadow: 0 0 4px rgba(204,17,0,.28); opacity: 1; }
+  0%, 100% { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28), 0 0 12px rgba(204,17,0,.12); opacity: 1; }
+  80%       { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28); opacity: 1; }
   82%       { color: #CC1100; text-shadow: 0 0 8px rgba(204,17,0,.70), 0 0 22px rgba(204,17,0,.28); opacity: 1; transform: translateX(1px); }
   83%       { color: #787878; text-shadow: none; opacity: 0.6; transform: translateX(-1px); }
   84%       { color: #CC1100; text-shadow: 0 0 6px rgba(204,17,0,.55); opacity: 0.9; transform: translateX(0); }
