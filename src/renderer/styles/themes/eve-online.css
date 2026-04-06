@@ -157,7 +157,7 @@
   content: 'NEW EDEN  //  CAPSULEER LINK ACTIVE  //  WARP DRIVE ONLINE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(56, 136, 204, 0.52);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(80, 160, 225, 0.62);
   pointer-events: none; white-space: nowrap;
 }
 

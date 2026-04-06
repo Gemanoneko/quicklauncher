@@ -164,7 +164,7 @@
   content: 'SEES  //  DARK HOUR  //  TARTARUS  //  MEMENTO MORI';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(30, 114, 216, 0.52);
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(60, 150, 240, 0.68);
   pointer-events: none; white-space: nowrap;
 }
 

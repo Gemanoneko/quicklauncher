@@ -128,7 +128,7 @@
   content: 'IMPERIAL COMMAND  //  CORUSCANT  //  ORDER REIGNS';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Segoe UI', sans-serif;
-  font-size: 8.5px; letter-spacing: 2.5px; color: rgba(160, 168, 184, 0.40);
+  font-size: 8.5px; letter-spacing: 2.5px; color: rgba(175, 183, 200, 0.52);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -172,7 +172,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(5, 5, 7, 0.98); border-top-color: rgba(150, 158, 175, 0.18); }
 #theme-banner::before { content: '▣'; color: #C0C8D8; font-size: 16px; }
-#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(120, 130, 148, 0.55); }
+#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(140, 150, 170, 0.65); }
 
 /* ── Phase 4D/E: header strobe + tile scan ───────────────────────────────── */
 #header::before { animation: hdr-bar-strobe 8s steps(1) infinite; }

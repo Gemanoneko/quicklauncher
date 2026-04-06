@@ -190,7 +190,7 @@
 #header::after {
   content: 'MU-TH-UR 6000  ///  WEYLAND-YUTANI CORP.';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(27, 200, 27, 0.50);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(27, 200, 27, 0.62);
   pointer-events: none; white-space: nowrap;
 }
 

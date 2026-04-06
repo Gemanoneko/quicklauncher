@@ -135,7 +135,7 @@
   content: 'THE SHIRE  //  HOBBITON  //  SECOND BREAKFAST PENDING';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(104, 128, 48, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(125, 155, 65, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -183,7 +183,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(4, 6, 1, 0.97); border-top-color: rgba(88, 110, 30, 0.22); }
 #theme-banner::before { content: '⌂'; color: #D0A040; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(104, 128, 40, 0.60); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(125, 155, 55, 0.72); }
 
 /* ── Hobbiton fireflies — glowing amber sparks above the meadow ──────────── */
 #particles {

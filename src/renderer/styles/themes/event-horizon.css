@@ -200,7 +200,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 0, 0, 0.99); border-top-color: rgba(80, 0, 0, 0.28); }
 #theme-banner::before { content: '⊘'; color: #991111; font-size: 20px; opacity: 0.88; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(165, 40, 40, 0.75); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 80, 75, 0.80); }
 
 /* ── Gravity drive — void distortion pulse expanding from the core ────────── */
 #particles {

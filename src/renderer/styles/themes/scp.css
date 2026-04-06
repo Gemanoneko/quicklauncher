@@ -157,7 +157,7 @@
   content: 'SCP FOUNDATION  //  CONTAINMENT PROTOCOL  //  LEVEL 4 CLEARANCE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(150, 150, 150, 0.42);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(170, 170, 170, 0.52);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -203,7 +203,7 @@
 /* ── Banner ──────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(2, 2, 2, 0.99); border-top-color: rgba(150, 150, 150, 0.20); }
 #theme-banner::before { content: '◼'; color: #CC0000; font-size: 18px; }
-#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(130, 130, 130, 0.55); }
+#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(150, 150, 150, 0.62); }
 
 /* ── Containment scan sweep + classified breach alert ────────────────────── */
 #particles {

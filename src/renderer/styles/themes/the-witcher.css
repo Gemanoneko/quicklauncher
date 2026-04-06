@@ -138,7 +138,7 @@
   content: 'THE WITCHER  //  MONSTER CONTRACT  //  BY ORDER OF THE GUILD';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(192, 160, 32, 0.45);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 170, 48, 0.55);
   pointer-events: none; white-space: nowrap;
 }
 

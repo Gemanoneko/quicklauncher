@@ -211,7 +211,7 @@
   content: 'THE MATRIX  HAS YOU  ///  FOLLOW THE WHITE RABBIT';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Courier New', Courier, monospace;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(0, 255, 65, 0.45);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(0, 255, 65, 0.52);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -237,7 +237,7 @@
 /* ── Banner ────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(0, 2, 0, 0.98); border-top-color: rgba(0, 255, 65, 0.16); }
 #theme-banner::before { content: '〓'; color: #00FF41; font-size: 20px; font-family: 'Courier New', monospace; }
-#theme-banner-text { font-family: 'Courier New', Courier, monospace; color: rgba(0, 200, 50, 0.55); }
+#theme-banner-text { font-family: 'Courier New', Courier, monospace; color: rgba(0, 200, 50, 0.68); }
 
 /* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
 #header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }

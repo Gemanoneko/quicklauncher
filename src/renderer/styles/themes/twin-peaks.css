@@ -170,7 +170,7 @@
   content: 'TWIN PEAKS  //  BLACK LODGE  //  THE OWLS ARE NOT WHAT THEY SEEM';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(160, 95, 50, 0.58);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(180, 115, 65, 0.72);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -218,7 +218,7 @@
 /* ── Banner ──────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(4, 1, 2, 0.99); border-top-color: rgba(110, 10, 5, 0.25); }
 #theme-banner::before { content: '◑'; color: #880000; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(155, 50, 30, 0.72); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 90, 60, 0.82); }
 
 /* ── Tile: curtain flicker ─────────────────────────────────────────────────── */
 .app-tile::before {

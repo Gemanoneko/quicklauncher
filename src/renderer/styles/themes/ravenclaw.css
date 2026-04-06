@@ -128,7 +128,7 @@
   content: 'RAVENCLAW  //  WIT BEYOND MEASURE  //  THE EAGLE SOARS';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(80, 120, 190, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(100, 145, 215, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -174,7 +174,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(2, 3, 9, 0.97); border-top-color: rgba(64, 104, 176, 0.22); }
 #theme-banner::before { content: '✧'; color: #4068B0; font-size: 22px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(70, 110, 185, 0.65); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(90, 135, 210, 0.72); }
 
 /* ── Astronomy tower stars — slow drift of the night sky ─────────────────── */
 #particles {

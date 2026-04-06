@@ -159,7 +159,7 @@
   content: 'NERV HQ  //  GEOFRONT  //  UNIT-01 SYNCHRONIZED';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(220, 90, 0, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(235, 115, 0, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -195,7 +195,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 3, 8, 0.98); border-top-color: rgba(200, 70, 0, 0.22); }
 #theme-banner::before { content: '⬡'; color: #E05800; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(192, 100, 0, 0.60); }
+#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(210, 120, 0, 0.72); }
 
 /* ── Phase 4E: tile radial ring ──────────────────────────────────────────── */
 .app-tile::before {

@@ -140,7 +140,7 @@
   content: 'RIVENDELL  //  IMLADRIS  //  THE LAST HOMELY HOUSE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(96, 128, 184, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(115, 150, 205, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -188,7 +188,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 4, 9, 0.97); border-top-color: rgba(80, 110, 170, 0.22); }
 #theme-banner::before { content: '✶'; color: #6080B8; font-size: 22px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(80, 120, 180, 0.60); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(100, 145, 205, 0.72); }
 
 /* ── Waterfall mist spray — droplets rising from the pool below ──────────── */
 #particles {

@@ -140,7 +140,7 @@
   content: 'GRYFFINDOR  //  BRAVE AT HEART  //  DARING  NERVE  CHIVALRY';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 100, 30, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(215, 120, 45, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 

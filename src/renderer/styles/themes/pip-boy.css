@@ -212,7 +212,7 @@
   content: 'VAULT-TEC  //  PIP-BOY 3000 MK.IV';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Arial Black', Arial, sans-serif;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(146, 200, 0, 0.42);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(146, 200, 0, 0.55);
   pointer-events: none; white-space: nowrap;
 }
 

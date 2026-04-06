@@ -140,7 +140,7 @@
   content: 'DISCOVERY ONE  //  2001  //  HAL 9000 OPERATIONAL';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Segoe UI', sans-serif;
-  font-size: 8.5px; letter-spacing: 2.5px; color: rgba(140, 165, 195, 0.40);
+  font-size: 8.5px; letter-spacing: 2.5px; color: rgba(160, 185, 218, 0.52);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -186,7 +186,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(2, 3, 8, 0.98); border-top-color: rgba(120, 145, 175, 0.18); }
 #theme-banner::before { content: '⊙'; color: #CC0000; font-size: 20px; opacity: 0.8; }
-#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(110, 130, 160, 0.55); }
+#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(130, 152, 185, 0.65); }
 
 /* ── Stargate sequence — Jupiter And Beyond The Infinite ─────────────────── */
 #particles {

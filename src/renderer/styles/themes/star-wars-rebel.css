@@ -129,7 +129,7 @@
   content: 'REBEL ALLIANCE  //  YAVIN IV  //  FREEDOM OR DEATH';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 100, 0, 0.53);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(215, 120, 0, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
