@@ -331,6 +331,34 @@ const THEME_BANNERS = {
     'SAVE YOURSELF FROM HELL.',
     'I CREATE LIFE. AND I DESTROY IT. THAT IS ENOUGH.',
   ],
+  'firefly': [
+    'YOU CAN\'T TAKE THE SKY FROM ME.',
+    'SERENITY FLIGHT SYSTEMS ONLINE.',
+    'CARGO SECURED. ENGINE ROOM STABLE.',
+    'I AIM TO MISBEHAVE.',
+    'WE HAVE DONE THE IMPOSSIBLE, AND THAT MAKES US MIGHTY.',
+  ],
+  'persona-4': [
+    'REACH OUT TO THE TRUTH.',
+    'MIDNIGHT CHANNEL SIGNAL STABLE.',
+    'FOG ADVISORY IN EFFECT.',
+    'THE TV WORLD AWAITS.',
+    'EVERY DAY\'S GREAT AT YOUR JUNES!',
+  ],
+  'persona-3': [
+    'MEMENTO MORI.',
+    'THE CLOCK STRIKES MIDNIGHT.',
+    'DARK HOUR STABILITY CONFIRMED.',
+    'THE MOMENT MAN DEVOURED THE FRUIT OF KNOWLEDGE, HE SEALED HIS FATE.',
+    'BURN MY DREAD.',
+  ],
+  'eve-online': [
+    'NEURAL LINK ESTABLISHED.',
+    'WARP DRIVE ACTIVE.',
+    'CAPSULE SYNCHRONIZATION COMPLETE.',
+    'DOCKING REQUEST ACCEPTED.',
+    'FLY DANGEROUS. FLY SAFE.',
+  ],
 };
 
 // Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
@@ -388,6 +416,10 @@ const THEME_NAMES = {
   'soma':                'SOMA',
   'stranger-things':     'STRANGER THINGS',
   'fatal-frame':         'FATAL FRAME',
+  'firefly':             'FIREFLY / SERENITY',
+  'persona-4':           'PERSONA 4',
+  'persona-3':           'PERSONA 3',
+  'eve-online':          'EVE ONLINE',
 };
 const ALL_THEMES = Object.keys(THEME_BANNERS);
 

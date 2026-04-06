@@ -1,0 +1,231 @@
+/* ══ PERSONA 4 ════════════════════════════════════════════════════════════════
+   Inaba. Yasogami High. The Midnight Channel. Investigation Team.
+   Bold mustard gold blazing through the golden fog. Every day's great at
+   your Junes. REACH OUT TO THE TRUTH.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #060401;
+  --panel-bg:     rgba(8, 5, 0, 0.98);
+  --overlay-bg:   rgba(6, 4, 0, 0.96);
+  --header-bg:    rgba(220, 180, 0, 0.05);
+
+  /* ── Typography ── */
+  --font:         'Segoe UI', 'Arial', sans-serif;
+
+  /* ── Text ── */
+  --text:         #E0C040;
+  --text-dim:     rgba(190, 155, 40, 0.45);
+
+  /* ── Accents ── */
+  --accent-c:     #DDB000;   /* Midnight Channel gold */
+  --accent-m:     #E86820;   /* Investigation orange */
+  --accent-y:     #FFE040;   /* blazing yellow */
+
+  /* ── Borders ── */
+  --border:       rgba(200, 160, 0, 0.24);
+  --border-h:     rgba(220, 180, 0, 0.60);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 7px rgba(220,176,0,.75),   0 0 22px rgba(200,150,0,.28);
+  --glow-m:       0 0 6px rgba(232,104,32,.70),  0 0 18px rgba(210,90,24,.25);
+  --glow-y:       0 0 8px rgba(255,224,64,.80),  0 0 26px rgba(240,200,32,.28);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 20px rgba(200,160,0,.07);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 2px,
+                    rgba(0, 0, 0, 0.38) 2px, rgba(0, 0, 0, 0.38) 3px
+                  );
+  --drag-over-glow: inset 0 0 24px rgba(220,180,0,.12);
+
+  /* ── Title animation ── */
+  --title-anim:   midnight-channel 5s steps(1) infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(200, 160, 0, 0.09);
+  --tile-hover-border: rgba(220, 180, 0, 0.52);
+  --tile-hover-shadow: 0 0 12px rgba(220, 176, 0, 0.28);
+  --tile-active-bg:    rgba(200, 160, 0, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(220,176,0,.72)) drop-shadow(0 0 14px rgba(200,150,0,.28));
+  --tile-icon-fx:      brightness(1.05) saturate(1.2) contrast(1.15);
+  --tile-icon-shape:   polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+  --tile-label-spacing:   2px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    700;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-throb 3s ease-in-out infinite;
+  --app-entrance-anim:   entrance-flash 0.8s ease-out forwards;
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(200, 160, 0, 0.11);
+  --btn-active-bg:  rgba(200, 160, 0, 0.22);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(200, 160, 0, 0.30);
+  --drop-icon-color:  rgba(220, 176, 0, 0.42);
+  --hint-sub-color:   rgba(180, 140, 40, 0.38);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(220, 176, 0, 0.45);
+  --rename-input-bg:  rgba(200, 160, 0, 0.07);
+
+  /* ── Edit bar (Investigation orange) ── */
+  --edit-bar-bg:          rgba(232, 104, 32, 0.07);
+  --edit-bar-border:      rgba(232, 104, 32, 0.48);
+  --edit-label-color:     #E86820;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #E86820;
+  --btn-done-border:      rgba(232, 104, 32, 0.45);
+  --btn-done-hover-bg:    rgba(232, 104, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(220, 176, 0, 0.45);
+
+  /* ── Update banner (blazing yellow) ── */
+  --update-bg:             rgba(255, 224, 64, 0.06);
+  --update-border:         rgba(255, 224, 64, 0.38);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(255, 224, 64, 0.32);
+  --update-btn-hover-bg:   rgba(255, 224, 64, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(220, 176, 0, 0.40);
+  --btn-close-hover-bg:   rgba(200, 160, 0, 0.11);
+  --btn-close-hover-glow: var(--glow-c);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(200, 160, 0, 0.07);
+  --picker-item-hover-bg:  rgba(200, 160, 0, 0.09);
+  --picker-item-active-bg: rgba(200, 160, 0, 0.17);
+  --picker-placeholder-bg: rgba(200, 160, 0, 0.07);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(200, 160, 0, 0.18);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(232, 104, 32, 0.90);
+  --remove-btn-border:     var(--accent-m);
+}
+
+/* ── Heavy CRT scanlines + golden fog vignette ──────────────────────────────── */
+#app::after {
+  background:
+    /* CRT scanlines — Midnight Channel TV interference */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 2px,
+      rgba(0, 0, 0, 0.42) 2px, rgba(0, 0, 0, 0.42) 3px
+    ),
+    /* golden fog vignette */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 28%, rgba(3, 2, 0, 0.88) 100%),
+    /* Midnight Channel center glow */
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(180, 140, 0, 0.05) 0%, transparent 60%),
+    /* corner shadow bleeds */
+    radial-gradient(ellipse 40% 30% at 0% 100%, rgba(200, 100, 0, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(200, 140, 0, 0.05) 0%, transparent 55%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header bold Midnight Channel gold bar ───────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #DDB000, rgba(180, 130, 0, 0.30));
+  box-shadow: 0 0 10px rgba(220,176,0,0.75), 0 0 28px rgba(200,150,0,0.28);
+}
+
+/* ── Grid: golden fog — horizontal Persona energy bars ──────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* bold horizontal Persona dividers */
+    repeating-linear-gradient(
+      to bottom,
+      rgba(200, 160, 0, 0.032) 0px, rgba(200, 160, 0, 0.032) 1px,
+      transparent 1px, transparent 30px
+    ),
+    /* golden fog seep from top */
+    linear-gradient(to bottom, rgba(200, 160, 0, 0.08) 0%, rgba(180, 130, 0, 0.03) 22%, transparent 50%),
+    /* golden seep from bottom */
+    linear-gradient(to top, rgba(180, 120, 0, 0.07) 0%, transparent 30%);
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'MIDNIGHT CHANNEL  //  INABA  //  INVESTIGATION TEAM';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 8px; letter-spacing: 2px; color: rgba(220, 176, 0, 0.50);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'REACH OUT\ATO THE\ATRUTH\A\AMIDNIGHT\ACHANNEL\A\AJUNES!\AJUNES!\AJUNES!\A\AGOLDEN\AFOG';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 11px; letter-spacing: 2px; line-height: 1.7; text-align: right;
+  color: rgba(180, 140, 0, 0.11); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'SHADOW WORLD — INVESTIGATION MODE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(220, 176, 0, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 5px; }
+
+/* ── Title animation: Midnight Channel TV flicker ────────────────────────────── */
+@keyframes midnight-channel {
+  0%, 100%  { color: #E0C040; text-shadow: 0 0 7px rgba(220,176,0,.70), 0 0 20px rgba(200,150,0,.25); opacity: 1; }
+  60%       { color: #E0C040; opacity: 1; }
+  62%       { color: #FFE040; text-shadow: 0 0 12px rgba(255,224,64,.90), 0 0 32px rgba(220,176,0,.45); opacity: 0.9; }
+  63%       { color: #202010; text-shadow: none; opacity: 0.2; }
+  64%       { color: #FFE040; text-shadow: 0 0 10px rgba(255,224,64,.80); opacity: 0.85; }
+  65%       { color: #E0C040; text-shadow: 0 0 7px rgba(220,176,0,.70); opacity: 1; }
+  85%       { color: #E0C040; opacity: 1; }
+  86%       { color: #E86820; text-shadow: 0 0 8px rgba(232,104,32,.75); opacity: 0.75; }
+  87%       { color: #E0C040; text-shadow: 0 0 7px rgba(220,176,0,.70); opacity: 1; }
+}
+
+/* ── App: golden fog pulse — TV static throb ─────────────────────────────────── */
+#app { animation: p4-tv-pulse 6s steps(1) infinite; }
+@keyframes p4-tv-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,160,0,.28), inset 0 0 22px rgba(180,140,0,.06); }
+  20%      { box-shadow: 0 0 0 1px rgba(220,176,0,.62), inset 0 0 30px rgba(200,160,0,.10); }
+  21%      { box-shadow: 0 0 0 1px rgba(40,30,0,.12), inset 0 0 10px rgba(20,15,0,.02); }
+  22%      { box-shadow: 0 0 0 1px rgba(220,176,0,.50), inset 0 0 26px rgba(200,160,0,.09); }
+  65%      { box-shadow: 0 0 0 1px rgba(180,140,0,.22), inset 0 0 20px rgba(180,140,0,.05); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(6, 4, 0, 0.98); border-top-color: rgba(200, 160, 0, 0.28); }
+#theme-banner::before { content: '◈'; color: #DDB000; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; color: rgba(200, 160, 32, 0.65); }
+
+/* ── Midnight Channel CRT static — golden fog interference ─────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='300'%3E%3Crect x='10' y='20' width='4' height='1' fill='rgba(220,176,0,0.18)'/%3E%3Crect x='60' y='80' width='6' height='1' fill='rgba(220,176,0,0.12)'/%3E%3Crect x='110' y='140' width='3' height='1' fill='rgba(255,224,64,0.14)'/%3E%3Crect x='40' y='200' width='5' height='1' fill='rgba(200,150,0,0.10)'/%3E%3Crect x='120' y='260' width='4' height='1' fill='rgba(220,176,0,0.15)'/%3E%3Crect x='80' y='50' width='7' height='1' fill='rgba(232,104,32,0.09)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='450'%3E%3Crect x='20' y='60' width='5' height='1' fill='rgba(220,176,0,0.10)'/%3E%3Crect x='100' y='180' width='8' height='1' fill='rgba(200,150,0,0.08)'/%3E%3Crect x='180' y='320' width='4' height='1' fill='rgba(255,224,64,0.09)'/%3E%3Crect x='60' y='400' width='6' height='1' fill='rgba(220,176,0,0.07)'/%3E%3C/svg%3E") repeat;
+  background-size: 150px 300px, 220px 450px;
+  animation: p4-static 0.15s steps(1) infinite;
+}
+@keyframes p4-static {
+  0%   { background-position: 0 0, 10px 0; opacity: 0.6; }
+  25%  { background-position: -5px 15px, 20px -10px; opacity: 0.9; }
+  50%  { background-position: 8px -8px, -5px 20px; opacity: 0.5; }
+  75%  { background-position: -3px 22px, 15px -15px; opacity: 0.8; }
+  100% { background-position: 10px 5px, -10px 8px; opacity: 0.6; }
+}

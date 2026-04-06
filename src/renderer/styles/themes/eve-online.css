@@ -1,0 +1,230 @@
+/* ══ EVE ONLINE ═══════════════════════════════════════════════════════════════
+   New Eden. Capsuleer interface. CONCORD authorized. Warp Drive Active.
+   Cold steel blue on the void. Empyrean Age. Fly dangerous. Fly safe.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #010407;
+  --panel-bg:     rgba(1, 5, 10, 0.99);
+  --overlay-bg:   rgba(1, 4, 8, 0.97);
+  --header-bg:    rgba(40, 120, 200, 0.04);
+
+  /* ── Typography ── */
+  --font:         'Segoe UI', 'Arial', sans-serif;
+
+  /* ── Text ── */
+  --text:         #A8C0D8;
+  --text-dim:     rgba(130, 160, 196, 0.42);
+
+  /* ── Accents ── */
+  --accent-c:     #3888CC;   /* EVE capsuleer steel blue */
+  --accent-m:     #5060A0;   /* Caldari secondary */
+  --accent-y:     #A0C4E8;   /* pale cold highlight */
+
+  /* ── Borders ── */
+  --border:       rgba(56, 136, 204, 0.18);
+  --border-h:     rgba(56, 136, 204, 0.52);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(56,136,204,.62),  0 0 18px rgba(40,110,180,.20);
+  --glow-m:       0 0 5px rgba(80,96,160,.55),   0 0 14px rgba(60,76,140,.18);
+  --glow-y:       0 0 6px rgba(160,196,232,.52), 0 0 18px rgba(130,170,210,.18);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 18px rgba(40,110,180,.04);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(56,136,204,.09);
+
+  /* ── Title animation ── */
+  --title-anim:   capsuleer-link 7s ease-in-out infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(40, 110, 180, 0.07);
+  --tile-hover-border: rgba(56, 136, 204, 0.40);
+  --tile-hover-shadow: 0 0 10px rgba(56, 136, 204, 0.14);
+  --tile-active-bg:    rgba(40, 110, 180, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(56,136,204,.52)) drop-shadow(0 0 12px rgba(40,110,180,.20));
+  --tile-icon-fx:      brightness(0.95) saturate(0.9) contrast(1.15);
+  --tile-icon-shape:   polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0% 71%, 0% 29%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-glow 5s ease-in-out infinite;
+  --app-entrance-anim:   entrance-glitch 1s ease-out forwards;
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(40, 110, 180, 0.09);
+  --btn-active-bg:  rgba(40, 110, 180, 0.18);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(40, 110, 180, 0.22);
+  --drop-icon-color:  rgba(56, 136, 204, 0.32);
+  --hint-sub-color:   rgba(120, 160, 200, 0.30);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(56, 136, 204, 0.35);
+  --rename-input-bg:  rgba(40, 110, 180, 0.07);
+
+  /* ── Edit bar (Caldari secondary blue) ── */
+  --edit-bar-bg:          rgba(80, 96, 160, 0.07);
+  --edit-bar-border:      rgba(80, 96, 160, 0.38);
+  --edit-label-color:     var(--accent-m);
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       var(--accent-m);
+  --btn-done-border:      rgba(80, 96, 160, 0.38);
+  --btn-done-hover-bg:    rgba(80, 96, 160, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(56, 136, 204, 0.32);
+
+  /* ── Update banner (pale cold blue) ── */
+  --update-bg:             rgba(160, 196, 232, 0.05);
+  --update-border:         rgba(160, 196, 232, 0.28);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(160, 196, 232, 0.24);
+  --update-btn-hover-bg:   rgba(160, 196, 232, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(56, 136, 204, 0.35);
+  --btn-close-hover-bg:   rgba(40, 110, 180, 0.09);
+  --btn-close-hover-glow: var(--glow-c);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(40, 110, 180, 0.07);
+  --picker-item-hover-bg:  rgba(40, 110, 180, 0.08);
+  --picker-item-active-bg: rgba(40, 110, 180, 0.15);
+  --picker-placeholder-bg: rgba(40, 110, 180, 0.07);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(40, 110, 180, 0.15);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(56, 136, 204, 0.88);
+  --remove-btn-border:     var(--accent-c);
+}
+
+/* ── Void: HUD scanlines + deep space vignette ──────────────────────────────── */
+#app::after {
+  background:
+    /* faint HUD scanlines — capsuleer interface overlay */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 3px,
+      rgba(56, 136, 204, 0.012) 3px, rgba(56, 136, 204, 0.012) 4px
+    ),
+    /* deep space black vignette */
+    radial-gradient(ellipse 100% 96% at 50% 50%, transparent 30%, rgba(0, 1, 4, 0.86) 100%),
+    /* cold void bleed from top */
+    radial-gradient(ellipse 55% 25% at 50% 0%, rgba(30, 80, 150, 0.06) 0%, transparent 65%);
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header: capsuleer steel blue bar ────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #3888CC, rgba(40, 110, 180, 0.25));
+  box-shadow: 0 0 8px rgba(56,136,204,0.60), 0 0 22px rgba(40,110,180,0.20);
+}
+
+/* ── Grid: tactical HUD overlay — precise coordinate grid ───────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* vertical HUD grid lines */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 39px,
+      rgba(56,136,204,.022) 39px, rgba(56,136,204,.022) 40px
+    ),
+    /* horizontal HUD grid lines */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px, transparent 39px,
+      rgba(56,136,204,.018) 39px, rgba(56,136,204,.018) 40px
+    ),
+    /* cold starfield depth from top */
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(10, 30, 70, 0.10) 0%, transparent 70%);
+  background-size: 40px 40px, 40px 40px, 100% 100%;
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'NEW EDEN  //  CAPSULEER LINK ACTIVE  //  WARP DRIVE ONLINE';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(56, 136, 204, 0.52);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'NEW EDEN\ACAPSULEER\AINTERFACE\A\ACONCORD\AAUTHORIZED\A\AWARP\ADRIVE\AACTIVE\A\ADOCKING\AREQUEST\AACCEPTED';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 8.5px; line-height: 1.6; text-align: right; letter-spacing: 2px;
+  color: rgba(40, 110, 180, 0.10); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'CAPSULE RECONFIGURATION';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(56, 136, 204, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 6px; font-weight: 300; }
+
+/* ── Title animation: neural link synchronization ────────────────────────────── */
+@keyframes capsuleer-link {
+  0%, 100% { color: #A8C0D8; text-shadow: 0 0 5px rgba(56,136,204,.38), 0 0 15px rgba(40,110,180,.15); opacity: 1; }
+  45%       { color: #B8D0EC; text-shadow: 0 0 8px rgba(56,136,204,.60), 0 0 22px rgba(40,110,180,.22); opacity: 0.95; }
+  75%       { color: #A8C0D8; text-shadow: 0 0 5px rgba(56,136,204,.38); opacity: 1; }
+  88%       { color: #A8C0D8; opacity: 1; }
+  89%       { color: #C8E0F8; text-shadow: 0 0 10px rgba(160,196,232,.75); opacity: 0.7; }
+  90%       { color: #505060; text-shadow: none; opacity: 0.25; }
+  91%       { color: #A8C0D8; text-shadow: 0 0 5px rgba(56,136,204,.38); opacity: 1; }
+}
+
+/* ── App: capsuleer void pulse — cold, minimal ────────────────────────────────── */
+#app { animation: eve-void-pulse 9s ease-in-out infinite; }
+@keyframes eve-void-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(40,110,180,.16), inset 0 0 20px rgba(40,110,180,.04); }
+  50%       { box-shadow: 0 0 0 1px rgba(56,136,204,.38), inset 0 0 30px rgba(56,136,204,.07); }
+  65%       { box-shadow: 0 0 0 1px rgba(20,60,120,.12), inset 0 0 16px rgba(20,60,120,.03); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(1, 4, 9, 0.99); border-top-color: rgba(40, 110, 180, 0.22); }
+#theme-banner::before { content: '◈'; color: #3888CC; font-size: 20px; }
+#theme-banner-text { color: rgba(140, 180, 220, 0.58); }
+
+/* ── Phase 4E: tile scan-v — capsuleer system scan ───────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 3px;
+  left: 0; top: -3px;
+  transform: none;
+  background: var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }
+
+/* ── Star field: distant New Eden systems — slow parallax drift ───────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='18' cy='42' r='0.8' fill='rgba(200,220,240,0.25)'/%3E%3Ccircle cx='75' cy='120' r='1.2' fill='rgba(160,196,232,0.20)'/%3E%3Ccircle cx='140' cy='228' r='0.7' fill='rgba(56,136,204,0.22)'/%3E%3Ccircle cx='50' cy='315' r='1' fill='rgba(200,220,240,0.18)'/%3E%3Ccircle cx='168' cy='78' r='0.8' fill='rgba(160,196,232,0.16)'/%3E%3Ccircle cx='105' cy='370' r='1.2' fill='rgba(56,136,204,0.14)'/%3E%3Ccircle cx='30' cy='195' r='0.6' fill='rgba(220,234,248,0.20)'/%3E%3Ccircle cx='185' cy='310' r='0.9' fill='rgba(130,170,210,0.18)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='310' height='620'%3E%3Ccircle cx='45' cy='80' r='1' fill='rgba(180,210,238,0.15)'/%3E%3Ccircle cx='160' cy='230' r='0.8' fill='rgba(56,136,204,0.12)'/%3E%3Ccircle cx='260' cy='410' r='1.2' fill='rgba(200,220,240,0.14)'/%3E%3Ccircle cx='90' cy='540' r='0.7' fill='rgba(140,180,220,0.16)'/%3E%3Ccircle cx='220' cy='150' r='1' fill='rgba(56,136,204,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 310px 620px;
+  animation: eve-starfield 60s linear infinite;
+}
+@keyframes eve-starfield {
+  from { background-position: 0 0, 30px 0; }
+  to   { background-position: 40px 100px, 80px 60px; }
+}

@@ -1,0 +1,218 @@
+/* ══ FIREFLY / SERENITY ═══════════════════════════════════════════════════════
+   A Firefly-class transport ship. Nine crew. No job too small. Worn copper
+   terminals and engine amber. Hull bolts and salvage dust. The signal can't
+   be stopped. I aim to misbehave.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Shape ── */
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── Backgrounds ── */
+  --bg:           #090602;
+  --panel-bg:     rgba(12, 8, 3, 0.99);
+  --overlay-bg:   rgba(9, 6, 2, 0.97);
+  --header-bg:    rgba(180, 90, 20, 0.04);
+
+  /* ── Typography ── */
+  --font:         'Consolas', 'Courier New', monospace;
+
+  /* ── Text ── */
+  --text:         #C8905A;
+  --text-dim:     rgba(160, 110, 60, 0.48);
+
+  /* ── Accents ── */
+  --accent-c:     #C87830;   /* warm copper — primary */
+  --accent-m:     #803A18;   /* deep rust — secondary */
+  --accent-y:     #E0A040;   /* bright engine amber */
+
+  /* ── Borders ── */
+  --border:       rgba(180, 100, 30, 0.28);
+  --border-h:     rgba(200, 120, 48, 0.58);
+
+  /* ── Glows ── */
+  --glow-c:       0 0 6px rgba(200,120,48,.65),  0 0 18px rgba(180,100,30,.22);
+  --glow-m:       0 0 5px rgba(128,58,24,.55),   0 0 14px rgba(100,40,16,.18);
+  --glow-y:       0 0 7px rgba(224,160,64,.65),  0 0 20px rgba(200,140,48,.22);
+
+  /* ── App window decoration ── */
+  --pulse-glow:   inset 0 0 20px rgba(160,80,20,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(200,120,48,.10);
+
+  /* ── Title animation ── */
+  --title-anim:   serenity-hum 10s ease-in-out infinite;
+
+  /* ── Tiles ── */
+  --tile-hover-bg:     rgba(180, 90, 20, 0.09);
+  --tile-hover-border: rgba(200, 120, 48, 0.42);
+  --tile-hover-shadow: 0 0 10px rgba(200, 120, 48, 0.18);
+  --tile-active-bg:    rgba(180, 90, 20, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(200,120,48,.55)) drop-shadow(0 0 12px rgba(180,100,30,.22));
+  --tile-icon-fx:      sepia(0.40) brightness(0.92) contrast(1.15) saturate(0.85);
+  --tile-icon-shape:   polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0% 71%, 0% 29%);
+  --tile-label-spacing:   0.5px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-glow 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
+
+  /* ── Buttons ── */
+  --btn-hover-bg:   rgba(180, 90, 20, 0.10);
+  --btn-active-bg:  rgba(180, 90, 20, 0.20);
+
+  /* ── Drop hint ── */
+  --drop-hint-border: rgba(180, 90, 20, 0.28);
+  --drop-icon-color:  rgba(200, 120, 48, 0.38);
+  --hint-sub-color:   rgba(150, 100, 55, 0.38);
+
+  /* ── Rename ── */
+  --rename-dashed:    rgba(200, 120, 48, 0.38);
+  --rename-input-bg:  rgba(180, 90, 20, 0.08);
+
+  /* ── Edit bar (engine amber) ── */
+  --edit-bar-bg:          rgba(180, 90, 20, 0.08);
+  --edit-bar-border:      rgba(200, 120, 48, 0.42);
+  --edit-label-color:     #E0A040;
+  --edit-label-glow:      var(--glow-y);
+  --btn-done-color:       #E0A040;
+  --btn-done-border:      rgba(224, 160, 64, 0.38);
+  --btn-done-hover-bg:    rgba(224, 160, 64, 0.09);
+  --btn-done-hover-glow:  var(--glow-y);
+  --btn-add-border:       rgba(200, 120, 48, 0.38);
+
+  /* ── Update banner (copper) ── */
+  --update-bg:             rgba(180, 90, 20, 0.07);
+  --update-border:         rgba(200, 120, 48, 0.32);
+  --update-color:          var(--accent-c);
+  --update-btn-border:     rgba(200, 120, 48, 0.28);
+  --update-btn-hover-bg:   rgba(200, 120, 48, 0.09);
+  --update-btn-hover-glow: var(--glow-c);
+
+  /* ── Close / secondary buttons ── */
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(200, 120, 48, 0.38);
+  --btn-close-hover-bg:   rgba(180, 90, 20, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  /* ── Picker ── */
+  --picker-search-bg:      rgba(180, 90, 20, 0.07);
+  --picker-item-hover-bg:  rgba(180, 90, 20, 0.09);
+  --picker-item-active-bg: rgba(180, 90, 20, 0.17);
+  --picker-placeholder-bg: rgba(180, 90, 20, 0.07);
+
+  /* ── Skin selector ── */
+  --skin-btn-active-bg:    rgba(180, 90, 20, 0.18);
+
+  /* ── Remove button ── */
+  --remove-btn-bg:         rgba(200, 120, 48, 0.90);
+  --remove-btn-border:     var(--accent-c);
+}
+
+/* ── Film grain + engine-warm vignette + amber corner bleeds ────────────────── */
+#app::after {
+  background:
+    /* film grain — worn hull plating texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.76' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+    /* warm vignette — hull walls closing in */
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 28%, rgba(4, 2, 0, 0.84) 100%),
+    /* engine amber bleed — from bottom */
+    radial-gradient(ellipse 60% 28% at 50% 100%, rgba(180, 90, 20, 0.09) 0%, transparent 65%),
+    /* warm bulkhead light — top-left corner */
+    radial-gradient(ellipse 35% 22% at 0% 0%, rgba(160, 70, 15, 0.06) 0%, transparent 60%);
+  background-size: 220px 220px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header warm copper accent bar ──────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #C87830, rgba(160, 80, 20, 0.28));
+  box-shadow: 0 0 8px rgba(200,120,48,0.60), 0 0 22px rgba(180,100,30,0.22);
+}
+
+/* ── Grid: engine room plating — horizontal bolted hull panels ──────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* hull panel seams — bolted horizontal dividers */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 57px,
+      rgba(140, 70, 18, 0.028) 57px, rgba(140, 70, 18, 0.028) 59px
+    ),
+    /* engine warmth — amber bleed from bottom */
+    linear-gradient(to top, rgba(160, 80, 20, 0.07) 0%, transparent 35%),
+    /* ambient hull warmth — sides */
+    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(120, 55, 12, 0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(120, 55, 12, 0.06) 0%, transparent 65%);
+  background-size: 100% 59px, 100% 100%, 100% 100%, 100% 100%;
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────────── */
+#header::after {
+  content: 'SERENITY  //  FIREFLY-CLASS TRANSPORT  //  CAN\'T STOP THE SIGNAL';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 120, 48, 0.52);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'SERENITY\AFIREFLY\ACLASS\A\ACREW: 9\ACARGO:\ASECURED\A\AENGINE\AROOM\ASTABLE\A\ACOURSE\APLOTTED';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 9px; line-height: 1.7; text-align: right;
+  color: rgba(160, 80, 20, 0.12); white-space: pre;
+}
+
+#edit-bar::after {
+  content: 'I AIM TO MISBEHAVE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 8px; letter-spacing: 2.5px; color: rgba(200, 140, 60, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Consolas', 'Courier New', monospace; letter-spacing: 5px; font-weight: 400; }
+
+/* ── Title animation: engine hum — amber pulse with occasional sputter ──────── */
+@keyframes serenity-hum {
+  0%, 100% { color: #C8905A; text-shadow: 0 0 5px rgba(200,120,48,.42), 0 0 14px rgba(180,100,30,.18); opacity: 1; }
+  50%       { color: #D4A06A; text-shadow: 0 0 8px rgba(224,160,64,.55), 0 0 22px rgba(200,130,48,.22); opacity: 0.95; }
+  88%       { color: #C8905A; text-shadow: 0 0 5px rgba(200,120,48,.42); opacity: 1; }
+  89%       { color: #E0A040; text-shadow: 0 0 10px rgba(224,160,64,.75); opacity: 0.7; }
+  90%       { color: #C8905A; text-shadow: 0 0 5px rgba(200,120,48,.42); opacity: 1; }
+  91%       { color: #A07030; text-shadow: none; opacity: 0.5; }
+  92%       { color: #C8905A; text-shadow: 0 0 6px rgba(200,120,48,.50); opacity: 1; }
+}
+
+/* ── App: Serenity engine warm pulse ─────────────────────────────────────────── */
+#app { animation: serenity-engine 10s ease-in-out infinite; }
+@keyframes serenity-engine {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(160,80,20,.22), inset 0 0 24px rgba(160,80,20,.05); }
+  50%       { box-shadow: 0 0 0 1px rgba(200,120,48,.40), inset 0 0 32px rgba(180,100,30,.08); }
+  70%       { box-shadow: 0 0 0 1px rgba(140,70,16,.18), inset 0 0 20px rgba(140,70,16,.04); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(8, 5, 1, 0.99); border-top-color: rgba(180, 90, 20, 0.28); }
+#theme-banner::before { content: '✦'; color: #C87830; font-size: 18px; }
+#theme-banner-text { font-family: 'Consolas', 'Courier New', monospace; color: rgba(180, 120, 60, 0.68); }
+
+/* ── Amber dust drifting upward — engine exhaust and hull particulates ─────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='450'%3E%3Ccircle cx='30' cy='80' r='1.5' fill='rgba(200,120,48,0.20)'/%3E%3Ccircle cx='90' cy='220' r='1' fill='rgba(224,160,64,0.15)'/%3E%3Ccircle cx='150' cy='360' r='2' fill='rgba(180,100,30,0.12)'/%3E%3Ccircle cx='60' cy='410' r='1' fill='rgba(200,140,60,0.18)'/%3E%3Ccircle cx='170' cy='130' r='1.5' fill='rgba(160,80,20,0.14)'/%3E%3Ccircle cx='110' cy='290' r='1' fill='rgba(224,150,56,0.16)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='600'%3E%3Ccircle cx='50' cy='100' r='1' fill='rgba(224,160,64,0.12)'/%3E%3Ccircle cx='140' cy='300' r='1.5' fill='rgba(200,120,48,0.09)'/%3E%3Ccircle cx='230' cy='480' r='2' fill='rgba(180,90,20,0.10)'/%3E%3Ccircle cx='80' cy='550' r='1' fill='rgba(160,80,20,0.12)'/%3E%3Ccircle cx='195' cy='200' r='1.5' fill='rgba(200,130,48,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 450px, 280px 600px;
+  animation: firefly-dust 12s linear infinite;
+}
+@keyframes firefly-dust {
+  from { background-position: 0 0, 20px 0; }
+  to   { background-position: -15px -450px, 5px -600px; }
+}
