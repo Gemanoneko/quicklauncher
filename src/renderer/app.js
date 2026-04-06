@@ -359,6 +359,13 @@ const THEME_BANNERS = {
     'DOCKING REQUEST ACCEPTED.',
     'FLY DANGEROUS. FLY SAFE.',
   ],
+  'indiana-jones': [
+    'SNAKES. WHY DID IT HAVE TO BE SNAKES.',
+    'NOT THE YEARS, HONEY. THE MILEAGE.',
+    'THAT BELONGS IN A MUSEUM.',
+    'FORTUNE AND GLORY, KID.',
+    'X MARKS THE SPOT.',
+  ],
 };
 
 // Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
@@ -420,6 +427,7 @@ const THEME_NAMES = {
   'persona-4':           'PERSONA 4',
   'persona-3':           'PERSONA 3',
   'eve-online':          'EVE ONLINE',
+  'indiana-jones':       'INDIANA JONES',
 };
 const ALL_THEMES = Object.keys(THEME_BANNERS);
 
