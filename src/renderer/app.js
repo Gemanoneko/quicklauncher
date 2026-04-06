@@ -366,6 +366,13 @@ const THEME_BANNERS = {
     'FORTUNE AND GLORY, KID.',
     'X MARKS THE SPOT.',
   ],
+  'game-of-thrones': [
+    'WHEN YOU PLAY THE GAME OF THRONES, YOU WIN OR YOU DIE.',
+    'WINTER IS COMING.',
+    'VALAR MORGHULIS.',
+    'DRACARYS.',
+    'A LANNISTER ALWAYS PAYS HIS DEBTS.',
+  ],
 };
 
 // Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
@@ -428,6 +435,7 @@ const THEME_NAMES = {
   'persona-3':           'PERSONA 3',
   'eve-online':          'EVE ONLINE',
   'indiana-jones':       'INDIANA JONES',
+  'game-of-thrones':     'GAME OF THRONES',
 };
 const ALL_THEMES = Object.keys(THEME_BANNERS);
 
