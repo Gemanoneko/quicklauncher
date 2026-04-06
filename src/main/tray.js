@@ -1,6 +1,5 @@
 const { Tray, Menu, nativeImage } = require('electron');
 const path = require('path');
-const { sendToBottom } = require('./window');
 const { checkForUpdates } = require('./updater');
 
 let tray = null;
@@ -27,7 +26,6 @@ function setupTray(win, electronApp, store) {
           win.hide();
         } else {
           win.show();
-          sendToBottom(win);
         }
       }
     },
@@ -45,7 +43,6 @@ function setupTray(win, electronApp, store) {
       win.hide();
     } else {
       win.show();
-      sendToBottom(win);
     }
   });
 }

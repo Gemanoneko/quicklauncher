@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
 const { randomUUID } = require('crypto');
-const { sendToBottom } = require('./window');
 const { checkForUpdates } = require('./updater');
 
 // Derive valid theme identifiers from the CSS files on disk.
@@ -263,8 +262,6 @@ function setupIPC(win, store, electronApp) {
     } else {
       shell.openPath(filePath);
     }
-    // Give the launched app time to take focus, then push launcher back down
-    setTimeout(() => sendToBottom(win), 500);
   });
 
   ipcMain.handle('get-installed-apps', () => {
@@ -509,7 +506,6 @@ $apps | ConvertTo-Json -Depth 2
 
   ipcMain.handle('resize-window', (_, { width, height }) => {
     win.setContentSize(Math.max(width, 200), Math.max(height, 150));
-    sendToBottom(win);
   });
 
   ipcMain.handle('set-auto-launch', (_, enabled) => {
