@@ -1,5 +1,16 @@
-const { BrowserWindow, screen } = require('electron');
+const { BrowserWindow, screen, app } = require('electron');
 const path = require('path');
+
+// Returns the saved position if at least 100×50px of the window overlaps any
+// active display workArea; otherwise returns null so we fall back to the default.
+function visiblePosition(pos, size) {
+  return screen.getAllDisplays().some(d => {
+    const wa = d.workArea;
+    const ox = Math.min(pos.x + size.width,  wa.x + wa.width)  - Math.max(pos.x, wa.x);
+    const oy = Math.min(pos.y + size.height, wa.y + wa.height) - Math.max(pos.y, wa.y);
+    return ox >= 100 && oy >= 50;
+  }) ? pos : null;
+}
 
 function createWindow(store) {
   const settings = store.get('settings');
@@ -9,7 +20,8 @@ function createWindow(store) {
   const defaultHeight = 300;
 
   const size = settings.windowSize || { width: defaultWidth, height: defaultHeight };
-  const pos = settings.windowPosition || {
+  const savedPos = settings.windowPosition;
+  const pos = (savedPos && visiblePosition(savedPos, size)) || {
     x: sw - size.width - 20,
     y: sh - size.height - 20
   };
@@ -32,7 +44,8 @@ function createWindow(store) {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      sandbox: false,          // preload needs require() to load package.json for version
+      sandbox: true,
+      additionalArguments: [`--app-version=${app.getVersion()}`],
       preload: path.join(__dirname, 'preload.js'),
     }
   });

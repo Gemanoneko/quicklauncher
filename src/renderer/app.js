@@ -613,6 +613,7 @@ function applySettings() {
   document.getElementById('slider-icon-size').value = size;
   document.getElementById('icon-size-val').textContent = size + 'px';
   document.getElementById('chk-startup').checked = settings.startWithWindows !== false;
+  document.getElementById('chk-random-theme').checked = settings.randomTheme !== false;
 
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
@@ -657,6 +658,11 @@ document.getElementById('chk-startup').addEventListener('change', async (e) => {
   settings.startWithWindows = e.target.checked;
   await window.api.invoke('save-settings', settings);
   await window.api.invoke('set-auto-launch', e.target.checked);
+});
+
+document.getElementById('chk-random-theme').addEventListener('change', async (e) => {
+  settings.randomTheme = e.target.checked;
+  await window.api.invoke('save-settings', settings);
 });
 
 // ── Drag & Drop ────────────────────────────────────────────────────────────────
@@ -946,6 +952,10 @@ function setupUpdateListeners() {
     window.api.on('update-error', (msg) => {
       showUpdateBanner(`UPDATE ERROR: ${msg}`, [], 6000);
       console.warn('Update error:', msg);
+    }),
+    window.api.on('store-save-error', () => {
+      showUpdateBanner('SAVE ERROR — SETTINGS MAY NOT PERSIST', [], 8000);
+      console.error('Store save failed');
     }),
   ];
 

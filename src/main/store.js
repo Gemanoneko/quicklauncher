@@ -1,9 +1,11 @@
 const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const { EventEmitter } = require('events');
 
-class Store {
+class Store extends EventEmitter {
   constructor() {
+    super();
     this.dataPath = path.join(app.getPath('userData'), 'quicklauncher-data.json');
     this.data = this._load();
   }
@@ -23,6 +25,7 @@ class Store {
       settings: {
         iconSize: 64,
         startWithWindows: true,
+        randomTheme: true,
         theme: 'cyberpunk',
         windowPosition: null
       }
@@ -42,7 +45,10 @@ class Store {
     clearTimeout(this._saveTimer);
     this._saveTimer = setTimeout(() => {
       fs.writeFile(this.dataPath, JSON.stringify(this.data, null, 2), 'utf8', (err) => {
-        if (err) console.error('Failed to save store:', err);
+        if (err) {
+          console.error('Failed to save store:', err);
+          this.emit('save-error', err);
+        }
       });
     }, 100);
   }

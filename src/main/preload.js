@@ -1,6 +1,6 @@
 'use strict';
 const { contextBridge, ipcRenderer, webUtils } = require('electron');
-const { version } = require('../../package.json');
+const version = process.argv.find(a => a.startsWith('--app-version='))?.slice('--app-version='.length) ?? '';
 
 // Allowlists — only these channels can be used from the renderer.
 // Any call outside these sets is rejected before it reaches the main process.
@@ -30,6 +30,7 @@ const ON_CHANNELS = new Set([
   'update-ready',
   'update-not-available',
   'update-error',
+  'store-save-error',
 ]);
 
 contextBridge.exposeInMainWorld('api', {

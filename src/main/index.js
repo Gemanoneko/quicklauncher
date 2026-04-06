@@ -18,14 +18,24 @@ let mainWindow = null;
 const store = new Store();
 
 app.whenReady().then(() => {
-  const themes = [...VALID_THEMES];
   const s = store.get('settings');
-  store.set('settings', { ...s, theme: themes[Math.floor(Math.random() * themes.length)] });
+  if (s.randomTheme !== false) {
+    const themes = [...VALID_THEMES];
+    const others = themes.filter(t => t !== s.theme);
+    const pool = others.length ? others : themes;
+    store.set('settings', { ...s, theme: pool[Math.floor(Math.random() * pool.length)] });
+  }
 
   mainWindow = createWindow(store);
   setupTray(mainWindow, app, store);
   setupIPC(mainWindow, store, app);
   setupUpdater(mainWindow);
+
+  store.on('save-error', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('store-save-error');
+    }
+  });
 
   // Apply auto-launch preference (packaged builds only — dev builds use the
   // bare Electron binary as exe path, which would register the wrong entry)

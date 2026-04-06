@@ -40,7 +40,13 @@ function setupUpdater(win) {
     send('update-error', err.message);
   });
 
-  ipcMain.handle('download-update', () => autoUpdater.downloadUpdate());
+  ipcMain.handle('download-update', async () => {
+    try {
+      await autoUpdater.downloadUpdate();
+    } catch (err) {
+      send('update-error', err.message);
+    }
+  });
 
   // Silent install: no installer UI shown, app restarts automatically
   ipcMain.handle('install-update', () => {
