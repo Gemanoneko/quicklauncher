@@ -148,7 +148,7 @@
   content: 'PATHOS-II  //  DEEP SEA STATION  //  WAU SYSTEMS ONLINE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 138, 154, 0.45);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 175, 195, 0.62);
   pointer-events: none; white-space: nowrap;
 }
 

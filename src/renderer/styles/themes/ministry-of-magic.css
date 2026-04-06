@@ -142,7 +142,7 @@
   content: 'MINISTRY OF MAGIC  //  DEPT. OF MYSTERIES  //  LEVEL SEVEN';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 120, 88, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 170, 128, 0.68);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -185,7 +185,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(2, 7, 4, 0.98); border-top-color: rgba(0, 100, 70, 0.22); }
 #theme-banner::before { content: '⊞'; color: #007858; font-size: 18px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(0, 110, 78, 0.60); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(0, 158, 115, 0.72); }
 
 /* ── Enchanted memos in flight — paper planes crossing the atrium ─────────── */
 #particles {

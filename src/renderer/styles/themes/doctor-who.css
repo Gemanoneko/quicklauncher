@@ -149,7 +149,7 @@
   content: 'T.A.R.D.I.S.  //  TIME LORD  //  GALLIFREY STANDS';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 112, 192, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 150, 235, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -188,7 +188,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(2, 4, 12, 0.97); border-top-color: rgba(0, 96, 180, 0.22); }
 #theme-banner::before { content: '∞'; color: #0070C0; font-size: 22px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(0, 100, 180, 0.60); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(0, 140, 210, 0.72); }
 
 /* ── Phase 4E: tile radial ring ──────────────────────────────────────────── */
 .app-tile::before {

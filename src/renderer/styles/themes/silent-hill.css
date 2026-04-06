@@ -160,7 +160,7 @@
   content: 'SILENT HILL  //  THE OTHERWORLD  //  SIREN ACTIVE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(120, 40, 16, 0.60);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(190, 95, 65, 0.75);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -196,7 +196,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(6, 3, 1, 0.98); border-top-color: rgba(100, 28, 10, 0.25); }
 #theme-banner::before { content: '✝'; color: #802010; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(110, 60, 30, 0.73); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(175, 105, 70, 0.80); }
 
 /* ── Tile: cage border flicker ───────────────────────────────────────────── */
 .app-tile::before {

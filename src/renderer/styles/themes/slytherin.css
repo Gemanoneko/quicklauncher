@@ -148,7 +148,7 @@
   content: 'SLYTHERIN  //  DUNGEONS  //  AMBITION ABOVE ALL';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(24, 128, 64, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(40, 170, 90, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -191,7 +191,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 5, 3, 0.98); border-top-color: rgba(20, 100, 40, 0.22); }
 #theme-banner::before { content: '◐'; color: #188040; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(20, 110, 50, 0.58); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(40, 155, 80, 0.70); }
 
 /* ── Black Lake water caustic shimmers — light dancing on dungeon walls ───── */
 #particles {

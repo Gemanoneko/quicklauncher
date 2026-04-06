@@ -272,7 +272,7 @@ button {
   -webkit-app-region: no-drag;
   background: transparent;
   border: 1px solid var(--border);
-  color: var(--accent-c);
+  color: var(--text);
   cursor: pointer;
   font-family: var(--font);
   font-size: 11px; letter-spacing: 1px;

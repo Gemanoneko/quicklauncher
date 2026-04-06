@@ -155,7 +155,7 @@
   content: 'HAWKINS  //  THE UPSIDE DOWN  //  THE GATE IS OPEN';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(255, 0, 102, 0.45);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(255, 70, 145, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -196,7 +196,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(5, 0, 5, 0.98); border-top-color: rgba(180, 0, 100, 0.28); }
 #theme-banner::before { content: '▽'; color: #9900CC; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(200, 0, 120, 0.58); }
+#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(235, 60, 165, 0.70); }
 
 /* ── The Gate opening — Upside Down bleeds through ──────────────────────── */
 #app { animation: st-gate-bleed 9s ease-in-out infinite; }

@@ -147,7 +147,7 @@
   content: 'NEO-TOKYO  //  2019  //  CAPSULE GANG';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
-  font-size: 9px; letter-spacing: 2px; color: rgba(220, 16, 32, 0.50);
+  font-size: 9px; letter-spacing: 2px; color: rgba(235, 80, 90, 0.68);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -193,7 +193,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(8, 0, 4, 0.98); border-top-color: rgba(220, 10, 30, 0.25); }
 #theme-banner::before { content: '◉'; color: #E01020; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(200, 20, 36, 0.60); }
+#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(225, 80, 90, 0.72); }
 
 /* ── Tile: psychic burst ─────────────────────────────────────────────────── */
 .app-tile::before {

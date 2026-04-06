@@ -154,7 +154,7 @@
   content: 'PHANTOM THIEVES  //  METAVERSE  //  STEAL THE TREASURE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(255, 16, 32, 0.48);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(255, 80, 90, 0.65);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -193,7 +193,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(9, 0, 0, 0.98); border-top-color: rgba(220, 0, 20, 0.28); }
 #theme-banner::before { content: '♠'; color: #FF1020; font-size: 22px; }
-#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 2px; color: rgba(220, 16, 32, 0.60); }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 2px; color: rgba(240, 75, 85, 0.72); }
 
 /* ── Metaverse bleed — red slashes cutting through reality ───────────────── */
 #particles {

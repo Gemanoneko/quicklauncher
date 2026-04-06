@@ -138,7 +138,7 @@
   content: 'PROJECT ZERO  //  HIMURO MANSION  //  CAMERA OBSCURA READY';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(80, 96, 160, 0.44);
+  font-size: 8.5px; letter-spacing: 2px; color: rgba(110, 130, 200, 0.62);
   pointer-events: none; white-space: nowrap;
 }
 
@@ -191,7 +191,7 @@
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 3, 8, 0.98); border-top-color: rgba(70, 80, 140, 0.26); }
 #theme-banner::before { content: '✿'; color: #5060A0; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(72, 88, 150, 0.58); }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(105, 125, 190, 0.72); }
 
 /* ── Spirit orbs — paranormal concentric-ring orbs, cold shrine glide ────── */
 #particles {
