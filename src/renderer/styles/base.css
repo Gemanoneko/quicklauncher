@@ -611,12 +611,12 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 .theme-search:hover { border-color: var(--border-h); box-shadow: var(--glow-c); }
 .theme-search:focus { border-color: var(--accent-c); box-shadow: var(--glow-c); cursor: text; }
 .theme-picker-list {
-  position: absolute; bottom: calc(100% + 3px); left: 0; right: 0; z-index: 400;
+  position: fixed; left: 20px; right: 20px; z-index: 400;
   background: var(--panel-bg);
   border: 1px solid var(--accent-c);
   box-shadow: var(--glow-c);
   border-radius: var(--radius);
-  max-height: 200px; overflow-y: auto;
+  overflow-y: auto;
 }
 .theme-picker-list::-webkit-scrollbar { width: 4px; }
 .theme-picker-list::-webkit-scrollbar-track { background: transparent; }

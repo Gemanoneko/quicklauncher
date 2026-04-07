@@ -1106,6 +1106,11 @@ document.getElementById('btn-done-edit').addEventListener('click', exitEditMode)
   function openPicker() {
     buildList(searchEl.value);
     listEl.classList.remove('hidden');
+    // Position dropdown below the search input, extending to the app bottom edge
+    const rect = searchEl.getBoundingClientRect();
+    const appBottom = document.getElementById('app').getBoundingClientRect().bottom;
+    listEl.style.top = (rect.bottom + 3) + 'px';
+    listEl.style.maxHeight = Math.max(80, appBottom - rect.bottom - 10) + 'px';
     const sel = listEl.querySelector('.theme-picker-item.selected');
     if (sel) sel.scrollIntoView({ block: 'nearest' });
   }
