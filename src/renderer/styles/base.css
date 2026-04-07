@@ -611,7 +611,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 .theme-search:hover { border-color: var(--border-h); box-shadow: var(--glow-c); }
 .theme-search:focus { border-color: var(--accent-c); box-shadow: var(--glow-c); cursor: text; }
 .theme-picker-list {
-  position: absolute; top: calc(100% + 3px); left: 0; right: 0; z-index: 400;
+  position: absolute; bottom: calc(100% + 3px); left: 0; right: 0; z-index: 400;
   background: var(--panel-bg);
   border: 1px solid var(--accent-c);
   box-shadow: var(--glow-c);
