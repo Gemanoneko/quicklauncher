@@ -880,7 +880,7 @@ function renderPickerList(items) {
   if (items.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'picker-empty';
-    empty.textContent = 'NO APPS FOUND';
+    empty.textContent = 'NO MATCHES — USE BROWSE TO ADD BY FILE';
     listEl.appendChild(empty);
     return;
   }
@@ -930,6 +930,11 @@ function renderPickerList(items) {
 document.getElementById('picker-search').addEventListener('input', (e) => {
   const q = e.target.value.toLowerCase();
   renderPickerList(q ? installedApps.filter(a => a.name.toLowerCase().includes(q)) : installedApps);
+});
+
+document.getElementById('btn-browse-picker').addEventListener('click', async () => {
+  document.getElementById('apps-picker').classList.add('hidden');
+  await addAppFromDialog();
 });
 
 document.getElementById('btn-close-picker').addEventListener('click', () => {
