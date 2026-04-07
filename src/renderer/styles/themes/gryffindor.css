@@ -9,185 +9,187 @@
   --overlay-clip: none;
 
   --bg:           #040100;
-  --panel-bg:     rgba(8, 2, 0, 0.98);
-  --overlay-bg:   rgba(4, 1, 0, 0.96);
+  --panel-bg:     rgba(8, 2, 0, 0.99);
+  --overlay-bg:   rgba(4, 1, 0, 0.97);
   --header-bg:    rgba(180, 40, 20, 0.04);
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #C08040;
   --text-dim:     rgba(180, 110, 50, 0.45);
 
-  --accent-c:     #CC3020;   /* Gryffindor scarlet */
-  --accent-m:     #C89020;   /* deep burnished gold */
-  --accent-y:     #7A5818;   /* old wood / dark gold */
+  --accent-c:     #C41E2A;   /* Gryffindor scarlet */
+  --accent-m:     #D4A800;   /* burnished gold */
+  --accent-y:     #8C6820;   /* warm dark gold */
 
-  --border:       rgba(160, 40, 20, 0.24);
-  --border-h:     rgba(204, 48, 32, 0.55);
+  --border:       rgba(196, 30, 42, 0.22);
+  --border-h:     rgba(196, 30, 42, 0.55);
 
-  --glow-c:       0 0 8px rgba(204,48,32,.62), 0 0 22px rgba(204,48,32,.22);
-  --glow-m:       0 0 8px rgba(200,144,32,.62), 0 0 22px rgba(200,144,32,.22);
-  --glow-y:       0 0 6px rgba(122,88,24,.50), 0 0 16px rgba(122,88,24,.16);
+  --glow-c:       0 0 8px rgba(196,30,42,.65), 0 0 22px rgba(196,30,42,.22);
+  --glow-m:       0 0 8px rgba(212,168,0,.62), 0 0 22px rgba(212,168,0,.22);
+  --glow-y:       0 0 6px rgba(140,104,32,.55), 0 0 16px rgba(140,104,32,.18);
 
-  --pulse-glow:   inset 0 0 22px rgba(160,40,20,.07);
+  --pulse-glow:   inset 0 0 22px rgba(196,30,42,.07);
   --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(200,144,32,.10);
+  --drag-over-glow: inset 0 0 24px rgba(212,168,0,.10);
 
-  --title-anim:   gryffindor-flame 5s ease-in-out infinite;
+  --title-anim:   gryff-title 12s ease-in-out infinite;
 
-  --tile-hover-bg:     rgba(160, 40, 20, 0.07);
-  --tile-hover-border: rgba(204, 48, 32, 0.36);
-  --tile-hover-shadow: 0 0 12px rgba(204, 48, 32, 0.22);
-  --tile-active-bg:    rgba(160, 40, 20, 0.14);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,144,32,.62)) drop-shadow(0 0 14px rgba(204,48,32,.28));
-  --tile-icon-fx:      contrast(1.2) brightness(1.05) saturate(1.2);
-  --tile-icon-shape:   polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+  --tile-hover-bg:     rgba(196, 30, 42, 0.07);
+  --tile-hover-border: rgba(196, 30, 42, 0.40);
+  --tile-hover-shadow: 0 0 12px rgba(196, 30, 42, 0.22);
+  --tile-active-bg:    rgba(196, 30, 42, 0.15);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(212,168,0,.62)) drop-shadow(0 0 14px rgba(196,30,42,.30));
+  --tile-icon-fx:      contrast(1.15) brightness(1.05) saturate(1.2);
+  --tile-icon-shape:   polygon(5% 0%, 95% 0%, 100% 8%, 100% 62%, 75% 82%, 50% 100%, 25% 82%, 0% 62%, 0% 8%);
   --tile-label-spacing:   0.8px;
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     italic;
   --banner-icon-anim:    banner-glow 4s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
 
-  --btn-hover-bg:   rgba(160, 40, 20, 0.10);
-  --btn-active-bg:  rgba(160, 40, 20, 0.20);
+  --btn-hover-bg:   rgba(196, 30, 42, 0.10);
+  --btn-active-bg:  rgba(196, 30, 42, 0.20);
 
-  --drop-hint-border: rgba(160, 40, 20, 0.26);
-  --drop-icon-color:  rgba(200, 144, 32, 0.38);
-  --hint-sub-color:   rgba(160, 100, 40, 0.40);
+  --drop-hint-border: rgba(196, 30, 42, 0.25);
+  --drop-icon-color:  rgba(212, 168, 0, 0.35);
+  --hint-sub-color:   rgba(180, 100, 40, 0.32);
 
-  --rename-dashed:    rgba(200, 144, 32, 0.40);
-  --rename-input-bg:  rgba(160, 40, 20, 0.07);
+  --rename-dashed:    rgba(212, 168, 0, 0.40);
+  --rename-input-bg:  rgba(196, 30, 42, 0.07);
 
-  --edit-bar-bg:          rgba(200, 144, 32, 0.07);
-  --edit-bar-border:      rgba(200, 144, 32, 0.40);
-  --edit-label-color:     #C89020;
+  --edit-bar-bg:          rgba(212, 168, 0, 0.07);
+  --edit-bar-border:      rgba(212, 168, 0, 0.42);
+  --edit-label-color:     #D4A800;
   --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #C89020;
-  --btn-done-border:      rgba(200, 144, 32, 0.42);
-  --btn-done-hover-bg:    rgba(200, 144, 32, 0.10);
+  --btn-done-color:       #D4A800;
+  --btn-done-border:      rgba(212, 168, 0, 0.38);
+  --btn-done-hover-bg:    rgba(212, 168, 0, 0.09);
   --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(204, 48, 32, 0.42);
+  --btn-add-border:       rgba(196, 30, 42, 0.38);
 
-  --update-bg:             rgba(122, 88, 24, 0.07);
-  --update-border:         rgba(150, 110, 30, 0.36);
-  --update-color:          #9A7020;
-  --update-btn-border:     rgba(122, 88, 24, 0.32);
-  --update-btn-hover-bg:   rgba(122, 88, 24, 0.10);
+  --update-bg:             rgba(140, 104, 32, 0.05);
+  --update-border:         rgba(140, 104, 32, 0.30);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(140, 104, 32, 0.25);
+  --update-btn-hover-bg:   rgba(140, 104, 32, 0.08);
   --update-btn-hover-glow: var(--glow-y);
 
-  --btn-close-color:      #C89020;
-  --btn-close-border:     rgba(200, 144, 32, 0.40);
-  --btn-close-hover-bg:   rgba(200, 144, 32, 0.10);
+  --btn-close-color:      #D4A800;
+  --btn-close-border:     rgba(212, 168, 0, 0.38);
+  --btn-close-hover-bg:   rgba(212, 168, 0, 0.10);
   --btn-close-hover-glow: var(--glow-m);
 
-  --picker-search-bg:      rgba(160, 40, 20, 0.07);
-  --picker-item-hover-bg:  rgba(160, 40, 20, 0.09);
-  --picker-item-active-bg: rgba(160, 40, 20, 0.16);
-  --picker-placeholder-bg: rgba(160, 40, 20, 0.07);
+  --picker-search-bg:      rgba(196, 30, 42, 0.07);
+  --picker-item-hover-bg:  rgba(196, 30, 42, 0.09);
+  --picker-item-active-bg: rgba(196, 30, 42, 0.17);
+  --picker-placeholder-bg: rgba(196, 30, 42, 0.07);
 
-  --skin-btn-active-bg:    rgba(160, 40, 20, 0.17);
-  --remove-btn-bg:         rgba(204, 48, 32, 0.90);
-  --remove-btn-border:     #CC3020;
+  --skin-btn-active-bg:    rgba(196, 30, 42, 0.17);
+  --remove-btn-bg:         rgba(196, 30, 42, 0.88);
+  --remove-btn-border:     #C41E2A;
 }
 
-/* ── Warm stone grain + fireplace glow from below ────────────────────────────── */
+/* ── Warm stone grain + hearth glow from below ───────────────────────────────── */
 #app::after {
   background:
-    /* warm stone texture — rough and noble */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.9 0 0 0 0.06  0.5 0 0 0 0.01  0.2 0 0 0 0  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* warm vignette — like looking into the common room from outside */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 42%, rgba(3, 0, 0, 0.78) 100%),
-    /* fireplace glow from below — hearth warmth */
-    radial-gradient(ellipse 80% 35% at 50% 100%, rgba(180, 60, 0, 0.10) 0%, rgba(140, 40, 0, 0.05) 50%, transparent 72%),
-    /* banner warmth from top — house colours */
-    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(160, 30, 10, 0.06) 0%, transparent 60%);
-  background-size: 200px 200px, auto, auto, auto;
+    repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(196,30,42,0.015) 39px),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(180,60,0,0.12) 0%, rgba(140,40,0,0.05) 50%, transparent 70%),
+    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(160,30,10,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 70% at 2% 50%, rgba(140,30,10,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 96% at 50% 50%, transparent 15%, rgba(4,1,0,0.90) 100%);
+  background-size: 200px 200px, auto, auto, auto, auto, auto;
   opacity: 1; pointer-events: none;
 }
 
 /* ── Header — scarlet accent bar ────────────────────────────────────────────── */
 #header::before {
-  background: linear-gradient(to bottom, #CC3020, rgba(160, 40, 20, 0.28));
-  box-shadow: 0 0 10px rgba(204, 48, 32, 0.60), 0 0 26px rgba(204, 48, 32, 0.20);
+  background: linear-gradient(to bottom, #C41E2A, rgba(196, 30, 42, 0.25));
+  box-shadow: 0 0 10px rgba(196,30,42,0.65), 0 0 28px rgba(196,30,42,0.22);
 }
 
-/* ── Grid: Common room fireplace — three flame columns rising ────────────────── */
+/* ── Grid: Gryffindor Heraldic Codex — lion rampant, virtue gauges, roll of honour ── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Flame pillar — left */
-    radial-gradient(ellipse 14% 65% at 22% 100%, rgba(204,80,10,0.11) 0%, rgba(160,50,0,0.05) 45%, transparent 68%),
-    /* Flame pillar — center (main fire) */
-    radial-gradient(ellipse 22% 80% at 50% 100%, rgba(200,70,8,0.14) 0%, rgba(160,45,0,0.06) 50%, transparent 74%),
-    /* Flame pillar — right */
-    radial-gradient(ellipse 12% 58% at 78% 100%, rgba(200,85,12,0.10) 0%, rgba(150,55,0,0.04) 42%, transparent 64%),
-    /* Fireplace ember bed — orange base glow */
-    linear-gradient(to top, rgba(200,70,0,0.16) 0%, rgba(160,50,0,0.06) 18%, transparent 42%),
-    /* Warm light on ceiling — firelight reflection */
-    radial-gradient(ellipse 65% 35% at 50% 0%, rgba(180,60,10,0.05) 0%, transparent 62%);
-  animation: gryff-fire 1.4s ease-in-out infinite alternate;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(212,168,0,0.35)' stroke-width='1'/%3E%3Crect x='13' y='13' width='474' height='354' fill='none' stroke='rgba(212,168,0,0.20)' stroke-width='0.5'/%3E%3Cpath d='M 8,32 L 8,8 L 32,8' fill='none' stroke='rgba(212,168,0,0.65)' stroke-width='1.5'/%3E%3Cpath d='M 468,8 L 492,8 L 492,32' fill='none' stroke='rgba(212,168,0,0.65)' stroke-width='1.5'/%3E%3Cpath d='M 8,348 L 8,372 L 32,372' fill='none' stroke='rgba(212,168,0,0.65)' stroke-width='1.5'/%3E%3Cpath d='M 468,372 L 492,372 L 492,348' fill='none' stroke='rgba(212,168,0,0.65)' stroke-width='1.5'/%3E%3Cline x1='133' y1='13' x2='133' y2='367' stroke='rgba(212,168,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='250' y1='13' x2='250' y2='367' stroke='rgba(212,168,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='367' y1='13' x2='367' y2='367' stroke='rgba(212,168,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='13' y1='130' x2='487' y2='130' stroke='rgba(212,168,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='13' y1='255' x2='487' y2='255' stroke='rgba(212,168,0,0.07)' stroke-width='0.5'/%3E%3Ctext x='250' y='34' text-anchor='middle' font-family='Georgia,serif' font-size='11' font-weight='bold' letter-spacing='3' fill='rgba(212,168,0,0.88)'%3EGRYFFINDOR HERALDIC CODEX%3C/text%3E%3Ctext x='250' y='50' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' letter-spacing='2.5' font-style='italic' fill='rgba(212,168,0,0.55)'%3EDOMUS BRAVISSIMA -- EST. 990 A.D. -- HOGWARTS%3C/text%3E%3Cline x1='70' y1='57' x2='430' y2='57' stroke='rgba(212,168,0,0.25)' stroke-width='0.5'/%3E%3Ccircle cx='70' cy='57' r='1.5' fill='rgba(212,168,0,0.40)'/%3E%3Ccircle cx='430' cy='57' r='1.5' fill='rgba(212,168,0,0.40)'/%3E%3Ccircle cx='250' cy='57' r='1.5' fill='rgba(212,168,0,0.40)'/%3E%3Ccircle cx='250' cy='195' r='78' fill='none' stroke='rgba(212,168,0,0.35)' stroke-width='1'/%3E%3Ccircle cx='250' cy='195' r='73' fill='none' stroke='rgba(212,168,0,0.20)' stroke-width='0.5'/%3E%3Cline x1='250' y1='117' x2='250' y2='122' stroke='rgba(212,168,0,0.55)' stroke-width='1'/%3E%3Cline x1='250' y1='268' x2='250' y2='273' stroke='rgba(212,168,0,0.55)' stroke-width='1'/%3E%3Cline x1='322' y1='195' x2='328' y2='195' stroke='rgba(212,168,0,0.55)' stroke-width='1'/%3E%3Cline x1='172' y1='195' x2='178' y2='195' stroke='rgba(212,168,0,0.55)' stroke-width='1'/%3E%3Cpolygon points='250,133 261.4,152.5 281,141.3 281.1,163.9 303.7,164 292.5,183.6 312,195 292.5,206.4 303.7,226 281.1,226.1 281,248.7 261.4,237.5 250,257 238.6,237.5 219,248.7 218.9,226.1 196.3,226 207.5,206.4 188,195 207.5,183.6 196.3,164 218.9,163.9 219,141.3 238.6,152.5' fill='rgba(196,30,42,0.62)' stroke='rgba(212,168,0,0.45)' stroke-width='1'/%3E%3Ccircle cx='250' cy='195' r='44' fill='rgba(180,25,35,0.72)' stroke='rgba(212,168,0,0.30)' stroke-width='0.5'/%3E%3Cpolygon points='226,172 218,156 236,165' fill='rgba(180,25,35,0.85)' stroke='rgba(212,168,0,0.45)' stroke-width='0.8'/%3E%3Cpolygon points='274,172 282,156 264,165' fill='rgba(180,25,35,0.85)' stroke='rgba(212,168,0,0.45)' stroke-width='0.8'/%3E%3Cpolygon points='227,171 221,160 234,166' fill='rgba(212,100,50,0.55)'/%3E%3Cpolygon points='273,171 279,160 266,166' fill='rgba(212,100,50,0.55)'/%3E%3Ccircle cx='250' cy='192' r='27' fill='rgba(196,42,52,0.78)' stroke='rgba(212,168,0,0.40)' stroke-width='1'/%3E%3Crect x='237' y='164' width='26' height='3' fill='rgba(212,168,0,0.75)' rx='0.5'/%3E%3Cpolygon points='239,164 238,155 241,156 242,164' fill='rgba(212,168,0,0.72)'/%3E%3Cpolygon points='249,164 248,151 250,148 252,151 251,164' fill='rgba(212,168,0,0.80)'/%3E%3Cpolygon points='258,164 259,155 262,156 261,164' fill='rgba(212,168,0,0.72)'/%3E%3Ccircle cx='239' cy='155' r='1.8' fill='rgba(196,30,42,0.90)' stroke='rgba(212,168,0,0.70)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='148' r='2.2' fill='rgba(196,30,42,0.95)' stroke='rgba(212,168,0,0.80)' stroke-width='0.5'/%3E%3Ccircle cx='261' cy='155' r='1.8' fill='rgba(196,30,42,0.90)' stroke='rgba(212,168,0,0.70)' stroke-width='0.5'/%3E%3Cellipse cx='241' cy='186' rx='5' ry='4' fill='rgba(255,200,100,0.85)'/%3E%3Cellipse cx='259' cy='186' rx='5' ry='4' fill='rgba(255,200,100,0.85)'/%3E%3Cellipse cx='241' cy='186' rx='2' ry='3.5' fill='rgba(30,10,5,0.90)'/%3E%3Cellipse cx='259' cy='186' rx='2' ry='3.5' fill='rgba(30,10,5,0.90)'/%3E%3Ccircle cx='240' cy='184' r='1' fill='rgba(255,255,220,0.75)'/%3E%3Ccircle cx='258' cy='184' r='1' fill='rgba(255,255,220,0.75)'/%3E%3Cpolygon points='250,197 245,204 255,204' fill='rgba(212,100,60,0.75)'/%3E%3Cline x1='250' y1='204' x2='250' y2='208' stroke='rgba(212,100,60,0.60)' stroke-width='1'/%3E%3Cpath d='M 244,208 Q 247,213 250,212 Q 253,213 256,208' fill='none' stroke='rgba(180,70,40,0.65)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cline x1='217' y1='194' x2='235' y2='192' stroke='rgba(212,168,0,0.30)' stroke-width='0.8'/%3E%3Cline x1='215' y1='198' x2='233' y2='197' stroke='rgba(212,168,0,0.30)' stroke-width='0.8'/%3E%3Cline x1='219' y1='203' x2='235' y2='202' stroke='rgba(212,168,0,0.25)' stroke-width='0.8'/%3E%3Cline x1='283' y1='194' x2='265' y2='192' stroke='rgba(212,168,0,0.30)' stroke-width='0.8'/%3E%3Cline x1='285' y1='198' x2='267' y2='197' stroke='rgba(212,168,0,0.30)' stroke-width='0.8'/%3E%3Cline x1='281' y1='203' x2='265' y2='202' stroke='rgba(212,168,0,0.25)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='195' r='3' fill='none' stroke='rgba(212,168,0,0.50)' stroke-width='1'/%3E%3Ctext x='250' y='286' text-anchor='middle' font-family='Georgia,serif' font-size='7' letter-spacing='2' fill='rgba(212,168,0,0.55)'%3ESIGILLUM GRYFFINDORIS%3C/text%3E%3Ctext x='85' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='8' letter-spacing='2' font-weight='bold' fill='rgba(212,168,0,0.72)'%3EHOUSE VIRTUES%3C/text%3E%3Cline x1='20' y1='86' x2='150' y2='86' stroke='rgba(212,168,0,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 20,95 L 20,298 L 25,298' fill='none' stroke='rgba(212,168,0,0.22)' stroke-width='0.8'/%3E%3Cpath d='M 20,95 L 25,95' fill='none' stroke='rgba(212,168,0,0.22)' stroke-width='0.8'/%3E%3Ctext x='20' y='108' font-family='Georgia,serif' font-size='7' letter-spacing='1.5' fill='rgba(212,168,0,0.68)'%3EBRAVERY%3C/text%3E%3Crect x='20' y='112' width='120' height='5' fill='rgba(212,168,0,0.10)' rx='1'/%3E%3Crect x='20' y='112' width='108' height='5' fill='rgba(196,30,42,0.70)' rx='1'/%3E%3Ctext x='143' y='117' font-family='Georgia,serif' font-size='6' fill='rgba(212,168,0,0.55)'%3E90%3C/text%3E%3Ctext x='20' y='130' font-family='Georgia,serif' font-size='7' letter-spacing='1.5' fill='rgba(212,168,0,0.68)'%3ECOURAGE%3C/text%3E%3Crect x='20' y='134' width='120' height='5' fill='rgba(212,168,0,0.10)' rx='1'/%3E%3Crect x='20' y='134' width='98' height='5' fill='rgba(196,30,42,0.65)' rx='1'/%3E%3Ctext x='143' y='139' font-family='Georgia,serif' font-size='6' fill='rgba(212,168,0,0.55)'%3E82%3C/text%3E%3Ctext x='20' y='152' font-family='Georgia,serif' font-size='7' letter-spacing='1.5' fill='rgba(212,168,0,0.68)'%3ENERVE%3C/text%3E%3Crect x='20' y='156' width='120' height='5' fill='rgba(212,168,0,0.10)' rx='1'/%3E%3Crect x='20' y='156' width='106' height='5' fill='rgba(196,30,42,0.68)' rx='1'/%3E%3Ctext x='143' y='161' font-family='Georgia,serif' font-size='6' fill='rgba(212,168,0,0.55)'%3E88%3C/text%3E%3Ctext x='20' y='174' font-family='Georgia,serif' font-size='7' letter-spacing='1.5' fill='rgba(212,168,0,0.68)'%3ECHIVALRY%3C/text%3E%3Crect x='20' y='178' width='120' height='5' fill='rgba(212,168,0,0.10)' rx='1'/%3E%3Crect x='20' y='178' width='89' height='5' fill='rgba(196,30,42,0.62)' rx='1'/%3E%3Ctext x='143' y='183' font-family='Georgia,serif' font-size='6' fill='rgba(212,168,0,0.55)'%3E74%3C/text%3E%3Ctext x='20' y='196' font-family='Georgia,serif' font-size='7' letter-spacing='1.5' fill='rgba(212,168,0,0.68)'%3EDARING%3C/text%3E%3Crect x='20' y='200' width='120' height='5' fill='rgba(212,168,0,0.10)' rx='1'/%3E%3Crect x='20' y='200' width='114' height='5' fill='rgba(196,30,42,0.72)' rx='1'/%3E%3Ctext x='143' y='205' font-family='Georgia,serif' font-size='6' fill='rgba(212,168,0,0.55)'%3E95%3C/text%3E%3Cline x1='20' y1='215' x2='150' y2='215' stroke='rgba(212,168,0,0.22)' stroke-width='0.5'/%3E%3Ctext x='85' y='228' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' letter-spacing='2' fill='rgba(212,168,0,0.72)'%3EEXEMPLARY%3C/text%3E%3Cline x1='20' y1='238' x2='150' y2='238' stroke='rgba(212,168,0,0.15)' stroke-width='0.5'/%3E%3Ctext x='85' y='252' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' fill='rgba(196,30,42,0.58)'%3EFORTUNA AUDACES%3C/text%3E%3Ctext x='85' y='264' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' fill='rgba(196,30,42,0.58)'%3EIUVAT%3C/text%3E%3Cline x1='82' y1='272' x2='88' y2='298' stroke='rgba(212,168,0,0.35)' stroke-width='1.5'/%3E%3Cline x1='76' y1='278' x2='94' y2='278' stroke='rgba(212,168,0,0.35)' stroke-width='1'/%3E%3Ccircle cx='85' cy='272' r='2.5' fill='rgba(212,168,0,0.40)' stroke='rgba(212,168,0,0.25)' stroke-width='0.5'/%3E%3Ctext x='415' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='8' letter-spacing='1.5' font-weight='bold' fill='rgba(212,168,0,0.72)'%3EROLL OF HONOUR%3C/text%3E%3Cline x1='350' y1='86' x2='480' y2='86' stroke='rgba(212,168,0,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 480,95 L 480,298 L 475,298' fill='none' stroke='rgba(212,168,0,0.22)' stroke-width='0.8'/%3E%3Cpath d='M 480,95 L 475,95' fill='none' stroke='rgba(212,168,0,0.22)' stroke-width='0.8'/%3E%3Ctext x='353' y='108' font-family='Georgia,serif' font-size='7' letter-spacing='1' fill='rgba(212,168,0,0.70)'%3EPOTTER, H.%3C/text%3E%3Cline x1='353' y1='110' x2='452' y2='110' stroke='rgba(212,168,0,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='108' font-family='Georgia,serif' font-size='7' fill='rgba(196,30,42,0.72)'%3E60 pts%3C/text%3E%3Ctext x='353' y='125' font-family='Georgia,serif' font-size='7' letter-spacing='1' fill='rgba(212,168,0,0.70)'%3EGRANGER, H.%3C/text%3E%3Cline x1='353' y1='127' x2='452' y2='127' stroke='rgba(212,168,0,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='125' font-family='Georgia,serif' font-size='7' fill='rgba(196,30,42,0.72)'%3E50 pts%3C/text%3E%3Ctext x='353' y='142' font-family='Georgia,serif' font-size='7' letter-spacing='1' fill='rgba(212,168,0,0.70)'%3EWEASLEY, R.%3C/text%3E%3Cline x1='353' y1='144' x2='452' y2='144' stroke='rgba(212,168,0,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='142' font-family='Georgia,serif' font-size='7' fill='rgba(196,30,42,0.68)'%3E45 pts%3C/text%3E%3Ctext x='353' y='159' font-family='Georgia,serif' font-size='7' letter-spacing='1' fill='rgba(212,168,0,0.70)'%3ELONGBOTTOM, N.%3C/text%3E%3Cline x1='353' y1='161' x2='452' y2='161' stroke='rgba(212,168,0,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='159' font-family='Georgia,serif' font-size='7' fill='rgba(196,30,42,0.65)'%3E35 pts%3C/text%3E%3Ctext x='353' y='176' font-family='Georgia,serif' font-size='7' letter-spacing='1' fill='rgba(212,168,0,0.65)'%3EWEASLEY, G.F.%3C/text%3E%3Cline x1='353' y1='178' x2='452' y2='178' stroke='rgba(212,168,0,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='176' font-family='Georgia,serif' font-size='7' fill='rgba(196,30,42,0.65)'%3E30 pts%3C/text%3E%3Ctext x='353' y='193' font-family='Georgia,serif' font-size='7' letter-spacing='1' fill='rgba(212,168,0,0.72)'%3EDUMBLEDORE, A.%3C/text%3E%3Cline x1='353' y1='195' x2='452' y2='195' stroke='rgba(212,168,0,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='193' font-family='Georgia,serif' font-size='7' fill='rgba(196,30,42,0.78)'%3E85 pts%3C/text%3E%3Cline x1='350' y1='202' x2='480' y2='202' stroke='rgba(212,168,0,0.28)' stroke-width='0.7'/%3E%3Ctext x='353' y='215' font-family='Georgia,serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(212,168,0,0.80)'%3ETOTAL HOUSE:%3C/text%3E%3Ctext x='455' y='215' font-family='Georgia,serif' font-size='8' font-weight='bold' fill='rgba(212,168,0,0.88)'%3E305%3C/text%3E%3Cline x1='350' y1='224' x2='480' y2='224' stroke='rgba(212,168,0,0.15)' stroke-width='0.5'/%3E%3Ctext x='415' y='237' text-anchor='middle' font-family='Georgia,serif' font-size='7' letter-spacing='1.5' fill='rgba(196,30,42,0.62)'%3ECUP STANDING%3C/text%3E%3Ctext x='415' y='252' text-anchor='middle' font-family='Georgia,serif' font-size='9' letter-spacing='2' font-weight='bold' fill='rgba(212,168,0,0.78)'%3E1ST PLACE%3C/text%3E%3Cpath d='M 415,270 C 400,260 385,272 388,285' fill='none' stroke='rgba(196,30,42,0.38)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 415,270 C 430,260 445,272 442,285' fill='none' stroke='rgba(196,30,42,0.38)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 415,270 L 415,295' stroke='rgba(196,30,42,0.35)' stroke-width='1' stroke-linecap='round'/%3E%3Ccircle cx='415' cy='268' r='3.5' fill='rgba(212,168,0,0.35)' stroke='rgba(212,168,0,0.22)' stroke-width='0.5'/%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(212,168,0,0.20)' stroke-width='0.7'/%3E%3Cline x1='20' y1='311' x2='480' y2='311' stroke='rgba(212,168,0,0.10)' stroke-width='0.3'/%3E%3Ctext x='60' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='6.5' letter-spacing='1' fill='rgba(212,168,0,0.55)'%3EHOUSE POINTS%3C/text%3E%3Ctext x='60' y='337' text-anchor='middle' font-family='Georgia,serif' font-size='8.5' letter-spacing='2' fill='rgba(196,30,42,0.72)'%3E285%3C/text%3E%3Ctext x='180' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='6.5' letter-spacing='1' fill='rgba(212,168,0,0.55)'%3ECURRENT STANDING%3C/text%3E%3Ctext x='180' y='337' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' letter-spacing='2' fill='rgba(212,168,0,0.72)'%3ELEADING%3C/text%3E%3Ctext x='320' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='6.5' letter-spacing='1' fill='rgba(212,168,0,0.55)'%3EACADEMIC YEAR%3C/text%3E%3Ctext x='320' y='337' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' letter-spacing='2' fill='rgba(212,168,0,0.68)'%3E1993 -- 1994%3C/text%3E%3Ctext x='440' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='6.5' letter-spacing='1' fill='rgba(212,168,0,0.55)'%3ESTATUS%3C/text%3E%3Ctext x='440' y='337' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' letter-spacing='2' fill='rgba(196,30,42,0.72)'%3EACTIVE%3C/text%3E%3Cline x1='123' y1='312' x2='123' y2='344' stroke='rgba(212,168,0,0.18)' stroke-width='0.5'/%3E%3Cline x1='248' y1='312' x2='248' y2='344' stroke='rgba(212,168,0,0.18)' stroke-width='0.5'/%3E%3Cline x1='373' y1='312' x2='373' y2='344' stroke='rgba(212,168,0,0.18)' stroke-width='0.5'/%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='6.5' letter-spacing='2' fill='rgba(212,168,0,0.38)'%3EHOGWARTS SCHOOL OF WITCHCRAFT AND WIZARDRY -- OFFICIAL HERALDIC RECORD%3C/text%3E%3Ccircle cx='45' cy='70' r='1.2' fill='rgba(212,168,0,0.30)'/%3E%3Ccircle cx='168' cy='98' r='0.8' fill='rgba(212,168,0,0.25)'/%3E%3Ccircle cx='92' cy='275' r='1' fill='rgba(196,30,42,0.28)'/%3E%3Ccircle cx='330' cy='95' r='0.8' fill='rgba(212,168,0,0.25)'/%3E%3Ccircle cx='455' cy='72' r='1.2' fill='rgba(212,168,0,0.30)'/%3E%3Ccircle cx='472' cy='268' r='0.8' fill='rgba(212,168,0,0.22)'/%3E%3Ccircle cx='38' cy='186' r='1' fill='rgba(196,30,42,0.25)'/%3E%3Ccircle cx='462' cy='190' r='1' fill='rgba(196,30,42,0.25)'/%3E%3Ccircle cx='160' cy='300' r='0.8' fill='rgba(212,168,0,0.22)'/%3E%3Ccircle cx='340' cy='295' r='0.8' fill='rgba(212,168,0,0.22)'/%3E%3Ccircle cx='250' cy='70' r='0.6' fill='rgba(212,168,0,0.20)'/%3E%3Ccircle cx='125' cy='258' r='0.8' fill='rgba(196,30,42,0.22)'/%3E%3Ccircle cx='375' cy='258' r='0.8' fill='rgba(196,30,42,0.22)'/%3E%3C/svg%3E") center / 740px 563px no-repeat;
+  opacity: 0.72;
+  animation: gryff-schematic 12s ease-in-out infinite;
 }
-@keyframes gryff-fire {
-  0%   { opacity: 0.72; }
-  30%  { opacity: 1.00; }
-  60%  { opacity: 0.82; }
-  100% { opacity: 0.90; }
+
+@keyframes gryff-schematic {
+  0%, 100% { opacity: 0.72; }
+  28%       { opacity: 0.82; }
+  65%       { opacity: 0.65; }
+  87%       { opacity: 0.65; }
+  88%       { opacity: 0.08; }   /* synchronized blackout */
+  89%       { opacity: 0.88; }
+  92%       { opacity: 0.72; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
 #header::after {
-  content: 'GRYFFINDOR  //  BRAVE AT HEART  //  DARING  NERVE  CHIVALRY';
+  content: 'DOMUS GRYFFINDORIS // BRAVE AT HEART // DARING - NERVE - CHIVALRY';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(215, 120, 45, 0.65);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(215, 120, 45, 0.72);
   pointer-events: none; white-space: nowrap;
 }
 
 #grid-container::after {
-  content: 'GRYFFINDOR\ABRAVE\AAT HEART\A\ATHE\ALION\AROARS\A\ANEVILLE\ADID\AWELL\A\AFAWKES';
+  content: 'GRYFFINDOR\ABRAVE AT HEART\A-----------\ABRAVERY: HIGH\ANERVE:   HIGH\ACHIVALRY: HIGH\A-----------\APOINTS: 285\APHOENIX RISING\ASWORD: GODRIC';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.7; text-align: right;
-  color: rgba(180, 80, 20, 0.11); white-space: pre;
-  animation: gryffindor-breathe 10s ease-in-out infinite;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(180, 80, 20, 0.13); white-space: pre;
+  animation: gryff-readout 12s ease-in-out infinite;
 }
 
-@keyframes gryffindor-breathe {
-  0%, 100% { opacity: 0.65; }
-  50% { opacity: 1.0; }
+@keyframes gryff-readout {
+  0%, 100% { color: rgba(180,80,20,.13); }
+  28%       { color: rgba(180,80,20,.17); }
+  65%       { color: rgba(180,80,20,.10); }
+  88%       { color: rgba(0,0,0,0); }   /* blackout synced with SVG */
+  89%       { color: rgba(180,80,20,.20); }
+  92%       { color: rgba(180,80,20,.13); }
 }
 
 #edit-bar::after {
-  content: "DUMBLEDORE'S ARMY  —  WE STAND TOGETHER";
+  content: "DUMBLEDORE'S ARMY  //  ALWAYS";
   position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(200, 144, 32, 0.42);
+  font-size: 8px; letter-spacing: 2.5px; color: rgba(212, 168, 0, 0.40);
   pointer-events: none; white-space: nowrap;
 }
 
 #title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
 
-/* ── Title animation: scarlet to gold, the lion's fire ─────────────────────── */
-@keyframes gryffindor-flame {
-  0%, 100% { text-shadow: 0 0 8px rgba(204,48,32,.62), 0 0 22px rgba(204,48,32,.22); color: #CC3020; }
-  50%       { text-shadow: 0 0 12px rgba(200,144,32,.85), 0 0 32px rgba(200,144,32,.35); color: #C89020; }
+/* ── Title: scarlet to gold, the lion's crown flash ────────────────────────── */
+@keyframes gryff-title {
+  0%, 100% { color: #C41E2A; text-shadow: 0 0 8px rgba(196,30,42,.62), 0 0 22px rgba(196,30,42,.22); }
+  35%       { color: #D4A800; text-shadow: 0 0 14px rgba(212,168,0,.82), 0 0 36px rgba(212,168,0,.32); }
+  65%       { color: #9A1520; text-shadow: 0 0 6px rgba(196,30,42,.45), 0 0 14px rgba(196,30,42,.15); }
+  88%       { color: #FFEEBB; text-shadow: 0 0 22px rgba(255,220,150,.90), 0 0 55px rgba(255,180,80,.55); opacity: 0.90; }
+  89%       { color: #C41E2A; text-shadow: 0 0 8px rgba(196,30,42,.62), 0 0 22px rgba(196,30,42,.22); }
 }
 
-/* ── App: noble scarlet border pulse ────────────────────────────────────────── */
-#app { animation: gryffindor-border 7s ease-in-out infinite; }
-@keyframes gryffindor-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(160,40,20,.35), inset 0 0 28px rgba(160,40,20,.05); }
-  50%       { box-shadow: 0 0 0 1px rgba(204,48,32,.55), inset 0 0 36px rgba(180,80,10,.08); }
+/* ── App: heraldic scarlet pulse, synchronized ──────────────────────────────── */
+#app { animation: gryff-pulse 12s ease-in-out infinite; }
+@keyframes gryff-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(196,30,42,.22), inset 0 0 24px rgba(196,30,42,.06); }
+  40%       { box-shadow: 0 0 0 1px rgba(196,30,42,.55), inset 0 0 42px rgba(212,168,0,.10); }
+  88%       { box-shadow: 0 0 0 2px rgba(255,255,255,.85), inset 0 0 64px rgba(212,168,0,.18), 0 0 22px rgba(196,30,42,.30); }
+  89%       { box-shadow: 0 0 0 1px rgba(196,30,42,.48), inset 0 0 28px rgba(196,30,42,.08); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(6, 1, 0, 0.98); border-top-color: rgba(160, 40, 20, 0.24); }
-#theme-banner::before { content: '⚜'; color: #C89020; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 110, 30, 0.65); }
+#theme-banner { background: rgba(6, 1, 0, 0.99); border-top-color: rgba(196, 30, 42, 0.24); }
+#theme-banner::before { content: '⚜'; color: #D4A800; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 110, 30, 0.76); }
 
-/* ── Fawkes' embers — sparks popping from the hearth, scatter and die ────── */
+/* ── Fawkes' embers — sparks scatter and die ─────────────────────────────── */
 #particles {
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='360'%3E%3Crect x='28' y='15' width='4' height='1' fill='rgba(255,160,30,0.55)' rx='0.5'/%3E%3Crect x='90' y='80' width='3' height='1' fill='rgba(220,80,10,0.50)' rx='0.5'/%3E%3Crect x='145' y='40' width='5' height='1' fill='rgba(255,180,40,0.45)' rx='0.5'/%3E%3Crect x='60' y='160' width='3' height='1' fill='rgba(220,100,20,0.42)' rx='0.5'/%3E%3Crect x='120' y='240' width='4' height='1' fill='rgba(255,140,20,0.48)' rx='0.5'/%3E%3Crect x='38' y='310' width='3' height='1' fill='rgba(200,70,10,0.38)' rx='0.5'/%3E%3Ccircle cx='110' cy='120' r='1' fill='rgba(255,200,50,0.40)'/%3E%3Ccircle cx='72' cy='280' r='0.8' fill='rgba(220,80,10,0.35)'/%3E%3C/svg%3E") repeat,
