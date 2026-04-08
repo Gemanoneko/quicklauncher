@@ -1,0 +1,219 @@
+/* ══ FINAL FANTASY VII ════════════════════════════════════════════════════════
+   Midgar. Shinra. The Lifestream flows beneath everything. Cloud carries
+   the weight of the world on a blade too big for any normal man.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #040810;
+  --panel-bg:     rgba(6, 10, 20, 0.99);
+  --overlay-bg:   rgba(4, 8, 16, 0.97);
+  --header-bg:    rgba(24, 72, 160, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #8898C0;
+  --text-dim:     rgba(100, 120, 165, 0.45);
+
+  --accent-c:     #1848A0;   /* Shinra blue */
+  --accent-m:     #20C890;   /* Mako / Lifestream green */
+  --accent-y:     #102040;   /* deep navy */
+
+  --border:       rgba(24, 72, 160, 0.22);
+  --border-h:     rgba(32, 200, 144, 0.48);
+
+  --glow-c:       0 0 7px rgba(24,72,160,.60), 0 0 20px rgba(24,72,160,.20);
+  --glow-m:       0 0 7px rgba(32,200,144,.58), 0 0 20px rgba(32,200,144,.20);
+  --glow-y:       0 0 5px rgba(16,32,64,.45), 0 0 14px rgba(16,32,64,.14);
+
+  --pulse-glow:   inset 0 0 20px rgba(24,72,160,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(32,200,144,.08);
+
+  --title-anim:   ff7-title 10s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(24, 72, 160, 0.08);
+  --tile-hover-border: rgba(32, 200, 144, 0.38);
+  --tile-hover-shadow: 0 0 12px rgba(32, 200, 144, 0.18);
+  --tile-active-bg:    rgba(24, 72, 160, 0.15);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(32,200,144,.50)) drop-shadow(0 0 12px rgba(24,72,160,.22));
+  --tile-icon-fx:      brightness(0.90) saturate(1.1) contrast(1.15);
+  --tile-icon-shape:   polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+  --tile-label-spacing:   1.2px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
+
+  --btn-hover-bg:   rgba(24, 72, 160, 0.10);
+  --btn-active-bg:  rgba(24, 72, 160, 0.20);
+
+  --drop-hint-border: rgba(24, 72, 160, 0.25);
+  --drop-icon-color:  rgba(32, 200, 144, 0.30);
+  --hint-sub-color:   rgba(100, 120, 165, 0.35);
+
+  --rename-dashed:    rgba(32, 200, 144, 0.40);
+  --rename-input-bg:  rgba(24, 72, 160, 0.07);
+
+  --edit-bar-bg:          rgba(32, 200, 144, 0.06);
+  --edit-bar-border:      rgba(32, 200, 144, 0.38);
+  --edit-label-color:     #20C890;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #20C890;
+  --btn-done-border:      rgba(32, 200, 144, 0.40);
+  --btn-done-hover-bg:    rgba(32, 200, 144, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(24, 72, 160, 0.40);
+
+  --update-bg:             rgba(32, 200, 144, 0.05);
+  --update-border:         rgba(32, 200, 144, 0.30);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(32, 200, 144, 0.25);
+  --update-btn-hover-bg:   rgba(32, 200, 144, 0.08);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      #20C890;
+  --btn-close-border:     rgba(32, 200, 144, 0.35);
+  --btn-close-hover-bg:   rgba(32, 200, 144, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(24, 72, 160, 0.07);
+  --picker-item-hover-bg:  rgba(24, 72, 160, 0.08);
+  --picker-item-active-bg: rgba(24, 72, 160, 0.15);
+  --picker-placeholder-bg: rgba(24, 72, 160, 0.07);
+
+  --skin-btn-active-bg:    rgba(24, 72, 160, 0.16);
+  --remove-btn-bg:         rgba(32, 200, 144, 0.85);
+  --remove-btn-border:     #20C890;
+}
+
+/* ── Mako grain + deep blue vignette + Lifestream glow ───────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.1 0.1 0.2 0 0.01  0.1 0.15 0.3 0 0.02  0.15 0.2 0.4 0 0.03  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 28%, rgba(2,4,10,0.88) 100%),
+    radial-gradient(ellipse 40% 50% at 50% 100%, rgba(16,100,72,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 30% at 0% 100%, rgba(16,40,100,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 30% at 100% 0%, rgba(16,40,100,0.04) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — Shinra blue accent bar ─────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #1848A0, rgba(18, 55, 120, 0.28));
+  box-shadow: 0 0 8px rgba(24,72,160,0.55), 0 0 22px rgba(24,72,160,0.18);
+}
+
+/* ── Grid: Style B — The Buster Sword ────────────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='18' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='3' fill='rgba(24,72,160,0.35)'%3ESHINRA ELECTRIC POWER COMPANY%3C/text%3E%3Ctext x='250' y='30' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(32,200,144,0.25)'%3EMIDGAR -- SECTOR 7 -- MAKO REACTOR DISTRICT%3C/text%3E%3Cpath d='M 250,38 L 298,68 L 298,282 L 202,282 L 202,68 Z' fill='rgba(120,135,160,0.22)' stroke='rgba(150,165,190,0.40)' stroke-width='1.5'/%3E%3Cpath d='M 250,38 L 294,65 L 294,279 L 206,279 L 206,65 Z' fill='none' stroke='rgba(130,145,170,0.18)' stroke-width='0.5'/%3E%3Cline x1='250' y1='58' x2='250' y2='272' stroke='rgba(100,115,140,0.25)' stroke-width='3'/%3E%3Cline x1='250' y1='58' x2='250' y2='272' stroke='rgba(80,95,120,0.15)' stroke-width='6'/%3E%3Cline x1='298' y1='68' x2='298' y2='282' stroke='rgba(180,190,210,0.35)' stroke-width='1'/%3E%3Cline x1='202' y1='68' x2='202' y2='282' stroke='rgba(110,125,150,0.28)' stroke-width='1.5'/%3E%3Cline x1='250' y1='38' x2='298' y2='68' stroke='rgba(180,190,210,0.35)' stroke-width='1'/%3E%3Cline x1='250' y1='38' x2='202' y2='68' stroke='rgba(160,175,195,0.30)' stroke-width='1'/%3E%3Ccircle cx='250' cy='125' r='14' fill='rgba(16,80,60,0.35)' stroke='rgba(32,200,144,0.48)' stroke-width='1.2'/%3E%3Ccircle cx='250' cy='125' r='9' fill='rgba(24,140,100,0.30)' stroke='rgba(32,200,144,0.25)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='125' r='4' fill='rgba(64,224,160,0.50)'/%3E%3Ctext x='250' y='108' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='4.5' letter-spacing='1' fill='rgba(32,200,144,0.38)'%3ECURE%3C/text%3E%3Ccircle cx='250' cy='195' r='14' fill='rgba(16,80,60,0.30)' stroke='rgba(32,200,144,0.42)' stroke-width='1.2'/%3E%3Ccircle cx='250' cy='195' r='9' fill='rgba(24,140,100,0.25)' stroke='rgba(32,200,144,0.20)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='195' r='4' fill='rgba(64,224,160,0.45)'/%3E%3Ctext x='250' y='178' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='4.5' letter-spacing='1' fill='rgba(32,200,144,0.35)'%3EBOLT%3C/text%3E%3Ccircle cx='250' cy='248' r='14' fill='rgba(40,48,70,0.25)' stroke='rgba(80,90,120,0.28)' stroke-width='1'/%3E%3Ccircle cx='250' cy='248' r='9' fill='none' stroke='rgba(60,70,95,0.18)' stroke-width='0.5'/%3E%3Ctext x='250' y='234' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='4' letter-spacing='1' fill='rgba(100,115,145,0.28)'%3EEMPTY%3C/text%3E%3Crect x='188' y='282' width='124' height='15' rx='3' fill='rgba(90,72,35,0.40)' stroke='rgba(140,115,55,0.42)' stroke-width='1.2'/%3E%3Crect x='191' y='285' width='118' height='9' rx='2' fill='none' stroke='rgba(120,100,48,0.22)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='289' r='2.5' fill='rgba(140,115,55,0.35)'/%3E%3Crect x='236' y='300' width='28' height='52' rx='4' fill='rgba(65,52,28,0.45)' stroke='rgba(110,90,45,0.38)' stroke-width='1'/%3E%3Crect x='239' y='303' width='22' height='46' rx='3' fill='none' stroke='rgba(90,75,38,0.20)' stroke-width='0.5'/%3E%3Cline x1='239' y1='310' x2='261' y2='320' stroke='rgba(130,110,52,0.25)' stroke-width='0.8'/%3E%3Cline x1='261' y1='310' x2='239' y2='320' stroke='rgba(130,110,52,0.25)' stroke-width='0.8'/%3E%3Cline x1='239' y1='320' x2='261' y2='330' stroke='rgba(130,110,52,0.25)' stroke-width='0.8'/%3E%3Cline x1='261' y1='320' x2='239' y2='330' stroke='rgba(130,110,52,0.25)' stroke-width='0.8'/%3E%3Cline x1='239' y1='330' x2='261' y2='340' stroke='rgba(130,110,52,0.22)' stroke-width='0.8'/%3E%3Cline x1='261' y1='330' x2='239' y2='340' stroke='rgba(130,110,52,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='358' r='8' fill='rgba(90,72,35,0.40)' stroke='rgba(130,110,52,0.38)' stroke-width='1'/%3E%3Ccircle cx='250' cy='358' r='3.5' fill='rgba(120,100,48,0.30)'/%3E%3Ctext x='250' y='378' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='2' fill='rgba(136,152,192,0.35)'%3EBUSTER SWORD%3C/text%3E%3Ctext x='85' y='80' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(32,200,144,0.32)'%3ESOLDIER 1ST CLASS%3C/text%3E%3Ctext x='85' y='95' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(136,152,192,0.42)'%3ECLOUD STRIFE%3C/text%3E%3Cline x1='30' y1='100' x2='165' y2='100' stroke='rgba(24,72,160,0.18)' stroke-width='0.5'/%3E%3Ctext x='85' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.35)'%3EWEAPON%3C/text%3E%3Ctext x='85' y='130' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(136,152,192,0.42)'%3EBUSTER SWORD%3C/text%3E%3Ctext x='85' y='148' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.35)'%3EMATERIA SLOTS%3C/text%3E%3Ctext x='85' y='160' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(32,200,144,0.40)'%3E2 OF 3 LINKED%3C/text%3E%3Ctext x='85' y='180' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.35)'%3EATTACK%3C/text%3E%3Crect x='30' y='184' width='120' height='5' fill='rgba(24,72,160,0.10)' rx='1'/%3E%3Crect x='30' y='184' width='90' height='5' fill='rgba(24,72,160,0.42)' rx='1'/%3E%3Ctext x='153' y='189' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' fill='rgba(136,152,192,0.38)'%3E75%3C/text%3E%3Ctext x='85' y='204' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.35)'%3EMAGIC%3C/text%3E%3Crect x='30' y='208' width='120' height='5' fill='rgba(24,72,160,0.10)' rx='1'/%3E%3Crect x='30' y='208' width='48' height='5' fill='rgba(32,200,144,0.42)' rx='1'/%3E%3Ctext x='153' y='213' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' fill='rgba(32,200,144,0.35)'%3E40%3C/text%3E%3Ctext x='415' y='80' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(32,200,144,0.32)'%3ELIMIT BREAK%3C/text%3E%3Ctext x='415' y='95' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(136,152,192,0.42)'%3EOMNISLASH%3C/text%3E%3Cline x1='340' y1='100' x2='475' y2='100' stroke='rgba(24,72,160,0.18)' stroke-width='0.5'/%3E%3Ctext x='415' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.35)'%3EHP%3C/text%3E%3Crect x='340' y='122' width='120' height='5' fill='rgba(24,72,160,0.10)' rx='1'/%3E%3Crect x='340' y='122' width='96' height='5' fill='rgba(32,200,144,0.45)' rx='1'/%3E%3Ctext x='463' y='127' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' fill='rgba(32,200,144,0.38)'%3E3248%3C/text%3E%3Ctext x='415' y='142' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.35)'%3EMP%3C/text%3E%3Crect x='340' y='146' width='120' height='5' fill='rgba(24,72,160,0.10)' rx='1'/%3E%3Crect x='340' y='146' width='72' height='5' fill='rgba(24,72,160,0.42)' rx='1'/%3E%3Ctext x='463' y='151' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' fill='rgba(136,152,192,0.35)'%3E186%3C/text%3E%3Ctext x='415' y='170' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.35)'%3ELIMIT%3C/text%3E%3Crect x='340' y='174' width='120' height='5' fill='rgba(24,72,160,0.10)' rx='1'/%3E%3Crect x='340' y='174' width='108' height='5' fill='rgba(200,160,40,0.42)' rx='1'/%3E%3Ctext x='463' y='179' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' fill='rgba(200,160,40,0.38)'%3EREADY%3C/text%3E%3Cline x1='340' y1='188' x2='475' y2='188' stroke='rgba(24,72,160,0.15)' stroke-width='0.5'/%3E%3Ctext x='415' y='205' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.32)'%3ELEVEL%3C/text%3E%3Ctext x='415' y='218' font-family='Segoe UI,Arial,sans-serif' font-size='9' font-weight='bold' letter-spacing='2' fill='rgba(136,152,192,0.42)'%3E52%3C/text%3E%3Ctext x='415' y='236' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(100,115,145,0.30)'%3ENEXT LV: 4820 EXP%3C/text%3E%3Ccircle cx='45' cy='58' r='0.8' fill='rgba(32,200,144,0.18)'/%3E%3Ccircle cx='455' cy='48' r='0.6' fill='rgba(24,72,160,0.15)'/%3E%3Ccircle cx='38' cy='250' r='1' fill='rgba(32,200,144,0.12)'/%3E%3Ccircle cx='462' cy='270' r='0.7' fill='rgba(24,72,160,0.10)'/%3E%3Ccircle cx='50' cy='340' r='0.6' fill='rgba(32,200,144,0.10)'/%3E%3Ccircle cx='450' cy='350' r='0.8' fill='rgba(24,72,160,0.08)'/%3E%3Ccircle cx='130' cy='280' r='0.7' fill='rgba(32,200,144,0.08)'/%3E%3Ccircle cx='370' cy='300' r='0.6' fill='rgba(24,72,160,0.10)'/%3E%3Ccircle cx='100' cy='50' r='0.5' fill='rgba(32,200,144,0.12)'/%3E%3Ccircle cx='400' cy='55' r='0.7' fill='rgba(24,72,160,0.12)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+  animation: ff7-sword 10s ease-in-out infinite;
+}
+
+@keyframes ff7-sword {
+  0%, 100% { opacity: 0.65; }
+  28%       { opacity: 0.72; }
+  50%       { opacity: 0.60; }
+  65%       { opacity: 0.58; }
+  87%       { opacity: 0.58; }
+  88%       { opacity: 0.03; }   /* Mako surge — synchronized blackout */
+  89%       { opacity: 0.78; }
+  92%       { opacity: 0.65; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'SHINRA ELECTRIC // MIDGAR // SECTOR 7';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(32, 200, 144, 0.62);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'FINAL\AFANTASY\AVII\A-----------\ACLOUD\ASTRIFE\A-----------\ASOLDIER\A1ST CLASS\ANOMNISLASH';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 12px; letter-spacing: 2px; line-height: 1.70; text-align: right;
+  color: rgba(24, 72, 160, 0.10); white-space: pre;
+  animation: ff7-readout 10s ease-in-out infinite;
+}
+
+@keyframes ff7-readout {
+  0%, 100% { color: rgba(24,72,160,.10); }
+  28%       { color: rgba(24,72,160,.14); }
+  65%       { color: rgba(24,72,160,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(32,200,144,.16); }
+  92%       { color: rgba(24,72,160,.10); }
+}
+
+#edit-bar::after {
+  content: 'AVALANCHE OPERATIONS // SAVE THE PLANET';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(32, 200, 144, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 5px; font-weight: 400; }
+
+/* ── Title: Mako/Lifestream pulse with 88% sync flash ────────────────────── */
+@keyframes ff7-title {
+  0%        { color: #8898C0; text-shadow: 0 0 6px rgba(24,72,160,.45), 0 0 18px rgba(24,72,160,.15); }
+  35%       { color: #20C890; text-shadow: 0 0 10px rgba(32,200,144,.60), 0 0 28px rgba(32,200,144,.22); }
+  65%       { color: #607090; text-shadow: 0 0 4px rgba(24,72,160,.30); }
+  87%       { color: #8898C0; text-shadow: 0 0 6px rgba(24,72,160,.40); }
+  88%       { color: #80FFD0; text-shadow: 0 0 22px rgba(128,255,208,.85), 0 0 50px rgba(32,200,144,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #8898C0; text-shadow: 0 0 8px rgba(24,72,160,.55); opacity: 1; }
+  100%      { color: #8898C0; text-shadow: 0 0 6px rgba(24,72,160,.45), 0 0 18px rgba(24,72,160,.15); }
+}
+
+/* ── App: Mako reactor pulse — synchronized ──────────────────────────────── */
+#app { animation: ff7-border 10s ease-in-out infinite; }
+@keyframes ff7-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(24,72,160,.20), inset 0 0 18px rgba(24,72,160,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(32,200,144,.42), inset 0 0 26px rgba(32,200,144,.06); }
+  65%      { box-shadow: 0 0 0 1px rgba(16,32,64,.22), inset 0 0 18px rgba(16,32,64,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(128,255,208,.80), inset 0 0 50px rgba(32,200,144,.15), 0 0 18px rgba(32,200,144,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(24,72,160,.40), inset 0 0 22px rgba(24,72,160,.06); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(4, 8, 16, 0.99); border-top-color: rgba(24, 72, 160, 0.22); }
+#theme-banner::before { content: '⟡'; color: #20C890; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; color: rgba(32, 200, 144, 0.62); }
+
+/* ── Lifestream motes — Mako particles drifting upward ───────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='35' cy='350' r='1.5' fill='rgba(32,200,144,0.20)'/%3E%3Ccircle cx='110' cy='250' r='1' fill='rgba(24,72,160,0.16)'/%3E%3Ccircle cx='165' cy='120' r='1.8' fill='rgba(32,200,144,0.12)'/%3E%3Ccircle cx='60' cy='50' r='0.8' fill='rgba(64,224,160,0.18)'/%3E%3Ccircle cx='140' cy='300' r='1.2' fill='rgba(32,200,144,0.14)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='45' cy='480' r='1.2' fill='rgba(32,200,144,0.10)'/%3E%3Ccircle cx='160' cy='320' r='1.5' fill='rgba(24,72,160,0.08)'/%3E%3Ccircle cx='230' cy='140' r='1' fill='rgba(64,224,160,0.08)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 280px 560px;
+  animation: ff7-lifestream 16s linear infinite;
+}
+@keyframes ff7-lifestream {
+  from { background-position: 0 0, 15px 0; }
+  to   { background-position: -20px -400px, 10px -560px; }
+}
+
+/* ── Tile: Mako scan ─────────────────────────────────────────────────────── */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(32,200,144,0.40);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

@@ -394,6 +394,13 @@ const THEME_BANNERS = {
     'SHE IS NOT HUMAN ANYMORE. SHE IS SOMETHING MORE.',
     'CARNEGIE HALL. OPENING NIGHT. THE LAST NIGHT.',
   ],
+  'ff7': [
+    'LET\'S MOSEY.',
+    'THERE AIN\'T NO GETTING OFF THIS TRAIN WE\'RE ON.',
+    'I WILL NEVER BE A MEMORY.',
+    'THE PLANET IS DYING. SLOWLY BUT SURELY IT IS DYING.',
+    'SOLDIER 1ST CLASS. CLOUD STRIFE.',
+  ],
 };
 
 // Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
@@ -460,8 +467,10 @@ const THEME_NAMES = {
   'amnesia':             'AMNESIA',
   'metal-gear':          'METAL GEAR SOLID',
   'parasite-eve':        'PARASITE EVE',
+  'ff7':                 'FINAL FANTASY VII',
 };
-const ALL_THEMES = Object.keys(THEME_BANNERS);
+const ALL_THEMES = Object.keys(THEME_BANNERS)
+  .sort((a, b) => (THEME_NAMES[a] || a).localeCompare(THEME_NAMES[b] || b));
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
