@@ -712,6 +712,17 @@ async function buildAppEntry(filePath) {
           if (!img.isEmpty()) iconDataUrl = img.toDataURL();
         } catch { /* fall through */ }
       }
+      // Fallback: IShellItemImageFactory thumbnail (works for portable/standalone .exe)
+      if (!iconDataUrl) {
+        const tb64 = await getFolderThumbnailBase64(iconSourcePath);
+        if (tb64) {
+          try {
+            const raw = nativeImage.createFromBuffer(Buffer.from(tb64, 'base64'));
+            const img = removeSolidBackground(raw);
+            if (!img.isEmpty()) iconDataUrl = img.toDataURL();
+          } catch { /* fall through */ }
+        }
+      }
     }
   }
   if (!iconDataUrl) {
