@@ -110,17 +110,19 @@
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* Death Star SVG — sphere latitude/longitude grid + targeting dish */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Equatorial trench line --%3E%3Cellipse cx='250' cy='190' rx='170' ry='10' fill='none' stroke='rgba(160,168,184,0.09)' stroke-width='1'/%3E%3C!-- Latitude lines --%3E%3Cellipse cx='250' cy='155' rx='150' ry='8' fill='none' stroke='rgba(160,168,184,0.06)' stroke-width='0.7'/%3E%3Cellipse cx='250' cy='225' rx='150' ry='8' fill='none' stroke='rgba(160,168,184,0.06)' stroke-width='0.7'/%3E%3Cellipse cx='250' cy='120' rx='120' ry='6' fill='none' stroke='rgba(160,168,184,0.05)' stroke-width='0.6'/%3E%3Cellipse cx='250' cy='260' rx='120' ry='6' fill='none' stroke='rgba(160,168,184,0.05)' stroke-width='0.6'/%3E%3C!-- Longitude lines (vertical arcs simplified as lines) --%3E%3Cline x1='250' y1='20' x2='250' y2='360' stroke='rgba(160,168,184,0.07)' stroke-width='0.7'/%3E%3Cline x1='80' y1='20' x2='80' y2='360' stroke='rgba(160,168,184,0.04)' stroke-width='0.5'/%3E%3Cline x1='420' y1='20' x2='420' y2='360' stroke='rgba(160,168,184,0.04)' stroke-width='0.5'/%3E%3C!-- Superlaser targeting dish — upper hemisphere, slightly left --%3E%3Ccircle cx='198' cy='118' r='42' fill='none' stroke='rgba(180,190,210,0.12)' stroke-width='1'/%3E%3Ccircle cx='198' cy='118' r='28' fill='none' stroke='rgba(180,190,210,0.10)' stroke-width='0.8'/%3E%3Ccircle cx='198' cy='118' r='14' fill='none' stroke='rgba(180,190,210,0.14)' stroke-width='1'/%3E%3Ccircle cx='198' cy='118' r='5' fill='rgba(180,190,210,0.18)'/%3E%3C!-- Dish crosshair --%3E%3Cline x1='198' y1='72' x2='198' y2='165' stroke='rgba(160,168,184,0.09)' stroke-width='0.7'/%3E%3Cline x1='152' y1='118' x2='244' y2='118' stroke='rgba(160,168,184,0.09)' stroke-width='0.7'/%3E%3C!-- Imperial badge — octagon corner mark --%3E%3Cpolygon points='454,22 470,22 478,30 478,46 470,54 454,54 446,46 446,30' fill='none' stroke='rgba(180,190,210,0.14)' stroke-width='1'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
-    /* cold grey ambient */
-    radial-gradient(ellipse 80% 55% at 50% 50%, rgba(8, 8, 14, 0.04) 0%, transparent 70%);
-  animation: empire-grid 14s ease-in-out infinite;
+    /* Death Star — full sphere with superlaser dish, equatorial trench, surface panels */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='18' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='3' fill='rgba(160,168,184,0.38)'%3EIMPERIAL BATTLE STATION DS-1%3C/text%3E%3Ctext x='250' y='30' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(140,148,165,0.25)'%3EDESCARTES SYSTEM -- IMPERIAL NAVY -- FULLY OPERATIONAL%3C/text%3E%3Ccircle cx='250' cy='195' r='140' fill='rgba(20,22,30,0.50)' stroke='rgba(160,168,184,0.42)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='195' r='136' fill='none' stroke='rgba(140,148,165,0.18)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='195' rx='140' ry='8' fill='none' stroke='rgba(180,190,210,0.35)' stroke-width='1.5'/%3E%3Cellipse cx='250' cy='195' rx='136' ry='6' fill='none' stroke='rgba(160,168,184,0.18)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='165' rx='130' ry='7' fill='none' stroke='rgba(140,148,165,0.15)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='135' rx='110' ry='6' fill='none' stroke='rgba(140,148,165,0.12)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='105' rx='82' ry='5' fill='none' stroke='rgba(140,148,165,0.10)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='225' rx='130' ry='7' fill='none' stroke='rgba(140,148,165,0.15)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='255' rx='110' ry='6' fill='none' stroke='rgba(140,148,165,0.12)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='285' rx='82' ry='5' fill='none' stroke='rgba(140,148,165,0.10)' stroke-width='0.5'/%3E%3Cpath d='M 250,55 Q 250,195 250,335' fill='none' stroke='rgba(140,148,165,0.12)' stroke-width='0.5'/%3E%3Cpath d='M 145,72 Q 180,195 145,318' fill='none' stroke='rgba(140,148,165,0.08)' stroke-width='0.5'/%3E%3Cpath d='M 355,72 Q 320,195 355,318' fill='none' stroke='rgba(140,148,165,0.08)' stroke-width='0.5'/%3E%3Cpath d='M 195,60 Q 210,195 195,330' fill='none' stroke='rgba(140,148,165,0.10)' stroke-width='0.5'/%3E%3Cpath d='M 305,60 Q 290,195 305,330' fill='none' stroke='rgba(140,148,165,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='205' cy='130' r='42' fill='rgba(12,14,20,0.55)' stroke='rgba(180,190,210,0.38)' stroke-width='1.2'/%3E%3Ccircle cx='205' cy='130' r='35' fill='none' stroke='rgba(160,168,184,0.25)' stroke-width='0.8'/%3E%3Ccircle cx='205' cy='130' r='25' fill='none' stroke='rgba(160,168,184,0.20)' stroke-width='0.5'/%3E%3Ccircle cx='205' cy='130' r='14' fill='none' stroke='rgba(180,190,210,0.30)' stroke-width='0.8'/%3E%3Ccircle cx='205' cy='130' r='5' fill='rgba(140,220,140,0.35)' stroke='rgba(140,220,140,0.25)' stroke-width='0.5'/%3E%3Cline x1='205' y1='85' x2='205' y2='175' stroke='rgba(160,168,184,0.15)' stroke-width='0.5'/%3E%3Cline x1='160' y1='130' x2='250' y2='130' stroke='rgba(160,168,184,0.15)' stroke-width='0.5'/%3E%3Ctext x='205' y='180' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1.5' fill='rgba(160,168,184,0.35)'%3ESUPERLASER%3C/text%3E%3Crect x='168' y='193' width='6' height='4' fill='rgba(140,148,165,0.18)'/%3E%3Crect x='184' y='193' width='6' height='4' fill='rgba(140,148,165,0.15)'/%3E%3Crect x='200' y='193' width='6' height='4' fill='rgba(140,148,165,0.18)'/%3E%3Crect x='250' y='193' width='6' height='4' fill='rgba(140,148,165,0.12)'/%3E%3Crect x='290' y='193' width='6' height='4' fill='rgba(140,148,165,0.15)'/%3E%3Crect x='320' y='193' width='6' height='4' fill='rgba(140,148,165,0.12)'/%3E%3Crect x='340' y='168' width='4' height='4' fill='rgba(140,148,165,0.10)'/%3E%3Crect x='155' y='225' width='4' height='4' fill='rgba(140,148,165,0.10)'/%3E%3Crect x='310' y='240' width='5' height='3' fill='rgba(140,148,165,0.12)'/%3E%3Crect x='180' y='260' width='4' height='3' fill='rgba(140,148,165,0.10)'/%3E%3Ctext x='85' y='85' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(160,168,184,0.38)'%3ESTATION CLASS%3C/text%3E%3Ctext x='85' y='98' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(180,190,210,0.48)'%3EDEATH STAR%3C/text%3E%3Cline x1='28' y1='104' x2='155' y2='104' stroke='rgba(160,168,184,0.18)' stroke-width='0.5'/%3E%3Ctext x='85' y='120' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3EDIAMETER%3C/text%3E%3Ctext x='85' y='132' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(180,190,210,0.45)'%3E160 KM%3C/text%3E%3Ctext x='85' y='148' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3ECREW%3C/text%3E%3Ctext x='85' y='160' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(180,190,210,0.42)'%3E1,186,295%3C/text%3E%3Ctext x='85' y='176' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3EWEAPON%3C/text%3E%3Ctext x='85' y='188' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(204,17,0,0.45)'%3ESUPERLASER%3C/text%3E%3Ctext x='430' y='85' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(160,168,184,0.38)'%3EPOWER STATUS%3C/text%3E%3Ctext x='430' y='98' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(140,220,140,0.45)'%3EOPERATIONAL%3C/text%3E%3Cline x1='365' y1='104' x2='480' y2='104' stroke='rgba(160,168,184,0.18)' stroke-width='0.5'/%3E%3Ctext x='430' y='120' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3EREACTOR%3C/text%3E%3Crect x='365' y='124' width='120' height='5' fill='rgba(140,148,165,0.10)' rx='1'/%3E%3Crect x='365' y='124' width='108' height='5' fill='rgba(140,220,140,0.35)' rx='1'/%3E%3Ctext x='430' y='144' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3ESHIELDS%3C/text%3E%3Crect x='365' y='148' width='120' height='5' fill='rgba(140,148,165,0.10)' rx='1'/%3E%3Crect x='365' y='148' width='96' height='5' fill='rgba(180,190,210,0.38)' rx='1'/%3E%3Ctext x='430' y='168' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3ESUPERLASER%3C/text%3E%3Crect x='365' y='172' width='120' height='5' fill='rgba(140,148,165,0.10)' rx='1'/%3E%3Crect x='365' y='172' width='84' height='5' fill='rgba(204,17,0,0.38)' rx='1'/%3E%3Ctext x='488' y='177' font-family='Segoe UI,Arial,sans-serif' font-size='5' fill='rgba(204,17,0,0.35)'%3E70 PCT%3C/text%3E%3Ctext x='250' y='355' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='2' fill='rgba(140,148,165,0.25)'%3EIMPERIAL NAVY -- GALACTIC EMPIRE -- DEATH STAR COMMAND%3C/text%3E%3Ccircle cx='55' cy='55' r='0.7' fill='rgba(180,190,210,0.18)'/%3E%3Ccircle cx='445' cy='48' r='0.5' fill='rgba(180,190,210,0.14)'/%3E%3Ccircle cx='48' cy='310' r='0.6' fill='rgba(180,190,210,0.12)'/%3E%3Ccircle cx='452' cy='320' r='0.8' fill='rgba(180,190,210,0.10)'/%3E%3Ccircle cx='60' cy='200' r='0.5' fill='rgba(180,190,210,0.10)'/%3E%3Ccircle cx='440' cy='240' r='0.6' fill='rgba(180,190,210,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+  animation: empire-deathstar 10s ease-in-out infinite;
 }
-@keyframes empire-grid {
-  0%, 100% { opacity: 0.85; }
-  48%       { opacity: 1.0; }
-  50%       { opacity: 1.2; }
-  52%       { opacity: 1.0; }
+@keyframes empire-deathstar {
+  0%, 100% { opacity: 0.65; }
+  28%       { opacity: 0.72; }
+  65%       { opacity: 0.58; }
+  87%       { opacity: 0.58; }
+  88%       { opacity: 0.03; }   /* superlaser discharge — synchronized blackout */
+  89%       { opacity: 0.80; }
+  92%       { opacity: 0.65; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -133,12 +135,22 @@
 }
 
 #grid-container::after {
-  content: 'GALACTIC\AEMPIRE\A\AORDER\ATHROUGH\ASTRENGTH\A\ACORUSCANT\ACOMMAND';
+  content: 'GALACTIC\AEMPIRE\A-----------\ADEATH STAR\AOPERATIONAL\A-----------\ACORUSCANT\ACOMMAND\AORDER REIGNS';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: 'Segoe UI', sans-serif; letter-spacing: 3px;
-  font-size: 12px; line-height: 1.8; text-align: right;
+  font-size: 12px; line-height: 1.70; text-align: right;
   color: rgba(140, 150, 168, 0.09); white-space: pre;
+  animation: empire-readout 10s ease-in-out infinite;
+}
+
+@keyframes empire-readout {
+  0%, 100% { color: rgba(140,150,168,.09); }
+  28%       { color: rgba(140,150,168,.13); }
+  65%       { color: rgba(140,150,168,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(160,168,184,.16); }
+  92%       { color: rgba(140,150,168,.09); }
 }
 
 #edit-bar::after {
@@ -153,20 +165,24 @@
 
 /* ── Imperial title flicker — precise, cold ──────────────────────────────────── */
 @keyframes empire-flicker {
-  0%, 100%  { text-shadow: 0 0 4px rgba(180,190,210,.40); }
-  90%       { text-shadow: 0 0 4px rgba(180,190,210,.40); }
-  91%       { text-shadow: 0 0 2px rgba(180,190,210,.12); }
-  92%       { text-shadow: 0 0 6px rgba(180,190,210,.55); }
-  93%       { text-shadow: 0 0 4px rgba(180,190,210,.40); }
+  0%        { color: #C0C8D8; text-shadow: 0 0 4px rgba(180,190,210,.40); }
+  65%       { color: #C0C8D8; text-shadow: 0 0 4px rgba(180,190,210,.40); }
+  87%       { color: #C0C8D8; text-shadow: 0 0 4px rgba(180,190,210,.40); }
+  88%       { color: #FFFFFF; text-shadow: 0 0 20px rgba(255,255,255,.90), 0 0 50px rgba(180,190,210,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C0C8D8; text-shadow: 0 0 6px rgba(180,190,210,.55); opacity: 1; }
+  100%      { color: #C0C8D8; text-shadow: 0 0 4px rgba(180,190,210,.40); }
 }
 
 /* ── App border: cold measured pulse — Death Star power cycling ──────────────── */
 #app { animation: empire-border 10s ease-in-out infinite; }
 @keyframes empire-border {
   0%, 100% { box-shadow: 0 0 0 1px rgba(150,158,175,.25), inset 0 0 20px rgba(150,158,175,.04); }
-  40%      { box-shadow: 0 0 0 1px rgba(180,190,210,.70), 0 0 18px rgba(180,190,210,.30), inset 0 0 40px rgba(160,168,185,.16); }
-  50%      { box-shadow: 0 0 0 2px rgba(200,210,230,.85), 0 0 28px rgba(200,210,230,.45), inset 0 0 55px rgba(180,190,210,.22); }
-  60%      { box-shadow: 0 0 0 1px rgba(180,190,210,.70), 0 0 18px rgba(180,190,210,.30), inset 0 0 40px rgba(160,168,185,.16); }
+  40%      { box-shadow: 0 0 0 1px rgba(180,190,210,.55), inset 0 0 30px rgba(160,168,185,.10); }
+  65%      { box-shadow: 0 0 0 1px rgba(150,158,175,.20), inset 0 0 18px rgba(150,158,175,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,255,255,.85), inset 0 0 50px rgba(180,190,210,.18), 0 0 20px rgba(180,190,210,.30); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(180,190,210,.50), inset 0 0 24px rgba(160,168,185,.08); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

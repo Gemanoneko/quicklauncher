@@ -136,23 +136,23 @@
   box-shadow: 0 0 10px rgba(204, 17, 0, 0.70), 0 0 24px rgba(180, 10, 0, 0.25);
 }
 
-/* ── Grid: brutalist concrete slab feel — thick horizontal dividers ───────────── */
+/* ── Grid: Style C — FBC Case File / Bureau dossier ──────────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* thick brutalist horizontal dividers — concrete slab */
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px, transparent 58px,
-      rgba(60, 60, 60, 0.030) 58px, rgba(60, 60, 60, 0.030) 60px
-    ),
-    /* ambient darkness from sides — concrete walls */
-    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(2, 2, 2, 0.22) 0%, transparent 65%),
-    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(2, 2, 2, 0.22) 0%, transparent 65%),
-    /* subtle red undertone from top — Bureau authority */
-    linear-gradient(to bottom, rgba(160, 10, 0, 0.04) 0%, transparent 22%);
-  background-size: 100% 60px, 100% 100%, 100% 100%, 100% 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(204,17,0,0.30)' stroke-width='1'/%3E%3Crect x='13' y='13' width='474' height='354' fill='none' stroke='rgba(204,17,0,0.15)' stroke-width='0.5'/%3E%3Cpath d='M 8,32 L 8,8 L 32,8' fill='none' stroke='rgba(204,17,0,0.55)' stroke-width='1.5'/%3E%3Cpath d='M 468,8 L 492,8 L 492,32' fill='none' stroke='rgba(204,17,0,0.55)' stroke-width='1.5'/%3E%3Cpath d='M 8,348 L 8,372 L 32,372' fill='none' stroke='rgba(204,17,0,0.55)' stroke-width='1.5'/%3E%3Cpath d='M 468,372 L 492,372 L 492,348' fill='none' stroke='rgba(204,17,0,0.55)' stroke-width='1.5'/%3E%3Cline x1='133' y1='13' x2='133' y2='367' stroke='rgba(204,17,0,0.05)' stroke-width='0.5'/%3E%3Cline x1='250' y1='13' x2='250' y2='367' stroke='rgba(204,17,0,0.05)' stroke-width='0.5'/%3E%3Cline x1='367' y1='13' x2='367' y2='367' stroke='rgba(204,17,0,0.05)' stroke-width='0.5'/%3E%3Cline x1='13' y1='130' x2='487' y2='130' stroke='rgba(204,17,0,0.05)' stroke-width='0.5'/%3E%3Cline x1='13' y1='255' x2='487' y2='255' stroke='rgba(204,17,0,0.05)' stroke-width='0.5'/%3E%3Ctext x='250' y='30' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='10' font-weight='bold' letter-spacing='4' fill='rgba(204,17,0,0.50)'%3EFEDERAL BUREAU OF CONTROL%3C/text%3E%3Ctext x='250' y='46' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' letter-spacing='2' fill='rgba(80,80,80,0.40)'%3EOLDEST HOUSE -- CASE FILE -- CLASSIFIED%3C/text%3E%3Cline x1='70' y1='52' x2='430' y2='52' stroke='rgba(204,17,0,0.20)' stroke-width='0.5'/%3E%3Ccircle cx='70' cy='52' r='1.5' fill='rgba(204,17,0,0.32)'/%3E%3Ccircle cx='430' cy='52' r='1.5' fill='rgba(204,17,0,0.32)'/%3E%3Cpolygon points='250,130 290,170 290,230 250,270 210,230 210,170' fill='rgba(204,17,0,0.08)' stroke='rgba(204,17,0,0.35)' stroke-width='1.2'/%3E%3Cpolygon points='250,140 282,172 282,228 250,260 218,228 218,172' fill='none' stroke='rgba(204,17,0,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='250,155 268,168 268,232 250,245 232,232 232,168' fill='rgba(204,17,0,0.06)' stroke='rgba(204,17,0,0.22)' stroke-width='0.8'/%3E%3Cline x1='250' y1='130' x2='250' y2='270' stroke='rgba(204,17,0,0.12)' stroke-width='0.5'/%3E%3Cline x1='210' y1='200' x2='290' y2='200' stroke='rgba(204,17,0,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='200' r='5' fill='rgba(204,17,0,0.30)' stroke='rgba(204,17,0,0.22)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='200' r='2' fill='rgba(204,17,0,0.50)'/%3E%3Ctext x='250' y='286' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='3' fill='rgba(204,17,0,0.38)'%3ETHE BOARD%3C/text%3E%3Ctext x='250' y='298' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1.5' fill='rgba(80,80,80,0.30)'%3EINVERTED PYRAMID -- ASTRAL PLANE%3C/text%3E%3Ctext x='85' y='75' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7.5' letter-spacing='2' font-weight='bold' fill='rgba(204,17,0,0.48)'%3ECASE FILE%3C/text%3E%3Cline x1='20' y1='80' x2='150' y2='80' stroke='rgba(204,17,0,0.20)' stroke-width='0.5'/%3E%3Cpath d='M 20,88 L 20,290 L 25,290' fill='none' stroke='rgba(204,17,0,0.15)' stroke-width='0.8'/%3E%3Cpath d='M 20,88 L 25,88' fill='none' stroke='rgba(204,17,0,0.15)' stroke-width='0.8'/%3E%3Ctext x='20' y='98' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(80,80,80,0.42)'%3EDIRECTOR%3C/text%3E%3Ctext x='20' y='110' font-family='Segoe UI,Arial,sans-serif' font-size='7.5' font-weight='bold' letter-spacing='1.5' fill='rgba(204,17,0,0.52)'%3EJESSE FADEN%3C/text%3E%3Ctext x='20' y='126' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(80,80,80,0.40)'%3EOBJECT OF POWER%3C/text%3E%3Ctext x='20' y='138' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1' fill='rgba(190,168,168,0.48)'%3ESERVICE WEAPON%3C/text%3E%3Ctext x='20' y='154' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(80,80,80,0.40)'%3EGUIDE%3C/text%3E%3Ctext x='20' y='166' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(100,140,200,0.45)'%3EPOLARIS%3C/text%3E%3Ctext x='20' y='184' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1.5' fill='rgba(80,80,80,0.40)'%3EHISS LEVEL%3C/text%3E%3Crect x='20' y='188' width='120' height='5' fill='rgba(80,80,80,0.10)' rx='1'/%3E%3Crect x='20' y='188' width='84' height='5' fill='rgba(204,17,0,0.50)' rx='1'/%3E%3Ctext x='143' y='193' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' font-weight='bold' fill='rgba(204,17,0,0.45)'%3EHIGH%3C/text%3E%3Ctext x='20' y='208' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1.5' fill='rgba(80,80,80,0.38)'%3ECONTAINMENT%3C/text%3E%3Crect x='20' y='212' width='120' height='5' fill='rgba(80,80,80,0.10)' rx='1'/%3E%3Crect x='20' y='212' width='60' height='5' fill='rgba(80,80,80,0.38)' rx='1'/%3E%3Ctext x='143' y='217' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' fill='rgba(80,80,80,0.35)'%3EACTIVE%3C/text%3E%3Cline x1='20' y1='228' x2='150' y2='228' stroke='rgba(204,17,0,0.12)' stroke-width='0.5'/%3E%3Ctext x='85' y='245' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' font-style='italic' fill='rgba(204,17,0,0.35)'%3EYOU ARE THE DIRECTOR%3C/text%3E%3Ctext x='415' y='75' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7.5' letter-spacing='2' font-weight='bold' fill='rgba(204,17,0,0.48)'%3EALTERED ITEMS%3C/text%3E%3Cline x1='350' y1='80' x2='480' y2='80' stroke='rgba(204,17,0,0.20)' stroke-width='0.5'/%3E%3Cpath d='M 480,88 L 480,290 L 475,290' fill='none' stroke='rgba(204,17,0,0.15)' stroke-width='0.8'/%3E%3Cpath d='M 480,88 L 475,88' fill='none' stroke='rgba(204,17,0,0.15)' stroke-width='0.8'/%3E%3Ctext x='353' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(190,168,168,0.48)'%3EFRIDGE%3C/text%3E%3Cline x1='353' y1='102' x2='452' y2='102' stroke='rgba(80,80,80,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(204,17,0,0.42)'%3ECONTAINED%3C/text%3E%3Ctext x='353' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(190,168,168,0.45)'%3EMOTEL KEY%3C/text%3E%3Cline x1='353' y1='120' x2='452' y2='120' stroke='rgba(80,80,80,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(204,17,0,0.42)'%3ECONTAINED%3C/text%3E%3Ctext x='353' y='136' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(190,168,168,0.42)'%3EANCHOR%3C/text%3E%3Cline x1='353' y1='138' x2='452' y2='138' stroke='rgba(80,80,80,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='136' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(204,17,0,0.42)'%3ECONTAINED%3C/text%3E%3Ctext x='353' y='154' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(190,168,168,0.42)'%3EFLOPPYDISK%3C/text%3E%3Cline x1='353' y1='156' x2='452' y2='156' stroke='rgba(80,80,80,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='154' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(204,17,0,0.38)'%3EACTIVE%3C/text%3E%3Ctext x='353' y='172' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(190,168,168,0.40)'%3ESWITCH%3C/text%3E%3Cline x1='353' y1='174' x2='452' y2='174' stroke='rgba(80,80,80,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='172' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(204,17,0,0.38)'%3EBREACHED%3C/text%3E%3Ctext x='353' y='190' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(190,168,168,0.40)'%3EHOTLINE%3C/text%3E%3Cline x1='353' y1='192' x2='452' y2='192' stroke='rgba(80,80,80,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='455' y='190' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(100,140,200,0.42)'%3EBOUND%3C/text%3E%3Cline x1='350' y1='200' x2='480' y2='200' stroke='rgba(204,17,0,0.18)' stroke-width='0.5'/%3E%3Ctext x='353' y='215' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1.5' font-weight='bold' fill='rgba(80,80,80,0.42)'%3ESECTORS%3C/text%3E%3Ctext x='353' y='230' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(190,168,168,0.38)'%3EEXECUTIVE%3C/text%3E%3Ctext x='353' y='242' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(190,168,168,0.35)'%3EMAINTENANCE%3C/text%3E%3Ctext x='353' y='254' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(190,168,168,0.35)'%3ERESEARCH%3C/text%3E%3Ctext x='353' y='266' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(204,17,0,0.38)'%3ECONTAINMENT%3C/text%3E%3Ctext x='353' y='278' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(190,168,168,0.32)'%3EFOUNDATION%3C/text%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(204,17,0,0.20)' stroke-width='0.7'/%3E%3Cline x1='20' y1='311' x2='480' y2='311' stroke='rgba(204,17,0,0.08)' stroke-width='0.3'/%3E%3Ctext x='60' y='324' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(80,80,80,0.38)'%3ESECTOR%3C/text%3E%3Ctext x='60' y='337' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(204,17,0,0.48)'%3EEXECUTIVE%3C/text%3E%3Ctext x='180' y='324' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(80,80,80,0.38)'%3EHISS%3C/text%3E%3Ctext x='180' y='337' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(204,17,0,0.45)'%3EDETECTED%3C/text%3E%3Ctext x='320' y='324' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(80,80,80,0.38)'%3ESTATUS%3C/text%3E%3Ctext x='320' y='337' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(190,168,168,0.42)'%3EDIRECTOR%3C/text%3E%3Ctext x='440' y='324' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(80,80,80,0.38)'%3EGUIDE%3C/text%3E%3Ctext x='440' y='337' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(100,140,200,0.42)'%3EPOLARIS%3C/text%3E%3Cline x1='123' y1='312' x2='123' y2='344' stroke='rgba(204,17,0,0.12)' stroke-width='0.5'/%3E%3Cline x1='248' y1='312' x2='248' y2='344' stroke='rgba(204,17,0,0.12)' stroke-width='0.5'/%3E%3Cline x1='373' y1='312' x2='373' y2='344' stroke='rgba(204,17,0,0.12)' stroke-width='0.5'/%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='2' fill='rgba(80,80,80,0.25)'%3EFBC -- OLDEST HOUSE -- NEW YORK -- CLASSIFIED%3C/text%3E%3Ccircle cx='42' cy='62' r='0.8' fill='rgba(204,17,0,0.20)'/%3E%3Ccircle cx='458' cy='58' r='0.6' fill='rgba(80,80,80,0.15)'/%3E%3Ccircle cx='35' cy='260' r='0.7' fill='rgba(204,17,0,0.12)'/%3E%3Ccircle cx='465' cy='280' r='0.8' fill='rgba(80,80,80,0.10)'/%3E%3Ccircle cx='45' cy='340' r='0.5' fill='rgba(204,17,0,0.10)'/%3E%3Ccircle cx='455' cy='345' r='0.6' fill='rgba(80,80,80,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.48;
+  animation: ctrl-casefile 10s ease-in-out infinite;
+}
+
+@keyframes ctrl-casefile {
+  0%, 100% { opacity: 0.48; }
+  28%       { opacity: 0.55; }
+  65%       { opacity: 0.40; }
+  87%       { opacity: 0.40; }
+  88%       { opacity: 0.04; }   /* Hiss surge — synchronized blackout */
+  89%       { opacity: 0.58; }
+  92%       { opacity: 0.48; }
 }
 
 /* ── Flavor content ──────────────────────────────────────────────────────────── */
@@ -169,8 +169,18 @@
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 300;
-  font-size: 10px; line-height: 1.7; text-align: right;
-  color: rgba(160, 30, 0, 0.14); white-space: pre;
+  font-size: 12px; line-height: 1.70; text-align: right;
+  color: rgba(160, 30, 0, 0.10); white-space: pre;
+  animation: ctrl-readout 10s ease-in-out infinite;
+}
+
+@keyframes ctrl-readout {
+  0%, 100% { color: rgba(160,30,0,.10); }
+  28%       { color: rgba(160,30,0,.14); }
+  65%       { color: rgba(160,30,0,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(204,17,0,.16); }
+  92%       { color: rgba(160,30,0,.10); }
 }
 
 #edit-bar::after {
@@ -185,25 +195,28 @@
 
 /* ── Title animation: Hiss-like glitch distortion ────────────────────────────── */
 @keyframes hiss-distort {
-  0%, 100% { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28), 0 0 12px rgba(204,17,0,.12); opacity: 1; }
-  80%       { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28); opacity: 1; }
-  82%       { color: #CC1100; text-shadow: 0 0 8px rgba(204,17,0,.70), 0 0 22px rgba(204,17,0,.28); opacity: 1; transform: translateX(1px); }
-  83%       { color: #787878; text-shadow: none; opacity: 0.6; transform: translateX(-1px); }
-  84%       { color: #CC1100; text-shadow: 0 0 6px rgba(204,17,0,.55); opacity: 0.9; transform: translateX(0); }
-  85%       { color: #787878; text-shadow: 0 0 4px rgba(204,17,0,.22); opacity: 1; }
-  93%       { color: #787878; opacity: 1; }
-  94%       { color: #505050; text-shadow: 2px 0 rgba(204,17,0,.40), -1px 0 rgba(60,60,60,.50); opacity: 0.8; }
-  95%       { color: #787878; text-shadow: 0 0 4px rgba(204,17,0,.22); opacity: 1; }
+  0%        { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28), 0 0 12px rgba(204,17,0,.12); }
+  70%       { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28); }
+  72%       { color: #CC1100; text-shadow: 0 0 8px rgba(204,17,0,.70), 0 0 22px rgba(204,17,0,.28); transform: translateX(1px); }
+  73%       { color: #505050; text-shadow: none; opacity: 0.5; transform: translateX(-1px); }
+  74%       { color: #CC1100; text-shadow: 0 0 6px rgba(204,17,0,.55); opacity: 1; transform: translateX(0); }
+  75%       { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28); }
+  87%       { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28); }
+  88%       { color: #FF3300; text-shadow: 0 0 22px rgba(255,50,0,.90), 0 0 50px rgba(204,17,0,.50); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #BEA8A8; text-shadow: 0 0 6px rgba(204,17,0,.42); opacity: 1; }
+  100%      { color: #BEA8A8; text-shadow: 0 0 4px rgba(204,17,0,.28), 0 0 12px rgba(204,17,0,.12); }
 }
 
 /* ── App: Hiss presence — subtle 12s cycle with red distortion flashes ───────── */
-#app { animation: control-hiss 12s ease-in-out infinite; }
+#app { animation: control-hiss 10s ease-in-out infinite; }
 @keyframes control-hiss {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(180,20,0,.22), inset 0 0 28px rgba(180,20,0,.04); }
-  40%      { box-shadow: 0 0 0 1px rgba(204,17,0,.38), inset 0 0 28px rgba(204,17,0,.07); }
-  41%      { box-shadow: 0 0 0 1px rgba(80,80,80,.12), inset 0 0 18px rgba(40,40,40,.03); }
-  42%      { box-shadow: 0 0 0 1px rgba(204,17,0,.32), inset 0 0 25px rgba(204,17,0,.06); }
-  70%      { box-shadow: 0 0 0 1px rgba(160,15,0,.18), inset 0 0 24px rgba(160,15,0,.03); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(180,20,0,.22), inset 0 0 22px rgba(180,20,0,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(204,17,0,.42), inset 0 0 28px rgba(204,17,0,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(80,80,80,.18), inset 0 0 18px rgba(40,40,40,.03); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,50,0,.85), inset 0 0 50px rgba(204,17,0,.15), 0 0 18px rgba(204,17,0,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(204,17,0,.40), inset 0 0 24px rgba(204,17,0,.06); }
 }
 
 /* ── Banner ──────────────────────────────────────────────────────────────────── */
