@@ -1,0 +1,218 @@
+/* ══ PARASITE EVE ═════════════════════════════════════════════════════════════
+   Manhattan. Carnegie Hall. The mitochondria have awakened — they remember.
+   Aya Brea, NYPD. The cells are burning. Evolution has its own agenda.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #060304;
+  --panel-bg:     rgba(10, 5, 4, 0.99);
+  --overlay-bg:   rgba(8, 4, 3, 0.97);
+  --header-bg:    rgba(212, 128, 32, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #C0A080;
+  --text-dim:     rgba(160, 130, 90, 0.45);
+
+  --accent-c:     #D48020;   /* mitochondrial amber */
+  --accent-m:     #CC3830;   /* cellular combustion red */
+  --accent-y:     #806028;   /* dark organic amber */
+
+  --border:       rgba(212, 128, 32, 0.20);
+  --border-h:     rgba(212, 128, 32, 0.50);
+
+  --glow-c:       0 0 7px rgba(212,128,32,.62), 0 0 20px rgba(212,128,32,.22);
+  --glow-m:       0 0 6px rgba(204,56,48,.58), 0 0 18px rgba(204,56,48,.20);
+  --glow-y:       0 0 5px rgba(128,96,40,.48), 0 0 16px rgba(128,96,40,.15);
+
+  --pulse-glow:   inset 0 0 20px rgba(212,128,32,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(212,128,32,.10);
+
+  --title-anim:   pe-title 10s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(212, 128, 32, 0.08);
+  --tile-hover-border: rgba(212, 128, 32, 0.40);
+  --tile-hover-shadow: 0 0 12px rgba(212, 128, 32, 0.20);
+  --tile-active-bg:    rgba(212, 128, 32, 0.15);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(212,128,32,.58)) drop-shadow(0 0 12px rgba(204,56,48,.22));
+  --tile-icon-fx:      brightness(0.92) saturate(1.15) contrast(1.1);
+  --tile-icon-shape:   ellipse(47% 45% at 50% 50%);
+  --tile-label-spacing:   1px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(212, 128, 32, 0.10);
+  --btn-active-bg:  rgba(212, 128, 32, 0.20);
+
+  --drop-hint-border: rgba(212, 128, 32, 0.22);
+  --drop-icon-color:  rgba(212, 128, 32, 0.32);
+  --hint-sub-color:   rgba(160, 130, 90, 0.35);
+
+  --rename-dashed:    rgba(212, 128, 32, 0.40);
+  --rename-input-bg:  rgba(212, 128, 32, 0.07);
+
+  --edit-bar-bg:          rgba(204, 56, 48, 0.07);
+  --edit-bar-border:      rgba(204, 56, 48, 0.38);
+  --edit-label-color:     #CC3830;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #CC3830;
+  --btn-done-border:      rgba(204, 56, 48, 0.42);
+  --btn-done-hover-bg:    rgba(204, 56, 48, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(212, 128, 32, 0.40);
+
+  --update-bg:             rgba(128, 96, 40, 0.06);
+  --update-border:         rgba(128, 96, 40, 0.32);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(128, 96, 40, 0.28);
+  --update-btn-hover-bg:   rgba(128, 96, 40, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #D48020;
+  --btn-close-border:     rgba(212, 128, 32, 0.38);
+  --btn-close-hover-bg:   rgba(212, 128, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(212, 128, 32, 0.07);
+  --picker-item-hover-bg:  rgba(212, 128, 32, 0.08);
+  --picker-item-active-bg: rgba(212, 128, 32, 0.15);
+  --picker-placeholder-bg: rgba(212, 128, 32, 0.07);
+
+  --skin-btn-active-bg:    rgba(212, 128, 32, 0.16);
+  --remove-btn-bg:         rgba(204, 56, 48, 0.88);
+  --remove-btn-border:     #CC3830;
+}
+
+/* ── Cellular grain + warm amber vignette + combustion glow ──────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.6 0.3 0.1 0 0.02  0.4 0.2 0.05 0 0.01  0.15 0.08 0.02 0 0  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 28%, rgba(4,2,2,0.86) 100%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(160,80,15,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 0% 100%, rgba(180,40,20,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 100% 0%, rgba(160,80,15,0.04) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — mitochondrial amber accent bar ─────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #D48020, rgba(180, 100, 25, 0.28));
+  box-shadow: 0 0 9px rgba(212,128,32,0.60), 0 0 24px rgba(212,128,32,0.20);
+}
+
+/* ── Grid: Style C — Mitochondrial Research Archive / NYPD Case File ─────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(212,128,32,0.35)' stroke-width='1'/%3E%3Crect x='13' y='13' width='474' height='354' fill='none' stroke='rgba(212,128,32,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 8,32 L 8,8 L 32,8' fill='none' stroke='rgba(212,128,32,0.58)' stroke-width='1.5'/%3E%3Cpath d='M 468,8 L 492,8 L 492,32' fill='none' stroke='rgba(212,128,32,0.58)' stroke-width='1.5'/%3E%3Cpath d='M 8,348 L 8,372 L 32,372' fill='none' stroke='rgba(212,128,32,0.58)' stroke-width='1.5'/%3E%3Cpath d='M 468,372 L 492,372 L 492,348' fill='none' stroke='rgba(212,128,32,0.58)' stroke-width='1.5'/%3E%3Cline x1='133' y1='13' x2='133' y2='367' stroke='rgba(212,128,32,0.06)' stroke-width='0.5'/%3E%3Cline x1='250' y1='13' x2='250' y2='367' stroke='rgba(212,128,32,0.06)' stroke-width='0.5'/%3E%3Cline x1='367' y1='13' x2='367' y2='367' stroke='rgba(212,128,32,0.06)' stroke-width='0.5'/%3E%3Cline x1='13' y1='130' x2='487' y2='130' stroke='rgba(212,128,32,0.06)' stroke-width='0.5'/%3E%3Cline x1='13' y1='255' x2='487' y2='255' stroke='rgba(212,128,32,0.06)' stroke-width='0.5'/%3E%3Ctext x='250' y='30' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='10' font-weight='bold' letter-spacing='3' fill='rgba(212,128,32,0.55)'%3EPARASITE EVE -- MITOCHONDRIAL ARCHIVE%3C/text%3E%3Ctext x='250' y='46' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='2' fill='rgba(180,100,25,0.38)'%3ENYPD 17TH PRECINCT -- MANHATTAN -- CASE NO. PE-1997%3C/text%3E%3Cline x1='70' y1='52' x2='430' y2='52' stroke='rgba(212,128,32,0.22)' stroke-width='0.5'/%3E%3Ccircle cx='70' cy='52' r='1.5' fill='rgba(212,128,32,0.35)'/%3E%3Ccircle cx='430' cy='52' r='1.5' fill='rgba(212,128,32,0.35)'/%3E%3Ccircle cx='250' cy='52' r='1.5' fill='rgba(212,128,32,0.28)'/%3E%3Cellipse cx='250' cy='185' rx='72' ry='52' fill='rgba(120,60,15,0.18)' stroke='rgba(212,128,32,0.42)' stroke-width='1.2'/%3E%3Cellipse cx='250' cy='185' rx='68' ry='48' fill='none' stroke='rgba(212,128,32,0.22)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='185' rx='78' ry='58' fill='none' stroke='rgba(180,100,25,0.15)' stroke-width='0.5' stroke-dasharray='3,6'/%3E%3Cpath d='M 195,170 Q 210,155 230,160 Q 245,165 240,180 Q 235,195 220,192 Q 205,188 195,170 Z' fill='rgba(204,56,48,0.15)' stroke='rgba(204,56,48,0.28)' stroke-width='0.8'/%3E%3Cpath d='M 260,175 Q 275,162 295,168 Q 305,180 295,195 Q 280,205 265,198 Q 255,190 260,175 Z' fill='rgba(204,56,48,0.12)' stroke='rgba(204,56,48,0.25)' stroke-width='0.8'/%3E%3Cpath d='M 225,195 Q 240,200 260,198 Q 275,195 280,205 Q 270,218 250,220 Q 230,218 220,205 Q 225,198 225,195 Z' fill='rgba(204,56,48,0.10)' stroke='rgba(204,56,48,0.22)' stroke-width='0.8'/%3E%3Cpath d='M 185,185 C 195,170 210,162 230,165' fill='none' stroke='rgba(212,128,32,0.25)' stroke-width='0.6'/%3E%3Cpath d='M 270,165 C 290,162 305,170 315,185' fill='none' stroke='rgba(212,128,32,0.25)' stroke-width='0.6'/%3E%3Cpath d='M 315,190 C 305,205 290,215 270,210' fill='none' stroke='rgba(212,128,32,0.20)' stroke-width='0.6'/%3E%3Cpath d='M 230,210 C 210,215 195,205 185,190' fill='none' stroke='rgba(212,128,32,0.20)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='185' r='12' fill='rgba(212,128,32,0.20)' stroke='rgba(212,128,32,0.35)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='5' fill='rgba(204,56,48,0.30)' stroke='rgba(204,56,48,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 245,185 Q 248,178 255,185 Q 248,192 245,185 Z' fill='rgba(212,128,32,0.40)' stroke='rgba(212,128,32,0.30)' stroke-width='0.3'/%3E%3Ctext x='250' y='248' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='8' font-weight='bold' letter-spacing='3' fill='rgba(212,128,32,0.45)'%3EMITOCHONDRIA%3C/text%3E%3Ctext x='250' y='260' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(180,100,25,0.32)'%3ECROSS-SECTION -- EVOLVED STRAIN%3C/text%3E%3Ctext x='250' y='138' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1.5' fill='rgba(212,128,32,0.28)'%3EOUTER MEMBRANE%3C/text%3E%3Cline x1='250' y1='140' x2='250' y2='148' stroke='rgba(212,128,32,0.18)' stroke-width='0.5'/%3E%3Ctext x='195' y='165' font-family='Segoe UI,Arial,sans-serif' font-size='4.5' letter-spacing='1' fill='rgba(204,56,48,0.35)'%3ECRISTAE%3C/text%3E%3Ctext x='300' y='165' font-family='Segoe UI,Arial,sans-serif' font-size='4.5' letter-spacing='1' fill='rgba(204,56,48,0.32)'%3ECRISTAE%3C/text%3E%3Ctext x='250' y='210' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='4.5' letter-spacing='1' fill='rgba(212,128,32,0.30)'%3EMATRIX%3C/text%3E%3Ctext x='85' y='75' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7.5' letter-spacing='2' font-weight='bold' fill='rgba(212,128,32,0.50)'%3ENYPD CASE FILE%3C/text%3E%3Cline x1='20' y1='80' x2='150' y2='80' stroke='rgba(212,128,32,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 20,88 L 20,290 L 25,290' fill='none' stroke='rgba(212,128,32,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 20,88 L 25,88' fill='none' stroke='rgba(212,128,32,0.18)' stroke-width='0.8'/%3E%3Ctext x='20' y='98' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.40)'%3EDETECTIVE%3C/text%3E%3Ctext x='20' y='110' font-family='Segoe UI,Arial,sans-serif' font-size='7.5' font-weight='bold' letter-spacing='1.5' fill='rgba(212,128,32,0.55)'%3EAYA BREA%3C/text%3E%3Ctext x='20' y='126' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.38)'%3EPRECINCT%3C/text%3E%3Ctext x='20' y='138' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(212,128,32,0.50)'%3E17TH, MANHATTAN%3C/text%3E%3Ctext x='20' y='154' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.38)'%3ECASE%3C/text%3E%3Ctext x='20' y='166' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1' fill='rgba(204,56,48,0.52)'%3ESPONTANEOUS%3C/text%3E%3Ctext x='20' y='178' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1' fill='rgba(204,56,48,0.48)'%3ECOMBUSTION%3C/text%3E%3Ctext x='20' y='196' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.38)'%3ESUSPECT%3C/text%3E%3Ctext x='20' y='208' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(204,56,48,0.50)'%3EEVE (MAYA BREA)%3C/text%3E%3Ctext x='20' y='226' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1.5' fill='rgba(180,100,25,0.38)'%3ETHREAT LEVEL%3C/text%3E%3Crect x='20' y='230' width='120' height='5' fill='rgba(212,128,32,0.10)' rx='1'/%3E%3Crect x='20' y='230' width='102' height='5' fill='rgba(204,56,48,0.55)' rx='1'/%3E%3Ctext x='143' y='235' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' font-weight='bold' fill='rgba(204,56,48,0.50)'%3EHIGH%3C/text%3E%3Ctext x='20' y='250' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1.5' fill='rgba(180,100,25,0.35)'%3EDAYS ELAPSED%3C/text%3E%3Crect x='20' y='254' width='120' height='5' fill='rgba(212,128,32,0.10)' rx='1'/%3E%3Crect x='20' y='254' width='72' height='5' fill='rgba(212,128,32,0.50)' rx='1'/%3E%3Ctext x='143' y='259' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' font-weight='bold' fill='rgba(212,128,32,0.45)'%3EDAY 6%3C/text%3E%3Cline x1='20' y1='268' x2='150' y2='268' stroke='rgba(212,128,32,0.15)' stroke-width='0.5'/%3E%3Ctext x='85' y='282' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' font-style='italic' fill='rgba(204,56,48,0.38)'%3ETHE CELLS REMEMBER%3C/text%3E%3Ctext x='415' y='75' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7.5' letter-spacing='2' font-weight='bold' fill='rgba(212,128,32,0.50)'%3EPE ABILITIES%3C/text%3E%3Cline x1='350' y1='80' x2='480' y2='80' stroke='rgba(212,128,32,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 480,88 L 480,290 L 475,290' fill='none' stroke='rgba(212,128,32,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 480,88 L 475,88' fill='none' stroke='rgba(212,128,32,0.18)' stroke-width='0.8'/%3E%3Ctext x='353' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(212,128,32,0.52)'%3EHEAL%3C/text%3E%3Cline x1='353' y1='102' x2='452' y2='102' stroke='rgba(180,100,25,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='458' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' fill='rgba(212,128,32,0.48)'%3ELV 3%3C/text%3E%3Ctext x='353' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(204,56,48,0.50)'%3EENERGY SHOT%3C/text%3E%3Cline x1='353' y1='120' x2='452' y2='120' stroke='rgba(180,100,25,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='458' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' fill='rgba(204,56,48,0.45)'%3ELV 2%3C/text%3E%3Ctext x='353' y='136' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(212,128,32,0.48)'%3EHASTE%3C/text%3E%3Cline x1='353' y1='138' x2='452' y2='138' stroke='rgba(180,100,25,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='458' y='136' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' fill='rgba(212,128,32,0.42)'%3ELV 1%3C/text%3E%3Ctext x='353' y='154' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(212,128,32,0.48)'%3EBARRIER%3C/text%3E%3Cline x1='353' y1='156' x2='452' y2='156' stroke='rgba(180,100,25,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='458' y='154' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' fill='rgba(212,128,32,0.42)'%3ELV 2%3C/text%3E%3Ctext x='353' y='172' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(204,56,48,0.45)'%3ELIBERATE%3C/text%3E%3Cline x1='353' y1='174' x2='452' y2='174' stroke='rgba(180,100,25,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='458' y='172' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' fill='rgba(204,56,48,0.40)'%3ELV 1%3C/text%3E%3Ctext x='353' y='190' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(212,128,32,0.45)'%3EPRERAISE%3C/text%3E%3Cline x1='353' y1='192' x2='452' y2='192' stroke='rgba(180,100,25,0.12)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='458' y='190' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' fill='rgba(212,128,32,0.40)'%3ELV 1%3C/text%3E%3Cline x1='350' y1='200' x2='480' y2='200' stroke='rgba(212,128,32,0.20)' stroke-width='0.5'/%3E%3Ctext x='353' y='215' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.38)'%3EPE ENERGY%3C/text%3E%3Crect x='353' y='220' width='120' height='5' fill='rgba(212,128,32,0.10)' rx='1'/%3E%3Crect x='353' y='220' width='84' height='5' fill='rgba(212,128,32,0.50)' rx='1'/%3E%3Ctext x='476' y='225' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' fill='rgba(212,128,32,0.42)'%3E70%3C/text%3E%3Ctext x='353' y='242' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.35)'%3EHP%3C/text%3E%3Crect x='353' y='246' width='120' height='5' fill='rgba(212,128,32,0.10)' rx='1'/%3E%3Crect x='353' y='246' width='96' height='5' fill='rgba(120,180,60,0.45)' rx='1'/%3E%3Ctext x='476' y='251' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' fill='rgba(120,180,60,0.40)'%3E80%3C/text%3E%3Cline x1='350' y1='260' x2='480' y2='260' stroke='rgba(212,128,32,0.12)' stroke-width='0.5'/%3E%3Ctext x='415' y='275' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' font-style='italic' fill='rgba(204,56,48,0.35)'%3EEVOLUTION AWAITS%3C/text%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(212,128,32,0.22)' stroke-width='0.7'/%3E%3Cline x1='20' y1='311' x2='480' y2='311' stroke='rgba(212,128,32,0.10)' stroke-width='0.3'/%3E%3Ctext x='60' y='324' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.38)'%3ELOCATION%3C/text%3E%3Ctext x='60' y='337' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(212,128,32,0.50)'%3ECARNEGIE%3C/text%3E%3Ctext x='180' y='324' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.38)'%3ETHREAT%3C/text%3E%3Ctext x='180' y='337' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(204,56,48,0.50)'%3EEVE ACTIVE%3C/text%3E%3Ctext x='320' y='324' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.38)'%3ESTATUS%3C/text%3E%3Ctext x='320' y='337' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(212,128,32,0.48)'%3EDAY 6%3C/text%3E%3Ctext x='440' y='324' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(180,100,25,0.38)'%3EDIVISION%3C/text%3E%3Ctext x='440' y='337' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='1.5' font-weight='bold' fill='rgba(212,128,32,0.45)'%3ENYPD%3C/text%3E%3Cline x1='123' y1='312' x2='123' y2='344' stroke='rgba(212,128,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='248' y1='312' x2='248' y2='344' stroke='rgba(212,128,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='373' y1='312' x2='373' y2='344' stroke='rgba(212,128,32,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='2' fill='rgba(180,100,25,0.28)'%3ENYPD SPECIAL INVESTIGATIONS -- MITOCHONDRIAL RESEARCH DIVISION%3C/text%3E%3Ccircle cx='45' cy='65' r='1' fill='rgba(212,128,32,0.22)'/%3E%3Ccircle cx='168' cy='92' r='0.8' fill='rgba(204,56,48,0.18)'/%3E%3Ccircle cx='92' cy='300' r='1' fill='rgba(212,128,32,0.15)'/%3E%3Ccircle cx='330' cy='68' r='0.8' fill='rgba(204,56,48,0.16)'/%3E%3Ccircle cx='455' cy='65' r='1' fill='rgba(212,128,32,0.20)'/%3E%3Ccircle cx='472' cy='270' r='0.8' fill='rgba(204,56,48,0.14)'/%3E%3Ccircle cx='38' cy='186' r='0.8' fill='rgba(212,128,32,0.12)'/%3E%3Ccircle cx='462' cy='190' r='0.8' fill='rgba(204,56,48,0.12)'/%3E%3Ccircle cx='160' cy='350' r='0.7' fill='rgba(212,128,32,0.10)'/%3E%3Ccircle cx='340' cy='345' r='0.7' fill='rgba(204,56,48,0.10)'/%3E%3C/svg%3E") center / 1170px 890px no-repeat;
+  opacity: 0.48;
+  animation: pe-archive 10s ease-in-out infinite;
+}
+
+@keyframes pe-archive {
+  0%, 100% { opacity: 0.48; }
+  28%       { opacity: 0.55; }
+  65%       { opacity: 0.40; }
+  87%       { opacity: 0.40; }
+  88%       { opacity: 0.04; }   /* cellular burnout — synchronized blackout */
+  89%       { opacity: 0.58; }
+  92%       { opacity: 0.48; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'NYPD 17TH PRECINCT // CARNEGIE HALL // MITOCHONDRIA ACTIVE';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(212, 128, 32, 0.62);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'PARASITE\AEVE\A-----------\ATHE CELLS\AREMEMBER\A-----------\AMANHATTAN\ADAY 6\AEVOLUTION\AAWAITS';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 12px; letter-spacing: 2px; line-height: 1.70; text-align: right;
+  color: rgba(212, 128, 32, 0.08); white-space: pre;
+  animation: pe-readout 10s ease-in-out infinite;
+}
+
+@keyframes pe-readout {
+  0%, 100% { color: rgba(212,128,32,.08); }
+  28%       { color: rgba(212,128,32,.12); }
+  65%       { color: rgba(212,128,32,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(212,128,32,.15); }
+  92%       { color: rgba(212,128,32,.08); }
+}
+
+#edit-bar::after {
+  content: 'MITOCHONDRIAL RESEARCH // CASE ACTIVE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(204, 56, 48, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 5px; font-weight: 400; }
+
+/* ── Title: amber cellular pulse with 88% combustion flash ───────────────── */
+@keyframes pe-title {
+  0%        { color: #C0A080; text-shadow: 0 0 6px rgba(212,128,32,.45), 0 0 18px rgba(212,128,32,.15); }
+  35%       { color: #D48020; text-shadow: 0 0 10px rgba(212,128,32,.65), 0 0 28px rgba(212,128,32,.25); }
+  65%       { color: #907050; text-shadow: 0 0 4px rgba(128,96,40,.30); }
+  87%       { color: #C0A080; text-shadow: 0 0 6px rgba(212,128,32,.40); }
+  88%       { color: #FF6040; text-shadow: 0 0 22px rgba(255,96,64,.85), 0 0 50px rgba(204,56,48,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C0A080; text-shadow: 0 0 8px rgba(212,128,32,.55); opacity: 1; }
+  100%      { color: #C0A080; text-shadow: 0 0 6px rgba(212,128,32,.45), 0 0 18px rgba(212,128,32,.15); }
+}
+
+/* ── App: cellular pulse — synchronized ──────────────────────────────────── */
+#app { animation: pe-border 10s ease-in-out infinite; }
+@keyframes pe-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(212,128,32,.20), inset 0 0 18px rgba(212,128,32,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(212,128,32,.48), inset 0 0 26px rgba(212,128,32,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(128,96,40,.22), inset 0 0 18px rgba(128,96,40,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,96,64,.80), inset 0 0 50px rgba(204,56,48,.15), 0 0 18px rgba(204,56,48,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(212,128,32,.42), inset 0 0 22px rgba(212,128,32,.06); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(8, 4, 3, 0.99); border-top-color: rgba(212, 128, 32, 0.22); }
+#theme-banner::before { content: '◉'; color: #D48020; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; color: rgba(200, 120, 40, 0.68); }
+
+/* ── Cellular motes — mitochondrial particles drifting ───────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='35' cy='60' r='1.5' fill='rgba(212,128,32,0.20)'/%3E%3Ccircle cx='110' cy='180' r='1' fill='rgba(204,56,48,0.16)'/%3E%3Ccircle cx='165' cy='300' r='1.8' fill='rgba(212,128,32,0.12)'/%3E%3Ccircle cx='60' cy='360' r='0.8' fill='rgba(204,56,48,0.14)'/%3E%3Ccircle cx='140' cy='120' r='1.2' fill='rgba(212,128,32,0.15)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='45' cy='100' r='1.2' fill='rgba(204,56,48,0.10)'/%3E%3Ccircle cx='160' cy='280' r='1.5' fill='rgba(212,128,32,0.08)'/%3E%3Ccircle cx='230' cy='450' r='1' fill='rgba(204,56,48,0.07)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 280px 560px;
+  animation: pe-motes 18s linear infinite;
+}
+@keyframes pe-motes {
+  from { background-position: 0 -400px, 20px -560px; }
+  to   { background-position: 25px 0, -15px 0; }
+}
+
+/* ── Tile: cellular scan ─────────────────────────────────────────────────── */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(212,128,32,0.40);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

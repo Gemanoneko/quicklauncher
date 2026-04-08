@@ -387,6 +387,13 @@ const THEME_BANNERS = {
     'THE WHOLE WORLD WANTS YOU DEAD, SNAKE.',
     'METAL GEAR?! IT CAN\'T BE!',
   ],
+  'parasite-eve': [
+    'THE MITOCHONDRIA. THEY ARE NOT WHAT YOU THINK.',
+    'EVOLUTION HAS ITS OWN AGENDA.',
+    'THE CELLS REMEMBER. THEY HAVE ALWAYS REMEMBERED.',
+    'SHE IS NOT HUMAN ANYMORE. SHE IS SOMETHING MORE.',
+    'CARNEGIE HALL. OPENING NIGHT. THE LAST NIGHT.',
+  ],
 };
 
 // Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
@@ -452,6 +459,7 @@ const THEME_NAMES = {
   'game-of-thrones':     'GAME OF THRONES',
   'amnesia':             'AMNESIA',
   'metal-gear':          'METAL GEAR SOLID',
+  'parasite-eve':        'PARASITE EVE',
 };
 const ALL_THEMES = Object.keys(THEME_BANNERS);
 
