@@ -380,6 +380,13 @@ const THEME_BANNERS = {
     'WHAT HAVE YOU DONE TO YOUR SOUL, DANIEL?',
     'THE DARKNESS WILL CONSUME WHAT REMAINS OF YOU.',
   ],
+  'metal-gear': [
+    'KEPT YOU WAITING, HUH?',
+    'WE ARE NOT TOOLS OF THE GOVERNMENT OR ANYONE ELSE.',
+    'A STRONG MAN DOES NOT NEED TO READ THE FUTURE. HE MAKES HIS OWN.',
+    'THE WHOLE WORLD WANTS YOU DEAD, SNAKE.',
+    'METAL GEAR?! IT CAN\'T BE!',
+  ],
 };
 
 // Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
@@ -444,6 +451,7 @@ const THEME_NAMES = {
   'indiana-jones':       'INDIANA JONES',
   'game-of-thrones':     'GAME OF THRONES',
   'amnesia':             'AMNESIA',
+  'metal-gear':          'METAL GEAR SOLID',
 };
 const ALL_THEMES = Object.keys(THEME_BANNERS);
 
