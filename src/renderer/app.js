@@ -531,7 +531,7 @@ function createAppTile(appItem) {
       e.stopPropagation();
       removeApp(appItem.id);
     });
-    iconWrapper.appendChild(removeBtn);
+    tile.appendChild(removeBtn);
   }
 
   const label = document.createElement('span');
