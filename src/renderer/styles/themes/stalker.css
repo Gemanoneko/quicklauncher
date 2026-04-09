@@ -9,11 +9,11 @@
   --overlay-clip: none;
 
   --bg:           #040604;
-  --panel-bg:     rgba(6, 9, 5, 0.98);
-  --overlay-bg:   rgba(4, 6, 4, 0.96);
+  --panel-bg:     rgba(6, 9, 5, 0.99);
+  --overlay-bg:   rgba(4, 6, 4, 0.97);
   --header-bg:    rgba(150, 150, 0, 0.04);
 
-  --font:         'Segoe UI', 'Consolas', monospace;
+  --font:         'Consolas', 'Courier New', monospace;
   --text:         #AABC88;
   --text-dim:     rgba(120, 140, 80, 0.45);
 
@@ -36,7 +36,7 @@
                   );
   --drag-over-glow: inset 0 0 24px rgba(170,170,0,.10);
 
-  --title-anim:   zone-scan 4s ease-in-out infinite;
+  --title-anim:   zone-title 10s ease-in-out infinite;
 
   --tile-hover-bg:     rgba(140, 140, 0, 0.07);
   --tile-hover-border: rgba(170, 170, 0, 0.38);
@@ -44,12 +44,12 @@
   --tile-active-bg:    rgba(140, 140, 0, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(170,170,0,.60)) drop-shadow(0 0 12px rgba(170,170,0,.25));
   --tile-icon-fx:      brightness(0.85) saturate(0.7) contrast(1.2);
-  --tile-icon-shape:   none;
+  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 100% 90%, 90% 100%, 10% 100%, 0% 90%);
   --tile-label-spacing:   0.8px;
   --tile-label-transform: none;
   --tile-label-weight:    400;
   --tile-label-style:     normal;
-  --banner-icon-anim:    banner-flicker 4s steps(1) infinite;
+  --banner-icon-anim:    banner-flicker 5s steps(1) infinite;
   --app-entrance-anim:   entrance-zoom 1.8s ease-out forwards;
 
   --btn-hover-bg:   rgba(140, 140, 0, 0.10);
@@ -94,75 +94,75 @@
   --remove-btn-border:     #904020;
 }
 
-/* ── Zone static + radiation overlay ───────────────────────────────────────── */
+/* ── Zone noise + scanlines + radiation vignette ─────────────────────────── */
 #app::after {
   background:
-    /* zone noise grain */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.065'/%3E%3C/svg%3E"),
-    /* scanlines */
-    repeating-linear-gradient(to bottom,
-      transparent 0px, transparent 4px,
-      rgba(140, 140, 0, 0.022) 4px, rgba(140, 140, 0, 0.022) 5px
-    ),
-    /* vignette */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 38%, rgba(2, 4, 2, 0.72) 100%),
-    /* radiation glow center */
-    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(100, 100, 0, 0.04) 0%, transparent 65%);
-  background-size: 200px 200px, auto, auto, auto;
+    repeating-linear-gradient(to bottom, transparent 0px, transparent 4px, rgba(140,140,0,0.022) 4px, rgba(140,140,0,0.022) 5px),
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 35%, rgba(2,4,2,0.78) 100%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(100,100,0,0.04) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 0% 100%, rgba(80,40,8,0.05) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
   opacity: 1; pointer-events: none;
 }
 
-/* ── Header yellow radiation accent bar ─────────────────────────────────────── */
+/* ── Header — radiation yellow accent bar ────────────────────────────────── */
 #header::before {
   background: linear-gradient(to bottom, #AAAA00, rgba(140, 140, 0, 0.28));
-  box-shadow: 0 0 10px rgba(170, 170, 0, 0.55), 0 0 22px rgba(170, 170, 0, 0.18);
+  box-shadow: 0 0 10px rgba(170,170,0,0.55), 0 0 22px rgba(170,170,0,0.18);
 }
 
-/* ── Grid: Chernobyl Exclusion Zone map — off-center rings + terrain ─────────── */
+/* ── Grid: Style B — The PDA (stalker's tactical device) ─────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Zone boundary ring 1 — outer exclusion perimeter (off-center like real Chernobyl) */
-    radial-gradient(ellipse 72% 58% at 38% 48%, transparent 108px, rgba(140,140,0,0.07) 109px, rgba(140,140,0,0.07) 113px, transparent 114px),
-    /* Zone boundary ring 2 — inner restricted zone */
-    radial-gradient(ellipse 44% 36% at 38% 48%, transparent 64px, rgba(150,150,0,0.10) 65px, rgba(150,150,0,0.10) 69px, transparent 70px),
-    /* Zone boundary ring 3 — reactor core zone */
-    radial-gradient(ellipse 22% 18% at 38% 48%, transparent 32px, rgba(160,160,0,0.14) 33px, rgba(160,160,0,0.14) 37px, transparent 38px),
-    /* Reactor core radiation glow */
-    radial-gradient(circle at 38% 48%, rgba(130,130,0,0.18) 0px, rgba(100,100,0,0.08) 30px, rgba(60,60,0,0.03) 50px, transparent 62px),
-    /* Terrain contour lines — slightly angled, like topographic map */
-    repeating-linear-gradient(12deg,
-      transparent 0px, transparent 28px,
-      rgba(100,120,50,0.016) 28px, rgba(100,120,50,0.016) 29px
-    ),
-    /* rust seep from bottom — dead earth */
-    linear-gradient(to top, rgba(80,40,8,0.07) 0%, transparent 28%),
-    /* radiation bleed from reactor */
-    radial-gradient(ellipse 70% 60% at 38% 48%, rgba(80,80,0,0.05) 0%, transparent 55%);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 29px, 100% 100%, 100% 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Crect x='135' y='28' width='230' height='324' rx='10' fill='rgba(35,40,28,0.82)' stroke='rgba(120,130,70,0.40)' stroke-width='1.5'/%3E%3Crect x='139' y='32' width='222' height='316' rx='8' fill='none' stroke='rgba(100,110,58,0.18)' stroke-width='0.5'/%3E%3Crect x='150' y='48' width='200' height='225' rx='4' fill='rgba(10,15,8,0.78)' stroke='rgba(140,140,0,0.38)' stroke-width='1.2'/%3E%3Crect x='153' y='51' width='194' height='219' rx='3' fill='none' stroke='rgba(120,130,70,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='65' text-anchor='middle' font-family='Consolas,monospace' font-size='6' letter-spacing='2' fill='rgba(170,170,0,0.50)'%3EZONE MAP -- PDA v3.2%3C/text%3E%3Cline x1='160' y1='70' x2='340' y2='70' stroke='rgba(140,140,0,0.22)' stroke-width='0.5'/%3E%3Cellipse cx='230' cy='155' rx='70' ry='55' fill='none' stroke='rgba(140,140,0,0.18)' stroke-width='0.8'/%3E%3Cellipse cx='230' cy='155' rx='45' ry='35' fill='none' stroke='rgba(150,150,0,0.22)' stroke-width='0.8'/%3E%3Cellipse cx='230' cy='155' rx='20' ry='15' fill='none' stroke='rgba(160,160,0,0.28)' stroke-width='0.8'/%3E%3Ccircle cx='230' cy='155' r='4' fill='rgba(170,170,0,0.45)' stroke='rgba(170,170,0,0.30)' stroke-width='0.5'/%3E%3Ctext x='230' y='148' text-anchor='middle' font-family='Consolas,monospace' font-size='4' fill='rgba(170,170,0,0.35)'%3ECNPP%3C/text%3E%3Ccircle cx='195' cy='125' r='3' fill='rgba(144,64,32,0.45)' stroke='rgba(144,64,32,0.30)' stroke-width='0.5'/%3E%3Ctext x='195' y='120' text-anchor='middle' font-family='Consolas,monospace' font-size='3.5' fill='rgba(144,64,32,0.40)'%3EANOMALY%3C/text%3E%3Ccircle cx='270' cy='140' r='3' fill='rgba(80,112,48,0.50)' stroke='rgba(80,112,48,0.32)' stroke-width='0.5'/%3E%3Ctext x='270' y='135' text-anchor='middle' font-family='Consolas,monospace' font-size='3.5' fill='rgba(80,112,48,0.42)'%3ECAMP%3C/text%3E%3Ccircle cx='210' cy='180' r='3' fill='rgba(170,170,0,0.50)' stroke='rgba(170,170,0,0.35)' stroke-width='0.5'/%3E%3Ctext x='210' y='175' text-anchor='middle' font-family='Consolas,monospace' font-size='3.5' fill='rgba(170,170,0,0.38)'%3ESTASH%3C/text%3E%3Cpolygon points='260,175 264,180 256,180' fill='rgba(170,170,0,0.55)'/%3E%3Ctext x='260' y='170' text-anchor='middle' font-family='Consolas,monospace' font-size='3.5' fill='rgba(170,170,0,0.42)'%3EOBJ%3C/text%3E%3Ccircle cx='185' cy='160' r='8' fill='none' stroke='rgba(144,64,32,0.25)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ccircle cx='280' cy='165' r='10' fill='none' stroke='rgba(144,64,32,0.20)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Cpath d='M 230,155 L 260,175' fill='none' stroke='rgba(170,170,0,0.20)' stroke-width='0.5' stroke-dasharray='3,4'/%3E%3Cpath d='M 230,155 L 270,140' fill='none' stroke='rgba(80,112,48,0.18)' stroke-width='0.5' stroke-dasharray='3,4'/%3E%3Cline x1='155' y1='100' x2='345' y2='100' stroke='rgba(100,110,58,0.08)' stroke-width='0.3'/%3E%3Cline x1='155' y1='155' x2='345' y2='155' stroke='rgba(100,110,58,0.08)' stroke-width='0.3'/%3E%3Cline x1='155' y1='210' x2='345' y2='210' stroke='rgba(100,110,58,0.08)' stroke-width='0.3'/%3E%3Cline x1='210' y1='75' x2='210' y2='265' stroke='rgba(100,110,58,0.06)' stroke-width='0.3'/%3E%3Cline x1='290' y1='75' x2='290' y2='265' stroke='rgba(100,110,58,0.06)' stroke-width='0.3'/%3E%3Ctext x='160' y='82' font-family='Consolas,monospace' font-size='4' fill='rgba(140,140,0,0.30)'%3EN 51.389%3C/text%3E%3Ctext x='310' y='82' font-family='Consolas,monospace' font-size='4' fill='rgba(140,140,0,0.30)'%3EE 30.098%3C/text%3E%3Crect x='155' y='230' width='30' height='30' rx='2' fill='none' stroke='rgba(140,140,0,0.28)' stroke-width='0.8'/%3E%3Cline x1='170' y1='235' x2='170' y2='255' stroke='rgba(170,170,0,0.35)' stroke-width='0.8'/%3E%3Cline x1='160' y1='245' x2='180' y2='245' stroke='rgba(170,170,0,0.35)' stroke-width='0.8'/%3E%3Ctext x='170' y='266' text-anchor='middle' font-family='Consolas,monospace' font-size='3.5' fill='rgba(140,140,0,0.30)'%3ECOMPASS%3C/text%3E%3Crect x='310' y='230' width='35' height='22' rx='2' fill='rgba(15,20,10,0.65)' stroke='rgba(140,140,0,0.25)' stroke-width='0.8'/%3E%3Crect x='313' y='233' width='9' height='16' rx='1' fill='rgba(170,170,0,0.30)'/%3E%3Crect x='324' y='236' width='9' height='13' rx='1' fill='rgba(170,170,0,0.22)'/%3E%3Crect x='335' y='240' width='7' height='9' rx='1' fill='rgba(140,140,0,0.15)'/%3E%3Ctext x='327' y='260' text-anchor='middle' font-family='Consolas,monospace' font-size='3.5' fill='rgba(140,140,0,0.28)'%3ERAD. LVL%3C/text%3E%3Crect x='160' y='285' width='32' height='22' rx='3' fill='rgba(28,32,22,0.70)' stroke='rgba(100,110,58,0.28)' stroke-width='0.8'/%3E%3Crect x='200' y='285' width='32' height='22' rx='3' fill='rgba(28,32,22,0.70)' stroke='rgba(100,110,58,0.28)' stroke-width='0.8'/%3E%3Crect x='240' y='285' width='32' height='22' rx='3' fill='rgba(28,32,22,0.70)' stroke='rgba(100,110,58,0.28)' stroke-width='0.8'/%3E%3Crect x='280' y='285' width='60' height='22' rx='3' fill='rgba(28,32,22,0.70)' stroke='rgba(140,140,0,0.30)' stroke-width='0.8'/%3E%3Ctext x='176' y='299' text-anchor='middle' font-family='Consolas,monospace' font-size='5' fill='rgba(140,140,0,0.38)'%3EMAP%3C/text%3E%3Ctext x='216' y='299' text-anchor='middle' font-family='Consolas,monospace' font-size='5' fill='rgba(140,140,0,0.35)'%3EINV%3C/text%3E%3Ctext x='256' y='299' text-anchor='middle' font-family='Consolas,monospace' font-size='5' fill='rgba(140,140,0,0.32)'%3ELOG%3C/text%3E%3Ctext x='310' y='299' text-anchor='middle' font-family='Consolas,monospace' font-size='5' fill='rgba(170,170,0,0.40)'%3EMISSION%3C/text%3E%3Crect x='150' y='315' width='200' height='12' rx='2' fill='rgba(20,25,15,0.55)' stroke='rgba(100,110,58,0.18)' stroke-width='0.5'/%3E%3Ctext x='250' y='324' text-anchor='middle' font-family='Consolas,monospace' font-size='5' letter-spacing='1.5' fill='rgba(100,110,58,0.35)'%3EPDA-3C // ZONE EDITION%3C/text%3E%3Crect x='340' y='30' width='18' height='6' rx='2' fill='rgba(50,55,38,0.70)' stroke='rgba(100,110,58,0.28)' stroke-width='0.5'/%3E%3Crect x='355' y='28' width='4' height='10' rx='1' fill='rgba(50,55,38,0.65)' stroke='rgba(100,110,58,0.22)' stroke-width='0.5'/%3E%3Ctext x='250' y='345' text-anchor='middle' font-family='Consolas,monospace' font-size='5.5' letter-spacing='2' fill='rgba(140,140,0,0.30)'%3ECHERNOBYL EXCLUSION ZONE -- PRIPYAT%3C/text%3E%3Ctext x='250' y='358' text-anchor='middle' font-family='Consolas,monospace' font-size='5' letter-spacing='1.5' fill='rgba(80,112,48,0.25)'%3EANOMALY FIELD ACTIVE -- PROCEED WITH CAUTION%3C/text%3E%3Ctext x='65' y='100' font-family='Consolas,monospace' font-size='5.5' letter-spacing='1' fill='rgba(140,140,0,0.35)'%3ERADIATION%3C/text%3E%3Crect x='25' y='105' width='100' height='5' fill='rgba(140,140,0,0.08)' rx='1'/%3E%3Crect x='25' y='105' width='72' height='5' fill='rgba(170,170,0,0.40)' rx='1'/%3E%3Ctext x='128' y='110' font-family='Consolas,monospace' font-size='5' fill='rgba(170,170,0,0.38)'%3EHIGH%3C/text%3E%3Ctext x='65' y='128' font-family='Consolas,monospace' font-size='5.5' letter-spacing='1' fill='rgba(100,110,58,0.35)'%3EHEALTH%3C/text%3E%3Crect x='25' y='132' width='100' height='5' fill='rgba(80,112,48,0.08)' rx='1'/%3E%3Crect x='25' y='132' width='80' height='5' fill='rgba(80,112,48,0.42)' rx='1'/%3E%3Ctext x='128' y='137' font-family='Consolas,monospace' font-size='5' fill='rgba(80,112,48,0.38)'%3E78%3C/text%3E%3Ctext x='65' y='155' font-family='Consolas,monospace' font-size='5.5' letter-spacing='1' fill='rgba(100,110,58,0.35)'%3ESTAMINA%3C/text%3E%3Crect x='25' y='159' width='100' height='5' fill='rgba(80,112,48,0.08)' rx='1'/%3E%3Crect x='25' y='159' width='55' height='5' fill='rgba(140,140,0,0.35)' rx='1'/%3E%3Ctext x='128' y='164' font-family='Consolas,monospace' font-size='5' fill='rgba(140,140,0,0.32)'%3E55%3C/text%3E%3Ctext x='65' y='188' font-family='Consolas,monospace' font-size='5.5' letter-spacing='1' fill='rgba(144,64,32,0.40)'%3EANOMALY DET.%3C/text%3E%3Crect x='25' y='192' width='100' height='5' fill='rgba(144,64,32,0.08)' rx='1'/%3E%3Crect x='25' y='192' width='90' height='5' fill='rgba(144,64,32,0.45)' rx='1'/%3E%3Ctext x='128' y='197' font-family='Consolas,monospace' font-size='5' fill='rgba(144,64,32,0.40)'%3EACTIVE%3C/text%3E%3Ctext x='440' y='100' font-family='Consolas,monospace' font-size='5.5' letter-spacing='1' fill='rgba(140,140,0,0.38)'%3EMISSION%3C/text%3E%3Ctext x='440' y='115' font-family='Consolas,monospace' font-size='6.5' font-weight='bold' fill='rgba(170,170,0,0.48)'%3EREACH CNPP%3C/text%3E%3Cline x1='385' y1='120' x2='480' y2='120' stroke='rgba(140,140,0,0.18)' stroke-width='0.5'/%3E%3Ctext x='440' y='138' font-family='Consolas,monospace' font-size='5.5' fill='rgba(100,110,58,0.35)'%3EFACTION%3C/text%3E%3Ctext x='440' y='152' font-family='Consolas,monospace' font-size='6.5' font-weight='bold' fill='rgba(170,188,136,0.45)'%3ELONER%3C/text%3E%3Ctext x='440' y='172' font-family='Consolas,monospace' font-size='5.5' fill='rgba(100,110,58,0.35)'%3ERANK%3C/text%3E%3Ctext x='440' y='186' font-family='Consolas,monospace' font-size='6.5' font-weight='bold' fill='rgba(170,188,136,0.42)'%3EEXPERT%3C/text%3E%3Ctext x='440' y='208' font-family='Consolas,monospace' font-size='5.5' fill='rgba(100,110,58,0.32)'%3EWEIGHT%3C/text%3E%3Ctext x='440' y='222' font-family='Consolas,monospace' font-size='6.5' font-weight='bold' fill='rgba(170,188,136,0.40)'%3E48.2 / 60 KG%3C/text%3E%3Ccircle cx='50' cy='60' r='0.7' fill='rgba(170,170,0,0.18)'/%3E%3Ccircle cx='455' cy='55' r='0.5' fill='rgba(140,140,0,0.14)'/%3E%3Ccircle cx='42' cy='250' r='0.8' fill='rgba(80,112,48,0.12)'/%3E%3Ccircle cx='460' cy='270' r='0.6' fill='rgba(144,64,32,0.10)'/%3E%3Ccircle cx='55' cy='340' r='0.5' fill='rgba(170,170,0,0.08)'/%3E%3Ccircle cx='450' cy='340' r='0.7' fill='rgba(80,112,48,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+  animation: zone-pda 10s ease-in-out infinite;
 }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+/* CPU-efficient: opacity-only animation (tier 1 — free, GPU composited) */
+@keyframes zone-pda {
+  0%, 100% { opacity: 0.65; }
+  28%       { opacity: 0.72; }
+  65%       { opacity: 0.58; }
+  87%       { opacity: 0.58; }
+  88%       { opacity: 0.04; }   /* anomaly surge — synchronized blackout */
+  89%       { opacity: 0.78; }
+  92%       { opacity: 0.65; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
 #header::after {
-  content: 'CHERNOBYL EXCLUSION ZONE  //  ANOMALY DETECTED';
+  content: 'CHERNOBYL EXCLUSION ZONE // ANOMALY DETECTED';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(175, 175, 0, 0.55);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(175, 175, 0, 0.55);
   pointer-events: none; white-space: nowrap;
 }
 
 #grid-container::after {
-  content: 'THE ZONE\A\AANOMALY\ADETECTED\A\AREDUCE\ASPEED\AOBSERVE\A\ACHERNOBYL';
+  content: 'THE ZONE\A-----------\AANOMALY\ADETECTED\A-----------\AREDUCE\ASPEED\AOBSERVE\A-----------\ACHERNOBYL';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: 'Consolas', monospace; letter-spacing: 1.5px;
-  font-size: 12px; line-height: 1.7; text-align: right;
-  color: rgba(140, 140, 0, 0.11); white-space: pre;
+  font-size: 12px; line-height: 1.70; text-align: right;
+  color: rgba(140, 140, 0, 0.10); white-space: pre;
+  animation: zone-readout 10s ease-in-out infinite;
+}
+
+/* CPU-efficient: color-only animation (tier 3 — low cost, small repaint) */
+@keyframes zone-readout {
+  0%, 100% { color: rgba(140,140,0,.10); }
+  28%       { color: rgba(140,140,0,.14); }
+  65%       { color: rgba(140,140,0,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(170,170,0,.18); }
+  92%       { color: rgba(140,140,0,.10); }
 }
 
 #edit-bar::after {
-  content: 'WISH GRANTER — AUTHORIZED ENTRY';
+  content: 'WISH GRANTER // AUTHORIZED ENTRY';
   position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
   font-family: 'Consolas', monospace;
   font-size: 8px; letter-spacing: 2px; color: rgba(144, 64, 32, 0.40);
@@ -171,46 +171,48 @@
 
 #title { font-family: 'Consolas', monospace; letter-spacing: 5px; }
 
-/* ── Title animation: zone scan pulse ───────────────────────────────────────── */
-@keyframes zone-scan {
-  0%, 100% { text-shadow: 0 0 7px rgba(170,170,0,.55), 0 0 18px rgba(170,170,0,.20); opacity: 1; }
-  50%       { text-shadow: 0 0 12px rgba(170,170,0,.80), 0 0 28px rgba(170,170,0,.35); opacity: 0.94; }
+/* ── Title: zone scan pulse with 88% sync — color + text-shadow (tier 3) ── */
+@keyframes zone-title {
+  0%        { color: #AABC88; text-shadow: 0 0 7px rgba(170,170,0,.45), 0 0 18px rgba(170,170,0,.15); }
+  35%       { color: #CCDD99; text-shadow: 0 0 10px rgba(170,170,0,.65), 0 0 26px rgba(170,170,0,.25); }
+  65%       { color: #889968; text-shadow: 0 0 4px rgba(80,112,48,.30); }
+  87%       { color: #AABC88; text-shadow: 0 0 6px rgba(170,170,0,.40); }
+  88%       { color: #FFFF88; text-shadow: 0 0 22px rgba(255,255,120,.85), 0 0 50px rgba(170,170,0,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #AABC88; text-shadow: 0 0 8px rgba(170,170,0,.55); opacity: 1; }
+  100%      { color: #AABC88; text-shadow: 0 0 7px rgba(170,170,0,.45), 0 0 18px rgba(170,170,0,.15); }
 }
 
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-/* ── Zone anomaly — radiation detector pulse ────────────────────────────── */
-#app { animation: zone-anomaly 7s ease-in-out infinite; }
-@keyframes zone-anomaly {
+/* ── App: zone anomaly pulse — box-shadow ≥ 7s, minimal keyframes (tier 5) ── */
+#app { animation: zone-border 10s ease-in-out infinite; }
+@keyframes zone-border {
   0%, 100% { box-shadow: 0 0 0 1px rgba(150,150,0,.22), inset 0 0 18px rgba(150,150,0,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(170,170,0,.50), inset 0 0 26px rgba(170,170,0,.08); }
-  36%      { box-shadow: 0 0 0 1px rgba(144,64,32,.28), inset 0 0 18px rgba(144,64,32,.05); }
-  37%      { box-shadow: 0 0 0 1px rgba(170,170,0,.42), inset 0 0 22px rgba(170,170,0,.07); }
-  70%      { box-shadow: 0 0 0 1px rgba(80,112,48,.28), inset 0 0 20px rgba(80,112,48,.05); }
+  40%      { box-shadow: 0 0 0 1px rgba(170,170,0,.48), inset 0 0 26px rgba(170,170,0,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(80,112,48,.22), inset 0 0 18px rgba(80,112,48,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,255,120,.80), inset 0 0 50px rgba(170,170,0,.15), 0 0 18px rgba(170,170,0,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(170,170,0,.42), inset 0 0 22px rgba(170,170,0,.06); }
 }
 
-#theme-banner { background: rgba(4, 6, 3, 0.98); border-top-color: rgba(150, 150, 0, 0.20); }
-#theme-banner::before { content: '⚠'; color: #AAAA00; font-size: 20px; }
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(4, 6, 3, 0.99); border-top-color: rgba(150, 150, 0, 0.20); }
+#theme-banner::before { content: '☢'; color: #AAAA00; font-size: 20px; }
 #theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(140, 140, 0, 0.58); }
 
-/* ── Zone artifacts — fixed-position blips, Geiger counter flicker ───────── */
+/* ── Zone artifacts — Geiger flicker, opacity-only (tier 1 — free) ───────── */
 #particles {
   background:
-    /* Artifact ♦ Moonrise — 23% × 31% */
     radial-gradient(circle at 23% 31%, rgba(180,180,0,0.55) 0px, rgba(160,160,0,0.32) 3px, rgba(140,140,0,0.10) 7px, transparent 13px),
-    /* Artifact ♦ Crystal — 71% × 58% */
     radial-gradient(circle at 71% 58%, rgba(144,64,32,0.50) 0px, rgba(130,55,25,0.28) 3px, rgba(110,45,18,0.08) 6px, transparent 11px),
-    /* Artifact ♦ Fireball — 45% × 73% */
     radial-gradient(circle at 45% 73%, rgba(180,180,0,0.48) 0px, rgba(155,155,0,0.26) 3px, rgba(130,130,0,0.08) 8px, transparent 14px),
-    /* Artifact ♦ Stone Flower — 81% × 21% */
     radial-gradient(circle at 81% 21%, rgba(90,120,50,0.42) 0px, rgba(75,105,40,0.20) 2px, rgba(60,90,30,0.06) 5px, transparent 9px),
-    /* Artifact ♦ Compass — 14% × 81% */
     radial-gradient(circle at 14% 81%, rgba(180,180,0,0.45) 0px, rgba(160,160,0,0.24) 3px, rgba(140,140,0,0.07) 7px, transparent 12px),
-    /* Artifact ♦ Gravi — 62% × 13% */
     radial-gradient(circle at 62% 13%, rgba(144,64,32,0.38) 0px, rgba(125,52,22,0.18) 2px, transparent 7px);
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  animation: zone-geiger 3.4s steps(1, end) infinite;
+  animation: zone-geiger 5s steps(1, end) infinite;
 }
+/* CPU-efficient: opacity-only with steps(1) — zero interpolation cost */
 @keyframes zone-geiger {
   0%   { opacity: 1; }
   14%  { opacity: 0.45; }
@@ -231,9 +233,7 @@
 
 /* ── Tile: anomaly flicker on hover ──────────────────────────────────────── */
 .app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: rgba(160,160,0,0.04);
+  background: transparent;
+  border: 1px solid rgba(170, 170, 0, 0.28);
 }
-.app-tile:hover::before { animation: tile-flicker .5s steps(1, end) forwards; }
+.app-tile:hover::before { animation: tile-flicker .6s steps(1, end) infinite; }
