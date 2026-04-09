@@ -1,0 +1,212 @@
+/* ══ WARHAMMER 40K: ELDAR ═════════════════════════════════════════════════════
+   Craftworld Aeldari. Ancient beyond reckoning. Wraithbone and psychic runes.
+   The dying race — elegant, precise, and haunted by She Who Thirsts.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #020408;
+  --panel-bg:     rgba(4, 6, 14, 0.99);
+  --overlay-bg:   rgba(3, 5, 10, 0.97);
+  --header-bg:    rgba(60, 120, 200, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #80A8D0;
+  --text-dim:     rgba(90, 120, 170, 0.45);
+
+  --accent-c:     #3070C0;   /* wraithbone blue */
+  --accent-m:     #C06020;   /* spirit stone amber */
+  --accent-y:     #182848;   /* deep void */
+
+  --border:       rgba(48, 112, 192, 0.22);
+  --border-h:     rgba(48, 112, 192, 0.50);
+
+  --glow-c:       0 0 7px rgba(48,112,192,.58), 0 0 20px rgba(48,112,192,.20);
+  --glow-m:       0 0 6px rgba(192,96,32,.52), 0 0 18px rgba(192,96,32,.18);
+  --glow-y:       0 0 5px rgba(24,40,72,.45), 0 0 14px rgba(24,40,72,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(48,112,192,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(48,112,192,.10);
+
+  --title-anim:   eldar-title 12s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(48, 112, 192, 0.08);
+  --tile-hover-border: rgba(48, 112, 192, 0.42);
+  --tile-hover-shadow: 0 0 12px rgba(48, 112, 192, 0.18);
+  --tile-active-bg:    rgba(48, 112, 192, 0.15);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(48,112,192,.52)) drop-shadow(0 0 12px rgba(192,96,32,.18));
+  --tile-icon-fx:      brightness(0.88) saturate(1.1) contrast(1.15);
+  --tile-icon-shape:   polygon(50% 0%, 90% 20%, 100% 60%, 80% 95%, 50% 100%, 20% 95%, 0% 60%, 10% 20%);
+  --tile-label-spacing:   1px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 7s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 2s ease-out forwards;
+
+  --btn-hover-bg:   rgba(48, 112, 192, 0.10);
+  --btn-active-bg:  rgba(48, 112, 192, 0.20);
+
+  --drop-hint-border: rgba(48, 112, 192, 0.25);
+  --drop-icon-color:  rgba(48, 112, 192, 0.32);
+  --hint-sub-color:   rgba(90, 120, 170, 0.35);
+
+  --rename-dashed:    rgba(48, 112, 192, 0.40);
+  --rename-input-bg:  rgba(48, 112, 192, 0.07);
+
+  --edit-bar-bg:          rgba(192, 96, 32, 0.07);
+  --edit-bar-border:      rgba(192, 96, 32, 0.40);
+  --edit-label-color:     #C06020;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C06020;
+  --btn-done-border:      rgba(192, 96, 32, 0.42);
+  --btn-done-hover-bg:    rgba(192, 96, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(48, 112, 192, 0.40);
+
+  --update-bg:             rgba(24, 40, 72, 0.06);
+  --update-border:         rgba(48, 112, 192, 0.30);
+  --update-color:          var(--accent-c);
+  --update-btn-border:     rgba(48, 112, 192, 0.28);
+  --update-btn-hover-bg:   rgba(48, 112, 192, 0.08);
+  --update-btn-hover-glow: var(--glow-c);
+
+  --btn-close-color:      #C06020;
+  --btn-close-border:     rgba(192, 96, 32, 0.38);
+  --btn-close-hover-bg:   rgba(192, 96, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(48, 112, 192, 0.07);
+  --picker-item-hover-bg:  rgba(48, 112, 192, 0.08);
+  --picker-item-active-bg: rgba(48, 112, 192, 0.15);
+  --picker-placeholder-bg: rgba(48, 112, 192, 0.07);
+
+  --skin-btn-active-bg:    rgba(48, 112, 192, 0.16);
+  --remove-btn-bg:         rgba(192, 96, 32, 0.85);
+  --remove-btn-border:     #C06020;
+}
+
+/* ── Wraithbone grain + psychic blue vignette ────────────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.1 0.15 0.3 0 0.01  0.1 0.15 0.3 0 0.01  0.15 0.2 0.4 0 0.02  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 28%, rgba(1,2,5,0.88) 100%),
+    radial-gradient(ellipse 40% 35% at 50% 50%, rgba(30,60,120,0.05) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 0% 0%, rgba(30,60,120,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 30% at 100% 100%, rgba(120,60,20,0.03) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — wraithbone blue accent bar ─────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #3070C0, rgba(36, 80, 150, 0.25));
+  box-shadow: 0 0 8px rgba(48,112,192,0.52), 0 0 22px rgba(48,112,192,0.18);
+}
+
+/* ── Grid: Style C — Craftworld Rune Archive ─────────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(48,112,192,0.30)' stroke-width='1'/%3E%3Crect x='13' y='13' width='474' height='354' fill='none' stroke='rgba(48,112,192,0.15)' stroke-width='0.5'/%3E%3Cpath d='M 8,32 L 8,8 L 32,8' fill='none' stroke='rgba(48,112,192,0.52)' stroke-width='1.5'/%3E%3Cpath d='M 468,8 L 492,8 L 492,32' fill='none' stroke='rgba(48,112,192,0.52)' stroke-width='1.5'/%3E%3Cpath d='M 8,348 L 8,372 L 32,372' fill='none' stroke='rgba(48,112,192,0.52)' stroke-width='1.5'/%3E%3Cpath d='M 468,372 L 492,372 L 492,348' fill='none' stroke='rgba(48,112,192,0.52)' stroke-width='1.5'/%3E%3Cline x1='133' y1='13' x2='133' y2='367' stroke='rgba(48,112,192,0.05)' stroke-width='0.5'/%3E%3Cline x1='367' y1='13' x2='367' y2='367' stroke='rgba(48,112,192,0.05)' stroke-width='0.5'/%3E%3Cline x1='13' y1='130' x2='487' y2='130' stroke='rgba(48,112,192,0.05)' stroke-width='0.5'/%3E%3Cline x1='13' y1='255' x2='487' y2='255' stroke='rgba(48,112,192,0.05)' stroke-width='0.5'/%3E%3Ctext x='250' y='30' text-anchor='middle' font-family='Georgia,serif' font-size='9' font-style='italic' letter-spacing='4' fill='rgba(48,112,192,0.52)'%3ECRAFTWORLD AELDARI%3C/text%3E%3Ctext x='250' y='45' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='2' fill='rgba(90,120,170,0.35)'%3EWRAITHBONE ARCHIVE -- PATH OF THE SEER -- ANCIENT RUNES%3C/text%3E%3Cline x1='70' y1='52' x2='430' y2='52' stroke='rgba(48,112,192,0.20)' stroke-width='0.5'/%3E%3Cpolygon points='250,100 300,145 300,215 250,260 200,215 200,145' fill='rgba(48,112,192,0.08)' stroke='rgba(48,112,192,0.35)' stroke-width='1.2'/%3E%3Cpolygon points='250,112 292,150 292,210 250,248 208,210 208,150' fill='none' stroke='rgba(48,112,192,0.18)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='180' r='28' fill='none' stroke='rgba(192,96,32,0.30)' stroke-width='1'/%3E%3Ccircle cx='250' cy='180' r='22' fill='none' stroke='rgba(192,96,32,0.18)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='180' r='8' fill='rgba(192,96,32,0.25)' stroke='rgba(192,96,32,0.35)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='180' r='3' fill='rgba(192,96,32,0.50)'/%3E%3Cline x1='250' y1='100' x2='250' y2='152' stroke='rgba(48,112,192,0.15)' stroke-width='0.5'/%3E%3Cline x1='250' y1='208' x2='250' y2='260' stroke='rgba(48,112,192,0.15)' stroke-width='0.5'/%3E%3Cline x1='200' y1='180' x2='222' y2='180' stroke='rgba(48,112,192,0.15)' stroke-width='0.5'/%3E%3Cline x1='278' y1='180' x2='300' y2='180' stroke='rgba(48,112,192,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='275' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='3' fill='rgba(192,96,32,0.40)'%3ESPIRIT STONE%3C/text%3E%3Ctext x='250' y='288' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(48,112,192,0.28)'%3EINFINITY CIRCUIT -- ACTIVE%3C/text%3E%3Ctext x='80' y='75' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' font-weight='bold' fill='rgba(48,112,192,0.48)'%3ECRAFTWORLDS%3C/text%3E%3Cline x1='20' y1='80' x2='140' y2='80' stroke='rgba(48,112,192,0.20)' stroke-width='0.5'/%3E%3Ctext x='23' y='98' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.50)'%3EULTHWE%3C/text%3E%3Cline x1='23' y1='100' x2='120' y2='100' stroke='rgba(90,120,170,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='125' y='98' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(90,120,170,0.38)'%3ESEERS%3C/text%3E%3Ctext x='23' y='116' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.46)'%3EBIEL-TAN%3C/text%3E%3Cline x1='23' y1='118' x2='120' y2='118' stroke='rgba(90,120,170,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='125' y='116' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(90,120,170,0.35)'%3EWARRIORS%3C/text%3E%3Ctext x='23' y='134' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.44)'%3ESAMHAIN%3C/text%3E%3Cline x1='23' y1='136' x2='120' y2='136' stroke='rgba(90,120,170,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='125' y='134' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(90,120,170,0.35)'%3EGHOSTS%3C/text%3E%3Ctext x='23' y='152' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.42)'%3EALAITOC%3C/text%3E%3Cline x1='23' y1='154' x2='120' y2='154' stroke='rgba(90,120,170,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='125' y='152' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(90,120,170,0.32)'%3ERANGERS%3C/text%3E%3Ctext x='23' y='170' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(192,96,32,0.45)'%3EIYANDEN%3C/text%3E%3Cline x1='23' y1='172' x2='120' y2='172' stroke='rgba(192,96,32,0.10)' stroke-width='0.5' stroke-dasharray='2,3'/%3E%3Ctext x='125' y='170' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(192,96,32,0.35)'%3EWRAITH%3C/text%3E%3Cline x1='20' y1='182' x2='140' y2='182' stroke='rgba(48,112,192,0.12)' stroke-width='0.5'/%3E%3Ctext x='80' y='198' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(48,112,192,0.38)'%3EPSYCHIC POWER%3C/text%3E%3Crect x='23' y='202' width='110' height='5' fill='rgba(48,112,192,0.10)' rx='1'/%3E%3Crect x='23' y='202' width='88' height='5' fill='rgba(48,112,192,0.45)' rx='1'/%3E%3Ctext x='80' y='220' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(192,96,32,0.35)'%3ETHE PATH IS LONG%3C/text%3E%3Ctext x='420' y='75' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' font-weight='bold' fill='rgba(48,112,192,0.48)'%3EASPECT WARRIORS%3C/text%3E%3Cline x1='350' y1='80' x2='480' y2='80' stroke='rgba(48,112,192,0.20)' stroke-width='0.5'/%3E%3Ctext x='355' y='98' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(192,96,32,0.48)'%3EDIRE AVENGERS%3C/text%3E%3Ctext x='355' y='116' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.44)'%3EHOWLING BANSHEES%3C/text%3E%3Ctext x='355' y='134' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.42)'%3EFIRE DRAGONS%3C/text%3E%3Ctext x='355' y='152' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.40)'%3ESTRIKING SCORPIONS%3C/text%3E%3Ctext x='355' y='170' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.38)'%3EDARK REAPERS%3C/text%3E%3Ctext x='355' y='188' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(48,112,192,0.36)'%3EWARP SPIDERS%3C/text%3E%3Cline x1='350' y1='198' x2='480' y2='198' stroke='rgba(48,112,192,0.15)' stroke-width='0.5'/%3E%3Ctext x='420' y='215' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(90,120,170,0.38)'%3EPHOENIX LORD%3C/text%3E%3Ctext x='420' y='230' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' font-style='italic' font-weight='bold' fill='rgba(192,96,32,0.48)'%3EASURMEN%3C/text%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(48,112,192,0.22)' stroke-width='0.7'/%3E%3Ctext x='70' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(90,120,170,0.35)'%3EPATH%3C/text%3E%3Ctext x='70' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(48,112,192,0.48)'%3ESEER%3C/text%3E%3Ctext x='200' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(90,120,170,0.35)'%3ETHREAT%3C/text%3E%3Ctext x='200' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(192,96,32,0.45)'%3ESLAANESH%3C/text%3E%3Ctext x='330' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(90,120,170,0.35)'%3EFLEET%3C/text%3E%3Ctext x='330' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(48,112,192,0.45)'%3ECRAFTWORLD%3C/text%3E%3Ctext x='450' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(90,120,170,0.35)'%3ERACE%3C/text%3E%3Ctext x='450' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(48,112,192,0.42)'%3EDYING%3C/text%3E%3Cline x1='135' y1='312' x2='135' y2='344' stroke='rgba(48,112,192,0.12)' stroke-width='0.5'/%3E%3Cline x1='265' y1='312' x2='265' y2='344' stroke='rgba(48,112,192,0.12)' stroke-width='0.5'/%3E%3Cline x1='390' y1='312' x2='390' y2='344' stroke='rgba(48,112,192,0.12)' stroke-width='0.5'/%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(48,112,192,0.22)'%3EAELDARI ARCHIVE -- WRAITHBONE CODEX -- THE RHANA DANDRA APPROACHES%3C/text%3E%3Ccircle cx='45' cy='62' r='0.8' fill='rgba(48,112,192,0.20)'/%3E%3Ccircle cx='455' cy='56' r='0.6' fill='rgba(192,96,32,0.16)'/%3E%3Ccircle cx='40' cy='250' r='0.7' fill='rgba(48,112,192,0.12)'/%3E%3Ccircle cx='460' cy='265' r='0.8' fill='rgba(192,96,32,0.10)'/%3E%3Ccircle cx='50' cy='340' r='0.5' fill='rgba(48,112,192,0.10)'/%3E%3Ccircle cx='452' cy='340' r='0.6' fill='rgba(192,96,32,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.48;
+  animation: eldar-runes 12s ease-in-out infinite;
+}
+
+@keyframes eldar-runes {
+  0%, 100% { opacity: 0.48; }
+  28%       { opacity: 0.55; }
+  65%       { opacity: 0.40; }
+  87%       { opacity: 0.40; }
+  88%       { opacity: 0.04; }
+  89%       { opacity: 0.58; }
+  92%       { opacity: 0.48; }
+}
+
+#header::after {
+  content: 'CRAFTWORLD AELDARI // PATH OF THE SEER // WRAITHBONE';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(80, 140, 220, 0.62);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'AELDARI\ACRAFTWORLD\A-----------\ATHE PATH\AIS LONG\AAND NARROW\A-----------\ATHE RHANA\ADANDRA\AAPPROACHES';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(48, 112, 192, 0.08); white-space: pre;
+  animation: eldar-readout 12s ease-in-out infinite;
+}
+
+@keyframes eldar-readout {
+  0%, 100% { color: rgba(48,112,192,.08); }
+  28%       { color: rgba(48,112,192,.12); }
+  65%       { color: rgba(48,112,192,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(48,112,192,.15); }
+  92%       { color: rgba(48,112,192,.08); }
+}
+
+#edit-bar::after {
+  content: 'INFINITY CIRCUIT // SPIRIT STONES INTACT';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(192, 96, 32, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+@keyframes eldar-title {
+  0%        { color: #80A8D0; text-shadow: 0 0 6px rgba(48,112,192,.45), 0 0 18px rgba(48,112,192,.15); }
+  35%       { color: #5090D0; text-shadow: 0 0 10px rgba(48,112,192,.62), 0 0 28px rgba(48,112,192,.22); }
+  65%       { color: #607890; text-shadow: 0 0 4px rgba(24,40,72,.30); }
+  87%       { color: #80A8D0; text-shadow: 0 0 6px rgba(48,112,192,.40); }
+  88%       { color: #C09050; text-shadow: 0 0 22px rgba(192,144,80,.80), 0 0 50px rgba(192,96,32,.40); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #80A8D0; text-shadow: 0 0 8px rgba(48,112,192,.55); opacity: 1; }
+  100%      { color: #80A8D0; text-shadow: 0 0 6px rgba(48,112,192,.45), 0 0 18px rgba(48,112,192,.15); }
+}
+
+#app { animation: eldar-border 12s ease-in-out infinite; }
+@keyframes eldar-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(48,112,192,.20), inset 0 0 20px rgba(48,112,192,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(48,112,192,.45), inset 0 0 28px rgba(48,112,192,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(192,96,32,.22), inset 0 0 18px rgba(192,96,32,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(192,144,80,.78), inset 0 0 50px rgba(192,96,32,.12), 0 0 18px rgba(48,112,192,.22); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(48,112,192,.38), inset 0 0 22px rgba(48,112,192,.05); }
+}
+
+#theme-banner { background: rgba(3, 5, 10, 0.99); border-top-color: rgba(48, 112, 192, 0.22); }
+#theme-banner::before { content: '◇'; color: #3070C0; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(80, 140, 220, 0.65); }
+
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='440'%3E%3Ccircle cx='35' cy='60' r='1.5' fill='rgba(48,112,192,0.20)'/%3E%3Ccircle cx='120' cy='200' r='1' fill='rgba(192,96,32,0.16)'/%3E%3Ccircle cx='180' cy='340' r='1.8' fill='rgba(48,112,192,0.12)'/%3E%3Ccircle cx='65' cy='400' r='0.8' fill='rgba(192,96,32,0.14)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='600'%3E%3Ccircle cx='50' cy='120' r='1.2' fill='rgba(48,112,192,0.10)'/%3E%3Ccircle cx='170' cy='320' r='1.5' fill='rgba(192,96,32,0.08)'/%3E%3Ccircle cx='250' cy='500' r='1' fill='rgba(48,112,192,0.07)'/%3E%3C/svg%3E") repeat;
+  background-size: 220px 440px, 300px 600px;
+  animation: eldar-motes 18s linear infinite;
+}
+@keyframes eldar-motes {
+  from { background-position: 0 0, 20px 0; }
+  to   { background-position: -30px -440px, 15px -600px; }
+}
+
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(48,112,192,0.42);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
