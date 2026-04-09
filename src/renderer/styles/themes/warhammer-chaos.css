@@ -1,0 +1,217 @@
+/* ══ WARHAMMER 40K: CHAOS ═════════════════════════════════════════════════════
+   The Warp. The Eye of Terror. Four Dark Gods. Blood and skulls, plague
+   and rot, excess and pain, scheming and change. Chaos Undivided.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #080002;
+  --panel-bg:     rgba(12, 2, 4, 0.99);
+  --overlay-bg:   rgba(8, 1, 2, 0.97);
+  --header-bg:    rgba(160, 0, 30, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #C0A0A0;
+  --text-dim:     rgba(150, 100, 100, 0.45);
+
+  --accent-c:     #A01020;   /* Khorne blood red */
+  --accent-m:     #6020A0;   /* Slaanesh purple */
+  --accent-y:     #408020;   /* Nurgle green */
+
+  --border:       rgba(160, 16, 32, 0.25);
+  --border-h:     rgba(180, 20, 40, 0.55);
+
+  --glow-c:       0 0 7px rgba(160,16,32,.65), 0 0 20px rgba(160,16,32,.22);
+  --glow-m:       0 0 6px rgba(96,32,160,.55), 0 0 18px rgba(96,32,160,.18);
+  --glow-y:       0 0 5px rgba(64,128,32,.48), 0 0 14px rgba(64,128,32,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(160,16,32,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(160,16,32,.10);
+
+  --title-anim:   chaos-title 10s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(160, 16, 32, 0.08);
+  --tile-hover-border: rgba(180, 20, 40, 0.42);
+  --tile-hover-shadow: 0 0 12px rgba(160, 16, 32, 0.22);
+  --tile-active-bg:    rgba(160, 16, 32, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(160,16,32,.58)) drop-shadow(0 0 12px rgba(96,32,160,.22));
+  --tile-icon-fx:      brightness(0.85) saturate(1.3) contrast(1.2);
+  --tile-icon-shape:   polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
+  --app-entrance-anim:   entrance-zoom 1.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(160, 16, 32, 0.10);
+  --btn-active-bg:  rgba(160, 16, 32, 0.20);
+
+  --drop-hint-border: rgba(160, 16, 32, 0.25);
+  --drop-icon-color:  rgba(160, 16, 32, 0.35);
+  --hint-sub-color:   rgba(150, 100, 100, 0.35);
+
+  --rename-dashed:    rgba(160, 16, 32, 0.40);
+  --rename-input-bg:  rgba(160, 16, 32, 0.07);
+
+  --edit-bar-bg:          rgba(96, 32, 160, 0.07);
+  --edit-bar-border:      rgba(96, 32, 160, 0.40);
+  --edit-label-color:     #6020A0;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #6020A0;
+  --btn-done-border:      rgba(96, 32, 160, 0.42);
+  --btn-done-hover-bg:    rgba(96, 32, 160, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(160, 16, 32, 0.40);
+
+  --update-bg:             rgba(64, 128, 32, 0.06);
+  --update-border:         rgba(64, 128, 32, 0.32);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(64, 128, 32, 0.28);
+  --update-btn-hover-bg:   rgba(64, 128, 32, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #A01020;
+  --btn-close-border:     rgba(160, 16, 32, 0.40);
+  --btn-close-hover-bg:   rgba(160, 16, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(160, 16, 32, 0.07);
+  --picker-item-hover-bg:  rgba(160, 16, 32, 0.08);
+  --picker-item-active-bg: rgba(160, 16, 32, 0.16);
+  --picker-placeholder-bg: rgba(160, 16, 32, 0.07);
+
+  --skin-btn-active-bg:    rgba(160, 16, 32, 0.18);
+  --remove-btn-bg:         rgba(160, 16, 32, 0.88);
+  --remove-btn-border:     #A01020;
+}
+
+/* ── Warp corruption grain + blood vignette ──────────────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.5 0.1 0.1 0 0.02  0.1 0.02 0.05 0 0  0.1 0.02 0.08 0 0.01  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 25%, rgba(5,0,1,0.88) 100%),
+    radial-gradient(ellipse 40% 35% at 0% 100%, rgba(96,20,60,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 100% 0%, rgba(60,10,80,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(80,0,15,0.05) 0%, transparent 65%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — blood red accent bar ───────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #A01020, rgba(120, 10, 25, 0.28));
+  box-shadow: 0 0 9px rgba(160,16,32,0.60), 0 0 24px rgba(160,16,32,0.20);
+}
+
+/* ── Grid: Style B — The 8-Pointed Chaos Star + Eye of Terror ────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='4' fill='rgba(160,16,32,0.50)'%3ECHAOS UNDIVIDED%3C/text%3E%3Ctext x='250' y='36' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(96,32,160,0.32)'%3ETHE WARP -- EYE OF TERROR -- FOUR DARK GODS%3C/text%3E%3Ccircle cx='250' cy='190' r='95' fill='none' stroke='rgba(160,16,32,0.28)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='190' r='90' fill='none' stroke='rgba(160,16,32,0.14)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='190' r='100' fill='none' stroke='rgba(96,32,160,0.12)' stroke-width='0.5' stroke-dasharray='4,8'/%3E%3Cline x1='250' y1='90' x2='250' y2='290' stroke='rgba(160,16,32,0.30)' stroke-width='1.5'/%3E%3Cline x1='150' y1='190' x2='350' y2='190' stroke='rgba(160,16,32,0.30)' stroke-width='1.5'/%3E%3Cline x1='179' y1='119' x2='321' y2='261' stroke='rgba(160,16,32,0.28)' stroke-width='1.2'/%3E%3Cline x1='321' y1='119' x2='179' y2='261' stroke='rgba(160,16,32,0.28)' stroke-width='1.2'/%3E%3Cpolygon points='250,90 260,108 290,108' fill='rgba(160,16,32,0.20)' stroke='rgba(160,16,32,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='250,90 240,108 210,108' fill='rgba(160,16,32,0.20)' stroke='rgba(160,16,32,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='350,190 332,200 332,230' fill='rgba(160,16,32,0.18)' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Cpolygon points='350,190 332,180 332,150' fill='rgba(160,16,32,0.18)' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Cpolygon points='250,290 260,272 290,272' fill='rgba(160,16,32,0.18)' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Cpolygon points='250,290 240,272 210,272' fill='rgba(160,16,32,0.18)' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Cpolygon points='150,190 168,200 168,230' fill='rgba(160,16,32,0.18)' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Cpolygon points='150,190 168,180 168,150' fill='rgba(160,16,32,0.18)' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Cpolygon points='321,119 305,128 290,108' fill='rgba(96,32,160,0.15)' stroke='rgba(96,32,160,0.12)' stroke-width='0.5'/%3E%3Cpolygon points='179,119 195,128 210,108' fill='rgba(96,32,160,0.15)' stroke='rgba(96,32,160,0.12)' stroke-width='0.5'/%3E%3Cpolygon points='321,261 305,252 290,272' fill='rgba(64,128,32,0.15)' stroke='rgba(64,128,32,0.12)' stroke-width='0.5'/%3E%3Cpolygon points='179,261 195,252 210,272' fill='rgba(64,128,32,0.15)' stroke='rgba(64,128,32,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='190' r='22' fill='rgba(50,0,10,0.55)' stroke='rgba(160,16,32,0.45)' stroke-width='1.2'/%3E%3Ccircle cx='250' cy='190' r='14' fill='rgba(80,0,15,0.50)' stroke='rgba(96,32,160,0.30)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='190' r='6' fill='rgba(160,16,32,0.55)'/%3E%3Ccircle cx='250' cy='190' r='2.5' fill='rgba(200,30,50,0.70)'/%3E%3Ctext x='250' y='160' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1' fill='rgba(160,16,32,0.32)'%3EEYE OF TERROR%3C/text%3E%3Ctext x='250' y='228' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1' fill='rgba(96,32,160,0.28)'%3ETHE WARP CLAIMS ALL%3C/text%3E%3Ctext x='250' y='310' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='3' fill='rgba(160,16,32,0.40)'%3ECHAOS STAR -- UNDIVIDED%3C/text%3E%3Ctext x='75' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(160,16,32,0.45)'%3EKHORNE%3C/text%3E%3Ctext x='75' y='95' font-family='Georgia,serif' font-size='6.5' font-weight='bold' font-style='italic' fill='rgba(160,16,32,0.50)'%3EBLOOD GOD%3C/text%3E%3Cline x1='25' y1='100' x2='125' y2='100' stroke='rgba(160,16,32,0.20)' stroke-width='0.5'/%3E%3Ctext x='75' y='118' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(96,32,160,0.42)'%3ESLAANESH%3C/text%3E%3Ctext x='75' y='133' font-family='Georgia,serif' font-size='6.5' font-weight='bold' font-style='italic' fill='rgba(96,32,160,0.48)'%3EDARK PRINCE%3C/text%3E%3Cline x1='25' y1='138' x2='125' y2='138' stroke='rgba(96,32,160,0.18)' stroke-width='0.5'/%3E%3Ctext x='75' y='156' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(64,128,32,0.42)'%3ENURGLE%3C/text%3E%3Ctext x='75' y='171' font-family='Georgia,serif' font-size='6.5' font-weight='bold' font-style='italic' fill='rgba(64,128,32,0.48)'%3EPLAGUE FATHER%3C/text%3E%3Cline x1='25' y1='176' x2='125' y2='176' stroke='rgba(64,128,32,0.18)' stroke-width='0.5'/%3E%3Ctext x='75' y='194' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(40,100,180,0.42)'%3ETZEENTCH%3C/text%3E%3Ctext x='75' y='209' font-family='Georgia,serif' font-size='6.5' font-weight='bold' font-style='italic' fill='rgba(40,100,180,0.48)'%3ECHANGER%3C/text%3E%3Ctext x='425' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(160,16,32,0.42)'%3ECORRUPTION%3C/text%3E%3Crect x='370' y='85' width='110' height='5' fill='rgba(160,16,32,0.10)' rx='1'/%3E%3Crect x='370' y='85' width='99' height='5' fill='rgba(160,16,32,0.48)' rx='1'/%3E%3Ctext x='425' y='108' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(96,32,160,0.40)'%3EWARP STORMS%3C/text%3E%3Crect x='370' y='112' width='110' height='5' fill='rgba(96,32,160,0.10)' rx='1'/%3E%3Crect x='370' y='112' width='77' height='5' fill='rgba(96,32,160,0.42)' rx='1'/%3E%3Ctext x='425' y='135' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(64,128,32,0.38)'%3EPLAGUE SPREAD%3C/text%3E%3Crect x='370' y='139' width='110' height='5' fill='rgba(64,128,32,0.10)' rx='1'/%3E%3Crect x='370' y='139' width='66' height='5' fill='rgba(64,128,32,0.42)' rx='1'/%3E%3Ctext x='425' y='162' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(40,100,180,0.38)'%3ESCHEMES%3C/text%3E%3Crect x='370' y='166' width='110' height='5' fill='rgba(40,100,180,0.10)' rx='1'/%3E%3Crect x='370' y='166' width='88' height='5' fill='rgba(40,100,180,0.38)' rx='1'/%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(160,16,32,0.22)' stroke-width='0.7'/%3E%3Ctext x='70' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,100,100,0.35)'%3EREALM%3C/text%3E%3Ctext x='70' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(160,16,32,0.48)'%3ETHE WARP%3C/text%3E%3Ctext x='200' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,100,100,0.35)'%3EALLEGIANCE%3C/text%3E%3Ctext x='200' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(96,32,160,0.45)'%3EUNDIVIDED%3C/text%3E%3Ctext x='330' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,100,100,0.35)'%3ESTATUS%3C/text%3E%3Ctext x='330' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(160,16,32,0.45)'%3EASCENDANT%3C/text%3E%3Ctext x='450' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,100,100,0.35)'%3ERIFT%3C/text%3E%3Ctext x='450' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(160,16,32,0.50)'%3EOPEN%3C/text%3E%3Cline x1='135' y1='312' x2='135' y2='344' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='265' y1='312' x2='265' y2='344' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='390' y1='312' x2='390' y2='344' stroke='rgba(160,16,32,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(96,32,160,0.22)'%3ECHAOS ETERNAL -- THE DARK GODS HUNGER -- BLOOD FOR THE BLOOD GOD%3C/text%3E%3Ccircle cx='45' cy='60' r='0.7' fill='rgba(160,16,32,0.20)'/%3E%3Ccircle cx='455' cy='55' r='0.6' fill='rgba(96,32,160,0.16)'/%3E%3Ccircle cx='40' cy='250' r='0.8' fill='rgba(64,128,32,0.14)'/%3E%3Ccircle cx='462' cy='260' r='0.7' fill='rgba(160,16,32,0.12)'/%3E%3Ccircle cx='48' cy='340' r='0.5' fill='rgba(96,32,160,0.10)'/%3E%3Ccircle cx='455' cy='345' r='0.6' fill='rgba(64,128,32,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+  animation: chaos-star 10s ease-in-out infinite;
+}
+
+@keyframes chaos-star {
+  0%, 100% { opacity: 0.65; }
+  28%       { opacity: 0.72; }
+  65%       { opacity: 0.55; }
+  87%       { opacity: 0.55; }
+  88%       { opacity: 0.04; }   /* warp rift — synchronized blackout */
+  89%       { opacity: 0.80; }
+  92%       { opacity: 0.65; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'THE WARP // EYE OF TERROR // CHAOS UNDIVIDED';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 60, 70, 0.65);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'BLOOD FOR\ATHE BLOOD\AGOD\A-----------\ASKULLS FOR\ATHE SKULL\ATHRONE\A-----------\ACHAOS\AETERNAL';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(160, 16, 32, 0.08); white-space: pre;
+  animation: chaos-readout 10s ease-in-out infinite;
+}
+
+@keyframes chaos-readout {
+  0%, 100% { color: rgba(160,16,32,.08); }
+  28%       { color: rgba(160,16,32,.12); }
+  65%       { color: rgba(160,16,32,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(200,30,50,.16); }
+  92%       { color: rgba(160,16,32,.08); }
+}
+
+#edit-bar::after {
+  content: 'HERESY EMBRACED // CORRUPTION SPREADING';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(96, 32, 160, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title: warp corruption with 88% sync ────────────────────────────────── */
+@keyframes chaos-title {
+  0%        { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.45), 0 0 18px rgba(160,16,32,.15); }
+  60%       { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.45); }
+  62%       { color: #A01020; text-shadow: 0 0 10px rgba(160,16,32,.70), 0 0 28px rgba(96,32,160,.25); opacity: 0.8; }
+  63%       { color: #6020A0; text-shadow: 3px 0 rgba(96,32,160,.60), -2px 0 rgba(160,16,32,.50); opacity: 0.5; }
+  64%       { color: #A01020; text-shadow: 0 0 8px rgba(160,16,32,.60); opacity: 1; }
+  65%       { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.45); }
+  87%       { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.40); }
+  88%       { color: #FF4050; text-shadow: 0 0 22px rgba(255,60,80,.85), 0 0 50px rgba(160,16,32,.50); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C0A0A0; text-shadow: 0 0 8px rgba(160,16,32,.55); opacity: 1; }
+  100%      { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.45), 0 0 18px rgba(160,16,32,.15); }
+}
+
+/* ── App: warp pulse — synchronized ──────────────────────────────────────── */
+#app { animation: chaos-border 10s ease-in-out infinite; }
+@keyframes chaos-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(160,16,32,.22), inset 0 0 22px rgba(160,16,32,.05); }
+  35%      { box-shadow: 0 0 0 1px rgba(160,16,32,.48), inset 0 0 30px rgba(96,32,160,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(96,32,160,.25), inset 0 0 22px rgba(64,128,32,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,60,80,.80), inset 0 0 50px rgba(160,16,32,.18), 0 0 18px rgba(96,32,160,.22); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(160,16,32,.42), inset 0 0 24px rgba(160,16,32,.06); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(8, 1, 2, 0.99); border-top-color: rgba(160, 16, 32, 0.28); }
+#theme-banner::before { content: '✦'; color: #A01020; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 60, 70, 0.68); }
+
+/* ── Warp debris — corrupted motes drifting upward ───────────────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Crect x='30' y='50' width='3' height='2' fill='rgba(160,16,32,0.18)' transform='rotate(25,31,51)'/%3E%3Crect x='100' y='180' width='2' height='3' fill='rgba(96,32,160,0.14)' transform='rotate(45,101,181)'/%3E%3Crect x='160' y='300' width='4' height='2' fill='rgba(64,128,32,0.12)' transform='rotate(15,162,301)'/%3E%3Crect x='60' y='350' width='2' height='3' fill='rgba(160,16,32,0.15)' transform='rotate(60,61,351)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Crect x='40' y='80' width='3' height='3' fill='rgba(96,32,160,0.10)' transform='rotate(35,41,81)'/%3E%3Crect x='150' y='280' width='4' height='2' fill='rgba(160,16,32,0.08)' transform='rotate(50,152,281)'/%3E%3Crect x='220' y='450' width='3' height='4' fill='rgba(64,128,32,0.07)' transform='rotate(20,221,451)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 280px 560px;
+  animation: chaos-debris 10s linear infinite;
+}
+@keyframes chaos-debris {
+  from { background-position: 0 0, 10px 0; }
+  to   { background-position: -20px -400px, 15px -560px; }
+}
+
+/* ── Tile: warp flicker ──────────────────────────────────────────────────── */
+.app-tile::before {
+  background: transparent;
+  border: 1px solid rgba(160, 16, 32, 0.30);
+}
+.app-tile:hover::before { animation: tile-flicker .6s steps(1, end) infinite; }
