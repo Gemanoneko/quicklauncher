@@ -36,7 +36,7 @@
                   );
   --drag-over-glow: inset 0 0 24px rgba(102,0,0,.12);
 
-  --title-anim:   void-corrupt 8s steps(1) infinite;
+  --title-anim:   void-title 10s steps(1) infinite;
 
   --tile-hover-bg:     rgba(80, 0, 0, 0.10);
   --tile-hover-border: rgba(110, 0, 0, 0.42);
@@ -44,7 +44,7 @@
   --tile-active-bg:    rgba(80, 0, 0, 0.20);
   --tile-icon-glow:    drop-shadow(0 0 5px rgba(102,0,0,.55)) drop-shadow(0 0 12px rgba(80,0,0,.22));
   --tile-icon-fx:      grayscale(0.35) contrast(1.25) brightness(0.82);
-  --tile-icon-shape:   circle(46% at 50% 50%);
+  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 100% 70%, 85% 90%, 50% 100%, 15% 90%, 0% 70%);
   --tile-label-spacing:   0.8px;
   --tile-label-transform: none;
   --tile-label-weight:    400;
@@ -121,53 +121,57 @@
   box-shadow: 0 0 8px rgba(102, 0, 0, 0.50), 0 0 20px rgba(80, 0, 0, 0.16);
 }
 
-/* ── Grid: Lewis's gravity drive — rings and singularity ────────────────────── */
+/* ── Grid: Style B — The Gravity Drive (armillary sphere) ────────────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Gravity drive — 3 concentric rings, 4 cardinal spokes, void singularity */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Ccircle cx='250' cy='190' r='145' fill='none' stroke='rgba(80,0,0,0.16)' stroke-width='1'/%3E%3Ccircle cx='250' cy='190' r='95' fill='none' stroke='rgba(90,0,0,0.20)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='190' r='48' fill='none' stroke='rgba(100,0,0,0.24)' stroke-width='0.8'/%3E%3Cline x1='250' y1='44' x2='250' y2='142' stroke='rgba(70,0,0,0.15)' stroke-width='0.7'/%3E%3Cline x1='250' y1='238' x2='250' y2='336' stroke='rgba(70,0,0,0.15)' stroke-width='0.7'/%3E%3Cline x1='104' y1='190' x2='202' y2='190' stroke='rgba(70,0,0,0.15)' stroke-width='0.7'/%3E%3Cline x1='298' y1='190' x2='396' y2='190' stroke='rgba(70,0,0,0.15)' stroke-width='0.7'/%3E%3Ccircle cx='250' cy='190' r='10' fill='rgba(60,0,0,0.40)'/%3E%3Ccircle cx='250' cy='190' r='3' fill='rgba(80,0,0,0.65)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* side void compression */
-    radial-gradient(ellipse 55% 80% at 0% 50%, rgba(3, 0, 0, 0.22) 0%, transparent 65%),
-    radial-gradient(ellipse 55% 80% at 100% 50%, rgba(3, 0, 0, 0.22) 0%, transparent 65%);
-  animation: void-drive 14s steps(1) infinite;
-}
-@keyframes void-drive {
-  0%, 100%  { opacity: 0.85; }
-  75%       { opacity: 0.85; }
-  76%       { opacity: 0.10; }
-  77%       { opacity: 1.00; }
-  78%       { opacity: 0.30; }
-  79%       { opacity: 0.85; }
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='20' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='3' fill='rgba(153,17,17,0.40)'%3ENSEA EVENT HORIZON -- GRAVITY DRIVE%3C/text%3E%3Ctext x='250' y='34' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(112,64,64,0.30)'%3EWEIR INDUSTRIES -- 2040 -- CLASSIFIED%3C/text%3E%3Crect x='120' y='55' width='260' height='270' rx='6' fill='rgba(8,2,2,0.40)' stroke='rgba(80,0,0,0.25)' stroke-width='1'/%3E%3Crect x='124' y='59' width='252' height='262' rx='4' fill='none' stroke='rgba(60,0,0,0.12)' stroke-width='0.5'/%3E%3Cpath d='M 120,55 L 112,48 M 380,55 L 388,48 M 120,325 L 112,332 M 380,325 L 388,332' fill='none' stroke='rgba(80,0,0,0.20)' stroke-width='1'/%3E%3Cline x1='130' y1='190' x2='370' y2='190' stroke='rgba(60,0,0,0.08)' stroke-width='0.5'/%3E%3Cline x1='250' y1='65' x2='250' y2='315' stroke='rgba(60,0,0,0.08)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='190' rx='110' ry='100' fill='none' stroke='rgba(100,10,10,0.28)' stroke-width='2'/%3E%3Cellipse cx='250' cy='190' rx='106' ry='96' fill='none' stroke='rgba(80,5,5,0.12)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='190' rx='95' ry='40' fill='none' stroke='rgba(120,15,15,0.32)' stroke-width='1.5' transform='rotate(-25,250,190)'/%3E%3Cellipse cx='250' cy='190' rx='90' ry='38' fill='none' stroke='rgba(100,10,10,0.15)' stroke-width='0.5' transform='rotate(-25,250,190)'/%3E%3Cellipse cx='250' cy='190' rx='80' ry='35' fill='none' stroke='rgba(130,18,18,0.30)' stroke-width='1.5' transform='rotate(30,250,190)'/%3E%3Cellipse cx='250' cy='190' rx='76' ry='33' fill='none' stroke='rgba(110,12,12,0.14)' stroke-width='0.5' transform='rotate(30,250,190)'/%3E%3Cellipse cx='250' cy='190' rx='60' ry='28' fill='none' stroke='rgba(140,20,20,0.28)' stroke-width='1.2' transform='rotate(-60,250,190)'/%3E%3Cellipse cx='250' cy='190' rx='56' ry='26' fill='none' stroke='rgba(120,15,15,0.12)' stroke-width='0.5' transform='rotate(-60,250,190)'/%3E%3Ccircle cx='250' cy='190' r='18' fill='rgba(40,0,0,0.55)' stroke='rgba(153,17,17,0.45)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='190' r='12' fill='rgba(60,0,0,0.50)' stroke='rgba(130,15,15,0.30)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='190' r='5' fill='rgba(153,17,17,0.60)' stroke='rgba(200,30,30,0.35)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='190' r='2' fill='rgba(200,40,40,0.70)'/%3E%3Cline x1='250' y1='90' x2='250' y2='172' stroke='rgba(80,0,0,0.22)' stroke-width='1'/%3E%3Cline x1='250' y1='208' x2='250' y2='290' stroke='rgba(80,0,0,0.22)' stroke-width='1'/%3E%3Cline x1='140' y1='190' x2='232' y2='190' stroke='rgba(80,0,0,0.22)' stroke-width='1'/%3E%3Cline x1='268' y1='190' x2='360' y2='190' stroke='rgba(80,0,0,0.22)' stroke-width='1'/%3E%3Cline x1='172' y1='118' x2='238' y2='180' stroke='rgba(70,0,0,0.15)' stroke-width='0.8'/%3E%3Cline x1='328' y1='118' x2='262' y2='180' stroke='rgba(70,0,0,0.15)' stroke-width='0.8'/%3E%3Cline x1='172' y1='262' x2='238' y2='200' stroke='rgba(70,0,0,0.15)' stroke-width='0.8'/%3E%3Cline x1='328' y1='262' x2='262' y2='200' stroke='rgba(70,0,0,0.15)' stroke-width='0.8'/%3E%3Ctext x='250' y='82' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1.5' fill='rgba(153,17,17,0.38)'%3ECONTAINMENT RING%3C/text%3E%3Ctext x='250' y='310' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(153,17,17,0.35)'%3ESINGULARITY CORE%3C/text%3E%3Ctext x='250' y='322' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1.5' fill='rgba(112,64,64,0.28)'%3EDIMENSIONAL GATEWAY -- ACTIVE%3C/text%3E%3Ctext x='65' y='85' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(153,17,17,0.42)'%3EDRIVE STATUS%3C/text%3E%3Ctext x='65' y='100' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,80,70,0.48)'%3EACTIVE%3C/text%3E%3Cline x1='20' y1='106' x2='118' y2='106' stroke='rgba(80,0,0,0.18)' stroke-width='0.5'/%3E%3Ctext x='65' y='122' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(112,64,64,0.38)'%3ECONTAINMENT%3C/text%3E%3Crect x='20' y='126' width='95' height='5' fill='rgba(80,0,0,0.10)' rx='1'/%3E%3Crect x='20' y='126' width='28' height='5' fill='rgba(153,17,17,0.48)' rx='1'/%3E%3Ctext x='118' y='131' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(153,17,17,0.42)'%3EFAILING%3C/text%3E%3Ctext x='65' y='148' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(112,64,64,0.38)'%3EPOWER OUTPUT%3C/text%3E%3Crect x='20' y='152' width='95' height='5' fill='rgba(80,0,0,0.10)' rx='1'/%3E%3Crect x='20' y='152' width='85' height='5' fill='rgba(102,0,0,0.42)' rx='1'/%3E%3Ctext x='118' y='157' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(112,64,64,0.35)'%3E89 PCT%3C/text%3E%3Ctext x='65' y='178' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(112,64,64,0.35)'%3EDIMENSION%3C/text%3E%3Ctext x='65' y='192' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(153,17,17,0.48)'%3EBREACHED%3C/text%3E%3Ctext x='440' y='85' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(153,17,17,0.42)'%3ESHIP LOG%3C/text%3E%3Ctext x='440' y='100' font-family='Georgia,serif' font-size='6.5' font-weight='bold' font-style='italic' fill='rgba(200,80,70,0.45)'%3EEVENT HORIZON%3C/text%3E%3Cline x1='385' y1='106' x2='480' y2='106' stroke='rgba(80,0,0,0.18)' stroke-width='0.5'/%3E%3Ctext x='440' y='122' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(112,64,64,0.38)'%3ECREW%3C/text%3E%3Ctext x='440' y='135' font-family='Georgia,serif' font-size='6.5' font-weight='bold' font-style='italic' fill='rgba(176,136,120,0.42)'%3EMISSING%3C/text%3E%3Ctext x='440' y='155' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(112,64,64,0.35)'%3ELAST SIGNAL%3C/text%3E%3Ctext x='440' y='168' font-family='Georgia,serif' font-size='6.5' font-weight='bold' font-style='italic' fill='rgba(176,136,120,0.40)'%3E2040 -- NEPTUNE%3C/text%3E%3Ctext x='440' y='188' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(112,64,64,0.35)'%3EMESSAGE%3C/text%3E%3Ctext x='440' y='202' font-family='Georgia,serif' font-size='6' font-weight='bold' font-style='italic' fill='rgba(153,17,17,0.50)'%3ELIBERATE TUTEMET%3C/text%3E%3Ctext x='440' y='214' font-family='Georgia,serif' font-size='6' font-weight='bold' font-style='italic' fill='rgba(153,17,17,0.48)'%3EEX INFERNIS%3C/text%3E%3Ctext x='250' y='355' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(112,64,64,0.22)'%3EWEIR INDUSTRIES -- GRAVITY DRIVE MK.II -- DO NOT ACTIVATE%3C/text%3E%3Ccircle cx='55' cy='55' r='0.7' fill='rgba(153,17,17,0.18)'/%3E%3Ccircle cx='445' cy='50' r='0.5' fill='rgba(80,0,0,0.14)'/%3E%3Ccircle cx='48' cy='280' r='0.8' fill='rgba(153,17,17,0.12)'/%3E%3Ccircle cx='455' cy='290' r='0.6' fill='rgba(80,0,0,0.10)'/%3E%3Ccircle cx='42' cy='340' r='0.5' fill='rgba(153,17,17,0.08)'/%3E%3Ccircle cx='460' cy='340' r='0.7' fill='rgba(80,0,0,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+  animation: void-drive 10s ease-in-out infinite;
 }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes void-drive {
+  0%, 100% { opacity: 0.65; }
+  28%       { opacity: 0.72; }
+  65%       { opacity: 0.55; }
+  87%       { opacity: 0.55; }
+  88%       { opacity: 0.03; }   /* dimensional breach — synchronized blackout */
+  89%       { opacity: 0.80; }
+  92%       { opacity: 0.65; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
 #header::after {
-  content: 'EVENT HORIZON  //  2047  //  LIBERATE TUTEMET EX INFERNIS';
+  content: 'EVENT HORIZON // 2047 // LIBERATE TUTEMET EX INFERNIS';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(200, 80, 70, 0.75);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 80, 70, 0.72);
   pointer-events: none; white-space: nowrap;
 }
 
 #grid-container::after {
-  content: 'WHERE WE\ARE GOING\A\AWE DON\'T\ANEED EYES\ATO SEE\A\ASAVE\AYOURSELF\AFROM HELL';
+  content: 'WHERE WE\AARE GOING\A-----------\AWE DO NOT\ANEED EYES\ATO SEE\A-----------\ASAVE\AYOURSELF\AFROM HELL';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.7; text-align: right;
-  color: rgba(80, 0, 0, 0.12); white-space: pre;
-  animation: void-breathe 11s ease-in-out infinite;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(80, 0, 0, 0.10); white-space: pre;
+  animation: void-readout 10s ease-in-out infinite;
 }
 
-@keyframes void-breathe {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1.0; }
+/* CPU-efficient: color-only (tier 3) */
+@keyframes void-readout {
+  0%, 100% { color: rgba(80,0,0,.10); }
+  28%       { color: rgba(80,0,0,.14); }
+  65%       { color: rgba(80,0,0,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(153,17,17,.18); }
+  92%       { color: rgba(80,0,0,.10); }
 }
 
 #edit-bar::after {
-  content: 'THE SHIP KNOWS THE WAY';
+  content: 'THE SHIP KNOWS THE WAY // DO NOT LOOK';
   position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
   font-size: 8px; letter-spacing: 2px; color: rgba(100, 0, 0, 0.42);
@@ -176,39 +180,45 @@
 
 #title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
 
-/* ── Title animation: corrupted void glitch ─────────────────────────────────── */
-@keyframes void-corrupt {
-  0%, 100%  { text-shadow: 0 0 7px rgba(153,17,17,.58), 0 0 20px rgba(153,17,17,.20); color: #991111; opacity: 1; }
-  75%       { text-shadow: 0 0 7px rgba(153,17,17,.58), 0 0 20px rgba(153,17,17,.20); color: #991111; opacity: 1; }
-  76%       { color: #BB2020; opacity: 0.4; text-shadow: 0 0 2px rgba(160,20,20,.35); }
-  77%       { color: #660000; opacity: 0.9; text-shadow: 3px 0 rgba(120,0,0,.70), -2px 0 rgba(80,20,0,.50); }
-  78%       { color: #991111; opacity: 1; text-shadow: 0 0 10px rgba(153,17,17,.65), 0 0 24px rgba(153,17,17,.24); }
-  79%       { opacity: 0.7; }
-  80%       { opacity: 1; text-shadow: 0 0 7px rgba(153,17,17,.58), 0 0 20px rgba(153,17,17,.20); color: #991111; }
+/* ── Title: void corruption glitch with 88% sync — color + text-shadow (tier 3) */
+@keyframes void-title {
+  0%        { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.45), 0 0 18px rgba(153,17,17,.15); }
+  65%       { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.45); }
+  67%       { color: #991111; text-shadow: 3px 0 rgba(120,0,0,.70), -2px 0 rgba(80,20,0,.50); opacity: 0.7; }
+  68%       { color: #660000; text-shadow: none; opacity: 0.3; }
+  69%       { color: #991111; text-shadow: 0 0 10px rgba(153,17,17,.65); opacity: 1; }
+  70%       { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.45); }
+  87%       { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.40); }
+  88%       { color: #FF4040; text-shadow: 0 0 22px rgba(255,60,60,.85), 0 0 50px rgba(153,17,17,.50); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #B08878; text-shadow: 0 0 8px rgba(153,17,17,.55); opacity: 1; }
+  100%      { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.45), 0 0 18px rgba(153,17,17,.15); }
 }
 
-/* ── App: the border feels wrong ────────────────────────────────────────────── */
-#app { animation: void-border 11s ease-in-out infinite; }
+/* ── App: void border — box-shadow ≥ 10s, minimal keyframes (tier 5) ─────── */
+#app { animation: void-border 10s ease-in-out infinite; }
 @keyframes void-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(80,0,0,.30), inset 0 0 30px rgba(80,0,0,.06); }
-  30%      { box-shadow: 0 0 0 1px rgba(100,0,0,.50), inset 0 0 30px rgba(100,0,0,.09); }
-  31%      { box-shadow: 0 0 0 1px rgba(60,0,0,.15), inset 0 0 20px rgba(60,0,0,.03); }
-  32%      { box-shadow: 0 0 0 1px rgba(100,0,0,.45), inset 0 0 28px rgba(100,0,0,.08); }
-  60%      { box-shadow: 0 0 0 1px rgba(80,0,0,.25), inset 0 0 30px rgba(80,0,0,.05); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(80,0,0,.28), inset 0 0 24px rgba(80,0,0,.05); }
+  35%      { box-shadow: 0 0 0 1px rgba(100,0,0,.48), inset 0 0 30px rgba(100,0,0,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(60,0,0,.20), inset 0 0 18px rgba(60,0,0,.03); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,60,60,.80), inset 0 0 50px rgba(153,17,17,.15), 0 0 18px rgba(153,17,17,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(100,0,0,.42), inset 0 0 24px rgba(80,0,0,.06); }
 }
 
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
+/* ── Banner ──────────────────────────────────────────────────────────────── */
 #theme-banner { background: rgba(3, 0, 0, 0.99); border-top-color: rgba(80, 0, 0, 0.28); }
-#theme-banner::before { content: '⊘'; color: #991111; font-size: 20px; opacity: 0.88; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 80, 75, 0.80); }
+#theme-banner::before { content: '⊘'; color: #991111; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 80, 75, 0.78); }
 
-/* ── Gravity drive — void distortion pulse expanding from the core ────────── */
+/* ── Gravity drive — void distortion pulse (opacity-only, tier 1) ────────── */
 #particles {
   background: radial-gradient(circle at 50% 50%, rgba(80,0,0,0.10) 0%, transparent 25%, transparent 88%, rgba(60,0,0,0.06) 92%, transparent 96%) no-repeat;
   background-size: 100% 100%;
   background-position: 50% 50%;
-  animation: void-distortion 9s ease-in-out infinite;
+  animation: void-distortion 12s ease-in-out infinite;
 }
+/* CPU-efficient: background-size + opacity (tier 1-2) */
 @keyframes void-distortion {
   0%, 100% { background-size: 80% 80%; opacity: 0.4; }
   50%      { background-size: 220% 220%; opacity: 1; }
