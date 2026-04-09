@@ -32,7 +32,7 @@
   --scanlines:    none;
   --drag-over-glow: inset 0 0 24px rgba(208,144,32,.09);
 
-  --title-anim:   hufflepuff-warmth 8s ease-in-out infinite;
+  --title-anim:   huff-title 10s ease-in-out infinite;
 
   --tile-hover-bg:     rgba(180, 130, 20, 0.07);
   --tile-hover-border: rgba(210, 155, 30, 0.34);
@@ -40,7 +40,7 @@
   --tile-active-bg:    rgba(180, 130, 20, 0.14);
   --tile-icon-glow:    drop-shadow(0 0 6px rgba(208,144,32,.58)) drop-shadow(0 0 14px rgba(96,64,32,.26));
   --tile-icon-fx:      brightness(1.08) sepia(0.15) saturate(1.1);
-  --tile-icon-shape:   circle(46% at 50% 50%);
+  --tile-icon-shape:   polygon(20% 0%, 80% 0%, 95% 25%, 100% 50%, 95% 75%, 80% 100%, 20% 100%, 5% 75%, 0% 50%, 5% 25%);
   --tile-label-spacing:   0.5px;
   --tile-label-transform: none;
   --tile-label-weight:    400;
@@ -113,46 +113,53 @@
   box-shadow: 0 0 10px rgba(208, 144, 32, 0.55), 0 0 26px rgba(208, 144, 32, 0.18);
 }
 
-/* ── Grid: honeycomb — Hufflepuff's hexagonal burrow walls ───────────────────── */
+/* ── Grid: Style B — Helga Hufflepuff's Cup (the golden goblet) ──────────── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Honeycomb — 60° diagonal lines */
-    repeating-linear-gradient(60deg, transparent 0px, transparent 10px, rgba(200,144,32,0.032) 10px, rgba(200,144,32,0.032) 11px),
-    /* Honeycomb — -60° diagonal lines */
-    repeating-linear-gradient(-60deg, transparent 0px, transparent 10px, rgba(190,135,28,0.028) 10px, rgba(190,135,28,0.028) 11px),
-    /* Honeycomb — vertical accent lines */
-    repeating-linear-gradient(90deg, transparent 0px, transparent 19px, rgba(180,120,20,0.018) 19px, rgba(180,120,20,0.018) 20px),
-    /* Warm kitchen center glow — hearth light from below */
-    radial-gradient(ellipse 80% 45% at 50% 100%, rgba(180,110,15,0.09) 0%, transparent 68%),
-    /* Sunlight through round window — from above */
-    radial-gradient(ellipse 50% 28% at 50% 0%, rgba(200,150,20,0.06) 0%, transparent 60%);
-  background-size: 100% 100%, 100% 100%, 20px 100%, 100% 100%, 100% 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='4' fill='rgba(208,144,32,0.52)'%3EHELGA HUFFLEPUFF%3C/text%3E%3Ctext x='250' y='36' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(180,130,20,0.35)'%3EFOUNDER -- HOGWARTS -- LOYAL AND TRUE%3C/text%3E%3Cellipse cx='250' cy='105' rx='50' ry='12' fill='rgba(120,80,15,0.30)' stroke='rgba(208,144,32,0.45)' stroke-width='1.2'/%3E%3Cellipse cx='250' cy='105' rx='46' ry='10' fill='none' stroke='rgba(224,176,64,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 200,105 Q 198,150 202,190 Q 208,220 220,240 Q 235,255 250,260 Q 265,255 280,240 Q 292,220 298,190 Q 302,150 300,105' fill='rgba(100,68,12,0.28)' stroke='rgba(208,144,32,0.45)' stroke-width='1.5'/%3E%3Cpath d='M 204,108 Q 202,148 206,188 Q 212,218 224,238 Q 237,252 250,256 Q 263,252 276,238 Q 288,218 294,188 Q 298,148 296,108' fill='none' stroke='rgba(180,130,20,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 200,120 C 185,118 175,128 172,140 C 168,155 175,168 188,172 C 195,174 200,170 202,162' fill='none' stroke='rgba(208,144,32,0.40)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 300,120 C 315,118 325,128 328,140 C 332,155 325,168 312,172 C 305,174 300,170 298,162' fill='none' stroke='rgba(208,144,32,0.40)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cellipse cx='250' cy='170' rx='28' ry='20' fill='none' stroke='rgba(96,64,32,0.30)' stroke-width='1'/%3E%3Ccircle cx='250' cy='168' r='10' fill='rgba(96,64,32,0.25)' stroke='rgba(208,144,32,0.35)' stroke-width='0.8'/%3E%3Cpath d='M 243,165 Q 245,160 250,158 Q 255,160 257,165 Q 258,170 255,174 Q 250,176 245,174 Q 242,170 243,165 Z' fill='rgba(120,80,15,0.35)' stroke='rgba(208,144,32,0.30)' stroke-width='0.5'/%3E%3Cline x1='250' y1='162' x2='250' y2='172' stroke='rgba(208,144,32,0.22)' stroke-width='0.5'/%3E%3Cline x1='245' y1='167' x2='255' y2='167' stroke='rgba(208,144,32,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 230,148 C 225,142 218,142 215,148' fill='none' stroke='rgba(208,144,32,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 270,148 C 275,142 282,142 285,148' fill='none' stroke='rgba(208,144,32,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 222,200 C 218,205 220,210 225,212' fill='none' stroke='rgba(208,144,32,0.15)' stroke-width='0.5'/%3E%3Cpath d='M 278,200 C 282,205 280,210 275,212' fill='none' stroke='rgba(208,144,32,0.15)' stroke-width='0.5'/%3E%3Crect x='240' y='260' width='20' height='18' rx='2' fill='rgba(100,68,12,0.30)' stroke='rgba(208,144,32,0.38)' stroke-width='1'/%3E%3Crect x='243' y='263' width='14' height='12' rx='1' fill='none' stroke='rgba(180,130,20,0.18)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='284' rx='35' ry='8' fill='rgba(100,68,12,0.30)' stroke='rgba(208,144,32,0.42)' stroke-width='1.2'/%3E%3Cellipse cx='250' cy='284' rx='31' ry='6' fill='none' stroke='rgba(180,130,20,0.20)' stroke-width='0.5'/%3E%3Ctext x='250' y='305' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='3' fill='rgba(208,144,32,0.45)'%3ETHE CUP OF HUFFLEPUFF%3C/text%3E%3Ctext x='250' y='318' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(180,130,20,0.30)'%3ERELIQUARY -- FOUNDER ARTIFACT%3C/text%3E%3Ctext x='80' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' font-weight='bold' fill='rgba(208,144,32,0.48)'%3EHOUSE VIRTUES%3C/text%3E%3Cline x1='20' y1='85' x2='140' y2='85' stroke='rgba(180,130,20,0.20)' stroke-width='0.5'/%3E%3Ctext x='20' y='100' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,130,20,0.40)'%3ELOYALTY%3C/text%3E%3Crect x='20' y='104' width='110' height='5' fill='rgba(180,130,20,0.10)' rx='1'/%3E%3Crect x='20' y='104' width='99' height='5' fill='rgba(208,144,32,0.42)' rx='1'/%3E%3Ctext x='20' y='122' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,130,20,0.40)'%3EPATIENCE%3C/text%3E%3Crect x='20' y='126' width='110' height='5' fill='rgba(180,130,20,0.10)' rx='1'/%3E%3Crect x='20' y='126' width='88' height='5' fill='rgba(208,144,32,0.40)' rx='1'/%3E%3Ctext x='20' y='144' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,130,20,0.38)'%3EDEDICATION%3C/text%3E%3Crect x='20' y='148' width='110' height='5' fill='rgba(180,130,20,0.10)' rx='1'/%3E%3Crect x='20' y='148' width='93' height='5' fill='rgba(208,144,32,0.38)' rx='1'/%3E%3Ctext x='20' y='166' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,130,20,0.38)'%3EFAIR PLAY%3C/text%3E%3Crect x='20' y='170' width='110' height='5' fill='rgba(180,130,20,0.10)' rx='1'/%3E%3Crect x='20' y='170' width='104' height='5' fill='rgba(224,176,64,0.38)' rx='1'/%3E%3Cline x1='20' y1='185' x2='140' y2='185' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Ctext x='80' y='200' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(208,144,32,0.38)'%3EUNAFRAID OF TOIL%3C/text%3E%3Ctext x='420' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' font-weight='bold' fill='rgba(208,144,32,0.48)'%3ENOTABLE BADGERS%3C/text%3E%3Cline x1='350' y1='85' x2='480' y2='85' stroke='rgba(180,130,20,0.20)' stroke-width='0.5'/%3E%3Ctext x='355' y='100' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(208,144,32,0.48)'%3ECEDRIC DIGGORY%3C/text%3E%3Ctext x='355' y='118' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(208,144,32,0.44)'%3ENEWT SCAMANDER%3C/text%3E%3Ctext x='355' y='136' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(208,144,32,0.42)'%3ENYMPHADORA TONKS%3C/text%3E%3Ctext x='355' y='154' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(96,64,32,0.42)'%3EPOMONA SPROUT%3C/text%3E%3Ctext x='355' y='172' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(96,64,32,0.38)'%3EERNEST MACMILLAN%3C/text%3E%3Cline x1='350' y1='182' x2='480' y2='182' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Ctext x='420' y='198' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(96,64,32,0.35)'%3ESUBJECT%3C/text%3E%3Ctext x='420' y='212' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' font-style='italic' font-weight='bold' fill='rgba(208,144,32,0.48)'%3EHERBOLOGY%3C/text%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(180,130,20,0.22)' stroke-width='0.7'/%3E%3Ctext x='70' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,130,20,0.35)'%3ECOMMON ROOM%3C/text%3E%3Ctext x='70' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(208,144,32,0.48)'%3EKITCHENS%3C/text%3E%3Ctext x='200' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,130,20,0.35)'%3EELEMENT%3C/text%3E%3Ctext x='200' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(96,64,32,0.45)'%3EEARTH%3C/text%3E%3Ctext x='330' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,130,20,0.35)'%3EANIMAL%3C/text%3E%3Ctext x='330' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(208,144,32,0.48)'%3EBADGER%3C/text%3E%3Ctext x='450' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,130,20,0.35)'%3EGHOST%3C/text%3E%3Ctext x='450' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(96,64,32,0.42)'%3EFAT FRIAR%3C/text%3E%3Cline x1='135' y1='312' x2='135' y2='344' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Cline x1='265' y1='312' x2='265' y2='344' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Cline x1='390' y1='312' x2='390' y2='344' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(180,130,20,0.25)'%3EHOGWARTS SCHOOL OF WITCHCRAFT AND WIZARDRY -- HUFFLEPUFF HOUSE%3C/text%3E%3Ccircle cx='45' cy='62' r='0.8' fill='rgba(208,144,32,0.22)'/%3E%3Ccircle cx='455' cy='56' r='0.6' fill='rgba(224,176,64,0.18)'/%3E%3Ccircle cx='40' cy='240' r='0.7' fill='rgba(96,64,32,0.14)'/%3E%3Ccircle cx='460' cy='250' r='0.8' fill='rgba(208,144,32,0.12)'/%3E%3Ccircle cx='50' cy='340' r='0.5' fill='rgba(224,176,64,0.10)'/%3E%3Ccircle cx='452' cy='340' r='0.6' fill='rgba(96,64,32,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+  animation: huff-cup 10s ease-in-out infinite;
 }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes huff-cup {
+  0%, 100% { opacity: 0.65; }
+  28%       { opacity: 0.72; }
+  65%       { opacity: 0.58; }
+  87%       { opacity: 0.58; }
+  88%       { opacity: 0.04; }   /* golden warmth flash — synchronized blackout */
+  89%       { opacity: 0.80; }
+  92%       { opacity: 0.65; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
 #header::after {
-  content: 'HUFFLEPUFF  //  JUST AND LOYAL  //  PATIENT  KIND  UNAFRAID OF TOIL';
+  content: 'HUFFLEPUFF // JUST AND LOYAL // UNAFRAID OF TOIL';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 145, 30, 0.58);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 145, 30, 0.62);
   pointer-events: none; white-space: nowrap;
 }
 
 #grid-container::after {
-  content: 'HUFFLEPUFF\AJUST AND\ALOYAL\A\ANEVILLE\AWOULD\AHave\ABEEN\AONE\A\ATRUE\AGRIT';
+  content: 'HUFFLEPUFF\AJUST AND\ALOYAL\A-----------\APATIENCE\ADEDICATION\AFAIR PLAY\A-----------\ATHE BADGER\ABURROWS DEEP';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.7; text-align: right;
-  color: rgba(180, 130, 20, 0.10); white-space: pre;
-  animation: hufflepuff-breathe 12s ease-in-out infinite;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(180, 130, 20, 0.08); white-space: pre;
+  animation: huff-readout 10s ease-in-out infinite;
 }
 
-@keyframes hufflepuff-breathe {
-  0%, 100% { opacity: 0.65; }
-  50% { opacity: 1.0; }
+/* CPU-efficient: color-only (tier 3) */
+@keyframes huff-readout {
+  0%, 100% { color: rgba(180,130,20,.08); }
+  28%       { color: rgba(180,130,20,.12); }
+  65%       { color: rgba(180,130,20,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(208,144,32,.15); }
+  92%       { color: rgba(180,130,20,.08); }
 }
 
 #edit-bar::after {
@@ -165,18 +172,27 @@
 
 #title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
 
-/* ── Title animation: warm yellow to bright gold, the badger's steady glow ────── */
-@keyframes hufflepuff-warmth {
-  0%, 100% { text-shadow: 0 0 8px rgba(208,144,32,.55), 0 0 22px rgba(208,144,32,.18); color: #D09020; }
-  40%       { text-shadow: 0 0 12px rgba(224,176,64,.80), 0 0 30px rgba(224,176,64,.30); color: #E0B040; }
-  75%       { text-shadow: 0 0 7px rgba(96,64,32,.50), 0 0 18px rgba(96,64,32,.16); color: #B07828; }
+/* ── Title: warm gold pulse with 88% sync — color + text-shadow (tier 3) ── */
+@keyframes huff-title {
+  0%        { color: #C09040; text-shadow: 0 0 6px rgba(208,144,32,.48), 0 0 18px rgba(208,144,32,.16); }
+  35%       { color: #E0B040; text-shadow: 0 0 10px rgba(224,176,64,.65), 0 0 28px rgba(224,176,64,.22); }
+  65%       { color: #906828; text-shadow: 0 0 4px rgba(96,64,32,.35); }
+  87%       { color: #C09040; text-shadow: 0 0 6px rgba(208,144,32,.42); }
+  88%       { color: #FFD870; text-shadow: 0 0 22px rgba(255,216,112,.82), 0 0 50px rgba(208,144,32,.42); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C09040; text-shadow: 0 0 8px rgba(208,144,32,.55); opacity: 1; }
+  100%      { color: #C09040; text-shadow: 0 0 6px rgba(208,144,32,.48), 0 0 18px rgba(208,144,32,.16); }
 }
 
-/* ── App: soft amber border — warm, never harsh ──────────────────────────────── */
-#app { animation: hufflepuff-border 10s ease-in-out infinite; }
-@keyframes hufflepuff-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(180,130,20,.28), inset 0 0 22px rgba(180,130,20,.04); }
-  50%       { box-shadow: 0 0 0 1px rgba(210,155,30,.48), inset 0 0 30px rgba(208,144,32,.07); }
+/* ── App: warm amber border — box-shadow ≥ 10s (tier 5) ──────────────────── */
+#app { animation: huff-border 10s ease-in-out infinite; }
+@keyframes huff-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(180,130,20,.22), inset 0 0 20px rgba(180,130,20,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(210,155,30,.45), inset 0 0 28px rgba(208,144,32,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(96,64,32,.22), inset 0 0 18px rgba(96,64,32,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,216,112,.78), inset 0 0 50px rgba(208,144,32,.15), 0 0 18px rgba(208,144,32,.25); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(210,155,30,.40), inset 0 0 22px rgba(208,144,32,.06); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
