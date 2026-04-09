@@ -420,7 +420,7 @@ const THEME_NAMES = {
   'deus-ex':             'DEUS EX',
   'ghost-shell':         'GHOST IN THE SHELL',
   'matrix':              'MATRIX',
-  'warhammer':           'WARHAMMER 40K',
+  'warhammer':           'WARHAMMER 40K: IMPERIUM',
   'dead-space':          'DEAD SPACE',
   'half-life':           'HALF-LIFE',
   'terminator':          'TERMINATOR',

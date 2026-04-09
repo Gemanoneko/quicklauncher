@@ -112,15 +112,14 @@
 
 /* ── Ember pulse — like candlelight in a cathedral, with Blood God flash ────── */
 #app { animation: wh-ember 10s ease-in-out infinite; }
+/* CPU-efficient: box-shadow ≥ 10s, minimal keyframes (tier 5) */
 @keyframes wh-ember {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(200,144,10,.22), inset 0 0 28px rgba(200,144,10,.15), inset 0 0 8px rgba(139,0,0,.1); }
-  28% { box-shadow: 0 0 0 1px rgba(200,144,10,.48), inset 0 0 44px rgba(200,144,10,.26), inset 0 0 14px rgba(139,0,0,.18); }
-  29% { box-shadow: 0 0 0 1px rgba(200,144,10,.14), inset 0 0 16px rgba(200,144,10,.07); }
-  30% { box-shadow: 0 0 0 1px rgba(200,144,10,.40), inset 0 0 36px rgba(200,144,10,.22); }
-  /* Blood God flash — Khorne demands tribute */
-  76% { box-shadow: 0 0 0 1px rgba(200,144,10,.35), inset 0 0 32px rgba(200,144,10,.18); }
-  77% { box-shadow: 0 0 0 1px rgba(139,0,0,.72), inset 0 0 44px rgba(139,0,0,.22), 0 0 18px rgba(139,0,0,.18); }
-  78% { box-shadow: 0 0 0 1px rgba(200,144,10,.26), inset 0 0 22px rgba(200,144,10,.11); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,144,10,.22), inset 0 0 22px rgba(200,144,10,.10); }
+  35%      { box-shadow: 0 0 0 1px rgba(200,144,10,.48), inset 0 0 34px rgba(200,144,10,.18); }
+  65%      { box-shadow: 0 0 0 1px rgba(139,0,0,.30), inset 0 0 22px rgba(139,0,0,.08); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,208,96,.82), inset 0 0 50px rgba(200,144,10,.20), 0 0 18px rgba(200,144,10,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(200,144,10,.42), inset 0 0 26px rgba(200,144,10,.12); }
 }
 
 /* ── Header — heavy gold bottom border, imperial authority ─────────────────── */
@@ -146,60 +145,44 @@
   pointer-events: none;
 }
 
-/* ── Imperial Aquila — great eagle watermark, rotating like a prayer wheel ──── */
+/* ── Grid: Style B — The Imperial Aquila (double-headed eagle seal) ───────── */
 #grid-container::before {
-  content: '☩';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 180px;
-  line-height: 1;
-  color: rgba(200, 144, 10, 0.055);
-  text-shadow:
-    0 0 40px rgba(200, 144, 10, 0.04),
-    0 0 80px rgba(200, 144, 10, 0.02);
-  background:
-    radial-gradient(ellipse 55% 55% at 50% 50%, rgba(200, 144, 10, 0.04) 0%, transparent 70%);
-  animation: wh-aquila-turn 40s linear infinite;
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='4' fill='rgba(200,144,10,0.50)'%3EIMPERIUM OF MAN%3C/text%3E%3Ctext x='250' y='36' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(200,144,10,0.32)'%3EAVE IMPERATOR -- TERRA -- M41%3C/text%3E%3Ccircle cx='250' cy='185' r='90' fill='none' stroke='rgba(200,144,10,0.25)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='185' r='86' fill='none' stroke='rgba(200,144,10,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='185' r='95' fill='none' stroke='rgba(200,144,10,0.10)' stroke-width='0.5' stroke-dasharray='4,8'/%3E%3Ccircle cx='250' cy='175' r='10' fill='rgba(200,144,10,0.30)' stroke='rgba(200,144,10,0.40)' stroke-width='1'/%3E%3Ccircle cx='250' cy='175' r='6' fill='rgba(139,0,0,0.35)'/%3E%3Ccircle cx='247' cy='173' r='1.5' fill='rgba(200,144,10,0.50)'/%3E%3Ccircle cx='253' cy='173' r='1.5' fill='rgba(200,144,10,0.50)'/%3E%3Cpath d='M 247,178 L 250,181 L 253,178' fill='none' stroke='rgba(200,144,10,0.40)' stroke-width='0.8'/%3E%3Cpath d='M 240,170 C 220,155 190,148 160,155 C 140,160 125,172 120,178' fill='none' stroke='rgba(200,144,10,0.35)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 260,170 C 280,155 310,148 340,155 C 360,160 375,172 380,178' fill='none' stroke='rgba(200,144,10,0.35)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 120,178 C 115,175 108,180 105,186 C 100,195 98,205 102,210' fill='none' stroke='rgba(200,144,10,0.28)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 380,178 C 385,175 392,180 395,186 C 400,195 402,205 398,210' fill='none' stroke='rgba(200,144,10,0.28)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 160,155 C 155,148 148,142 142,140' fill='none' stroke='rgba(200,144,10,0.22)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 340,155 C 345,148 352,142 358,140' fill='none' stroke='rgba(200,144,10,0.22)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 170,158 C 162,145 150,135 140,132' fill='none' stroke='rgba(200,144,10,0.20)' stroke-width='0.8'/%3E%3Cpath d='M 330,158 C 338,145 350,135 360,132' fill='none' stroke='rgba(200,144,10,0.20)' stroke-width='0.8'/%3E%3Cpath d='M 180,162 C 168,150 155,142 148,140' fill='none' stroke='rgba(200,144,10,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 320,162 C 332,150 345,142 352,140' fill='none' stroke='rgba(200,144,10,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 240,175 C 235,190 232,208 236,220 L 250,240 L 264,220 C 268,208 265,190 260,175' fill='none' stroke='rgba(200,144,10,0.22)' stroke-width='1'/%3E%3Cline x1='250' y1='190' x2='250' y2='235' stroke='rgba(200,144,10,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='210,165 215,158 220,165' fill='rgba(200,144,10,0.25)'/%3E%3Cpolygon points='280,165 285,158 290,165' fill='rgba(200,144,10,0.25)'/%3E%3Ctext x='250' y='260' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='3' fill='rgba(200,144,10,0.42)'%3EAQUILA IMPERIALIS%3C/text%3E%3Ctext x='250' y='274' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(200,144,10,0.28)'%3ETHE EMPEROR PROTECTS%3C/text%3E%3Ctext x='80' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(200,144,10,0.42)'%3ECRUSADE%3C/text%3E%3Ctext x='80' y='95' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.50)'%3EINDOMITUS%3C/text%3E%3Cline x1='25' y1='100' x2='135' y2='100' stroke='rgba(200,144,10,0.18)' stroke-width='0.5'/%3E%3Ctext x='80' y='118' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3ESECTOR%3C/text%3E%3Ctext x='80' y='130' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.48)'%3ESEGMENTUM SOLAR%3C/text%3E%3Ctext x='80' y='148' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3ETHREAT%3C/text%3E%3Crect x='25' y='152' width='110' height='5' fill='rgba(200,144,10,0.10)' rx='1'/%3E%3Crect x='25' y='152' width='88' height='5' fill='rgba(139,0,0,0.48)' rx='1'/%3E%3Ctext x='138' y='157' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(139,0,0,0.42)'%3ECRITICAL%3C/text%3E%3Ctext x='80' y='175' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3EFAITH%3C/text%3E%3Crect x='25' y='179' width='110' height='5' fill='rgba(200,144,10,0.10)' rx='1'/%3E%3Crect x='25' y='179' width='99' height='5' fill='rgba(200,144,10,0.45)' rx='1'/%3E%3Ctext x='138' y='184' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(200,144,10,0.40)'%3EABSOLUTE%3C/text%3E%3Ctext x='420' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(200,144,10,0.42)'%3EFORCES%3C/text%3E%3Ctext x='420' y='95' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.48)'%3ESPACE MARINES%3C/text%3E%3Cline x1='365' y1='100' x2='475' y2='100' stroke='rgba(200,144,10,0.18)' stroke-width='0.5'/%3E%3Ctext x='420' y='118' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3ECHAPTER%3C/text%3E%3Ctext x='420' y='130' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(139,0,0,0.48)'%3EBLOOD ANGELS%3C/text%3E%3Ctext x='420' y='148' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3EPRIMARCH%3C/text%3E%3Ctext x='420' y='160' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.45)'%3ESANGUINIUS%3C/text%3E%3Ctext x='420' y='178' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3ESTATUS%3C/text%3E%3Ctext x='420' y='190' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.42)'%3ECRUSADING%3C/text%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(200,144,10,0.22)' stroke-width='0.7'/%3E%3Ctext x='70' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3ESECTOR%3C/text%3E%3Ctext x='70' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.48)'%3ESOLAR%3C/text%3E%3Ctext x='190' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3ETHREAT%3C/text%3E%3Ctext x='190' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(139,0,0,0.48)'%3EHERESY%3C/text%3E%3Ctext x='320' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3EIMPERIUM%3C/text%3E%3Ctext x='320' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.45)'%3EENDURES%3C/text%3E%3Ctext x='440' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3EEMPEROR%3C/text%3E%3Ctext x='440' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(212,168,32,0.50)'%3EPROTECTS%3C/text%3E%3Cline x1='130' y1='312' x2='130' y2='344' stroke='rgba(200,144,10,0.15)' stroke-width='0.5'/%3E%3Cline x1='255' y1='312' x2='255' y2='344' stroke='rgba(200,144,10,0.15)' stroke-width='0.5'/%3E%3Cline x1='380' y1='312' x2='380' y2='344' stroke='rgba(200,144,10,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='362' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(200,144,10,0.25)'%3EADMINISTRATUM TERRA -- IMPERIUM OF MAN -- M41.999%3C/text%3E%3Ccircle cx='45' cy='65' r='0.8' fill='rgba(200,144,10,0.20)'/%3E%3Ccircle cx='455' cy='55' r='0.6' fill='rgba(200,144,10,0.16)'/%3E%3Ccircle cx='40' cy='250' r='0.7' fill='rgba(139,0,0,0.14)'/%3E%3Ccircle cx='460' cy='260' r='0.8' fill='rgba(200,144,10,0.12)'/%3E%3Ccircle cx='50' cy='340' r='0.5' fill='rgba(200,144,10,0.10)'/%3E%3Ccircle cx='450' cy='345' r='0.6' fill='rgba(139,0,0,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+  animation: wh-aquila 10s ease-in-out infinite;
 }
-@keyframes wh-aquila-turn {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes wh-aquila {
+  0%, 100% { opacity: 0.65; }
+  28%       { opacity: 0.72; }
+  65%       { opacity: 0.55; }
+  87%       { opacity: 0.55; }
+  88%       { opacity: 0.04; }   /* the Emperor's light — synchronized blackout */
+  89%       { opacity: 0.80; }
+  92%       { opacity: 0.65; }
 }
 
 /* ── Gothic gold border filaments at grid edges ─────────────────────────────── */
 #grid-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    /* top edge line */
-    linear-gradient(to bottom, rgba(200, 144, 10, 0.18) 0px, rgba(200, 144, 10, 0.18) 1px, transparent 1px) 0 0 / 100% 100% no-repeat,
-    /* bottom edge line */
-    linear-gradient(to top, rgba(200, 144, 10, 0.18) 0px, rgba(200, 144, 10, 0.18) 1px, transparent 1px) 0 100% / 100% 100% no-repeat,
-    /* left edge line */
-    linear-gradient(to right, rgba(200, 144, 10, 0.12) 0px, rgba(200, 144, 10, 0.12) 1px, transparent 1px) 0 0 / 100% 100% no-repeat,
-    /* right edge line */
-    linear-gradient(to left, rgba(200, 144, 10, 0.12) 0px, rgba(200, 144, 10, 0.12) 1px, transparent 1px) 100% 0 / 100% 100% no-repeat,
-    /* corner gold ornament — top-left */
-    linear-gradient(to right, rgba(200, 144, 10, 0.45) 0px, rgba(200, 144, 10, 0.45) 2px, transparent 2px) 4px 4px / 24px 2px no-repeat,
-    linear-gradient(to bottom, rgba(200, 144, 10, 0.45) 0px, rgba(200, 144, 10, 0.45) 2px, transparent 2px) 4px 4px / 2px 24px no-repeat,
-    /* corner gold ornament — top-right */
-    linear-gradient(to left, rgba(200, 144, 10, 0.45) 0px, rgba(200, 144, 10, 0.45) 2px, transparent 2px) calc(100% - 4px) 4px / 24px 2px no-repeat,
-    linear-gradient(to bottom, rgba(200, 144, 10, 0.45) 0px, rgba(200, 144, 10, 0.45) 2px, transparent 2px) calc(100% - 5px) 4px / 2px 24px no-repeat,
-    /* corner gold ornament — bottom-left */
-    linear-gradient(to right, rgba(139, 0, 0, 0.45) 0px, rgba(139, 0, 0, 0.45) 2px, transparent 2px) 4px calc(100% - 4px) / 24px 2px no-repeat,
-    linear-gradient(to top, rgba(139, 0, 0, 0.45) 0px, rgba(139, 0, 0, 0.45) 2px, transparent 2px) 4px calc(100% - 4px) / 2px 24px no-repeat,
-    /* corner gold ornament — bottom-right */
-    linear-gradient(to left, rgba(139, 0, 0, 0.45) 0px, rgba(139, 0, 0, 0.45) 2px, transparent 2px) calc(100% - 4px) calc(100% - 4px) / 24px 2px no-repeat,
-    linear-gradient(to top, rgba(139, 0, 0, 0.45) 0px, rgba(139, 0, 0, 0.45) 2px, transparent 2px) calc(100% - 5px) calc(100% - 4px) / 2px 24px no-repeat;
+  content: 'THE EMPEROR\APROTECTS\A-----------\AFOR THE\AIMPERIUM\AOF MAN\A-----------\APURITY SEAL\AREQUIRED\A\AHERESY\ADETECTED';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(200, 144, 10, 0.08); white-space: pre;
+  animation: wh-readout 10s ease-in-out infinite;
+}
+
+@keyframes wh-readout {
+  0%, 100% { color: rgba(200,144,10,.08); }
+  28%       { color: rgba(200,144,10,.12); }
+  65%       { color: rgba(200,144,10,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(200,144,10,.15); }
+  92%       { color: rgba(200,144,10,.08); }
 }
 
 /* ── Overlay panel — parchment panel with octagonal clip ───────────────────── */
@@ -208,57 +191,24 @@
   box-shadow: 0 0 20px rgba(200, 144, 10, 0.15), inset 0 0 30px rgba(200, 144, 10, 0.04);
 }
 
-/* ── Candle-flicker title animation ─────────────────────────────────────────── */
+/* ── Title: candle-flicker with 88% sync — color + text-shadow (tier 3) ───── */
 @keyframes wh-flicker {
-  0%, 100% {
-    text-shadow: 0 0 6px rgba(200, 144, 10, 0.7), 0 0 18px rgba(200, 144, 10, 0.3);
-    opacity: 1;
-  }
-  20% {
-    text-shadow: 0 0 10px rgba(200, 144, 10, 0.9), 0 0 26px rgba(200, 144, 10, 0.45);
-    opacity: 0.95;
-  }
-  21% {
-    text-shadow: 0 0 4px rgba(200, 144, 10, 0.5), 0 0 10px rgba(200, 144, 10, 0.2);
-    opacity: 0.88;
-  }
-  22% {
-    text-shadow: 0 0 9px rgba(200, 144, 10, 0.85), 0 0 22px rgba(200, 144, 10, 0.4);
-    opacity: 0.97;
-  }
-  50% {
-    text-shadow: 0 0 8px rgba(200, 144, 10, 0.75), 0 0 20px rgba(200, 144, 10, 0.35);
-    opacity: 0.92;
-  }
-  /* Red flash — like a vision of the Blood God */
-  75% {
-    text-shadow: 0 0 8px rgba(200, 144, 10, 0.8), 0 0 22px rgba(200, 144, 10, 0.4);
-    opacity: 1;
-  }
-  76% {
-    text-shadow: 0 0 6px rgba(139, 0, 0, 0.9), 0 0 18px rgba(139, 0, 0, 0.5), 0 0 40px rgba(139, 0, 0, 0.2);
-    opacity: 1;
-  }
-  77% {
-    text-shadow: 0 0 8px rgba(200, 144, 10, 0.75), 0 0 22px rgba(200, 144, 10, 0.35);
-    opacity: 1;
-  }
-  80% {
-    text-shadow: 0 0 5px rgba(200, 144, 10, 0.55), 0 0 14px rgba(200, 144, 10, 0.25);
-    opacity: 0.9;
-  }
-  81% {
-    text-shadow: 0 0 9px rgba(200, 144, 10, 0.85), 0 0 24px rgba(200, 144, 10, 0.4);
-    opacity: 1;
-  }
+  0%        { color: #C8B896; text-shadow: 0 0 6px rgba(200,144,10,.55), 0 0 18px rgba(200,144,10,.22); }
+  35%       { color: #D4A820; text-shadow: 0 0 10px rgba(212,168,32,.70), 0 0 26px rgba(200,144,10,.30); }
+  65%       { color: #A08860; text-shadow: 0 0 4px rgba(200,144,10,.35); }
+  87%       { color: #C8B896; text-shadow: 0 0 6px rgba(200,144,10,.50); }
+  88%       { color: #FFD060; text-shadow: 0 0 22px rgba(255,208,96,.85), 0 0 50px rgba(200,144,10,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C8B896; text-shadow: 0 0 8px rgba(200,144,10,.60); opacity: 1; }
+  100%      { color: #C8B896; text-shadow: 0 0 6px rgba(200,144,10,.55), 0 0 18px rgba(200,144,10,.22); }
 }
 
 /* ── Flavor content ────────────────────────────────────────────────────────── */
 #header::after {
-  content: 'ADEPTUS MECHANICUS  //  OMNIS ARCANUM';
+  content: 'IMPERIUM OF MAN // AVE IMPERATOR // ONLY IN DEATH DOES DUTY END';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(200, 144, 10, 0.52);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 144, 10, 0.55);
   pointer-events: none; white-space: nowrap;
 }
 
