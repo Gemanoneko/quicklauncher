@@ -415,6 +415,13 @@ const THEME_BANNERS = {
     'WHAT HAVE YOU DONE TO YOUR SOUL, DANIEL?',
     'THE DARKNESS WILL CONSUME WHAT REMAINS OF YOU.',
   ],
+  'predator': [
+    'IF IT BLEEDS, WE CAN KILL IT.',
+    'WHAT THE HELL ARE YOU?',
+    'OVER HERE. TURN AROUND.',
+    'THE HUNT BEGINS. THERE IS NO PREY THAT CANNOT BE TAKEN.',
+    'YOU ARE ONE UGLY MOTHERF---.',
+  ],
   'robocop': [
     'DEAD OR ALIVE, YOU ARE COMING WITH ME.',
     'SERVE THE PUBLIC TRUST. PROTECT THE INNOCENT. UPHOLD THE LAW.',
@@ -468,6 +475,7 @@ const THEME_NAMES = {
   'warhammer-eldar':     'WARHAMMER 40K: ELDAR',
   'warhammer-necrons':   'WARHAMMER 40K: NECRONS',
   'warhammer-tyranids':  'WARHAMMER 40K: TYRANIDS',
+  'predator':            'PREDATOR',
   'robocop':             'ROBOCOP',
   'dead-space':          'DEAD SPACE',
   'half-life':           'HALF-LIFE',
