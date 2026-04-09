@@ -142,6 +142,7 @@ html, body {
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
   clip-path: var(--app-clip);
   display: flex; flex-direction: column; overflow: hidden;
+  will-change: box-shadow;
 }
 
 /* Particle layer — themes override with animated backgrounds */
@@ -151,6 +152,7 @@ html, body {
   pointer-events: none;
   z-index: 1;
   overflow: hidden;
+  will-change: background-position, opacity;
 }
 
 /* Startup entrance overlay — plays once then vanishes */
@@ -197,6 +199,7 @@ html, body {
   pointer-events: none;
   z-index: 200;
   animation: border-pulse 4s ease-in-out infinite;
+  will-change: box-shadow;
 }
 @keyframes border-pulse {
   0%,100% { border-color: var(--border); }
@@ -235,6 +238,7 @@ html, body {
   background: var(--accent-c);
   box-shadow: var(--glow-c);
   animation: hdr-bar-pulse 3s ease-in-out infinite;
+  will-change: filter;
 }
 
 /* Constrain theme flavor text: left boundary keeps it clear of the title,
@@ -253,6 +257,7 @@ html, body {
   color: var(--accent-c);
   text-shadow: var(--glow-c);
   animation: var(--title-anim);
+  will-change: transform;
 }
 #header-version { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); line-height: 1; }
 .accent { color: var(--accent-m); }
@@ -305,6 +310,7 @@ button:active { background: var(--btn-active-bg); }
   position: absolute; inset: 0;
   pointer-events: none;
   z-index: 0;
+  will-change: transform, opacity;
 }
 
 #app-grid {
@@ -436,6 +442,7 @@ button:active { background: var(--btn-active-bg); }
   opacity: 0.55;
   pointer-events: none;
   animation: var(--banner-icon-anim, none);
+  will-change: opacity;
 }
 
 /* Shared banner icon animation keyframes */
