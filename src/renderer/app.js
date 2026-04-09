@@ -415,6 +415,13 @@ const THEME_BANNERS = {
     'WHAT HAVE YOU DONE TO YOUR SOUL, DANIEL?',
     'THE DARKNESS WILL CONSUME WHAT REMAINS OF YOU.',
   ],
+  'robocop': [
+    'DEAD OR ALIVE, YOU ARE COMING WITH ME.',
+    'SERVE THE PUBLIC TRUST. PROTECT THE INNOCENT. UPHOLD THE LAW.',
+    'YOUR MOVE, CREEP.',
+    'I AM THE LAW.',
+    'COME QUIETLY OR THERE WILL BE TROUBLE.',
+  ],
   'metal-gear': [
     'KEPT YOU WAITING, HUH?',
     'WE ARE NOT TOOLS OF THE GOVERNMENT OR ANYONE ELSE.',
@@ -461,6 +468,7 @@ const THEME_NAMES = {
   'warhammer-eldar':     'WARHAMMER 40K: ELDAR',
   'warhammer-necrons':   'WARHAMMER 40K: NECRONS',
   'warhammer-tyranids':  'WARHAMMER 40K: TYRANIDS',
+  'robocop':             'ROBOCOP',
   'dead-space':          'DEAD SPACE',
   'half-life':           'HALF-LIFE',
   'terminator':          'TERMINATOR',
