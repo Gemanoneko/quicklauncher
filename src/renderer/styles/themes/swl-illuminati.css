@@ -1,0 +1,211 @@
+/* ══ SECRET WORLD LEGENDS: ILLUMINATI ═════════════════════════════════════════
+   The Illuminati. New York. Labyrinth. Sex, drugs, and Rockefeller.
+   Corporate power meets occult conspiracy. They own EVERYTHING and they
+   want you to know it. Sharp neon on black — confidence is a weapon.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* SHARP CORPORATE NEON — trading floor meets nightclub */
+  --bg:           #040804;
+  --panel-bg:     rgba(6, 12, 6, 0.99);
+  --overlay-bg:   rgba(4, 8, 4, 0.97);
+  --header-bg:    rgba(0, 200, 60, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #70C070;
+  --text-dim:     rgba(80, 160, 80, 0.45);
+
+  /* Money green + corporate gold */
+  --accent-c:     #00C840;   /* Illuminati green — VIVID */
+  --accent-m:     #C0A020;   /* money gold */
+  --accent-y:     #0A200A;   /* dark corp */
+
+  --border:       rgba(0, 200, 64, 0.22);
+  --border-h:     rgba(0, 200, 64, 0.55);
+
+  --glow-c:       0 0 8px rgba(0,200,64,.65), 0 0 22px rgba(0,200,64,.22);
+  --glow-m:       0 0 6px rgba(192,160,32,.52), 0 0 18px rgba(192,160,32,.18);
+  --glow-y:       0 0 5px rgba(10,32,10,.42), 0 0 14px rgba(10,32,10,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(0,200,64,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(0,200,64,.10);
+
+  --title-anim:   illum-title 8s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(0, 200, 64, 0.08);
+  --tile-hover-border: rgba(0, 200, 64, 0.50);
+  --tile-hover-shadow: 0 0 14px rgba(0, 200, 64, 0.22);
+  --tile-active-bg:    rgba(0, 200, 64, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(0,200,64,.58)) drop-shadow(0 0 14px rgba(0,200,64,.22));
+  --tile-icon-fx:      brightness(0.92) saturate(1.3) contrast(1.15);
+  --tile-icon-shape:   polygon(8% 0%, 92% 0%, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0% 92%, 0% 8%);
+  --tile-label-spacing:   2px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    700;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-throb 3s ease-in-out infinite;
+  --app-entrance-anim:   entrance-flash 0.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(0, 200, 64, 0.10);
+  --btn-active-bg:  rgba(0, 200, 64, 0.22);
+
+  --drop-hint-border: rgba(0, 200, 64, 0.28);
+  --drop-icon-color:  rgba(0, 200, 64, 0.38);
+  --hint-sub-color:   rgba(80, 160, 80, 0.35);
+
+  --rename-dashed:    rgba(0, 200, 64, 0.42);
+  --rename-input-bg:  rgba(0, 200, 64, 0.07);
+
+  --edit-bar-bg:          rgba(192, 160, 32, 0.07);
+  --edit-bar-border:      rgba(192, 160, 32, 0.42);
+  --edit-label-color:     #C0A020;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C0A020;
+  --btn-done-border:      rgba(192, 160, 32, 0.42);
+  --btn-done-hover-bg:    rgba(192, 160, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(0, 200, 64, 0.42);
+
+  --update-bg:             rgba(192, 160, 32, 0.06);
+  --update-border:         rgba(192, 160, 32, 0.32);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(192, 160, 32, 0.28);
+  --update-btn-hover-bg:   rgba(192, 160, 32, 0.09);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      #00C840;
+  --btn-close-border:     rgba(0, 200, 64, 0.42);
+  --btn-close-hover-bg:   rgba(0, 200, 64, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(0, 200, 64, 0.07);
+  --picker-item-hover-bg:  rgba(0, 200, 64, 0.08);
+  --picker-item-active-bg: rgba(0, 200, 64, 0.16);
+  --picker-placeholder-bg: rgba(0, 200, 64, 0.07);
+
+  --skin-btn-active-bg:    rgba(0, 200, 64, 0.18);
+  --remove-btn-bg:         rgba(0, 200, 64, 0.85);
+  --remove-btn-border:     #00C840;
+}
+
+/* ── Sharp green grain + neon glow + corporate grid ──────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.08 0.20 0.08 0 0  0.1 0.30 0.1 0 0.02  0.04 0.10 0.04 0 0  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(2,4,2,0.86) 100%),
+    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,80,25,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 25% at 100% 100%, rgba(0,60,20,0.04) 0%, transparent 55%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+#header::before {
+  background: linear-gradient(to bottom, #00C840, rgba(0, 150, 48, 0.28));
+  box-shadow: 0 0 10px rgba(0,200,64,0.58), 0 0 26px rgba(0,200,64,0.20);
+}
+
+/* ── Grid: The Illuminati Eye/Pyramid — centered, corporate authority ────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='8' font-weight='bold' letter-spacing='4' fill='rgba(0,200,64,0.50)'%3EILLUMINATI%3C/text%3E%3Ctext x='250' y='38' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(192,160,32,0.35)'%3ELABYRINTH -- NEW YORK -- WE OWN EVERYTHING%3C/text%3E%3Cpath d='M 250,75 L 370,290 L 130,290 Z' fill='rgba(0,40,12,0.35)' stroke='rgba(0,200,64,0.45)' stroke-width='2'/%3E%3Cpath d='M 250,90 L 360,285 L 140,285 Z' fill='none' stroke='rgba(0,200,64,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 250,110 L 345,278 L 155,278 Z' fill='none' stroke='rgba(0,200,64,0.15)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='195' r='28' fill='rgba(0,60,20,0.35)' stroke='rgba(0,200,64,0.42)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='195' r='20' fill='none' stroke='rgba(0,200,64,0.25)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='192' rx='12' ry='8' fill='none' stroke='rgba(192,160,32,0.40)' stroke-width='1'/%3E%3Ccircle cx='250' cy='192' r='4' fill='rgba(192,160,32,0.50)'/%3E%3Ccircle cx='250' cy='192' r='1.5' fill='rgba(0,200,64,0.65)'/%3E%3Cline x1='250' y1='75' x2='250' y2='167' stroke='rgba(0,200,64,0.15)' stroke-width='0.5'/%3E%3Cline x1='250' y1='223' x2='250' y2='290' stroke='rgba(0,200,64,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='240' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(0,200,64,0.38)'%3ENOVUS ORDO SECLORUM%3C/text%3E%3Ctext x='250' y='255' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1.5' fill='rgba(192,160,32,0.30)'%3EANNUIT COEPTIS%3C/text%3E%3Ctext x='70' y='80' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(0,200,64,0.48)'%3EHANDLER%3C/text%3E%3Ctext x='70' y='95' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(192,160,32,0.48)'%3EKIRSTEN GEARY%3C/text%3E%3Cline x1='25' y1='100' x2='140' y2='100' stroke='rgba(0,200,64,0.18)' stroke-width='0.5'/%3E%3Ctext x='70' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(80,160,80,0.38)'%3EHOME BASE%3C/text%3E%3Ctext x='70' y='132' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(0,200,64,0.42)'%3ELABORINTH, NYC%3C/text%3E%3Ctext x='70' y='152' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(80,160,80,0.35)'%3EASSETS%3C/text%3E%3Crect x='25' y='156' width='110' height='5' fill='rgba(0,200,64,0.10)' rx='0'/%3E%3Crect x='25' y='156' width='99' height='5' fill='rgba(0,200,64,0.45)' rx='0'/%3E%3Ctext x='138' y='161' font-family='Segoe UI,Arial,sans-serif' font-size='5' font-weight='bold' fill='rgba(192,160,32,0.42)'%3EMAX%3C/text%3E%3Ctext x='430' y='80' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(0,200,64,0.45)'%3EOPERATIONS%3C/text%3E%3Ctext x='430' y='98' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(80,160,80,0.38)'%3EKINGSMOUTH%3C/text%3E%3Ctext x='430' y='114' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(80,160,80,0.35)'%3EEGYPT%3C/text%3E%3Ctext x='430' y='130' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(80,160,80,0.32)'%3ETRANSYLVANIA%3C/text%3E%3Ctext x='430' y='146' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(80,160,80,0.30)'%3ETOKYO%3C/text%3E%3Ctext x='430' y='162' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(192,160,32,0.32)'%3ESOUTH AFRICA%3C/text%3E%3Ctext x='250' y='310' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='3' fill='rgba(0,200,64,0.42)'%3ETHE EYE SEES ALL%3C/text%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(80,160,80,0.25)'%3EILLUMINATI -- LABYRINTH -- SECRET WORLD%3C/text%3E%3Ccircle cx='50' cy='55' r='0.7' fill='rgba(0,200,64,0.18)'/%3E%3Ccircle cx='450' cy='48' r='0.5' fill='rgba(192,160,32,0.14)'/%3E%3Ccircle cx='45' cy='300' r='0.8' fill='rgba(0,200,64,0.10)'/%3E%3Ccircle cx='455' cy='280' r='0.6' fill='rgba(192,160,32,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: illum-eye 8s ease-in-out infinite;
+}
+
+@keyframes illum-eye {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+#header::after {
+  content: 'ILLUMINATI // LABYRINTH // WE OWN EVERYTHING';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif; font-weight: 700;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(0, 240, 80, 0.58);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE\AILLUMINATI\A-----------\ASEX DRUGS\AROCKEFELLER\A-----------\AWE OWN\AEVERYTHING\ATHE EYE\ASEES ALL';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', sans-serif; font-weight: 700;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 2px;
+  color: rgba(0, 200, 64, 0.08); white-space: pre;
+  animation: illum-readout 8s ease-in-out infinite;
+}
+
+@keyframes illum-readout {
+  0%, 100% { color: rgba(0,200,64,.08); }
+  28%       { color: rgba(0,200,64,.12); }
+  65%       { color: rgba(0,200,64,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(0,200,64,.16); }
+  92%       { color: rgba(0,200,64,.08); }
+}
+
+#edit-bar::after {
+  content: 'CLASSIFIED // KIRSTEN GEARY SENDS HER REGARDS';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif; font-weight: 700;
+  font-size: 8px; letter-spacing: 2px; color: rgba(192, 160, 32, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 5px; }
+
+@keyframes illum-title {
+  0%        { color: #70C070; text-shadow: 0 0 6px rgba(0,200,64,.50), 0 0 18px rgba(0,200,64,.18); }
+  60%       { color: #70C070; text-shadow: 0 0 6px rgba(0,200,64,.50); }
+  62%       { color: #00FF50; text-shadow: 0 0 12px rgba(0,255,80,.80), 0 0 30px rgba(0,200,64,.35); opacity: 0.85; }
+  63%       { color: #C0A020; text-shadow: 0 0 6px rgba(192,160,32,.55); opacity: 0.6; }
+  64%       { color: #70C070; text-shadow: 0 0 8px rgba(0,200,64,.55); opacity: 1; }
+  87%       { color: #70C070; text-shadow: 0 0 6px rgba(0,200,64,.45); }
+  88%       { color: #88FF88; text-shadow: 0 0 22px rgba(136,255,136,.85), 0 0 50px rgba(0,200,64,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #70C070; text-shadow: 0 0 8px rgba(0,200,64,.55); opacity: 1; }
+  100%      { color: #70C070; text-shadow: 0 0 6px rgba(0,200,64,.50), 0 0 18px rgba(0,200,64,.18); }
+}
+
+#app { animation: illum-border 8s steps(1) infinite; }
+@keyframes illum-border {
+  0%, 60%  { box-shadow: 0 0 0 1px rgba(0,200,64,.22), inset 0 0 20px rgba(0,200,64,.04); }
+  62%      { box-shadow: 0 0 0 1px rgba(0,200,64,.55), inset 0 0 30px rgba(0,200,64,.08); }
+  63%      { box-shadow: 0 0 0 1px rgba(192,160,32,.28), inset 0 0 18px rgba(192,160,32,.04); }
+  64%, 87% { box-shadow: 0 0 0 1px rgba(0,200,64,.28), inset 0 0 22px rgba(0,200,64,.05); }
+  88%      { box-shadow: 0 0 0 2px rgba(136,255,136,.80), inset 0 0 50px rgba(0,200,64,.15), 0 0 18px rgba(0,200,64,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(0,200,64,.35), inset 0 0 22px rgba(0,200,64,.05); }
+}
+
+#theme-banner { background: rgba(4, 8, 4, 0.99); border-top-color: rgba(0, 200, 64, 0.22); }
+#theme-banner::before { content: '△'; color: #00C840; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 2px; color: rgba(0, 240, 80, 0.62); }
+
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='360'%3E%3Crect x='25' y='40' width='4' height='1' fill='rgba(0,200,64,0.18)' rx='0.5'/%3E%3Crect x='90' y='150' width='3' height='1' fill='rgba(192,160,32,0.12)' rx='0.5'/%3E%3Crect x='140' y='270' width='5' height='1' fill='rgba(0,200,64,0.14)' rx='0.5'/%3E%3Crect x='55' y='320' width='3' height='1' fill='rgba(0,200,64,0.16)' rx='0.5'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='500'%3E%3Crect x='35' y='70' width='4' height='1' fill='rgba(0,200,64,0.10)' rx='0.5'/%3E%3Crect x='140' y='250' width='3' height='1' fill='rgba(192,160,32,0.08)' rx='0.5'/%3E%3Crect x='200' y='420' width='5' height='1' fill='rgba(0,200,64,0.06)' rx='0.5'/%3E%3C/svg%3E") repeat;
+  background-size: 180px 360px, 250px 500px;
+  animation: illum-data 8s linear infinite;
+}
+@keyframes illum-data {
+  from { background-position: 0 -360px, 10px -500px; }
+  to   { background-position: 30px 0, -12px 0; }
+}
+
+.app-tile::before {
+  background: transparent;
+  border: 1px solid rgba(0, 200, 64, 0.30);
+}
+.app-tile:hover::before { animation: tile-flicker .4s steps(1, end) infinite; }

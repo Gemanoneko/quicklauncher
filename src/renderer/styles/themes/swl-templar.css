@@ -1,0 +1,219 @@
+/* == SECRET WORLD LEGENDS: TEMPLAR ============================================
+   The Templars. Temple Hall, London. Old European authority carved in stone.
+   Tradition. Discipline. Sacrifice. Heavy monastic weight — not sleek,
+   not modern. Like carved stone tablets and crusader oaths.
+   Richard Sonnac guides from the shadows. The Order endures.
+   ============================================================================ */
+
+:root {
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* HEAVY STONE MONASTIC -- warm dark stone, old European authority */
+  --bg:           #0A0808;
+  --panel-bg:     rgba(14, 12, 12, 0.99);
+  --overlay-bg:   rgba(10, 8, 8, 0.97);
+  --header-bg:    rgba(168, 32, 32, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #A89888;
+  --text-dim:     rgba(136, 120, 104, 0.45);
+
+  /* Crusader crimson + weathered stone grey + dark wood */
+  --accent-c:     #A82020;   /* crusader crimson */
+  --accent-m:     #888078;   /* weathered stone grey */
+  --accent-y:     #402018;   /* dark wood */
+
+  --border:       rgba(168, 32, 32, 0.20);
+  --border-h:     rgba(168, 32, 32, 0.50);
+
+  --glow-c:       0 0 6px rgba(168,32,32,.50), 0 0 16px rgba(168,32,32,.16);
+  --glow-m:       0 0 5px rgba(136,128,120,.42), 0 0 14px rgba(136,128,120,.12);
+  --glow-y:       0 0 5px rgba(64,32,24,.38), 0 0 14px rgba(64,32,24,.10);
+
+  --pulse-glow:   inset 0 0 20px rgba(168,32,32,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(168,32,32,.08);
+
+  --title-anim:   swlt-title 10s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(168, 32, 32, 0.07);
+  --tile-hover-border: rgba(168, 32, 32, 0.40);
+  --tile-hover-shadow: 0 0 12px rgba(168, 32, 32, 0.18);
+  --tile-active-bg:    rgba(168, 32, 32, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(168,32,32,.45)) drop-shadow(0 0 10px rgba(168,32,32,.16));
+  --tile-icon-fx:      brightness(0.86) saturate(0.70) contrast(1.15);
+  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 100% 100%, 50% 92%, 0% 100%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    700;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
+
+  --btn-hover-bg:   rgba(168, 32, 32, 0.08);
+  --btn-active-bg:  rgba(168, 32, 32, 0.16);
+
+  --drop-hint-border: rgba(168, 32, 32, 0.22);
+  --drop-icon-color:  rgba(168, 32, 32, 0.30);
+  --hint-sub-color:   rgba(136, 120, 104, 0.32);
+
+  --rename-dashed:    rgba(168, 32, 32, 0.35);
+  --rename-input-bg:  rgba(168, 32, 32, 0.06);
+
+  --edit-bar-bg:          rgba(136, 128, 120, 0.07);
+  --edit-bar-border:      rgba(136, 128, 120, 0.35);
+  --edit-label-color:     #888078;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #888078;
+  --btn-done-border:      rgba(136, 128, 120, 0.38);
+  --btn-done-hover-bg:    rgba(136, 128, 120, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(168, 32, 32, 0.35);
+
+  --update-bg:             rgba(136, 128, 120, 0.06);
+  --update-border:         rgba(136, 128, 120, 0.28);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(136, 128, 120, 0.25);
+  --update-btn-hover-bg:   rgba(136, 128, 120, 0.08);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      #A82020;
+  --btn-close-border:     rgba(168, 32, 32, 0.38);
+  --btn-close-hover-bg:   rgba(168, 32, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(168, 32, 32, 0.06);
+  --picker-item-hover-bg:  rgba(168, 32, 32, 0.07);
+  --picker-item-active-bg: rgba(168, 32, 32, 0.14);
+  --picker-placeholder-bg: rgba(168, 32, 32, 0.06);
+
+  --skin-btn-active-bg:    rgba(168, 32, 32, 0.14);
+  --remove-btn-bg:         rgba(168, 32, 32, 0.82);
+  --remove-btn-border:     #A82020;
+}
+
+/* -- Warm stone grain + monastic vignette ---------------------------------- */
+#app::after {
+  background:
+    /* Warm stone grey fractal noise */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.22 0.18 0.15 0 0.02  0.20 0.17 0.14 0 0.02  0.16 0.14 0.12 0 0.01  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* Dark warm vignette -- heavy stone walls closing in */
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 25%, rgba(6,4,4,0.88) 100%),
+    /* Faint crimson glow from above -- stained glass light */
+    radial-gradient(ellipse 35% 20% at 50% 0%, rgba(100,16,16,0.06) 0%, transparent 60%),
+    /* Deep wood warmth from below */
+    radial-gradient(ellipse 40% 22% at 50% 100%, rgba(64,32,24,0.05) 0%, transparent 55%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* -- Header -- deep crimson accent bar ------------------------------------- */
+#header::before {
+  background: linear-gradient(to bottom, #A82020, rgba(120, 18, 18, 0.25));
+  box-shadow: 0 0 8px rgba(168,32,32,0.48), 0 0 18px rgba(168,32,32,0.16);
+}
+
+/* -- Grid: Style B -- Templar Maltese/Pattee Cross, TOP-HEAVY -------------- */
+/* Large Maltese cross with flared ends in upper half.                        */
+/* Lower half is mostly empty dark stone. T-shaped text arrangement.          */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3C!-- T-SHAPE TEXT: horizontal across top --%3E%3Ctext x='70' y='18' font-family='Georgia,Times New Roman,serif' font-size='7' font-weight='bold' letter-spacing='3' fill='rgba(168,32,32,0.48)'%3ETEMPLE HALL%3C/text%3E%3Ctext x='250' y='18' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='6' letter-spacing='5' fill='rgba(136,128,120,0.35)'%3ALONDON%3C/text%3E%3Ctext x='430' y='18' text-anchor='end' font-family='Georgia,Times New Roman,serif' font-size='7' font-weight='bold' letter-spacing='3' fill='rgba(168,32,32,0.42)'%3ERICHARD SONNAC%3C/text%3E%3Cline x1='25' y1='25' x2='475' y2='25' stroke='rgba(136,128,120,0.18)' stroke-width='0.5'/%3E%3Ctext x='85' y='38' font-family='Georgia,Times New Roman,serif' font-size='5.5' letter-spacing='2' fill='rgba(136,128,120,0.30)'%3ETRADITION%3C/text%3E%3Ctext x='250' y='38' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='5.5' letter-spacing='4' fill='rgba(168,32,32,0.35)'%3EDISCIPLINE%3C/text%3E%3Ctext x='415' y='38' text-anchor='end' font-family='Georgia,Times New Roman,serif' font-size='5.5' letter-spacing='2' fill='rgba(136,128,120,0.30)'%3ESACRIFICE%3C/text%3E%3C!-- MALTESE/PATTEE CROSS -- flared ends, positioned upper half --%3E%3C!-- The cross is built from 4 trapezoidal arms radiating from center --%3E%3Cpath d='M 242,80 L 258,80 L 265,140 L 235,140 Z' fill='rgba(168,32,32,0.22)' stroke='rgba(168,32,32,0.38)' stroke-width='1'/%3E%3Cpath d='M 235,160 L 265,160 L 258,220 L 242,220 Z' fill='rgba(168,32,32,0.22)' stroke='rgba(168,32,32,0.38)' stroke-width='1'/%3E%3Cpath d='M 180,142 L 180,158 L 235,165 L 235,135 Z' fill='rgba(168,32,32,0.22)' stroke='rgba(168,32,32,0.38)' stroke-width='1'/%3E%3Cpath d='M 265,135 L 265,165 L 320,158 L 320,142 Z' fill='rgba(168,32,32,0.22)' stroke='rgba(168,32,32,0.38)' stroke-width='1'/%3E%3C!-- Central hub -- thick stone boss --%3E%3Ccircle cx='250' cy='150' r='20' fill='rgba(64,32,24,0.30)' stroke='rgba(168,32,32,0.35)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='150' r='12' fill='rgba(10,8,8,0.50)' stroke='rgba(136,128,120,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='150' r='4' fill='rgba(168,32,32,0.45)'/%3E%3C!-- Flared end details -- serifs on each arm tip --%3E%3Cline x1='238' y1='80' x2='262' y2='80' stroke='rgba(136,128,120,0.25)' stroke-width='1'/%3E%3Cline x1='238' y1='220' x2='262' y2='220' stroke='rgba(136,128,120,0.25)' stroke-width='1'/%3E%3Cline x1='180' y1='138' x2='180' y2='162' stroke='rgba(136,128,120,0.25)' stroke-width='1'/%3E%3Cline x1='320' y1='138' x2='320' y2='162' stroke='rgba(136,128,120,0.25)' stroke-width='1'/%3E%3C!-- Outer decorative brackets -- stone carved frame --%3E%3Cpath d='M 160,65 L 170,65 L 170,68' fill='none' stroke='rgba(136,128,120,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 340,65 L 330,65 L 330,68' fill='none' stroke='rgba(136,128,120,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 160,235 L 170,235 L 170,232' fill='none' stroke='rgba(136,128,120,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 340,235 L 330,235 L 330,232' fill='none' stroke='rgba(136,128,120,0.18)' stroke-width='0.8'/%3E%3C!-- LEFT PANEL -- Order information --%3E%3Ctext x='55' y='72' font-family='Georgia,Times New Roman,serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(168,32,32,0.42)'%3ETHE ORDER%3C/text%3E%3Cline x1='20' y1='77' x2='130' y2='77' stroke='rgba(136,128,120,0.15)' stroke-width='0.5'/%3E%3Ctext x='20' y='92' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(136,128,120,0.38)'%3EEst. 1312 AD%3C/text%3E%3Ctext x='20' y='106' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(136,128,120,0.35)'%3EReconstituted%3C/text%3E%3Ctext x='20' y='120' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(136,128,120,0.32)'%3ETemple Hall, London%3C/text%3E%3Cline x1='20' y1='130' x2='130' y2='130' stroke='rgba(136,128,120,0.10)' stroke-width='0.5'/%3E%3Ctext x='20' y='145' font-family='Georgia,Times New Roman,serif' font-size='5.5' letter-spacing='1' fill='rgba(136,128,120,0.35)'%3EVIRTUES%3C/text%3E%3Ctext x='20' y='160' font-family='Georgia,Times New Roman,serif' font-size='6' font-weight='bold' fill='rgba(168,32,32,0.38)'%3ETradition%3C/text%3E%3Ctext x='20' y='174' font-family='Georgia,Times New Roman,serif' font-size='6' font-weight='bold' fill='rgba(168,32,32,0.35)'%3EDiscipline%3C/text%3E%3Ctext x='20' y='188' font-family='Georgia,Times New Roman,serif' font-size='6' font-weight='bold' fill='rgba(168,32,32,0.32)'%3ESacrifice%3C/text%3E%3Cline x1='20' y1='196' x2='130' y2='196' stroke='rgba(136,128,120,0.10)' stroke-width='0.5'/%3E%3Ctext x='20' y='212' font-family='Georgia,Times New Roman,serif' font-size='5.5' font-style='italic' fill='rgba(136,128,120,0.30)'%3EWe are the sword%3C/text%3E%3Ctext x='20' y='225' font-family='Georgia,Times New Roman,serif' font-size='5.5' font-style='italic' fill='rgba(136,128,120,0.28)'%3Eand the shield.%3C/text%3E%3C!-- RIGHT PANEL -- Handler and operations --%3E%3Ctext x='430' y='72' font-family='Georgia,Times New Roman,serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(168,32,32,0.42)'%3EHANDLER%3C/text%3E%3Cline x1='370' y1='77' x2='480' y2='77' stroke='rgba(136,128,120,0.15)' stroke-width='0.5'/%3E%3Ctext x='430' y='92' font-family='Georgia,Times New Roman,serif' font-size='6' font-weight='bold' fill='rgba(136,128,120,0.42)'%3ERICHARD SONNAC%3C/text%3E%3Ctext x='430' y='108' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(136,128,120,0.35)'%3ETemple Hall%3C/text%3E%3Cline x1='370' y1='118' x2='480' y2='118' stroke='rgba(136,128,120,0.10)' stroke-width='0.5'/%3E%3Ctext x='430' y='134' font-family='Georgia,Times New Roman,serif' font-size='5.5' letter-spacing='1' fill='rgba(136,128,120,0.35)'%3EOPERATIONS%3C/text%3E%3Ctext x='430' y='150' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(136,128,120,0.32)'%3EKingsmouth%3C/text%3E%3Ctext x='430' y='164' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(136,128,120,0.30)'%3EEgypt%3C/text%3E%3Ctext x='430' y='178' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(136,128,120,0.28)'%3ETransylvania%3C/text%3E%3Ctext x='430' y='192' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(136,128,120,0.26)'%3ETokyo%3C/text%3E%3Ctext x='430' y='206' font-family='Georgia,Times New Roman,serif' font-size='5.5' fill='rgba(64,32,24,0.32)'%3ESouth Africa%3C/text%3E%3C!-- T-SHAPE TEXT: vertical down center (lower half -- sparse) --%3E%3Ctext x='250' y='248' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='6' font-weight='bold' letter-spacing='3' fill='rgba(168,32,32,0.35)'%3ETRADITION%3C/text%3E%3Ctext x='250' y='268' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='6' font-weight='bold' letter-spacing='3' fill='rgba(168,32,32,0.30)'%3EDISCIPLINE%3C/text%3E%3Ctext x='250' y='288' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='6' font-weight='bold' letter-spacing='3' fill='rgba(168,32,32,0.25)'%3ESACRIFICE%3C/text%3E%3Cline x1='250' y1='228' x2='250' y2='300' stroke='rgba(136,128,120,0.08)' stroke-width='0.5'/%3E%3C!-- Bottom inscription -- carved into stone --%3E%3Ctext x='250' y='330' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='6' letter-spacing='3' fill='rgba(136,128,120,0.22)'%3ETEMPLE HALL -- LONDON -- THE ORDER ENDURES%3C/text%3E%3Ctext x='250' y='358' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='5.5' letter-spacing='2' fill='rgba(136,128,120,0.16)'%3ESECRET WORLD -- TEMPLAR -- WE HAVE ALWAYS BEEN%3C/text%3E%3C!-- Corner marks -- stone tablet corners --%3E%3Ccircle cx='50' cy='55' r='0.6' fill='rgba(168,32,32,0.12)'/%3E%3Ccircle cx='450' cy='50' r='0.5' fill='rgba(136,128,120,0.10)'/%3E%3Ccircle cx='48' cy='340' r='0.5' fill='rgba(168,32,32,0.08)'/%3E%3Ccircle cx='452' cy='340' r='0.6' fill='rgba(136,128,120,0.06)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: swlt-hud 10s ease-in-out infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) -- 88% deep crimson flash */
+@keyframes swlt-hud {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+/* -- Flavor content -------------------------------------------------------- */
+#header::after {
+  content: 'TEMPLE HALL // LONDON // THE ORDER ENDURES';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-weight: 700;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(168, 60, 50, 0.55);
+  pointer-events: none; white-space: nowrap;
+}
+
+/* Ghost text: TRADITION / DISCIPLINE / SACRIFICE / TEMPLE HALL / THE ORDER / ENDURES */
+#grid-container::after {
+  content: 'TRADITION\ADISCIPLINE\ASACRIFICE\A-----------\ATEMPLE HALL\ATHE ORDER\AENDURES\A-----------\AWE HAVE\AALWAYS BEEN';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-weight: 700;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 2px;
+  color: rgba(168, 32, 32, 0.08); white-space: pre;
+  animation: swlt-readout 10s ease-in-out infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) */
+@keyframes swlt-readout {
+  0%, 100% { color: rgba(168,32,32,.08); }
+  28%       { color: rgba(168,32,32,.12); }
+  65%       { color: rgba(168,32,32,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(168,32,32,.15); }
+  92%       { color: rgba(168,32,32,.08); }
+}
+
+#edit-bar::after {
+  content: 'RICHARD SONNAC // TRADITION. DISCIPLINE. SACRIFICE.';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-weight: 700;
+  font-size: 8px; letter-spacing: 2px; color: rgba(136, 128, 120, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; letter-spacing: 5px; }
+
+/* -- Title: heavy stone pulse with 88% deep crimson flash ------------------ */
+@keyframes swlt-title {
+  0%        { color: #A89888; text-shadow: 0 0 5px rgba(168,32,32,.35), 0 0 16px rgba(168,32,32,.12); }
+  35%       { color: #C04030; text-shadow: 0 0 10px rgba(168,32,32,.55), 0 0 26px rgba(168,32,32,.20); }
+  65%       { color: #888078; text-shadow: 0 0 3px rgba(136,128,120,.25); }
+  87%       { color: #A89888; text-shadow: 0 0 5px rgba(168,32,32,.30); }
+  88%       { color: #E83030; text-shadow: 0 0 22px rgba(232,48,48,.78), 0 0 48px rgba(168,32,32,.38); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #A89888; text-shadow: 0 0 6px rgba(168,32,32,.40); opacity: 1; }
+  100%      { color: #A89888; text-shadow: 0 0 5px rgba(168,32,32,.35), 0 0 16px rgba(168,32,32,.12); }
+}
+
+/* -- App border: stone pulse with 88% crimson flash (tier 5) --------------- */
+#app { animation: swlt-border 10s ease-in-out infinite; }
+@keyframes swlt-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(168,32,32,.18), inset 0 0 18px rgba(168,32,32,.03); }
+  35%      { box-shadow: 0 0 0 1px rgba(168,32,32,.42), inset 0 0 26px rgba(168,32,32,.06); }
+  65%      { box-shadow: 0 0 0 1px rgba(136,128,120,.18), inset 0 0 16px rgba(136,128,120,.03); }
+  88%      { box-shadow: 0 0 0 2px rgba(232,48,48,.72), inset 0 0 45px rgba(168,32,32,.12), 0 0 16px rgba(168,32,32,.22); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(168,32,32,.32), inset 0 0 20px rgba(168,32,32,.04); }
+}
+
+/* -- Banner ---------------------------------------------------------------- */
+#theme-banner { background: rgba(10, 8, 8, 0.99); border-top-color: rgba(168, 32, 32, 0.20); }
+#theme-banner::before { content: '\2720'; color: #A82020; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; letter-spacing: 2px; color: rgba(168, 60, 50, 0.62); }
+
+/* NO particles. The Templars are still, immovable, like stone. */
+#particles {
+  background: none;
+}
+
+/* -- Tile: heavy stone slab scan ------------------------------------------- */
+.app-tile::before {
+  width: 100%; height: 3px;
+  left: 0; top: -3px;
+  transform: none;
+  background: var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }

@@ -1,0 +1,226 @@
+/* == SECRET WORLD LEGENDS: DRAGON =============================================
+   The Dragon. Seoul. Chaos theory. The butterfly effect.
+   A single pebble can start an avalanche. They do not lead,
+   they do not follow -- they nudge. Scattered. Organic. Inevitable.
+   ============================================================================= */
+
+:root {
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* DEEP VIOLET-DARK -- the chaos beneath the surface */
+  --bg:           #06040C;
+  --panel-bg:     rgba(8, 6, 16, 0.99);
+  --overlay-bg:   rgba(6, 4, 12, 0.97);
+  --header-bg:    rgba(96, 64, 160, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #9888B0;
+  --text-dim:     rgba(120, 100, 150, 0.45);
+
+  /* Deep violet + amber chaos + shadow */
+  --accent-c:     #6040A0;   /* deep violet -- the Dragon's chosen */
+  --accent-m:     #C89030;   /* amber chaos -- butterfly wings */
+  --accent-y:     #201830;   /* shadow */
+
+  --border:       rgba(96, 64, 160, 0.22);
+  --border-h:     rgba(96, 64, 160, 0.55);
+
+  --glow-c:       0 0 8px rgba(96,64,160,.62), 0 0 22px rgba(96,64,160,.22);
+  --glow-m:       0 0 6px rgba(200,144,48,.55), 0 0 18px rgba(200,144,48,.18);
+  --glow-y:       0 0 5px rgba(32,24,48,.42), 0 0 14px rgba(32,24,48,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(96,64,160,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(96,64,160,.10);
+
+  --title-anim:   dragon-title 12s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(96, 64, 160, 0.08);
+  --tile-hover-border: rgba(96, 64, 160, 0.48);
+  --tile-hover-shadow: 0 0 14px rgba(96, 64, 160, 0.22);
+  --tile-active-bg:    rgba(96, 64, 160, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(96,64,160,.58)) drop-shadow(0 0 14px rgba(200,144,48,.22));
+  --tile-icon-fx:      brightness(0.90) saturate(1.2) contrast(1.12);
+  --tile-icon-shape:   polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  --tile-label-spacing:   0.5px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(96, 64, 160, 0.10);
+  --btn-active-bg:  rgba(96, 64, 160, 0.22);
+
+  --drop-hint-border: rgba(96, 64, 160, 0.26);
+  --drop-icon-color:  rgba(96, 64, 160, 0.38);
+  --hint-sub-color:   rgba(120, 100, 150, 0.35);
+
+  --rename-dashed:    rgba(96, 64, 160, 0.42);
+  --rename-input-bg:  rgba(96, 64, 160, 0.07);
+
+  --edit-bar-bg:          rgba(200, 144, 48, 0.07);
+  --edit-bar-border:      rgba(200, 144, 48, 0.42);
+  --edit-label-color:     #C89030;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C89030;
+  --btn-done-border:      rgba(200, 144, 48, 0.42);
+  --btn-done-hover-bg:    rgba(200, 144, 48, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(96, 64, 160, 0.42);
+
+  --update-bg:             rgba(200, 144, 48, 0.06);
+  --update-border:         rgba(200, 144, 48, 0.32);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(200, 144, 48, 0.28);
+  --update-btn-hover-bg:   rgba(200, 144, 48, 0.09);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      #6040A0;
+  --btn-close-border:     rgba(96, 64, 160, 0.42);
+  --btn-close-hover-bg:   rgba(96, 64, 160, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(96, 64, 160, 0.07);
+  --picker-item-hover-bg:  rgba(96, 64, 160, 0.08);
+  --picker-item-active-bg: rgba(96, 64, 160, 0.16);
+  --picker-placeholder-bg: rgba(96, 64, 160, 0.07);
+
+  --skin-btn-active-bg:    rgba(96, 64, 160, 0.18);
+  --remove-btn-bg:         rgba(96, 64, 160, 0.85);
+  --remove-btn-border:     #6040A0;
+}
+
+/* -- Fractal noise: violet-dark tint ---------------------------------------- */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.15 0.06 0.28 0 0.01  0.08 0.04 0.20 0 0.01  0.22 0.10 0.40 0 0.02  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(4,2,8,0.88) 100%),
+    radial-gradient(ellipse 35% 28% at 35% 40%, rgba(60,30,100,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 25% 20% at 75% 70%, rgba(200,144,48,0.03) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 25% at 20% 80%, rgba(50,25,80,0.04) 0%, transparent 55%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* -- Header -- violet accent bar -------------------------------------------- */
+#header::before {
+  background: linear-gradient(to bottom, #6040A0, rgba(80, 50, 130, 0.28));
+  box-shadow: 0 0 10px rgba(96,64,160,0.58), 0 0 26px rgba(96,64,160,0.20);
+}
+
+/* -- Grid: SCATTERED/ORGANIC -- conspiracy board, chaos paradigm ------------ */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ccircle cx='175' cy='152' r='22' fill='none' stroke='rgba(96,64,160,0.35)' stroke-width='1.2'/%3E%3Ccircle cx='175' cy='152' r='15' fill='rgba(32,24,48,0.30)' stroke='rgba(96,64,160,0.22)' stroke-width='0.5'/%3E%3Ccircle cx='175' cy='152' r='8' fill='none' stroke='rgba(200,144,48,0.28)' stroke-width='0.8'/%3E%3Cpath d='M 169,148 C 170,144 175,142 180,144 C 184,146 184,150 182,154 C 180,157 176,158 173,156 C 170,154 169,151 169,148 Z' fill='rgba(96,64,160,0.22)' stroke='rgba(200,144,48,0.32)' stroke-width='0.6'/%3E%3Cline x1='173' y1='145' x2='177' y2='159' stroke='rgba(200,144,48,0.20)' stroke-width='0.4'/%3E%3Cline x1='168' y1='152' x2='182' y2='152' stroke='rgba(200,144,48,0.20)' stroke-width='0.4'/%3E%3Ctext x='385' y='62' font-family='Georgia,serif' font-size='9' font-style='italic' font-weight='bold' letter-spacing='3' fill='rgba(200,144,48,0.48)' transform='rotate(-3 385 62)'%3ESEOUL%3C/text%3E%3Ctext x='60' y='305' font-family='Georgia,serif' font-size='6.5' font-style='italic' letter-spacing='1.5' fill='rgba(96,64,160,0.45)' transform='rotate(2 60 305)'%3ETHE BUTTERFLY EFFECT%3C/text%3E%3Ctext x='225' y='175' font-family='Georgia,serif' font-size='8' font-style='italic' font-weight='bold' letter-spacing='2' fill='rgba(200,144,48,0.42)'%3EBONG CHA%3C/text%3E%3Ctext x='280' y='340' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(96,64,160,0.38)' transform='rotate(-1 280 340)'%3EA SINGLE PEBBLE%3C/text%3E%3Ctext x='340' y='130' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='1' fill='rgba(120,100,150,0.30)'%3ECHAOS THEORY%3C/text%3E%3Ctext x='55' y='88' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(120,100,150,0.28)' transform='rotate(4 55 88)'%3ETHE DRAGON WATCHES%3C/text%3E%3Ctext x='380' y='240' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(200,144,48,0.25)' transform='rotate(-5 380 240)'%3ENOTHING IS RANDOM%3C/text%3E%3Ctext x='125' y='230' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(96,64,160,0.28)'%3ENUDGE%3C/text%3E%3Ctext x='430' y='310' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(120,100,150,0.25)' transform='rotate(3 430 310)'%3EAVALANCHE%3C/text%3E%3Ctext x='90' y='185' font-family='Georgia,serif' font-size='4.5' font-style='italic' fill='rgba(96,64,160,0.25)' transform='rotate(-7 90 185)'%3ETHE HONEYCOMB%3C/text%3E%3Cline x1='175' y1='170' x2='225' y2='172' stroke='rgba(96,64,160,0.18)' stroke-width='0.5'/%3E%3Cline x1='160' y1='305' x2='275' y2='340' stroke='rgba(96,64,160,0.14)' stroke-width='0.4' stroke-dasharray='4,6'/%3E%3Cline x1='385' y1='68' x2='345' y2='126' stroke='rgba(200,144,48,0.14)' stroke-width='0.4' stroke-dasharray='3,5'/%3E%3Cline x1='130' y1='88' x2='160' y2='140' stroke='rgba(96,64,160,0.12)' stroke-width='0.4' stroke-dasharray='3,7'/%3E%3Cline x1='137' y1='228' x2='168' y2='173' stroke='rgba(96,64,160,0.12)' stroke-width='0.4' stroke-dasharray='2,6'/%3E%3Cline x1='290' y1='175' x2='340' y2='128' stroke='rgba(200,144,48,0.10)' stroke-width='0.4' stroke-dasharray='3,5'/%3E%3Cline x1='370' y1='340' x2='430' y2='312' stroke='rgba(120,100,150,0.10)' stroke-width='0.4' stroke-dasharray='2,5'/%3E%3Cline x1='395' y1='240' x2='437' y2='308' stroke='rgba(200,144,48,0.08)' stroke-width='0.3' stroke-dasharray='4,8'/%3E%3Cpolygon points='300,72 325,86 325,114 300,128 275,114 275,86' fill='rgba(32,24,48,0.22)' stroke='rgba(96,64,160,0.25)' stroke-width='0.8'/%3E%3Cpolygon points='300,78 320,89 320,111 300,122 280,111 280,89' fill='none' stroke='rgba(96,64,160,0.12)' stroke-width='0.4'/%3E%3Cpolygon points='420,170 438,180 438,200 420,210 402,200 402,180' fill='rgba(32,24,48,0.18)' stroke='rgba(96,64,160,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='68,260 80,253 92,260 92,274 80,281 68,274' fill='rgba(32,24,48,0.15)' stroke='rgba(200,144,48,0.15)' stroke-width='0.5'/%3E%3Ccircle cx='468' cy='48' r='0.6' fill='rgba(200,144,48,0.18)'/%3E%3Ccircle cx='32' cy='42' r='0.5' fill='rgba(96,64,160,0.15)'/%3E%3Ccircle cx='445' cy='280' r='0.7' fill='rgba(96,64,160,0.10)'/%3E%3Ccircle cx='25' cy='340' r='0.8' fill='rgba(200,144,48,0.08)'/%3E%3Ccircle cx='480' cy='150' r='0.4' fill='rgba(96,64,160,0.12)'/%3E%3Ccircle cx='15' cy='170' r='0.5' fill='rgba(200,144,48,0.10)'/%3E%3Ctext x='250' y='370' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(120,100,150,0.22)'%3ETHE DRAGON -- SEOUL -- SECRET WORLD -- CHAOS IS THE DESIGN%3C/text%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: dragon-chaos 12s ease-in-out infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes dragon-chaos {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }   /* violet-amber flash -- synchronized blackout */
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+/* -- Flavor content --------------------------------------------------------- */
+#header::after {
+  content: 'THE DRAGON // SEOUL // THE BUTTERFLY EFFECT';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(152, 136, 176, 0.58);
+  pointer-events: none; white-space: nowrap;
+}
+
+/* -- Ghost text: scattered Dragon wisdom ------------------------------------ */
+#grid-container::after {
+  content: 'A SINGLE\APEBBLE\ACAN START\AAN AVALANCHE\ATHE DRAGON\AWATCHES';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(96, 64, 160, 0.08); white-space: pre;
+  animation: dragon-readout 12s ease-in-out infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) */
+@keyframes dragon-readout {
+  0%, 100% { color: rgba(96,64,160,.08); }
+  28%       { color: rgba(96,64,160,.12); }
+  65%       { color: rgba(96,64,160,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(200,144,48,.15); }
+  92%       { color: rgba(96,64,160,.08); }
+}
+
+#edit-bar::after {
+  content: 'CHAOS IS A TOOL // THE DRAGON NUDGES';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(200, 144, 48, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* -- Title: violet-amber contemplative pulse with 88% sync (tier 3) --------- */
+@keyframes dragon-title {
+  0%        { color: #9888B0; text-shadow: 0 0 6px rgba(96,64,160,.48), 0 0 18px rgba(96,64,160,.16); }
+  60%       { color: #9888B0; text-shadow: 0 0 6px rgba(96,64,160,.45); }
+  62%       { color: #8060C0; text-shadow: 0 0 10px rgba(128,96,192,.70), 0 0 28px rgba(96,64,160,.25); opacity: 0.85; }
+  63%       { color: #C89030; text-shadow: 0 0 6px rgba(200,144,48,.55); opacity: 0.6; }
+  64%       { color: #9888B0; text-shadow: 0 0 8px rgba(96,64,160,.55); opacity: 1; }
+  87%       { color: #9888B0; text-shadow: 0 0 6px rgba(96,64,160,.42); }
+  88%       { color: #C0A0F0; text-shadow: 0 0 22px rgba(192,160,240,.82), 0 0 50px rgba(96,64,160,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #9888B0; text-shadow: 0 0 8px rgba(96,64,160,.55); opacity: 1; }
+  100%      { color: #9888B0; text-shadow: 0 0 6px rgba(96,64,160,.48), 0 0 18px rgba(96,64,160,.16); }
+}
+
+/* -- App: violet chaos border -- box-shadow 12s (tier 5) -------------------- */
+#app { animation: dragon-border 12s ease-in-out infinite; }
+@keyframes dragon-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(96,64,160,.22), inset 0 0 20px rgba(96,64,160,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(96,64,160,.45), inset 0 0 28px rgba(200,144,48,.05); }
+  65%      { box-shadow: 0 0 0 1px rgba(32,24,48,.22), inset 0 0 18px rgba(32,24,48,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(192,160,240,.80), inset 0 0 50px rgba(96,64,160,.15), 0 0 18px rgba(96,64,160,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(96,64,160,.35), inset 0 0 22px rgba(96,64,160,.05); }
+}
+
+/* -- Banner ----------------------------------------------------------------- */
+#theme-banner { background: rgba(6, 4, 12, 0.99); border-top-color: rgba(96, 64, 160, 0.22); }
+#theme-banner::before { content: '\262F'; color: #6040A0; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 1px; color: rgba(152, 136, 176, 0.62); }
+
+/* -- Particles: violet circles drifting RANDOM directions (multi-layer) ----- */
+#particles {
+  background:
+    /* Layer 1: drifts up-left */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='42' cy='70' r='1.8' fill='rgba(96,64,160,0.22)'/%3E%3Ccircle cx='130' cy='190' r='1.2' fill='rgba(200,144,48,0.16)'/%3E%3Ccircle cx='170' cy='340' r='2' fill='rgba(96,64,160,0.14)'/%3E%3Ccircle cx='75' cy='280' r='1' fill='rgba(120,100,150,0.18)'/%3E%3Ccircle cx='155' cy='50' r='1.5' fill='rgba(96,64,160,0.12)'/%3E%3C/svg%3E") repeat,
+    /* Layer 2: drifts down-right */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='55' cy='120' r='1.5' fill='rgba(96,64,160,0.14)'/%3E%3Ccircle cx='190' cy='380' r='2' fill='rgba(200,144,48,0.10)'/%3E%3Ccircle cx='240' cy='80' r='1' fill='rgba(96,64,160,0.12)'/%3E%3Ccircle cx='110' cy='460' r='1.8' fill='rgba(120,100,150,0.08)'/%3E%3C/svg%3E") repeat,
+    /* Layer 3: drifts sideways-up */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='35' cy='420' r='1.2' fill='rgba(200,144,48,0.14)'/%3E%3Ccircle cx='180' cy='200' r='1.8' fill='rgba(96,64,160,0.10)'/%3E%3Ccircle cx='100' cy='60' r='1.5' fill='rgba(120,100,150,0.12)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 280px 560px, 240px 480px;
+  animation: dragon-drift 12s linear infinite;
+}
+/* Multi-directional drift: each layer moves differently */
+@keyframes dragon-drift {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to   { background-position: -30px -400px, 25px 560px, -50px -240px; }
+}
+
+/* -- Tile: hexagonal chaos pulse on hover ----------------------------------- */
+.app-tile::before {
+  background: transparent;
+  border: 1px solid rgba(96, 64, 160, 0.30);
+}
+.app-tile:hover::before { animation: tile-flicker .4s steps(1, end) infinite; }
