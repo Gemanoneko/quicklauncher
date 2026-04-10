@@ -1,0 +1,238 @@
+/* ══ PROMISE MASCOT AGENCY ══════════════════════════════════════════════════════
+   Corporate pastel turning sinister. Everything is bright, cheerful, and
+   clean. But the smiley face has asymmetric eyes. The smile is too wide.
+   The mascots are watching. They are always watching. YOUR FRIEND FOREVER.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       6px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* CORPORATE DARKNESS — the real void behind the pastel facade */
+  --bg:           #0E0A12;
+  --panel-bg:     rgba(18, 14, 22, 0.99);
+  --overlay-bg:   rgba(16, 12, 20, 0.97);
+  --header-bg:    rgba(192, 96, 160, 0.04);
+
+  --font:         'Segoe UI', sans-serif;
+  --text:         #B098C0;
+  --text-dim:     rgba(148, 120, 168, 0.45);
+
+  --accent-c:     #C060A0;   /* mascot pink — too bright, unsettling */
+  --accent-m:     #60C0A0;   /* corporate teal */
+  --accent-y:     #302040;   /* shadow */
+
+  --border:       rgba(192, 96, 160, 0.22);
+  --border-h:     rgba(192, 96, 160, 0.55);
+
+  --glow-c:       0 0 7px rgba(192,96,160,.65), 0 0 20px rgba(192,96,160,.22);
+  --glow-m:       0 0 6px rgba(96,192,160,.55), 0 0 16px rgba(96,192,160,.18);
+  --glow-y:       0 0 7px rgba(48,32,64,.55), 0 0 20px rgba(48,32,64,.18);
+
+  --pulse-glow:   inset 0 0 22px rgba(192,96,160,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(192,96,160,.10);
+
+  --title-anim:   mascot-title 10s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(192, 96, 160, 0.09);
+  --tile-hover-border: rgba(192, 96, 160, 0.45);
+  --tile-hover-shadow: 0 0 12px rgba(192, 96, 160, 0.20);
+  --tile-active-bg:    rgba(192, 96, 160, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(192,96,160,.55)) drop-shadow(0 0 12px rgba(96,192,160,.22));
+  --tile-icon-fx:      brightness(0.92) saturate(1.2) contrast(1.1);
+  --tile-icon-shape:   polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(192, 96, 160, 0.10);
+  --btn-active-bg:  rgba(192, 96, 160, 0.20);
+
+  --drop-hint-border: rgba(192, 96, 160, 0.25);
+  --drop-icon-color:  rgba(192, 96, 160, 0.35);
+  --hint-sub-color:   rgba(148, 120, 168, 0.32);
+
+  --rename-dashed:    rgba(192, 96, 160, 0.40);
+  --rename-input-bg:  rgba(192, 96, 160, 0.07);
+
+  --edit-bar-bg:          rgba(96, 192, 160, 0.07);
+  --edit-bar-border:      rgba(96, 192, 160, 0.42);
+  --edit-label-color:     #60C0A0;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #60C0A0;
+  --btn-done-border:      rgba(96, 192, 160, 0.38);
+  --btn-done-hover-bg:    rgba(96, 192, 160, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(192, 96, 160, 0.38);
+
+  --update-bg:             rgba(48, 32, 64, 0.05);
+  --update-border:         rgba(48, 32, 64, 0.30);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(48, 32, 64, 0.25);
+  --update-btn-hover-bg:   rgba(48, 32, 64, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(192, 96, 160, 0.38);
+  --btn-close-hover-bg:   rgba(192, 96, 160, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(192, 96, 160, 0.07);
+  --picker-item-hover-bg:  rgba(192, 96, 160, 0.09);
+  --picker-item-active-bg: rgba(192, 96, 160, 0.17);
+  --picker-placeholder-bg: rgba(192, 96, 160, 0.07);
+
+  --skin-btn-active-bg:    rgba(192, 96, 160, 0.17);
+  --remove-btn-bg:         rgba(192, 96, 160, 0.88);
+  --remove-btn-border:     var(--accent-c);
+}
+
+/* ── Depth layers — sickly sweet corporate void ──────────────────────────── */
+#app::after {
+  background:
+    /* grain — faint pink-purple tint, corporate sterile */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.28 0.10 0.15 0 0.02  0.12 0.06 0.20 0 0.01  0.22 0.08 0.30 0 0.03  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* pink ambient glow — too cheerful, like a neon sign in a basement */
+    radial-gradient(ellipse 55% 45% at 50% 45%, rgba(192,96,160,0.06) 0%, transparent 65%),
+    /* teal accent bleed — bottom left, corporate branding */
+    radial-gradient(ellipse 35% 40% at 18% 85%, rgba(96,192,160,0.04) 0%, transparent 60%),
+    /* pink accent bleed — top right, mascot glow */
+    radial-gradient(ellipse 30% 35% at 82% 15%, rgba(192,96,160,0.05) 0%, transparent 55%),
+    /* vignette — the darkness closing in behind the smile */
+    radial-gradient(ellipse 100% 96% at 50% 50%, transparent 15%, #0E0A12 100%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — mascot pink accent bar ─────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #C060A0, rgba(160, 64, 120, 0.25));
+  box-shadow: 0 0 9px rgba(192,96,160,.65), 0 0 26px rgba(192,96,160,.22);
+}
+
+/* ── Grid: Style B — The Mascot (overlapping layers, something is wrong) ── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='20' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='8' font-weight='bold' letter-spacing='5' fill='rgba(192,96,160,0.50)'%3EPROMISE MASCOT AGENCY%3C/text%3E%3Ctext x='250' y='34' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' letter-spacing='3' fill='rgba(96,192,160,0.32)'%3EYOUR FRIEND FOREVER -- EST. 1987%3C/text%3E%3Cline x1='200' y1='152' x2='140' y2='90' stroke='rgba(192,96,160,0.12)' stroke-width='0.8'/%3E%3Cline x1='300' y1='152' x2='360' y2='90' stroke='rgba(192,96,160,0.12)' stroke-width='0.8'/%3E%3Cline x1='210' y1='175' x2='130' y2='175' stroke='rgba(192,96,160,0.10)' stroke-width='0.7'/%3E%3Cline x1='290' y1='175' x2='370' y2='175' stroke='rgba(192,96,160,0.10)' stroke-width='0.7'/%3E%3Cline x1='220' y1='205' x2='150' y2='260' stroke='rgba(96,192,160,0.08)' stroke-width='0.6'/%3E%3Cline x1='280' y1='205' x2='350' y2='260' stroke='rgba(96,192,160,0.08)' stroke-width='0.6'/%3E%3Cline x1='250' y1='140' x2='250' y2='70' stroke='rgba(192,96,160,0.10)' stroke-width='0.7'/%3E%3Cline x1='250' y1='210' x2='250' y2='280' stroke='rgba(192,96,160,0.08)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='175' r='60' fill='rgba(192,96,160,0.06)' stroke='rgba(192,96,160,0.28)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='175' r='55' fill='none' stroke='rgba(192,96,160,0.10)' stroke-width='0.5' stroke-dasharray='4,8'/%3E%3Ccircle cx='250' cy='175' r='48' fill='none' stroke='rgba(96,192,160,0.08)' stroke-width='0.3'/%3E%3Ccircle cx='235' cy='162' r='8' fill='rgba(192,96,160,0.18)' stroke='rgba(192,96,160,0.35)' stroke-width='1'/%3E%3Ccircle cx='235' cy='162' r='3.5' fill='rgba(14,10,18,0.80)'/%3E%3Ccircle cx='236' cy='161' r='1.2' fill='rgba(192,96,160,0.50)'/%3E%3Ccircle cx='268' cy='160' r='11' fill='rgba(192,96,160,0.18)' stroke='rgba(192,96,160,0.35)' stroke-width='1'/%3E%3Ccircle cx='268' cy='160' r='5' fill='rgba(14,10,18,0.80)'/%3E%3Ccircle cx='269' cy='159' r='1.8' fill='rgba(192,96,160,0.50)'/%3E%3Cpath d='M 225,182 Q 232,202 250,206 Q 268,202 275,182' fill='none' stroke='rgba(192,96,160,0.42)' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M 230,185 Q 238,198 250,201 Q 262,198 270,185' fill='none' stroke='rgba(192,96,160,0.15)' stroke-width='0.5'/%3E%3Cline x1='225' y1='182' x2='220' y2='180' stroke='rgba(192,96,160,0.22)' stroke-width='0.8'/%3E%3Cline x1='275' y1='182' x2='280' y2='180' stroke='rgba(192,96,160,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='175' r='70' fill='none' stroke='rgba(192,96,160,0.06)' stroke-width='0.3' stroke-dasharray='2,12'/%3E%3Ccircle cx='250' cy='175' r='80' fill='none' stroke='rgba(96,192,160,0.04)' stroke-width='0.3' stroke-dasharray='1,16'/%3E%3Ctext x='250' y='65' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='6' font-weight='bold' letter-spacing='2' fill='rgba(192,96,160,0.38)'%3ESMILE%3C/text%3E%3Ctext x='130' y='85' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5' letter-spacing='1' fill='rgba(96,192,160,0.28)'%3EALWAYS HAPPY%3C/text%3E%3Ctext x='370' y='85' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5' letter-spacing='1' fill='rgba(96,192,160,0.28)'%3EALWAYS HERE%3C/text%3E%3Ctext x='390' y='168' font-family='Segoe UI,sans-serif' font-size='5.5' letter-spacing='1.5' fill='rgba(192,96,160,0.30)' transform='rotate(12,390,168)'%3EWE ARE ALWAYS WATCHING%3C/text%3E%3Ctext x='60' y='200' font-family='Segoe UI,sans-serif' font-size='5' letter-spacing='1' fill='rgba(96,192,160,0.22)' transform='rotate(-8,60,200)'%3EYOUR FRIEND FOREVER%3C/text%3E%3Ctext x='420' y='250' font-family='Segoe UI,sans-serif' font-size='4.5' letter-spacing='1' fill='rgba(192,96,160,0.20)' transform='rotate(5,420,250)'%3EEMPLOYEE OF THE MONTH%3C/text%3E%3Ctext x='70' y='280' font-family='Segoe UI,sans-serif' font-size='4.5' letter-spacing='1.5' fill='rgba(96,192,160,0.18)' transform='rotate(-3,70,280)'%3ETHANK YOU FOR SMILING%3C/text%3E%3Ctext x='350' y='130' font-family='Segoe UI,sans-serif' font-size='4' fill='rgba(192,96,160,0.15)' transform='rotate(18,350,130)'%3EDO NOT LOOK AWAY%3C/text%3E%3Ctext x='100' y='140' font-family='Segoe UI,sans-serif' font-size='4' fill='rgba(96,192,160,0.15)' transform='rotate(-15,100,140)'%3ECOMPLIANCE IS JOY%3C/text%3E%3Crect x='55' y='300' width='120' height='45' rx='3' fill='rgba(18,14,22,0.40)' stroke='rgba(192,96,160,0.18)' stroke-width='0.8'/%3E%3Ctext x='115' y='315' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' font-weight='bold' letter-spacing='1' fill='rgba(192,96,160,0.42)'%3EAPPROVAL RATING%3C/text%3E%3Crect x='65' y='320' width='100' height='5' fill='rgba(192,96,160,0.08)' rx='1'/%3E%3Crect x='65' y='320' width='98' height='5' fill='rgba(192,96,160,0.35)' rx='1'/%3E%3Ctext x='168' y='325' font-family='Segoe UI,sans-serif' font-size='4.5' fill='rgba(192,96,160,0.38)'%3E98 PCT%3C/text%3E%3Ctext x='115' y='340' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='4' letter-spacing='1' fill='rgba(96,192,160,0.22)'%3EALL FRIENDS ACCOUNTED FOR%3C/text%3E%3Crect x='325' y='300' width='120' height='45' rx='3' fill='rgba(18,14,22,0.40)' stroke='rgba(96,192,160,0.18)' stroke-width='0.8'/%3E%3Ctext x='385' y='315' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' font-weight='bold' letter-spacing='1' fill='rgba(96,192,160,0.42)'%3EHAPPINESS INDEX%3C/text%3E%3Crect x='335' y='320' width='100' height='5' fill='rgba(96,192,160,0.08)' rx='1'/%3E%3Crect x='335' y='320' width='100' height='5' fill='rgba(96,192,160,0.35)' rx='1'/%3E%3Ctext x='438' y='325' font-family='Segoe UI,sans-serif' font-size='4.5' fill='rgba(96,192,160,0.38)'%3EMAX%3C/text%3E%3Ctext x='385' y='340' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='4' letter-spacing='1' fill='rgba(192,96,160,0.22)'%3EMANDATORY ENJOYMENT%3C/text%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5' letter-spacing='3' fill='rgba(148,120,168,0.22)'%3EPROMISE MASCOT AGENCY -- DIVISION OF WELLNESS -- ALL SMILES PERMANENT%3C/text%3E%3Ctext x='250' y='372' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='4' letter-spacing='2' fill='rgba(148,120,168,0.15)'%3EIF YOU CAN READ THIS YOU ARE ALREADY ENROLLED%3C/text%3E%3Ccircle cx='48' cy='58' r='0.7' fill='rgba(192,96,160,0.18)'/%3E%3Ccircle cx='455' cy='52' r='0.5' fill='rgba(96,192,160,0.14)'/%3E%3Ccircle cx='42' cy='248' r='0.8' fill='rgba(192,96,160,0.12)'/%3E%3Ccircle cx='460' cy='258' r='0.6' fill='rgba(96,192,160,0.10)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: mascot-face 10s ease-in-out infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) — with steps(1) glitch at 41% */
+@keyframes mascot-face {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  40%       { opacity: 0.85; }
+  41%       { opacity: 0.02; }   /* something is wrong — one frame glitch */
+  42%       { opacity: 0.85; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }   /* synchronized blackout — sickly pink flash */
+  89%       { opacity: 0.92; }
+  92%       { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'PROMISE MASCOT AGENCY // YOUR FRIEND FOREVER // ALWAYS WATCHING';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(176, 152, 192, 0.72);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'PROMISE\AMASCOT\AAGENCY\A-----------\ASMILE\AALWAYS\ASMILING\A-----------\AYOUR FRIEND\AFOREVER';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(192, 96, 160, 0.13); white-space: pre;
+  animation: mascot-readout 10s ease-in-out infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) — with 41% glitch */
+@keyframes mascot-readout {
+  0%, 100% { color: rgba(192,96,160,.13); }
+  28%       { color: rgba(192,96,160,.17); }
+  40%       { color: rgba(192,96,160,.14); }
+  41%       { color: rgba(96,192,160,.25); }   /* wrong color flash */
+  42%       { color: rgba(192,96,160,.14); }
+  65%       { color: rgba(192,96,160,.10); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(192,96,160,.20); }
+  92%       { color: rgba(192,96,160,.13); }
+}
+
+#edit-bar::after {
+  content: 'YOUR ENROLLMENT IS PERMANENT AND APPRECIATED';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(96, 192, 160, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', sans-serif; letter-spacing: 5px; }
+
+/* ── Title: sickly sweet pulse with 41% glitch and 88% pink flash ────────── */
+@keyframes mascot-title {
+  0%        { color: #B098C0; text-shadow: 0 0 6px rgba(192,96,160,.45), 0 0 18px rgba(192,96,160,.15); }
+  35%       { color: #C8A8D8; text-shadow: 0 0 10px rgba(192,96,160,.62), 0 0 28px rgba(96,192,160,.18); }
+  40%       { color: #B098C0; text-shadow: 0 0 6px rgba(192,96,160,.45); }
+  41%       { color: #60C0A0; text-shadow: 0 0 14px rgba(96,192,160,.80); opacity: 0.6; }
+  42%       { color: #B098C0; text-shadow: 0 0 6px rgba(192,96,160,.45); opacity: 1; }
+  65%       { color: #8070A0; text-shadow: 0 0 4px rgba(48,32,64,.35); }
+  87%       { color: #B098C0; text-shadow: 0 0 6px rgba(192,96,160,.42); }
+  88%       { color: #F080C0; text-shadow: 0 0 22px rgba(240,128,192,.85), 0 0 50px rgba(192,96,160,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #B098C0; text-shadow: 0 0 8px rgba(192,96,160,.55); opacity: 1; }
+  100%      { color: #B098C0; text-shadow: 0 0 6px rgba(192,96,160,.45), 0 0 18px rgba(192,96,160,.15); }
+}
+
+/* ── App: corporate pulse — box-shadow >= 10s (tier 5) with 41% glitch ──── */
+#app { animation: mascot-border 10s ease-in-out infinite; }
+@keyframes mascot-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(192,96,160,.20), inset 0 0 24px rgba(192,96,160,.06); }
+  35%      { box-shadow: 0 0 0 1px rgba(192,96,160,.48), inset 0 0 32px rgba(96,192,160,.07); }
+  40%      { box-shadow: 0 0 0 1px rgba(192,96,160,.35), inset 0 0 24px rgba(192,96,160,.06); }
+  41%      { box-shadow: 0 0 0 2px rgba(96,192,160,.70), inset 0 0 40px rgba(96,192,160,.12); }
+  42%      { box-shadow: 0 0 0 1px rgba(192,96,160,.35), inset 0 0 24px rgba(192,96,160,.06); }
+  65%      { box-shadow: 0 0 0 1px rgba(48,32,64,.22), inset 0 0 18px rgba(48,32,64,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(240,128,192,.82), inset 0 0 64px rgba(192,96,160,.22), 0 0 22px rgba(192,96,160,.30); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(192,96,160,.42), inset 0 0 22px rgba(192,96,160,.06); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(14, 10, 18, 0.99); border-top-color: rgba(192, 96, 160, 0.25); }
+#theme-banner::before { content: '\263A'; color: #C060A0; font-size: 20px; }
+#theme-banner-text { color: rgba(176, 152, 192, 0.68); }
+
+/* ── Particles — pink and teal confetti drifting TOO SLOWLY (unnatural) ── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='40' cy='60' r='2' fill='rgba(192,96,160,0.22)'/%3E%3Ccircle cx='120' cy='180' r='1.5' fill='rgba(96,192,160,0.18)'/%3E%3Ccircle cx='190' cy='320' r='2.2' fill='rgba(192,96,160,0.16)'/%3E%3Ccircle cx='70' cy='420' r='1.8' fill='rgba(96,192,160,0.20)'/%3E%3Ccircle cx='160' cy='100' r='1.2' fill='rgba(192,96,160,0.14)'/%3E%3Ccircle cx='210' cy='240' r='1.6' fill='rgba(96,192,160,0.12)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='640'%3E%3Ccircle cx='55' cy='90' r='1.8' fill='rgba(96,192,160,0.14)'/%3E%3Ccircle cx='180' cy='280' r='2' fill='rgba(192,96,160,0.12)'/%3E%3Ccircle cx='260' cy='460' r='1.4' fill='rgba(96,192,160,0.10)'/%3E%3Ccircle cx='110' cy='560' r='2.2' fill='rgba(192,96,160,0.08)'/%3E%3C/svg%3E") repeat;
+  background-size: 240px 480px, 320px 640px;
+  animation: mascot-confetti 28s linear infinite;   /* TOO SLOW — unnatural drift */
+}
+@keyframes mascot-confetti {
+  from { background-position: 0 0, 12px 0; }
+  to   { background-position: -10px -480px, 8px -640px; }
+}
+
+/* ── Tile: radial pulse — something watching from inside ──────────────────── */
+.app-tile::before {
+  width: 16px; height: 16px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(192,96,160,0.55);
+}
+.app-tile:hover::before { animation: tile-radial .5s ease-out forwards; }

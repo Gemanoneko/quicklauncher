@@ -1,0 +1,217 @@
+/* ══ MORTAL KOMBAT ═════════════════════════════════════════════════════════════
+   The Dragon. The Tournament. Choose your fighter.
+   High-contrast duo: black + dragon gold. The emblem IS the identity.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* TOURNAMENT ARENA — near-black + dragon gold, nothing else */
+  --bg:           #060400;
+  --panel-bg:     rgba(6, 4, 0, 0.99);
+  --overlay-bg:   rgba(6, 4, 0, 0.97);
+  --header-bg:    rgba(200, 160, 16, 0.04);
+
+  --font:         'Segoe UI', sans-serif;
+  --text:         #C0A040;
+  --text-dim:     rgba(160, 128, 48, 0.45);
+
+  --accent-c:     #C8A010;   /* dragon gold */
+  --accent-m:     #B01010;   /* blood */
+  --accent-y:     #302808;   /* dark amber */
+
+  --border:       rgba(200, 160, 16, 0.22);
+  --border-h:     rgba(200, 160, 16, 0.55);
+
+  --glow-c:       0 0 7px rgba(200,160,16,.65), 0 0 20px rgba(200,160,16,.22);
+  --glow-m:       0 0 6px rgba(176,16,16,.55), 0 0 16px rgba(176,16,16,.18);
+  --glow-y:       0 0 7px rgba(48,40,8,.55), 0 0 20px rgba(48,40,8,.18);
+
+  --pulse-glow:   inset 0 0 22px rgba(200,160,16,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(200,160,16,.10);
+
+  --title-anim:   mk-title 8s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(200, 160, 16, 0.09);
+  --tile-hover-border: rgba(200, 160, 16, 0.45);
+  --tile-hover-shadow: 0 0 12px rgba(200, 160, 16, 0.20);
+  --tile-active-bg:    rgba(200, 160, 16, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(200,160,16,.55)) drop-shadow(0 0 12px rgba(200,160,16,.22));
+  --tile-icon-fx:      brightness(0.92) saturate(1.2) contrast(1.1);
+  --tile-icon-shape:   polygon(50% 0%, 100% 25%, 100% 100%, 50% 85%, 0% 100%, 0% 25%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    700;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(200, 160, 16, 0.10);
+  --btn-active-bg:  rgba(200, 160, 16, 0.20);
+
+  --drop-hint-border: rgba(200, 160, 16, 0.25);
+  --drop-icon-color:  rgba(200, 160, 16, 0.35);
+  --hint-sub-color:   rgba(160, 128, 48, 0.32);
+
+  --rename-dashed:    rgba(200, 160, 16, 0.40);
+  --rename-input-bg:  rgba(200, 160, 16, 0.07);
+
+  --edit-bar-bg:          rgba(176, 16, 16, 0.07);
+  --edit-bar-border:      rgba(176, 16, 16, 0.42);
+  --edit-label-color:     #B01010;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #B01010;
+  --btn-done-border:      rgba(176, 16, 16, 0.38);
+  --btn-done-hover-bg:    rgba(176, 16, 16, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(200, 160, 16, 0.38);
+
+  --update-bg:             rgba(48, 40, 8, 0.05);
+  --update-border:         rgba(48, 40, 8, 0.30);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(48, 40, 8, 0.25);
+  --update-btn-hover-bg:   rgba(48, 40, 8, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(200, 160, 16, 0.38);
+  --btn-close-hover-bg:   rgba(200, 160, 16, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(200, 160, 16, 0.07);
+  --picker-item-hover-bg:  rgba(200, 160, 16, 0.09);
+  --picker-item-active-bg: rgba(200, 160, 16, 0.17);
+  --picker-placeholder-bg: rgba(200, 160, 16, 0.07);
+
+  --skin-btn-active-bg:    rgba(200, 160, 16, 0.17);
+  --remove-btn-bg:         rgba(176, 16, 16, 0.88);
+  --remove-btn-border:     #B01010;
+}
+
+/* ── Depth layers — black void with faint gold grain ────────────────────── */
+#app::after {
+  background:
+    /* Grain — very sparse, near-invisible gold-tinted noise */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.20 0.16 0.02 0 0.01  0.16 0.12 0.01 0 0.01  0.04 0.03 0.01 0 0.00  0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* Faint gold bloom at center — tournament pit light */
+    radial-gradient(ellipse 40% 35% at 50% 48%, rgba(200,160,16,0.04) 0%, transparent 65%),
+    /* Blood corner — bottom left, barely visible */
+    radial-gradient(ellipse 30% 25% at 10% 90%, rgba(176,16,16,0.03) 0%, transparent 55%),
+    /* Vignette — heavy, arena darkness */
+    radial-gradient(ellipse 100% 96% at 50% 50%, transparent 15%, rgba(6,4,0,0.92) 100%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — dragon gold accent bar ────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #C8A010, rgba(160, 120, 8, 0.25));
+  box-shadow: 0 0 9px rgba(200,160,16,.65), 0 0 26px rgba(200,160,16,.22);
+}
+
+/* ── Grid: Style B — Full-Bleed MK Dragon Emblem ────────────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Cdefs%3E%3CclipPath id='dc'%3E%3Ccircle cx='250' cy='185' r='120'/%3E%3C/clipPath%3E%3C/defs%3E%3Ccircle cx='250' cy='185' r='122' fill='none' stroke='rgba(200,160,16,0.30)' stroke-width='2.5'/%3E%3Ccircle cx='250' cy='185' r='118' fill='none' stroke='rgba(200,160,16,0.12)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='126' fill='none' stroke='rgba(200,160,16,0.08)' stroke-width='0.5'/%3E%3Cg clip-path='url(%23dc)'%3E%3Cpath d='M 250 80 C 230 80 205 95 195 115 C 185 135 188 155 195 168 C 200 175 208 180 215 178 C 222 176 225 170 222 162 C 220 156 214 152 210 148 C 206 142 205 135 210 125 C 215 118 225 112 238 110 C 245 109 248 110 250 112' fill='none' stroke='rgba(200,160,16,0.42)' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M 250 112 C 252 110 255 109 262 110 C 275 112 285 118 290 125 C 295 135 294 142 290 148 C 286 152 280 156 278 162 C 275 170 278 176 285 178 C 292 180 300 175 305 168 C 312 155 315 135 305 115 C 295 95 270 80 250 80' fill='none' stroke='rgba(200,160,16,0.42)' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M 195 168 C 188 180 178 195 172 215 C 168 230 170 248 178 260 C 185 270 195 275 205 272 C 212 270 218 264 220 255 C 222 246 218 238 212 232 C 208 228 202 224 198 218 C 195 212 194 205 198 198 C 202 192 208 188 215 186' fill='none' stroke='rgba(200,160,16,0.38)' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M 305 168 C 312 180 322 195 328 215 C 332 230 330 248 322 260 C 315 270 305 275 295 272 C 288 270 282 264 280 255 C 278 246 282 238 288 232 C 292 228 298 224 302 218 C 305 212 306 205 302 198 C 298 192 292 188 285 186' fill='none' stroke='rgba(200,160,16,0.38)' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M 215 186 C 222 184 230 183 240 185 C 245 186 248 190 250 195' fill='none' stroke='rgba(200,160,16,0.35)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 285 186 C 278 184 270 183 260 185 C 255 186 252 190 250 195' fill='none' stroke='rgba(200,160,16,0.35)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 250 195 C 248 205 244 218 238 228 C 232 238 225 245 220 255' fill='none' stroke='rgba(200,160,16,0.32)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 250 195 C 252 205 256 218 262 228 C 268 238 275 245 280 255' fill='none' stroke='rgba(200,160,16,0.32)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 220 108 C 215 100 210 92 215 86 C 218 82 224 80 228 84 C 230 86 230 90 226 94 C 224 96 222 100 222 104' fill='none' stroke='rgba(200,160,16,0.35)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 280 108 C 285 100 290 92 285 86 C 282 82 276 80 272 84 C 270 86 270 90 274 94 C 276 96 278 100 278 104' fill='none' stroke='rgba(200,160,16,0.35)' stroke-width='1.2' stroke-linecap='round'/%3E%3Ccircle cx='230' cy='132' r='5' fill='rgba(200,160,16,0.25)' stroke='rgba(200,160,16,0.40)' stroke-width='1'/%3E%3Ccircle cx='270' cy='132' r='5' fill='rgba(200,160,16,0.25)' stroke='rgba(200,160,16,0.40)' stroke-width='1'/%3E%3Ccircle cx='230' cy='132' r='2' fill='rgba(200,160,16,0.50)'/%3E%3Ccircle cx='270' cy='132' r='2' fill='rgba(200,160,16,0.50)'/%3E%3Cpath d='M 240 150 C 242 152 245 155 250 156 C 255 155 258 152 260 150' fill='none' stroke='rgba(200,160,16,0.35)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 238 156 L 245 162 L 250 158 L 255 162 L 262 156' fill='none' stroke='rgba(200,160,16,0.30)' stroke-width='0.8' stroke-linecap='round'/%3E%3Cpath d='M 178 260 C 182 268 190 278 205 282 C 215 284 225 280 235 272 C 242 266 246 258 250 250' fill='none' stroke='rgba(200,160,16,0.28)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 322 260 C 318 268 310 278 295 282 C 285 284 275 280 265 272 C 258 266 254 258 250 250' fill='none' stroke='rgba(200,160,16,0.28)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 250 250 C 250 260 250 272 250 285 C 250 292 248 298 245 302' fill='none' stroke='rgba(200,160,16,0.25)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 250 250 C 250 260 250 272 250 285 C 250 292 252 298 255 302' fill='none' stroke='rgba(200,160,16,0.25)' stroke-width='1' stroke-linecap='round'/%3E%3C/g%3E%3Ctext x='250' y='30' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='12' font-weight='bold' letter-spacing='8' fill='rgba(200,160,16,0.48)'%3EMORTAL KOMBAT%3C/text%3E%3Ctext x='250' y='345' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='8' font-weight='bold' letter-spacing='4' fill='rgba(176,16,16,0.42)'%3EFINISH HIM%3C/text%3E%3Ctext x='250' y='362' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='3' fill='rgba(200,160,16,0.32)'%3EFLAWLESS VICTORY%3C/text%3E%3Ctext x='250' y='375' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' letter-spacing='2.5' fill='rgba(200,160,16,0.22)'%3ETEST YOUR MIGHT%3C/text%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: mk-dragon 8s steps(1) infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes mk-dragon {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }   /* FATALITY — synchronized blackout */
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'MORTAL KOMBAT // TOURNAMENT // CHOOSE YOUR FIGHTER';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(192, 160, 64, 0.72);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'MORTAL\AKOMBAT\A-----------\ACHOOSE YOUR\AFIGHTER\A-----------\AFINISH HIM\AFATALITY\AFLAWLESS\AVICTORY';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(200, 160, 16, 0.13); white-space: pre;
+  animation: mk-readout 8s steps(1) infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) */
+@keyframes mk-readout {
+  0%, 100% { color: rgba(200,160,16,.13); }
+  28%       { color: rgba(200,160,16,.17); }
+  65%       { color: rgba(200,160,16,.10); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(200,160,16,.20); }
+  92%       { color: rgba(200,160,16,.13); }
+}
+
+#edit-bar::after {
+  content: 'TOURNAMENT MODE // CHOOSE YOUR DESTINY';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(176, 16, 16, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', sans-serif; font-weight: bold; letter-spacing: 5px; }
+
+/* ── Title: aggressive gold flash with blood at 88% — steps(1) ───────────── */
+@keyframes mk-title {
+  0%        { color: #C0A040; text-shadow: 0 0 6px rgba(200,160,16,.45), 0 0 18px rgba(200,160,16,.15); }
+  60%       { color: #C0A040; text-shadow: 0 0 6px rgba(200,160,16,.45); }
+  62%       { color: #C8A010; text-shadow: 0 0 10px rgba(200,160,16,.70), 0 0 28px rgba(200,160,16,.28); }
+  63%       { color: #B01010; text-shadow: 0 0 6px rgba(176,16,16,.55); opacity: 0.7; }
+  64%       { color: #C8A010; text-shadow: 0 0 8px rgba(200,160,16,.60); opacity: 1; }
+  65%       { color: #C0A040; text-shadow: 0 0 6px rgba(200,160,16,.45); }
+  87%       { color: #C0A040; text-shadow: 0 0 6px rgba(200,160,16,.40); }
+  88%       { color: #FFD848; text-shadow: 0 0 22px rgba(255,216,72,.85), 0 0 50px rgba(200,160,16,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C0A040; text-shadow: 0 0 8px rgba(200,160,16,.55); opacity: 1; }
+  100%      { color: #C0A040; text-shadow: 0 0 6px rgba(200,160,16,.45), 0 0 18px rgba(200,160,16,.15); }
+}
+
+/* ── App: gold border flash — box-shadow ≥ 8s (tier 5) ──────────────────── */
+#app { animation: mk-border 8s steps(1) infinite; }
+@keyframes mk-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,160,16,.20), inset 0 0 20px rgba(200,160,16,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(200,160,16,.48), inset 0 0 28px rgba(200,160,16,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(200,160,16,.15), inset 0 0 18px rgba(200,160,16,.03); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,216,72,.80), inset 0 0 50px rgba(200,160,16,.15), 0 0 18px rgba(200,160,16,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(200,160,16,.42), inset 0 0 22px rgba(200,160,16,.06); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(6, 4, 0, 0.99); border-top-color: rgba(200, 160, 16, 0.25); }
+#theme-banner::before { content: '\26A1'; color: #C8A010; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', sans-serif; font-weight: bold; letter-spacing: 2px; color: rgba(192, 160, 64, 0.70); }
+
+/* ── No particles — tournament arena is clean ───────────────────────────── */
+#particles {
+  background: none;
+  animation: none;
+}
+
+/* ── Tile: aggressive flicker ───────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-flicker .5s steps(1, end) infinite; }

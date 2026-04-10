@@ -1,0 +1,229 @@
+/* ══ DOOM ETERNAL ═════════════════════════════════════════════════════════════
+   The Slayer. Rip and Tear, until it is done. Argent energy crackles,
+   hell portals blaze, and the only thing they fear — is you.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* MODERN BRUTAL NEON — near-black with blood-red tinge */
+  --bg:           #080204;
+  --panel-bg:     rgba(12, 4, 6, 0.99);
+  --overlay-bg:   rgba(10, 3, 5, 0.97);
+  --header-bg:    rgba(224, 32, 32, 0.04);
+
+  --font:         'Segoe UI', sans-serif;
+  --text:         #C06060;
+  --text-dim:     rgba(160, 70, 70, 0.45);
+
+  --accent-c:     #E02020;   /* Doom red — VIVID */
+  --accent-m:     #40A060;   /* argent energy green */
+  --accent-y:     #282028;   /* hell dark */
+
+  --border:       rgba(224, 32, 32, 0.22);
+  --border-h:     rgba(224, 32, 32, 0.55);
+
+  --glow-c:       0 0 7px rgba(224,32,32,.65), 0 0 20px rgba(224,32,32,.22);
+  --glow-m:       0 0 6px rgba(64,160,96,.55), 0 0 16px rgba(64,160,96,.18);
+  --glow-y:       0 0 7px rgba(40,32,40,.55), 0 0 20px rgba(40,32,40,.18);
+
+  --pulse-glow:   inset 0 0 22px rgba(224,32,32,.07);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(224,32,32,.10);
+
+  --title-anim:   doom-title 8s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(224, 32, 32, 0.09);
+  --tile-hover-border: rgba(224, 32, 32, 0.45);
+  --tile-hover-shadow: 0 0 12px rgba(224, 32, 32, 0.20);
+  --tile-active-bg:    rgba(224, 32, 32, 0.18);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(224,32,32,.60)) drop-shadow(0 0 14px rgba(64,160,96,.20));
+  --tile-icon-fx:      brightness(0.92) saturate(1.2) contrast(1.1);
+  --tile-icon-shape:   polygon(0% 8%, 8% 0%, 92% 0%, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0% 92%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    700;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-zoom 1.5s ease-out forwards;
+
+  --btn-hover-bg:   rgba(224, 32, 32, 0.10);
+  --btn-active-bg:  rgba(224, 32, 32, 0.20);
+
+  --drop-hint-border: rgba(224, 32, 32, 0.25);
+  --drop-icon-color:  rgba(224, 32, 32, 0.35);
+  --hint-sub-color:   rgba(160, 70, 70, 0.32);
+
+  --rename-dashed:    rgba(224, 32, 32, 0.40);
+  --rename-input-bg:  rgba(224, 32, 32, 0.07);
+
+  --edit-bar-bg:          rgba(64, 160, 96, 0.07);
+  --edit-bar-border:      rgba(64, 160, 96, 0.42);
+  --edit-label-color:     #40A060;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #40A060;
+  --btn-done-border:      rgba(64, 160, 96, 0.38);
+  --btn-done-hover-bg:    rgba(64, 160, 96, 0.09);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(224, 32, 32, 0.38);
+
+  --update-bg:             rgba(64, 160, 96, 0.05);
+  --update-border:         rgba(64, 160, 96, 0.30);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(64, 160, 96, 0.25);
+  --update-btn-hover-bg:   rgba(64, 160, 96, 0.08);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      var(--accent-c);
+  --btn-close-border:     rgba(224, 32, 32, 0.38);
+  --btn-close-hover-bg:   rgba(224, 32, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(224, 32, 32, 0.07);
+  --picker-item-hover-bg:  rgba(224, 32, 32, 0.09);
+  --picker-item-active-bg: rgba(224, 32, 32, 0.17);
+  --picker-placeholder-bg: rgba(224, 32, 32, 0.07);
+
+  --skin-btn-active-bg:    rgba(224, 32, 32, 0.17);
+  --remove-btn-bg:         rgba(224, 32, 32, 0.88);
+  --remove-btn-border:     var(--accent-c);
+}
+
+/* ── DARK MODE 2.0 — hell-tinged grain, red ambient, deep vignette ───────── */
+#app::after {
+  background:
+    /* Grain — blood-tinged fractal noise */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.22 0.04 0.04 0 0.02  0.06 0.02 0.02 0 0.005  0.04 0.02 0.06 0 0.005  0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* Aggressive diagonal energy lines */
+    repeating-linear-gradient(135deg, rgba(224,32,32,0.02) 0px, transparent 1px, transparent 12px),
+    /* Central hell glow — deep red from below center */
+    radial-gradient(ellipse 55% 45% at 50% 62%, rgba(224,32,32,0.06) 0%, transparent 65%),
+    /* Upper-left argent energy bleed */
+    radial-gradient(ellipse 30% 25% at 18% 22%, rgba(64,160,96,0.04) 0%, transparent 60%),
+    /* Lower-right hell rift */
+    radial-gradient(ellipse 25% 30% at 82% 78%, rgba(180,20,20,0.05) 0%, transparent 55%),
+    /* Tight vignette — claustrophobic, hellish */
+    radial-gradient(ellipse 100% 96% at 50% 50%, transparent 10%, rgba(8,2,4,0.92) 100%);
+  background-size: 200px 200px, auto, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — Doom red accent bar ─────────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #E02020, rgba(160, 16, 16, 0.25));
+  box-shadow: 0 0 9px rgba(224,32,32,.65), 0 0 26px rgba(224,32,32,.22);
+}
+
+/* ── Grid: Style B — The Slayer's Mark — Concentric Rings ────────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='18' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='7' font-weight='bold' letter-spacing='4' fill='rgba(224,32,32,0.45)'%3EDOOM SLAYER SYSTEM -- PRAETOR SUIT ONLINE%3C/text%3E%3Ctext x='250' y='32' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(64,160,96,0.30)'%3EARGENT ENERGY STABLE -- DEMONIC PRESENCE AT UNSAFE LEVELS%3C/text%3E%3Ccircle cx='250' cy='185' r='140' fill='none' stroke='rgba(224,32,32,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='185' r='120' fill='none' stroke='rgba(224,32,32,0.14)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='185' r='100' fill='none' stroke='rgba(224,32,32,0.18)' stroke-width='0.7'/%3E%3Ccircle cx='250' cy='185' r='80' fill='none' stroke='rgba(224,32,32,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='60' fill='none' stroke='rgba(224,32,32,0.28)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='40' fill='none' stroke='rgba(224,32,32,0.34)' stroke-width='1'/%3E%3Ccircle cx='250' cy='185' r='20' fill='none' stroke='rgba(224,32,32,0.40)' stroke-width='1'/%3E%3Ccircle cx='250' cy='185' r='5' fill='rgba(224,32,32,0.55)'/%3E%3Cpath d='M250,165 L238,195 L262,195 Z' fill='none' stroke='rgba(224,32,32,0.50)' stroke-width='1.2'/%3E%3Cpath d='M250,160 L235,200 L265,200 Z' fill='none' stroke='rgba(224,32,32,0.30)' stroke-width='0.8'/%3E%3Cline x1='250' y1='145' x2='250' y2='170' stroke='rgba(224,32,32,0.40)' stroke-width='0.8'/%3E%3Cline x1='250' y1='195' x2='250' y2='225' stroke='rgba(224,32,32,0.40)' stroke-width='0.8'/%3E%3Cline x1='230' y1='185' x2='210' y2='185' stroke='rgba(224,32,32,0.35)' stroke-width='0.8'/%3E%3Cline x1='270' y1='185' x2='290' y2='185' stroke='rgba(224,32,32,0.35)' stroke-width='0.8'/%3E%3Cline x1='237' y1='172' x2='222' y2='157' stroke='rgba(224,32,32,0.25)' stroke-width='0.6'/%3E%3Cline x1='263' y1='172' x2='278' y2='157' stroke='rgba(224,32,32,0.25)' stroke-width='0.6'/%3E%3Cline x1='237' y1='198' x2='222' y2='213' stroke='rgba(224,32,32,0.25)' stroke-width='0.6'/%3E%3Cline x1='263' y1='198' x2='278' y2='213' stroke='rgba(224,32,32,0.25)' stroke-width='0.6'/%3E%3Cpath d='M250,155 L242,175 L250,170 L258,175 Z' fill='rgba(224,32,32,0.20)' stroke='rgba(224,32,32,0.35)' stroke-width='0.6'/%3E%3Cpath d='M238,195 L250,210 L262,195 L250,200 Z' fill='rgba(224,32,32,0.15)' stroke='rgba(224,32,32,0.30)' stroke-width='0.6'/%3E%3Ctext x='250' y='68' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='9' font-weight='bold' letter-spacing='6' fill='rgba(224,32,32,0.50)'%3ERIP AND TEAR%3C/text%3E%3Ctext x='250' y='310' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='8' font-weight='bold' letter-spacing='4' fill='rgba(224,32,32,0.45)'%3EUNTIL IT IS DONE%3C/text%3E%3Ctext x='250' y='82' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(64,160,96,0.32)'%3ETHE ONLY THING THEY FEAR IS YOU%3C/text%3E%3Ctext x='250' y='295' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='6' letter-spacing='2' fill='rgba(160,70,70,0.35)'%3EDOOM SLAYER%3C/text%3E%3Cline x1='140' y1='55' x2='360' y2='55' stroke='rgba(224,32,32,0.12)' stroke-width='0.5'/%3E%3Cline x1='140' y1='88' x2='360' y2='88' stroke='rgba(224,32,32,0.10)' stroke-width='0.4'/%3E%3Cline x1='155' y1='318' x2='345' y2='318' stroke='rgba(224,32,32,0.12)' stroke-width='0.5'/%3E%3Crect x='20' y='95' width='95' height='4' rx='1' fill='rgba(224,32,32,0.10)'/%3E%3Crect x='20' y='95' width='72' height='4' rx='1' fill='rgba(224,32,32,0.40)'/%3E%3Ctext x='20' y='92' font-family='Segoe UI,sans-serif' font-size='5' font-weight='bold' letter-spacing='1' fill='rgba(160,70,70,0.42)'%3EARGENT CELLS%3C/text%3E%3Ctext x='118' y='99' font-family='Segoe UI,sans-serif' font-size='4.5' fill='rgba(64,160,96,0.40)'%3E76 PCT%3C/text%3E%3Crect x='20' y='115' width='95' height='4' rx='1' fill='rgba(224,32,32,0.10)'/%3E%3Crect x='20' y='115' width='95' height='4' rx='1' fill='rgba(64,160,96,0.42)'/%3E%3Ctext x='20' y='112' font-family='Segoe UI,sans-serif' font-size='5' font-weight='bold' letter-spacing='1' fill='rgba(160,70,70,0.42)'%3EPRAETOR SUIT%3C/text%3E%3Ctext x='118' y='119' font-family='Segoe UI,sans-serif' font-size='4.5' fill='rgba(64,160,96,0.42)'%3EMAX%3C/text%3E%3Crect x='20' y='135' width='95' height='4' rx='1' fill='rgba(224,32,32,0.10)'/%3E%3Crect x='20' y='135' width='57' height='4' rx='1' fill='rgba(224,32,32,0.45)'/%3E%3Ctext x='20' y='132' font-family='Segoe UI,sans-serif' font-size='5' font-weight='bold' letter-spacing='1' fill='rgba(160,70,70,0.42)'%3ECRUCIBLE%3C/text%3E%3Ctext x='118' y='139' font-family='Segoe UI,sans-serif' font-size='4.5' fill='rgba(224,32,32,0.42)'%3E60 PCT%3C/text%3E%3Crect x='20' y='155' width='95' height='4' rx='1' fill='rgba(224,32,32,0.10)'/%3E%3Crect x='20' y='155' width='85' height='4' rx='1' fill='rgba(224,32,32,0.48)'/%3E%3Ctext x='20' y='152' font-family='Segoe UI,sans-serif' font-size='5' font-weight='bold' letter-spacing='1' fill='rgba(160,70,70,0.42)'%3EBFG 9000%3C/text%3E%3Ctext x='118' y='159' font-family='Segoe UI,sans-serif' font-size='4.5' fill='rgba(224,32,32,0.42)'%3E89 PCT%3C/text%3E%3Cline x1='20' y1='170' x2='130' y2='170' stroke='rgba(224,32,32,0.12)' stroke-width='0.4'/%3E%3Ctext x='70' y='188' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' font-weight='bold' letter-spacing='1.5' fill='rgba(224,32,32,0.38)'%3EKILL COUNT%3C/text%3E%3Ctext x='70' y='202' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='10' font-weight='bold' fill='rgba(224,32,32,0.50)'%3E66,610%3C/text%3E%3Crect x='385' y='88' width='95' height='68' rx='2' fill='rgba(12,4,8,0.50)' stroke='rgba(224,32,32,0.20)' stroke-width='0.7'/%3E%3Ctext x='432' y='102' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' font-weight='bold' letter-spacing='1.5' fill='rgba(64,160,96,0.45)'%3EDEMON LOG%3C/text%3E%3Cline x1='390' y1='107' x2='475' y2='107' stroke='rgba(64,160,96,0.18)' stroke-width='0.4'/%3E%3Ctext x='392' y='118' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(160,70,70,0.38)'%3EIMP%3C/text%3E%3Ctext x='470' y='118' text-anchor='end' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(224,32,32,0.38)'%3ESLAIN%3C/text%3E%3Ctext x='392' y='129' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(160,70,70,0.38)'%3ECACODEMON%3C/text%3E%3Ctext x='470' y='129' text-anchor='end' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(224,32,32,0.38)'%3ESLAIN%3C/text%3E%3Ctext x='392' y='140' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(160,70,70,0.38)'%3ETYRANT%3C/text%3E%3Ctext x='470' y='140' text-anchor='end' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(224,32,32,0.38)'%3ESLAIN%3C/text%3E%3Ctext x='392' y='151' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(160,70,70,0.38)'%3EMARAUDER%3C/text%3E%3Ctext x='470' y='151' text-anchor='end' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(224,32,32,0.38)'%3ESLAIN%3C/text%3E%3Ctext x='432' y='180' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' font-weight='bold' letter-spacing='1' fill='rgba(224,32,32,0.40)'%3ETHREAT LEVEL%3C/text%3E%3Ctext x='432' y='196' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='10' font-weight='bold' fill='rgba(224,32,32,0.52)'%3ECRITICAL%3C/text%3E%3Ctext x='432' y='214' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5' letter-spacing='1' fill='rgba(64,160,96,0.35)'%3EHELL ON EARTH%3C/text%3E%3Cline x1='30' y1='335' x2='470' y2='335' stroke='rgba(224,32,32,0.18)' stroke-width='0.6'/%3E%3Cline x1='30' y1='338' x2='470' y2='338' stroke='rgba(224,32,32,0.06)' stroke-width='0.3'/%3E%3Ctext x='85' y='354' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(160,70,70,0.38)'%3EWEAPON%3C/text%3E%3Ctext x='85' y='367' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='7' font-weight='bold' fill='rgba(224,32,32,0.52)'%3ESUPER SHOTGUN%3C/text%3E%3Ctext x='250' y='354' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(160,70,70,0.38)'%3ERUNE%3C/text%3E%3Ctext x='250' y='367' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='7' font-weight='bold' fill='rgba(64,160,96,0.50)'%3EOVERDRIVE%3C/text%3E%3Ctext x='415' y='354' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5' fill='rgba(160,70,70,0.38)'%3ESTATUS%3C/text%3E%3Ctext x='415' y='367' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='7' font-weight='bold' fill='rgba(224,32,32,0.50)'%3EUNSTOPPABLE%3C/text%3E%3Cline x1='165' y1='340' x2='165' y2='372' stroke='rgba(224,32,32,0.12)' stroke-width='0.4'/%3E%3Cline x1='335' y1='340' x2='335' y2='372' stroke='rgba(224,32,32,0.12)' stroke-width='0.4'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: doom-device 8s steps(1) infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes doom-device {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }   /* hell blackout — synchronized */
+  89%       { opacity: 0.92; }
+  92%       { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'PRAETOR SUIT // ARGENT ENERGY // SLAYER PROTOCOL';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(224, 60, 60, 0.65);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'RIP AND\ATEAR\AUNTIL\AIT IS\ADONE\A--------\ADEMON\ACOUNT\A66610';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(224, 32, 32, 0.10); white-space: pre;
+  animation: doom-readout 8s steps(1) infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) */
+@keyframes doom-readout {
+  0%, 100% { color: rgba(224,32,32,.10); }
+  28%       { color: rgba(224,32,32,.14); }
+  65%       { color: rgba(224,32,32,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(224,32,32,.18); }
+  92%       { color: rgba(224,32,32,.10); }
+}
+
+#edit-bar::after {
+  content: 'SLAYER PROTOCOL // RIP AND TEAR';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(64, 160, 96, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', sans-serif; font-weight: bold; letter-spacing: 5px; }
+
+/* ── Title: aggressive steps(1) glitch with BRIGHT red 88% flash ─────────── */
+@keyframes doom-title {
+  0%        { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.50), 0 0 18px rgba(224,32,32,.15); }
+  60%       { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.50); }
+  62%       { color: #E02020; text-shadow: 0 0 12px rgba(224,32,32,.80), 0 0 30px rgba(224,32,32,.30); opacity: 0.85; }
+  63%       { color: #40A060; text-shadow: 0 0 8px rgba(64,160,96,.55); opacity: 0.5; }
+  64%       { color: #E02020; text-shadow: 0 0 10px rgba(224,32,32,.65); opacity: 1; }
+  65%       { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.50); }
+  87%       { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.45); }
+  88%       { color: #FF3030; text-shadow: 0 0 24px rgba(255,48,48,.90), 0 0 55px rgba(224,32,32,.50); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C06060; text-shadow: 0 0 8px rgba(224,32,32,.55); opacity: 1; }
+  100%      { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.50), 0 0 18px rgba(224,32,32,.15); }
+}
+
+/* ── App: hell pulse — box-shadow (tier 5, 8s) ───────────────────────────── */
+#app { animation: doom-border 8s steps(1) infinite; }
+@keyframes doom-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(224,32,32,.22), inset 0 0 22px rgba(224,32,32,.05); }
+  35%      { box-shadow: 0 0 0 1px rgba(224,32,32,.50), inset 0 0 32px rgba(224,32,32,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(64,160,96,.22), inset 0 0 18px rgba(64,160,96,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,48,48,.85), inset 0 0 55px rgba(224,32,32,.18), 0 0 20px rgba(224,32,32,.30); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(224,32,32,.45), inset 0 0 24px rgba(224,32,32,.06); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(10, 2, 4, 0.99); border-top-color: rgba(224, 32, 32, 0.25); }
+#theme-banner::before { content: '\26E7'; color: #E02020; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 2px; color: rgba(224, 70, 70, 0.68); }
+
+/* ── Particles — red diagonal slashes drifting upward (hell energy rises) ── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Cline x1='30' y1='340' x2='38' y2='332' stroke='rgba(224,32,32,0.22)' stroke-width='1.5'/%3E%3Cline x1='105' y1='250' x2='112' y2='243' stroke='rgba(224,32,32,0.16)' stroke-width='1.2'/%3E%3Cline x1='160' y1='120' x2='168' y2='112' stroke='rgba(180,20,20,0.14)' stroke-width='1.8'/%3E%3Cline x1='55' y1='60' x2='62' y2='53' stroke='rgba(64,160,96,0.18)' stroke-width='1'/%3E%3Cline x1='135' y1='305' x2='143' y2='297' stroke='rgba(224,32,32,0.12)' stroke-width='1.4'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Cline x1='40' y1='480' x2='48' y2='472' stroke='rgba(224,32,32,0.10)' stroke-width='1.2'/%3E%3Cline x1='155' y1='310' x2='163' y2='302' stroke='rgba(180,20,20,0.08)' stroke-width='1.5'/%3E%3Cline x1='225' y1='150' x2='233' y2='142' stroke='rgba(64,160,96,0.08)' stroke-width='1'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 280px 560px;
+  animation: doom-slash 10s linear infinite;
+}
+/* Hell energy rises — particles drift UPWARD */
+@keyframes doom-slash {
+  from { background-position: 0 0, 12px 0; }
+  to   { background-position: -12px -400px, 8px -560px; }
+}
+
+/* ── Tile: aggressive flicker ────────────────────────────────────────────── */
+.app-tile::before {
+  width: 100%; height: 3px;
+  left: 0; top: -3px;
+  transform: none;
+  background: var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-flicker .3s steps(1) 2; }

@@ -1,0 +1,235 @@
+/* ══ TINY BUNNY (ЗАЙЧИК) ═════════════════════════════════════════════════════
+   Russian horror visual novel. Deep winter. Slavic fairy tale darkness.
+   The forest is cold, the snow is falling, and something is watching.
+   COLD SNOWY MONOCHROME — like Silent Hill but COLDER. The emptiness is the horror.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* ── COLD SNOWY MONOCHROME — winter night, blue-grey dark ── */
+  --bg:           #0C0E14;
+  --panel-bg:     rgba(14, 16, 24, 0.99);
+  --overlay-bg:   rgba(10, 12, 18, 0.97);
+  --header-bg:    rgba(104, 120, 160, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #8898B0;
+  --text-dim:     rgba(100, 115, 140, 0.42);
+
+  /* Near-monochrome — cold steel blue, blood in snow red, frozen dark */
+  --accent-c:     #6878A0;   /* cold steel blue */
+  --accent-m:     #A02030;   /* blood in snow red */
+  --accent-y:     #283040;   /* frozen dark */
+
+  --border:       rgba(104, 120, 160, 0.16);
+  --border-h:     rgba(104, 120, 160, 0.35);
+
+  --glow-c:       0 0 5px rgba(104,120,160,.28), 0 0 14px rgba(104,120,160,.08);
+  --glow-m:       0 0 5px rgba(160,32,48,.35), 0 0 14px rgba(160,32,48,.10);
+  --glow-y:       0 0 4px rgba(40,48,64,.25), 0 0 12px rgba(40,48,64,.08);
+
+  --pulse-glow:   inset 0 0 20px rgba(104,120,160,.04);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(104,120,160,.06);
+
+  /* VERY SLOW — frozen, cold, barely moving */
+  --title-anim:   tb-title 14s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(104, 120, 160, 0.05);
+  --tile-hover-border: rgba(104, 120, 160, 0.22);
+  --tile-hover-shadow: 0 0 10px rgba(104, 120, 160, 0.10);
+  --tile-active-bg:    rgba(104, 120, 160, 0.10);
+  --tile-icon-glow:    drop-shadow(0 0 3px rgba(104,120,160,.22)) drop-shadow(0 0 8px rgba(104,120,160,.08));
+  --tile-icon-fx:      grayscale(0.60) contrast(0.95) brightness(0.82);
+  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 98% 100%, 2% 100%);
+  --tile-label-spacing:   0.5px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 10s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 3s ease-out forwards;
+
+  --btn-hover-bg:   rgba(104, 120, 160, 0.06);
+  --btn-active-bg:  rgba(104, 120, 160, 0.12);
+
+  --drop-hint-border: rgba(104, 120, 160, 0.16);
+  --drop-icon-color:  rgba(104, 120, 160, 0.22);
+  --hint-sub-color:   rgba(104, 120, 160, 0.24);
+
+  --rename-dashed:    rgba(104, 120, 160, 0.28);
+  --rename-input-bg:  rgba(104, 120, 160, 0.05);
+
+  --edit-bar-bg:          rgba(160, 32, 48, 0.06);
+  --edit-bar-border:      rgba(160, 32, 48, 0.25);
+  --edit-label-color:     #A02030;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #A02030;
+  --btn-done-border:      rgba(160, 32, 48, 0.30);
+  --btn-done-hover-bg:    rgba(160, 32, 48, 0.08);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(104, 120, 160, 0.28);
+
+  --update-bg:             rgba(40, 48, 64, 0.06);
+  --update-border:         rgba(40, 48, 64, 0.25);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(40, 48, 64, 0.22);
+  --update-btn-hover-bg:   rgba(40, 48, 64, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #6878A0;
+  --btn-close-border:     rgba(104, 120, 160, 0.25);
+  --btn-close-hover-bg:   rgba(104, 120, 160, 0.08);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(104, 120, 160, 0.05);
+  --picker-item-hover-bg:  rgba(104, 120, 160, 0.06);
+  --picker-item-active-bg: rgba(104, 120, 160, 0.10);
+  --picker-placeholder-bg: rgba(104, 120, 160, 0.05);
+
+  --skin-btn-active-bg:    rgba(104, 120, 160, 0.12);
+  --remove-btn-bg:         rgba(160, 32, 48, 0.75);
+  --remove-btn-border:     #A02030;
+}
+
+/* ── COLD winter grain — faint blue-grey noise, heavy dark vignette ────────── */
+#app::after {
+  background:
+    /* Winter film grain — cold, desaturated, blue-tinted */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.10 0.10 0.20 0 0.01  0.08 0.10 0.18 0 0.01  0.14 0.16 0.28 0 0.02  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* Deep cold vignette — the forest closes in */
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 25%, rgba(6,8,12,0.85) 100%),
+    /* Faint cold breath — barely visible lighter patch center */
+    radial-gradient(ellipse 35% 28% at 50% 50%, rgba(104,120,160,0.03) 0%, transparent 55%),
+    /* Snow reflection — very faint cool glow from below */
+    radial-gradient(ellipse 50% 20% at 50% 100%, rgba(136,152,176,0.03) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — cold steel blue accent bar, barely visible ────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #6878A0, rgba(80, 96, 128, 0.20));
+  box-shadow: 0 0 5px rgba(104,120,160,0.28), 0 0 14px rgba(104,120,160,0.08);
+}
+
+/* ── Grid: ATMOSPHERE-ONLY — birch forest, rabbit silhouette, Russian text ── */
+/* NO device. NO panno. The emptiness is the horror. */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='9' font-style='italic' letter-spacing='6' fill='rgba(104,120,160,0.18)'%3E%D0%97%D0%90%D0%99%D0%A7%D0%98%D0%9A%3C/text%3E%3Cline x1='58' y1='0' x2='58' y2='380' stroke='rgba(136,152,176,0.08)' stroke-width='1.8'/%3E%3Cline x1='60' y1='45' x2='55' y2='45' stroke='rgba(136,152,176,0.05)' stroke-width='0.5'/%3E%3Cline x1='60' y1='90' x2='54' y2='90' stroke='rgba(136,152,176,0.04)' stroke-width='0.5'/%3E%3Cline x1='60' y1='160' x2='56' y2='160' stroke='rgba(136,152,176,0.04)' stroke-width='0.5'/%3E%3Cline x1='60' y1='240' x2='53' y2='240' stroke='rgba(136,152,176,0.05)' stroke-width='0.5'/%3E%3Cline x1='130' y1='0' x2='132' y2='380' stroke='rgba(136,152,176,0.06)' stroke-width='1.2'/%3E%3Cline x1='132' y1='70' x2='128' y2='70' stroke='rgba(136,152,176,0.04)' stroke-width='0.5'/%3E%3Cline x1='132' y1='200' x2='127' y2='200' stroke='rgba(136,152,176,0.04)' stroke-width='0.5'/%3E%3Cline x1='215' y1='0' x2='214' y2='380' stroke='rgba(136,152,176,0.05)' stroke-width='1'/%3E%3Cline x1='215' y1='120' x2='211' y2='120' stroke='rgba(136,152,176,0.03)' stroke-width='0.5'/%3E%3Cline x1='290' y1='0' x2='291' y2='380' stroke='rgba(136,152,176,0.07)' stroke-width='1.5'/%3E%3Cline x1='291' y1='55' x2='287' y2='55' stroke='rgba(136,152,176,0.04)' stroke-width='0.5'/%3E%3Cline x1='291' y1='180' x2='286' y2='180' stroke='rgba(136,152,176,0.05)' stroke-width='0.5'/%3E%3Cline x1='291' y1='280' x2='288' y2='280' stroke='rgba(136,152,176,0.04)' stroke-width='0.5'/%3E%3Cline x1='370' y1='0' x2='369' y2='380' stroke='rgba(136,152,176,0.06)' stroke-width='1.3'/%3E%3Cline x1='370' y1='100' x2='366' y2='100' stroke='rgba(136,152,176,0.04)' stroke-width='0.5'/%3E%3Cline x1='370' y1='250' x2='365' y2='250' stroke='rgba(136,152,176,0.04)' stroke-width='0.5'/%3E%3Cline x1='440' y1='0' x2='441' y2='380' stroke='rgba(136,152,176,0.05)' stroke-width='1'/%3E%3Cline x1='441' y1='150' x2='437' y2='150' stroke='rgba(136,152,176,0.03)' stroke-width='0.5'/%3E%3Cline x1='35' y1='0' x2='34' y2='380' stroke='rgba(136,152,176,0.04)' stroke-width='0.8'/%3E%3Cline x1='175' y1='0' x2='176' y2='380' stroke='rgba(136,152,176,0.04)' stroke-width='0.7'/%3E%3Cline x1='335' y1='0' x2='336' y2='380' stroke='rgba(136,152,176,0.04)' stroke-width='0.8'/%3E%3Cline x1='465' y1='0' x2='464' y2='380' stroke='rgba(136,152,176,0.04)' stroke-width='0.7'/%3E%3Cg transform='translate(385,265) scale(0.6)'%3E%3Cellipse cx='0' cy='8' rx='7' ry='4' fill='rgba(136,152,176,0.10)'/%3E%3Cellipse cx='0' cy='0' rx='5' ry='6' fill='rgba(136,152,176,0.12)'/%3E%3Ccircle cx='0' cy='-8' r='3.5' fill='rgba(136,152,176,0.12)'/%3E%3Cellipse cx='-2' cy='-18' rx='1.5' ry='7' fill='rgba(136,152,176,0.10)' transform='rotate(-8)'/%3E%3Cellipse cx='2' cy='-18' rx='1.5' ry='7' fill='rgba(136,152,176,0.10)' transform='rotate(8)'/%3E%3Ccircle cx='-1.5' cy='-9' r='0.6' fill='rgba(160,32,48,0.25)'/%3E%3Ccircle cx='1.5' cy='-9' r='0.6' fill='rgba(160,32,48,0.25)'/%3E%3C/g%3E%3Ccircle cx='80' cy='55' r='0.6' fill='rgba(200,210,225,0.10)'/%3E%3Ccircle cx='160' cy='120' r='0.5' fill='rgba(200,210,225,0.08)'/%3E%3Ccircle cx='320' cy='80' r='0.7' fill='rgba(200,210,225,0.09)'/%3E%3Ccircle cx='420' cy='140' r='0.4' fill='rgba(200,210,225,0.07)'/%3E%3Ccircle cx='250' cy='200' r='0.5' fill='rgba(200,210,225,0.08)'/%3E%3Ccircle cx='100' cy='280' r='0.6' fill='rgba(200,210,225,0.07)'/%3E%3Ccircle cx='450' cy='300' r='0.5' fill='rgba(200,210,225,0.06)'/%3E%3Ccircle cx='200' cy='330' r='0.4' fill='rgba(200,210,225,0.07)'/%3E%3Ccircle cx='360' cy='180' r='0.5' fill='rgba(200,210,225,0.08)'/%3E%3Ccircle cx='45' cy='190' r='0.4' fill='rgba(200,210,225,0.06)'/%3E%3Ccircle cx='475' cy='60' r='0.5' fill='rgba(200,210,225,0.07)'/%3E%3Ccircle cx='270' cy='290' r='0.4' fill='rgba(200,210,225,0.06)'/%3E%3Ctext x='42' y='345' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='2' fill='rgba(104,120,160,0.14)'%3E%D0%9B%D0%95%D0%A1%3C/text%3E%3Ctext x='420' y='50' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='1.5' fill='rgba(160,32,48,0.12)'%3E%D0%9D%D0%95 %D0%A5%D0%9E%D0%94%D0%98 %D0%A2%D0%A3%D0%94%D0%90%3C/text%3E%3Ctext x='65' y='95' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1.5' fill='rgba(104,120,160,0.10)'%3E%D0%A2%D0%81%D0%9C%D0%9D%D0%AB%D0%99 %D0%9B%D0%95%D0%A1%3C/text%3E%3Ctext x='250' y='370' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(104,120,160,0.08)'%3E%D0%B7%D0%B8%D0%BC%D0%B0 // %D1%81%D0%BD%D0%B5%D0%B3 // %D1%82%D0%B8%D1%88%D0%B8%D0%BD%D0%B0%3C/text%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: tb-forest 14s ease-in-out infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) — VERY slow, cold, frozen */
+/* 88% is NOT a flash — it's a SLOW fade to black and back (the cold swallows everything) */
+@keyframes tb-forest {
+  0%, 100% { opacity: 0.82; }
+  35%       { opacity: 0.85; }
+  55%       { opacity: 0.78; }
+  75%       { opacity: 0.82; }
+  85%       { opacity: 0.80; }
+  87%       { opacity: 0.75; }
+  88%       { opacity: 0.06; }
+  89.5%     { opacity: 0.10; }
+  91%       { opacity: 0.70; }
+  93%       { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: '\0417\0410\0419\0427\0418\041A // \041B\0415\0421 // \0417\0418\041C\0410';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(104, 120, 160, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: '\0417\0410\0419\0427\0418\041A\A-----------\A\0442\D1\91\043C\043D\044B\0439\A\043B\0435\0441\A-----------\A\043D\0435 \0445\043E\0434\0438\A\0442\0443\0434\0430\A-----------\A\0441\043D\0435\0433\A\0442\0438\0448\0438\043D\0430';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(104, 120, 160, 0.10); white-space: pre;
+  animation: tb-readout 14s ease-in-out infinite;
+}
+
+@keyframes tb-readout {
+  0%, 100% { color: rgba(104,120,160,.10); }
+  35%       { color: rgba(104,120,160,.13); }
+  55%       { color: rgba(104,120,160,.08); }
+  87%       { color: rgba(104,120,160,.06); }
+  88%       { color: rgba(6,8,12,0); }
+  89.5%     { color: rgba(6,8,12,0); }
+  91%       { color: rgba(104,120,160,.14); }
+  93%       { color: rgba(104,120,160,.10); }
+}
+
+#edit-bar::after {
+  content: '\041D\0415 \0425\041E\0414\0418 \0422\0423\0414\0410';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2.5px; color: rgba(160, 32, 48, 0.30);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
+
+/* ── Title: cold breath — barely visible text fading in frozen air ─────────── */
+@keyframes tb-title {
+  0%        { color: #8898B0; text-shadow: 0 0 5px rgba(104,120,160,.20); }
+  35%       { color: #96A6C0; text-shadow: 0 0 7px rgba(104,120,160,.28); }
+  55%       { color: #7888A0; text-shadow: none; }
+  75%       { color: #8898B0; text-shadow: 0 0 4px rgba(104,120,160,.18); }
+  87%       { color: #7080A0; text-shadow: 0 0 3px rgba(104,120,160,.15); }
+  88%       { color: #3A4860; text-shadow: 0 0 12px rgba(6,8,12,.60); opacity: 0.40; }
+  89.5%     { color: #2A3850; text-shadow: none; opacity: 0.15; }
+  91%       { color: #8898B0; text-shadow: 0 0 6px rgba(104,120,160,.25); opacity: 1; }
+  100%      { color: #8898B0; text-shadow: 0 0 5px rgba(104,120,160,.20); }
+}
+
+/* ── App: frozen pulse — the cold presses in ───────────────────────────────── */
+#app { animation: tb-border 14s ease-in-out infinite; }
+@keyframes tb-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(104,120,160,.14), inset 0 0 18px rgba(104,120,160,.03); }
+  35%      { box-shadow: 0 0 0 1px rgba(104,120,160,.22), inset 0 0 24px rgba(104,120,160,.04); }
+  55%      { box-shadow: 0 0 0 1px rgba(80,96,128,.10), inset 0 0 14px rgba(80,96,128,.02); }
+  87%      { box-shadow: 0 0 0 1px rgba(104,120,160,.12), inset 0 0 16px rgba(104,120,160,.02); }
+  88%      { box-shadow: 0 0 0 1px rgba(6,8,12,.50), inset 0 0 40px rgba(6,8,12,.12); }
+  89.5%    { box-shadow: 0 0 0 0px transparent; }
+  91%      { box-shadow: 0 0 0 1px rgba(104,120,160,.18), inset 0 0 20px rgba(104,120,160,.03); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(10, 12, 18, 0.99); border-top-color: rgba(104, 120, 160, 0.15); }
+#theme-banner::before { content: '❄'; color: #6878A0; font-size: 18px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(104, 120, 160, 0.55); }
+
+/* ── Falling snow — tiny white circles drifting SLOWLY downward ─────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='30' cy='40' r='1.2' fill='rgba(200,210,225,0.18)'/%3E%3Ccircle cx='95' cy='150' r='0.8' fill='rgba(200,210,225,0.14)'/%3E%3Ccircle cx='180' cy='280' r='1' fill='rgba(200,210,225,0.12)'/%3E%3Ccircle cx='55' cy='360' r='0.7' fill='rgba(200,210,225,0.16)'/%3E%3Ccircle cx='210' cy='100' r='1.3' fill='rgba(200,210,225,0.10)'/%3E%3Ccircle cx='140' cy='420' r='0.9' fill='rgba(200,210,225,0.14)'/%3E%3Ccircle cx='15' cy='210' r='0.6' fill='rgba(200,210,225,0.12)'/%3E%3Ccircle cx='170' cy='60' r='0.8' fill='rgba(200,210,225,0.10)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='640'%3E%3Ccircle cx='50' cy='80' r='0.9' fill='rgba(200,210,225,0.10)'/%3E%3Ccircle cx='160' cy='250' r='1.1' fill='rgba(200,210,225,0.08)'/%3E%3Ccircle cx='260' cy='450' r='0.7' fill='rgba(200,210,225,0.07)'/%3E%3Ccircle cx='100' cy='550' r='1' fill='rgba(200,210,225,0.09)'/%3E%3Ccircle cx='220' cy='150' r='0.6' fill='rgba(200,210,225,0.08)'/%3E%3Ccircle cx='300' cy='380' r='0.8' fill='rgba(200,210,225,0.06)'/%3E%3C/svg%3E") repeat;
+  background-size: 240px 480px, 320px 640px;
+  animation: tb-snow 22s linear infinite;
+}
+/* Snow drifts SLOWLY downward — very slow, frozen world */
+@keyframes tb-snow {
+  from { background-position: 0 0, 18px 0; }
+  to   { background-position: 12px 480px, -10px 640px; }
+}
+
+/* ── Tile: frost edge — barely there, the cold touches everything ──────── */
+.app-tile::before {
+  width: 100%; height: 100%;
+  left: 0; top: 0;
+  transform: none;
+  background: transparent;
+  border: 1px solid rgba(104, 120, 160, 0.08);
+}
+.app-tile:hover::before { border-color: rgba(104, 120, 160, 0.20); }
