@@ -464,13 +464,6 @@ const THEME_BANNERS = {
     'GET OVER HERE!',
     'FATALITY.',
   ],
-  'dom-rusalok': [
-    'ДОМ РУСАЛОК. ВОДА ПОМНИТ ВСЁ.',
-    'НЕ СМОТРИ В ВОДУ. ОНА СМОТРИТ В ТЕБЯ.',
-    'РУСАЛКИ ПОЮТ. ОНИ ЗОВУТ ТЕБЯ.',
-    'ДОМ СТОИТ НА БЕРЕГУ. ДОМ ЖДЁТ.',
-    'ВОДА ПОДНИМАЕТСЯ.',
-  ],
   'nonary-games': [
     'SEEK A WAY OUT.',
     'NINE HOURS. NINE PERSONS. NINE DOORS.',
@@ -784,7 +777,6 @@ const THEME_NAMES = {
   'tiny-bunny':          'ЗАЙЧИК / TINY BUNNY',
   'promise-mascot':      'PROMISE MASCOT AGENCY',
   'mortal-kombat':       'MORTAL KOMBAT',
-  'dom-rusalok':         'ДОМ РУСАЛОК',
   'nonary-games':        'NONARY GAMES / ZERO ESCAPE',
   'life-is-strange':     'LIFE IS STRANGE',
   'dragon-age':          'DRAGON AGE',
