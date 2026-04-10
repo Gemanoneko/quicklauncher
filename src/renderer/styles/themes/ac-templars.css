@@ -1,0 +1,218 @@
+/* ══ ASSASSIN'S CREED: TEMPLARS ═══════════════════════════════════════════════
+   May the Father of Understanding guide us. Order. Purpose. Direction.
+   The red cross on cold stone. The Templar Order imposes structure
+   where the Assassins sow chaos. COLD AUTHORITARIAN GRID paradigm.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* COLD STONE — opaque, heavy, authoritarian. No transparency. */
+  --bg:           #08080A;
+  --panel-bg:     rgba(12, 12, 15, 0.99);
+  --overlay-bg:   rgba(8, 8, 10, 0.97);
+  --header-bg:    rgba(160, 20, 20, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #A0A0A8;
+  --text-dim:     rgba(120, 120, 130, 0.45);
+
+  /* Cold grey + Templar red — the only warmth is the cross */
+  --accent-c:     #B01818;   /* Templar red */
+  --accent-m:     #707880;   /* cold steel grey */
+  --accent-y:     #282830;   /* dark stone */
+
+  --border:       rgba(176, 24, 24, 0.20);
+  --border-h:     rgba(176, 24, 24, 0.50);
+
+  --glow-c:       0 0 6px rgba(176,24,24,.52), 0 0 18px rgba(176,24,24,.16);
+  --glow-m:       0 0 5px rgba(112,120,128,.42), 0 0 14px rgba(112,120,128,.12);
+  --glow-y:       0 0 5px rgba(40,40,48,.38), 0 0 14px rgba(40,40,48,.10);
+
+  --pulse-glow:   inset 0 0 20px rgba(176,24,24,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(176,24,24,.08);
+
+  --title-anim:   templar-title 10s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(176, 24, 24, 0.07);
+  --tile-hover-border: rgba(176, 24, 24, 0.38);
+  --tile-hover-shadow: 0 0 12px rgba(176, 24, 24, 0.16);
+  --tile-active-bg:    rgba(176, 24, 24, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(176,24,24,.42)) drop-shadow(0 0 10px rgba(176,24,24,.14));
+  --tile-icon-fx:      brightness(0.88) saturate(0.75) contrast(1.15);
+  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
+
+  --btn-hover-bg:   rgba(176, 24, 24, 0.08);
+  --btn-active-bg:  rgba(176, 24, 24, 0.16);
+
+  --drop-hint-border: rgba(176, 24, 24, 0.22);
+  --drop-icon-color:  rgba(176, 24, 24, 0.30);
+  --hint-sub-color:   rgba(120, 120, 130, 0.32);
+
+  --rename-dashed:    rgba(176, 24, 24, 0.35);
+  --rename-input-bg:  rgba(176, 24, 24, 0.06);
+
+  --edit-bar-bg:          rgba(112, 120, 128, 0.07);
+  --edit-bar-border:      rgba(112, 120, 128, 0.35);
+  --edit-label-color:     #707880;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #707880;
+  --btn-done-border:      rgba(112, 120, 128, 0.38);
+  --btn-done-hover-bg:    rgba(112, 120, 128, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(176, 24, 24, 0.35);
+
+  --update-bg:             rgba(112, 120, 128, 0.06);
+  --update-border:         rgba(112, 120, 128, 0.28);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(112, 120, 128, 0.25);
+  --update-btn-hover-bg:   rgba(112, 120, 128, 0.08);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      #B01818;
+  --btn-close-border:     rgba(176, 24, 24, 0.38);
+  --btn-close-hover-bg:   rgba(176, 24, 24, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(176, 24, 24, 0.06);
+  --picker-item-hover-bg:  rgba(176, 24, 24, 0.07);
+  --picker-item-active-bg: rgba(176, 24, 24, 0.14);
+  --picker-placeholder-bg: rgba(176, 24, 24, 0.06);
+
+  --skin-btn-active-bg:    rgba(176, 24, 24, 0.14);
+  --remove-btn-bg:         rgba(176, 24, 24, 0.82);
+  --remove-btn-border:     #B01818;
+}
+
+/* ── Cold stone grain + rigid authoritarian vignette ─────────────────────── */
+#app::after {
+  background:
+    /* Cold stone grain — desaturated, grey, rigid */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.2 0.2 0.22 0 0.02  0.2 0.2 0.22 0 0.02  0.22 0.22 0.25 0 0.02  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* Rigid grid lines — the Order imposes structure */
+    repeating-linear-gradient(0deg, transparent 0px, transparent 58px, rgba(112,120,128,0.018) 58px, rgba(112,120,128,0.018) 59px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 58px, rgba(112,120,128,0.018) 58px, rgba(112,120,128,0.018) 59px),
+    /* Cold vignette */
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(4,4,5,0.86) 100%),
+    /* Faint red from below — the Order's power */
+    radial-gradient(ellipse 40% 25% at 50% 100%, rgba(110,12,12,0.05) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — Templar red accent bar ─────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #B01818, rgba(130, 15, 15, 0.25));
+  box-shadow: 0 0 8px rgba(176,24,24,0.50), 0 0 20px rgba(176,24,24,0.16);
+}
+
+/* ── Grid: GRID/MOSAIC — Templar Cross at center, rigid structure ────────── */
+/* The cross is drawn with STRAIGHT LINES only. No curves. Order. */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    /* Templar Cross — the red cross imposed on a grid */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='8' font-weight='bold' letter-spacing='4' fill='rgba(176,24,24,0.48)'%3ETHE TEMPLAR ORDER%3C/text%3E%3Ctext x='250' y='38' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(112,120,128,0.35)'%3EMAY THE FATHER OF UNDERSTANDING GUIDE US%3C/text%3E%3Crect x='225' y='70' width='50' height='240' fill='rgba(176,24,24,0.22)' stroke='rgba(176,24,24,0.38)' stroke-width='1.5'/%3E%3Crect x='150' y='145' width='200' height='50' fill='rgba(176,24,24,0.22)' stroke='rgba(176,24,24,0.38)' stroke-width='1.5'/%3E%3Crect x='228' y='73' width='44' height='234' fill='none' stroke='rgba(112,120,128,0.15)' stroke-width='0.5'/%3E%3Crect x='153' y='148' width='194' height='44' fill='none' stroke='rgba(112,120,128,0.15)' stroke-width='0.5'/%3E%3Crect x='232' y='76' width='36' height='228' fill='rgba(100,8,8,0.12)'/%3E%3Crect x='156' y='152' width='188' height='36' fill='rgba(100,8,8,0.12)'/%3E%3Cline x1='100' y1='70' x2='100' y2='310' stroke='rgba(112,120,128,0.08)' stroke-width='0.5'/%3E%3Cline x1='400' y1='70' x2='400' y2='310' stroke='rgba(112,120,128,0.08)' stroke-width='0.5'/%3E%3Cline x1='100' y1='70' x2='400' y2='70' stroke='rgba(112,120,128,0.08)' stroke-width='0.5'/%3E%3Cline x1='100' y1='310' x2='400' y2='310' stroke='rgba(112,120,128,0.08)' stroke-width='0.5'/%3E%3Cline x1='175' y1='70' x2='175' y2='310' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Cline x1='325' y1='70' x2='325' y2='310' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Cline x1='100' y1='120' x2='400' y2='120' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Cline x1='100' y1='220' x2='400' y2='220' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Cline x1='100' y1='265' x2='400' y2='265' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Ctext x='65' y='85' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(176,24,24,0.42)'%3EGRAND MASTER%3C/text%3E%3Ctext x='65' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.38)'%3EHAYTHAM KENWAY%3C/text%3E%3Ctext x='65' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.35)'%3EROBERT DE SABLE%3C/text%3E%3Ctext x='65' y='136' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.32)'%3ERODORIGO BORGIA%3C/text%3E%3Ctext x='430' y='85' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(176,24,24,0.42)'%3EDIRECTIVE%3C/text%3E%3Ctext x='430' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.38)'%3EORDER%3C/text%3E%3Ctext x='430' y='115' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.35)'%3EPURPOSE%3C/text%3E%3Ctext x='430' y='130' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.32)'%3EDIRECTION%3C/text%3E%3Ctext x='250' y='330' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' letter-spacing='3' fill='rgba(176,24,24,0.40)'%3ETHE FATHER OF UNDERSTANDING%3C/text%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(112,120,128,0.25)'%3ETEMPLAR ORDER -- ABSTERGO INDUSTRIES -- CONTROL%3C/text%3E%3Ccircle cx='55' cy='55' r='0.6' fill='rgba(176,24,24,0.14)'/%3E%3Ccircle cx='445' cy='50' r='0.5' fill='rgba(112,120,128,0.10)'/%3E%3Ccircle cx='50' cy='340' r='0.5' fill='rgba(176,24,24,0.08)'/%3E%3Ccircle cx='450' cy='340' r='0.6' fill='rgba(112,120,128,0.08)'/%3E%3C/svg%3E") center / contain no-repeat,
+    /* Underlying grid — the Order ALWAYS has structure visible */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect x='0' y='0' width='60' height='60' fill='none' stroke='rgba(112,120,128,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-size: contain, 60px 60px;
+  background-repeat: no-repeat, repeat;
+  background-position: center, 0 0;
+  opacity: 0.82;
+  animation: templar-cross 10s ease-in-out infinite;
+}
+
+@keyframes templar-cross {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+#header::after {
+  content: 'TEMPLAR ORDER // ABSTERGO // THE FATHER OF UNDERSTANDING';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(176, 60, 60, 0.58);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'MAY THE\AFATHER OF\AUNDERSTANDING\AGUIDE US\A-----------\AORDER\APURPOSE\ADIRECTION\A-----------\ACONTROL';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(176, 24, 24, 0.08); white-space: pre;
+  animation: templar-readout 10s ease-in-out infinite;
+}
+
+@keyframes templar-readout {
+  0%, 100% { color: rgba(176,24,24,.08); }
+  28%       { color: rgba(176,24,24,.12); }
+  65%       { color: rgba(176,24,24,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(176,24,24,.15); }
+  92%       { color: rgba(176,24,24,.08); }
+}
+
+#edit-bar::after {
+  content: 'ABSTERGO INDUSTRIES // ORDER THROUGH CONTROL';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 8px; letter-spacing: 2px; color: rgba(112, 120, 128, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 5px; }
+
+@keyframes templar-title {
+  0%        { color: #A0A0A8; text-shadow: 0 0 5px rgba(176,24,24,.35), 0 0 16px rgba(176,24,24,.12); }
+  35%       { color: #C03030; text-shadow: 0 0 10px rgba(176,24,24,.55), 0 0 26px rgba(176,24,24,.20); }
+  65%       { color: #808088; text-shadow: 0 0 3px rgba(112,120,128,.25); }
+  87%       { color: #A0A0A8; text-shadow: 0 0 5px rgba(176,24,24,.30); }
+  88%       { color: #FF4444; text-shadow: 0 0 22px rgba(255,68,68,.78), 0 0 48px rgba(176,24,24,.38); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #A0A0A8; text-shadow: 0 0 6px rgba(176,24,24,.40); opacity: 1; }
+  100%      { color: #A0A0A8; text-shadow: 0 0 5px rgba(176,24,24,.35), 0 0 16px rgba(176,24,24,.12); }
+}
+
+#app { animation: templar-border 10s ease-in-out infinite; }
+@keyframes templar-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(176,24,24,.18), inset 0 0 18px rgba(176,24,24,.03); }
+  35%      { box-shadow: 0 0 0 1px rgba(176,24,24,.42), inset 0 0 26px rgba(176,24,24,.06); }
+  65%      { box-shadow: 0 0 0 1px rgba(112,120,128,.18), inset 0 0 16px rgba(112,120,128,.03); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,68,68,.72), inset 0 0 45px rgba(176,24,24,.12), 0 0 16px rgba(176,24,24,.20); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(176,24,24,.32), inset 0 0 20px rgba(176,24,24,.04); }
+}
+
+#theme-banner { background: rgba(8, 8, 10, 0.99); border-top-color: rgba(176, 24, 24, 0.20); }
+#theme-banner::before { content: '✚'; color: #B01818; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 2px; color: rgba(176, 60, 60, 0.62); }
+
+/* NO particles. The Order is rigid. Nothing drifts. Everything is in place. */
+#particles {
+  background: none;
+}
+
+/* Tile: cold military scan */
+.app-tile::before {
+  width: 100%; height: 3px;
+  left: 0; top: -3px;
+  transform: none;
+  background: var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }

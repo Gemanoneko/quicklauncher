@@ -1,0 +1,211 @@
+/* ══ ASSASSIN'S CREED: ASSASSINS ══════════════════════════════════════════════
+   Nothing is true. Everything is permitted. The Creed. The hidden blade.
+   Eagle Vision reveals the world in golden light — allies, enemies, truth.
+   TRANSLUCENT EAGLE VISION — the desktop IS the world you see through.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* TRANSLUCENT — Eagle Vision overlaid on reality */
+  --bg:           rgba(8, 6, 2, 0.52);
+  --panel-bg:     rgba(12, 10, 4, 0.82);
+  --overlay-bg:   rgba(8, 6, 2, 0.88);
+  --header-bg:    rgba(200, 160, 40, 0.06);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #C0A868;
+  --text-dim:     rgba(170, 140, 80, 0.45);
+
+  --accent-c:     #C8A030;   /* Eagle Vision gold */
+  --accent-m:     #A02020;   /* assassin red (hidden blade blood) */
+  --accent-y:     #806020;   /* aged leather */
+
+  --border:       rgba(200, 160, 48, 0.20);
+  --border-h:     rgba(200, 160, 48, 0.48);
+
+  --glow-c:       0 0 7px rgba(200,160,48,.55), 0 0 20px rgba(200,160,48,.18);
+  --glow-m:       0 0 6px rgba(160,32,32,.50), 0 0 18px rgba(160,32,32,.16);
+  --glow-y:       0 0 5px rgba(128,96,32,.45), 0 0 14px rgba(128,96,32,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(200,160,48,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(200,160,48,.08);
+
+  --title-anim:   assassin-title 12s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(200, 160, 48, 0.07);
+  --tile-hover-border: rgba(200, 160, 48, 0.38);
+  --tile-hover-shadow: 0 0 12px rgba(200, 160, 48, 0.15);
+  --tile-active-bg:    rgba(200, 160, 48, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(200,160,48,.48)) drop-shadow(0 0 12px rgba(200,160,48,.16));
+  --tile-icon-fx:      brightness(0.92) saturate(1.1) contrast(1.1);
+  --tile-icon-shape:   polygon(50% 0%, 100% 35%, 80% 100%, 20% 100%, 0% 35%);
+  --tile-label-spacing:   0.8px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 7s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 2s ease-out forwards;
+
+  --btn-hover-bg:   rgba(200, 160, 48, 0.09);
+  --btn-active-bg:  rgba(200, 160, 48, 0.18);
+
+  --drop-hint-border: rgba(200, 160, 48, 0.22);
+  --drop-icon-color:  rgba(200, 160, 48, 0.30);
+  --hint-sub-color:   rgba(170, 140, 80, 0.32);
+
+  --rename-dashed:    rgba(200, 160, 48, 0.38);
+  --rename-input-bg:  rgba(200, 160, 48, 0.06);
+
+  --edit-bar-bg:          rgba(160, 32, 32, 0.07);
+  --edit-bar-border:      rgba(160, 32, 32, 0.35);
+  --edit-label-color:     #A02020;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #A02020;
+  --btn-done-border:      rgba(160, 32, 32, 0.38);
+  --btn-done-hover-bg:    rgba(160, 32, 32, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(200, 160, 48, 0.38);
+
+  --update-bg:             rgba(128, 96, 32, 0.06);
+  --update-border:         rgba(200, 160, 48, 0.28);
+  --update-color:          var(--accent-c);
+  --update-btn-border:     rgba(200, 160, 48, 0.25);
+  --update-btn-hover-bg:   rgba(200, 160, 48, 0.08);
+  --update-btn-hover-glow: var(--glow-c);
+
+  --btn-close-color:      #C8A030;
+  --btn-close-border:     rgba(200, 160, 48, 0.35);
+  --btn-close-hover-bg:   rgba(200, 160, 48, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(200, 160, 48, 0.06);
+  --picker-item-hover-bg:  rgba(200, 160, 48, 0.07);
+  --picker-item-active-bg: rgba(200, 160, 48, 0.14);
+  --picker-placeholder-bg: rgba(200, 160, 48, 0.06);
+
+  --skin-btn-active-bg:    rgba(200, 160, 48, 0.14);
+  --remove-btn-bg:         rgba(160, 32, 32, 0.82);
+  --remove-btn-border:     #A02020;
+}
+
+/* ── Eagle Vision grain — warm golden ambient on translucent bg ───────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.45 0.30 0.10 0 0.03  0.35 0.22 0.08 0 0.02  0.10 0.06 0.02 0 0  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 35%, rgba(4,3,1,0.55) 100%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(160,120,20,0.06) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — Eagle Vision gold accent bar ───────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #C8A030, rgba(150, 120, 30, 0.25));
+  box-shadow: 0 0 8px rgba(200,160,48,0.48), 0 0 20px rgba(200,160,48,0.15);
+}
+
+/* ── Grid: DIAGONAL — The Hidden Blade, positioned diagonally ────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='4' fill='rgba(200,160,48,0.48)'%3ENOTHING IS TRUE%3C/text%3E%3Ctext x='250' y='38' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(170,140,80,0.32)'%3EEVERYTHING IS PERMITTED%3C/text%3E%3Cpath d='M 120,310 L 380,70' stroke='rgba(160,130,40,0.40)' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M 118,308 L 378,68' stroke='rgba(128,100,28,0.18)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 380,70 L 395,58 L 400,65 L 385,72' fill='rgba(160,130,40,0.35)' stroke='rgba(200,160,48,0.30)' stroke-width='0.8'/%3E%3Crect x='105' y='298' width='35' height='22' rx='3' fill='rgba(60,48,18,0.40)' stroke='rgba(128,100,28,0.35)' stroke-width='1'/%3E%3Crect x='108' y='301' width='29' height='16' rx='2' fill='none' stroke='rgba(100,80,25,0.18)' stroke-width='0.5'/%3E%3Cline x1='122' y1='298' x2='122' y2='320' stroke='rgba(128,100,28,0.22)' stroke-width='0.5'/%3E%3Crect x='92' y='305' width='18' height='10' rx='4' fill='rgba(50,40,15,0.45)' stroke='rgba(128,100,28,0.30)' stroke-width='0.8'/%3E%3Crect x='95' y='308' width='12' height='4' rx='2' fill='rgba(128,100,28,0.22)'/%3E%3Ctext x='200' y='230' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='2' fill='rgba(200,160,48,0.42)'%3EHIDDEN BLADE%3C/text%3E%3Ctext x='320' y='120' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,160,48,0.35)'%3ELEAP OF FAITH%3C/text%3E%3Ctext x='320' y='135' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(170,140,80,0.28)'%3EEAGLE VISION ACTIVE%3C/text%3E%3Ccircle cx='250' cy='190' r='35' fill='none' stroke='rgba(200,160,48,0.18)' stroke-width='0.8' stroke-dasharray='4,6'/%3E%3Ccircle cx='250' cy='190' r='18' fill='none' stroke='rgba(200,160,48,0.22)' stroke-width='0.5'/%3E%3Ctext x='80' y='85' font-family='Georgia,serif' font-size='6.5' font-style='italic' letter-spacing='1' fill='rgba(200,160,48,0.45)'%3ETHE CREED%3C/text%3E%3Cline x1='25' y1='90' x2='150' y2='90' stroke='rgba(200,160,48,0.18)' stroke-width='0.5'/%3E%3Ctext x='25' y='108' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(170,140,80,0.38)'%3ESTAY YOUR BLADE%3C/text%3E%3Ctext x='25' y='122' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(170,140,80,0.35)'%3EHIDE IN PLAIN SIGHT%3C/text%3E%3Ctext x='25' y='136' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(170,140,80,0.32)'%3ENEVER COMPROMISE%3C/text%3E%3Ctext x='25' y='150' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(170,140,80,0.30)'%3ETHE BROTHERHOOD%3C/text%3E%3Ctext x='400' y='280' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(200,160,48,0.38)'%3EMENTORS%3C/text%3E%3Ctext x='400' y='296' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(170,140,80,0.35)'%3EALTAIR%3C/text%3E%3Ctext x='400' y='310' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(170,140,80,0.32)'%3EEZIO%3C/text%3E%3Ctext x='400' y='324' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(170,140,80,0.30)'%3EBAYEK%3C/text%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(170,140,80,0.25)'%3ETHE ASSASSIN BROTHERHOOD -- WE WORK IN THE DARK%3C/text%3E%3Ccircle cx='50' cy='55' r='0.7' fill='rgba(200,160,48,0.18)'/%3E%3Ccircle cx='450' cy='48' r='0.5' fill='rgba(200,160,48,0.14)'/%3E%3Ccircle cx='45' cy='250' r='0.8' fill='rgba(200,160,48,0.10)'/%3E%3Ccircle cx='455' cy='200' r='0.6' fill='rgba(170,140,80,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: assassin-blade 12s ease-in-out infinite;
+}
+
+@keyframes assassin-blade {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+#header::after {
+  content: 'THE BROTHERHOOD // EAGLE VISION // NOTHING IS TRUE';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 160, 48, 0.58);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'NOTHING IS\ATRUE\A-----------\AEVERYTHING\AIS\APERMITTED\A-----------\AWE WORK IN\ATHE DARK\ATO SERVE\ATHE LIGHT';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(200, 160, 48, 0.08); white-space: pre;
+  animation: assassin-readout 12s ease-in-out infinite;
+}
+
+@keyframes assassin-readout {
+  0%, 100% { color: rgba(200,160,48,.08); }
+  28%       { color: rgba(200,160,48,.12); }
+  65%       { color: rgba(200,160,48,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(200,160,48,.15); }
+  92%       { color: rgba(200,160,48,.08); }
+}
+
+#edit-bar::after {
+  content: 'REQUIESCAT IN PACE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2.5px; color: rgba(160, 32, 32, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+@keyframes assassin-title {
+  0%        { color: #C0A868; text-shadow: 0 0 6px rgba(200,160,48,.42), 0 0 18px rgba(200,160,48,.14); }
+  35%       { color: #D8C060; text-shadow: 0 0 10px rgba(200,160,48,.58), 0 0 28px rgba(200,160,48,.22); }
+  65%       { color: #907840; text-shadow: 0 0 4px rgba(128,96,32,.28); }
+  87%       { color: #C0A868; text-shadow: 0 0 6px rgba(200,160,48,.38); }
+  88%       { color: #FFD870; text-shadow: 0 0 22px rgba(255,216,112,.78), 0 0 50px rgba(200,160,48,.38); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C0A868; text-shadow: 0 0 8px rgba(200,160,48,.48); opacity: 1; }
+  100%      { color: #C0A868; text-shadow: 0 0 6px rgba(200,160,48,.42), 0 0 18px rgba(200,160,48,.14); }
+}
+
+#app { animation: assassin-border 12s ease-in-out infinite; }
+@keyframes assassin-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,160,48,.18), inset 0 0 18px rgba(200,160,48,.03); }
+  35%      { box-shadow: 0 0 0 1px rgba(200,160,48,.38), inset 0 0 26px rgba(200,160,48,.06); }
+  65%      { box-shadow: 0 0 0 1px rgba(128,96,32,.18), inset 0 0 16px rgba(128,96,32,.03); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,216,112,.72), inset 0 0 45px rgba(200,160,48,.10), 0 0 16px rgba(200,160,48,.20); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(200,160,48,.32), inset 0 0 20px rgba(200,160,48,.04); }
+}
+
+#theme-banner { background: rgba(8, 6, 2, 0.92); border-top-color: rgba(200, 160, 48, 0.20); }
+#theme-banner::before { content: '◄'; color: #C8A030; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, serif; font-style: italic; color: rgba(190, 155, 60, 0.62); }
+
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='440'%3E%3Ccircle cx='35' cy='60' r='1.5' fill='rgba(200,160,48,0.18)'/%3E%3Ccircle cx='120' cy='200' r='1' fill='rgba(170,140,80,0.14)'/%3E%3Ccircle cx='180' cy='340' r='1.8' fill='rgba(200,160,48,0.12)'/%3E%3Ccircle cx='65' cy='400' r='0.8' fill='rgba(170,140,80,0.15)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='600'%3E%3Ccircle cx='50' cy='120' r='1.2' fill='rgba(200,160,48,0.10)'/%3E%3Ccircle cx='170' cy='320' r='1.5' fill='rgba(170,140,80,0.08)'/%3E%3Ccircle cx='250' cy='500' r='1' fill='rgba(200,160,48,0.06)'/%3E%3C/svg%3E") repeat;
+  background-size: 220px 440px, 300px 600px;
+  animation: assassin-dust 18s linear infinite;
+}
+@keyframes assassin-dust {
+  from { background-position: 0 -440px, 20px -600px; }
+  to   { background-position: 25px 0, -12px 0; }
+}
+
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(200,160,48,0.35);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
