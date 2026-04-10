@@ -1,7 +1,7 @@
 const { ipcMain, dialog, shell, app, nativeImage, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { execFile } = require('child_process');
+const { execFile, execFileSync } = require('child_process');
 const { randomUUID } = require('crypto');
 const { checkForUpdates } = require('./updater');
 
@@ -124,6 +124,44 @@ public static class IconHelper {
     } catch { return null; }
   }
 }`;
+
+// Pre-compiled DLL path — avoids inline Add-Type -TypeDefinition which triggers
+// antivirus heuristics (Bitdefender et al. flag inline C# + DllImport as malicious).
+// We compile once with csc.exe and cache the DLL in userData.
+let _iconHelperDll = null;
+function getIconHelperDll() {
+  if (_iconHelperDll && fs.existsSync(_iconHelperDll)) return _iconHelperDll;
+  const dllPath = path.join(app.getPath('userData'), 'ql-icon-helper.dll');
+  if (fs.existsSync(dllPath)) { _iconHelperDll = dllPath; return dllPath; }
+  // Find csc.exe from .NET Framework (ships with every Windows install)
+  const winDir = process.env.WINDIR || 'C:\\Windows';
+  const candidates = [
+    path.join(winDir, 'Microsoft.NET', 'Framework64', 'v4.0.30319', 'csc.exe'),
+    path.join(winDir, 'Microsoft.NET', 'Framework', 'v4.0.30319', 'csc.exe'),
+  ];
+  const csc = candidates.find(c => fs.existsSync(c));
+  if (!csc) return null;
+  const csPath = path.join(app.getPath('temp'), 'QLIconHelper.cs');
+  try {
+    fs.writeFileSync(csPath, ICON_HELPER_CS);
+    execFileSync(csc, [
+      '/target:library', '/reference:System.Drawing.dll',
+      '/nologo', '/optimize', `/out:${dllPath}`, csPath
+    ], { windowsHide: true, timeout: 30000 });
+    _iconHelperDll = dllPath;
+    try { fs.unlinkSync(csPath); } catch { /* ignore */ }
+    return dllPath;
+  } catch { return null; }
+}
+
+// Returns the PowerShell snippet to load the icon helper.
+// Uses pre-compiled DLL (AV-safe) or falls back to inline Add-Type (legacy).
+function iconHelperLoadSnippet() {
+  const dll = getIconHelperDll();
+  if (dll) return `Add-Type -Path '${dll.replace(/'/g, "''")}'`;
+  // Fallback: inline compilation (may trigger AV on some systems)
+  return `Add-Type -TypeDefinition @'\n${ICON_HELPER_CS}\n'@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue`;
+}
 
 // Crop background padding from an icon image.
 // Detects background via corner sampling (handles both transparent and solid backgrounds).
@@ -278,11 +316,7 @@ Get-AppxPackage -ErrorAction SilentlyContinue | ForEach-Object { $pkgMap[$_.Pack
 $steamInstall = $null
 try { $steamInstall = (Get-ItemProperty 'HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam' -EA SilentlyContinue).InstallPath } catch {}
 if (-not $steamInstall) { try { $steamInstall = (Get-ItemProperty 'HKLM:\\SOFTWARE\\Valve\\Steam' -EA SilentlyContinue).InstallPath } catch {} }
-try {
-  Add-Type -TypeDefinition @'
-${ICON_HELPER_CS}
-'@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue
-} catch {}
+try { ${iconHelperLoadSnippet()} } catch {}
 $apps = Get-StartApps | ForEach-Object {
   $appId = $_.AppID; $name = $_.Name; $iconPath = $null; $exePath = $null
   if ($appId -match '^steam://rungameid/(\\d+)$') {
@@ -583,11 +617,7 @@ function removeSolidBackground(img) {
 // Path is passed via environment variable to avoid PowerShell injection via special characters.
 function getFolderThumbnailBase64(folderPath) {
   return new Promise((resolve) => {
-    const ps = `try {
-  Add-Type -TypeDefinition @'
-${ICON_HELPER_CS}
-'@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue
-} catch {}
+    const ps = `try { ${iconHelperLoadSnippet()} } catch {}
 $b = [IconHelper]::GetThumbnailBase64($env:QL_PATH)
 if ($b) { Write-Output $b }`;
     execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
@@ -635,11 +665,7 @@ try {
 // Path is passed via environment variable to avoid PowerShell injection.
 function getJumboIconBase64(exePath) {
   return new Promise((resolve) => {
-    const ps = `try {
-  Add-Type -TypeDefinition @'
-${ICON_HELPER_CS}
-'@ -ReferencedAssemblies System.Drawing -EA SilentlyContinue
-} catch {}
+    const ps = `try { ${iconHelperLoadSnippet()} } catch {}
 $b = [IconHelper]::GetBase64($env:QL_PATH)
 if ($b) { Write-Output $b }`;
     execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
