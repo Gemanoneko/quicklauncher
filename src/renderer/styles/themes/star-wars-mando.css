@@ -1,0 +1,211 @@
+/* ══ STAR WARS: MANDALORIAN ═══════════════════════════════════════════════════
+   This is the Way. Beskar steel. The T-visor. Bounty hunting is a
+   complicated profession. Clan of two. Wherever I go, he goes.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* DESATURATED METALLIC — almost monochrome silver + one warm accent */
+  --bg:           #0A0B0C;
+  --panel-bg:     rgba(14, 15, 17, 0.99);
+  --overlay-bg:   rgba(10, 11, 13, 0.97);
+  --header-bg:    rgba(140, 130, 110, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #A0A098;
+  --text-dim:     rgba(120, 118, 110, 0.45);
+
+  --accent-c:     #8A8478;   /* beskar silver-warm */
+  --accent-m:     #C08830;   /* Mandalorian gold/amber */
+  --accent-y:     #484440;   /* dark steel */
+
+  --border:       rgba(140, 130, 110, 0.20);
+  --border-h:     rgba(140, 130, 110, 0.48);
+
+  --glow-c:       0 0 6px rgba(140,130,110,.48), 0 0 18px rgba(140,130,110,.15);
+  --glow-m:       0 0 6px rgba(192,136,48,.52), 0 0 18px rgba(192,136,48,.18);
+  --glow-y:       0 0 5px rgba(72,68,64,.40), 0 0 14px rgba(72,68,64,.12);
+
+  --pulse-glow:   inset 0 0 20px rgba(140,130,110,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(140,130,110,.08);
+
+  --title-anim:   mando-title 10s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(140, 130, 110, 0.07);
+  --tile-hover-border: rgba(140, 130, 110, 0.38);
+  --tile-hover-shadow: 0 0 12px rgba(140, 130, 110, 0.15);
+  --tile-active-bg:    rgba(140, 130, 110, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(140,130,110,.42)) drop-shadow(0 0 10px rgba(192,136,48,.15));
+  --tile-icon-fx:      brightness(0.88) saturate(0.7) contrast(1.15);
+  --tile-icon-shape:   polygon(0% 0%, 40% 0%, 50% 10%, 60% 0%, 100% 0%, 100% 100%, 0% 100%);
+  --tile-label-spacing:   1.2px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
+
+  --btn-hover-bg:   rgba(140, 130, 110, 0.09);
+  --btn-active-bg:  rgba(140, 130, 110, 0.18);
+
+  --drop-hint-border: rgba(140, 130, 110, 0.22);
+  --drop-icon-color:  rgba(192, 136, 48, 0.28);
+  --hint-sub-color:   rgba(120, 118, 110, 0.32);
+
+  --rename-dashed:    rgba(192, 136, 48, 0.38);
+  --rename-input-bg:  rgba(140, 130, 110, 0.06);
+
+  --edit-bar-bg:          rgba(192, 136, 48, 0.07);
+  --edit-bar-border:      rgba(192, 136, 48, 0.38);
+  --edit-label-color:     #C08830;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #C08830;
+  --btn-done-border:      rgba(192, 136, 48, 0.40);
+  --btn-done-hover-bg:    rgba(192, 136, 48, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(140, 130, 110, 0.38);
+
+  --update-bg:             rgba(72, 68, 64, 0.06);
+  --update-border:         rgba(140, 130, 110, 0.28);
+  --update-color:          var(--accent-c);
+  --update-btn-border:     rgba(140, 130, 110, 0.25);
+  --update-btn-hover-bg:   rgba(140, 130, 110, 0.08);
+  --update-btn-hover-glow: var(--glow-c);
+
+  --btn-close-color:      #C08830;
+  --btn-close-border:     rgba(192, 136, 48, 0.35);
+  --btn-close-hover-bg:   rgba(192, 136, 48, 0.10);
+  --btn-close-hover-glow: var(--glow-m);
+
+  --picker-search-bg:      rgba(140, 130, 110, 0.06);
+  --picker-item-hover-bg:  rgba(140, 130, 110, 0.07);
+  --picker-item-active-bg: rgba(140, 130, 110, 0.14);
+  --picker-placeholder-bg: rgba(140, 130, 110, 0.06);
+
+  --skin-btn-active-bg:    rgba(140, 130, 110, 0.16);
+  --remove-btn-bg:         rgba(192, 136, 48, 0.85);
+  --remove-btn-border:     #C08830;
+}
+
+/* ── Beskar metal grain + dark steel vignette ────────────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.25 0.24 0.22 0 0.02  0.25 0.24 0.22 0 0.02  0.24 0.23 0.21 0 0.01  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(4,4,5,0.85) 100%),
+    radial-gradient(ellipse 40% 30% at 50% 40%, rgba(80,76,68,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 25% at 0% 100%, rgba(120,85,30,0.04) 0%, transparent 55%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — beskar warm accent bar ─────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #8A8478, rgba(100, 95, 82, 0.25));
+  box-shadow: 0 0 6px rgba(140,130,110,0.42), 0 0 18px rgba(140,130,110,0.14);
+}
+
+/* ── Grid: FULL-BLEED — The T-visor helmet, filling the viewport ─────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Cpath d='M 100,40 Q 100,20 120,15 L 250,8 L 380,15 Q 400,20 400,40 L 405,200 Q 400,280 370,320 Q 340,350 250,365 Q 160,350 130,320 Q 100,280 95,200 Z' fill='rgba(22,22,25,0.45)' stroke='rgba(140,130,110,0.30)' stroke-width='1.5'/%3E%3Cpath d='M 108,45 Q 108,28 125,22 L 250,16 L 375,22 Q 392,28 392,45 L 397,198 Q 392,275 365,312 Q 336,342 250,356 Q 164,342 135,312 Q 108,275 103,198 Z' fill='none' stroke='rgba(120,115,100,0.15)' stroke-width='0.5'/%3E%3Cpath d='M 130,160 L 230,160 L 245,175 L 255,175 L 270,160 L 370,160 L 375,170 L 370,180 L 270,180 L 255,195 L 245,195 L 230,180 L 130,180 L 125,170 Z' fill='rgba(10,10,12,0.60)' stroke='rgba(140,130,110,0.42)' stroke-width='1.5'/%3E%3Cpath d='M 135,163 L 228,163 L 243,178 L 257,178 L 272,163 L 365,163 L 369,170 L 365,177 L 272,177 L 257,192 L 243,192 L 228,177 L 135,177 L 131,170 Z' fill='none' stroke='rgba(120,115,100,0.18)' stroke-width='0.5'/%3E%3Cline x1='200' y1='168' x2='228' y2='168' stroke='rgba(140,130,110,0.15)' stroke-width='0.5'/%3E%3Cline x1='200' y1='172' x2='228' y2='172' stroke='rgba(140,130,110,0.12)' stroke-width='0.5'/%3E%3Cline x1='272' y1='168' x2='300' y2='168' stroke='rgba(140,130,110,0.15)' stroke-width='0.5'/%3E%3Cline x1='272' y1='172' x2='300' y2='172' stroke='rgba(140,130,110,0.12)' stroke-width='0.5'/%3E%3Cline x1='250' y1='200' x2='250' y2='280' stroke='rgba(120,115,100,0.10)' stroke-width='0.5'/%3E%3Cpath d='M 210,220 Q 230,215 250,220 Q 270,215 290,220' fill='none' stroke='rgba(140,130,110,0.12)' stroke-width='0.5'/%3E%3Cpath d='M 220,250 Q 235,245 250,248 Q 265,245 280,250' fill='none' stroke='rgba(120,115,100,0.08)' stroke-width='0.5'/%3E%3Cline x1='180' y1='80' x2='250' y2='110' stroke='rgba(140,130,110,0.10)' stroke-width='0.5'/%3E%3Cline x1='320' y1='80' x2='250' y2='110' stroke='rgba(140,130,110,0.10)' stroke-width='0.5'/%3E%3Ctext x='250' y='130' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(140,130,110,0.28)'%3EBESKAR ALLOY%3C/text%3E%3Ctext x='250' y='310' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='3' fill='rgba(192,136,48,0.35)'%3ETHIS IS THE WAY%3C/text%3E%3Ctext x='250' y='325' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(140,130,110,0.22)'%3EMANDALORIAN CREED%3C/text%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='3' fill='rgba(140,130,110,0.25)'%3ECLAN MUDHORN%3C/text%3E%3Ctext x='250' y='365' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(120,115,100,0.18)'%3EBOUNTY HUNTERS GUILD -- NEVARRO%3C/text%3E%3Ccircle cx='55' cy='55' r='0.6' fill='rgba(140,130,110,0.14)'/%3E%3Ccircle cx='445' cy='50' r='0.5' fill='rgba(140,130,110,0.10)'/%3E%3Ccircle cx='50' cy='300' r='0.7' fill='rgba(192,136,48,0.08)'/%3E%3Ccircle cx='450' cy='310' r='0.6' fill='rgba(140,130,110,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.65;
+  animation: mando-helm 10s ease-in-out infinite;
+}
+
+@keyframes mando-helm {
+  0%, 100% { opacity: 0.65; }
+  28%       { opacity: 0.72; }
+  65%       { opacity: 0.58; }
+  87%       { opacity: 0.58; }
+  88%       { opacity: 0.04; }
+  89%       { opacity: 0.78; }
+  92%       { opacity: 0.65; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'MANDALORIAN // BESKAR // THIS IS THE WAY';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(160, 152, 135, 0.58);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THIS IS\ATHE WAY\A-----------\ACLAN OF\ATWO\A-----------\ABOUNTY\AHUNTING\AIS A\ACOMPLICATED\APROFESSION';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(140, 130, 110, 0.08); white-space: pre;
+  animation: mando-readout 10s ease-in-out infinite;
+}
+
+@keyframes mando-readout {
+  0%, 100% { color: rgba(140,130,110,.08); }
+  28%       { color: rgba(140,130,110,.12); }
+  65%       { color: rgba(140,130,110,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(140,130,110,.16); }
+  92%       { color: rgba(140,130,110,.08); }
+}
+
+#edit-bar::after {
+  content: 'WEAPONS ARE MY RELIGION';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 8px; letter-spacing: 2.5px; color: rgba(192, 136, 48, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 5px; }
+
+@keyframes mando-title {
+  0%        { color: #A0A098; text-shadow: 0 0 5px rgba(140,130,110,.35), 0 0 16px rgba(140,130,110,.12); }
+  35%       { color: #C0B8A8; text-shadow: 0 0 8px rgba(140,130,110,.50), 0 0 24px rgba(192,136,48,.18); }
+  65%       { color: #787470; text-shadow: 0 0 3px rgba(72,68,64,.25); }
+  87%       { color: #A0A098; text-shadow: 0 0 5px rgba(140,130,110,.30); }
+  88%       { color: #E0D8C8; text-shadow: 0 0 18px rgba(224,216,200,.72), 0 0 42px rgba(192,136,48,.35); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #A0A098; text-shadow: 0 0 6px rgba(140,130,110,.40); opacity: 1; }
+  100%      { color: #A0A098; text-shadow: 0 0 5px rgba(140,130,110,.35), 0 0 16px rgba(140,130,110,.12); }
+}
+
+#app { animation: mando-border 10s ease-in-out infinite; }
+@keyframes mando-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(140,130,110,.18), inset 0 0 18px rgba(140,130,110,.03); }
+  35%      { box-shadow: 0 0 0 1px rgba(140,130,110,.38), inset 0 0 26px rgba(140,130,110,.06); }
+  65%      { box-shadow: 0 0 0 1px rgba(72,68,64,.18), inset 0 0 16px rgba(72,68,64,.03); }
+  88%      { box-shadow: 0 0 0 2px rgba(224,216,200,.70), inset 0 0 45px rgba(192,136,48,.10), 0 0 16px rgba(140,130,110,.20); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(140,130,110,.32), inset 0 0 20px rgba(140,130,110,.04); }
+}
+
+#theme-banner { background: rgba(10, 11, 13, 0.99); border-top-color: rgba(140, 130, 110, 0.18); }
+#theme-banner::before { content: '⊤'; color: #8A8478; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 2px; color: rgba(160, 152, 135, 0.60); }
+
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Crect x='30' y='50' width='3' height='1' fill='rgba(140,130,110,0.14)' rx='0.5'/%3E%3Crect x='100' y='180' width='2' height='1' fill='rgba(192,136,48,0.10)' rx='0.5'/%3E%3Crect x='160' y='300' width='3' height='1' fill='rgba(140,130,110,0.10)' rx='0.5'/%3E%3Crect x='70' y='350' width='2' height='1' fill='rgba(120,115,100,0.12)' rx='0.5'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Crect x='40' y='80' width='3' height='1' fill='rgba(140,130,110,0.08)' rx='0.5'/%3E%3Crect x='150' y='280' width='2' height='1' fill='rgba(192,136,48,0.06)' rx='0.5'/%3E%3Crect x='220' y='450' width='3' height='1' fill='rgba(120,115,100,0.06)' rx='0.5'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 280px 560px;
+  animation: mando-dust 16s linear infinite;
+}
+@keyframes mando-dust {
+  from { background-position: 0 0, 15px 0; }
+  to   { background-position: 25px -400px, -10px -560px; }
+}
+
+.app-tile::before {
+  width: 100%; height: 3px;
+  left: 0; top: -3px;
+  transform: none;
+  background: var(--tile-hover-border);
+}
+.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }
