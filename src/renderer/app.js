@@ -149,6 +149,13 @@ const THEME_BANNERS = {
     'APOLOGY ACCEPTED, CAPTAIN NEEDA.',
     'THE EMPEROR IS NOT AS FORGIVING AS I AM.',
   ],
+  'star-wars-sith': [
+    'PEACE IS A LIE. THERE IS ONLY PASSION.',
+    'THE DARK SIDE OF THE FORCE IS A PATHWAY TO MANY ABILITIES SOME CONSIDER UNNATURAL.',
+    'GOOD. I CAN FEEL YOUR ANGER.',
+    'EXECUTE ORDER 66.',
+    'UNLIMITED POWER.',
+  ],
   'star-wars-republic': [
     'THERE IS NO EMOTION, THERE IS PEACE. THERE IS NO IGNORANCE, THERE IS KNOWLEDGE.',
     'ONCE YOU START DOWN THE DARK PATH, FOREVER WILL IT DOMINATE YOUR DESTINY.',
@@ -483,6 +490,7 @@ const THEME_NAMES = {
   'portal':              'PORTAL',
   'star-wars-rebel':     'STAR WARS: REBEL ALLIANCE',
   'star-wars-empire':    'STAR WARS: GALACTIC EMPIRE',
+  'star-wars-sith':      'STAR WARS: SITH',
   'star-wars-republic':  'STAR WARS: OLD REPUBLIC',
   'doctor-who':          'DOCTOR WHO',
   'akira':               'AKIRA',
