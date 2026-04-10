@@ -45,7 +45,7 @@
                           );
 
   /* Title animation */
-  --title-anim:           cp-glitch 6s infinite;
+  --title-anim:           cp-glitch 10s infinite;
 
   /* Tiles */
   --tile-hover-bg:        rgba(0, 240, 255, 0.07);
@@ -115,10 +115,11 @@
   --drag-over-glow:       inset 0 0 24px rgba(0, 240, 255, 0.3);
 }
 
-/* ── Scanline overlay ──────────────────────────────────────────────────────── */
+/* ── Scanline overlay + fractal noise ──────────────────────────────────────── */
 #app::after {
   content: '';
   background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.1 0.2 0.3 0 0.01  0.1 0.2 0.3 0 0.02  0.2 0.3 0.4 0 0.03  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
     repeating-linear-gradient(
       to bottom,
       transparent 0px,
@@ -156,6 +157,12 @@
     /* bottom-right bracket */
     linear-gradient(to left,   rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) calc(100% - 8px) calc(100% - 8px) / 18px 2px no-repeat,
     linear-gradient(to top,    rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) calc(100% - 9px) calc(100% - 8px) / 2px 18px no-repeat;
+  animation: cp-bracket-sync 10s ease-in-out infinite;
+}
+@keyframes cp-bracket-sync {
+  0%, 87%, 90%, 100% { opacity: 1; }
+  88%                 { opacity: 1; filter: brightness(3) drop-shadow(0 0 4px #fff); }
+  89%                 { opacity: 0; }
 }
 
 /* ── Grid faint horizontal grid lines ─────────────────────────────────────── */
@@ -176,10 +183,24 @@
 
 /* ── Glitch keyframes ──────────────────────────────────────────────────────── */
 @keyframes cp-glitch {
-  0%, 90%, 100% {
+  0%, 87%, 90%, 100% {
     text-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.6);
     transform: translate(0, 0);
     clip-path: none;
+  }
+  88% {
+    text-shadow: 0 0 12px #fff, 0 0 28px rgba(255, 255, 255, 0.9);
+    transform: translate(0, 0);
+    clip-path: none;
+  }
+  89% {
+    text-shadow: none;
+    transform: translate(0, 0);
+    clip-path: none;
+    opacity: 0;
+  }
+  89.5% {
+    opacity: 1;
   }
   91% {
     text-shadow: -3px 0 #ff00aa, 3px 0 #00f0ff;
@@ -243,7 +264,7 @@
 #theme-banner::before { content: '◈'; color: #00f0ff; font-size: 20px; }
 
 /* ── Night City neon surge — corp billboard overload ────────────────────── */
-#app { animation: cp-neon-surge 7s ease-in-out infinite; }
+#app { animation: cp-neon-surge 10s ease-in-out infinite; }
 @keyframes cp-neon-surge {
   0%, 100% { box-shadow: 0 0 0 1px rgba(0,240,255,.18), inset 0 0 18px rgba(0,240,255,.04); }
   25%      { box-shadow: 0 0 0 1px rgba(0,240,255,.45), inset 0 0 28px rgba(0,240,255,.08); }
@@ -253,6 +274,10 @@
   75%      { box-shadow: 0 0 0 1px rgba(255,0,170,.42), inset 0 0 26px rgba(255,0,170,.07); }
   76%      { box-shadow: 0 0 0 1px rgba(232,255,0,.28), inset 0 0 20px rgba(232,255,0,.05); }
   77%      { box-shadow: 0 0 0 1px rgba(255,0,170,.52), inset 0 0 30px rgba(255,0,170,.09); }
+  87%      { box-shadow: 0 0 0 1px rgba(0,240,255,.18), inset 0 0 18px rgba(0,240,255,.04); }
+  88%      { box-shadow: 0 0 0 1px rgba(255,255,255,.9), inset 0 0 30px rgba(255,255,255,.15); }
+  89%      { box-shadow: 0 0 0 1px rgba(0,0,0,.6), inset 0 0 0 rgba(0,0,0,0); }
+  90%      { box-shadow: 0 0 0 1px rgba(0,240,255,.22), inset 0 0 18px rgba(0,240,255,.04); }
 }
 
 /* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */

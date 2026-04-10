@@ -45,7 +45,7 @@
                           );
 
   /* Title animation — terminal blink */
-  --title-anim:           alien-blink 1.1s step-end infinite;
+  --title-anim:           alien-blink 10s ease-in-out infinite;
 
   /* Tiles */
   --tile-hover-bg:        rgba(27, 200, 27, 0.06);
@@ -114,7 +114,7 @@
   --drag-over-glow:       inset 0 0 20px rgba(27, 200, 27, 0.2);
 }
 
-/* ── Heavy CRT scanlines ─────────────────────────────────────────────────── */
+/* ── Heavy CRT scanlines + green CRT fractal noise ──────────────────────── */
 #app::after {
   content: '';
   background:
@@ -122,19 +122,24 @@
       to bottom,
       transparent 0px, transparent 2px,
       rgba(0, 0, 0, 0.52) 2px, rgba(0, 0, 0, 0.52) 3px
-    );
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.1 0.2 0.1 0 0  0.1 0.3 0.1 0 0.01  0.05 0.12 0.05 0 0  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: auto, 200px 200px;
   opacity: 1;
   pointer-events: none;
 }
 
 /* ── Bio-organic border pulse: slow, like a xenomorph heartbeat ──────────── */
-#app { animation: alien-bio-pulse 3.2s ease-in-out infinite; }
+#app { animation: alien-bio-pulse 10s ease-in-out infinite; }
 @keyframes alien-bio-pulse {
   0%,  45% { box-shadow: 0 0 0 1px rgba(27,200,27,0.22), inset 0 0 18px rgba(27,200,27,0.04); }
   50%       { box-shadow: 0 0 0 1px rgba(27,200,27,0.55), inset 0 0 30px rgba(27,200,27,0.09); }
   52%       { box-shadow: 0 0 0 1px rgba(27,200,27,0.18), inset 0 0 16px rgba(27,200,27,0.03); }
   60%       { box-shadow: 0 0 0 1px rgba(27,200,27,0.48), inset 0 0 26px rgba(27,200,27,0.08); }
-  65%, 100% { box-shadow: 0 0 0 1px rgba(27,200,27,0.22), inset 0 0 18px rgba(27,200,27,0.04); }
+  65%, 87% { box-shadow: 0 0 0 1px rgba(27,200,27,0.22), inset 0 0 18px rgba(27,200,27,0.04); }
+  88%       { box-shadow: 0 0 0 2px rgba(27,200,27,0.72), inset 0 0 40px rgba(27,200,27,0.14); }
+  89%       { box-shadow: 0 0 0 1px rgba(27,200,27,0.08), inset 0 0 8px rgba(27,200,27,0.01); }
+  90%, 100% { box-shadow: 0 0 0 1px rgba(27,200,27,0.22), inset 0 0 18px rgba(27,200,27,0.04); }
 }
 
 /* ── Header bright phosphor accent bar ────────────────────────────────────── */
@@ -182,8 +187,12 @@
 
 /* ── Terminal cursor/blink animation ──────────────────────────────────────── */
 @keyframes alien-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  0%, 40% { color: #18A016; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); }
+  50%      { color: #1BC81B; text-shadow: 0 0 10px rgba(27,200,27,0.7), 0 0 28px rgba(27,200,27,0.3); }
+  65%, 87% { color: #18A016; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); }
+  88%      { color: #22FF22; text-shadow: 0 0 18px rgba(34,255,34,0.9), 0 0 45px rgba(27,200,27,0.5); }
+  89%      { color: #000200; text-shadow: none; opacity: 0.05; }
+  90%      { color: #18A016; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); opacity: 1; }
 }
 
 /* ── Flavor content ────────────────────────────────────────────────────────── */
@@ -201,7 +210,7 @@
   font-size: 12px; line-height: 1.70; text-align: left;
   color: rgba(27, 200, 27, 0.14); white-space: pre;
   background: none;
-  animation: alien-readout 5s ease-in-out infinite;
+  animation: alien-readout 10s ease-in-out infinite;
 }
 @keyframes alien-readout {
   0%, 100% { color: rgba(27, 200, 27, 0.14); }
@@ -219,7 +228,11 @@
 
 #title::after {
   content: '_';
-  animation: alien-blink 1.1s step-start infinite;
+  animation: alien-cursor 1.1s step-start infinite;
+}
+@keyframes alien-cursor {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
 /* ── Banner ────────────────────────────────────────────────────────────────── */
@@ -243,7 +256,7 @@
     radial-gradient(circle 3px at 40% 62%, rgba(27,200,27,0.35) 0%, transparent 100%),
     radial-gradient(circle 2.5px at 57% 36%, rgba(27,200,27,0.40) 0%, transparent 100%),
     radial-gradient(circle 2px at 48% 68%, rgba(27,200,27,0.30) 0%, transparent 100%);
-  animation: alien-blips 5s ease-in-out infinite;
+  animation: alien-blips 10s ease-in-out infinite;
 }
 @keyframes alien-blips {
   0%, 12% { opacity: 0; }

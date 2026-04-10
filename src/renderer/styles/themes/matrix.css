@@ -42,7 +42,7 @@
   --drag-over-glow: inset 0 0 24px rgba(0,255,65,.06);
 
   /* ── Title animation ── */
-  --title-anim:   none;
+  --title-anim:   mx-title 10s steps(1) infinite;
 
   /* ── Tiles ── */
   --tile-hover-bg:     rgba(0, 255, 65, 0.05);
@@ -118,31 +118,37 @@
 }
 
 /* ── System intrusion: border flickers when the construct detects presence ───── */
-#app { animation: mx-intrusion 18s steps(1) infinite; }
+#app { animation: mx-intrusion 10s steps(1) infinite; }
 @keyframes mx-intrusion {
-  0%, 87%, 100% { box-shadow: none; }
+  0%, 87%, 90%, 100% { box-shadow: none; }
   88% { box-shadow: 0 0 0 1px rgba(0,255,65,.75), inset 0 0 24px rgba(0,255,65,.06); }
   89% { box-shadow: none; }
-  90% { box-shadow: 0 0 0 1px rgba(0,255,65,.55); }
-  91%, 95% { box-shadow: 0 0 0 1px rgba(0,255,65,.32); }
-  96% { box-shadow: 0 0 0 1px rgba(0,255,65,.65), inset 0 0 18px rgba(0,255,65,.05); }
 }
 
-/* ── App::after — scanlines + descending green scan sweep ───────────────────── */
+/* ── Title: green flash / blackout sync ─────────────────────────────────────── */
+@keyframes mx-title {
+  0%, 87%, 90%, 100% { color: #00CC33; text-shadow: 0 0 6px rgba(0,255,65,.35), 0 0 16px rgba(0,255,65,.12); }
+  88%                 { color: #00FF41; text-shadow: 0 0 14px rgba(0,255,65,.90), 0 0 32px rgba(0,255,65,.40); }
+  89%                 { color: transparent; text-shadow: none; opacity: 0; }
+}
+
+/* ── App::after — fractal noise + scanlines + descending green scan sweep ──── */
 #app::after {
   background:
+    /* fractal noise — green-tinted digital texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.05 0.2 0.05 0 0  0.1 0.4 0.1 0 0.02  0.02 0.1 0.02 0 0  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
     /* scan sweep — bright bar descending through the rain */
     linear-gradient(to bottom, transparent 0, rgba(0,255,65,.07) 40px, transparent 80px) no-repeat,
     /* very faint scanlines */
     repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 3px);
-  background-size: 100% 80px, 100% 3px;
-  background-position: 0 -80px, 0 0;
+  background-size: 200px 200px, 100% 80px, 100% 3px;
+  background-position: 0 0, 0 -80px, 0 0;
   animation: mx-sweep 10s linear infinite;
   opacity: 1;
 }
 @keyframes mx-sweep {
-  from { background-position: 0 -80px, 0 0; }
-  to   { background-position: 0 calc(100% + 80px), 0 0; }
+  from { background-position: 0 0, 0 -80px, 0 0; }
+  to   { background-position: 0 0, 0 calc(100% + 80px), 0 0; }
 }
 
 /* ── Grid container: THREE-LAYER digital rain ───────────────────────────────── */
@@ -178,7 +184,12 @@
 
   background-size:  25px 160px, 38px 240px, 52px 320px;
   background-position: 0 0, 11px 53px, 25px 107px;
-  animation: mx-rain 8s linear infinite;
+  animation: mx-rain 8s linear infinite, mx-rain-sync 10s steps(1) infinite;
+}
+@keyframes mx-rain-sync {
+  0%, 87%, 90%, 100% { opacity: 1; }
+  88%                 { opacity: 1; filter: brightness(1.6) drop-shadow(0 0 3px rgba(0,255,65,.50)); }
+  89%                 { opacity: 0; }
 }
 
 #grid-container::after {

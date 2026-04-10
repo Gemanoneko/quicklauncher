@@ -45,7 +45,7 @@
                           );
 
   /* Title animation — slow amber pulse */
-  --title-anim:           br-pulse 4s ease-in-out infinite;
+  --title-anim:           br-pulse 10s ease-in-out infinite;
 
   /* Tiles */
   --tile-hover-bg:        rgba(224, 122, 0, 0.07);
@@ -120,7 +120,7 @@
   content: '';
   background:
     /* film grain — wet street texture */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.6 0 0 0 0.04  0.4 0 0 0 0.02  0.2 0 0 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.15 0.2 0.3 0 0.01  0.15 0.2 0.3 0 0.01  0.2 0.25 0.35 0 0.02  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"),
     /* rain — primary streaks, much more visible */
     repeating-linear-gradient(
       104deg,
@@ -178,11 +178,17 @@
     /* side hazes */
     radial-gradient(ellipse 55% 80% at 0% 50%, rgba(200, 80, 0, 0.07) 0%, transparent 70%),
     radial-gradient(ellipse 55% 80% at 100% 50%, rgba(184, 48, 0, 0.06) 0%, transparent 70%);
+  animation: br-grid-flicker 10s ease-in-out infinite;
+}
+@keyframes br-grid-flicker {
+  0%, 87%, 90%, 100% { opacity: 1; }
+  88%                { opacity: 1.15; filter: brightness(1.3) saturate(0.6); }
+  89%                { opacity: 0.2; }
 }
 
 /* ── Amber border flicker animation ───────────────────────────────────────── */
 #app {
-  animation: br-border-flicker 8s ease-in-out infinite;
+  animation: br-border-flicker 10s ease-in-out infinite;
 }
 
 @keyframes br-border-flicker {
@@ -194,12 +200,17 @@
   70%       { box-shadow: 0 0 0 1px rgba(224, 122, 0, 0.5), inset 0 0 40px rgba(184, 48, 0, 0.08); }
   71%       { box-shadow: 0 0 0 1px rgba(224, 122, 0, 0.15), inset 0 0 30px rgba(224, 122, 0, 0.02); }
   72%       { box-shadow: 0 0 0 1px rgba(224, 122, 0, 0.48), inset 0 0 30px rgba(224, 122, 0, 0.08); }
+  88%       { box-shadow: 0 0 0 1px rgba(180, 200, 255, 0.7), inset 0 0 40px rgba(180, 200, 255, 0.12); }
+  89%       { box-shadow: 0 0 0 1px rgba(224, 122, 0, 0.08), inset 0 0 10px rgba(0, 0, 0, 0.3); }
+  90%       { box-shadow: 0 0 0 1px rgba(224, 122, 0, 0.4), inset 0 0 30px rgba(224, 122, 0, 0.06); }
 }
 
 /* ── Title slow amber pulse ───────────────────────────────────────────────── */
 @keyframes br-pulse {
   0%, 100% { text-shadow: 0 0 6px rgba(224, 122, 0, 0.5), 0 0 16px rgba(224, 122, 0, 0.2); opacity: 1; }
   50%       { text-shadow: 0 0 10px rgba(224, 122, 0, 0.8), 0 0 28px rgba(224, 122, 0, 0.4); opacity: 0.9; }
+  88%       { text-shadow: 0 0 14px rgba(180, 200, 255, 0.9), 0 0 32px rgba(180, 200, 255, 0.5); opacity: 1; }
+  89%       { text-shadow: none; opacity: 0.05; }
 }
 
 /* ── Flavor content ────────────────────────────────────────────────────────── */
@@ -219,7 +230,7 @@
   font-size: 13px; line-height: 1.70; text-align: right;
   color: rgba(224, 122, 0, 0.14); white-space: pre;
   background: none;
-  animation: br-readout 8s ease-in-out infinite;
+  animation: br-readout 10s ease-in-out infinite;
 }
 @keyframes br-readout {
   0%, 100% { color: rgba(224, 122, 0, 0.14); }

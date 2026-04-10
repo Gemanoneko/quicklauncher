@@ -43,7 +43,7 @@
   --drag-over-glow: inset 0 0 24px rgba(139,24,24,.12);
 
   /* ── Title animation ── */
-  --title-anim:   iron-throne 8s ease-in-out infinite;
+  --title-anim:   iron-throne 10s ease-in-out infinite;
 
   /* ── Tiles ── */
   --tile-hover-bg:     rgba(150, 110, 25, 0.08);
@@ -116,7 +116,7 @@
 #app::after {
   background:
     /* cold granite grain — Westeros keep walls, ashlar masonry */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.7 0.6 0.5 0 0  0.7 0.6 0.5 0 0  0.7 0.6 0.5 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.5 0.3 0.15 0 0.03  0.4 0.25 0.10 0 0.02  0.15 0.08 0.03 0 0  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"),
     /* stone masonry mortar joints — coursed ashlar every 20px */
     repeating-linear-gradient(
       to bottom,
@@ -159,16 +159,16 @@
     /* dungeon wall shadows — left and right flanks */
     radial-gradient(ellipse 30% 100% at 0% 50%, rgba(3, 2, 5, 0.12) 0%, transparent 60%),
     radial-gradient(ellipse 30% 100% at 100% 50%, rgba(3, 2, 5, 0.12) 0%, transparent 60%);
-  animation: westeros-shadow 15s ease-in-out infinite;
+  animation: westeros-shadow 10s ease-in-out infinite;
 }
 @keyframes westeros-shadow {
   0%, 100% { opacity: 0.85; }
   50%       { opacity: 1.0; }
-  77%       { opacity: 0.88; }
-  78%       { opacity: 0.12; }   /* dragon shadow passes over — darkness blots the map */
-  79%       { opacity: 0.95; }
-  80%       { opacity: 0.78; }
-  81%       { opacity: 1.0; }
+  87%       { opacity: 0.88; }
+  88%       { opacity: 0.12; }   /* dragon shadow passes over — darkness blots the map */
+  89%       { opacity: 0.95; }
+  90%       { opacity: 0.78; }
+  91%       { opacity: 1.0; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -187,12 +187,15 @@
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
   font-size: 13px; line-height: 1.70; text-align: right;
   color: rgba(140, 105, 28, 0.09); white-space: pre;
-  animation: westeros-breathe 13s ease-in-out infinite;
+  animation: westeros-breathe 10s ease-in-out infinite;
 }
 
 @keyframes westeros-breathe {
   0%, 100% { opacity: 0.60; }
   50%       { opacity: 1.0; }
+  88%       { opacity: 0.95; }
+  89%       { opacity: 0.08; }
+  90%       { opacity: 0.65; }
 }
 
 #edit-bar::after {
@@ -211,13 +214,13 @@
   30%       { color: #D4B555; text-shadow: 0 0 12px rgba(212,172,52,.78), 0 0 32px rgba(200,148,22,.32); }
   65%       { color: #A88828; text-shadow: 0 0 6px rgba(178,128,18,.48), 0 0 16px rgba(148,108,10,.16); }
   87%       { color: #C0A038; text-shadow: 0 0 7px rgba(200,158,42,.55), 0 0 22px rgba(180,130,20,.20); }
-  88%       { color: #FF6820; text-shadow: 0 0 22px rgba(255,100,32,.95), 0 0 55px rgba(220,60,20,.65); opacity: 0.88; }
-  89%       { color: #E09030; text-shadow: 0 0 14px rgba(230,140,40,.82), 0 0 38px rgba(200,98,20,.48); }
-  90%       { color: #C0A038; text-shadow: 0 0 7px rgba(200,158,42,.55), 0 0 22px rgba(180,130,20,.20); }
+  88%       { color: #FFD060; text-shadow: 0 0 22px rgba(255,208,96,.95), 0 0 55px rgba(220,170,40,.65); }
+  89%       { color: #050408; text-shadow: none; opacity: 0.05; }
+  90%       { color: #C0A038; text-shadow: 0 0 7px rgba(200,158,42,.55), 0 0 22px rgba(180,130,20,.20); opacity: 1; }
 }
 
 /* ── App: castle walls breathing — torch pulse with dracarys flare ──────────── */
-#app { animation: got-fires 9s ease-in-out infinite; }
+#app { animation: got-fires 10s ease-in-out infinite; }
 @keyframes got-fires {
   0%, 100% { box-shadow: 0 0 0 1px rgba(148,108,22,.28), inset 0 0 22px rgba(80,58,8,.06); }
   30%      { box-shadow: 0 0 0 1px rgba(200,158,42,.48), inset 0 0 32px rgba(158,118,16,.10); }
