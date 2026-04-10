@@ -464,6 +464,13 @@ const THEME_BANNERS = {
     'SHE IS NOT HUMAN ANYMORE. SHE IS SOMETHING MORE.',
     'CARNEGIE HALL. OPENING NIGHT. THE LAST NIGHT.',
   ],
+  'wow-alliance': [
+    'FOR THE ALLIANCE!',
+    'THE LIGHT DOES NOT ABANDON ITS CHAMPIONS.',
+    'STORMWIND STANDS. THE LION ROARS.',
+    'WE WILL NOT LET DARKNESS CONSUME THIS WORLD.',
+    'LOK TAR-- WAIT. FOR THE ALLIANCE!',
+  ],
   'ff7': [
     'LET\'S MOSEY.',
     'THERE AIN\'T NO GETTING OFF THIS TRAIN WE\'RE ON.',
@@ -498,6 +505,7 @@ const THEME_NAMES = {
   'warhammer-tyranids':  'WARHAMMER 40K: TYRANIDS',
   'predator':            'PREDATOR',
   'robocop':             'ROBOCOP',
+  'wow-alliance':        'WOW: ALLIANCE',
   'dead-space':          'DEAD SPACE',
   'half-life':           'HALF-LIFE',
   'terminator':          'TERMINATOR',
