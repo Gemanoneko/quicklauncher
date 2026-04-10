@@ -9,11 +9,11 @@
   --app-clip:     none;
   --overlay-clip: none;
 
-  /* ── Backgrounds ── */
-  --bg:           rgba(10, 6, 0, 0.93);
-  --panel-bg:     rgba(18, 10, 2, 0.97);
-  --overlay-bg:   rgba(10, 6, 0, 0.95);
-  --header-bg:    rgba(200, 144, 80, 0.05);
+  /* ── WARM MID-TONE PARADIGM — desert parchment, NOT dark mode ── */
+  --bg:           #2A1E10;
+  --panel-bg:     rgba(35, 25, 14, 0.97);
+  --overlay-bg:   rgba(30, 22, 12, 0.96);
+  --header-bg:    rgba(200, 144, 80, 0.06);
 
   /* ── Typography ── */
   --font:         'Segoe UI', Georgia, serif;
@@ -42,7 +42,7 @@
   --drag-over-glow: inset 0 0 24px rgba(200,144,80,.08);
 
   /* ── Title animation ── */
-  --title-anim:   dune-glow 6s ease-in-out infinite;
+  --title-anim:   dune-title 12s ease-in-out infinite;
 
   /* ── Tiles ── */
   --tile-hover-bg:     rgba(200, 144, 80, 0.06);
@@ -112,37 +112,26 @@
 }
 
 /* ── Title animation: slow warm gold pulse ─────────────────────────────────── */
-@keyframes dune-glow {
-  0%, 100% {
-    color: #C89050;
-    text-shadow: 0 0 8px rgba(200,144,80,.50), 0 0 20px rgba(200,144,80,.18);
-  }
-  40% {
-    color: #E8C880;
-    text-shadow: 0 0 12px rgba(232,200,128,.70), 0 0 30px rgba(200,144,80,.35);
-  }
-  70% {
-    color: #C87830;
-    text-shadow: 0 0 6px rgba(200,120,48,.45), 0 0 16px rgba(192,64,0,.20);
-  }
+@keyframes dune-title {
+  0%        { color: #C89050; text-shadow: 0 0 6px rgba(200,144,80,.40), 0 0 18px rgba(200,144,80,.14); }
+  35%       { color: #E8C880; text-shadow: 0 0 10px rgba(232,200,128,.60), 0 0 28px rgba(200,144,80,.22); }
+  65%       { color: #A87030; text-shadow: 0 0 4px rgba(160,100,40,.30); }
+  87%       { color: #C89050; text-shadow: 0 0 6px rgba(200,144,80,.35); }
+  88%       { color: #FFD890; text-shadow: 0 0 22px rgba(255,216,144,.80), 0 0 50px rgba(200,144,80,.40); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C89050; text-shadow: 0 0 8px rgba(200,144,80,.50); opacity: 1; }
+  100%      { color: #C89050; text-shadow: 0 0 6px rgba(200,144,80,.40), 0 0 18px rgba(200,144,80,.14); }
 }
 
-/* ── Shai-Hulud — sandworm passing beneath, deep amber glow rises and fades ── */
-#app { animation: dn-sandworm 14s ease-in-out infinite; }
-@keyframes dn-sandworm {
-  0%, 50%, 100% { box-shadow: none; }
-  58% { box-shadow: 0 6px 30px rgba(200,144,80,.28), inset 0 -6px 20px rgba(160,100,40,.12); }
-  66% { box-shadow: 0 10px 55px rgba(200,144,80,.58), inset 0 -12px 40px rgba(160,100,40,.28); }
-  74% { box-shadow: 0 14px 80px rgba(200,144,80,.75), 0 20px 100px rgba(160,100,40,.40), inset 0 -16px 55px rgba(160,100,40,.35); }
-  82% { box-shadow: 0 10px 55px rgba(200,144,80,.55), inset 0 -10px 36px rgba(160,100,40,.24); }
-  90% { box-shadow: 0 5px 22px rgba(200,144,80,.20); }
-  96% { box-shadow: none; }
-}
-
-/* ── App border: warm amber pulse ──────────────────────────────────────────── */
-@keyframes border-pulse {
-  0%, 100% { border-color: rgba(200,144,80,.18); box-shadow: none; }
-  50%       { border-color: rgba(200,144,80,.50); box-shadow: inset 0 0 14px rgba(200,144,80,.06); }
+/* ── App: warm amber pulse — synced at 12s/88% ───────────────────────────── */
+#app { animation: dune-border 12s ease-in-out infinite; }
+@keyframes dune-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(200,144,80,.18), inset 0 0 20px rgba(200,144,80,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(200,144,80,.42), inset 0 0 28px rgba(200,144,80,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(160,100,40,.20), inset 0 0 18px rgba(160,100,40,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,216,144,.75), inset 0 0 50px rgba(200,144,80,.14), 0 0 18px rgba(200,144,80,.25); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(200,144,80,.35), inset 0 0 22px rgba(200,144,80,.06); }
 }
 
 /* ── App::after — sand grain texture + warm vignette ──────────────────────── */
@@ -158,37 +147,29 @@
   opacity: 1;
 }
 
-/* ── Grid container: Shai-Hulud arc + dune topographic contours ───────────── */
+/* ── Grid: ASYMMETRIC composition — Maker hook lower-right, text upper-left ── */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* Shai-Hulud — great sandworm arc surfacing from the dune sea */
-    radial-gradient(ellipse 68% 82% at 68% 88%, transparent 48%, rgba(192,120,40,0.13) 49%, rgba(160,90,20,0.13) 57%, transparent 58%),
-    /* Worm heat mass — below-surface glow */
-    radial-gradient(ellipse 54% 62% at 68% 92%, rgba(180,100,20,0.07) 0%, rgba(160,80,10,0.04) 40%, transparent 62%),
-    /* Sand ripple ring 1 — closest to worm body */
-    radial-gradient(ellipse 72% 14% at 58% 80%, transparent 70%, rgba(200,140,60,0.09) 71%, rgba(180,120,40,0.09) 77%, transparent 78%),
-    /* Sand ripple ring 2 — further out */
-    radial-gradient(ellipse 82% 18% at 54% 88%, transparent 76%, rgba(180,120,40,0.055) 77%, rgba(160,100,30,0.055) 84%, transparent 85%),
-    /* Dune topographic contour lines — slanted like real dune slopes */
-    repeating-linear-gradient(
-      174deg,
-      transparent 0px, transparent 22px,
-      rgba(200,144,80,0.030) 22px, rgba(200,144,80,0.030) 23px,
-      transparent 23px, transparent 46px,
-      rgba(180,120,50,0.018) 46px, rgba(180,120,50,0.018) 47px
-    ),
-    /* Spice melange horizon — deep amber seep from below */
-    radial-gradient(ellipse 88% 38% at 50% 100%, rgba(160,70,0,0.08) 0%, transparent 68%);
-  animation: dune-worm 10s ease-in-out infinite;
+    /* Maker hook SVG — anchored to lower-right corner, NOT centered */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Cpath d='M 380,340 C 375,280 365,220 345,170 C 330,130 310,100 290,85' fill='none' stroke='rgba(200,144,80,0.40)' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M 376,338 C 371,278 362,220 342,172 C 328,134 308,104 288,90' fill='none' stroke='rgba(180,120,50,0.20)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 290,85 C 282,78 272,75 265,78 C 258,82 255,90 260,98 C 265,106 275,108 282,102' fill='none' stroke='rgba(200,144,80,0.38)' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M 345,170 L 355,165 L 358,172' fill='none' stroke='rgba(200,144,80,0.25)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 360,210 L 370,205 L 373,212' fill='none' stroke='rgba(200,144,80,0.22)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 370,255 L 380,250 L 383,257' fill='none' stroke='rgba(200,144,80,0.20)' stroke-width='1.5' stroke-linecap='round'/%3E%3Ctext x='380' y='355' text-anchor='end' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='2' fill='rgba(200,144,80,0.38)'%3EMAKER HOOK%3C/text%3E%3Ctext x='380' y='366' text-anchor='end' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1.5' fill='rgba(180,120,50,0.28)'%3EFREMEN WORM-RIDING TOOL%3C/text%3E%3Ctext x='40' y='55' font-family='Georgia,serif' font-size='10' font-style='italic' letter-spacing='3' fill='rgba(200,144,80,0.42)'%3EARRAKIS%3C/text%3E%3Ctext x='40' y='72' font-family='Georgia,serif' font-size='6.5' font-style='italic' letter-spacing='2' fill='rgba(180,120,50,0.32)'%3ETHE DESERT PLANET%3C/text%3E%3Cline x1='40' y1='78' x2='180' y2='78' stroke='rgba(200,144,80,0.18)' stroke-width='0.5'/%3E%3Ctext x='40' y='100' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,120,50,0.35)'%3ETHE SPICE MUST FLOW%3C/text%3E%3Ctext x='40' y='118' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(200,144,80,0.30)'%3EFEAR IS THE MIND-KILLER%3C/text%3E%3Ctext x='40' y='136' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,120,50,0.28)'%3EI WILL FACE MY FEAR%3C/text%3E%3Ctext x='40' y='154' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(200,144,80,0.25)'%3EI WILL PERMIT IT TO PASS%3C/text%3E%3Ctext x='40' y='172' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,120,50,0.22)'%3ETHROUGH ME%3C/text%3E%3Cline x1='40' y1='182' x2='140' y2='182' stroke='rgba(200,144,80,0.12)' stroke-width='0.5'/%3E%3Ctext x='40' y='200' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,120,50,0.28)'%3EHOUSE ATREIDES%3C/text%3E%3Ctext x='40' y='215' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,80,0.25)'%3EFREMEN: SIETCH TABR%3C/text%3E%3Ctext x='40' y='230' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(192,64,0,0.28)'%3ESHIELD WALL: BREACHED%3C/text%3E%3Ccircle cx='420' cy='60' r='0.8' fill='rgba(200,144,80,0.18)'/%3E%3Ccircle cx='460' cy='120' r='0.6' fill='rgba(180,120,50,0.14)'/%3E%3Ccircle cx='440' cy='180' r='0.7' fill='rgba(200,144,80,0.12)'/%3E%3Ccircle cx='30' cy='270' r='0.8' fill='rgba(180,120,50,0.14)'/%3E%3Ccircle cx='100' cy='320' r='0.6' fill='rgba(200,144,80,0.10)'/%3E%3C/svg%3E") center / contain no-repeat,
+    /* Sand dune contour lines — slanted like real dune slopes */
+    repeating-linear-gradient(174deg, transparent 0px, transparent 28px, rgba(200,144,80,0.025) 28px, rgba(200,144,80,0.025) 29px),
+    /* Spice glow from below */
+    radial-gradient(ellipse 70% 30% at 50% 100%, rgba(160,70,0,0.08) 0%, transparent 65%);
+  animation: dune-sand 12s ease-in-out infinite;
 }
-@keyframes dune-worm {
-  0%, 100% { opacity: 0.80; }
-  45%       { opacity: 1.0; }
-  80%       { opacity: 0.88; }
-  82%       { opacity: 0.35; }
-  83%       { opacity: 1.0; }
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes dune-sand {
+  0%, 100% { opacity: 0.70; }
+  28%       { opacity: 0.78; }
+  65%       { opacity: 0.62; }
+  87%       { opacity: 0.65; }
+  88%       { opacity: 0.04; }   /* sandstorm blackout — synchronized */
+  89%       { opacity: 0.82; }
+  92%       { opacity: 0.70; }
 }
 
 /* ── Header: warm amber bottom border ─────────────────────────────────────── */
@@ -205,26 +186,30 @@
 
 /* ── Flavor content ────────────────────────────────────────────────────────── */
 #header::after {
-  content: 'ARRAKIS  //  DUNE  //  DESERT PLANET';
+  content: 'ARRAKIS // DUNE // THE SPICE MUST FLOW';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 136, 64, 0.58);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 144, 80, 0.62);
   pointer-events: none; white-space: nowrap;
 }
 
 #grid-container::after {
-  content: 'THE SPICE\AMUST FLOW\A\AFEAR IS THE\AMIND-KILLER\A\AARRAKIS\ADUNE\A\ASHAI-HULUD\AAWAKENS';
+  content: 'SHAI-HULUD\AAWAKENS\A-----------\ATHE SPICE\AMUST FLOW\A-----------\ADESERT\APOWER\AFREMEN\ARISING';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 13px; line-height: 1.7; text-align: right;
-  color: rgba(200, 136, 64, 0.12); white-space: pre;
-  animation: du-breathe 7s ease-in-out infinite;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(200, 144, 80, 0.10); white-space: pre;
+  animation: dune-readout 12s ease-in-out infinite;
 }
 
-@keyframes du-breathe {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+@keyframes dune-readout {
+  0%, 100% { color: rgba(200,144,80,.10); }
+  28%       { color: rgba(200,144,80,.14); }
+  65%       { color: rgba(200,144,80,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(200,144,80,.18); }
+  92%       { color: rgba(200,144,80,.10); }
 }
 
 #edit-bar::after {
