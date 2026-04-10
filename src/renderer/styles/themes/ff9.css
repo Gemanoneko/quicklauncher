@@ -1,0 +1,222 @@
+/* ══ FINAL FANTASY IX ═════════════════════════════════════════════════════════
+   Warm golden light. A storybook stage play lit by lanterns, where actors
+   speak of crystals and the meaning of life. Zidane, Garnet, Vivi —
+   a troupe of souls searching for purpose beneath alien moons.
+   You don't need a reason to help people.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #141008;
+  --panel-bg:     rgba(20, 16, 10, 0.99);
+  --overlay-bg:   rgba(16, 12, 8, 0.97);
+  --header-bg:    rgba(208, 160, 64, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #C0A070;
+  --text-dim:     rgba(168, 136, 88, 0.45);
+
+  --accent-c:     #D0A040;   /* golden amber */
+  --accent-m:     #4080C0;   /* crystal blue */
+  --accent-y:     #805820;   /* aged wood */
+
+  --border:       rgba(208, 160, 64, 0.22);
+  --border-h:     rgba(208, 160, 64, 0.52);
+
+  --glow-c:       0 0 8px rgba(208,160,64,.60), 0 0 22px rgba(208,160,64,.20);
+  --glow-m:       0 0 7px rgba(64,128,192,.55), 0 0 18px rgba(64,128,192,.18);
+  --glow-y:       0 0 6px rgba(128,88,32,.48), 0 0 16px rgba(128,88,32,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(208,160,64,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(208,160,64,.09);
+
+  --title-anim:   ff9-title 12s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(208, 160, 64, 0.08);
+  --tile-hover-border: rgba(208, 160, 64, 0.40);
+  --tile-hover-shadow: 0 0 13px rgba(208, 160, 64, 0.20);
+  --tile-active-bg:    rgba(208, 160, 64, 0.15);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(208,160,64,.55)) drop-shadow(0 0 14px rgba(64,128,192,.22));
+  --tile-icon-fx:      brightness(1.05) sepia(0.12) saturate(1.1);
+  --tile-icon-shape:   polygon(50% 0%, 95% 20%, 95% 80%, 50% 100%, 5% 80%, 5% 20%);
+  --tile-label-spacing:   0.5px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(208, 160, 64, 0.09);
+  --btn-active-bg:  rgba(208, 160, 64, 0.18);
+
+  --drop-hint-border: rgba(208, 160, 64, 0.25);
+  --drop-icon-color:  rgba(208, 160, 64, 0.35);
+  --hint-sub-color:   rgba(168, 136, 88, 0.38);
+
+  --rename-dashed:    rgba(208, 160, 64, 0.42);
+  --rename-input-bg:  rgba(208, 160, 64, 0.07);
+
+  --edit-bar-bg:          rgba(128, 88, 32, 0.07);
+  --edit-bar-border:      rgba(128, 88, 32, 0.40);
+  --edit-label-color:     #D0A040;
+  --edit-label-glow:      var(--glow-c);
+  --btn-done-color:       #D0A040;
+  --btn-done-border:      rgba(208, 160, 64, 0.42);
+  --btn-done-hover-bg:    rgba(208, 160, 64, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(208, 160, 64, 0.42);
+
+  --update-bg:             rgba(64, 128, 192, 0.06);
+  --update-border:         rgba(64, 128, 192, 0.32);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(64, 128, 192, 0.28);
+  --update-btn-hover-bg:   rgba(64, 128, 192, 0.09);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      #D0A040;
+  --btn-close-border:     rgba(208, 160, 64, 0.40);
+  --btn-close-hover-bg:   rgba(208, 160, 64, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(208, 160, 64, 0.07);
+  --picker-item-hover-bg:  rgba(208, 160, 64, 0.08);
+  --picker-item-active-bg: rgba(208, 160, 64, 0.16);
+  --picker-placeholder-bg: rgba(208, 160, 64, 0.07);
+
+  --skin-btn-active-bg:    rgba(208, 160, 64, 0.16);
+  --remove-btn-bg:         rgba(128, 88, 32, 0.88);
+  --remove-btn-border:     #805820;
+}
+
+/* ── Warm amber grain + lantern vignette — theatrical, storybook ───────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.60' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.55 0.15 0 0 0.04  0.4 0.12 0 0 0.03  0.15 0.05 0 0 0.01  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(10, 8, 4, 0.78) 100%),
+    radial-gradient(ellipse 50% 40% at 50% 55%, rgba(180, 130, 40, 0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 0% 100%, rgba(160, 110, 30, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(64, 100, 160, 0.04) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — golden amber accent bar ──────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #D0A040, rgba(160, 120, 40, 0.28));
+  box-shadow: 0 0 10px rgba(208,160,64,0.55), 0 0 26px rgba(208,160,64,0.18);
+}
+
+/* ── Grid: Style B — The Crystal (circular/radial composition) ─────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3C!-- Light rays radiating from center --%3E%3Cline x1='250' y1='180' x2='250' y2='20' stroke='rgba(208,160,64,0.10)' stroke-width='0.8'/%3E%3Cline x1='250' y1='180' x2='250' y2='360' stroke='rgba(208,160,64,0.10)' stroke-width='0.8'/%3E%3Cline x1='250' y1='180' x2='40' y2='180' stroke='rgba(208,160,64,0.08)' stroke-width='0.7'/%3E%3Cline x1='250' y1='180' x2='460' y2='180' stroke='rgba(208,160,64,0.08)' stroke-width='0.7'/%3E%3Cline x1='250' y1='180' x2='105' y2='55' stroke='rgba(208,160,64,0.06)' stroke-width='0.6'/%3E%3Cline x1='250' y1='180' x2='395' y2='55' stroke='rgba(208,160,64,0.06)' stroke-width='0.6'/%3E%3Cline x1='250' y1='180' x2='105' y2='305' stroke='rgba(208,160,64,0.06)' stroke-width='0.6'/%3E%3Cline x1='250' y1='180' x2='395' y2='305' stroke='rgba(208,160,64,0.06)' stroke-width='0.6'/%3E%3Cline x1='250' y1='180' x2='155' y2='38' stroke='rgba(64,128,192,0.05)' stroke-width='0.5'/%3E%3Cline x1='250' y1='180' x2='345' y2='38' stroke='rgba(64,128,192,0.05)' stroke-width='0.5'/%3E%3Cline x1='250' y1='180' x2='155' y2='340' stroke='rgba(64,128,192,0.05)' stroke-width='0.5'/%3E%3Cline x1='250' y1='180' x2='345' y2='340' stroke='rgba(64,128,192,0.05)' stroke-width='0.5'/%3E%3C!-- Outer radiance rings --%3E%3Ccircle cx='250' cy='180' r='140' fill='none' stroke='rgba(208,160,64,0.08)' stroke-width='0.5' stroke-dasharray='6,10'/%3E%3Ccircle cx='250' cy='180' r='115' fill='none' stroke='rgba(208,160,64,0.10)' stroke-width='0.5' stroke-dasharray='4,8'/%3E%3Ccircle cx='250' cy='180' r='90' fill='none' stroke='rgba(208,160,64,0.14)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='180' r='65' fill='none' stroke='rgba(208,160,64,0.18)' stroke-width='0.7'/%3E%3C!-- The Crystal — octagonal faceted diamond --%3E%3Cpolygon points='250,110 290,140 290,220 250,250 210,220 210,140' fill='rgba(64,128,192,0.08)' stroke='rgba(64,128,192,0.35)' stroke-width='1.5'/%3E%3Cpolygon points='250,118 284,144 284,216 250,242 216,216 216,144' fill='none' stroke='rgba(208,160,64,0.22)' stroke-width='0.6'/%3E%3C!-- Crystal inner facets --%3E%3Cline x1='250' y1='110' x2='250' y2='250' stroke='rgba(64,128,192,0.18)' stroke-width='0.5'/%3E%3Cline x1='210' y1='140' x2='290' y2='220' stroke='rgba(64,128,192,0.14)' stroke-width='0.5'/%3E%3Cline x1='290' y1='140' x2='210' y2='220' stroke='rgba(64,128,192,0.14)' stroke-width='0.5'/%3E%3Cline x1='210' y1='180' x2='290' y2='180' stroke='rgba(64,128,192,0.12)' stroke-width='0.5'/%3E%3C!-- Crystal core glow --%3E%3Ccircle cx='250' cy='180' r='18' fill='rgba(64,128,192,0.12)' stroke='rgba(64,128,192,0.28)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='180' r='8' fill='rgba(208,160,64,0.22)'/%3E%3Ccircle cx='250' cy='180' r='3' fill='rgba(255,220,120,0.40)'/%3E%3C!-- Crystal top facet highlight --%3E%3Cpolygon points='250,110 290,140 250,155 210,140' fill='rgba(208,160,64,0.08)' stroke='rgba(208,160,64,0.15)' stroke-width='0.4'/%3E%3C!-- Arc labels flowing around the crystal --%3E%3Cpath id='arc-top' d='M 150,100 Q 250,50 350,100' fill='none' stroke='none'/%3E%3Ctext font-family='Georgia,serif' font-size='9' font-style='italic' letter-spacing='5' fill='rgba(208,160,64,0.50)'%3E%3CtextPath href='%23arc-top' startOffset='50%25' text-anchor='middle'%3ETHE CRYSTAL%3C/textPath%3E%3C/text%3E%3Cpath id='arc-right' d='M 330,140 Q 370,180 330,230' fill='none' stroke='none'/%3E%3Ctext font-family='Georgia,serif' font-size='6.5' font-style='italic' letter-spacing='2' fill='rgba(64,128,192,0.38)'%3E%3CtextPath href='%23arc-right' startOffset='50%25' text-anchor='middle'%3EGAIA%3C/textPath%3E%3C/text%3E%3Cpath id='arc-left' d='M 170,230 Q 130,180 170,140' fill='none' stroke='none'/%3E%3Ctext font-family='Georgia,serif' font-size='6.5' font-style='italic' letter-spacing='2' fill='rgba(64,128,192,0.38)'%3E%3CtextPath href='%23arc-left' startOffset='50%25' text-anchor='middle'%3ETERRA%3C/textPath%3E%3C/text%3E%3Cpath id='arc-bottom' d='M 155,265 Q 250,310 345,265' fill='none' stroke='none'/%3E%3Ctext font-family='Georgia,serif' font-size='7.5' font-style='italic' font-weight='bold' letter-spacing='3' fill='rgba(208,160,64,0.45)'%3E%3CtextPath href='%23arc-bottom' startOffset='50%25' text-anchor='middle'%3EZIDANE TRIBAL%3C/textPath%3E%3C/text%3E%3C!-- Small crystal shards orbiting --%3E%3Cpolygon points='140,90 148,85 152,92 144,97' fill='rgba(64,128,192,0.18)' stroke='rgba(64,128,192,0.25)' stroke-width='0.5'/%3E%3Cpolygon points='355,95 362,88 368,96 360,100' fill='rgba(64,128,192,0.15)' stroke='rgba(64,128,192,0.22)' stroke-width='0.5'/%3E%3Cpolygon points='130,250 136,244 142,252 135,256' fill='rgba(208,160,64,0.14)' stroke='rgba(208,160,64,0.20)' stroke-width='0.5'/%3E%3Cpolygon points='365,245 372,240 376,248 370,252' fill='rgba(208,160,64,0.12)' stroke='rgba(208,160,64,0.18)' stroke-width='0.5'/%3E%3C!-- Corner stardust --%3E%3Ccircle cx='48' cy='55' r='0.8' fill='rgba(208,160,64,0.20)'/%3E%3Ccircle cx='455' cy='50' r='0.6' fill='rgba(64,128,192,0.16)'/%3E%3Ccircle cx='42' cy='290' r='0.7' fill='rgba(208,160,64,0.14)'/%3E%3Ccircle cx='460' cy='300' r='0.8' fill='rgba(64,128,192,0.12)'/%3E%3Ccircle cx='50' cy='350' r='0.5' fill='rgba(208,160,64,0.10)'/%3E%3Ccircle cx='452' cy='345' r='0.6' fill='rgba(128,88,32,0.10)'/%3E%3C!-- Bottom status row --%3E%3Cline x1='30' y1='325' x2='470' y2='325' stroke='rgba(208,160,64,0.18)' stroke-width='0.6'/%3E%3Ctext x='250' y='345' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(208,160,64,0.28)'%3EGAIA -- THE IIFA TREE -- MEMORIA -- THE CRYSTAL WORLD%3C/text%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1.5' fill='rgba(128,88,32,0.22)'%3EI WANT TO FIND OUT WHO I AM%3C/text%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: ff9-crystal 12s ease-in-out infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes ff9-crystal {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }   /* golden flash — synchronized blackout */
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'TANTALUS THEATER TROUPE // PRIMA VISTA // ACT I';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(208, 160, 64, 0.62);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'YOU DONT NEED\AA REASON\ATO HELP PEOPLE\A-----------\ATHE CRYSTAL\ATELLS ALL';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(208, 160, 64, 0.08); white-space: pre;
+  animation: ff9-readout 12s ease-in-out infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) */
+@keyframes ff9-readout {
+  0%, 100% { color: rgba(208,160,64,.08); }
+  28%       { color: rgba(208,160,64,.12); }
+  65%       { color: rgba(208,160,64,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(208,160,64,.15); }
+  92%       { color: rgba(208,160,64,.08); }
+}
+
+#edit-bar::after {
+  content: 'THE PLACE I WILL RETURN TO SOMEDAY';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(208, 160, 64, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title: warm golden pulse with 88% sync — color + text-shadow (tier 3) */
+@keyframes ff9-title {
+  0%        { color: #C0A070; text-shadow: 0 0 6px rgba(208,160,64,.48), 0 0 18px rgba(208,160,64,.16); }
+  35%       { color: #D8B868; text-shadow: 0 0 10px rgba(208,160,64,.62), 0 0 28px rgba(208,160,64,.22); }
+  65%       { color: #907848; text-shadow: 0 0 4px rgba(128,88,32,.35); }
+  87%       { color: #C0A070; text-shadow: 0 0 6px rgba(208,160,64,.42); }
+  88%       { color: #FFD870; text-shadow: 0 0 22px rgba(255,216,112,.82), 0 0 50px rgba(208,160,64,.42); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #C0A070; text-shadow: 0 0 8px rgba(208,160,64,.55); opacity: 1; }
+  100%      { color: #C0A070; text-shadow: 0 0 6px rgba(208,160,64,.48), 0 0 18px rgba(208,160,64,.16); }
+}
+
+/* ── App: warm amber border — box-shadow ≥ 12s (tier 5) ────────────────── */
+#app { animation: ff9-border 12s ease-in-out infinite; }
+@keyframes ff9-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(208,160,64,.22), inset 0 0 20px rgba(208,160,64,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(208,160,64,.48), inset 0 0 28px rgba(208,160,64,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(128,88,32,.22), inset 0 0 18px rgba(128,88,32,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,216,112,.78), inset 0 0 50px rgba(208,160,64,.15), 0 0 18px rgba(208,160,64,.25); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(208,160,64,.42), inset 0 0 22px rgba(208,160,64,.06); }
+}
+
+/* ── Banner ─────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(16, 12, 8, 0.99); border-top-color: rgba(208, 160, 64, 0.22); }
+#theme-banner::before { content: '✧'; color: #D0A040; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 155, 60, 0.65); }
+
+/* ── Stardust particles — golden circles drifting slowly downward ──────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='440'%3E%3Ccircle cx='38' cy='60' r='1.8' fill='rgba(208,160,64,0.28)'/%3E%3Ccircle cx='115' cy='185' r='1.2' fill='rgba(208,160,64,0.22)'/%3E%3Ccircle cx='175' cy='310' r='1.5' fill='rgba(255,220,120,0.18)'/%3E%3Ccircle cx='62' cy='380' r='1' fill='rgba(208,160,64,0.24)'/%3E%3Ccircle cx='150' cy='120' r='0.8' fill='rgba(64,128,192,0.16)'/%3E%3Ccircle cx='90' cy='260' r='1.4' fill='rgba(208,160,64,0.20)'/%3E%3Ccircle cx='195' cy='420' r='1' fill='rgba(255,220,120,0.14)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='600'%3E%3Ccircle cx='55' cy='90' r='1.5' fill='rgba(208,160,64,0.16)'/%3E%3Ccircle cx='170' cy='280' r='1' fill='rgba(64,128,192,0.12)'/%3E%3Ccircle cx='245' cy='460' r='1.8' fill='rgba(208,160,64,0.14)'/%3E%3Ccircle cx='120' cy='540' r='0.8' fill='rgba(255,220,120,0.12)'/%3E%3Ccircle cx='270' cy='160' r='1.2' fill='rgba(208,160,64,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 220px 440px, 300px 600px;
+  animation: ff9-stardust 18s linear infinite;
+}
+@keyframes ff9-stardust {
+  from { background-position: 0 0, 18px 0; }
+  to   { background-position: -15px 440px, 8px 600px; }
+}
+
+/* ── Tile: crystal facet pulse on hover ─────────────────────────────────── */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 0;
+  background: transparent;
+  border: 1px solid rgba(208,160,64,0.50);
+  clip-path: polygon(50% 0%, 95% 20%, 95% 80%, 50% 100%, 5% 80%, 5% 20%);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
