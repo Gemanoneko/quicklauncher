@@ -279,8 +279,18 @@
   display: flex; align-items: flex-end; justify-content: flex-start;
   padding: 0 0 10px 12px;
   font-family: Consolas, 'Courier New', monospace;
-  font-size: 8.5px; line-height: 1.6; text-align: left;
+  font-size: 12px; line-height: 1.70; text-align: left;
   color: rgba(222, 160, 0, 0.12); white-space: pre;
+  animation: hl-lore-breathe 10s ease-in-out infinite;
+}
+
+@keyframes hl-lore-breathe {
+  0%, 100% { color: rgba(222,160,0,.12); }
+  28%       { color: rgba(222,160,0,.16); }
+  65%       { color: rgba(222,160,0,.08); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(222,160,0,.18); }
+  92%       { color: rgba(222,160,0,.12); }
 }
 
 #edit-bar::after {

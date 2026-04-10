@@ -188,7 +188,7 @@
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 9px; line-height: 1.65; text-align: right;
+  font-size: 12px; line-height: 1.70; text-align: right;
   color: rgba(0, 110, 78, 0.10); white-space: pre;
   animation: ministry-breathe 14s ease-in-out infinite;
 }

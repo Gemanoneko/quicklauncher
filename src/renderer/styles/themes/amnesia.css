@@ -169,7 +169,7 @@
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif;
   font-style: italic;
-  font-size: 8.5px; line-height: 1.65; text-align: right; letter-spacing: 1px;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
   color: rgba(120, 80, 28, 0.13); white-space: pre;
   animation: amnesia-note 11s ease-in-out infinite;
 }

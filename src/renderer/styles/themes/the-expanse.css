@@ -157,6 +157,16 @@
   font-family: 'Consolas', monospace; letter-spacing: 1.5px;
   font-size: 12px; line-height: 1.7; text-align: right;
   color: rgba(50, 100, 140, 0.11); white-space: pre;
+  animation: expanse-ghost 10s ease-in-out infinite;
+}
+
+@keyframes expanse-ghost {
+  0%, 100% { color: rgba(50, 100, 140, 0.11); }
+  22%       { color: rgba(50, 100, 140, 0.15); }
+  60%       { color: rgba(50, 100, 140, 0.08); }
+  88%       { color: rgba(0, 0, 0, 0); }
+  89%       { color: rgba(50, 100, 140, 0.18); }
+  92%       { color: rgba(50, 100, 140, 0.11); }
 }
 
 #edit-bar::after {

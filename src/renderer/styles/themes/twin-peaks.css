@@ -179,8 +179,18 @@
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.7; text-align: right;
+  font-size: 12px; line-height: 1.70; text-align: right;
   color: rgba(110, 10, 5, 0.12); white-space: pre;
+  animation: lodge-lore 10s ease-in-out infinite;
+}
+
+@keyframes lodge-lore {
+  0%, 100% { color: rgba(110, 10, 5, 0.12); }
+  28%       { color: rgba(110, 10, 5, 0.16); }
+  65%       { color: rgba(110, 10, 5, 0.09); }
+  88%       { color: rgba(0, 0, 0, 0); }
+  89%       { color: rgba(110, 10, 5, 0.20); }
+  92%       { color: rgba(110, 10, 5, 0.12); }
 }
 
 #edit-bar::after {

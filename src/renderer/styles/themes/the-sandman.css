@@ -167,8 +167,18 @@
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 11px; line-height: 1.7; text-align: right;
+  font-size: 12px; line-height: 1.70; text-align: right;
   color: rgba(80, 55, 150, 0.09); white-space: pre;
+  animation: dream-ghost 10s ease-in-out infinite;
+}
+
+@keyframes dream-ghost {
+  0%, 100% { color: rgba(80, 55, 150, 0.09); }
+  22%       { color: rgba(80, 55, 150, 0.13); }
+  60%       { color: rgba(80, 55, 150, 0.06); }
+  88%       { color: rgba(0, 0, 0, 0); }
+  89%       { color: rgba(80, 55, 150, 0.16); }
+  92%       { color: rgba(80, 55, 150, 0.09); }
 }
 
 #edit-bar::after {

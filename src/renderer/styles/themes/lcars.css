@@ -189,9 +189,19 @@
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Arial, Helvetica, sans-serif; font-weight: bold;
-  font-size: 8px; line-height: 1.7; text-align: right;
+  font-size: 12px; line-height: 1.70; text-align: right;
   color: rgba(255, 153, 0, 0.12); white-space: pre;
   background: none;
+  animation: lcars-lore-breathe 10s ease-in-out infinite;
+}
+
+@keyframes lcars-lore-breathe {
+  0%, 100% { color: rgba(255,153,0,.12); }
+  28%       { color: rgba(255,153,0,.16); }
+  65%       { color: rgba(255,153,0,.08); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(255,153,0,.18); }
+  92%       { color: rgba(255,153,0,.12); }
 }
 
 #edit-bar::after {

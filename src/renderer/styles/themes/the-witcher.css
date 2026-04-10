@@ -149,6 +149,16 @@
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
   font-size: 12px; line-height: 1.7; text-align: right;
   color: rgba(160, 130, 16, 0.11); white-space: pre;
+  animation: witcher-ghost 10s ease-in-out infinite;
+}
+
+@keyframes witcher-ghost {
+  0%, 100% { color: rgba(160, 130, 16, 0.11); }
+  22%       { color: rgba(160, 130, 16, 0.15); }
+  60%       { color: rgba(160, 130, 16, 0.08); }
+  88%       { color: rgba(0, 0, 0, 0); }
+  89%       { color: rgba(160, 130, 16, 0.18); }
+  92%       { color: rgba(160, 130, 16, 0.11); }
 }
 
 #edit-bar::after {

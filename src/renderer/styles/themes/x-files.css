@@ -219,8 +219,18 @@
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: 'Courier New', Courier, monospace;
-  font-size: 8px; line-height: 1.6; text-align: right;
+  font-size: 12px; line-height: 1.70; text-align: right;
   color: rgba(0, 176, 160, 0.10); white-space: pre;
+  animation: xfiles-ghost 10s ease-in-out infinite;
+}
+
+@keyframes xfiles-ghost {
+  0%, 100% { color: rgba(0, 176, 160, 0.10); }
+  22%       { color: rgba(0, 176, 160, 0.14); }
+  60%       { color: rgba(0, 176, 160, 0.07); }
+  88%       { color: rgba(0, 0, 0, 0); }
+  89%       { color: rgba(0, 176, 160, 0.17); }
+  92%       { color: rgba(0, 176, 160, 0.10); }
 }
 
 #edit-bar::after {

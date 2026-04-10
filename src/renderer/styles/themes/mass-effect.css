@@ -227,8 +227,18 @@
   content: 'MASS RELAY\ANETWORK\A  ACTIVE\A\ACITADEL\ASTATION\A  ONLINE\A\ANORMANDY\ASYSTEMS\A  NOMINAL\A\ASPECTRE\ACLEARANCE';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
-  font-size: 8.5px; line-height: 1.6; text-align: right; letter-spacing: 2px;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 2px;
   color: rgba(0, 184, 236, 0.10); white-space: pre;
+  animation: me-lore-breathe 10s ease-in-out infinite;
+}
+
+@keyframes me-lore-breathe {
+  0%, 100% { color: rgba(0,184,236,.10); }
+  28%       { color: rgba(0,184,236,.14); }
+  65%       { color: rgba(0,184,236,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(0,184,236,.18); }
+  92%       { color: rgba(0,184,236,.10); }
 }
 
 #edit-bar::after {

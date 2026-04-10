@@ -164,8 +164,18 @@
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: 'Consolas', monospace;
-  font-size: 12px; line-height: 1.7; text-align: right;
+  font-size: 12px; line-height: 1.70; text-align: right;
   color: rgba(140, 0, 100, 0.12); white-space: pre;
+  animation: st-lore 10s ease-in-out infinite;
+}
+
+@keyframes st-lore {
+  0%, 100% { color: rgba(140, 0, 100, 0.12); }
+  28%       { color: rgba(140, 0, 100, 0.16); }
+  65%       { color: rgba(140, 0, 100, 0.09); }
+  88%       { color: rgba(0, 0, 0, 0); }
+  89%       { color: rgba(140, 0, 100, 0.20); }
+  92%       { color: rgba(140, 0, 100, 0.12); }
 }
 
 #edit-bar::after {

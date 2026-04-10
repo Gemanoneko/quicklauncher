@@ -166,8 +166,18 @@
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 8.5px; line-height: 1.6; text-align: right; letter-spacing: 2px;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 2px;
   color: rgba(40, 110, 180, 0.10); white-space: pre;
+  animation: eve-online-readout 10s ease-in-out infinite;
+}
+
+@keyframes eve-online-readout {
+  0%, 100% { color: rgba(40,110,180,.10); }
+  28%       { color: rgba(40,110,180,.14); }
+  65%       { color: rgba(40,110,180,.07); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(40,110,180,.18); }
+  92%       { color: rgba(40,110,180,.10); }
 }
 
 #edit-bar::after {

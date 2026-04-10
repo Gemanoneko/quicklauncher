@@ -198,9 +198,16 @@
   content: 'MU-TH-UR ONLINE\ACREW: 7 / 7\ACARGO: ORE\ADEST: EARTH (W-Y)\A\A> LV-426 APPROACH\A> PRIORITY ONE\A  OVERRIDE\A\A*** WARNING ***\ABIO-HZD CLASS A\ADANGER: EXTREME\ACREW EXPENDABLE\A\AALL PRIORITIES\ARECEDE';
   display: flex; align-items: flex-end; justify-content: flex-start;
   padding: 0 0 10px 12px;
-  font-size: 8px; line-height: 1.6; text-align: left;
+  font-size: 12px; line-height: 1.70; text-align: left;
   color: rgba(27, 200, 27, 0.14); white-space: pre;
   background: none;
+  animation: alien-readout 5s ease-in-out infinite;
+}
+@keyframes alien-readout {
+  0%, 100% { color: rgba(27, 200, 27, 0.14); }
+  50%      { color: rgba(27, 200, 27, 0.19); }
+  88%      { color: rgba(27, 200, 27, 0.01); }
+  89%      { color: rgba(27, 200, 27, 0.16); }
 }
 
 #edit-bar::after {
