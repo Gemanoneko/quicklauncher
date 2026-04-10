@@ -1,222 +1,224 @@
 /* ══ SILENT HILL ══════════════════════════════════════════════════════════════
-   The Otherworld. Rust and blood and fog. Industrial horror — corroded metal,
-   chain-link and siren. Beautiful in the most cursed possible way.
+   The fog. Not the rust — the FOG. White, suffocating, endless.
+   Shapes emerge from nothing. The radio crackles with static.
+   You can't see more than ten feet ahead. Something is out there.
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --radius:       1px;
+  --radius:       2px;
   --app-clip:     none;
   --overlay-clip: none;
 
-  --bg:           #060302;
-  --panel-bg:     rgba(10, 5, 3, 0.98);
-  --overlay-bg:   rgba(6, 3, 2, 0.96);
-  --header-bg:    rgba(100, 30, 10, 0.04);
+  /* ── LIGHT FOG PARADIGM — the opposite of dark mode ── */
+  --bg:           #C8C0B8;
+  --panel-bg:     rgba(180, 172, 164, 0.97);
+  --overlay-bg:   rgba(170, 162, 155, 0.96);
+  --header-bg:    rgba(100, 90, 80, 0.06);
 
-  --font:         'Segoe UI', Georgia, serif;
-  --text:         #BEA090;
-  --text-dim:     rgba(140, 100, 80, 0.50);
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #3A3530;
+  --text-dim:     rgba(60, 55, 48, 0.40);
 
-  --accent-c:     #802010;   /* corroded rust */
-  --accent-m:     #5A1008;   /* deep blood */
-  --accent-y:     #706040;   /* corroded grey-gold */
+  /* Near-monochrome — the only color is a faint rust bleed */
+  --accent-c:     #6A5A4A;   /* fog brown-grey */
+  --accent-m:     #7A3020;   /* distant rust (barely visible) */
+  --accent-y:     #8A7A6A;   /* warm grey */
 
-  --border:       rgba(120, 35, 15, 0.35);
-  --border-h:     rgba(140, 40, 20, 0.60);
+  --border:       rgba(80, 70, 60, 0.18);
+  --border-h:     rgba(80, 70, 60, 0.38);
 
-  --glow-c:       0 0 6px rgba(128,32,16,.55), 0 0 18px rgba(128,32,16,.18);
-  --glow-m:       0 0 6px rgba(90,16,8,.55), 0 0 18px rgba(90,16,8,.18);
-  --glow-y:       0 0 6px rgba(112,96,64,.45), 0 0 16px rgba(112,96,64,.14);
+  --glow-c:       0 0 6px rgba(80,70,60,.25), 0 0 16px rgba(80,70,60,.08);
+  --glow-m:       0 0 6px rgba(122,48,32,.30), 0 0 16px rgba(122,48,32,.10);
+  --glow-y:       0 0 5px rgba(100,90,75,.25), 0 0 14px rgba(100,90,75,.08);
 
-  --pulse-glow:   inset 0 0 20px rgba(90,20,8,.07);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 3px,
-                    rgba(80, 20, 8, 0.04) 3px, rgba(80, 20, 8, 0.04) 4px
-                  );
-  --drag-over-glow: inset 0 0 24px rgba(128,32,16,.10);
+  --pulse-glow:   inset 0 0 22px rgba(80,70,60,.04);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(80,70,60,.08);
 
-  --title-anim:   sh-flicker 6s steps(1) infinite;
+  --title-anim:   sh-fog-title 12s ease-in-out infinite;
 
-  --tile-hover-bg:     rgba(100, 30, 10, 0.09);
-  --tile-hover-border: rgba(130, 40, 15, 0.40);
-  --tile-hover-shadow: 0 0 10px rgba(128, 32, 16, 0.18);
-  --tile-active-bg:    rgba(100, 30, 10, 0.18);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(128,32,16,.50)) drop-shadow(0 0 10px rgba(90,16,8,.22));
-  --tile-icon-fx:      grayscale(0.5) contrast(1.1) brightness(0.75);
+  --tile-hover-bg:     rgba(60, 55, 48, 0.06);
+  --tile-hover-border: rgba(80, 70, 60, 0.25);
+  --tile-hover-shadow: 0 0 12px rgba(80, 70, 60, 0.10);
+  --tile-active-bg:    rgba(60, 55, 48, 0.12);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(60,55,48,.20)) drop-shadow(0 0 10px rgba(60,55,48,.08));
+  --tile-icon-fx:      grayscale(0.65) contrast(0.9) brightness(0.85);
+  --tile-icon-shape:   none;
   --tile-label-spacing:   0.5px;
   --tile-label-transform: none;
   --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-flicker 6s steps(1) infinite;
-  --app-entrance-anim:   entrance-zoom 2s ease-out forwards;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 8s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 3s ease-out forwards;
 
-  --btn-hover-bg:   rgba(100, 30, 10, 0.10);
-  --btn-active-bg:  rgba(100, 30, 10, 0.20);
+  --btn-hover-bg:   rgba(60, 55, 48, 0.08);
+  --btn-active-bg:  rgba(60, 55, 48, 0.15);
 
-  --drop-hint-border: rgba(100, 30, 10, 0.28);
-  --drop-icon-color:  rgba(128, 32, 16, 0.35);
-  --hint-sub-color:   rgba(100, 70, 45, 0.38);
+  --drop-hint-border: rgba(80, 70, 60, 0.20);
+  --drop-icon-color:  rgba(80, 70, 60, 0.25);
+  --hint-sub-color:   rgba(80, 70, 60, 0.28);
 
-  --rename-dashed:    rgba(128, 32, 16, 0.38);
-  --rename-input-bg:  rgba(100, 30, 10, 0.08);
+  --rename-dashed:    rgba(80, 70, 60, 0.30);
+  --rename-input-bg:  rgba(60, 55, 48, 0.06);
 
-  --edit-bar-bg:          rgba(90, 16, 8, 0.09);
-  --edit-bar-border:      rgba(90, 16, 8, 0.45);
-  --edit-label-color:     #5A1008;
+  --edit-bar-bg:          rgba(122, 48, 32, 0.06);
+  --edit-bar-border:      rgba(122, 48, 32, 0.25);
+  --edit-label-color:     #7A3020;
   --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #802010;
-  --btn-done-border:      rgba(128, 32, 16, 0.42);
-  --btn-done-hover-bg:    rgba(128, 32, 16, 0.10);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(100, 30, 10, 0.42);
+  --btn-done-color:       #7A3020;
+  --btn-done-border:      rgba(122, 48, 32, 0.30);
+  --btn-done-hover-bg:    rgba(122, 48, 32, 0.08);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(80, 70, 60, 0.30);
 
-  --update-bg:             rgba(112, 96, 64, 0.06);
-  --update-border:         rgba(112, 96, 64, 0.32);
-  --update-color:          #706040;
-  --update-btn-border:     rgba(112, 96, 64, 0.28);
-  --update-btn-hover-bg:   rgba(112, 96, 64, 0.08);
+  --update-bg:             rgba(100, 90, 75, 0.06);
+  --update-border:         rgba(100, 90, 75, 0.25);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(100, 90, 75, 0.22);
+  --update-btn-hover-bg:   rgba(100, 90, 75, 0.08);
   --update-btn-hover-glow: var(--glow-y);
 
-  --btn-close-color:      #802010;
-  --btn-close-border:     rgba(128, 32, 16, 0.40);
-  --btn-close-hover-bg:   rgba(128, 32, 16, 0.10);
+  --btn-close-color:      #6A5A4A;
+  --btn-close-border:     rgba(80, 70, 60, 0.28);
+  --btn-close-hover-bg:   rgba(80, 70, 60, 0.08);
   --btn-close-hover-glow: var(--glow-c);
 
-  --picker-search-bg:      rgba(100, 30, 10, 0.08);
-  --picker-item-hover-bg:  rgba(100, 30, 10, 0.09);
-  --picker-item-active-bg: rgba(100, 30, 10, 0.16);
-  --picker-placeholder-bg: rgba(100, 30, 10, 0.08);
+  --picker-search-bg:      rgba(60, 55, 48, 0.06);
+  --picker-item-hover-bg:  rgba(60, 55, 48, 0.07);
+  --picker-item-active-bg: rgba(60, 55, 48, 0.12);
+  --picker-placeholder-bg: rgba(60, 55, 48, 0.06);
 
-  --skin-btn-active-bg:    rgba(100, 30, 10, 0.18);
-  --remove-btn-bg:         rgba(90, 16, 8, 0.90);
-  --remove-btn-border:     #5A1008;
+  --skin-btn-active-bg:    rgba(60, 55, 48, 0.14);
+  --remove-btn-bg:         rgba(122, 48, 32, 0.70);
+  --remove-btn-border:     #7A3020;
 }
 
-/* ── Static flicker — analog signal lost in the fog ────────────────────────── */
-#app { animation: sh-static 22s steps(1) infinite; }
-@keyframes sh-static {
-  0%, 80%, 100% { opacity: 1; }
-  81% { opacity: 0.88; }
-  82% { opacity: 1; }
-  83% { opacity: 0.72; }
-  84% { opacity: 0.95; }
-  85% { opacity: 0.60; }
-  86% { opacity: 1; }
-  87% { opacity: 0.82; }
-  88% { opacity: 1; }
-}
-
-/* ── Rust grain + fog + blood vignette ──────────────────────────────────────── */
+/* ── The fog. Heavy grain, white-out vignette (INVERTED — light center, darker edges) ── */
 #app::after {
   background:
-    /* heavy film grain / rust texture */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.10'/%3E%3C/svg%3E"),
-    /* diagonal rust streaks */
-    repeating-linear-gradient(
-      102deg,
-      transparent 0px, transparent 4px,
-      rgba(100, 20, 8, 0.020) 4px, rgba(100, 20, 8, 0.020) 5px,
-      transparent 5px, transparent 32px
-    ),
-    /* blood vignette */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 35%, rgba(4, 1, 0, 0.78) 100%),
-    /* bottom red seep */
-    radial-gradient(ellipse 80% 30% at 50% 100%, rgba(80, 12, 4, 0.08) 0%, transparent 70%);
-  background-size: 200px 200px, auto, auto, auto;
+    /* Heavy film grain — desaturated, visible on light background */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"),
+    /* Fog vignette — INVERTED: edges darken slightly, center is bright fog */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(90,82,75,0.22) 100%),
+    /* Distant rust bleed — barely there, bottom edge */
+    radial-gradient(ellipse 60% 25% at 50% 100%, rgba(100,40,20,0.04) 0%, transparent 65%),
+    /* Fog density variation — slightly brighter patches */
+    radial-gradient(ellipse 40% 35% at 30% 40%, rgba(210,200,190,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 70% 60%, rgba(210,200,190,0.06) 0%, transparent 50%);
+  background-size: 200px 200px, auto, auto, auto, auto;
   opacity: 1; pointer-events: none;
 }
 
-/* ── Header rust accent bar ─────────────────────────────────────────────────── */
+/* ── Header — muted grey accent bar, barely visible ──────────────────────── */
 #header::before {
-  background: linear-gradient(to bottom, #802010, rgba(100, 25, 10, 0.25));
-  box-shadow: 0 0 8px rgba(128, 32, 16, 0.45), 0 0 20px rgba(90, 16, 8, 0.15);
+  background: linear-gradient(to bottom, #8A7A6A, rgba(100, 90, 75, 0.20));
+  box-shadow: 0 0 6px rgba(80,70,60,0.20), 0 0 16px rgba(80,70,60,0.06);
 }
 
-/* ── Grid: chain-link cage + Pyramid Head silhouette ───────────────────────── */
+/* ── Grid: NO device, NO panno — just fog. Atmosphere only. ──────────────── */
+/* The fog IS the theme. Nothing to see. Something to feel. */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* Pyramid Head helmet + chain-link fence — the Otherworld in full */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Cdefs%3E%3Cpattern id='cl' width='22' height='22' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 11,0 L 22,11 L 11,22 L 0,11 Z' fill='none' stroke='rgba(90,20,8,0.14)' stroke-width='0.8'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='500' height='380' fill='url(%23cl)'/%3E%3Cpolygon points='250,16 90,310 410,310' fill='rgba(55,8,3,0.22)'/%3E%3Cpolygon points='250,55 145,290 355,290' fill='rgba(35,5,2,0.15)'/%3E%3Crect x='210' y='148' width='80' height='10' rx='2' fill='rgba(80,16,6,0.28)'/%3E%3Crect x='174' y='172' width='20' height='5' rx='1' fill='rgba(70,12,4,0.18)'/%3E%3Crect x='306' y='172' width='20' height='5' rx='1' fill='rgba(70,12,4,0.18)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* side darkness — fog closing in */
-    radial-gradient(ellipse 40% 100% at 0% 50%, rgba(4, 1, 0, 0.20) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 100% at 100% 50%, rgba(4, 1, 0, 0.20) 0%, transparent 60%);
-  animation: sh-cage 14s steps(1) infinite;
-}
-@keyframes sh-cage {
-  0%, 100%  { opacity: 0.85; }
-  80%       { opacity: 0.85; }
-  81%       { opacity: 0.20; }
-  82%       { opacity: 1.00; }
-  83%       { opacity: 0.45; }
-  84%       { opacity: 0.10; }
-  85%       { opacity: 0.85; }
+    /* Drifting fog banks — layered radial gradients that shift */
+    radial-gradient(ellipse 60% 45% at 35% 45%, rgba(190,182,174,0.15) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 65% 55%, rgba(185,178,170,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 35% at 50% 80%, rgba(180,172,164,0.10) 0%, transparent 60%),
+    /* Faint chain-link suggestion — barely visible, like something behind the fog */
+    repeating-linear-gradient(45deg, transparent 0px, transparent 18px, rgba(80,70,60,0.015) 18px, rgba(80,70,60,0.015) 19px),
+    repeating-linear-gradient(-45deg, transparent 0px, transparent 18px, rgba(80,70,60,0.015) 18px, rgba(80,70,60,0.015) 19px);
+  animation: sh-fog 12s ease-in-out infinite;
 }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+/* CPU-efficient: opacity-only (tier 1) — slow, breathing fog */
+@keyframes sh-fog {
+  0%, 100% { opacity: 0.70; }
+  30%       { opacity: 0.85; }
+  50%       { opacity: 0.60; }
+  70%       { opacity: 0.80; }
+  87%       { opacity: 0.75; }
+  88%       { opacity: 0.15; }   /* the fog parts for one terrifying moment */
+  89%       { opacity: 0.90; }   /* then closes back in, thicker */
+  92%       { opacity: 0.70; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
 #header::after {
-  content: 'SILENT HILL  //  THE OTHERWORLD  //  SIREN ACTIVE';
+  content: 'SILENT HILL // THE FOG // RADIO STATIC';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(190, 95, 65, 0.75);
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(60, 55, 48, 0.45);
   pointer-events: none; white-space: nowrap;
 }
 
 #grid-container::after {
-  content: 'SILENT\AHILL\A\ATHERE WAS A\AHOLE HERE\AIT IS GONE\ANOW\A\AALESSA\AWATCHES';
+  content: 'THERE WAS\AA HOLE\AHERE\A\AIT IS\AGONE\ANOW\A\ATHE FOG\AIS GETTING\ATHICKER';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.7; text-align: right;
-  color: rgba(100, 28, 10, 0.12); white-space: pre;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(60, 55, 48, 0.12); white-space: pre;
+  animation: sh-readout 12s ease-in-out infinite;
+}
+
+@keyframes sh-readout {
+  0%, 100% { color: rgba(60,55,48,.12); }
+  28%       { color: rgba(60,55,48,.16); }
+  65%       { color: rgba(60,55,48,.09); }
+  88%       { color: rgba(200,192,184,0); }
+  89%       { color: rgba(60,55,48,.20); }
+  92%       { color: rgba(60,55,48,.12); }
 }
 
 #edit-bar::after {
-  content: 'PYRAMID HEAD APPROACHES';
+  content: 'SOMETHING IS FOLLOWING YOU';
   position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
   font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(90, 16, 8, 0.45);
+  font-size: 8px; letter-spacing: 2px; color: rgba(122, 48, 32, 0.35);
   pointer-events: none; white-space: nowrap;
 }
 
 #title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
 
-/* ── Title animation: fog-flicker ────────────────────────────────────────────── */
-@keyframes sh-flicker {
-  0%, 100%  { text-shadow: 0 0 6px rgba(128,32,16,.50), 0 0 18px rgba(128,32,16,.18); opacity: 1; }
-  80%       { text-shadow: 0 0 6px rgba(128,32,16,.50), 0 0 18px rgba(128,32,16,.18); opacity: 1; }
-  82%       { opacity: 0.4; text-shadow: none; }
-  83%       { opacity: 1; text-shadow: 0 0 8px rgba(128,32,16,.65), 0 0 22px rgba(128,32,16,.25); }
-  84%       { opacity: 0.6; }
-  85%       { opacity: 1; text-shadow: 0 0 6px rgba(128,32,16,.50), 0 0 18px rgba(128,32,16,.18); }
+/* ── Title: fog pulse — barely visible text emerging and receding ─────────── */
+@keyframes sh-fog-title {
+  0%        { color: #5A5248; text-shadow: 0 0 8px rgba(80,70,60,.20); }
+  35%       { color: #4A4238; text-shadow: 0 0 12px rgba(80,70,60,.30); }
+  65%       { color: #7A7268; text-shadow: none; }
+  87%       { color: #5A5248; text-shadow: 0 0 6px rgba(80,70,60,.18); }
+  88%       { color: #2A2520; text-shadow: 0 0 18px rgba(40,35,30,.50), 0 0 40px rgba(122,48,32,.20); opacity: 0.90; }
+  89%       { color: #C8C0B8; text-shadow: none; opacity: 0; }
+  90%       { color: #5A5248; text-shadow: 0 0 8px rgba(80,70,60,.25); opacity: 1; }
+  100%      { color: #5A5248; text-shadow: 0 0 8px rgba(80,70,60,.20); }
 }
 
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(6, 3, 1, 0.98); border-top-color: rgba(100, 28, 10, 0.25); }
-#theme-banner::before { content: '✝'; color: #802010; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(175, 105, 70, 0.80); }
+/* ── App: fog breathing — very slow, very subtle ─────────────────────────── */
+#app { animation: sh-fog-border 12s ease-in-out infinite; }
+@keyframes sh-fog-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(80,70,60,.15), inset 0 0 30px rgba(80,70,60,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(80,70,60,.22), inset 0 0 40px rgba(80,70,60,.06); }
+  65%      { box-shadow: 0 0 0 1px rgba(80,70,60,.12), inset 0 0 20px rgba(80,70,60,.03); }
+  88%      { box-shadow: 0 0 0 2px rgba(40,35,30,.50), inset 0 0 60px rgba(122,48,32,.08), 0 0 20px rgba(60,55,48,.15); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(80,70,60,.18), inset 0 0 28px rgba(80,70,60,.04); }
+}
 
-/* ── Tile: cage border flicker ───────────────────────────────────────────── */
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(170, 162, 155, 0.97); border-top-color: rgba(80, 70, 60, 0.18); }
+#theme-banner::before { content: '✝'; color: #6A5A4A; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(58, 53, 48, 0.65); }
+
+/* ── No particles. The fog is still. Nothing moves. That's what's wrong. ── */
+#particles {
+  background: none;
+}
+
+/* ── Tile: no hover effect. Just a faint border that was always there. ──── */
 .app-tile::before {
   width: 100%; height: 100%;
   left: 0; top: 0;
   transform: none;
   background: transparent;
-  border: 1px solid rgba(120, 35, 14, 0.35);
-}
-.app-tile:hover::before { animation: tile-flicker .8s steps(1, end) infinite; }
-
-/* ── Rust flakes — corroded metal drifting through Otherworld fog ────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='500'%3E%3Crect x='28' y='45' width='3' height='10' rx='1' fill='rgba(120,38,15,0.22)' transform='rotate(-22,28,45)'/%3E%3Crect x='85' y='140' width='2' height='8' rx='1' fill='rgba(110,32,12,0.17)' transform='rotate(15,85,140)'/%3E%3Crect x='155' y='260' width='4' height='12' rx='1' fill='rgba(130,42,16,0.20)' transform='rotate(-8,155,260)'/%3E%3Crect x='45' y='380' width='3' height='9' rx='1' fill='rgba(115,35,14,0.18)' transform='rotate(28,45,380)'/%3E%3Crect x='120' y='80' width='2' height='7' rx='1' fill='rgba(105,30,11,0.14)' transform='rotate(-15,120,80)'/%3E%3Crect x='170' y='320' width='3' height='11' rx='1' fill='rgba(125,40,16,0.19)' transform='rotate(10,170,320)'/%3E%3Crect x='65' y='470' width='2' height='8' rx='1' fill='rgba(108,33,13,0.16)' transform='rotate(-30,65,470)'/%3E%3Crect x='140' y='200' width='4' height='13' rx='1' fill='rgba(118,36,14,0.21)' transform='rotate(20,140,200)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='700'%3E%3Crect x='40' y='90' width='3' height='10' rx='1' fill='rgba(100,28,10,0.14)' transform='rotate(18,40,90)'/%3E%3Crect x='130' y='280' width='4' height='14' rx='1' fill='rgba(115,35,13,0.12)' transform='rotate(-12,130,280)'/%3E%3Crect x='210' y='450' width='3' height='11' rx='1' fill='rgba(108,32,12,0.11)' transform='rotate(25,210,450)'/%3E%3Crect x='70' y='580' width='2' height='8' rx='1' fill='rgba(95,25,9,0.13)' transform='rotate(-20,70,580)'/%3E%3Crect x='185' y='160' width='3' height='9' rx='1' fill='rgba(112,34,13,0.10)' transform='rotate(8,185,160)'/%3E%3Crect x='55' y='660' width='4' height='12' rx='1' fill='rgba(120,38,15,0.12)' transform='rotate(-35,55,660)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 500px, 260px 700px;
-  animation: sh-ash 16s linear infinite;
-}
-@keyframes sh-ash {
-  from { background-position: 0 -500px, 20px -700px; }
-  to   { background-position: 30px 0, -10px 0; }
+  border: none;
 }
