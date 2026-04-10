@@ -12,8 +12,8 @@
 
   /* Typography */
   --font:                 'Consolas', 'Courier New', monospace;
-  --text:                 #18A016;
-  --text-dim:             #0a5008;
+  --text:                 #30BC30;
+  --text-dim:             rgba(48, 160, 48, 0.45);
 
   /* Shape — hard rectangle, no softness */
   --radius:               0px;
@@ -187,12 +187,12 @@
 
 /* ── Terminal cursor/blink animation ──────────────────────────────────────── */
 @keyframes alien-blink {
-  0%, 40% { color: #18A016; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); }
-  50%      { color: #1BC81B; text-shadow: 0 0 10px rgba(27,200,27,0.7), 0 0 28px rgba(27,200,27,0.3); }
-  65%, 87% { color: #18A016; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); }
-  88%      { color: #22FF22; text-shadow: 0 0 18px rgba(34,255,34,0.9), 0 0 45px rgba(27,200,27,0.5); }
+  0%, 40% { color: #30BC30; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); }
+  50%      { color: #28D028; text-shadow: 0 0 10px rgba(27,200,27,0.7), 0 0 28px rgba(27,200,27,0.3); }
+  65%, 87% { color: #30BC30; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); }
+  88%      { color: #55FF55; text-shadow: 0 0 18px rgba(85,255,85,0.9), 0 0 45px rgba(27,200,27,0.5); }
   89%      { color: #000200; text-shadow: none; opacity: 0.05; }
-  90%      { color: #18A016; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); opacity: 1; }
+  90%      { color: #30BC30; text-shadow: 0 0 6px rgba(27,200,27,0.5), 0 0 18px rgba(27,200,27,0.2); opacity: 1; }
 }
 
 /* ── Flavor content ────────────────────────────────────────────────────────── */

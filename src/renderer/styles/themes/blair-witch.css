@@ -17,8 +17,8 @@
   --header-bg:    rgba(80, 75, 65, 0.04);
 
   --font:         'Courier New', Consolas, monospace;
-  --text:         #807868;
-  --text-dim:     rgba(100, 92, 78, 0.45);
+  --text:         #B0A090;
+  --text-dim:     rgba(140, 128, 108, 0.45);
 
   /* Near-monochrome — NO bright accents. Everything muted, washed out. */
   --accent-c:     #605848;   /* dead wood brown */

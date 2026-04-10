@@ -16,8 +16,8 @@
   --header-bg:    rgba(32, 168, 70, 0.04);
 
   --font:         Georgia, 'Times New Roman', serif;
-  --text:         #509870;
-  --text-dim:     rgba(80, 140, 96, 0.45);
+  --text:         #68A880;
+  --text-dim:     rgba(104, 160, 122, 0.45);
 
   /* Dragon jade-green + amber chaos + shadow */
   --accent-c:     #20A848;   /* Dragon green -- jade Seoul */
@@ -172,16 +172,16 @@
 
 /* -- Title: jade-amber contemplative pulse with 88% sync (tier 3) ----------- */
 @keyframes dragon-title {
-  0%        { color: #509870; text-shadow: 0 0 6px rgba(32,168,70,.48), 0 0 18px rgba(32,168,70,.16); }
-  60%       { color: #509870; text-shadow: 0 0 6px rgba(32,168,70,.45); }
-  62%       { color: #40C868; text-shadow: 0 0 10px rgba(64,200,104,.70), 0 0 28px rgba(32,168,70,.25); opacity: 0.85; }
+  0%        { color: #68A880; text-shadow: 0 0 6px rgba(32,168,70,.48), 0 0 18px rgba(32,168,70,.16); }
+  60%       { color: #68A880; text-shadow: 0 0 6px rgba(32,168,70,.45); }
+  62%       { color: #50D878; text-shadow: 0 0 10px rgba(80,216,120,.70), 0 0 28px rgba(32,168,70,.25); opacity: 0.85; }
   63%       { color: #C89030; text-shadow: 0 0 6px rgba(200,144,48,.55); opacity: 0.6; }
-  64%       { color: #509870; text-shadow: 0 0 8px rgba(32,168,70,.55); opacity: 1; }
-  87%       { color: #509870; text-shadow: 0 0 6px rgba(32,168,70,.42); }
-  88%       { color: #80E098; text-shadow: 0 0 22px rgba(128,224,152,.82), 0 0 50px rgba(32,168,70,.45); opacity: 0.90; }
+  64%       { color: #68A880; text-shadow: 0 0 8px rgba(32,168,70,.55); opacity: 1; }
+  87%       { color: #68A880; text-shadow: 0 0 6px rgba(32,168,70,.42); }
+  88%       { color: #90EAA8; text-shadow: 0 0 22px rgba(144,234,168,.82), 0 0 50px rgba(32,168,70,.45); opacity: 0.90; }
   89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #509870; text-shadow: 0 0 8px rgba(32,168,70,.55); opacity: 1; }
-  100%      { color: #509870; text-shadow: 0 0 6px rgba(32,168,70,.48), 0 0 18px rgba(32,168,70,.16); }
+  90%       { color: #68A880; text-shadow: 0 0 8px rgba(32,168,70,.55); opacity: 1; }
+  100%      { color: #68A880; text-shadow: 0 0 6px rgba(32,168,70,.48), 0 0 18px rgba(32,168,70,.16); }
 }
 
 /* -- App: jade chaos border -- box-shadow 12s (tier 5) ---------------------- */

@@ -16,8 +16,8 @@
   --header-bg:    rgba(0, 90, 210, 0.04);
 
   --font:         'Segoe UI', 'Arial', sans-serif;
-  --text:         #4880C8;
-  --text-dim:     rgba(60, 100, 180, 0.45);
+  --text:         #70A0E0;
+  --text-dim:     rgba(90, 135, 210, 0.45);
 
   /* Electric blue + money gold */
   --accent-c:     #0072E8;   /* Illuminati blue — electric corporate */
@@ -165,16 +165,16 @@
 #title { font-family: 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 5px; }
 
 @keyframes illum-title {
-  0%        { color: #4880C8; text-shadow: 0 0 6px rgba(0,114,232,.50), 0 0 18px rgba(0,114,232,.18); }
-  60%       { color: #4880C8; text-shadow: 0 0 6px rgba(0,114,232,.50); }
-  62%       { color: #40AAFF; text-shadow: 0 0 12px rgba(64,170,255,.80), 0 0 30px rgba(0,114,232,.35); opacity: 0.85; }
+  0%        { color: #70A0E0; text-shadow: 0 0 6px rgba(0,114,232,.50), 0 0 18px rgba(0,114,232,.18); }
+  60%       { color: #70A0E0; text-shadow: 0 0 6px rgba(0,114,232,.50); }
+  62%       { color: #60C0FF; text-shadow: 0 0 12px rgba(96,192,255,.80), 0 0 30px rgba(0,114,232,.35); opacity: 0.85; }
   63%       { color: #C0A020; text-shadow: 0 0 6px rgba(192,160,32,.55); opacity: 0.6; }
-  64%       { color: #4880C8; text-shadow: 0 0 8px rgba(0,114,232,.55); opacity: 1; }
-  87%       { color: #4880C8; text-shadow: 0 0 6px rgba(0,114,232,.45); }
-  88%       { color: #88CCFF; text-shadow: 0 0 22px rgba(136,204,255,.85), 0 0 50px rgba(0,114,232,.45); opacity: 0.90; }
+  64%       { color: #70A0E0; text-shadow: 0 0 8px rgba(0,114,232,.55); opacity: 1; }
+  87%       { color: #70A0E0; text-shadow: 0 0 6px rgba(0,114,232,.45); }
+  88%       { color: #A0D0FF; text-shadow: 0 0 22px rgba(160,208,255,.85), 0 0 50px rgba(0,114,232,.45); opacity: 0.90; }
   89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #4880C8; text-shadow: 0 0 8px rgba(0,114,232,.55); opacity: 1; }
-  100%      { color: #4880C8; text-shadow: 0 0 6px rgba(0,114,232,.50), 0 0 18px rgba(0,114,232,.18); }
+  90%       { color: #70A0E0; text-shadow: 0 0 8px rgba(0,114,232,.55); opacity: 1; }
+  100%      { color: #70A0E0; text-shadow: 0 0 6px rgba(0,114,232,.50), 0 0 18px rgba(0,114,232,.18); }
 }
 
 #app { animation: illum-border 8s steps(1) infinite; }
