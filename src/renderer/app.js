@@ -429,6 +429,13 @@ const THEME_BANNERS = {
     'DRACARYS.',
     'A LANNISTER ALWAYS PAYS HIS DEBTS.',
   ],
+  'blair-witch': [
+    'I AM SO SCARED.',
+    'THE MAP IS GONE. JOSH IS GONE.',
+    'I SAW SOMETHING STANDING IN THE TREES. IT WAS NOT HUMAN.',
+    'STAND IN THE CORNER. DO NOT TURN AROUND.',
+    'THE FOOTAGE WAS FOUND A YEAR LATER.',
+  ],
   'amnesia': [
     'REMEMBER. YOU CHOSE THIS.',
     'THE SHADOW IS COMING FOR YOU, DANIEL.',
@@ -632,6 +639,7 @@ const THEME_NAMES = {
   'eve-online':          'EVE ONLINE',
   'indiana-jones':       'INDIANA JONES',
   'game-of-thrones':     'GAME OF THRONES',
+  'blair-witch':         'BLAIR WITCH',
   'amnesia':             'AMNESIA',
   'metal-gear':          'METAL GEAR SOLID',
   'parasite-eve':        'PARASITE EVE',
