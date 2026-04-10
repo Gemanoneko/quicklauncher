@@ -44,8 +44,8 @@
                             rgba(109, 232, 255, 0.025) 6px
                           );
 
-  /* Title animation — slow blue pulse */
-  --title-anim:           tron-pulse 3s ease-in-out infinite;
+  /* Title animation — sharp digital pulse, 10s synced */
+  --title-anim:           tron-title 10s ease-in-out infinite;
 
   /* Tiles */
   --tile-hover-bg:        rgba(109, 232, 255, 0.06);
@@ -137,49 +137,78 @@
   box-shadow: 0 0 10px rgba(255, 127, 0, 0.7), 0 0 22px rgba(255, 127, 0, 0.3);
 }
 
-/* ── Circuit grid: node dots at intersections + edge glows + disc trace ───── */
+/* ── The Grid: perspective floor grid receding to vanishing point ─────────── */
+/* THE iconic Tron visual — infinite grid stretching into darkness */
 #grid-container::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    /* glowing node dots at each circuit intersection */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Ccircle cx='0' cy='0' r='2.5' fill='rgba(109,232,255,0.18)'/%3E%3Ccircle cx='64' cy='0' r='2.5' fill='rgba(109,232,255,0.18)'/%3E%3Ccircle cx='0' cy='64' r='2.5' fill='rgba(109,232,255,0.18)'/%3E%3Ccircle cx='64' cy='64' r='2.5' fill='rgba(109,232,255,0.18)'/%3E%3Cline x1='0' y1='0' x2='64' y2='0' stroke='rgba(109,232,255,0.06)' stroke-width='0.5'/%3E%3Cline x1='0' y1='64' x2='64' y2='64' stroke='rgba(109,232,255,0.06)' stroke-width='0.5'/%3E%3Cline x1='0' y1='0' x2='0' y2='64' stroke='rgba(109,232,255,0.06)' stroke-width='0.5'/%3E%3Cline x1='64' y1='0' x2='64' y2='64' stroke='rgba(109,232,255,0.06)' stroke-width='0.5'/%3E%3C/svg%3E"),
-    /* identity disc diagonal trace */
-    repeating-linear-gradient(45deg, transparent 0px, transparent 95px, rgba(255,127,0,0.028) 95px, rgba(255,127,0,0.028) 96px),
-    /* top-edge programme glow */
-    linear-gradient(to bottom, rgba(109,232,255,0.09) 0px, transparent 22px),
-    /* bottom-edge End of Line glow */
-    linear-gradient(to top, rgba(109,232,255,0.09) 0px, transparent 22px),
-    /* data disc center radial */
-    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(109,232,255,0.028) 0%, transparent 70%);
+    /* Perspective grid — horizontal lines that compress toward the horizon (top 40%) */
+    repeating-linear-gradient(to bottom,
+      transparent 0px, transparent 6px, rgba(109,232,255,0.08) 6px, rgba(109,232,255,0.08) 7px
+    ),
+    /* Vertical grid lines */
+    repeating-linear-gradient(to right,
+      transparent 0px, transparent 60px, rgba(109,232,255,0.05) 60px, rgba(109,232,255,0.05) 61px
+    ),
+    /* Horizon glow — where the grid meets the sky */
+    linear-gradient(to bottom,
+      rgba(109,232,255,0.12) 0%, rgba(109,232,255,0.04) 8%, transparent 35%
+    ),
+    /* Identity disc glow — center, orange */
+    radial-gradient(circle at 50% 50%, rgba(255,127,0,0.06) 0%, transparent 35%),
+    /* Vanishing point glow at top center */
+    radial-gradient(ellipse 30% 15% at 50% 0%, rgba(109,232,255,0.10) 0%, transparent 65%);
+  animation: tron-grid 10s ease-in-out infinite;
 }
 
-/* ── Title slow blue pulse ────────────────────────────────────────────────── */
-@keyframes tron-pulse {
-  0%, 100% {
-    text-shadow: 0 0 6px rgba(109, 232, 255, 0.6), 0 0 18px rgba(109, 232, 255, 0.25);
-    opacity: 1;
-  }
-  50% {
-    text-shadow: 0 0 10px rgba(109, 232, 255, 0.9), 0 0 30px rgba(109, 232, 255, 0.5), 0 0 50px rgba(109, 232, 255, 0.2);
-    opacity: 0.95;
-  }
+@keyframes tron-grid {
+  0%, 100% { opacity: 0.70; }
+  28%       { opacity: 0.80; }
+  65%       { opacity: 0.62; }
+  87%       { opacity: 0.65; }
+  88%       { opacity: 0.04; }   /* derez — synchronized blackout */
+  89%       { opacity: 0.88; }
+  92%       { opacity: 0.70; }
+}
+
+/* ── Title: sharp digital pulse with 88% sync ────────────────────────────── */
+@keyframes tron-title {
+  0%        { color: #6DE8FF; text-shadow: 0 0 6px rgba(109,232,255,.60), 0 0 18px rgba(109,232,255,.25); }
+  35%       { color: #9FFFFF; text-shadow: 0 0 10px rgba(109,232,255,.85), 0 0 30px rgba(109,232,255,.40); }
+  65%       { color: #4A90A0; text-shadow: 0 0 4px rgba(109,232,255,.30); }
+  87%       { color: #6DE8FF; text-shadow: 0 0 6px rgba(109,232,255,.50); }
+  88%       { color: #FFFFFF; text-shadow: 0 0 22px rgba(255,255,255,.90), 0 0 50px rgba(109,232,255,.50); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #6DE8FF; text-shadow: 0 0 8px rgba(109,232,255,.65); opacity: 1; }
+  100%      { color: #6DE8FF; text-shadow: 0 0 6px rgba(109,232,255,.60), 0 0 18px rgba(109,232,255,.25); }
 }
 
 /* ── Flavor content ────────────────────────────────────────────────────────── */
 #header::after {
-  content: 'USER: ACTIVE  ///  GRID: ONLINE';
+  content: 'THE GRID // PROGRAMME ACTIVE // END OF LINE';
   position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-size: 8px; letter-spacing: 2px; color: rgba(109, 232, 255, 0.45);
+  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(109, 232, 255, 0.52);
   pointer-events: none; white-space: nowrap;
 }
 
 #grid-container::after {
-  content: '01001010 01010111\A10110110 11001010\A\AUSER 42 // ACTIVE\AGRID SECTOR: 7-G\AIDENTITY DISC: ON\ACYCLES: 1,024,000\A\AEND OF LINE\A...';
+  content: 'I FIGHT FOR\ATHE USERS\A-----------\ATHE GRID\ASECTOR 7-G\A-----------\AIDENTITY\ADISC: ON\ACYCLES:\A1024000';
   display: flex; align-items: flex-end; justify-content: flex-end;
   padding: 0 12px 10px 0;
-  font-size: 8.5px; line-height: 1.6; text-align: right;
-  color: rgba(109, 232, 255, 0.10); white-space: pre;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(109, 232, 255, 0.08); white-space: pre;
+  animation: tron-readout 10s ease-in-out infinite;
+}
+
+@keyframes tron-readout {
+  0%, 100% { color: rgba(109,232,255,.08); }
+  28%       { color: rgba(109,232,255,.12); }
+  65%       { color: rgba(109,232,255,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(109,232,255,.16); }
+  92%       { color: rgba(109,232,255,.08); }
 }
 
 #edit-bar::after {
@@ -190,20 +219,19 @@
 }
 
 /* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(0, 4, 12, 0.97); border-top-color: rgba(109, 232, 255, 0.18); }
+#theme-banner { background: rgba(0, 4, 12, 0.98); border-top-color: rgba(109, 232, 255, 0.18); }
 #theme-banner::before { content: '◇'; color: #6DE8FF; font-size: 20px; }
-#theme-banner-text { color: rgba(168, 224, 240, 0.55); }
+#theme-banner-text { font-family: 'Consolas', 'Courier New', monospace; letter-spacing: 2px; color: rgba(168, 224, 240, 0.60); }
 
-/* ── Identity disc grid pulse — programme cycling on the grid ────────────── */
-#app { animation: tron-grid-pulse 6s ease-in-out infinite; }
-@keyframes tron-grid-pulse {
+/* ── App: grid pulse — synced at 10s/88% ─────────────────────────────────── */
+#app { animation: tron-border 10s ease-in-out infinite; }
+@keyframes tron-border {
   0%, 100% { box-shadow: 0 0 0 1px rgba(109,232,255,.18), inset 0 0 16px rgba(109,232,255,.04); }
-  33%      { box-shadow: 0 0 0 1px rgba(109,232,255,.45), inset 0 0 26px rgba(109,232,255,.09); }
-  34%      { box-shadow: 0 0 0 1px rgba(255,127,0,.30),   inset 0 0 20px rgba(255,127,0,.06); }
-  35%      { box-shadow: 0 0 0 1px rgba(109,232,255,.38), inset 0 0 22px rgba(109,232,255,.07); }
-  66%      { box-shadow: 0 0 0 1px rgba(109,232,255,.32), inset 0 0 20px rgba(109,232,255,.06); }
-  67%      { box-shadow: 0 0 0 1px rgba(255,127,0,.48),   inset 0 0 28px rgba(255,127,0,.09); }
-  68%      { box-shadow: 0 0 0 1px rgba(109,232,255,.42), inset 0 0 24px rgba(109,232,255,.08); }
+  35%      { box-shadow: 0 0 0 1px rgba(109,232,255,.48), inset 0 0 26px rgba(109,232,255,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(255,127,0,.25), inset 0 0 18px rgba(255,127,0,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,255,255,.85), inset 0 0 50px rgba(109,232,255,.15), 0 0 20px rgba(109,232,255,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(109,232,255,.40), inset 0 0 22px rgba(109,232,255,.06); }
 }
 
 /* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
