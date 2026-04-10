@@ -138,14 +138,12 @@
   animation: mordor-eye 10s ease-in-out infinite;
 }
 @keyframes mordor-eye {
-  0%, 100% { opacity: 0.80; }
-  28%       { opacity: 0.90; }
-  50%       { opacity: 0.72; }
-  65%       { opacity: 0.85; }
-  87%       { opacity: 0.78; }
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
   88%       { opacity: 0.04; }   /* the Eye blinks — synchronized blackout */
-  89%       { opacity: 0.95; }   /* it opens wider */
-  92%       { opacity: 0.80; }
+  89%       { opacity: 0.90; }   /* it opens wider */
+  92%       { opacity: 0.82; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */

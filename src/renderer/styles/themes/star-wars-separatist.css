@@ -126,13 +126,12 @@
 }
 
 @keyframes sep-grid {
-  0%, 100% { opacity: 0.65; }
-  28%       { opacity: 0.72; }
-  65%       { opacity: 0.58; }
-  87%       { opacity: 0.58; }
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
   88%       { opacity: 0.04; }
-  89%       { opacity: 0.78; }
-  92%       { opacity: 0.65; }
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
 }
 
 /* ── Flavor content ──────────────────────────────────────────────────────── */

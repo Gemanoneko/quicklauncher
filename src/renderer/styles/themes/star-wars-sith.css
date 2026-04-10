@@ -114,18 +114,17 @@
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='45' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='3' fill='rgba(200,16,16,0.30)'%3EPEACE IS A LIE%3C/text%3E%3Ctext x='150' y='80' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.20)'%3ETHERE IS ONLY PASSION%3C/text%3E%3Ctext x='350' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.18)'%3ETHROUGH PASSION%3C/text%3E%3Ctext x='100' y='125' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.15)'%3EI GAIN STRENGTH%3C/text%3E%3Ctext x='400' y='65' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.14)'%3ETHROUGH STRENGTH%3C/text%3E%3Ctext x='80' y='160' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.12)'%3EI GAIN POWER%3C/text%3E%3Cpath d='M 250,150 L 370,340 L 130,340 Z' fill='rgba(30,0,0,0.50)' stroke='rgba(200,16,16,0.42)' stroke-width='2'/%3E%3Cpath d='M 250,165 L 358,335 L 142,335 Z' fill='none' stroke='rgba(200,16,16,0.20)' stroke-width='0.5'/%3E%3Cline x1='250' y1='150' x2='250' y2='340' stroke='rgba(200,16,16,0.15)' stroke-width='0.5'/%3E%3Cline x1='130' y1='340' x2='370' y2='340' stroke='rgba(200,16,16,0.15)' stroke-width='0.5'/%3E%3Cline x1='190' y1='245' x2='310' y2='245' stroke='rgba(200,16,16,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='260' r='22' fill='rgba(80,0,0,0.40)' stroke='rgba(200,16,16,0.38)' stroke-width='1.2'/%3E%3Ccircle cx='250' cy='260' r='14' fill='rgba(120,0,0,0.35)' stroke='rgba(200,16,16,0.22)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='260' r='5' fill='rgba(200,16,16,0.55)'/%3E%3Ccircle cx='250' cy='260' r='2' fill='rgba(255,40,40,0.70)'/%3E%3Cline x1='250' y1='150' x2='228' y2='260' stroke='rgba(200,16,16,0.18)' stroke-width='0.5' stroke-dasharray='3,5'/%3E%3Cline x1='250' y1='150' x2='272' y2='260' stroke='rgba(200,16,16,0.18)' stroke-width='0.5' stroke-dasharray='3,5'/%3E%3Cline x1='130' y1='340' x2='228' y2='260' stroke='rgba(200,16,16,0.12)' stroke-width='0.5' stroke-dasharray='3,5'/%3E%3Cline x1='370' y1='340' x2='272' y2='260' stroke='rgba(200,16,16,0.12)' stroke-width='0.5' stroke-dasharray='3,5'/%3E%3Ctext x='250' y='300' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='3' fill='rgba(200,16,16,0.42)'%3ESITH HOLOCRON%3C/text%3E%3Ctext x='250' y='315' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(136,8,8,0.30)'%3EDARK SIDE KNOWLEDGE%3C/text%3E%3Ctext x='250' y='358' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(200,16,16,0.22)'%3ETHE FORCE SHALL FREE ME%3C/text%3E%3Ccircle cx='60' cy='50' r='0.7' fill='rgba(200,16,16,0.18)'/%3E%3Ccircle cx='440' cy='45' r='0.5' fill='rgba(200,16,16,0.14)'/%3E%3Ccircle cx='45' cy='200' r='0.8' fill='rgba(200,16,16,0.10)'/%3E%3Ccircle cx='455' cy='180' r='0.6' fill='rgba(200,16,16,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.65;
+  opacity: 0.82;
   animation: sith-holocron 10s ease-in-out infinite;
 }
 
 @keyframes sith-holocron {
-  0%, 100% { opacity: 0.65; }
-  28%       { opacity: 0.72; }
-  65%       { opacity: 0.55; }
-  87%       { opacity: 0.55; }
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
   88%       { opacity: 0.04; }   /* the dark side consumes — synchronized blackout */
-  89%       { opacity: 0.82; }
-  92%       { opacity: 0.65; }
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
 }
 
 /* ── Flavor content ──────────────────────────────────────────────────────── */
