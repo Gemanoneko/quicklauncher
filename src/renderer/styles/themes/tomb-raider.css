@@ -1,0 +1,231 @@
+/* ══ TOMB RAIDER ══════════════════════════════════════════════════════════════
+   Ancient tombs. Torchlight on stone. Lara Croft descends into the dark.
+   The walls are carved with warnings in dead languages. Traps wait
+   in the silence. You're not the first to come here. You may be the last.
+   TORCH-LIT STONE paradigm — inside the tomb, asymmetric warm/cold lighting.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* Inside a tomb — dark stone base with warm torch influence */
+  --bg:           #0C0A06;
+  --panel-bg:     rgba(16, 14, 8, 0.99);
+  --overlay-bg:   rgba(12, 10, 6, 0.97);
+  --header-bg:    rgba(180, 120, 40, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #A89070;
+  --text-dim:     rgba(140, 115, 80, 0.45);
+
+  /* Torchlight amber + cold stone */
+  --accent-c:     #C08830;   /* torchlight amber */
+  --accent-m:     #606868;   /* cold wet stone */
+  --accent-y:     #604818;   /* ancient wood */
+
+  --border:       rgba(192, 136, 48, 0.18);
+  --border-h:     rgba(192, 136, 48, 0.45);
+
+  --glow-c:       0 0 7px rgba(192,136,48,.52), 0 0 20px rgba(192,136,48,.18);
+  --glow-m:       0 0 5px rgba(96,104,104,.38), 0 0 14px rgba(96,104,104,.12);
+  --glow-y:       0 0 5px rgba(96,72,24,.42), 0 0 14px rgba(96,72,24,.14);
+
+  --pulse-glow:   inset 0 0 20px rgba(192,136,48,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 22px rgba(192,136,48,.08);
+
+  --title-anim:   tr-title 12s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(192, 136, 48, 0.06);
+  --tile-hover-border: rgba(192, 136, 48, 0.32);
+  --tile-hover-shadow: 0 0 12px rgba(192, 136, 48, 0.14);
+  --tile-active-bg:    rgba(192, 136, 48, 0.12);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(192,136,48,.42)) drop-shadow(0 0 12px rgba(192,136,48,.14));
+  --tile-icon-fx:      brightness(0.90) saturate(1.05) contrast(1.1);
+  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 100% 88%, 50% 100%, 0% 88%);
+  --tile-label-spacing:   0.8px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 7s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 2s ease-out forwards;
+
+  --btn-hover-bg:   rgba(192, 136, 48, 0.08);
+  --btn-active-bg:  rgba(192, 136, 48, 0.16);
+
+  --drop-hint-border: rgba(192, 136, 48, 0.20);
+  --drop-icon-color:  rgba(192, 136, 48, 0.28);
+  --hint-sub-color:   rgba(140, 115, 80, 0.30);
+
+  --rename-dashed:    rgba(192, 136, 48, 0.35);
+  --rename-input-bg:  rgba(192, 136, 48, 0.06);
+
+  --edit-bar-bg:          rgba(96, 104, 104, 0.07);
+  --edit-bar-border:      rgba(96, 104, 104, 0.32);
+  --edit-label-color:     #788080;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #788080;
+  --btn-done-border:      rgba(96, 104, 104, 0.35);
+  --btn-done-hover-bg:    rgba(96, 104, 104, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(192, 136, 48, 0.35);
+
+  --update-bg:             rgba(96, 72, 24, 0.06);
+  --update-border:         rgba(192, 136, 48, 0.28);
+  --update-color:          var(--accent-c);
+  --update-btn-border:     rgba(192, 136, 48, 0.25);
+  --update-btn-hover-bg:   rgba(192, 136, 48, 0.08);
+  --update-btn-hover-glow: var(--glow-c);
+
+  --btn-close-color:      #C08830;
+  --btn-close-border:     rgba(192, 136, 48, 0.35);
+  --btn-close-hover-bg:   rgba(192, 136, 48, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(192, 136, 48, 0.06);
+  --picker-item-hover-bg:  rgba(192, 136, 48, 0.07);
+  --picker-item-active-bg: rgba(192, 136, 48, 0.14);
+  --picker-placeholder-bg: rgba(192, 136, 48, 0.06);
+
+  --skin-btn-active-bg:    rgba(192, 136, 48, 0.14);
+  --remove-btn-bg:         rgba(96, 104, 104, 0.78);
+  --remove-btn-border:     #606868;
+}
+
+/* ── ASYMMETRIC TORCH-LIT STONE — warm left, cold dark right ─────────────── */
+#app::after {
+  background:
+    /* Stone grain — heavy, rough, visible texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.3 0.22 0.12 0 0.02  0.25 0.18 0.10 0 0.01  0.12 0.08 0.05 0 0  0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* TORCH GLOW — warm amber from the LEFT side (asymmetric!) */
+    radial-gradient(ellipse 45% 70% at 5% 50%, rgba(180,110,25,0.12) 0%, rgba(140,80,15,0.06) 40%, transparent 70%),
+    /* Cold stone darkness — everything the torch doesn't reach */
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 20%, rgba(4,3,2,0.82) 100%),
+    /* Faint warm ceiling reflection from torchlight */
+    radial-gradient(ellipse 35% 20% at 20% 0%, rgba(140,90,20,0.05) 0%, transparent 55%),
+    /* Deep cold at far right — the tomb goes deeper */
+    radial-gradient(ellipse 40% 80% at 100% 50%, rgba(2,3,4,0.20) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — torchlight amber accent bar ────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #C08830, rgba(150, 100, 30, 0.25));
+  box-shadow: 0 0 7px rgba(192,136,48,0.45), 0 0 18px rgba(192,136,48,0.14);
+}
+
+/* ── Grid: L-SHAPED — tomb corridor architecture, torch-lit left wall ────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='70' y='30' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='3' fill='rgba(192,136,48,0.48)'%3ETOMB RAIDER%3C/text%3E%3Ctext x='70' y='46' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(140,115,80,0.35)'%3ELARA CROFT -- CROFT MANOR -- EXPEDITION%3C/text%3E%3Crect x='15' y='60' width='12' height='260' fill='rgba(60,50,30,0.35)' stroke='rgba(120,95,55,0.28)' stroke-width='0.8'/%3E%3Crect x='27' y='60' width='12' height='260' fill='rgba(50,42,25,0.30)' stroke='rgba(100,80,45,0.22)' stroke-width='0.5'/%3E%3Crect x='39' y='60' width='12' height='260' fill='rgba(42,35,20,0.25)' stroke='rgba(85,68,38,0.18)' stroke-width='0.5'/%3E%3Crect x='15' y='320' width='180' height='12' fill='rgba(55,46,28,0.30)' stroke='rgba(110,88,50,0.25)' stroke-width='0.8'/%3E%3Crect x='15' y='332' width='180' height='12' fill='rgba(48,40,24,0.25)' stroke='rgba(90,72,40,0.20)' stroke-width='0.5'/%3E%3Crect x='15' y='55' width='180' height='8' fill='rgba(58,48,30,0.32)' stroke='rgba(115,92,52,0.25)' stroke-width='0.8'/%3E%3Cpath d='M 60,110 Q 68,95 80,100 L 90,110 Q 85,120 75,118 L 65,115 Z' fill='none' stroke='rgba(192,136,48,0.28)' stroke-width='0.8'/%3E%3Cpath d='M 65,140 L 85,135 L 82,152 L 62,148 Z' fill='none' stroke='rgba(192,136,48,0.22)' stroke-width='0.6'/%3E%3Ccircle cx='72' cy='180' r='8' fill='none' stroke='rgba(192,136,48,0.25)' stroke-width='0.8'/%3E%3Cline x1='72' y1='172' x2='72' y2='188' stroke='rgba(192,136,48,0.18)' stroke-width='0.5'/%3E%3Cline x1='64' y1='180' x2='80' y2='180' stroke='rgba(192,136,48,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 60,220 C 65,210 78,208 85,215 C 92,222 88,235 80,240 C 72,245 62,238 60,228 Z' fill='none' stroke='rgba(192,136,48,0.20)' stroke-width='0.6'/%3E%3Ctext x='62' y='270' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(192,136,48,0.32)'%3EWARNING%3C/text%3E%3Ctext x='62' y='282' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(192,136,48,0.28)'%3EDEATH%3C/text%3E%3Ctext x='62' y='294' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(192,136,48,0.25)'%3EAWAITS%3C/text%3E%3Cpath d='M 200,80 L 200,340' stroke='rgba(96,104,104,0.10)' stroke-width='0.5' stroke-dasharray='6,10'/%3E%3Ctext x='280' y='120' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' fill='rgba(140,115,80,0.38)'%3EEXPEDITION LOG%3C/text%3E%3Cline x1='240' y1='126' x2='380' y2='126' stroke='rgba(140,115,80,0.15)' stroke-width='0.5'/%3E%3Ctext x='240' y='145' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(192,136,48,0.40)'%3EYAMATAI%3C/text%3E%3Ctext x='240' y='162' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(140,115,80,0.35)'%3EKITEZH%3C/text%3E%3Ctext x='240' y='179' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(140,115,80,0.32)'%3EPAITITI%3C/text%3E%3Ctext x='240' y='196' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(96,104,104,0.30)'%3ECROFT MANOR%3C/text%3E%3Ctext x='240' y='213' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(96,104,104,0.28)'%3EENDURANCE%3C/text%3E%3Ctext x='280' y='245' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(96,104,104,0.25)'%3EA SURVIVOR IS BORN%3C/text%3E%3Ctext x='250' y='358' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(140,115,80,0.22)'%3ECROFT EXPEDITIONS -- TOMB RAIDER -- THE LOST CITY%3C/text%3E%3Ccircle cx='420' cy='80' r='0.6' fill='rgba(192,136,48,0.12)'/%3E%3Ccircle cx='450' cy='200' r='0.5' fill='rgba(96,104,104,0.08)'/%3E%3Ccircle cx='380' cy='300' r='0.7' fill='rgba(140,115,80,0.08)'/%3E%3Ccircle cx='460' cy='330' r='0.4' fill='rgba(96,104,104,0.06)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: tr-tomb 12s ease-in-out infinite;
+}
+
+@keyframes tr-tomb {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }   /* the torch gutters — darkness rushes in */
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'CROFT EXPEDITIONS // TOMB RAIDER // A SURVIVOR IS BORN';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(180, 130, 55, 0.58);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'TOMB\ARAIDER\A-----------\AA SURVIVOR\AIS BORN\A-----------\ATHE TOMB\ADOES NOT\AFORGIVE\AMISTAKES';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(192, 136, 48, 0.08); white-space: pre;
+  animation: tr-readout 12s ease-in-out infinite;
+}
+
+@keyframes tr-readout {
+  0%, 100% { color: rgba(192,136,48,.08); }
+  28%       { color: rgba(192,136,48,.12); }
+  65%       { color: rgba(192,136,48,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(192,136,48,.15); }
+  92%       { color: rgba(192,136,48,.08); }
+}
+
+#edit-bar::after {
+  content: 'I AM NOT WHO I WAS BEFORE';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(96, 104, 104, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title: torch flicker — warm amber pulsing like real firelight ────────── */
+@keyframes tr-title {
+  0%        { color: #A89070; text-shadow: 0 0 6px rgba(192,136,48,.38), 0 0 18px rgba(192,136,48,.12); }
+  20%       { color: #B8A078; text-shadow: 0 0 8px rgba(192,136,48,.48), 0 0 22px rgba(192,136,48,.16); }
+  22%       { color: #988060; text-shadow: 0 0 4px rgba(192,136,48,.28); }
+  24%       { color: #B0986C; text-shadow: 0 0 7px rgba(192,136,48,.42); }
+  50%       { color: #A89070; text-shadow: 0 0 6px rgba(192,136,48,.35); }
+  65%       { color: #908060; text-shadow: 0 0 4px rgba(96,72,24,.25); }
+  87%       { color: #A89070; text-shadow: 0 0 6px rgba(192,136,48,.35); }
+  88%       { color: #E0C080; text-shadow: 0 0 20px rgba(224,192,128,.72), 0 0 45px rgba(192,136,48,.35); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #A89070; text-shadow: 0 0 8px rgba(192,136,48,.45); opacity: 1; }
+  100%      { color: #A89070; text-shadow: 0 0 6px rgba(192,136,48,.38), 0 0 18px rgba(192,136,48,.12); }
+}
+
+/* ── App border: torch-lit — warm glow from left, nothing from right ─────── */
+#app { animation: tr-border 12s ease-in-out infinite; }
+@keyframes tr-border {
+  0%, 100% { box-shadow: -2px 0 12px rgba(192,136,48,.12), 0 0 0 1px rgba(192,136,48,.15), inset 0 0 18px rgba(192,136,48,.03); }
+  28%      { box-shadow: -3px 0 18px rgba(192,136,48,.18), 0 0 0 1px rgba(192,136,48,.28), inset 0 0 24px rgba(192,136,48,.05); }
+  50%      { box-shadow: -2px 0 10px rgba(192,136,48,.10), 0 0 0 1px rgba(192,136,48,.12), inset 0 0 16px rgba(192,136,48,.02); }
+  65%      { box-shadow: -3px 0 16px rgba(192,136,48,.15), 0 0 0 1px rgba(96,104,104,.12), inset 0 0 18px rgba(96,104,104,.02); }
+  88%      { box-shadow: 0 0 0 2px rgba(224,192,128,.65), inset 0 0 40px rgba(192,136,48,.10), 0 0 14px rgba(192,136,48,.18); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: -2px 0 14px rgba(192,136,48,.14), 0 0 0 1px rgba(192,136,48,.22), inset 0 0 20px rgba(192,136,48,.04); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(12, 10, 6, 0.99); border-top-color: rgba(192, 136, 48, 0.18); }
+#theme-banner::before { content: '⬢'; color: #C08830; font-size: 18px; }
+#theme-banner-text { font-family: Georgia, serif; font-style: italic; color: rgba(180, 130, 55, 0.60); }
+
+/* ── Torch sparks — warm tiny particles drifting UP from below-left ──────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='400'%3E%3Ccircle cx='20' cy='360' r='1.5' fill='rgba(220,150,40,0.22)'/%3E%3Ccircle cx='45' cy='280' r='1' fill='rgba(192,136,48,0.18)'/%3E%3Ccircle cx='30' cy='180' r='1.8' fill='rgba(200,140,35,0.14)'/%3E%3Ccircle cx='55' cy='100' r='0.8' fill='rgba(220,150,40,0.16)'/%3E%3Ccircle cx='15' cy='50' r='1.2' fill='rgba(192,136,48,0.12)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='560'%3E%3Ccircle cx='35' cy='500' r='1.2' fill='rgba(220,150,40,0.10)'/%3E%3Ccircle cx='60' cy='350' r='1.5' fill='rgba(192,136,48,0.08)'/%3E%3Ccircle cx='25' cy='180' r='1' fill='rgba(200,140,35,0.07)'/%3E%3C/svg%3E") repeat;
+  background-size: 180px 400px, 250px 560px;
+  animation: tr-sparks 14s linear infinite;
+}
+/* Sparks rise — upward drift, slightly left-biased */
+@keyframes tr-sparks {
+  from { background-position: 0 0, 10px 0; }
+  to   { background-position: -15px -400px, -8px -560px; }
+}
+
+/* ── Tile: warm radial pulse — organic, ancient ──────────────────────────── */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(192,136,48,0.32);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

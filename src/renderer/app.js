@@ -429,6 +429,13 @@ const THEME_BANNERS = {
     'DRACARYS.',
     'A LANNISTER ALWAYS PAYS HIS DEBTS.',
   ],
+  'tomb-raider': [
+    'A SURVIVOR IS BORN.',
+    'I AM NOT WHO I WAS BEFORE. BUT I KNOW WHO I AM BECOMING.',
+    'THE EXTRAORDINARY IS IN WHAT WE DO, NOT WHO WE ARE.',
+    'THE TOMB DOES NOT FORGIVE MISTAKES.',
+    'I CAME LOOKING FOR ADVENTURE. I FOUND SOMETHING ELSE ENTIRELY.',
+  ],
   'uncharted': [
     'SIC PARVIS MAGNA. GREATNESS FROM SMALL BEGINNINGS.',
     'I AM A MAN OF FORTUNE AND I MUST SEEK MY FORTUNE.',
@@ -695,6 +702,7 @@ const THEME_NAMES = {
   'eve-online':          'EVE ONLINE',
   'indiana-jones':       'INDIANA JONES',
   'game-of-thrones':     'GAME OF THRONES',
+  'tomb-raider':         'TOMB RAIDER',
   'uncharted':           'UNCHARTED',
   'broken-sword':        'BROKEN SWORD',
   'swl-illuminati':      'SWL: ILLUMINATI',
