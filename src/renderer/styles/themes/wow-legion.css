@@ -1,0 +1,215 @@
+/* ══ WORLD OF WARCRAFT: BURNING LEGION ════════════════════════════════════════
+   The Burning Legion. Sargeras' infinite army. Fel fire consumes all worlds.
+   Concentric rings of a demonic portal — green fire radiating outward.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #060804;
+  --panel-bg:     rgba(8, 12, 6, 0.99);
+  --overlay-bg:   rgba(6, 10, 4, 0.97);
+  --header-bg:    rgba(64, 192, 32, 0.04);
+
+  --font:         'Segoe UI', sans-serif;
+  --text:         #80B060;
+  --text-dim:     rgba(96, 140, 60, 0.45);
+
+  --accent-c:     #40C020;   /* fel green */
+  --accent-m:     #802090;   /* shadow purple */
+  --accent-y:     #183010;   /* dark fel */
+
+  --border:       rgba(64, 192, 32, 0.22);
+  --border-h:     rgba(64, 192, 32, 0.55);
+
+  --glow-c:       0 0 7px rgba(64,192,32,.60), 0 0 20px rgba(64,192,32,.20);
+  --glow-m:       0 0 6px rgba(128,32,144,.52), 0 0 18px rgba(128,32,144,.18);
+  --glow-y:       0 0 5px rgba(24,48,16,.42), 0 0 14px rgba(24,48,16,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(64,192,32,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(64,192,32,.10);
+
+  --title-anim:   legion-title 10s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(64, 192, 32, 0.08);
+  --tile-hover-border: rgba(64, 192, 32, 0.45);
+  --tile-hover-shadow: 0 0 12px rgba(64, 192, 32, 0.20);
+  --tile-active-bg:    rgba(64, 192, 32, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(64,192,32,.55)) drop-shadow(0 0 12px rgba(128,32,144,.20));
+  --tile-icon-fx:      brightness(0.85) saturate(1.3) contrast(1.15);
+  --tile-icon-shape:   polygon(50% 0%, 100% 30%, 100% 70%, 50% 100%, 0% 70%, 0% 30%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    700;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
+  --app-entrance-anim:   entrance-flash 1s ease-out forwards;
+
+  --btn-hover-bg:   rgba(64, 192, 32, 0.10);
+  --btn-active-bg:  rgba(64, 192, 32, 0.22);
+
+  --drop-hint-border: rgba(64, 192, 32, 0.25);
+  --drop-icon-color:  rgba(64, 192, 32, 0.35);
+  --hint-sub-color:   rgba(96, 140, 60, 0.35);
+
+  --rename-dashed:    rgba(128, 32, 144, 0.42);
+  --rename-input-bg:  rgba(64, 192, 32, 0.07);
+
+  --edit-bar-bg:          rgba(128, 32, 144, 0.07);
+  --edit-bar-border:      rgba(128, 32, 144, 0.40);
+  --edit-label-color:     #802090;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #802090;
+  --btn-done-border:      rgba(128, 32, 144, 0.42);
+  --btn-done-hover-bg:    rgba(128, 32, 144, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(64, 192, 32, 0.42);
+
+  --update-bg:             rgba(128, 32, 144, 0.06);
+  --update-border:         rgba(128, 32, 144, 0.30);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(128, 32, 144, 0.28);
+  --update-btn-hover-bg:   rgba(128, 32, 144, 0.09);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      #40C020;
+  --btn-close-border:     rgba(64, 192, 32, 0.40);
+  --btn-close-hover-bg:   rgba(64, 192, 32, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(64, 192, 32, 0.07);
+  --picker-item-hover-bg:  rgba(64, 192, 32, 0.08);
+  --picker-item-active-bg: rgba(64, 192, 32, 0.16);
+  --picker-placeholder-bg: rgba(64, 192, 32, 0.07);
+
+  --skin-btn-active-bg:    rgba(64, 192, 32, 0.18);
+  --remove-btn-bg:         rgba(64, 192, 32, 0.88);
+  --remove-btn-border:     #40C020;
+}
+
+/* ── Fel corruption grain + demonic vignette ────────────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.70' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.08 0.15 0.04 0 0.01  0.12 0.25 0.06 0 0.02  0.04 0.08 0.02 0 0  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 28%, rgba(3,4,2,0.88) 100%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(30,80,15,0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 0% 100%, rgba(64,16,72,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 100% 0%, rgba(64,16,72,0.03) 0%, transparent 55%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — fel green accent bar ──────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #40C020, rgba(48, 144, 24, 0.28));
+  box-shadow: 0 0 9px rgba(64,192,32,0.58), 0 0 24px rgba(64,192,32,0.20);
+}
+
+/* ── Grid: CONCENTRIC RINGS — Fel Portal radiating from center ──────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ccircle cx='250' cy='190' r='140' fill='none' stroke='rgba(64,192,32,0.18)' stroke-width='1.2' stroke-dasharray='8,12'/%3E%3Ccircle cx='250' cy='190' r='105' fill='none' stroke='rgba(64,192,32,0.28)' stroke-width='1'/%3E%3Ccircle cx='250' cy='190' r='70' fill='none' stroke='rgba(64,192,32,0.38)' stroke-width='1.2'/%3E%3Ccircle cx='250' cy='190' r='35' fill='rgba(12,24,8,0.50)' stroke='rgba(64,192,32,0.52)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='190' r='12' fill='rgba(64,192,32,0.25)' stroke='rgba(128,32,144,0.45)' stroke-width='1'/%3E%3Ccircle cx='250' cy='190' r='4' fill='rgba(64,192,32,0.50)'/%3E%3Cline x1='250' y1='45' x2='250' y2='155' stroke='rgba(64,192,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='250' y1='225' x2='250' y2='335' stroke='rgba(64,192,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='105' y1='190' x2='215' y2='190' stroke='rgba(64,192,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='285' y1='190' x2='395' y2='190' stroke='rgba(64,192,32,0.15)' stroke-width='0.5'/%3E%3Cline x1='152' y1='92' x2='218' y2='158' stroke='rgba(64,192,32,0.10)' stroke-width='0.5'/%3E%3Cline x1='282' y1='222' x2='348' y2='288' stroke='rgba(64,192,32,0.10)' stroke-width='0.5'/%3E%3Cline x1='348' y1='92' x2='282' y2='158' stroke='rgba(64,192,32,0.10)' stroke-width='0.5'/%3E%3Cline x1='218' y1='222' x2='152' y2='288' stroke='rgba(64,192,32,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='50' r='2' fill='rgba(64,192,32,0.30)'/%3E%3Ccircle cx='250' cy='330' r='2' fill='rgba(64,192,32,0.30)'/%3E%3Ccircle cx='110' cy='190' r='2' fill='rgba(64,192,32,0.30)'/%3E%3Ccircle cx='390' cy='190' r='2' fill='rgba(64,192,32,0.30)'/%3E%3Ccircle cx='155' cy='93' r='1.5' fill='rgba(128,32,144,0.25)'/%3E%3Ccircle cx='345' cy='93' r='1.5' fill='rgba(128,32,144,0.25)'/%3E%3Ccircle cx='155' cy='287' r='1.5' fill='rgba(128,32,144,0.25)'/%3E%3Ccircle cx='345' cy='287' r='1.5' fill='rgba(128,32,144,0.25)'/%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='7.5' font-weight='bold' letter-spacing='4' fill='rgba(64,192,32,0.48)'%3ETHE BURNING LEGION%3C/text%3E%3Ctext x='250' y='370' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(96,140,60,0.28)'%3EFEL PORTAL -- ACTIVE -- WORLD DESTRUCTION IMMINENT%3C/text%3E%3Ctext x='75' y='72' font-family='Segoe UI,sans-serif' font-size='6' font-weight='bold' letter-spacing='1' fill='rgba(64,192,32,0.42)'%3ESARGERAS%3C/text%3E%3Cline x1='20' y1='77' x2='130' y2='77' stroke='rgba(64,192,32,0.15)' stroke-width='0.5'/%3E%3Ctext x='75' y='92' font-family='Segoe UI,sans-serif' font-size='5.5' fill='rgba(128,32,144,0.38)'%3EDARK TITAN%3C/text%3E%3Ctext x='75' y='108' font-family='Segoe UI,sans-serif' font-size='5.5' fill='rgba(96,140,60,0.35)'%3EFALLEN CHAMPION%3C/text%3E%3Ctext x='430' y='72' font-family='Segoe UI,sans-serif' font-size='6' font-weight='bold' letter-spacing='1' fill='rgba(64,192,32,0.42)'%3EFEL PORTAL ACTIVE%3C/text%3E%3Cline x1='370' y1='77' x2='480' y2='77' stroke='rgba(64,192,32,0.15)' stroke-width='0.5'/%3E%3Ctext x='430' y='92' font-family='Segoe UI,sans-serif' font-size='5.5' fill='rgba(64,192,32,0.38)'%3EDEMONIC ENERGY%3C/text%3E%3Ctext x='430' y='108' font-family='Segoe UI,sans-serif' font-size='5.5' fill='rgba(128,32,144,0.32)'%3ECRITICAL MASS%3C/text%3E%3Ctext x='430' y='290' font-family='Segoe UI,sans-serif' font-size='6' font-weight='bold' letter-spacing='1' fill='rgba(64,192,32,0.40)'%3EARGUS%3C/text%3E%3Cline x1='370' y1='295' x2='480' y2='295' stroke='rgba(64,192,32,0.12)' stroke-width='0.5'/%3E%3Ctext x='430' y='308' font-family='Segoe UI,sans-serif' font-size='5.5' fill='rgba(96,140,60,0.32)'%3EHOMEWORLD%3C/text%3E%3Ctext x='430' y='322' font-family='Segoe UI,sans-serif' font-size='5.5' fill='rgba(128,32,144,0.28)'%3ECORRUPTED%3C/text%3E%3Ctext x='75' y='290' font-family='Segoe UI,sans-serif' font-size='6' font-weight='bold' letter-spacing='1' fill='rgba(64,192,32,0.40)'%3EKIL%27JAEDEN%3C/text%3E%3Cline x1='20' y1='295' x2='130' y2='295' stroke='rgba(64,192,32,0.12)' stroke-width='0.5'/%3E%3Ctext x='75' y='308' font-family='Segoe UI,sans-serif' font-size='5.5' fill='rgba(128,32,144,0.35)'%3ETHE DECEIVER%3C/text%3E%3Ctext x='75' y='322' font-family='Segoe UI,sans-serif' font-size='5.5' fill='rgba(96,140,60,0.30)'%3EEREDAR LORD%3C/text%3E%3Ccircle cx='48' cy='55' r='0.7' fill='rgba(64,192,32,0.15)'/%3E%3Ccircle cx='455' cy='50' r='0.5' fill='rgba(128,32,144,0.12)'/%3E%3Ccircle cx='42' cy='340' r='0.8' fill='rgba(64,192,32,0.10)'/%3E%3Ccircle cx='460' cy='345' r='0.6' fill='rgba(128,32,144,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: legion-portal 10s ease-in-out infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes legion-portal {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'THE BURNING LEGION // FEL PORTAL ACTIVE // SARGERAS';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif; font-weight: 700;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(80, 200, 40, 0.62);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE LEGION\ABURNS\A-----------\AFEL PORTAL\AACTIVE\A-----------\ASARGERAS\ARETURNS';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', sans-serif; font-weight: 700;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 2px;
+  color: rgba(64, 192, 32, 0.08); white-space: pre;
+  animation: legion-readout 10s ease-in-out infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) */
+@keyframes legion-readout {
+  0%, 100% { color: rgba(64,192,32,.08); }
+  28%       { color: rgba(64,192,32,.12); }
+  65%       { color: rgba(64,192,32,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(64,192,32,.16); }
+  92%       { color: rgba(64,192,32,.08); }
+}
+
+#edit-bar::after {
+  content: 'FEL ENERGY // DEMONIC CORRUPTION PROTOCOL';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', sans-serif; font-weight: 700;
+  font-size: 8px; letter-spacing: 2.5px; color: rgba(128, 32, 144, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 5px; }
+
+/* ── Title: fel green flash with 88% sync — color + text-shadow (tier 3) ── */
+@keyframes legion-title {
+  0%        { color: #80B060; text-shadow: 0 0 6px rgba(64,192,32,.48), 0 0 18px rgba(64,192,32,.16); }
+  35%       { color: #40C020; text-shadow: 0 0 10px rgba(64,192,32,.68), 0 0 28px rgba(64,192,32,.25); }
+  65%       { color: #607848; text-shadow: 0 0 4px rgba(24,48,16,.30); }
+  87%       { color: #80B060; text-shadow: 0 0 6px rgba(64,192,32,.42); }
+  88%       { color: #80FF40; text-shadow: 0 0 22px rgba(128,255,64,.82), 0 0 50px rgba(64,192,32,.42); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #80B060; text-shadow: 0 0 8px rgba(64,192,32,.55); opacity: 1; }
+  100%      { color: #80B060; text-shadow: 0 0 6px rgba(64,192,32,.48), 0 0 18px rgba(64,192,32,.16); }
+}
+
+/* ── App: fel pulse — box-shadow >= 10s (tier 5) ─────────────────────────── */
+#app { animation: legion-border 10s ease-in-out infinite; }
+@keyframes legion-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(64,192,32,.22), inset 0 0 20px rgba(64,192,32,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(64,192,32,.50), inset 0 0 28px rgba(64,192,32,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(128,32,144,.22), inset 0 0 18px rgba(128,32,144,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(128,255,64,.78), inset 0 0 50px rgba(64,192,32,.15), 0 0 18px rgba(64,192,32,.25); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(64,192,32,.40), inset 0 0 22px rgba(64,192,32,.06); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(8, 12, 6, 0.99); border-top-color: rgba(64, 192, 32, 0.25); }
+#theme-banner::before { content: '\25C9'; color: #40C020; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 2px; color: rgba(80, 200, 40, 0.65); }
+
+/* ── Fel particles — green circles drifting upward (tier 2) ─────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='30' cy='60' r='1.8' fill='rgba(64,192,32,0.18)'/%3E%3Ccircle cx='105' cy='180' r='1.2' fill='rgba(64,192,32,0.14)'/%3E%3Ccircle cx='160' cy='300' r='2' fill='rgba(64,192,32,0.10)'/%3E%3Ccircle cx='55' cy='360' r='0.9' fill='rgba(128,32,144,0.12)'/%3E%3Ccircle cx='140' cy='120' r='1.4' fill='rgba(64,192,32,0.16)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='40' cy='100' r='1.5' fill='rgba(64,192,32,0.10)'/%3E%3Ccircle cx='155' cy='280' r='1.8' fill='rgba(128,32,144,0.07)'/%3E%3Ccircle cx='225' cy='450' r='1.2' fill='rgba(64,192,32,0.08)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 280px 560px;
+  animation: legion-embers 12s linear infinite;
+}
+@keyframes legion-embers {
+  from { background-position: 0 0, 12px 0; }
+  to   { background-position: -18px -400px, 8px -560px; }
+}
+
+/* ── Tile: demonic hex pulse ─────────────────────────────────────────────── */
+.app-tile::before {
+  background: transparent;
+  border: 1px solid rgba(64, 192, 32, 0.30);
+}
+.app-tile:hover::before { animation: tile-flicker .5s steps(1, end) infinite; }

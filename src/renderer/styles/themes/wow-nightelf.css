@@ -1,0 +1,219 @@
+/* ══ WORLD OF WARCRAFT: NIGHT ELVES ══════════════════════════════════════════
+   Elune adore. Children of the Stars. Silver moonlight on still water,
+   ancient forests, and the eternal vigil. The Kaldorei remember.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       2px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #060810;
+  --panel-bg:     rgba(8, 10, 20, 0.99);
+  --overlay-bg:   rgba(6, 8, 16, 0.97);
+  --header-bg:    rgba(128, 112, 192, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #A098C0;
+  --text-dim:     rgba(140, 130, 175, 0.45);
+
+  --accent-c:     #8070C0;   /* moonlight violet */
+  --accent-m:     #40A8A0;   /* nature teal */
+  --accent-y:     #181830;   /* night shadow */
+
+  --border:       rgba(128, 112, 192, 0.22);
+  --border-h:     rgba(128, 112, 192, 0.52);
+
+  --glow-c:       0 0 8px rgba(128,112,192,.58), 0 0 22px rgba(128,112,192,.20);
+  --glow-m:       0 0 7px rgba(64,168,160,.52), 0 0 18px rgba(64,168,160,.18);
+  --glow-y:       0 0 5px rgba(24,24,48,.42), 0 0 14px rgba(24,24,48,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(128,112,192,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(128,112,192,.10);
+
+  --title-anim:   nelf-title 12s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(128, 112, 192, 0.08);
+  --tile-hover-border: rgba(128, 112, 192, 0.42);
+  --tile-hover-shadow: 0 0 14px rgba(128, 112, 192, 0.20);
+  --tile-active-bg:    rgba(128, 112, 192, 0.15);
+  --tile-icon-glow:    drop-shadow(0 0 6px rgba(128,112,192,.55)) drop-shadow(0 0 14px rgba(64,168,160,.20));
+  --tile-icon-fx:      brightness(0.95) saturate(1.15) contrast(1.1);
+  --tile-icon-shape:   polygon(50% 0%, 85% 10%, 100% 40%, 100% 70%, 85% 100%, 15% 100%, 0% 70%, 0% 40%, 15% 10%);
+  --tile-label-spacing:   0.8px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(128, 112, 192, 0.10);
+  --btn-active-bg:  rgba(128, 112, 192, 0.20);
+
+  --drop-hint-border: rgba(128, 112, 192, 0.25);
+  --drop-icon-color:  rgba(64, 168, 160, 0.32);
+  --hint-sub-color:   rgba(140, 130, 175, 0.38);
+
+  --rename-dashed:    rgba(128, 112, 192, 0.40);
+  --rename-input-bg:  rgba(128, 112, 192, 0.07);
+
+  --edit-bar-bg:          rgba(64, 168, 160, 0.07);
+  --edit-bar-border:      rgba(64, 168, 160, 0.40);
+  --edit-label-color:     #40A8A0;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #40A8A0;
+  --btn-done-border:      rgba(64, 168, 160, 0.42);
+  --btn-done-hover-bg:    rgba(64, 168, 160, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(128, 112, 192, 0.40);
+
+  --update-bg:             rgba(64, 168, 160, 0.06);
+  --update-border:         rgba(64, 168, 160, 0.32);
+  --update-color:          var(--accent-m);
+  --update-btn-border:     rgba(64, 168, 160, 0.28);
+  --update-btn-hover-bg:   rgba(64, 168, 160, 0.09);
+  --update-btn-hover-glow: var(--glow-m);
+
+  --btn-close-color:      #8070C0;
+  --btn-close-border:     rgba(128, 112, 192, 0.38);
+  --btn-close-hover-bg:   rgba(128, 112, 192, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(128, 112, 192, 0.07);
+  --picker-item-hover-bg:  rgba(128, 112, 192, 0.08);
+  --picker-item-active-bg: rgba(128, 112, 192, 0.15);
+  --picker-placeholder-bg: rgba(128, 112, 192, 0.07);
+
+  --skin-btn-active-bg:    rgba(128, 112, 192, 0.16);
+  --remove-btn-bg:         rgba(64, 168, 160, 0.88);
+  --remove-btn-border:     #40A8A0;
+}
+
+/* ── Moonlit grain + silver-violet vignette ─────────────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.15 0.1 0.3 0 0.01  0.12 0.08 0.25 0 0.01  0.25 0.2 0.5 0 0.02  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 28%, rgba(3,4,8,0.88) 100%),
+    radial-gradient(ellipse 55% 45% at 50% 30%, rgba(100,85,160,0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 0% 100%, rgba(40,100,95,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 100% 100%, rgba(40,100,95,0.03) 0%, transparent 55%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — moonlight violet accent bar ───────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #8070C0, rgba(100, 85, 160, 0.28));
+  box-shadow: 0 0 9px rgba(128,112,192,0.55), 0 0 24px rgba(128,112,192,0.18);
+}
+
+/* ── Grid: Style B — Moonwell (sacred pool of Elune's light) ────────────── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='4' fill='rgba(128,112,192,0.50)'%3EELUNE ADORE%3C/text%3E%3Ctext x='250' y='36' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(160,152,192,0.32)'%3ECHILDREN OF THE STARS -- KALDOREI -- ETERNAL VIGIL%3C/text%3E%3Ccircle cx='250' cy='185' r='110' fill='none' stroke='rgba(128,112,192,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='185' r='95' fill='none' stroke='rgba(128,112,192,0.14)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='185' r='80' fill='none' stroke='rgba(128,112,192,0.18)' stroke-width='0.7'/%3E%3Ccircle cx='250' cy='185' r='65' fill='none' stroke='rgba(128,112,192,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='50' fill='none' stroke='rgba(128,112,192,0.28)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='35' fill='none' stroke='rgba(160,152,192,0.32)' stroke-width='1'/%3E%3Ccircle cx='250' cy='185' r='20' fill='none' stroke='rgba(180,170,210,0.38)' stroke-width='1'/%3E%3Ccircle cx='250' cy='185' r='8' fill='rgba(200,195,230,0.22)' stroke='rgba(200,195,230,0.42)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='3' fill='rgba(220,215,245,0.55)'/%3E%3Ccircle cx='250' cy='185' r='50' fill='rgba(100,85,160,0.06)'/%3E%3Ccircle cx='250' cy='185' r='80' fill='rgba(80,70,140,0.04)'/%3E%3Ctext x='250' y='62' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' font-weight='bold' letter-spacing='3' fill='rgba(200,195,230,0.48)'%3EELUNE ADORE%3C/text%3E%3Ctext x='90' y='190' text-anchor='middle' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' letter-spacing='1' fill='rgba(64,168,160,0.42)'%3ETELDRASSIL%3C/text%3E%3Ctext x='415' y='190' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' font-weight='bold' letter-spacing='1' fill='rgba(128,112,192,0.42)'%3ETYRANDE WHISPERWIND%3C/text%3E%3Ctext x='250' y='320' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' font-weight='bold' letter-spacing='2' fill='rgba(160,152,192,0.45)'%3EDARNASSUS%3C/text%3E%3Ctext x='250' y='335' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(128,112,192,0.28)'%3ECITY OF THE KALDOREI -- MOONWELL SANCTUM%3C/text%3E%3Ccircle cx='232' cy='170' r='1.5' fill='rgba(200,195,230,0.30)'/%3E%3Ccircle cx='268' cy='170' r='1' fill='rgba(200,195,230,0.25)'/%3E%3Ccircle cx='240' cy='200' r='1.2' fill='rgba(200,195,230,0.22)'/%3E%3Ccircle cx='260' cy='195' r='0.8' fill='rgba(200,195,230,0.28)'/%3E%3Ccircle cx='250' cy='175' r='0.6' fill='rgba(220,215,245,0.35)'/%3E%3Cline x1='250' y1='68' x2='250' y2='120' stroke='rgba(128,112,192,0.10)' stroke-width='0.5' stroke-dasharray='3,4'/%3E%3Cline x1='250' y1='250' x2='250' y2='308' stroke='rgba(128,112,192,0.10)' stroke-width='0.5' stroke-dasharray='3,4'/%3E%3Cline x1='125' y1='185' x2='140' y2='185' stroke='rgba(64,168,160,0.12)' stroke-width='0.5'/%3E%3Cline x1='360' y1='185' x2='375' y2='185' stroke='rgba(128,112,192,0.12)' stroke-width='0.5'/%3E%3Ctext x='250' y='358' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(128,112,192,0.22)'%3EWORLD OF WARCRAFT -- NIGHT ELVES -- ELUNE%27S BLESSING%3C/text%3E%3Ccircle cx='48' cy='55' r='0.7' fill='rgba(128,112,192,0.18)'/%3E%3Ccircle cx='455' cy='50' r='0.5' fill='rgba(64,168,160,0.14)'/%3E%3Ccircle cx='42' cy='300' r='0.8' fill='rgba(128,112,192,0.10)'/%3E%3Ccircle cx='460' cy='310' r='0.6' fill='rgba(64,168,160,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: nelf-moonwell 12s ease-in-out infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes nelf-moonwell {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }   /* silver-white moonlight flash — synchronized blackout */
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'ELUNE ADORE // KALDOREI // THE MOONWELL AWAITS';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(160, 152, 192, 0.62);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'ELUNE\AADORE\A-----------\ATHE MOON\AGODDESS\AWATCHES\A-----------\ATELDRASSIL';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(128, 112, 192, 0.08); white-space: pre;
+  animation: nelf-readout 12s ease-in-out infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) */
+@keyframes nelf-readout {
+  0%, 100% { color: rgba(128,112,192,.08); }
+  28%       { color: rgba(128,112,192,.12); }
+  65%       { color: rgba(128,112,192,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(200,195,230,.15); }
+  92%       { color: rgba(128,112,192,.08); }
+}
+
+#edit-bar::after {
+  content: 'ISHNU-ALAH // THE GODDESS WATCHES OVER US';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(64, 168, 160, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* ── Title: moonlight pulse with 88% sync — color + text-shadow (tier 3) ── */
+@keyframes nelf-title {
+  0%        { color: #A098C0; text-shadow: 0 0 6px rgba(128,112,192,.48), 0 0 18px rgba(128,112,192,.16); }
+  35%       { color: #B8B0D8; text-shadow: 0 0 10px rgba(160,152,210,.62), 0 0 28px rgba(128,112,192,.22); }
+  65%       { color: #706890; text-shadow: 0 0 4px rgba(24,24,48,.30); }
+  87%       { color: #A098C0; text-shadow: 0 0 6px rgba(128,112,192,.42); }
+  88%       { color: #E0DCFF; text-shadow: 0 0 22px rgba(224,220,255,.82), 0 0 50px rgba(128,112,192,.42); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #A098C0; text-shadow: 0 0 8px rgba(128,112,192,.55); opacity: 1; }
+  100%      { color: #A098C0; text-shadow: 0 0 6px rgba(128,112,192,.48), 0 0 18px rgba(128,112,192,.16); }
+}
+
+/* ── App: moonlight border — box-shadow ≥ 12s (tier 5) ──────────────────── */
+#app { animation: nelf-border 12s ease-in-out infinite; }
+@keyframes nelf-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(128,112,192,.20), inset 0 0 20px rgba(128,112,192,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(128,112,192,.42), inset 0 0 28px rgba(128,112,192,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(64,168,160,.22), inset 0 0 18px rgba(64,168,160,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(224,220,255,.78), inset 0 0 50px rgba(128,112,192,.14), 0 0 18px rgba(128,112,192,.25); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(128,112,192,.38), inset 0 0 22px rgba(128,112,192,.06); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(6, 8, 16, 0.99); border-top-color: rgba(128, 112, 192, 0.22); }
+#theme-banner::before { content: '☽'; color: #8070C0; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(160, 152, 192, 0.65); }
+
+/* ── Silver moonlight motes — circles drifting VERY slowly ─────────────── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='38' cy='65' r='1.8' fill='rgba(200,195,230,0.22)'/%3E%3Ccircle cx='120' cy='195' r='1.2' fill='rgba(180,170,210,0.18)'/%3E%3Ccircle cx='175' cy='320' r='2' fill='rgba(200,195,230,0.15)'/%3E%3Ccircle cx='65' cy='400' r='1' fill='rgba(64,168,160,0.16)'/%3E%3Ccircle cx='155' cy='130' r='1.5' fill='rgba(200,195,230,0.20)'/%3E%3Ccircle cx='90' cy='260' r='0.8' fill='rgba(180,170,210,0.24)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='640'%3E%3Ccircle cx='55' cy='110' r='1.5' fill='rgba(200,195,230,0.12)'/%3E%3Ccircle cx='180' cy='300' r='2' fill='rgba(180,170,210,0.10)'/%3E%3Ccircle cx='260' cy='480' r='1.2' fill='rgba(200,195,230,0.08)'/%3E%3Ccircle cx='110' cy='540' r='1.8' fill='rgba(64,168,160,0.10)'/%3E%3C/svg%3E") repeat;
+  background-size: 240px 480px, 320px 640px;
+  animation: nelf-motes 22s linear infinite;
+}
+@keyframes nelf-motes {
+  from { background-position: 0 0, 18px 0; }
+  to   { background-position: -15px -480px, 8px -640px; }
+}
+
+/* ── Tile: moonwell ripple on hover ─────────────────────────────────────── */
+.app-tile::before {
+  width: 20px; height: 20px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(200,195,230,0.45);
+}
+.app-tile:hover::before { animation: tile-radial .6s ease-out forwards; }

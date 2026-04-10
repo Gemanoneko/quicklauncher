@@ -1,0 +1,205 @@
+/* ══ WORLD OF WARCRAFT: HORDE ═════════════════════════════════════════════════
+   LOK'TAR OGAR! Victory or death. The Horde endures. Savage, proud,
+   unbroken. Red war banners and iron spikes against the burning sky.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       0px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  --bg:           #0C0402;
+  --panel-bg:     rgba(16, 6, 3, 0.99);
+  --overlay-bg:   rgba(12, 4, 2, 0.97);
+  --header-bg:    rgba(180, 30, 10, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #B88868;
+  --text-dim:     rgba(150, 100, 70, 0.45);
+
+  --accent-c:     #B81818;   /* Horde blood red */
+  --accent-m:     #484038;   /* dark iron */
+  --accent-y:     #C08020;   /* war gold */
+
+  --border:       rgba(184, 24, 24, 0.25);
+  --border-h:     rgba(184, 24, 24, 0.55);
+
+  --glow-c:       0 0 7px rgba(184,24,24,.60), 0 0 20px rgba(184,24,24,.20);
+  --glow-m:       0 0 6px rgba(72,64,56,.48), 0 0 18px rgba(72,64,56,.15);
+  --glow-y:       0 0 6px rgba(192,128,32,.52), 0 0 18px rgba(192,128,32,.18);
+
+  --pulse-glow:   inset 0 0 22px rgba(184,24,24,.06);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(184,24,24,.10);
+
+  --title-anim:   horde-title 10s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(184, 24, 24, 0.08);
+  --tile-hover-border: rgba(184, 24, 24, 0.45);
+  --tile-hover-shadow: 0 0 12px rgba(184, 24, 24, 0.20);
+  --tile-active-bg:    rgba(184, 24, 24, 0.16);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(184,24,24,.55)) drop-shadow(0 0 12px rgba(192,128,32,.18));
+  --tile-icon-fx:      brightness(0.88) saturate(1.25) contrast(1.15);
+  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 95% 50%, 100% 100%, 0% 100%, 5% 50%);
+  --tile-label-spacing:   1.5px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight:    700;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
+  --app-entrance-anim:   entrance-flash 1s ease-out forwards;
+
+  --btn-hover-bg:   rgba(184, 24, 24, 0.10);
+  --btn-active-bg:  rgba(184, 24, 24, 0.22);
+
+  --drop-hint-border: rgba(184, 24, 24, 0.25);
+  --drop-icon-color:  rgba(184, 24, 24, 0.35);
+  --hint-sub-color:   rgba(150, 100, 70, 0.35);
+
+  --rename-dashed:    rgba(192, 128, 32, 0.42);
+  --rename-input-bg:  rgba(184, 24, 24, 0.07);
+
+  --edit-bar-bg:          rgba(72, 64, 56, 0.08);
+  --edit-bar-border:      rgba(72, 64, 56, 0.42);
+  --edit-label-color:     #706050;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #706050;
+  --btn-done-border:      rgba(72, 64, 56, 0.42);
+  --btn-done-hover-bg:    rgba(72, 64, 56, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(184, 24, 24, 0.42);
+
+  --update-bg:             rgba(192, 128, 32, 0.06);
+  --update-border:         rgba(192, 128, 32, 0.30);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(192, 128, 32, 0.28);
+  --update-btn-hover-bg:   rgba(192, 128, 32, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #B81818;
+  --btn-close-border:     rgba(184, 24, 24, 0.40);
+  --btn-close-hover-bg:   rgba(184, 24, 24, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(184, 24, 24, 0.07);
+  --picker-item-hover-bg:  rgba(184, 24, 24, 0.08);
+  --picker-item-active-bg: rgba(184, 24, 24, 0.16);
+  --picker-placeholder-bg: rgba(184, 24, 24, 0.07);
+
+  --skin-btn-active-bg:    rgba(184, 24, 24, 0.18);
+  --remove-btn-bg:         rgba(184, 24, 24, 0.88);
+  --remove-btn-border:     #B81818;
+}
+
+/* ── War-torn leather grain + blood vignette ─────────────────────────────── */
+#app::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.4 0.15 0.05 0 0.02  0.25 0.10 0.03 0 0.01  0.1 0.04 0.01 0 0  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 28%, rgba(6,2,1,0.86) 100%),
+    radial-gradient(ellipse 50% 35% at 50% 100%, rgba(120,15,5,0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 100% 0%, rgba(100,50,10,0.05) 0%, transparent 55%);
+  background-size: 200px 200px, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+#header::before {
+  background: linear-gradient(to bottom, #B81818, rgba(140, 18, 12, 0.28));
+  box-shadow: 0 0 9px rgba(184,24,24,0.58), 0 0 24px rgba(184,24,24,0.20);
+}
+
+/* ── Grid: ASYMMETRIC — Horde crest anchored upper-left, text flows right ── */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ccircle cx='130' cy='140' r='72' fill='rgba(60,8,4,0.35)' stroke='rgba(184,24,24,0.42)' stroke-width='2'/%3E%3Ccircle cx='130' cy='140' r='66' fill='none' stroke='rgba(184,24,24,0.20)' stroke-width='0.5'/%3E%3Ccircle cx='130' cy='140' r='78' fill='none' stroke='rgba(192,128,32,0.12)' stroke-width='0.5' stroke-dasharray='4,8'/%3E%3Cpath d='M 130,68 L 140,88 L 165,78 L 155,100 L 180,105 L 160,118 L 175,138 L 150,130 L 145,155 L 130,138 L 115,155 L 110,130 L 85,138 L 100,118 L 80,105 L 105,100 L 95,78 L 120,88 Z' fill='rgba(184,24,24,0.30)' stroke='rgba(192,128,32,0.38)' stroke-width='1.5'/%3E%3Ccircle cx='130' cy='140' r='18' fill='rgba(40,5,2,0.55)' stroke='rgba(184,24,24,0.40)' stroke-width='1.2'/%3E%3Ccircle cx='130' cy='140' r='8' fill='rgba(184,24,24,0.35)'/%3E%3Ccircle cx='130' cy='140' r='3' fill='rgba(192,128,32,0.50)'/%3E%3Ctext x='130' y='230' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='8' font-weight='bold' letter-spacing='4' fill='rgba(184,24,24,0.48)'%3EHORDE%3C/text%3E%3Ctext x='130' y='248' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(192,128,32,0.32)'%3EVICTORY OR DEATH%3C/text%3E%3Ctext x='320' y='60' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(184,24,24,0.45)'%3EWARCHIEF%3C/text%3E%3Ctext x='320' y='78' font-family='Segoe UI,Arial,sans-serif' font-size='7.5' font-weight='bold' fill='rgba(192,128,32,0.50)'%3ETHRALL%3C/text%3E%3Cline x1='280' y1='84' x2='420' y2='84' stroke='rgba(184,24,24,0.18)' stroke-width='0.5'/%3E%3Ctext x='320' y='105' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(150,100,70,0.38)'%3ECAPITAL%3C/text%3E%3Ctext x='320' y='120' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(184,24,24,0.45)'%3EORGRIMMAR%3C/text%3E%3Ctext x='320' y='145' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(184,24,24,0.42)'%3EORCS%3C/text%3E%3Ctext x='320' y='162' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(184,24,24,0.40)'%3ETROLLS%3C/text%3E%3Ctext x='320' y='179' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(184,24,24,0.38)'%3ETAUREN%3C/text%3E%3Ctext x='320' y='196' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(150,100,70,0.38)'%3EFORSAKEN%3C/text%3E%3Ctext x='320' y='213' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(150,100,70,0.35)'%3EBLOOD ELVES%3C/text%3E%3Ctext x='320' y='230' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(192,128,32,0.35)'%3EGOBLINS%3C/text%3E%3Ctext x='250' y='320' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='2' fill='rgba(184,24,24,0.35)'%3ELOK TAR OGAR -- VICTORY OR DEATH%3C/text%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(150,100,70,0.22)'%3EWORLD OF WARCRAFT -- THE HORDE -- FOR AZEROTH%3C/text%3E%3Ccircle cx='450' cy='55' r='0.6' fill='rgba(184,24,24,0.15)'/%3E%3Ccircle cx='460' cy='280' r='0.8' fill='rgba(192,128,32,0.10)'/%3E%3Ccircle cx='50' cy='300' r='0.7' fill='rgba(184,24,24,0.10)'/%3E%3Ccircle cx='440' cy='340' r='0.5' fill='rgba(150,100,70,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: horde-crest 10s ease-in-out infinite;
+}
+
+@keyframes horde-crest {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+#header::after {
+  content: 'FOR THE HORDE // ORGRIMMAR // VICTORY OR DEATH';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 60, 40, 0.62);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'LOK TAR\AOGAR\A-----------\AVICTORY\AOR DEATH\A-----------\ATHE HORDE\AENDURES\AALWAYS';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 2px;
+  color: rgba(184, 24, 24, 0.08); white-space: pre;
+  animation: horde-readout 10s ease-in-out infinite;
+}
+
+@keyframes horde-readout {
+  0%, 100% { color: rgba(184,24,24,.08); }
+  28%       { color: rgba(184,24,24,.12); }
+  65%       { color: rgba(184,24,24,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(184,24,24,.16); }
+  92%       { color: rgba(184,24,24,.08); }
+}
+
+#edit-bar::after {
+  content: 'BLOOD AND THUNDER';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
+  font-size: 8px; letter-spacing: 2.5px; color: rgba(192, 128, 32, 0.40);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 5px; }
+
+@keyframes horde-title {
+  0%        { color: #B88868; text-shadow: 0 0 6px rgba(184,24,24,.48), 0 0 18px rgba(184,24,24,.16); }
+  35%       { color: #CC3020; text-shadow: 0 0 10px rgba(184,24,24,.68), 0 0 28px rgba(184,24,24,.25); }
+  65%       { color: #886048; text-shadow: 0 0 4px rgba(72,64,56,.30); }
+  87%       { color: #B88868; text-shadow: 0 0 6px rgba(184,24,24,.42); }
+  88%       { color: #FF6040; text-shadow: 0 0 22px rgba(255,96,64,.82), 0 0 50px rgba(184,24,24,.42); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #B88868; text-shadow: 0 0 8px rgba(184,24,24,.55); opacity: 1; }
+  100%      { color: #B88868; text-shadow: 0 0 6px rgba(184,24,24,.48), 0 0 18px rgba(184,24,24,.16); }
+}
+
+#app { animation: horde-border 10s ease-in-out infinite; }
+@keyframes horde-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(184,24,24,.22), inset 0 0 20px rgba(184,24,24,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(184,24,24,.50), inset 0 0 28px rgba(184,24,24,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(72,64,56,.20), inset 0 0 18px rgba(72,64,56,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,96,64,.78), inset 0 0 50px rgba(184,24,24,.15), 0 0 18px rgba(184,24,24,.25); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(184,24,24,.40), inset 0 0 22px rgba(184,24,24,.06); }
+}
+
+#theme-banner { background: rgba(12, 4, 2, 0.99); border-top-color: rgba(184, 24, 24, 0.25); }
+#theme-banner::before { content: '⚔'; color: #B81818; font-size: 20px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 2px; color: rgba(200, 60, 40, 0.65); }
+
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Crect x='30' y='50' width='4' height='2' fill='rgba(184,24,24,0.16)' transform='rotate(20,32,51)'/%3E%3Crect x='100' y='180' width='3' height='2' fill='rgba(72,64,56,0.12)' transform='rotate(45,101,181)'/%3E%3Crect x='160' y='300' width='5' height='2' fill='rgba(184,24,24,0.10)' transform='rotate(15,162,301)'/%3E%3Crect x='60' y='360' width='3' height='3' fill='rgba(192,128,32,0.12)' transform='rotate(60,61,361)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Crect x='40' y='80' width='4' height='2' fill='rgba(184,24,24,0.08)' transform='rotate(35,42,81)'/%3E%3Crect x='150' y='280' width='3' height='3' fill='rgba(72,64,56,0.06)' transform='rotate(50,151,281)'/%3E%3Crect x='220' y='450' width='5' height='2' fill='rgba(192,128,32,0.06)' transform='rotate(20,222,451)'/%3E%3C/svg%3E") repeat;
+  background-size: 200px 400px, 280px 560px;
+  animation: horde-debris 10s linear infinite;
+}
+@keyframes horde-debris {
+  from { background-position: 0 0, 10px 0; }
+  to   { background-position: 25px -400px, -12px -560px; }
+}
+
+.app-tile::before {
+  background: transparent;
+  border: 1px solid rgba(184, 24, 24, 0.30);
+}
+.app-tile:hover::before { animation: tile-flicker .5s steps(1, end) infinite; }
