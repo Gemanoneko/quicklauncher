@@ -8,9 +8,10 @@
   --app-clip:     none;
   --overlay-clip: none;
 
-  --bg:           #080200;
-  --panel-bg:     rgba(12, 4, 1, 0.99);
-  --overlay-bg:   rgba(8, 3, 0, 0.97);
+  /* THERMAL VISION — deep blue-violet cold base, hot signatures in orange/red */
+  --bg:           #080418;
+  --panel-bg:     rgba(10, 6, 24, 0.99);
+  --overlay-bg:   rgba(8, 4, 18, 0.97);
   --header-bg:    rgba(208, 64, 32, 0.04);
 
   --font:         'Segoe UI', 'Arial', sans-serif;
@@ -90,15 +91,22 @@
   --remove-btn-border:     #D04020;
 }
 
-/* ── Thermal noise + heat vignette ───────────────────────────────────────── */
+/* ── THERMAL VISION — cold blue-violet base + scattered warm heat signatures ── */
 #app::after {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.6 0.2 0.05 0 0.02  0.3 0.1 0.02 0 0.01  0.08 0.03 0.01 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 28%, rgba(5,1,0,0.88) 100%),
-    radial-gradient(ellipse 45% 35% at 50% 50%, rgba(120,30,10,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 30% at 0% 100%, rgba(140,40,10,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 30% at 100% 0%, rgba(120,50,10,0.04) 0%, transparent 60%);
-  background-size: 200px 200px, auto, auto, auto, auto;
+    /* Thermal noise grain — blue-violet cold tint */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.12 0.08 0.25 0 0.01  0.06 0.04 0.18 0 0.01  0.18 0.12 0.35 0 0.03  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* Heat signature blob 1 — upper left, large warm body */
+    radial-gradient(ellipse 22% 28% at 25% 35%, rgba(220,80,15,0.10) 0%, rgba(180,50,10,0.05) 40%, transparent 70%),
+    /* Heat signature blob 2 — center right, smaller */
+    radial-gradient(ellipse 15% 20% at 72% 55%, rgba(200,60,10,0.08) 0%, rgba(160,40,8,0.04) 45%, transparent 65%),
+    /* Heat signature blob 3 — lower center, faint */
+    radial-gradient(ellipse 18% 15% at 45% 78%, rgba(180,45,8,0.06) 0%, transparent 55%),
+    /* Cold blue-violet vignette — the thermal cold background */
+    radial-gradient(ellipse 100% 92% at 50% 50%, rgba(12,8,30,0.15) 20%, rgba(4,2,12,0.88) 100%),
+    /* Deep violet ambient — the cold parts of the thermal spectrum */
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(20,10,50,0.08) 0%, transparent 65%);
+  background-size: 200px 200px, auto, auto, auto, auto, auto;
   opacity: 1; pointer-events: none;
 }
 
@@ -197,17 +205,18 @@
 #theme-banner::before { content: '▼'; color: #D04020; font-size: 18px; }
 #theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 2px; color: rgba(220, 100, 50, 0.65); }
 
-/* ── Thermal particles — heat signatures drifting (tier 2) ───────────────── */
+/* ── Thermal particles — warm heat motes rising against cold violet ───────── */
 #particles {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='35' cy='60' r='1.5' fill='rgba(208,64,32,0.20)'/%3E%3Ccircle cx='110' cy='180' r='1' fill='rgba(224,160,32,0.16)'/%3E%3Ccircle cx='165' cy='300' r='1.8' fill='rgba(208,64,32,0.12)'/%3E%3Ccircle cx='60' cy='360' r='0.8' fill='rgba(32,128,64,0.14)'/%3E%3Ccircle cx='140' cy='120' r='1.2' fill='rgba(224,160,32,0.15)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='45' cy='100' r='1.2' fill='rgba(208,64,32,0.10)'/%3E%3Ccircle cx='160' cy='280' r='1.5' fill='rgba(224,160,32,0.08)'/%3E%3Ccircle cx='230' cy='450' r='1' fill='rgba(208,64,32,0.07)'/%3E%3C/svg%3E") repeat;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='35' cy='340' r='2' fill='rgba(220,80,15,0.22)'/%3E%3Ccircle cx='110' cy='260' r='1.5' fill='rgba(240,160,30,0.18)'/%3E%3Ccircle cx='165' cy='120' r='2.5' fill='rgba(200,60,10,0.14)'/%3E%3Ccircle cx='60' cy='50' r='1' fill='rgba(255,200,50,0.20)'/%3E%3Ccircle cx='140' cy='300' r='1.8' fill='rgba(210,70,12,0.16)'/%3E%3C/svg%3E") repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='45' cy='480' r='1.5' fill='rgba(220,80,15,0.12)'/%3E%3Ccircle cx='160' cy='320' r='2' fill='rgba(240,160,30,0.10)'/%3E%3Ccircle cx='230' cy='140' r='1.2' fill='rgba(200,60,10,0.08)'/%3E%3C/svg%3E") repeat;
   background-size: 200px 400px, 280px 560px;
-  animation: pred-heat 14s linear infinite;
+  animation: pred-heat 12s linear infinite;
 }
+/* Heat rises — particles drift UPWARD */
 @keyframes pred-heat {
   from { background-position: 0 0, 15px 0; }
-  to   { background-position: -20px -400px, 10px -560px; }
+  to   { background-position: -15px -400px, 10px -560px; }
 }
 
 /* ── Tile: thermal scan ──────────────────────────────────────────────────── */
