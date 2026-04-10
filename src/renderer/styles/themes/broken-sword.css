@@ -1,0 +1,220 @@
+/* == BROKEN SWORD ================================================================
+   The Shadow of the Templars. George Stobbart and Nico Collard unravel a
+   conspiracy stretching from the cafes of Paris to the deserts of Syria.
+   ILLUMINATED MANUSCRIPT paradigm -- a Knights Templar codex page, aged
+   parchment with ornate borders and calligraphic text. Stillness is weight.
+   ============================================================================== */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* AGED PARCHMENT -- warm dark, not cold. Like vellum held to candlelight. */
+  --bg:           #12100A;
+  --panel-bg:     rgba(20, 18, 12, 0.99);
+  --overlay-bg:   rgba(16, 14, 10, 0.97);
+  --header-bg:    rgba(184, 136, 48, 0.04);
+
+  --font:         Georgia, 'Times New Roman', serif;
+  --text:         #B0A080;
+  --text-dim:     rgba(150, 130, 90, 0.45);
+
+  --accent-c:     #B88830;   /* manuscript gold */
+  --accent-m:     #802818;   /* Templar seal red */
+  --accent-y:     #605030;   /* aged vellum */
+
+  --border:       rgba(184, 136, 48, 0.22);
+  --border-h:     rgba(184, 136, 48, 0.52);
+
+  --glow-c:       0 0 7px rgba(184,136,48,.58), 0 0 20px rgba(184,136,48,.20);
+  --glow-m:       0 0 6px rgba(128,40,24,.52), 0 0 18px rgba(128,40,24,.16);
+  --glow-y:       0 0 5px rgba(96,80,48,.48), 0 0 14px rgba(96,80,48,.14);
+
+  --pulse-glow:   inset 0 0 22px rgba(184,136,48,.05);
+  --scanlines:    none;
+  --drag-over-glow: inset 0 0 24px rgba(184,136,48,.09);
+
+  --title-anim:   codex-title 12s ease-in-out infinite;
+
+  --tile-hover-bg:     rgba(184, 136, 48, 0.07);
+  --tile-hover-border: rgba(184, 136, 48, 0.42);
+  --tile-hover-shadow: 0 0 12px rgba(184, 136, 48, 0.20);
+  --tile-active-bg:    rgba(184, 136, 48, 0.14);
+  --tile-icon-glow:    drop-shadow(0 0 5px rgba(184,136,48,.52)) drop-shadow(0 0 12px rgba(128,40,24,.18));
+  --tile-icon-fx:      brightness(0.92) sepia(0.20) saturate(0.85) contrast(1.12);
+  --tile-icon-shape:   polygon(0% 5%, 5% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%);
+  --tile-label-spacing:   0.8px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     italic;
+  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
+  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
+
+  --btn-hover-bg:   rgba(184, 136, 48, 0.09);
+  --btn-active-bg:  rgba(184, 136, 48, 0.18);
+
+  --drop-hint-border: rgba(184, 136, 48, 0.26);
+  --drop-icon-color:  rgba(184, 136, 48, 0.35);
+  --hint-sub-color:   rgba(150, 130, 90, 0.38);
+
+  --rename-dashed:    rgba(184, 136, 48, 0.42);
+  --rename-input-bg:  rgba(184, 136, 48, 0.07);
+
+  --edit-bar-bg:          rgba(128, 40, 24, 0.07);
+  --edit-bar-border:      rgba(128, 40, 24, 0.40);
+  --edit-label-color:     #B88830;
+  --edit-label-glow:      var(--glow-c);
+  --btn-done-color:       #B88830;
+  --btn-done-border:      rgba(184, 136, 48, 0.42);
+  --btn-done-hover-bg:    rgba(184, 136, 48, 0.10);
+  --btn-done-hover-glow:  var(--glow-c);
+  --btn-add-border:       rgba(184, 136, 48, 0.42);
+
+  --update-bg:             rgba(96, 80, 48, 0.06);
+  --update-border:         rgba(96, 80, 48, 0.32);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(96, 80, 48, 0.28);
+  --update-btn-hover-bg:   rgba(96, 80, 48, 0.09);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #B88830;
+  --btn-close-border:     rgba(184, 136, 48, 0.40);
+  --btn-close-hover-bg:   rgba(184, 136, 48, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(184, 136, 48, 0.07);
+  --picker-item-hover-bg:  rgba(184, 136, 48, 0.08);
+  --picker-item-active-bg: rgba(184, 136, 48, 0.16);
+  --picker-placeholder-bg: rgba(184, 136, 48, 0.07);
+
+  --skin-btn-active-bg:    rgba(184, 136, 48, 0.16);
+  --remove-btn-bg:         rgba(128, 40, 24, 0.88);
+  --remove-btn-border:     #802818;
+}
+
+/* -- Warm parchment grain -- heavy, visible, like real vellum texture --------- */
+#app::after {
+  background:
+    /* Parchment vellum grain -- warm, heavy, organic. Like aged animal skin. */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.52' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.8 0.4 0.1 0 0.04  0.6 0.4 0.1 0 0.03  0.2 0.15 0.05 0 0.01  0 0 0 0.14 0'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* Warm candlelight from above -- monastery scriptorium */
+    radial-gradient(ellipse 65% 40% at 50% 0%, rgba(160, 120, 30, 0.07) 0%, transparent 62%),
+    /* Heavy vignette -- darkened edges like an old codex page */
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(8, 6, 3, 0.80) 100%),
+    /* Warm center glow -- candlelit reading surface */
+    radial-gradient(ellipse 55% 50% at 50% 55%, rgba(120, 90, 25, 0.05) 0%, transparent 65%),
+    /* Aged discoloration -- uneven parchment tone */
+    radial-gradient(ellipse 40% 35% at 30% 70%, rgba(100, 70, 15, 0.04) 0%, transparent 55%);
+  background-size: 250px 250px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* -- Header -- manuscript gold accent bar ----------------------------------- */
+#header::before {
+  background: linear-gradient(to bottom, #B88830, rgba(150, 110, 30, 0.28));
+  box-shadow: 0 0 9px rgba(184,136,48,0.55), 0 0 24px rgba(184,136,48,0.18);
+}
+
+/* -- Grid: Style B -- Illuminated Manuscript -- Templar Codex Page ---------- */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Crect x='18' y='12' width='464' height='356' fill='none' stroke='rgba(184,136,48,0.28)' stroke-width='1.5'/%3E%3Crect x='24' y='18' width='452' height='344' fill='none' stroke='rgba(184,136,48,0.18)' stroke-width='0.8'/%3E%3Cpolygon points='250,12 253,8 256,12 253,16' fill='rgba(184,136,48,0.35)'/%3E%3Cpolygon points='250,368 253,364 256,368 253,372' fill='rgba(184,136,48,0.35)'/%3E%3Cpolygon points='18,190 14,187 18,184 22,187' fill='rgba(184,136,48,0.35)'/%3E%3Cpolygon points='482,190 478,187 482,184 486,187' fill='rgba(184,136,48,0.35)'/%3E%3Cpolygon points='21,15 15,12 18,18' fill='rgba(128,40,24,0.30)' stroke='rgba(128,40,24,0.22)' stroke-width='0.5'/%3E%3Cline x1='18' y1='12' x2='30' y2='12' stroke='rgba(128,40,24,0.25)' stroke-width='0.8'/%3E%3Cline x1='18' y1='12' x2='18' y2='24' stroke='rgba(128,40,24,0.25)' stroke-width='0.8'/%3E%3Cline x1='26' y1='20' x2='34' y2='20' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Cline x1='26' y1='20' x2='26' y2='28' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='479,15 485,12 482,18' fill='rgba(128,40,24,0.30)' stroke='rgba(128,40,24,0.22)' stroke-width='0.5'/%3E%3Cline x1='482' y1='12' x2='470' y2='12' stroke='rgba(128,40,24,0.25)' stroke-width='0.8'/%3E%3Cline x1='482' y1='12' x2='482' y2='24' stroke='rgba(128,40,24,0.25)' stroke-width='0.8'/%3E%3Cline x1='474' y1='20' x2='466' y2='20' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Cline x1='474' y1='20' x2='474' y2='28' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='21,365 15,368 18,362' fill='rgba(128,40,24,0.30)' stroke='rgba(128,40,24,0.22)' stroke-width='0.5'/%3E%3Cline x1='18' y1='368' x2='30' y2='368' stroke='rgba(128,40,24,0.25)' stroke-width='0.8'/%3E%3Cline x1='18' y1='368' x2='18' y2='356' stroke='rgba(128,40,24,0.25)' stroke-width='0.8'/%3E%3Cline x1='26' y1='360' x2='34' y2='360' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Cline x1='26' y1='360' x2='26' y2='352' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='479,365 485,368 482,362' fill='rgba(128,40,24,0.30)' stroke='rgba(128,40,24,0.22)' stroke-width='0.5'/%3E%3Cline x1='482' y1='368' x2='470' y2='368' stroke='rgba(128,40,24,0.25)' stroke-width='0.8'/%3E%3Cline x1='482' y1='368' x2='482' y2='356' stroke='rgba(128,40,24,0.25)' stroke-width='0.8'/%3E%3Cline x1='474' y1='360' x2='466' y2='360' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Cline x1='474' y1='360' x2='474' y2='352' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Crect x='237' y='75' width='26' height='68' fill='rgba(150,130,90,0.12)' stroke='rgba(184,136,48,0.32)' stroke-width='1'/%3E%3Cpath d='M 240,143 L 240,83 C 240,80 243,78 250,78 C 257,78 260,80 260,83 L 260,143' fill='none' stroke='rgba(184,136,48,0.25)' stroke-width='0.5'/%3E%3Cline x1='244' y1='85' x2='256' y2='85' stroke='rgba(184,136,48,0.18)' stroke-width='0.5'/%3E%3Cline x1='244' y1='135' x2='256' y2='135' stroke='rgba(184,136,48,0.18)' stroke-width='0.5'/%3E%3Cline x1='250' y1='78' x2='250' y2='140' stroke='rgba(184,136,48,0.12)' stroke-width='0.3'/%3E%3Cpath d='M 242,90 L 258,90 L 260,92 L 258,94 L 242,94 L 240,92 Z' fill='rgba(184,136,48,0.15)' stroke='rgba(184,136,48,0.22)' stroke-width='0.5'/%3E%3Crect x='246' y='155' width='8' height='5' fill='none' stroke='rgba(184,136,48,0.20)' stroke-width='0.5'/%3E%3Crect x='237' y='170' width='26' height='68' fill='rgba(150,130,90,0.10)' stroke='rgba(184,136,48,0.28)' stroke-width='1'/%3E%3Cpath d='M 240,238 L 240,178 C 240,175 243,173 250,173 C 257,173 260,175 260,178 L 260,238' fill='none' stroke='rgba(184,136,48,0.22)' stroke-width='0.5'/%3E%3Cline x1='244' y1='180' x2='256' y2='180' stroke='rgba(184,136,48,0.15)' stroke-width='0.5'/%3E%3Cline x1='244' y1='230' x2='256' y2='230' stroke='rgba(184,136,48,0.15)' stroke-width='0.5'/%3E%3Cline x1='250' y1='173' x2='250' y2='235' stroke='rgba(184,136,48,0.10)' stroke-width='0.3'/%3E%3Cpath d='M 242,185 L 258,185 L 260,187 L 258,189 L 242,189 L 240,187 Z' fill='rgba(184,136,48,0.12)' stroke='rgba(184,136,48,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 248,148 L 250,152 L 252,148' fill='none' stroke='rgba(128,40,24,0.35)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 245,150 L 250,158 L 255,150' fill='none' stroke='rgba(128,40,24,0.22)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='155' r='4' fill='none' stroke='rgba(128,40,24,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 246,245 L 250,250 L 254,245' fill='none' stroke='rgba(184,136,48,0.22)' stroke-width='0.5'/%3E%3Ctext x='250' y='32' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' font-style='italic' letter-spacing='3' fill='rgba(184,136,48,0.50)'%3ETHE SHADOW OF THE TEMPLARS%3C/text%3E%3Ctext x='250' y='46' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(150,130,90,0.32)'%3EMANUSCRIPTUM -- ORDO TEMPLI%3C/text%3E%3Ctext x='75' y='108' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' fill='rgba(184,136,48,0.45)'%3EGEORGE STOBBART%3C/text%3E%3Cline x1='20' y1='113' x2='130' y2='113' stroke='rgba(184,136,48,0.18)' stroke-width='0.5'/%3E%3Ctext x='75' y='128' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.35)'%3EAmerican Tourist%3C/text%3E%3Ctext x='75' y='142' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.32)'%3EReluctant Hero%3C/text%3E%3Ctext x='75' y='156' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.30)'%3EKnight of the Order%3C/text%3E%3Ctext x='75' y='178' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(128,40,24,0.35)'%3ELa Risee du Monde%3C/text%3E%3Crect x='32' y='192' width='86' height='48' rx='1' fill='rgba(18,16,10,0.50)' stroke='rgba(184,136,48,0.18)' stroke-width='0.5'/%3E%3Ctext x='75' y='208' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(184,136,48,0.30)'%3ECLUES%3C/text%3E%3Cline x1='40' y1='212' x2='110' y2='212' stroke='rgba(184,136,48,0.12)' stroke-width='0.3'/%3E%3Ctext x='75' y='222' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(150,130,90,0.25)'%3EThe Manuscript%3C/text%3E%3Ctext x='75' y='232' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(150,130,90,0.22)'%3EThe Chalice%3C/text%3E%3Ctext x='425' y='108' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' fill='rgba(184,136,48,0.45)'%3ENICO COLLARD%3C/text%3E%3Cline x1='370' y1='113' x2='480' y2='113' stroke='rgba(184,136,48,0.18)' stroke-width='0.5'/%3E%3Ctext x='425' y='128' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.35)'%3EFrench Journalist%3C/text%3E%3Ctext x='425' y='142' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.32)'%3EPhotographer%3C/text%3E%3Ctext x='425' y='156' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.30)'%3EThe Truth-Seeker%3C/text%3E%3Ctext x='425' y='178' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(128,40,24,0.35)'%3ELiberte du Savoir%3C/text%3E%3Crect x='382' y='192' width='86' height='48' rx='1' fill='rgba(18,16,10,0.50)' stroke='rgba(184,136,48,0.18)' stroke-width='0.5'/%3E%3Ctext x='425' y='208' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(184,136,48,0.30)'%3ELOCATIONS%3C/text%3E%3Cline x1='390' y1='212' x2='460' y2='212' stroke='rgba(184,136,48,0.12)' stroke-width='0.3'/%3E%3Ctext x='425' y='222' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(150,130,90,0.25)'%3ECafe de la Chandelle Verte%3C/text%3E%3Ctext x='425' y='232' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(150,130,90,0.22)'%3EBull%27s Head Hill%3C/text%3E%3Ctext x='250' y='270' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(128,40,24,0.38)'%3EORDO TEMPLI%3C/text%3E%3Ctext x='250' y='286' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1' fill='rgba(150,130,90,0.28)'%3EIn hoc signo vinces%3C/text%3E%3Cline x1='18' y1='308' x2='482' y2='308' stroke='rgba(184,136,48,0.22)' stroke-width='0.7'/%3E%3Cline x1='18' y1='311' x2='482' y2='311' stroke='rgba(184,136,48,0.08)' stroke-width='0.3'/%3E%3Ctext x='85' y='326' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.35)'%3EFILE%3C/text%3E%3Ctext x='85' y='342' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' font-weight='bold' fill='rgba(184,136,48,0.48)'%3EPARIS%3C/text%3E%3Ctext x='210' y='326' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.35)'%3EFILE%3C/text%3E%3Ctext x='210' y='342' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' font-weight='bold' fill='rgba(128,40,24,0.45)'%3ESYRIA%3C/text%3E%3Ctext x='335' y='326' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.35)'%3EFILE%3C/text%3E%3Ctext x='335' y='342' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' font-weight='bold' fill='rgba(184,136,48,0.45)'%3EIRELAND%3C/text%3E%3Ctext x='450' y='326' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(150,130,90,0.35)'%3EFILE%3C/text%3E%3Ctext x='450' y='342' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' font-weight='bold' fill='rgba(96,80,48,0.42)'%3ESPAIN%3C/text%3E%3Cline x1='148' y1='314' x2='148' y2='348' stroke='rgba(184,136,48,0.12)' stroke-width='0.5'/%3E%3Cline x1='272' y1='314' x2='272' y2='348' stroke='rgba(184,136,48,0.12)' stroke-width='0.5'/%3E%3Cline x1='393' y1='314' x2='393' y2='348' stroke='rgba(184,136,48,0.12)' stroke-width='0.5'/%3E%3Ctext x='250' y='362' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(150,130,90,0.22)'%3EPARIS -- SYRIA -- IRELAND -- MANUSCRIPTUM TEMPLI%3C/text%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: codex-page 12s ease-in-out infinite;
+}
+
+/* CPU-efficient: opacity-only (tier 1) */
+@keyframes codex-page {
+  0%, 100% { opacity: 0.82; }
+  28%       { opacity: 0.88; }
+  65%       { opacity: 0.75; }
+  88%       { opacity: 0.04; }   /* warm gold flash -- synchronized blackout */
+  89%       { opacity: 0.90; }
+  92%       { opacity: 0.82; }
+}
+
+/* -- Flavor content --------------------------------------------------------- */
+#header::after {
+  content: 'CODEX TEMPLI // THE SHADOW OF THE TEMPLARS // MANUSCRIPTUM';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(184, 136, 48, 0.58);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE SHADOW\AOF THE\ATEMPLARS\A-----------\AGEORGE\ASTOBBART\A-----------\APARIS\ASYRIA\AIRELAND';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(184, 136, 48, 0.08); white-space: pre;
+  animation: codex-readout 12s ease-in-out infinite;
+}
+
+/* CPU-efficient: color-only (tier 3) */
+@keyframes codex-readout {
+  0%, 100% { color: rgba(184,136,48,.08); }
+  28%       { color: rgba(184,136,48,.12); }
+  65%       { color: rgba(184,136,48,.06); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(184,136,48,.15); }
+  92%       { color: rgba(184,136,48,.08); }
+}
+
+#edit-bar::after {
+  content: 'ORDO TEMPLI // THE MYSTERY ENDURES';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  font-size: 8px; letter-spacing: 2px; color: rgba(128, 40, 24, 0.42);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
+
+/* -- Title: manuscript gold pulse with 88% sync -- color + text-shadow (tier 3) */
+@keyframes codex-title {
+  0%        { color: #B0A080; text-shadow: 0 0 6px rgba(184,136,48,.45), 0 0 18px rgba(184,136,48,.15); }
+  35%       { color: #C8A848; text-shadow: 0 0 10px rgba(184,136,48,.62), 0 0 28px rgba(184,136,48,.22); }
+  65%       { color: #908060; text-shadow: 0 0 4px rgba(96,80,48,.35); }
+  87%       { color: #B0A080; text-shadow: 0 0 6px rgba(184,136,48,.40); }
+  88%       { color: #E8C868; text-shadow: 0 0 22px rgba(232,200,104,.80), 0 0 50px rgba(184,136,48,.40); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #B0A080; text-shadow: 0 0 8px rgba(184,136,48,.52); opacity: 1; }
+  100%      { color: #B0A080; text-shadow: 0 0 6px rgba(184,136,48,.45), 0 0 18px rgba(184,136,48,.15); }
+}
+
+/* -- App: parchment glow border -- box-shadow >= 12s (tier 5) --------------- */
+#app { animation: codex-border 12s ease-in-out infinite; }
+@keyframes codex-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(184,136,48,.20), inset 0 0 20px rgba(184,136,48,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(184,136,48,.42), inset 0 0 28px rgba(184,136,48,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(96,80,48,.20), inset 0 0 18px rgba(96,80,48,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(232,200,104,.75), inset 0 0 48px rgba(184,136,48,.14), 0 0 18px rgba(184,136,48,.24); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(184,136,48,.38), inset 0 0 22px rgba(184,136,48,.06); }
+}
+
+/* -- Banner ----------------------------------------------------------------- */
+#theme-banner { background: rgba(14, 12, 8, 0.99); border-top-color: rgba(184, 136, 48, 0.22); }
+#theme-banner::before { content: '\269C'; color: #B88830; font-size: 20px; }
+#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 2px; color: rgba(184, 136, 48, 0.65); }
+
+/* NO particles. A manuscript page does not have floating particles.
+   The stillness adds to the weight. */
+#particles {
+  background: none;
+}
+
+/* -- Tile: manuscript illumination pulse on hover --------------------------- */
+.app-tile::before {
+  width: 18px; height: 18px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 0;
+  background: transparent;
+  border: 1px solid rgba(184, 136, 48, 0.48);
+}
+.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
