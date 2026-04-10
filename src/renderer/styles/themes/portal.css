@@ -5,16 +5,16 @@
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Backgrounds */
-  --bg:                   #0A0C14;
-  --panel-bg:             rgba(10, 12, 22, 0.98);
-  --overlay-bg:           rgba(8, 10, 18, 0.92);
-  --header-bg:            rgba(12, 14, 26, 0.97);
+  /* CLINICAL WHITE PARADIGM — Aperture test chambers are WHITE, not dark */
+  --bg:                   #D8D8DE;
+  --panel-bg:             rgba(200, 200, 210, 0.97);
+  --overlay-bg:           rgba(195, 195, 205, 0.96);
+  --header-bg:            rgba(80, 90, 120, 0.06);
 
   /* Typography — Aperture Science is clean corporate sans-serif */
   --font:                 'Segoe UI', 'Arial', sans-serif;
-  --text:                 #C0CCD8;
-  --text-dim:             #4A5668;
+  --text:                 #3A4050;
+  --text-dim:             rgba(60, 65, 80, 0.40);
 
   /* Shape — rectangular test chambers */
   --radius:               4px;
@@ -27,7 +27,7 @@
   --accent-y:             #0088FF;
 
   /* Borders */
-  --border:               rgba(192, 204, 216, 0.12);
+  --border:               rgba(60, 65, 80, 0.15);
   --border-h:             rgba(255, 102, 0, 0.55);
 
   /* Glows — portal energy fields */
@@ -46,7 +46,7 @@
                           );
 
   /* Title — slow portal color shift, orange to blue */
-  --title-anim:           portal-fade 6s ease-in-out infinite;
+  --title-anim:           portal-fade 10s ease-in-out infinite;
 
   /* Tiles */
   --tile-hover-bg:        rgba(255, 102, 0, 0.07);
@@ -54,7 +54,7 @@
   --tile-hover-shadow:    0 0 10px rgba(255, 102, 0, 0.35), inset 0 0 8px rgba(255, 102, 0, 0.05);
   --tile-active-bg:       rgba(255, 102, 0, 0.12);
   --tile-icon-fx:         brightness(1.1) contrast(1.1) saturate(1.15);
-  --tile-icon-shape:      circle(46% at 50% 50%);
+  --tile-icon-shape:      circle(44% at 50% 50%);
   --tile-label-spacing:   1.2px;
   --tile-label-transform: uppercase;
   --tile-label-weight:    400;
@@ -116,14 +116,14 @@
 }
 
 /* ── Dual portal side glows — orange left, blue right, breathing together ─── */
-#app { animation: pt-portal-energy 5s ease-in-out infinite; }
+#app { animation: pt-portal-energy 10s ease-in-out infinite; }
 @keyframes pt-portal-energy {
-  0%, 100% {
-    box-shadow: -3px 0 22px rgba(255,102,0,.22), 3px 0 22px rgba(0,96,204,.22);
-  }
-  50% {
-    box-shadow: -3px 0 42px rgba(255,102,0,.42), 3px 0 42px rgba(0,96,204,.42);
-  }
+  0%, 100% { box-shadow: -3px 0 22px rgba(255,102,0,.22), 3px 0 22px rgba(0,96,204,.22); }
+  35%      { box-shadow: -3px 0 36px rgba(255,102,0,.38), 3px 0 36px rgba(0,96,204,.38); }
+  65%      { box-shadow: -3px 0 18px rgba(255,102,0,.18), 3px 0 18px rgba(0,96,204,.18); }
+  88%      { box-shadow: -3px 0 50px rgba(255,102,0,.60), 3px 0 50px rgba(0,96,204,.60), 0 0 0 2px rgba(255,255,255,.70); }
+  89%      { box-shadow: none; }
+  90%      { box-shadow: -3px 0 28px rgba(255,102,0,.28), 3px 0 28px rgba(0,96,204,.28); }
 }
 
 /* ── Portal rings pulse — the energy field breathes ──────────────────────── */
@@ -272,13 +272,13 @@
 }
 
 /* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 4, 8, 0.97); border-top-color: rgba(224, 232, 240, 0.14); }
+#theme-banner { background: rgba(195, 195, 205, 0.97); border-top-color: rgba(60, 65, 80, 0.15); }
 #theme-banner::before { content: '◎'; font-size: 22px; animation: pt-symbol-shift 6s ease-in-out infinite; }
 @keyframes pt-symbol-shift {
   0%, 100% { color: #FF6600; opacity: 0.6; }
   50% { color: #0060CC; opacity: 0.6; }
 }
-#theme-banner-text { color: rgba(192, 204, 216, 0.50); }
+#theme-banner-text { color: rgba(58, 64, 80, 0.65); }
 
 /* ── Phase 4E: tile radial ring ──────────────────────────────────────────── */
 .app-tile::before {

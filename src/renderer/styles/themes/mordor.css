@@ -8,9 +8,10 @@
   --app-clip:     none;
   --overlay-clip: none;
 
-  --bg:           #060300;
-  --panel-bg:     rgba(10, 5, 1, 0.98);
-  --overlay-bg:   rgba(6, 3, 0, 0.96);
+  /* WARM VOLCANIC MID-TONE — not just dark-with-red */
+  --bg:           #1A0C04;
+  --panel-bg:     rgba(22, 10, 4, 0.97);
+  --overlay-bg:   rgba(18, 8, 3, 0.96);
   --header-bg:    rgba(180, 60, 0, 0.04);
 
   --font:         'Segoe UI', Georgia, serif;
@@ -97,21 +98,16 @@
 /* ── Volcanic ash + ember glow + cracked ground ─────────────────────────────── */
 #app::after {
   background:
-    /* ash grain — volcanic pumice */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E"),
+    /* ash grain — WARM volcanic tint, not desaturated */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.5 0.2 0.05 0 0.03  0.3 0.1 0.02 0 0.01  0.1 0.04 0.01 0 0  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
     /* diagonal fire streaks */
-    repeating-linear-gradient(
-      106deg,
-      transparent 0px, transparent 5px,
-      rgba(180, 55, 0, 0.020) 5px, rgba(180, 55, 0, 0.020) 6px,
-      transparent 6px, transparent 42px
-    ),
-    /* heavy vignette — ash clouds */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 32%, rgba(4, 1, 0, 0.80) 100%),
-    /* ember glow from below — Mount Doom */
-    radial-gradient(ellipse 80% 35% at 50% 100%, rgba(180, 50, 0, 0.12) 0%, transparent 70%),
-    /* Eye of Sauron ambient top */
-    radial-gradient(ellipse 50% 40% at 50% 0%, rgba(160, 40, 0, 0.07) 0%, transparent 65%);
+    repeating-linear-gradient(106deg, transparent 0px, transparent 5px, rgba(180,55,0,0.025) 5px, rgba(180,55,0,0.025) 6px, transparent 6px, transparent 42px),
+    /* vignette — NOT full dark, preserves warm mid-tone */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 35%, rgba(8,2,0,0.70) 100%),
+    /* STRONG ember glow from below — Mount Doom lava */
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(180,50,0,0.18) 0%, rgba(140,35,0,0.08) 40%, transparent 70%),
+    /* Eye glow from above */
+    radial-gradient(ellipse 45% 35% at 50% 0%, rgba(200,60,0,0.10) 0%, transparent 60%);
   background-size: 200px 200px, auto, auto, auto, auto;
   opacity: 1; pointer-events: none;
 }
@@ -139,14 +135,17 @@
     linear-gradient(to bottom, rgba(140, 40, 0, 0.07) 0%, transparent 28%),
     /* Lava seep from Orodruin below */
     linear-gradient(to top, rgba(180, 50, 0, 0.09) 0%, rgba(140, 35, 0, 0.04) 18%, transparent 45%);
-  animation: mordor-eye 4s ease-in-out infinite;
+  animation: mordor-eye 10s ease-in-out infinite;
 }
 @keyframes mordor-eye {
-  0%, 100% { opacity: 0.85; }
-  50%       { opacity: 1.0; }
-  80%       { opacity: 0.9; }
-  82%       { opacity: 0.5; }
-  83%       { opacity: 1.0; }
+  0%, 100% { opacity: 0.80; }
+  28%       { opacity: 0.90; }
+  50%       { opacity: 0.72; }
+  65%       { opacity: 0.85; }
+  87%       { opacity: 0.78; }
+  88%       { opacity: 0.04; }   /* the Eye blinks — synchronized blackout */
+  89%       { opacity: 0.95; }   /* it opens wider */
+  92%       { opacity: 0.80; }
 }
 
 /* ── Flavor content ─────────────────────────────────────────────────────────── */
@@ -189,15 +188,25 @@
 
 /* ── Title animation: Eye of Sauron glow ────────────────────────────────────── */
 @keyframes eye-of-sauron {
-  0%, 100% { text-shadow: 0 0 8px rgba(204,72,0,.60), 0 0 22px rgba(204,72,0,.22); color: #CC4800; }
-  50%       { text-shadow: 0 0 14px rgba(220,80,0,.90), 0 0 36px rgba(200,60,0,.40); color: #E05000; }
+  0%        { color: #CC4800; text-shadow: 0 0 8px rgba(204,72,0,.55), 0 0 22px rgba(204,72,0,.18); }
+  35%       { color: #E06000; text-shadow: 0 0 14px rgba(220,80,0,.75), 0 0 32px rgba(200,60,0,.30); }
+  65%       { color: #A03800; text-shadow: 0 0 5px rgba(160,55,0,.40); }
+  87%       { color: #CC4800; text-shadow: 0 0 8px rgba(204,72,0,.50); }
+  88%       { color: #FF8820; text-shadow: 0 0 22px rgba(255,136,32,.85), 0 0 50px rgba(204,72,0,.45); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #CC4800; text-shadow: 0 0 10px rgba(204,72,0,.60); opacity: 1; }
+  100%      { color: #CC4800; text-shadow: 0 0 8px rgba(204,72,0,.55), 0 0 22px rgba(204,72,0,.18); }
 }
 
-/* ── App: volcanic border pulse ─────────────────────────────────────────────── */
-#app { animation: mordor-border 6s ease-in-out infinite; }
+/* ── App: volcanic border — synced at 10s/88% ────────────────────────────── */
+#app { animation: mordor-border 10s ease-in-out infinite; }
 @keyframes mordor-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(160,55,0,.35), inset 0 0 30px rgba(160,55,0,.06); }
-  50%       { box-shadow: 0 0 0 1px rgba(204,72,0,.60), inset 0 0 40px rgba(180,50,0,.10); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(160,55,0,.28), inset 0 0 24px rgba(160,55,0,.05); }
+  35%      { box-shadow: 0 0 0 1px rgba(204,72,0,.52), inset 0 0 34px rgba(180,50,0,.08); }
+  65%      { box-shadow: 0 0 0 1px rgba(136,0,0,.25), inset 0 0 20px rgba(136,0,0,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(255,136,32,.80), inset 0 0 50px rgba(204,72,0,.15), 0 0 18px rgba(204,72,0,.28); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(204,72,0,.45), inset 0 0 28px rgba(160,55,0,.07); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */

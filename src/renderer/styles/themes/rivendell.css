@@ -8,9 +8,10 @@
   --app-clip:     none;
   --overlay-clip: none;
 
-  --bg:           #030508;
-  --panel-bg:     rgba(5, 8, 14, 0.97);
-  --overlay-bg:   rgba(3, 5, 10, 0.95);
+  /* TRANSLUCENT ETHEREAL — desktop bleeds through like moonlit water */
+  --bg:           rgba(3, 5, 12, 0.55);
+  --panel-bg:     rgba(5, 8, 18, 0.82);
+  --overlay-bg:   rgba(3, 5, 12, 0.88);
   --header-bg:    rgba(80, 110, 170, 0.04);
 
   --font:         Georgia, 'Times New Roman', serif;
@@ -32,7 +33,7 @@
   --scanlines:    none;
   --drag-over-glow: inset 0 0 24px rgba(96,128,184,.10);
 
-  --title-anim:   rivendell-moonlight 7s ease-in-out infinite;
+  --title-anim:   rivendell-moonlight 12s ease-in-out infinite;
 
   --tile-hover-bg:     rgba(80, 110, 170, 0.07);
   --tile-hover-border: rgba(100, 138, 205, 0.35);
@@ -171,22 +172,29 @@
 
 /* ── Title animation: moonlight on still water ──────────────────────────────── */
 @keyframes rivendell-moonlight {
-  0%, 100% { text-shadow: 0 0 8px rgba(96,128,184,.55), 0 0 22px rgba(96,128,184,.20); color: #6080B8; }
-  35%       { text-shadow: 0 0 14px rgba(130,160,220,.85), 0 0 35px rgba(96,128,184,.40); color: #80A0D8; }
-  70%       { text-shadow: 0 0 10px rgba(192,168,64,.55), 0 0 24px rgba(80,110,170,.22); color: #9090C0; }
+  0%        { color: #6080B8; text-shadow: 0 0 8px rgba(96,128,184,.50), 0 0 22px rgba(96,128,184,.18); }
+  35%       { color: #80A0D8; text-shadow: 0 0 14px rgba(130,160,220,.72), 0 0 32px rgba(96,128,184,.30); }
+  65%       { color: #506898; text-shadow: 0 0 5px rgba(80,110,170,.30); }
+  87%       { color: #6080B8; text-shadow: 0 0 8px rgba(96,128,184,.45); }
+  88%       { color: #C0D8FF; text-shadow: 0 0 22px rgba(192,216,255,.80), 0 0 50px rgba(96,128,184,.40); opacity: 0.90; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  90%       { color: #6080B8; text-shadow: 0 0 10px rgba(96,128,184,.55); opacity: 1; }
+  100%      { color: #6080B8; text-shadow: 0 0 8px rgba(96,128,184,.50), 0 0 22px rgba(96,128,184,.18); }
 }
 
-/* ── Elven starlight — silver-blue moonrise pulse ───────────────────────── */
-#app { animation: rivendell-starlight 9s ease-in-out infinite; }
+/* ── Elven starlight — synced at 12s/88% ─────────────────────────────────── */
+#app { animation: rivendell-starlight 12s ease-in-out infinite; }
 @keyframes rivendell-starlight {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(80,110,170,.22), inset 0 0 20px rgba(80,110,170,.04); }
-  40%      { box-shadow: 0 0 0 1px rgba(96,128,184,.48), inset 0 0 30px rgba(96,128,184,.08); }
-  60%      { box-shadow: 0 0 0 1px rgba(192,168,64,.28), inset 0 0 22px rgba(192,168,64,.05); }
-  80%      { box-shadow: 0 0 0 1px rgba(80,110,170,.35), inset 0 0 24px rgba(80,110,170,.06); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(80,110,170,.20), inset 0 0 20px rgba(80,110,170,.04); }
+  35%      { box-shadow: 0 0 0 1px rgba(96,128,184,.42), inset 0 0 28px rgba(96,128,184,.07); }
+  65%      { box-shadow: 0 0 0 1px rgba(192,168,64,.22), inset 0 0 18px rgba(192,168,64,.04); }
+  88%      { box-shadow: 0 0 0 2px rgba(192,216,255,.75), inset 0 0 50px rgba(96,128,184,.12), 0 0 18px rgba(96,128,184,.22); }
+  89%      { box-shadow: 0 0 0 0px transparent; }
+  90%      { box-shadow: 0 0 0 1px rgba(96,128,184,.38), inset 0 0 22px rgba(80,110,170,.06); }
 }
 
 /* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(3, 4, 9, 0.97); border-top-color: rgba(80, 110, 170, 0.22); }
+#theme-banner { background: rgba(3, 5, 12, 0.92); border-top-color: rgba(80, 110, 170, 0.22); }
 #theme-banner::before { content: '✶'; color: #6080B8; font-size: 22px; }
 #theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(100, 145, 205, 0.72); }
 
