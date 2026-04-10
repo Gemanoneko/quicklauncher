@@ -1,0 +1,255 @@
+/* ══ FORBIDDEN SIREN ══════════════════════════════════════════════════════════
+   Hanuda Village. The siren calls. The Shibito walk. You can see through
+   their eyes — sightjacking. Red static. Corrupted vision. A frequency
+   that should not exist. The dead are watching through YOU.
+   SIGHTJACK INTERFERENCE paradigm — active red corruption, not still horror.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius:       1px;
+  --app-clip:     none;
+  --overlay-clip: none;
+
+  /* Deep corrupted dark — not pure black, stained with red interference */
+  --bg:           #0A0406;
+  --panel-bg:     rgba(14, 6, 8, 0.99);
+  --overlay-bg:   rgba(10, 4, 6, 0.97);
+  --header-bg:    rgba(140, 20, 30, 0.04);
+
+  --font:         'Segoe UI', 'Arial', sans-serif;
+  --text:         #A07078;
+  --text-dim:     rgba(130, 80, 90, 0.45);
+
+  /* Red interference — the sightjack frequency */
+  --accent-c:     #A01828;   /* sightjack red */
+  --accent-m:     #582830;   /* dead blood */
+  --accent-y:     #403038;   /* corrupted grey-violet */
+
+  --border:       rgba(160, 24, 40, 0.22);
+  --border-h:     rgba(160, 24, 40, 0.50);
+
+  --glow-c:       0 0 6px rgba(160,24,40,.55), 0 0 18px rgba(160,24,40,.18);
+  --glow-m:       0 0 5px rgba(88,40,48,.45), 0 0 14px rgba(88,40,48,.14);
+  --glow-y:       0 0 5px rgba(64,48,56,.40), 0 0 14px rgba(64,48,56,.12);
+
+  --pulse-glow:   inset 0 0 20px rgba(160,24,40,.05);
+  --scanlines:    repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px, transparent 2px,
+                    rgba(140, 20, 30, 0.03) 2px, rgba(140, 20, 30, 0.03) 3px
+                  );
+  --drag-over-glow: inset 0 0 22px rgba(160,24,40,.08);
+
+  --title-anim:   siren-title 12s steps(1) infinite;
+
+  --tile-hover-bg:     rgba(160, 24, 40, 0.06);
+  --tile-hover-border: rgba(160, 24, 40, 0.30);
+  --tile-hover-shadow: 0 0 10px rgba(160, 24, 40, 0.14);
+  --tile-active-bg:    rgba(160, 24, 40, 0.12);
+  --tile-icon-glow:    drop-shadow(0 0 4px rgba(160,24,40,.40)) drop-shadow(0 0 10px rgba(88,40,48,.16));
+  --tile-icon-fx:      grayscale(0.50) contrast(1.15) brightness(0.80) sepia(0.15);
+  --tile-icon-shape:   polygon(3% 0%, 97% 3%, 100% 97%, 95% 100%, 0% 98%, 2% 5%);
+  --tile-label-spacing:   0.5px;
+  --tile-label-transform: none;
+  --tile-label-weight:    400;
+  --tile-label-style:     normal;
+  --banner-icon-anim:    banner-flicker 6s steps(1) infinite;
+  --app-entrance-anim:   entrance-fade 2.5s ease-out forwards;
+
+  --btn-hover-bg:   rgba(160, 24, 40, 0.08);
+  --btn-active-bg:  rgba(160, 24, 40, 0.16);
+
+  --drop-hint-border: rgba(160, 24, 40, 0.20);
+  --drop-icon-color:  rgba(160, 24, 40, 0.28);
+  --hint-sub-color:   rgba(130, 80, 90, 0.30);
+
+  --rename-dashed:    rgba(160, 24, 40, 0.32);
+  --rename-input-bg:  rgba(160, 24, 40, 0.06);
+
+  --edit-bar-bg:          rgba(88, 40, 48, 0.07);
+  --edit-bar-border:      rgba(88, 40, 48, 0.32);
+  --edit-label-color:     #783840;
+  --edit-label-glow:      var(--glow-m);
+  --btn-done-color:       #783840;
+  --btn-done-border:      rgba(88, 40, 48, 0.35);
+  --btn-done-hover-bg:    rgba(88, 40, 48, 0.10);
+  --btn-done-hover-glow:  var(--glow-m);
+  --btn-add-border:       rgba(160, 24, 40, 0.32);
+
+  --update-bg:             rgba(64, 48, 56, 0.06);
+  --update-border:         rgba(64, 48, 56, 0.25);
+  --update-color:          var(--accent-y);
+  --update-btn-border:     rgba(64, 48, 56, 0.22);
+  --update-btn-hover-bg:   rgba(64, 48, 56, 0.08);
+  --update-btn-hover-glow: var(--glow-y);
+
+  --btn-close-color:      #A01828;
+  --btn-close-border:     rgba(160, 24, 40, 0.35);
+  --btn-close-hover-bg:   rgba(160, 24, 40, 0.10);
+  --btn-close-hover-glow: var(--glow-c);
+
+  --picker-search-bg:      rgba(160, 24, 40, 0.06);
+  --picker-item-hover-bg:  rgba(160, 24, 40, 0.07);
+  --picker-item-active-bg: rgba(160, 24, 40, 0.14);
+  --picker-placeholder-bg: rgba(160, 24, 40, 0.06);
+
+  --skin-btn-active-bg:    rgba(160, 24, 40, 0.14);
+  --remove-btn-bg:         rgba(160, 24, 40, 0.80);
+  --remove-btn-border:     #A01828;
+}
+
+/* ── Sightjack static — red-tinted interference grain + diagonal corruption ── */
+#app::after {
+  background:
+    /* HEAVY red-tinted static — the sightjack frequency */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.4 0.08 0.08 0 0.02  0.1 0.02 0.02 0 0  0.08 0.015 0.02 0 0  0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* Diagonal interference bars — the sightjack signal breaking up */
+    repeating-linear-gradient(
+      -15deg,
+      transparent 0px, transparent 40px,
+      rgba(140, 20, 30, 0.025) 40px, rgba(140, 20, 30, 0.025) 42px,
+      transparent 42px, transparent 80px
+    ),
+    /* Corrupted vignette — closing in, claustrophobic */
+    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 18%, rgba(5,2,3,0.85) 100%),
+    /* Red bleed from edges — the Shibito are close */
+    radial-gradient(ellipse 40% 30% at 0% 50%, rgba(100,10,18,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 100% 50%, rgba(100,10,18,0.05) 0%, transparent 60%);
+  background-size: 200px 200px, auto, auto, auto, auto;
+  opacity: 1; pointer-events: none;
+}
+
+/* ── Header — dark blood accent bar ──────────────────────────────────────── */
+#header::before {
+  background: linear-gradient(to bottom, #702028, rgba(90, 18, 25, 0.22));
+  box-shadow: 0 0 5px rgba(160,24,40,0.38), 0 0 14px rgba(160,24,40,0.12);
+}
+
+/* ── Grid: SIGHTJACK VIEW — fragmented interference, NOT a single object ── */
+/* You're seeing through multiple Shibito eyes at once. The view is broken. */
+#grid-container::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Cline x1='0' y1='95' x2='500' y2='80' stroke='rgba(160,24,40,0.18)' stroke-width='1.5'/%3E%3Cline x1='0' y1='96' x2='500' y2='81' stroke='rgba(100,10,18,0.08)' stroke-width='0.5'/%3E%3Cline x1='0' y1='205' x2='500' y2='215' stroke='rgba(160,24,40,0.15)' stroke-width='1.2'/%3E%3Cline x1='0' y1='206' x2='500' y2='216' stroke='rgba(100,10,18,0.06)' stroke-width='0.5'/%3E%3Cline x1='0' y1='290' x2='500' y2='282' stroke='rgba(140,20,30,0.12)' stroke-width='1'/%3E%3Crect x='0' y='130' width='500' height='3' fill='rgba(160,24,40,0.06)'/%3E%3Crect x='0' y='250' width='500' height='2' fill='rgba(140,20,30,0.04)'/%3E%3Crect x='0' y='55' width='500' height='2' fill='rgba(100,10,18,0.05)'/%3E%3Ccircle cx='250' cy='180' r='55' fill='none' stroke='rgba(160,24,40,0.22)' stroke-width='1.2' stroke-dasharray='6,8'/%3E%3Ccircle cx='250' cy='180' r='35' fill='none' stroke='rgba(160,24,40,0.15)' stroke-width='0.8' stroke-dasharray='4,6'/%3E%3Cline x1='250' y1='120' x2='250' y2='165' stroke='rgba(160,24,40,0.12)' stroke-width='0.5'/%3E%3Cline x1='250' y1='195' x2='250' y2='240' stroke='rgba(160,24,40,0.12)' stroke-width='0.5'/%3E%3Cline x1='190' y1='180' x2='235' y2='180' stroke='rgba(160,24,40,0.12)' stroke-width='0.5'/%3E%3Cline x1='265' y1='180' x2='310' y2='180' stroke='rgba(160,24,40,0.12)' stroke-width='0.5'/%3E%3Ctext x='250' y='170' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(160,24,40,0.38)'%3ESIGHTJACK%3C/text%3E%3Ctext x='250' y='196' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1.5' fill='rgba(130,80,90,0.30)'%3EFREQUENCY LOCKED%3C/text%3E%3Ctext x='70' y='45' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' letter-spacing='2' fill='rgba(160,24,40,0.42)'%3EHANUDA VILLAGE%3C/text%3E%3Ctext x='70' y='60' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1.5' fill='rgba(130,80,90,0.30)'%3ETHE SIREN CALLS%3C/text%3E%3Ctext x='380' y='330' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1.5' fill='rgba(160,24,40,0.38)'%3ESHIBITO%3C/text%3E%3Ctext x='380' y='345' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(130,80,90,0.28)'%3ETHEY ARE WATCHING%3C/text%3E%3Ctext x='380' y='358' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1' fill='rgba(88,40,48,0.25)'%3ETHROUGH YOU%3C/text%3E%3Ctext x='60' y='320' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1.5' fill='rgba(88,40,48,0.28)'%3EDAY 1 -- 00:00%3C/text%3E%3Ctext x='60' y='335' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1' fill='rgba(88,40,48,0.22)'%3ETIMELINE: FRACTURED%3C/text%3E%3Crect x='140' y='105' width='45' height='2' fill='rgba(160,24,40,0.20)'/%3E%3Crect x='320' y='240' width='60' height='2' fill='rgba(160,24,40,0.15)'/%3E%3Crect x='50' y='175' width='30' height='2' fill='rgba(140,20,30,0.12)'/%3E%3Crect x='420' y='140' width='35' height='2' fill='rgba(140,20,30,0.10)'/%3E%3Crect x='200' y='310' width='50' height='2' fill='rgba(100,10,18,0.10)'/%3E%3Ccircle cx='75' cy='120' r='0.6' fill='rgba(160,24,40,0.15)'/%3E%3Ccircle cx='430' cy='75' r='0.5' fill='rgba(160,24,40,0.12)'/%3E%3Ccircle cx='55' cy='260' r='0.7' fill='rgba(88,40,48,0.10)'/%3E%3Ccircle cx='445' cy='280' r='0.5' fill='rgba(160,24,40,0.08)'/%3E%3Ccircle cx='150' cy='350' r='0.4' fill='rgba(88,40,48,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.82;
+  animation: siren-sightjack 12s steps(1) infinite;
+}
+
+/* STEPS(1) — the sightjack view doesn't fade smoothly, it SNAPS between states */
+@keyframes siren-sightjack {
+  0%        { opacity: 0.82; }
+  15%       { opacity: 0.82; }
+  16%       { opacity: 0.55; }  /* signal drops — another Shibito's perspective */
+  17%       { opacity: 0.82; }
+  40%       { opacity: 0.82; }
+  41%       { opacity: 0.40; }  /* interference spike */
+  42%       { opacity: 0.85; }
+  65%       { opacity: 0.82; }
+  66%       { opacity: 0.60; }  /* signal scramble */
+  67%       { opacity: 0.82; }
+  87%       { opacity: 0.82; }
+  88%       { opacity: 0.04; }  /* total signal loss — the siren sounds */
+  89%       { opacity: 0.70; }
+  89.5%     { opacity: 0.04; }  /* double-glitch */
+  90%       { opacity: 0.82; }
+  100%      { opacity: 0.82; }
+}
+
+/* ── Flavor content ──────────────────────────────────────────────────────── */
+#header::after {
+  content: 'HANUDA VILLAGE // SIGHTJACK // THE SIREN CALLS';
+  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 7.5px; letter-spacing: 2px; color: rgba(180, 60, 65, 0.58);
+  pointer-events: none; white-space: nowrap;
+}
+
+#grid-container::after {
+  content: 'THE SIREN\ACALLS\A-----------\ASIGHTJACK\AACTIVE\A-----------\ASHIBITO\AWALKING\AHANUDA\AVILLAGE';
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 12px 10px 0;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
+  color: rgba(160, 24, 40, 0.10); white-space: pre;
+  animation: siren-readout 12s steps(1) infinite;
+}
+
+/* Ghost text ALSO glitches with steps — matching the sightjack interference */
+@keyframes siren-readout {
+  0%, 15%   { color: rgba(160,24,40,.10); }
+  16%       { color: rgba(160,24,40,.04); }
+  17%, 40%  { color: rgba(160,24,40,.10); }
+  41%       { color: rgba(160,24,40,.16); }
+  42%, 65%  { color: rgba(160,24,40,.10); }
+  66%       { color: rgba(160,24,40,.03); }
+  67%, 87%  { color: rgba(160,24,40,.10); }
+  88%       { color: rgba(0,0,0,0); }
+  89%       { color: rgba(160,24,40,.14); }
+  89.5%     { color: rgba(0,0,0,0); }
+  90%, 100% { color: rgba(160,24,40,.10); }
+}
+
+#edit-bar::after {
+  content: 'DO NOT LOOK AT THEM';
+  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 8px; letter-spacing: 2.5px; color: rgba(88, 40, 48, 0.38);
+  pointer-events: none; white-space: nowrap;
+}
+
+#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 4px; }
+
+/* ── Title: sightjack interference — steps, snapping between states ──────── */
+@keyframes siren-title {
+  0%        { color: #A07078; text-shadow: 0 0 5px rgba(160,24,40,.35); }
+  15%       { color: #A07078; text-shadow: 0 0 5px rgba(160,24,40,.35); }
+  16%       { color: #602830; text-shadow: none; opacity: 0.50; }
+  17%       { color: #A07078; text-shadow: 0 0 5px rgba(160,24,40,.35); opacity: 1; }
+  40%       { color: #A07078; text-shadow: 0 0 5px rgba(160,24,40,.35); }
+  41%       { color: #C03040; text-shadow: 2px 0 rgba(160,24,40,.50), -1px 0 rgba(88,40,48,.40); opacity: 0.65; }
+  42%       { color: #A07078; text-shadow: 0 0 6px rgba(160,24,40,.40); opacity: 1; }
+  87%       { color: #A07078; text-shadow: 0 0 5px rgba(160,24,40,.32); }
+  88%       { color: #E04050; text-shadow: 0 0 18px rgba(224,64,80,.72), 0 0 40px rgba(160,24,40,.35); opacity: 0.85; }
+  89%       { color: transparent; text-shadow: none; opacity: 0; }
+  89.5%     { color: #804048; text-shadow: 0 0 4px rgba(160,24,40,.30); opacity: 0.60; }
+  90%       { color: #A07078; text-shadow: 0 0 5px rgba(160,24,40,.35); opacity: 1; }
+  100%      { color: #A07078; text-shadow: 0 0 5px rgba(160,24,40,.35); }
+}
+
+/* ── App border: interference pulse — snaps, doesn't fade ────────────────── */
+#app { animation: siren-border 12s steps(1) infinite; }
+@keyframes siren-border {
+  0%, 15%   { box-shadow: 0 0 0 1px rgba(160,24,40,.18), inset 0 0 18px rgba(160,24,40,.03); }
+  16%       { box-shadow: 0 0 0 1px rgba(88,40,48,.10), inset 0 0 10px rgba(88,40,48,.02); }
+  17%, 40%  { box-shadow: 0 0 0 1px rgba(160,24,40,.22), inset 0 0 20px rgba(160,24,40,.04); }
+  41%       { box-shadow: 0 0 0 1px rgba(160,24,40,.42), inset 0 0 30px rgba(160,24,40,.06); }
+  42%, 87%  { box-shadow: 0 0 0 1px rgba(160,24,40,.18), inset 0 0 18px rgba(160,24,40,.03); }
+  88%       { box-shadow: 0 0 0 2px rgba(224,64,80,.65), inset 0 0 40px rgba(160,24,40,.10), 0 0 14px rgba(160,24,40,.18); }
+  89%       { box-shadow: 0 0 0 0px transparent; }
+  89.5%     { box-shadow: 0 0 0 1px rgba(160,24,40,.30), inset 0 0 22px rgba(160,24,40,.04); }
+  90%       { box-shadow: 0 0 0 1px rgba(160,24,40,.18), inset 0 0 18px rgba(160,24,40,.03); }
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────── */
+#theme-banner { background: rgba(10, 4, 6, 0.99); border-top-color: rgba(160, 24, 40, 0.20); }
+#theme-banner::before { content: '◎'; color: #A01828; font-size: 18px; }
+#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; color: rgba(180, 60, 65, 0.60); }
+
+/* ── Sightjack interference particles — red horizontal scan bars drifting ── */
+#particles {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='400'%3E%3Crect x='0' y='45' width='500' height='2' fill='rgba(160,24,40,0.08)'/%3E%3Crect x='0' y='130' width='500' height='3' fill='rgba(140,20,30,0.06)'/%3E%3Crect x='0' y='228' width='500' height='2' fill='rgba(160,24,40,0.07)'/%3E%3Crect x='0' y='310' width='500' height='2' fill='rgba(100,10,18,0.05)'/%3E%3Crect x='0' y='375' width='500' height='3' fill='rgba(140,20,30,0.06)'/%3E%3C/svg%3E") repeat-y;
+  background-size: 100% 400px;
+  animation: siren-scan 8s linear infinite;
+}
+@keyframes siren-scan {
+  from { background-position: 0 -400px; }
+  to   { background-position: 0 0; }
+}
+
+/* ── Tile: sightjack flicker — aggressive steps ──────────────────────────── */
+.app-tile::before {
+  background: transparent;
+  border: 1px solid rgba(160, 24, 40, 0.22);
+}
+.app-tile:hover::before { animation: tile-flicker .4s steps(1, end) infinite; }

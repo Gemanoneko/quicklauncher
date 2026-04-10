@@ -429,6 +429,13 @@ const THEME_BANNERS = {
     'DRACARYS.',
     'A LANNISTER ALWAYS PAYS HIS DEBTS.',
   ],
+  'siren': [
+    'THE SIREN CALLS. DO NOT FOLLOW THE SOUND.',
+    'SIGHTJACK ACTIVE. YOU CAN SEE THROUGH THEIR EYES.',
+    'THE SHIBITO WALK. THEY WERE HUMAN ONCE.',
+    'HANUDA VILLAGE. THERE IS NO ESCAPE.',
+    'THE RED WATER RISES. THE DEAD DO NOT REST.',
+  ],
   'blair-witch': [
     'I AM SO SCARED.',
     'THE MAP IS GONE. JOSH IS GONE.',
@@ -639,6 +646,7 @@ const THEME_NAMES = {
   'eve-online':          'EVE ONLINE',
   'indiana-jones':       'INDIANA JONES',
   'game-of-thrones':     'GAME OF THRONES',
+  'siren':               'FORBIDDEN SIREN',
   'blair-witch':         'BLAIR WITCH',
   'amnesia':             'AMNESIA',
   'metal-gear':          'METAL GEAR SOLID',
