@@ -1407,6 +1407,28 @@ document.getElementById('btn-hide').addEventListener('click', () => {
   window.api.invoke('hide-window');
 });
 
+let isFullscreen = false;
+
+document.getElementById('btn-fullscreen').addEventListener('click', async () => {
+  isFullscreen = await window.api.invoke('toggle-fullscreen');
+  const btn = document.getElementById('btn-fullscreen');
+  btn.title = isFullscreen ? 'Exit fullscreen' : 'Fullscreen';
+});
+
+document.getElementById('btn-close').addEventListener('click', () => {
+  window.api.invoke('close-window');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && isFullscreen) {
+    window.api.invoke('toggle-fullscreen').then(fs => {
+      isFullscreen = fs;
+      const btn = document.getElementById('btn-fullscreen');
+      btn.title = isFullscreen ? 'Exit fullscreen' : 'Fullscreen';
+    });
+  }
+});
+
 document.getElementById('btn-close-settings').addEventListener('click', () => {
   document.getElementById('settings-overlay').classList.add('hidden');
 });

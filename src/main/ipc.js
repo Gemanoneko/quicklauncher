@@ -562,6 +562,24 @@ $apps | ConvertTo-Json -Depth 2
 
   ipcMain.handle('show-window', () => win.show());
   ipcMain.handle('hide-window', () => win.hide());
+
+  ipcMain.handle('close-window', () => app.quit());
+
+  let preFullscreenBounds = null;
+  ipcMain.handle('toggle-fullscreen', () => {
+    if (win.isFullScreen()) {
+      win.setFullScreen(false);
+      if (preFullscreenBounds) {
+        win.setBounds(preFullscreenBounds);
+        preFullscreenBounds = null;
+      }
+      return false;
+    } else {
+      preFullscreenBounds = win.getBounds();
+      win.setFullScreen(true);
+      return true;
+    }
+  });
 }
 
 // Remove a solid background color from a thumbnail image using BFS flood-fill from
