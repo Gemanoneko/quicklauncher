@@ -563,21 +563,31 @@ $apps | ConvertTo-Json -Depth 2
   ipcMain.handle('show-window', () => win.show());
   ipcMain.handle('hide-window', () => win.hide());
 
-  ipcMain.handle('close-window', () => app.quit());
-
   let preFullscreenBounds = null;
+
+  function exitFullscreen() {
+    win.setFullScreen(false);
+    if (preFullscreenBounds) {
+      win.setBounds(preFullscreenBounds);
+      preFullscreenBounds = null;
+    }
+    win.webContents.send('fullscreen-changed', false);
+  }
+
   ipcMain.handle('toggle-fullscreen', () => {
     if (win.isFullScreen()) {
-      win.setFullScreen(false);
-      if (preFullscreenBounds) {
-        win.setBounds(preFullscreenBounds);
-        preFullscreenBounds = null;
-      }
+      exitFullscreen();
       return false;
     } else {
       preFullscreenBounds = win.getBounds();
       win.setFullScreen(true);
       return true;
+    }
+  });
+
+  win.webContents.on('before-input-event', (_event, input) => {
+    if (input.type === 'keyDown' && input.key === 'Escape' && win.isFullScreen()) {
+      exitFullscreen();
     }
   });
 }

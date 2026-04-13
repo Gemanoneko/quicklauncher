@@ -19,7 +19,6 @@ const INVOKE_CHANNELS = new Set([
   'check-update',
   'show-window',
   'hide-window',
-  'close-window',
   'toggle-fullscreen',
   'download-update',
   'install-update',
@@ -33,6 +32,7 @@ const ON_CHANNELS = new Set([
   'update-not-available',
   'update-error',
   'store-save-error',
+  'fullscreen-changed',
 ]);
 
 contextBridge.exposeInMainWorld('api', {

@@ -1409,25 +1409,17 @@ document.getElementById('btn-hide').addEventListener('click', () => {
 
 let isFullscreen = false;
 
-document.getElementById('btn-fullscreen').addEventListener('click', async () => {
-  isFullscreen = await window.api.invoke('toggle-fullscreen');
+function updateFullscreenButton(fs) {
+  isFullscreen = fs;
   const btn = document.getElementById('btn-fullscreen');
-  btn.title = isFullscreen ? 'Exit fullscreen' : 'Fullscreen';
+  btn.title = fs ? 'Exit fullscreen' : 'Fullscreen';
+}
+
+document.getElementById('btn-fullscreen').addEventListener('click', async () => {
+  updateFullscreenButton(await window.api.invoke('toggle-fullscreen'));
 });
 
-document.getElementById('btn-close').addEventListener('click', () => {
-  window.api.invoke('close-window');
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && isFullscreen) {
-    window.api.invoke('toggle-fullscreen').then(fs => {
-      isFullscreen = fs;
-      const btn = document.getElementById('btn-fullscreen');
-      btn.title = isFullscreen ? 'Exit fullscreen' : 'Fullscreen';
-    });
-  }
-});
+window.api.on('fullscreen-changed', (fs) => updateFullscreenButton(fs));
 
 document.getElementById('btn-close-settings').addEventListener('click', () => {
   document.getElementById('settings-overlay').classList.add('hidden');

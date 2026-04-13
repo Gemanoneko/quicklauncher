@@ -245,7 +245,7 @@ html, body {
    right boundary keeps it clear of the icon buttons.
    Themes define content/position/color; boundaries live here. */
 #header::after {
-  right: 168px;
+  right: 135px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
