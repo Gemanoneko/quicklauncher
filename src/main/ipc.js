@@ -1,4 +1,4 @@
-const { ipcMain, dialog, shell, app, nativeImage, screen } = require('electron');
+const { ipcMain, dialog, shell, app, nativeImage, screen, globalShortcut } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
@@ -566,6 +566,7 @@ $apps | ConvertTo-Json -Depth 2
   let preFullscreenBounds = null;
 
   function exitFullscreen() {
+    globalShortcut.unregister('Escape');
     win.setFullScreen(false);
     if (preFullscreenBounds) {
       win.setBounds(preFullscreenBounds);
@@ -581,13 +582,8 @@ $apps | ConvertTo-Json -Depth 2
     } else {
       preFullscreenBounds = win.getBounds();
       win.setFullScreen(true);
+      globalShortcut.register('Escape', exitFullscreen);
       return true;
-    }
-  });
-
-  win.webContents.on('before-input-event', (_event, input) => {
-    if (input.type === 'keyDown' && input.key === 'Escape' && win.isFullScreen()) {
-      exitFullscreen();
     }
   });
 }
