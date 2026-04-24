@@ -4,11 +4,22 @@
 // Reads GH_TOKEN from environment (same var electron-builder uses).
 
 const https = require('https');
+const fs    = require('fs');
+const path  = require('path');
 
-const OWNER  = 'Gemanoneko';
-const REPO   = 'quicklauncher';
+// Read owner/repo from package.json's build.publish block so renaming or
+// forking the repo only needs a single edit (in package.json).
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+const publish = (pkg.build && pkg.build.publish) || {};
+const OWNER  = publish.owner;
+const REPO   = publish.repo;
 const KEEP   = 4;
 const TOKEN  = process.env.GH_TOKEN;
+
+if (!OWNER || !REPO) {
+  console.error('cleanup-releases: build.publish.owner / build.publish.repo missing from package.json');
+  process.exit(1);
+}
 
 if (!TOKEN) {
   console.error('cleanup-releases: GH_TOKEN not set — skipping cleanup');
@@ -27,7 +38,6 @@ function api(method, path, body) {
         'Accept':        'application/vnd.github+json',
       },
     };
-    if (body) opts.headers['Content-Length'] = 0;
 
     const req = https.request(opts, res => {
       let data = '';

@@ -19,7 +19,7 @@ const store = new Store();
 
 app.whenReady().then(() => {
   const s = store.get('settings');
-  if (s.randomTheme !== false) {
+  if (s.randomTheme !== false && VALID_THEMES.size > 0) {
     const themes = [...VALID_THEMES];
     const others = themes.filter(t => t !== s.theme);
     const pool = others.length ? others : themes;
@@ -41,16 +41,25 @@ app.whenReady().then(() => {
   // bare Electron binary as exe path, which would register the wrong entry)
   if (app.isPackaged) {
     const settings = store.get('settings');
-    app.setLoginItemSettings({
-      openAtLogin: settings.startWithWindows !== false,
-      path: app.getPath('exe')
-    });
+    const desiredOpenAtLogin = settings.startWithWindows !== false;
+    const current = app.getLoginItemSettings();
+    // Only rewrite the Run-key entry when the registered state actually differs.
+    // (getLoginItemSettings on Windows doesn't expose the registered exe path, so we
+    // can't compare it here — openAtLogin is the only stable field to check.)
+    if (current.openAtLogin !== desiredOpenAtLogin) {
+      app.setLoginItemSettings({
+        openAtLogin: desiredOpenAtLogin,
+        path: app.getPath('exe')
+      });
+    }
   }
 });
 
 app.on('second-instance', () => {
   if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.show();
+    mainWindow.focus();
   }
 });
 

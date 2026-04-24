@@ -15,7 +15,12 @@ class Store extends EventEmitter {
       const raw = fs.readFileSync(this.dataPath, 'utf8');
       return { ...this._defaults(), ...JSON.parse(raw) };
     } catch (err) {
-      // On corruption (SyntaxError), try the .bak written after the last good save.
+      // ENOENT: no file yet (first run). Silent return of defaults — expected.
+      if (err && err.code === 'ENOENT') {
+        return this._defaults();
+      }
+      // SyntaxError: main file is corrupt. Try .bak silently (the common case
+      // after a crashed write), then fall through to defaults if .bak is also bad.
       if (err instanceof SyntaxError) {
         try {
           const raw = fs.readFileSync(this.dataPath + '.bak', 'utf8');
@@ -23,6 +28,17 @@ class Store extends EventEmitter {
         } catch {
           // fall through to defaults
         }
+        return this._defaults();
+      }
+      // Anything else (EBUSY, EACCES, EPERM, transient IO failure): warn loudly
+      // and try .bak. Do NOT silently reset to defaults — that would destroy the
+      // user's data if the main file was merely temporarily locked.
+      console.warn('[store] main file load failed:', err && (err.code ?? err.message));
+      try {
+        const raw = fs.readFileSync(this.dataPath + '.bak', 'utf8');
+        return { ...this._defaults(), ...JSON.parse(raw) };
+      } catch (bakErr) {
+        console.warn('[store] .bak load also failed:', bakErr && (bakErr.code ?? bakErr.message));
       }
       return this._defaults();
     }
@@ -70,7 +86,9 @@ class Store extends EventEmitter {
             return;
           }
           // Refresh .bak from the now-good file so _load() can recover on future corruption. Best-effort.
-          fs.copyFile(this.dataPath, this.dataPath + '.bak', () => {});
+          fs.copyFile(this.dataPath, this.dataPath + '.bak', (err3) => {
+            if (err3) console.warn('[store] .bak refresh failed:', err3.code ?? err3.message);
+          });
         });
       });
     }, 100);

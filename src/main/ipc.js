@@ -1,4 +1,4 @@
-const { ipcMain, dialog, shell, app, nativeImage, screen, globalShortcut } = require('electron');
+const { ipcMain, dialog, shell, app, nativeImage, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
@@ -235,6 +235,10 @@ function setupIPC(win, store, electronApp) {
   // Compile icon helper DLL in the background (async, non-blocking).
   // Must finish before any icon extraction calls use iconHelperLoadSnippet().
   compileIconHelperDll();
+
+  // Authoritative list of theme identifiers, derived from the CSS files on disk
+  // (see VALID_THEMES module constant). Renderer calls this at startup to stay in sync.
+  ipcMain.handle('get-valid-themes', () => [...VALID_THEMES]);
 
   ipcMain.handle('get-apps', () => store.get('apps'));
 
@@ -550,8 +554,13 @@ $apps | ConvertTo-Json -Depth 2
 
   ipcMain.handle('set-auto-launch', (_, enabled) => {
     if (!electronApp.isPackaged) return; // dev builds must not touch the startup registry
+    const desiredOpenAtLogin = !!enabled;
+    const current = electronApp.getLoginItemSettings();
+    // Skip the registry write when state already matches — keeps auto-launch idempotent
+    // so repeated toggles (or startup re-application) don't churn the Run key.
+    if (current.openAtLogin === desiredOpenAtLogin) return;
     electronApp.setLoginItemSettings({
-      openAtLogin: enabled,
+      openAtLogin: desiredOpenAtLogin,
       path: electronApp.getPath('exe')
     });
   });
@@ -566,7 +575,6 @@ $apps | ConvertTo-Json -Depth 2
   let preFullscreenBounds = null;
 
   function exitFullscreen() {
-    globalShortcut.unregister('Escape');
     win.setFullScreen(false);
     if (preFullscreenBounds) {
       win.setBounds(preFullscreenBounds);
@@ -582,9 +590,17 @@ $apps | ConvertTo-Json -Depth 2
     } else {
       preFullscreenBounds = win.getBounds();
       win.setFullScreen(true);
-      globalShortcut.register('Escape', exitFullscreen);
       return true;
     }
+  });
+
+  // Renderer-scoped Escape handling (see 'exit-fullscreen' handler below).
+  ipcMain.handle('exit-fullscreen', () => {
+    if (win.isFullScreen()) {
+      exitFullscreen();
+      return false;
+    }
+    return win.isFullScreen();
   });
 }
 

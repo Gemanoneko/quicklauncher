@@ -13,6 +13,21 @@ let bannerFadeTimer = null;   // inner fade setTimeout — cleared on theme chan
 let autoDismissTimer = null;  // update banner auto-dismiss timer
 let refreshingIcons = false;  // guard against concurrent refreshMissingIcons calls
 
+// ── DOM refs (cached once at script start; index.html loads app.js at end of body) ──
+// Only the most-frequently-repeated lookups are cached here — one-off getElementById
+// calls stay inline for readability. Kept under 10 deliberately.
+const $ = (id) => document.getElementById(id);
+const elAppGrid        = $('app-grid');
+const elApp            = $('app');
+const elAppsPicker     = $('apps-picker');
+const elSettingsOverlay= $('settings-overlay');
+const elThemeSearch    = $('theme-search');
+const elChkStartup     = $('chk-startup');
+const elChkRandomTheme = $('chk-random-theme');
+const elSliderIconSize = $('slider-icon-size');
+const elIconSizeVal    = $('icon-size-val');
+const elUpdateText     = $('update-text');
+
 // ── Banner quotes (3 per theme) ───────────────────────────────────────────────
 const THEME_BANNERS = {
   'cyberpunk':    ['WAKE UP, SAMURAI. WE HAVE A CITY TO BURN.',
@@ -690,8 +705,11 @@ const THEME_BANNERS = {
   ],
 };
 
-// Derive valid theme names from THEME_BANNERS so the two never drift out of sync.
-const VALID_THEMES = new Set(Object.keys(THEME_BANNERS));
+// VALID_THEMES is populated from the main process (which derives it from the CSS
+// files on disk — single source of truth). Seeded with THEME_BANNERS keys so
+// early-boot calls to applySettings() have a fallback; init() overwrites it
+// with the authoritative list fetched via IPC.
+let VALID_THEMES = new Set(Object.keys(THEME_BANNERS));
 
 // Display labels for the searchable theme picker.
 const THEME_NAMES = {
@@ -804,6 +822,28 @@ const ALL_THEMES = Object.keys(THEME_BANNERS)
 async function init() {
   apps     = await window.api.invoke('get-apps');
   settings = await window.api.invoke('get-settings');
+
+  // Adopt the main process's authoritative theme list (derived from CSS files on disk).
+  // Warn on any mismatch between it and THEME_BANNERS — signals a new theme CSS
+  // added without a banner entry, or a banner entry for a deleted theme.
+  try {
+    const mainThemes = await window.api.invoke('get-valid-themes');
+    if (Array.isArray(mainThemes) && mainThemes.length) {
+      VALID_THEMES = new Set(mainThemes);
+      const bannerKeys = new Set(Object.keys(THEME_BANNERS));
+      const missingBanners = mainThemes.filter(t => !bannerKeys.has(t));
+      const orphanBanners  = [...bannerKeys].filter(t => !VALID_THEMES.has(t));
+      if (missingBanners.length) {
+        console.warn('[themes] CSS themes with no THEME_BANNERS entry:', missingBanners);
+      }
+      if (orphanBanners.length) {
+        console.warn('[themes] THEME_BANNERS entries with no matching CSS:', orphanBanners);
+      }
+    }
+  } catch (e) {
+    console.warn('[themes] get-valid-themes failed, using THEME_BANNERS keys:', e);
+  }
+
   applySettings();
   renderGrid();
   setupDragDrop();
@@ -844,10 +884,9 @@ async function refreshMissingIcons() {
 
 // ── Render ───────────────────────────────────────────────────────────────────
 function renderGrid() {
-  const grid = document.getElementById('app-grid');
-  const dropHint = document.getElementById('drop-hint');
+  const dropHint = $('drop-hint');
 
-  grid.innerHTML = '';
+  elAppGrid.innerHTML = '';
 
   if (apps.length === 0 && !editMode) {
     dropHint.classList.remove('hidden');
@@ -855,7 +894,7 @@ function renderGrid() {
     dropHint.classList.add('hidden');
   }
 
-  apps.forEach(appItem => grid.appendChild(createAppTile(appItem)));
+  apps.forEach(appItem => elAppGrid.appendChild(createAppTile(appItem)));
 }
 
 function createAppTile(appItem) {
@@ -987,15 +1026,15 @@ async function saveApps() {
 function applySettings() {
   const size = settings.iconSize || 64;
   document.documentElement.style.setProperty('--icon-size', size + 'px');
-  document.getElementById('slider-icon-size').value = size;
-  document.getElementById('icon-size-val').textContent = size + 'px';
-  document.getElementById('chk-startup').checked = settings.startWithWindows !== false;
-  document.getElementById('chk-random-theme').checked = settings.randomTheme !== false;
+  elSliderIconSize.value = size;
+  elIconSizeVal.textContent = size + 'px';
+  elChkStartup.checked = settings.startWithWindows !== false;
+  elChkRandomTheme.checked = settings.randomTheme !== false;
 
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
-  document.getElementById('theme-stylesheet').href = `styles/themes/${theme}.css`;
-  document.getElementById('theme-search').value = '';
+  $('theme-stylesheet').href = `styles/themes/${theme}.css`;
+  elThemeSearch.value = '';
   startBannerCycle(theme);
 }
 
@@ -1023,21 +1062,21 @@ function startBannerCycle(theme) {
   }, 14000);
 }
 
-document.getElementById('slider-icon-size').addEventListener('input', async (e) => {
+elSliderIconSize.addEventListener('input', async (e) => {
   const size = parseInt(e.target.value, 10);
-  document.getElementById('icon-size-val').textContent = size + 'px';
+  elIconSizeVal.textContent = size + 'px';
   document.documentElement.style.setProperty('--icon-size', size + 'px');
   settings.iconSize = size;
   await window.api.invoke('save-settings', settings);
 });
 
-document.getElementById('chk-startup').addEventListener('change', async (e) => {
+elChkStartup.addEventListener('change', async (e) => {
   settings.startWithWindows = e.target.checked;
   await window.api.invoke('save-settings', settings);
   await window.api.invoke('set-auto-launch', e.target.checked);
 });
 
-document.getElementById('chk-random-theme').addEventListener('change', async (e) => {
+elChkRandomTheme.addEventListener('change', async (e) => {
   settings.randomTheme = e.target.checked;
   await window.api.invoke('save-settings', settings);
 });
@@ -1045,22 +1084,32 @@ document.getElementById('chk-random-theme').addEventListener('change', async (e)
 // ── Drag & Drop ────────────────────────────────────────────────────────────────
 function setupDragDrop() {
   const body = document.body;
+  // Drag-enter counter — tracks nested enter/leave transitions across child
+  // elements so we only remove .drag-over when the cursor leaves the window
+  // entirely (not when it crosses an internal boundary).
+  let dragDepth = 0;
+
+  body.addEventListener('dragenter', () => {
+    dragDepth++;
+    elApp.classList.add('drag-over');
+  });
 
   body.addEventListener('dragover', (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
-    document.getElementById('app').classList.add('drag-over');
   });
 
-  body.addEventListener('dragleave', (e) => {
-    if (!e.relatedTarget || e.relatedTarget === document.documentElement) {
-      document.getElementById('app').classList.remove('drag-over');
+  body.addEventListener('dragleave', () => {
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) {
+      elApp.classList.remove('drag-over');
     }
   });
 
   body.addEventListener('drop', async (e) => {
     e.preventDefault();
-    document.getElementById('app').classList.remove('drag-over');
+    dragDepth = 0;
+    elApp.classList.remove('drag-over');
     try {
       const files = Array.from(e.dataTransfer.files);
       for (const file of files) {
@@ -1083,9 +1132,7 @@ function setupDragDrop() {
 
 // ── Tile drag-to-reorder ──────────────────────────────────────────────────────
 function setupTileReorder() {
-  const grid = document.getElementById('app-grid');
-
-  grid.addEventListener('mousedown', (e) => {
+  elAppGrid.addEventListener('mousedown', (e) => {
     if (e.button !== 0) return;
     const tile = e.target.closest('.app-tile');
     if (!tile) return;
@@ -1144,10 +1191,9 @@ function handleReorderMove(e) {
   // Find which tile the cursor is over (ghost has pointer-events:none)
   const el = document.elementFromPoint(e.clientX, e.clientY);
   const overTile = el?.closest('.app-tile');
-  const grid = document.getElementById('app-grid');
 
-  if (overTile && grid.contains(overTile) && overTile !== reorderState.srcEl) {
-    const all = [...grid.querySelectorAll('.app-tile')];
+  if (overTile && elAppGrid.contains(overTile) && overTile !== reorderState.srcEl) {
+    const all = [...elAppGrid.querySelectorAll('.app-tile')];
     const srcPos  = all.indexOf(reorderState.srcEl);
     const overPos = all.indexOf(overTile);
     if (srcPos !== overPos) {
@@ -1173,13 +1219,14 @@ async function handleReorderUp() {
   state.ghost?.remove();
   state.srcEl.classList.remove('tile-drag-source');
 
-  // Suppress the click that fires immediately after mouseup
+  // Suppress the click that fires immediately after mouseup. Clear on the very
+  // next click (capture phase, one-shot) instead of an arbitrary timeout — the
+  // click always follows synchronously, so no fallback timer is needed.
   suppressNextClick = true;
-  setTimeout(() => { suppressNextClick = false; }, 50);
+  document.addEventListener('click', () => { suppressNextClick = false; }, { once: true, capture: true });
 
   // Derive new order from DOM positions
-  const grid = document.getElementById('app-grid');
-  const allTiles = [...grid.querySelectorAll('.app-tile')];
+  const allTiles = [...elAppGrid.querySelectorAll('.app-tile')];
   const newIndex = allTiles.indexOf(state.srcEl);
   const oldIndex = apps.findIndex(a => a.id === state.srcEl.dataset.id);
 
@@ -1205,15 +1252,14 @@ function cancelReorder() {
 
 // ── Installed apps picker ─────────────────────────────────────────────────────
 async function openInstalledAppsPicker() {
-  const pickerEl = document.getElementById('apps-picker');
-  const loadingEl = document.getElementById('picker-loading');
-  const listEl = document.getElementById('picker-list');
-  const searchEl = document.getElementById('picker-search');
+  const loadingEl = $('picker-loading');
+  const listEl = $('picker-list');
+  const searchEl = $('picker-search');
 
   listEl.innerHTML = '';
   searchEl.value = '';
   loadingEl.classList.remove('hidden');
-  pickerEl.classList.remove('hidden');
+  elAppsPicker.classList.remove('hidden');
 
   try {
     installedApps = await window.api.invoke('get-installed-apps');
@@ -1273,25 +1319,25 @@ function renderPickerList(items) {
       } catch (e) {
         console.error('Failed to add app from picker:', e);
       }
-      document.getElementById('apps-picker').classList.add('hidden');
+      elAppsPicker.classList.add('hidden');
     });
 
     listEl.appendChild(el);
   });
 }
 
-document.getElementById('picker-search').addEventListener('input', (e) => {
+$('picker-search').addEventListener('input', (e) => {
   const q = e.target.value.toLowerCase();
   renderPickerList(q ? installedApps.filter(a => a.name.toLowerCase().includes(q)) : installedApps);
 });
 
-document.getElementById('btn-browse-picker').addEventListener('click', async () => {
-  document.getElementById('apps-picker').classList.add('hidden');
+$('btn-browse-picker').addEventListener('click', async () => {
+  elAppsPicker.classList.add('hidden');
   await addAppFromDialog();
 });
 
-document.getElementById('btn-close-picker').addEventListener('click', () => {
-  document.getElementById('apps-picker').classList.add('hidden');
+$('btn-close-picker').addEventListener('click', () => {
+  elAppsPicker.classList.add('hidden');
 });
 
 // ── Context menu (right-click → edit mode) ────────────────────────────────────
@@ -1306,47 +1352,50 @@ function setupContextMenu() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && editMode) exitEditMode();
   });
+
+  // Escape exits fullscreen. Scoped to the renderer window (previously a
+  // process-wide globalShortcut, which stole Escape from every other app).
+  document.addEventListener('keydown', async (e) => {
+    if (e.key !== 'Escape') return;
+    if (isFullscreen) {
+      updateFullscreenButton(await window.api.invoke('exit-fullscreen'));
+    }
+  });
 }
 
 // ── Update banner ─────────────────────────────────────────────────────────────
-let _offUpdateListeners = null;
-
+// setupUpdateListeners is called exactly once (from init()), so tracking the
+// unsubscribe callbacks served no purpose — inline the subscriptions.
 function setupUpdateListeners() {
-  if (_offUpdateListeners) _offUpdateListeners();
-
-  const offs = [
-    window.api.on('update-checking', () => {
-      showUpdateBanner('CHECKING FOR UPDATES...', []);
-    }),
-    window.api.on('update-available', (info) => {
-      showUpdateBanner(
-        `UPDATE AVAILABLE — v${info.version}`,
-        [{ label: 'DOWNLOAD', action: 'download' }]
-      );
-    }),
-    window.api.on('update-progress', (pct) => {
-      document.getElementById('update-text').textContent = `DOWNLOADING... ${pct}%`;
-    }),
-    window.api.on('update-ready', () => {
-      showUpdateBanner(
-        'UPDATE READY — WILL INSTALL AND RESTART',
-        [{ label: 'INSTALL NOW', action: 'install' }]
-      );
-    }),
-    window.api.on('update-not-available', () => {
-      showUpdateBanner('SYSTEM IS UP TO DATE', [], 3000);
-    }),
-    window.api.on('update-error', (msg) => {
-      showUpdateBanner(`UPDATE ERROR: ${msg}`, [], 6000);
-      console.warn('Update error:', msg);
-    }),
-    window.api.on('store-save-error', () => {
-      showUpdateBanner('SAVE ERROR — SETTINGS MAY NOT PERSIST', [], 8000);
-      console.error('Store save failed');
-    }),
-  ];
-
-  _offUpdateListeners = () => offs.forEach(off => off());
+  window.api.on('update-checking', () => {
+    showUpdateBanner('CHECKING FOR UPDATES...', []);
+  });
+  window.api.on('update-available', (info) => {
+    showUpdateBanner(
+      `UPDATE AVAILABLE — v${info.version}`,
+      [{ label: 'DOWNLOAD', action: 'download' }]
+    );
+  });
+  window.api.on('update-progress', (pct) => {
+    elUpdateText.textContent = `DOWNLOADING... ${pct}%`;
+  });
+  window.api.on('update-ready', () => {
+    showUpdateBanner(
+      'UPDATE READY — WILL INSTALL AND RESTART',
+      [{ label: 'INSTALL NOW', action: 'install' }]
+    );
+  });
+  window.api.on('update-not-available', () => {
+    showUpdateBanner('SYSTEM IS UP TO DATE', [], 3000);
+  });
+  window.api.on('update-error', (msg) => {
+    showUpdateBanner(`UPDATE ERROR: ${msg}`, [], 6000);
+    console.warn('Update error:', msg);
+  });
+  window.api.on('store-save-error', () => {
+    showUpdateBanner('SAVE ERROR — SETTINGS MAY NOT PERSIST', [], 8000);
+    console.error('Store save failed');
+  });
 }
 
 function showUpdateBanner(text, actions, autoDismissMs = 0) {
@@ -1354,11 +1403,10 @@ function showUpdateBanner(text, actions, autoDismissMs = 0) {
   clearTimeout(autoDismissTimer);
   autoDismissTimer = null;
 
-  const banner = document.getElementById('update-banner');
-  const textEl = document.getElementById('update-text');
-  const actionsEl = document.getElementById('update-actions');
+  const banner = $('update-banner');
+  const actionsEl = $('update-actions');
 
-  textEl.textContent = text;
+  elUpdateText.textContent = text;
   actionsEl.innerHTML = '';
 
   actions.forEach(({ label, action }) => {
@@ -1395,15 +1443,15 @@ function showUpdateBanner(text, actions, autoDismissMs = 0) {
 function hideUpdateBanner() {
   clearTimeout(autoDismissTimer);
   autoDismissTimer = null;
-  document.getElementById('update-banner').classList.add('hidden');
+  $('update-banner').classList.add('hidden');
 }
 
 // ── Button wiring ─────────────────────────────────────────────────────────────
-document.getElementById('btn-settings').addEventListener('click', () => {
-  document.getElementById('settings-overlay').classList.toggle('hidden');
+$('btn-settings').addEventListener('click', () => {
+  elSettingsOverlay.classList.toggle('hidden');
 });
 
-document.getElementById('btn-hide').addEventListener('click', () => {
+$('btn-hide').addEventListener('click', () => {
   window.api.invoke('hide-window');
 });
 
@@ -1411,33 +1459,32 @@ let isFullscreen = false;
 
 function updateFullscreenButton(fs) {
   isFullscreen = fs;
-  const btn = document.getElementById('btn-fullscreen');
-  btn.title = fs ? 'Exit fullscreen' : 'Fullscreen';
+  $('btn-fullscreen').title = fs ? 'Exit fullscreen' : 'Fullscreen';
 }
 
-document.getElementById('btn-fullscreen').addEventListener('click', async () => {
+$('btn-fullscreen').addEventListener('click', async () => {
   updateFullscreenButton(await window.api.invoke('toggle-fullscreen'));
 });
 
 window.api.on('fullscreen-changed', (fs) => updateFullscreenButton(fs));
 
-document.getElementById('btn-close-settings').addEventListener('click', () => {
-  document.getElementById('settings-overlay').classList.add('hidden');
+$('btn-close-settings').addEventListener('click', () => {
+  elSettingsOverlay.classList.add('hidden');
 });
 
-document.getElementById('btn-check-update').addEventListener('click', () => {
+$('btn-check-update').addEventListener('click', () => {
   window.api.invoke('check-update');
-  document.getElementById('settings-overlay').classList.add('hidden');
+  elSettingsOverlay.classList.add('hidden');
 });
 
-document.getElementById('btn-add-edit').addEventListener('click', addAppFromDialog);
-document.getElementById('btn-add-installed').addEventListener('click', openInstalledAppsPicker);
-document.getElementById('btn-done-edit').addEventListener('click', exitEditMode);
+$('btn-add-edit').addEventListener('click', addAppFromDialog);
+$('btn-add-installed').addEventListener('click', openInstalledAppsPicker);
+$('btn-done-edit').addEventListener('click', exitEditMode);
 
 // ── Skin selection (searchable picker) ───────────────────────────────────────
 (function () {
-  const searchEl = document.getElementById('theme-search');
-  const listEl   = document.getElementById('theme-picker-list');
+  const searchEl = elThemeSearch;
+  const listEl   = $('theme-picker-list');
 
   function buildList(filter) {
     const q = (filter || '').toLowerCase().trim();
@@ -1475,7 +1522,7 @@ document.getElementById('btn-done-edit').addEventListener('click', exitEditMode)
     listEl.classList.remove('hidden');
     // Position dropdown below the search input, extending to the app bottom edge
     const rect = searchEl.getBoundingClientRect();
-    const appBottom = document.getElementById('app').getBoundingClientRect().bottom;
+    const appBottom = elApp.getBoundingClientRect().bottom;
     listEl.style.top = (rect.bottom + 3) + 'px';
     listEl.style.maxHeight = Math.max(80, appBottom - rect.bottom - 10) + 'px';
     const sel = listEl.querySelector('.theme-picker-item.selected');
@@ -1514,7 +1561,7 @@ document.getElementById('btn-done-edit').addEventListener('click', exitEditMode)
   });
 })();
 
-document.getElementById('btn-random-theme').addEventListener('click', async () => {
+$('btn-random-theme').addEventListener('click', async () => {
   const current = settings.theme || 'cyberpunk';
   const others = ALL_THEMES.filter(t => t !== current);
   settings.theme = others[Math.floor(Math.random() * others.length)];

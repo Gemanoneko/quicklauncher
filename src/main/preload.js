@@ -5,6 +5,7 @@ const version = process.argv.find(a => a.startsWith('--app-version='))?.slice('-
 // Allowlists — only these channels can be used from the renderer.
 // Any call outside these sets is rejected before it reaches the main process.
 const INVOKE_CHANNELS = new Set([
+  'get-valid-themes',
   'get-apps',
   'save-apps',
   'get-settings',
@@ -20,6 +21,7 @@ const INVOKE_CHANNELS = new Set([
   'show-window',
   'hide-window',
   'toggle-fullscreen',
+  'exit-fullscreen',
   'download-update',
   'install-update',
 ]);
