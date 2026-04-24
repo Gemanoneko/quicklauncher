@@ -1,14 +1,15 @@
 {
   "name": "quicklauncher",
   "productName": "QuickLauncher",
-  "version": "1.93.0",
+  "version": "1.93.1",
   "description": "Cyberpunk-themed desktop quick launcher",
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --win --publish always",
+    "clean:dist": "node scripts/clean-dist.js",
+    "build": "npm run clean:dist && electron-builder --win --publish always",
     "postbuild": "node scripts/cleanup-releases.js",
-    "pack": "electron-builder --win --publish never"
+    "pack": "npm run clean:dist && electron-builder --win --publish never"
   },
   "build": {
     "appId": "com.antigravity.quicklauncher",
