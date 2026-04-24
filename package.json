@@ -1,13 +1,14 @@
 {
   "name": "quicklauncher",
   "productName": "QuickLauncher",
-  "version": "1.93.1",
+  "version": "1.93.2",
   "description": "Cyberpunk-themed desktop quick launcher",
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
     "clean:dist": "node scripts/clean-dist.js",
     "build": "npm run clean:dist && electron-builder --win --publish always",
+    "release": "node scripts/release.mjs",
     "postbuild": "node scripts/cleanup-releases.js",
     "pack": "npm run clean:dist && electron-builder --win --publish never"
   },
