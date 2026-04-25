@@ -366,7 +366,11 @@ button:active { background: var(--btn-active-bg); }
 #app-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(calc(var(--icon-size) + 32px),1fr));
-  gap: 4px;
+  /* Tile gap: 4 → 8 px (UX Review §1 / Polish P1). At 4 px the grid read
+     as a single block, undermining Law of Proximity and slowing scan;
+     8 px aligns with Material 3 8-dp spacing and gives related-but-discrete
+     tiles enough breathing room. --grid-pad stays at 16 px. */
+  gap: 8px;
   position: relative; z-index: 2;
 }
 
