@@ -233,11 +233,11 @@
 @keyframes portal-fade {
   0%, 100% {
     text-shadow: 0 0 6px rgba(255, 102, 0, 0.7), 0 0 18px rgba(255, 102, 0, 0.3);
-    color: #FF6600;
+    color: #A83400;
   }
   25% {
     text-shadow: 0 0 7px rgba(255, 120, 40, 0.65), 0 0 18px rgba(255, 100, 20, 0.28);
-    color: #FF7020;
+    color: #A83400;
   }
   50% {
     text-shadow: 0 0 6px rgba(0, 96, 204, 0.7), 0 0 18px rgba(0, 96, 204, 0.3);

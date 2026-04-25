@@ -169,9 +169,9 @@
 @keyframes chaos-title {
   0%        { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.45), 0 0 18px rgba(160,16,32,.15); }
   60%       { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.45); }
-  62%       { color: #A01020; text-shadow: 0 0 10px rgba(160,16,32,.70), 0 0 28px rgba(96,32,160,.25); opacity: 0.8; }
+  62%       { color: #E03040; text-shadow: 0 0 10px rgba(160,16,32,.70), 0 0 28px rgba(96,32,160,.25); opacity: 0.8; }
   63%       { color: #6020A0; text-shadow: 3px 0 rgba(96,32,160,.60), -2px 0 rgba(160,16,32,.50); opacity: 0.5; }
-  64%       { color: #A01020; text-shadow: 0 0 8px rgba(160,16,32,.60); opacity: 1; }
+  64%       { color: #E03040; text-shadow: 0 0 8px rgba(160,16,32,.60); opacity: 1; }
   65%       { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.45); }
   87%       { color: #C0A0A0; text-shadow: 0 0 6px rgba(160,16,32,.40); }
   88%       { color: #FF4050; text-shadow: 0 0 22px rgba(255,60,80,.85), 0 0 50px rgba(160,16,32,.50); opacity: 0.90; }

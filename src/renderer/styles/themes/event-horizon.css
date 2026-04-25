@@ -184,9 +184,9 @@
 @keyframes void-title {
   0%        { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.45), 0 0 18px rgba(153,17,17,.15); }
   65%       { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.45); }
-  67%       { color: #991111; text-shadow: 3px 0 rgba(120,0,0,.70), -2px 0 rgba(80,20,0,.50); opacity: 0.7; }
+  67%       { color: #D83838; text-shadow: 3px 0 rgba(120,0,0,.70), -2px 0 rgba(80,20,0,.50); opacity: 0.7; }
   68%       { color: #660000; text-shadow: none; opacity: 0.3; }
-  69%       { color: #991111; text-shadow: 0 0 10px rgba(153,17,17,.65); opacity: 1; }
+  69%       { color: #D83838; text-shadow: 0 0 10px rgba(153,17,17,.65); opacity: 1; }
   70%       { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.45); }
   87%       { color: #B08878; text-shadow: 0 0 6px rgba(153,17,17,.40); }
   88%       { color: #FF4040; text-shadow: 0 0 22px rgba(255,60,60,.85), 0 0 50px rgba(153,17,17,.50); opacity: 0.90; }
