@@ -38,6 +38,13 @@
   --accent-c:     #00f0ff;   /* primary */
   --accent-m:     #ff00aa;   /* secondary (edit mode, destructive) */
   --accent-y:     #e8ff00;   /* tertiary (update banner) */
+  /* Text-role variant of the accent. Defaults to the canonical accent so
+     every theme inherits identical behavior. The 13 dark/saturated themes
+     (twin-peaks, event-horizon, dragon-age, etc.) redeclare this to a
+     contrast-safe cousin so functional small text clears the WCAG 2.2 AA
+     3:1 UI-component floor while borders/glows/focus rings keep accent-c.
+     See Docs/QuickLaunch_AccentText_Spec_2026-04-25.md. */
+  --accent-text:  var(--accent-c);
 
   /* ── Borders ── */
   --border:       rgba(0, 240, 255, 0.18);
@@ -269,7 +276,7 @@ html, body {
 
 #title {
   font-size: 11px; font-weight: 700; letter-spacing: 4px;
-  color: var(--accent-c);
+  color: var(--accent-text);
   text-shadow: var(--glow-c);
   animation: var(--title-anim);
   will-change: transform;
@@ -300,12 +307,12 @@ html, body {
   border: 1px solid var(--accent-c);
   border-radius: var(--radius);
   font-size: 11px; letter-spacing: 1px;
-  color: var(--accent-c);
+  color: var(--accent-text);
   max-width: 160px; min-height: 22px;
 }
 #filter-chip-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #filter-chip-clear {
-  border: none; background: transparent; color: var(--accent-c);
+  border: none; background: transparent; color: var(--accent-text);
   padding: 0; min-width: 18px; min-height: 18px;
   font-size: 11px; line-height: 1; cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
@@ -446,14 +453,14 @@ button:active { background: var(--btn-active-bg); }
   line-height: 1.2;
 }
 .tile-label.renameable { cursor: text; border-bottom: 1px dashed var(--rename-dashed); }
-.tile-label.renameable:hover { border-bottom-color: var(--accent-c); color: var(--accent-c); }
+.tile-label.renameable:hover { border-bottom-color: var(--accent-c); color: var(--accent-text); }
 
 .rename-input {
   width: calc(var(--icon-size) + 28px);
   background: var(--rename-input-bg);
   border: 1px solid var(--accent-c);
   border-radius: 2px;
-  color: var(--accent-c);
+  color: var(--accent-text);
   font-family: var(--font);
   /* Rename input: raised 10 → 12 px per UX Review §3 explicit call-out
      ("the user is editing words; small text + uppercase + letter-spacing
@@ -514,7 +521,7 @@ button:active { background: var(--btn-active-bg); }
   flex-shrink: 0;
   font-size: 22px;
   line-height: 1;
-  color: var(--accent-c);
+  color: var(--accent-text);
   opacity: 0.55;
   pointer-events: none;
   animation: var(--banner-icon-anim, none);
@@ -603,7 +610,7 @@ button:active { background: var(--btn-active-bg); }
 .overlay-panel { width: 100%; padding: 20px 20px 14px; background: var(--panel-bg); }
 .overlay-title {
   font-size: 12px; letter-spacing: 4px;
-  color: var(--accent-c); text-shadow: var(--glow-c);
+  color: var(--accent-text); text-shadow: var(--glow-c);
   margin-bottom: 20px; padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
 }
@@ -618,7 +625,7 @@ button:active { background: var(--btn-active-bg); }
 .setting-label { font-size: 12px; letter-spacing: 1px; color: var(--text-dim); }
 .slider-row { display: flex; align-items: center; gap: 10px; }
 input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; height: 4px; }
-#icon-size-val { font-size: 11px; color: var(--accent-c); min-width: 36px; text-align: right; }
+#icon-size-val { font-size: 11px; color: var(--accent-text); min-width: 36px; text-align: right; }
 
 /* checkbox-label: 12 px floor + letter-spacing dropped to 1 px
    (UX Review §3 / I6). The !important flags pre-date the spec — they
@@ -636,7 +643,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   flex: 1;
   background: var(--rename-input-bg);
   border: 1px solid var(--border);
-  color: var(--accent-c);
+  color: var(--accent-text);
   font-family: var(--font);
   font-size: 11px; letter-spacing: 1.5px;
   padding: 5px 10px;
@@ -684,7 +691,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 }
 .cheat-key {
   flex: 0 0 110px;
-  color: var(--accent-c);
+  color: var(--accent-text);
   text-shadow: var(--glow-c);
   font-weight: 700;
   font-family: var(--font);
@@ -698,7 +705,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   width: 100%;
   background: var(--picker-search-bg);
   border: 1px solid var(--border); border-radius: var(--radius);
-  color: var(--accent-c);
+  color: var(--accent-text);
   font-family: var(--font); font-size: 11px; letter-spacing: 1px;
   padding: 6px 10px; outline: none; margin-bottom: 10px; flex-shrink: 0;
   -webkit-user-select: text; user-select: text;
@@ -745,7 +752,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   width: 100%; box-sizing: border-box;
   background: var(--panel-bg);
   border: 1px solid var(--border);
-  color: var(--accent-c);
+  color: var(--accent-text);
   font-family: var(--font);
   /* Theme search input: 12 px floor (functional input). UX Review §3 / I6. */
   font-size: 12px; letter-spacing: 1px;
@@ -780,8 +787,8 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   transition: background .08s, color .08s;
 }
 .theme-picker-item:hover,
-.theme-picker-item.active { background: var(--picker-item-hover-bg); color: var(--accent-c); }
-.theme-picker-item.selected { background: var(--picker-item-active-bg); color: var(--accent-c); }
+.theme-picker-item.active { background: var(--picker-item-hover-bg); color: var(--accent-text); }
+.theme-picker-item.selected { background: var(--picker-item-active-bg); color: var(--accent-text); }
 .theme-picker-empty {
   padding: 12px 10px; text-align: center;
   font-family: var(--font); font-size: 12px; letter-spacing: 1px; color: var(--text-dim);

@@ -156,11 +156,12 @@ function auditTheme(themePath, baseCss) {
     return resolveVarValue(v, css, baseCss);
   };
 
-  const bg       = parseColor(get('bg'));
-  const text     = parseColor(get('text'));
-  const textDim  = parseColor(get('text-dim'));
-  const accent   = parseColor(get('accent-c'));
-  const hintSub  = parseColor(get('hint-sub-color'));
+  const bg         = parseColor(get('bg'));
+  const text       = parseColor(get('text'));
+  const textDim    = parseColor(get('text-dim'));
+  const accent     = parseColor(get('accent-c'));
+  const accentText = parseColor(get('accent-text'));
+  const hintSub    = parseColor(get('hint-sub-color'));
 
   if (!bg) {
     findings.push({ kind: 'error', msg: '--bg failed to parse' });
@@ -169,10 +170,15 @@ function auditTheme(themePath, baseCss) {
   const bgFlat = flatten(bg);
 
   const checks = [
-    { label: '--text on --bg',           color: text,    threshold: AA_NORMAL_TEXT },
-    { label: '--text-dim on --bg',       color: textDim, threshold: AA_NORMAL_TEXT },
-    { label: '--accent-c on --bg',       color: accent,  threshold: AA_UI_ELEMENT  },
-    { label: '--hint-sub-color on --bg', color: hintSub, threshold: AA_NORMAL_TEXT },
+    { label: '--text on --bg',           color: text,       threshold: AA_NORMAL_TEXT },
+    { label: '--text-dim on --bg',       color: textDim,    threshold: AA_NORMAL_TEXT },
+    { label: '--accent-c on --bg',       color: accent,     threshold: AA_UI_ELEMENT  },
+    // --accent-text is the small-text variant of the accent (1.94.1 split).
+    // Functional small text in base.css paints with --accent-text, so the
+    // 3:1 UI-component floor applies (chrome-adjacent labels at 11–12 px,
+    // not body prose — body uses --text and is already gated above).
+    { label: '--accent-text on --bg',    color: accentText, threshold: AA_UI_ELEMENT  },
+    { label: '--hint-sub-color on --bg', color: hintSub,    threshold: AA_NORMAL_TEXT },
   ];
 
   for (const c of checks) {
