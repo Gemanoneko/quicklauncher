@@ -165,13 +165,18 @@
 
 #title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
 
-/* ── Title: scarlet to gold, the lion's crown flash ────────────────────────── */
+/* ── Title: scarlet to gold, the lion's crown flash ──────────────────────────
+   Resting/dominant scarlet brightened from #C41E2A (~3.5:1 on near-black --bg,
+   sub-AA at 11 px title) to #FF5560 (~6:1) to clear WCAG 2.2 AA. Mid-cycle
+   #9A1520 was darker still — also lifted to #E04050. Gold and white-gold
+   flashes already pass and are unchanged. The --accent-c variable stays
+   scarlet so borders and glows keep the canonical Gryffindor color. */
 @keyframes gryff-title {
-  0%, 100% { color: #C41E2A; text-shadow: 0 0 8px rgba(196,30,42,.62), 0 0 22px rgba(196,30,42,.22); }
+  0%, 100% { color: #FF5560; text-shadow: 0 0 8px rgba(196,30,42,.62), 0 0 22px rgba(196,30,42,.22); }
   35%       { color: #D4A800; text-shadow: 0 0 14px rgba(212,168,0,.82), 0 0 36px rgba(212,168,0,.32); }
-  65%       { color: #9A1520; text-shadow: 0 0 6px rgba(196,30,42,.45), 0 0 14px rgba(196,30,42,.15); }
+  65%       { color: #E04050; text-shadow: 0 0 6px rgba(196,30,42,.45), 0 0 14px rgba(196,30,42,.15); }
   88%       { color: #FFEEBB; text-shadow: 0 0 22px rgba(255,220,150,.90), 0 0 55px rgba(255,180,80,.55); opacity: 0.90; }
-  89%       { color: #C41E2A; text-shadow: 0 0 8px rgba(196,30,42,.62), 0 0 22px rgba(196,30,42,.22); }
+  89%       { color: #FF5560; text-shadow: 0 0 8px rgba(196,30,42,.62), 0 0 22px rgba(196,30,42,.22); }
 }
 
 /* ── App: heraldic scarlet pulse, synchronized ──────────────────────────────── */

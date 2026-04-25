@@ -172,21 +172,24 @@
   pointer-events: none; white-space: nowrap;
 }
 
-#title { font-family: 'Segoe UI', sans-serif; font-weight: bold; letter-spacing: 5px; }
+/* Title color brightened from --accent-c (#E02020 ≈ 4.0:1 on --bg) to #FF5C5C
+   to clear WCAG 2.2 AA 4.5:1 at 11 px. The keyframe accent flashes (#FF3030 etc.)
+   are brief and remain visually as accent flares. */
+#title { font-family: 'Segoe UI', sans-serif; font-weight: bold; letter-spacing: 5px; color: #FF5C5C; }
 
 /* ── Title: aggressive steps(1) glitch with BRIGHT red 88% flash ─────────── */
 @keyframes doom-title {
-  0%        { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.50), 0 0 18px rgba(224,32,32,.15); }
-  60%       { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.50); }
+  0%        { color: #FF5C5C; text-shadow: 0 0 6px rgba(224,32,32,.50), 0 0 18px rgba(224,32,32,.15); }
+  60%       { color: #FF5C5C; text-shadow: 0 0 6px rgba(224,32,32,.50); }
   62%       { color: #E02020; text-shadow: 0 0 12px rgba(224,32,32,.80), 0 0 30px rgba(224,32,32,.30); opacity: 0.85; }
   63%       { color: #40A060; text-shadow: 0 0 8px rgba(64,160,96,.55); opacity: 0.5; }
   64%       { color: #E02020; text-shadow: 0 0 10px rgba(224,32,32,.65); opacity: 1; }
-  65%       { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.50); }
-  87%       { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.45); }
+  65%       { color: #FF5C5C; text-shadow: 0 0 6px rgba(224,32,32,.50); }
+  87%       { color: #FF5C5C; text-shadow: 0 0 6px rgba(224,32,32,.45); }
   88%       { color: #FF3030; text-shadow: 0 0 24px rgba(255,48,48,.90), 0 0 55px rgba(224,32,32,.50); opacity: 0.90; }
   89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #C06060; text-shadow: 0 0 8px rgba(224,32,32,.55); opacity: 1; }
-  100%      { color: #C06060; text-shadow: 0 0 6px rgba(224,32,32,.50), 0 0 18px rgba(224,32,32,.15); }
+  90%       { color: #FF5C5C; text-shadow: 0 0 8px rgba(224,32,32,.55); opacity: 1; }
+  100%      { color: #FF5C5C; text-shadow: 0 0 6px rgba(224,32,32,.50), 0 0 18px rgba(224,32,32,.15); }
 }
 
 /* ── App: hell pulse — box-shadow (tier 5, 8s) ───────────────────────────── */

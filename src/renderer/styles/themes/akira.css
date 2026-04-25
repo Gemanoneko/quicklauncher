@@ -175,7 +175,9 @@
   pointer-events: none; white-space: nowrap;
 }
 
-#title { font-family: 'Consolas', monospace; letter-spacing: 6px; font-weight: 700; }
+/* Title color overridden from --accent-c (#E01020 ≈ 4.2:1 on --bg) to #FF5560
+   to clear WCAG 2.2 AA 4.5:1 at 11 px. Accent stays unchanged for borders/glows. */
+#title { font-family: 'Consolas', monospace; letter-spacing: 6px; font-weight: 700; color: #FF5560; }
 
 /* ── Title animation: energy burst ──────────────────────────────────────────── */
 @keyframes akira-burst {
