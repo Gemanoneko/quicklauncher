@@ -1396,6 +1396,14 @@ function setupUpdateListeners() {
     showUpdateBanner('SAVE ERROR — SETTINGS MAY NOT PERSIST', [], 8000);
     console.error('Store save failed');
   });
+  // Surface launch failures (missing target, exec error) — previously silent.
+  // Per UX Review §10 / Critical C3 (NN/g: help users recognize, diagnose,
+  // and recover from errors). Truncate long names so the banner stays one line.
+  window.api.on('launch-error', ({ name, reason }) => {
+    const safeName = String(name || '').slice(0, 60);
+    showUpdateBanner(`COULD NOT LAUNCH "${safeName}" — ${reason}`, [], 8000);
+    console.warn('Launch error:', reason, name);
+  });
 }
 
 function showUpdateBanner(text, actions, autoDismissMs = 0) {

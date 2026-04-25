@@ -290,21 +290,61 @@ function setupIPC(win, store, electronApp) {
     store.set('settings', sanitized);
   });
 
-  ipcMain.handle('launch-app', (_, filePath) => {
+  ipcMain.handle('launch-app', async (_, filePath) => {
     if (typeof filePath !== 'string' || !filePath) return;
 
     // Only launch paths that are in the stored app list, or known-safe protocol URIs
     const storedApps = store.get('apps') || [];
-    const isKnown = storedApps.some(a => a.path === filePath)
-      || filePath.startsWith('shell:')
-      || filePath.startsWith('steam://');
+    const matchedApp = storedApps.find(a => a.path === filePath);
+    const isProtocol = filePath.startsWith('shell:') || filePath.startsWith('steam://');
+    const isKnown = !!matchedApp || isProtocol;
     if (!isKnown) return;
 
-    if (filePath.startsWith('shell:') || filePath.startsWith('steam://')) {
-      // Use explorer.exe for shell: URIs (Store apps) and steam:// URLs
+    // Display name for error reporting (renderer surfaces this verbatim)
+    const displayName = matchedApp ? matchedApp.name : filePath;
+
+    // Helper: report a launch failure back to the renderer, where it's surfaced
+    // via the update-banner channel. Plain-language reason, lightweight overlay.
+    // Per Judy's UX Review (2026-04-25, §10 / Critical C3): silent failure was
+    // a major NN/g "help users recover from errors" violation — clicking a tile
+    // that pointed at a missing/broken target produced no feedback at all.
+    const reportFailure = (reason) => {
+      if (win && !win.isDestroyed()) {
+        win.webContents.send('launch-error', { name: displayName, reason });
+      }
+    };
+
+    if (isProtocol) {
+      // Use explorer.exe for shell: URIs (Store apps) and steam:// URLs.
+      // explorer.exe always exits 1 even on success, so we can't reliably
+      // detect failure here — leave silent. Errors here are extremely rare
+      // (Store apps that have been uninstalled fall back to "open with"
+      // dialog which is itself a form of feedback).
       execFile('explorer.exe', [filePath], { windowsHide: false, stdio: 'pipe' }, () => {});
-    } else {
-      shell.openPath(filePath);
+      return;
+    }
+
+    // Filesystem path: pre-flight existence check so we can give a clear
+    // reason. shell.openPath returns a non-empty string on failure but its
+    // messages are inconsistent across Windows versions and AV interactions.
+    try {
+      if (!fs.existsSync(filePath)) {
+        reportFailure('TARGET MISSING');
+        return;
+      }
+    } catch {
+      reportFailure('TARGET UNREADABLE');
+      return;
+    }
+
+    try {
+      const errMsg = await shell.openPath(filePath);
+      if (errMsg) {
+        // shell.openPath resolves with an error string when the OS refused.
+        reportFailure('LAUNCH FAILED');
+      }
+    } catch {
+      reportFailure('LAUNCH FAILED');
     }
   });
 

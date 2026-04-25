@@ -35,6 +35,7 @@ const ON_CHANNELS = new Set([
   'update-error',
   'store-save-error',
   'fullscreen-changed',
+  'launch-error',
 ]);
 
 contextBridge.exposeInMainWorld('api', {
