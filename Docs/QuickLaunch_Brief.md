@@ -17,7 +17,7 @@ Keeps it in the tray. Pops it open with `Ctrl+Space` (or via the tray) when he w
   - `src/renderer/` — vanilla HTML/CSS/JS UI with per-theme stylesheets in `src/renderer/styles/themes/`
   - `preload.js` — context-bridge IPC surface
 - `electron-builder` for NSIS installers, `electron-updater` for auto-update
-- GitHub Actions CI builds + releases, `scripts/cleanup-releases.js` keeps last 4
+- Local-publish release pipeline via `npm run release` → `scripts/release.mjs`, which sources `GH_TOKEN` from `gh auth token` and runs `electron-builder --publish always`. `scripts/cleanup-releases.js` runs as the final postbuild step, keeping the last 4 GitHub releases. There is no `.github/workflows/` — releases are built and published from Sergei's machine.
 
 ## Repo
 - GitHub: `https://github.com/Gemanoneko/quicklauncher`
