@@ -278,7 +278,14 @@ html, body {
 }
 
 #header-controls { -webkit-app-region: no-drag; display: flex; gap: 6px; }
-#header-controls button { padding: 2px 7px; font-size: 13px; }
+/* Click target floor: WCAG 2.2 AA 24×24 (UX Review §2 / I7).
+   Old padding 2px 7px rendered ~20×24 — under spec. */
+#header-controls button {
+  padding: 4px 8px; font-size: 13px;
+  min-width: 28px; min-height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
 
 /* ── Buttons ─────────────────────────────────────────────────────────────────── */
 button {
@@ -401,10 +408,13 @@ button:active { background: var(--btn-active-bg); }
   -webkit-user-select: text; user-select: text;
 }
 
+/* btn-remove: 24×24 strict WCAG 2.2 AA per Sergei's locked decision
+   (UX Review §2 / Decisions Locked In #4). The 22 px corner-badge alternative
+   was rejected. */
 .btn-remove {
   position: absolute; top: -2px; right: -2px;
-  width: 17px; height: 17px; border-radius: 50%; padding: 0;
-  font-size: 9px; line-height: 1;
+  width: 24px; height: 24px; border-radius: 50%; padding: 0;
+  font-size: 11px; line-height: 1;
   display: flex; align-items: center; justify-content: center;
   background: var(--remove-btn-bg);
   border-color: var(--remove-btn-border);
@@ -514,7 +524,15 @@ button:active { background: var(--btn-active-bg); }
   box-shadow: var(--update-btn-hover-glow);
   color: #fff;
 }
-.update-dismiss { border-color: transparent; color: var(--text-dim); padding: 2px 5px; }
+/* update-dismiss: raised to 24×24 (UX Review §2 / I7) */
+.update-dismiss {
+  border-color: transparent;
+  color: var(--text-dim);
+  padding: 0;
+  min-width: 24px; min-height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; line-height: 1;
+}
 
 /* ── Settings overlay ────────────────────────────────────────────────────────── */
 .overlay {
