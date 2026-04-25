@@ -15,7 +15,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #B88868;
-  --text-dim:     rgba(150, 100, 70, 0.78);
+  --text-dim:     #9E6C4E;
 
   --accent-c:     #B81818;   /* Horde blood red */
   --accent-m:     #484038;   /* dark iron */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(184, 24, 24, 0.25);
   --drop-icon-color:  rgba(184, 24, 24, 0.35);
-  --hint-sub-color:   rgba(150, 100, 70, 0.75);
+  --hint-sub-color:   #9E6C4E;
 
   --rename-dashed:    rgba(192, 128, 32, 0.42);
   --rename-input-bg:  rgba(184, 24, 24, 0.07);

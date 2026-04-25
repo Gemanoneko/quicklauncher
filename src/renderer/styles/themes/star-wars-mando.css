@@ -16,7 +16,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #A0A098;
-  --text-dim:     rgba(120, 118, 110, 0.78);
+  --text-dim:     #7C7A72;
 
   --accent-c:     #8A8478;   /* beskar silver-warm */
   --accent-m:     #C08830;   /* Mandalorian gold/amber */
@@ -54,7 +54,7 @@
 
   --drop-hint-border: rgba(140, 130, 110, 0.22);
   --drop-icon-color:  rgba(192, 136, 48, 0.28);
-  --hint-sub-color:   rgba(120, 118, 110, 0.75);
+  --hint-sub-color:   #7C7A72;
 
   --rename-dashed:    rgba(192, 136, 48, 0.38);
   --rename-input-bg:  rgba(140, 130, 110, 0.06);
