@@ -73,6 +73,17 @@ function setUpdateAvailable(flag) {
 function setupTray(win, electronApp, store) {
   const iconPath = path.join(__dirname, '../../icon.png');
   iconDefault = nativeImage.createFromPath(iconPath).resize({ width: 16, height: 16 });
+  // Defense against a missing / unreadable icon.png in a packaged build
+  // (Senua review M3, 2026-04-25). createFromPath returns an empty image
+  // on failure, which would feed an invalid bitmap into composeUpdateIcon
+  // and then throw inside `new Tray()` — killing main-process bootstrap
+  // with a confusing stack. Fail loud here, then degrade: no tray surface,
+  // but the rest of the app (window, hotkey, IPC) still comes up.
+  // setUpdateAvailable already guards on `if (!tray) return`.
+  if (iconDefault.isEmpty()) {
+    console.error('[tray] icon.png is missing or unreadable at', iconPath, '— tray disabled');
+    return;
+  }
   iconUpdate = composeUpdateIcon(iconDefault);
 
   tray = new Tray(iconDefault);
