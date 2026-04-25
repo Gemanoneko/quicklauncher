@@ -911,6 +911,10 @@ function createAppTile(appItem) {
   tile.tabIndex = 0;
   tile.setAttribute('role', 'button');
   tile.setAttribute('aria-label', appItem.name);
+  // Cache lowercased name on the tile so applyFilter() reads tile attrs
+  // only — eliminates the per-tile O(n) `apps.find` scan that made the
+  // type-to-filter loop O(n²) per keystroke. (Senua review M1, 2026-04-25.)
+  tile.dataset.nameLower = (appItem.name || '').toLowerCase();
 
   const iconWrapper = document.createElement('div');
   iconWrapper.className = 'tile-icon-wrap';
@@ -1413,12 +1417,13 @@ function updateFilterChip() {
 
 function applyFilter() {
   const q = _filterText.toLowerCase();
+  // Read the precomputed `dataset.nameLower` cached at tile-creation time
+  // (see createAppTile). No `apps.find` scan inside the loop — keystroke
+  // cost is now O(n) in tile count rather than O(n²). (Senua review M1.)
   const tiles = [...elAppGrid.querySelectorAll('.app-tile')];
   for (const t of tiles) {
-    const id = t.dataset.id;
-    const appItem = apps.find(a => a.id === id);
-    if (!appItem) continue;
-    const match = !q || appItem.name.toLowerCase().includes(q);
+    const nameLower = t.dataset.nameLower || '';
+    const match = !q || nameLower.includes(q);
     t.classList.toggle('filter-hidden', !match);
   }
   updateFilterChip();
