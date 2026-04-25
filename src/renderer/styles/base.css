@@ -274,7 +274,12 @@ html, body {
   animation: var(--title-anim);
   will-change: transform;
 }
-#header-version { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); line-height: 1; }
+/* Body-text floor: functional copy ≥ 12 px (UX Review §3 / I6).
+   Microsoft Fluent's English UI minimum is 12 px; the spec audit found
+   the version/settings/picker/drop-hint copy at 9–10 px combined with
+   uppercase + 1.5–2 px letter-spacing measurably hurt scan speed. The
+   11 px title stays — it's accent/decoration, exempted by the spec. */
+#header-version { font-size: 12px; letter-spacing: 1px; color: var(--text-dim); line-height: 1; }
 .accent { color: var(--accent-m); }
 
 @keyframes glitch-title {
@@ -446,7 +451,10 @@ button:active { background: var(--btn-active-bg); }
   border-radius: 2px;
   color: var(--accent-c);
   font-family: var(--font);
-  font-size: 10px; letter-spacing: 0.4px; text-align: center;
+  /* Rename input: raised 10 → 12 px per UX Review §3 explicit call-out
+     ("the user is editing words; small text + uppercase + letter-spacing
+     is genuinely hard to read"). */
+  font-size: 12px; letter-spacing: 0.4px; text-align: center;
   padding: 1px 4px; margin-top: 5px;
   outline: none; box-shadow: var(--glow-c);
   -webkit-user-select: text; user-select: text;
@@ -478,7 +486,9 @@ button:active { background: var(--btn-active-bg); }
   padding: 28px 32px; font-size: 11px; letter-spacing: 2px; line-height: 2;
 }
 .drop-icon { font-size: 28px; color: var(--drop-icon-color); margin-bottom: 8px; }
-.hint-sub  { font-size: 9px; letter-spacing: 1px; color: var(--hint-sub-color); }
+/* Drop-hint sub: raised 9 → 12 px (functional copy, listed explicitly in
+   UX Review §3 functional-text enumeration). */
+.hint-sub  { font-size: 12px; letter-spacing: 1px; color: var(--hint-sub-color); }
 
 /* ── Theme banner ────────────────────────────────────────────────────────────── */
 #theme-banner {
@@ -594,18 +604,24 @@ button:active { background: var(--btn-active-bg); }
   border-bottom: 1px solid var(--border);
 }
 .setting-row { margin-bottom: 16px; }
+/* setting-row label: 12 px floor + letter-spacing dropped to 1 px
+   (UX Review §3 / I6 — letter-spacing > 1 px on functional copy
+   compounds with the small-size scan-speed cost). */
 .setting-row label {
-  display: block; font-size: 10px; letter-spacing: 2px;
+  display: block; font-size: 12px; letter-spacing: 1px;
   color: var(--text-dim); margin-bottom: 6px;
 }
-.setting-label { font-size: 10px; letter-spacing: 1px; color: var(--text-dim); }
+.setting-label { font-size: 12px; letter-spacing: 1px; color: var(--text-dim); }
 .slider-row { display: flex; align-items: center; gap: 10px; }
 input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; height: 4px; }
 #icon-size-val { font-size: 11px; color: var(--accent-c); min-width: 36px; text-align: right; }
 
+/* checkbox-label: 12 px floor + letter-spacing dropped to 1 px
+   (UX Review §3 / I6). The !important flags pre-date the spec — they
+   defeat per-theme overrides that previously shrank Settings copy. */
 .checkbox-label {
   display: flex !important; align-items: center; gap: 10px; cursor: pointer;
-  font-size: 10px !important; letter-spacing: 2px;
+  font-size: 12px !important; letter-spacing: 1px;
   color: var(--text) !important; margin-bottom: 0 !important;
 }
 .checkbox-label input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--accent-c); cursor: pointer; }
@@ -635,9 +651,11 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   padding: 0; font-size: 11px; line-height: 1;
   display: inline-flex; align-items: center; justify-content: center;
 }
+/* hotkey-status: raised 9 → 12 px (functional secondary copy, surfaces
+   conflict / invalid-binding feedback). UX Review §3 / I6. */
 .hotkey-status {
-  margin-top: 4px; font-size: 9px; letter-spacing: 1px;
-  color: var(--text-dim); min-height: 12px;
+  margin-top: 4px; font-size: 12px; letter-spacing: 1px;
+  color: var(--text-dim); min-height: 14px;
 }
 .hotkey-status.error { color: var(--accent-m); }
 
@@ -707,8 +725,12 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   background: var(--picker-placeholder-bg);
   border: 1px solid var(--border); border-radius: 2px; flex-shrink: 0;
 }
-.picker-item-name { font-size: 10px; letter-spacing: 0.4px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.picker-empty { text-align: center; font-size: 10px; letter-spacing: 1.5px; color: var(--text-dim); padding: 20px; }
+/* Picker rows + empty state: 12 px floor (UX Review §3 / I6 — listed
+   explicitly under functional-text enumeration). Letter-spacing on
+   .picker-empty dropped from 1.5 → 1 px. .picker-item-name was
+   already at 0.4 px (within the ≤ 1 px functional-copy ceiling). */
+.picker-item-name { font-size: 12px; letter-spacing: 0.4px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.picker-empty { text-align: center; font-size: 12px; letter-spacing: 1px; color: var(--text-dim); padding: 20px; }
 
 /* ── Utilities ───────────────────────────────────────────────────────────────── */
 .hidden { display: none !important; }
@@ -721,7 +743,8 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   border: 1px solid var(--border);
   color: var(--accent-c);
   font-family: var(--font);
-  font-size: 10px; letter-spacing: 1.5px;
+  /* Theme search input: 12 px floor (functional input). UX Review §3 / I6. */
+  font-size: 12px; letter-spacing: 1px;
   padding: 5px 28px 5px 10px;
   border-radius: var(--radius);
   outline: none;
@@ -744,9 +767,11 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 .theme-picker-list::-webkit-scrollbar { width: 4px; }
 .theme-picker-list::-webkit-scrollbar-track { background: transparent; }
 .theme-picker-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+/* theme-picker rows + empty state: 12 px floor + letter-spacing
+   dropped to 1 px. UX Review §3 / I6. */
 .theme-picker-item {
   padding: 6px 10px;
-  font-family: var(--font); font-size: 10px; letter-spacing: 1.5px;
+  font-family: var(--font); font-size: 12px; letter-spacing: 1px;
   color: var(--text); cursor: pointer;
   transition: background .08s, color .08s;
 }
@@ -755,7 +780,7 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 .theme-picker-item.selected { background: var(--picker-item-active-bg); color: var(--accent-c); }
 .theme-picker-empty {
   padding: 12px 10px; text-align: center;
-  font-family: var(--font); font-size: 10px; letter-spacing: 1.5px; color: var(--text-dim);
+  font-family: var(--font); font-size: 12px; letter-spacing: 1px; color: var(--text-dim);
 }
 
 /* ── Tile hover keyframes ────────────────────────────────────────────────────── */
