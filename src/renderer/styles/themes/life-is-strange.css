@@ -17,7 +17,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #B89878;
-  --text-dim:     rgba(160, 120, 90, 0.78);
+  --text-dim:     rgba(160, 120, 90, 0.98);
 
   --accent-c:     #C07848;   /* warm sunset orange */
   --accent-m:     #4878A0;   /* indie blue — faded denim sky */
@@ -55,7 +55,7 @@
 
   --drop-hint-border: rgba(192, 120, 72, 0.25);
   --drop-icon-color:  rgba(192, 120, 72, 0.35);
-  --hint-sub-color:   rgba(160, 120, 90, 0.75);
+  --hint-sub-color:   rgba(160, 120, 90, 1);
 
   --rename-dashed:    rgba(192, 120, 72, 0.40);
   --rename-input-bg:  rgba(192, 120, 72, 0.07);

@@ -15,7 +15,7 @@
 
   --font:         'Consolas', 'Courier New', monospace;
   --text:         #AABC88;
-  --text-dim:     rgba(120, 140, 80, 0.78);
+  --text-dim:     rgba(120, 140, 80, 0.93);
 
   --accent-c:     #AAAA00;   /* radiation yellow */
   --accent-m:     #904020;   /* rust orange */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(140, 140, 0, 0.25);
   --drop-icon-color:  rgba(170, 170, 0, 0.35);
-  --hint-sub-color:   rgba(100, 120, 60, 0.75);
+  --hint-sub-color:   #6C8044;
 
   --rename-dashed:    rgba(170, 170, 0, 0.40);
   --rename-input-bg:  rgba(140, 140, 0, 0.06);

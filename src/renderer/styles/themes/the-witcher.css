@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #C0B080;
-  --text-dim:     rgba(140, 120, 70, 0.78);
+  --text-dim:     rgba(140, 120, 70, 0.98);
 
   --accent-c:     #C0A020;   /* alchemy gold */
   --accent-m:     #8B3020;   /* blood contract red */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(180, 150, 30, 0.28);
   --drop-icon-color:  rgba(192, 160, 32, 0.38);
-  --hint-sub-color:   rgba(140, 110, 55, 0.75);
+  --hint-sub-color:   #94763F;
 
   --rename-dashed:    rgba(192, 160, 32, 0.40);
   --rename-input-bg:  rgba(180, 150, 30, 0.07);

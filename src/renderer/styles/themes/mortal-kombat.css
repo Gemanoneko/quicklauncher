@@ -16,7 +16,7 @@
 
   --font:         'Segoe UI', sans-serif;
   --text:         #C0A040;
-  --text-dim:     rgba(160, 128, 48, 0.78);
+  --text-dim:     rgba(160, 128, 48, 0.93);
 
   --accent-c:     #C8A010;   /* dragon gold */
   --accent-m:     #B01010;   /* blood */
@@ -54,7 +54,7 @@
 
   --drop-hint-border: rgba(200, 160, 16, 0.25);
   --drop-icon-color:  rgba(200, 160, 16, 0.35);
-  --hint-sub-color:   rgba(160, 128, 48, 0.75);
+  --hint-sub-color:   rgba(160, 128, 48, 0.9);
 
   --rename-dashed:    rgba(200, 160, 16, 0.40);
   --rename-input-bg:  rgba(200, 160, 16, 0.07);

@@ -18,7 +18,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #B0A080;
-  --text-dim:     rgba(150, 130, 90, 0.78);
+  --text-dim:     rgba(150, 130, 90, 0.93);
 
   --accent-c:     #B88830;   /* manuscript gold */
   --accent-m:     #802818;   /* Templar seal red */
@@ -56,7 +56,7 @@
 
   --drop-hint-border: rgba(184, 136, 48, 0.26);
   --drop-icon-color:  rgba(184, 136, 48, 0.35);
-  --hint-sub-color:   rgba(150, 130, 90, 0.75);
+  --hint-sub-color:   rgba(150, 130, 90, 0.95);
 
   --rename-dashed:    rgba(184, 136, 48, 0.42);
   --rename-input-bg:  rgba(184, 136, 48, 0.07);

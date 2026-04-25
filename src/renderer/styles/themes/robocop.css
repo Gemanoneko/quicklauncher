@@ -15,7 +15,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #80B0D0;
-  --text-dim:     rgba(90, 130, 170, 0.78);
+  --text-dim:     rgba(90, 130, 170, 0.98);
 
   --accent-c:     #2090D0;   /* HUD cyan-blue */
   --accent-m:     #CC2020;   /* OCP alert red */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(32, 144, 208, 0.25);
   --drop-icon-color:  rgba(32, 144, 208, 0.32);
-  --hint-sub-color:   rgba(90, 130, 170, 0.75);
+  --hint-sub-color:   rgba(90, 130, 170, 0.95);
 
   --rename-dashed:    rgba(32, 144, 208, 0.40);
   --rename-input-bg:  rgba(32, 144, 208, 0.07);

@@ -17,7 +17,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #68A880;
-  --text-dim:     rgba(104, 160, 122, 0.78);
+  --text-dim:     rgba(104, 160, 122, 0.83);
 
   /* Dragon jade-green + amber chaos + shadow */
   --accent-c:     #20A848;   /* Dragon green -- jade Seoul */
@@ -56,7 +56,7 @@
 
   --drop-hint-border: rgba(32, 168, 70, 0.26);
   --drop-icon-color:  rgba(32, 168, 70, 0.38);
-  --hint-sub-color:   rgba(80, 140, 96, 0.75);
+  --hint-sub-color:   rgba(80, 140, 96, 0.95);
 
   --rename-dashed:    rgba(32, 168, 70, 0.42);
   --rename-input-bg:  rgba(32, 168, 70, 0.07);

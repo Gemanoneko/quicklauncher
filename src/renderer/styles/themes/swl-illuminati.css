@@ -17,7 +17,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #70A0E0;
-  --text-dim:     rgba(90, 135, 210, 0.78);
+  --text-dim:     rgba(90, 135, 210, 0.88);
 
   /* Electric blue + money gold */
   --accent-c:     #0072E8;   /* Illuminati blue — electric corporate */
@@ -56,7 +56,7 @@
 
   --drop-hint-border: rgba(0, 114, 232, 0.28);
   --drop-icon-color:  rgba(0, 114, 232, 0.38);
-  --hint-sub-color:   rgba(60, 100, 180, 0.75);
+  --hint-sub-color:   #5078C8;
 
   --rename-dashed:    rgba(0, 114, 232, 0.42);
   --rename-input-bg:  rgba(0, 114, 232, 0.07);
