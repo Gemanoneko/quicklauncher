@@ -53,8 +53,12 @@
   --scanlines:    repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px);
   --drag-over-glow: inset 0 0 24px rgba(0,240,255,.08);
 
-  /* ── Title animation (set to 'none' to disable glitch) ── */
-  --title-anim:   glitch-title 8s steps(1) infinite;
+  /* ── Title animation ──
+     Default: NONE. Per UX Review §5: "default to off for ambient idle motion".
+     The 8 s glitch was a persistent decorative tic in peripheral vision for
+     a tool the user opens dozens of times a day. Themes can opt in by
+     overriding --title-anim. */
+  --title-anim:   none;
 
   /* ── Tiles ── */
   --tile-hover-bg:     rgba(0, 240, 255, 0.055);
@@ -198,7 +202,11 @@ html, body {
   100% { opacity: 0; transform: scale(1); filter: blur(0); }
 }
 
-/* Animated border */
+/* App border — static by default. Per UX Review §5: persistent
+   border-pulse on a tray-resident utility was ambient motion in
+   peripheral vision. The keyframe set is preserved in case any theme
+   wants to opt back in (set animation on #app::before), but the
+   default no longer plays it. */
 #app::before {
   content: '';
   position: absolute; inset: 0;
@@ -206,8 +214,6 @@ html, body {
   border: 1px solid var(--border);
   pointer-events: none;
   z-index: 200;
-  animation: border-pulse 4s ease-in-out infinite;
-  will-change: box-shadow;
 }
 @keyframes border-pulse {
   0%,100% { border-color: var(--border); }
@@ -239,14 +245,15 @@ html, body {
   flex-shrink: 0;
   position: relative; z-index: 100;
 }
+/* Header sidebar accent — static by default. The hdr-bar-pulse 3 s breathe
+   was persistent ambient motion (UX Review §5). Themes can opt back in
+   by setting animation on #header::before. */
 #header::before {
   content: '';
   position: absolute; left: 0; top: 25%; bottom: 25%;
   width: 2px;
   background: var(--accent-c);
   box-shadow: var(--glow-c);
-  animation: hdr-bar-pulse 3s ease-in-out infinite;
-  will-change: filter;
 }
 
 /* Constrain theme flavor text: left boundary keeps it clear of the title,
@@ -818,6 +825,35 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   87% { filter: brightness(0.50); transform: none; }
   90% { filter: brightness(1.60); }
   92% { filter: brightness(0.70); }
+}
+
+/* ── Reduced motion (UX Review §5) ───────────────────────────────────────────
+   Triggered by either:
+   - body.reduced-motion (renderer applies this when settings.reducedMotion
+     is true OR window.matchMedia('(prefers-reduced-motion: reduce)') matches)
+   - the @media query directly, as a belt-and-braces for environments that
+     don't get JS-driven class updates
+   Strategy: blanket-suppress all keyframe animations. Functional state
+   feedback (hover sheen, tile-press scale, focus outline) is non-animation
+   — those use transition only and remain. The entrance fade is animation
+   but it's a single discrete event tied to opening the window, not ambient
+   idle motion, so we keep it. */
+body.reduced-motion *,
+body.reduced-motion *::before,
+body.reduced-motion *::after {
+  animation: none !important;
+  transition-duration: 0.01s !important;
+}
+body.reduced-motion #app-entrance {
+  animation: entrance-fade 0.2s ease-out forwards !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0.01s !important;
+  }
+  #app-entrance { animation: entrance-fade 0.2s ease-out forwards !important; }
 }
 
 /* ── Tile drag-to-reorder ────────────────────────────────────────────────────── */
