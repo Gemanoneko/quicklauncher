@@ -1489,6 +1489,12 @@ function closeCheatsheet() {
 // keys when no specific element has focus. Inputs (text fields, settings
 // inputs) opt out via the `editingText` early-return.
 document.addEventListener('keydown', (e) => {
+  // IME composition guard (Senua review M2, 2026-04-25): on CJK / dead-key
+  // layouts the window receives composition events AND keydown for each
+  // constituent keystroke. Skip every keypath consequence (filter,
+  // navigation, escape) while the IME is composing.
+  if (e.isComposing || e.keyCode === 229) return;
+
   // Keys that must always pass through to native handlers in text fields
   const tag = (e.target && e.target.tagName) || '';
   const editingText = tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable);
