@@ -18,7 +18,7 @@
 
   --font:         'Courier New', Consolas, monospace;
   --text:         #B0A090;
-  --text-dim:     rgba(140, 128, 108, 0.45);
+  --text-dim:     rgba(140, 128, 108, 0.78);
 
   /* Near-monochrome — NO bright accents. Everything muted, washed out. */
   --accent-c:     #605848;   /* dead wood brown */
@@ -62,7 +62,7 @@
 
   --drop-hint-border: rgba(80, 72, 60, 0.15);
   --drop-icon-color:  rgba(80, 72, 60, 0.20);
-  --hint-sub-color:   rgba(80, 72, 60, 0.22);
+  --hint-sub-color:   rgba(80, 72, 60, 0.75);
 
   --rename-dashed:    rgba(80, 72, 60, 0.25);
   --rename-input-bg:  rgba(80, 72, 60, 0.05);

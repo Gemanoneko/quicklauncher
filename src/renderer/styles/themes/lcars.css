@@ -13,7 +13,7 @@
   /* Typography */
   --font:                 'Arial', 'Helvetica', sans-serif;
   --text:                 #FFCC44;
-  --text-dim:             #886622;
+  --text-dim:             #c89a3a;
 
   /* Shape — rounded everywhere */
   --radius:               16px;
@@ -63,7 +63,7 @@
   /* Drop hint */
   --drop-hint-border:     rgba(255, 153, 0, 0.35);
   --drop-icon-color:      rgba(255, 153, 0, 0.45);
-  --hint-sub-color:       #886622;
+  --hint-sub-color:       #c89a3a;
 
   /* Rename */
   --rename-dashed:        rgba(255, 153, 0, 0.5);

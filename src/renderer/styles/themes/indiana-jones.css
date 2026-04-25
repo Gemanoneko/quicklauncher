@@ -22,7 +22,7 @@
 
   /* ── Text ── */
   --text:         #C0A060;
-  --text-dim:     rgba(160, 128, 70, 0.45);
+  --text-dim:     rgba(160, 128, 70, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #C8900C;   /* golden torch / treasure amber */
@@ -68,7 +68,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(160, 110, 10, 0.28);
   --drop-icon-color:  rgba(200, 144, 12, 0.38);
-  --hint-sub-color:   rgba(140, 100, 40, 0.42);
+  --hint-sub-color:   rgba(140, 100, 40, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(200, 144, 12, 0.42);

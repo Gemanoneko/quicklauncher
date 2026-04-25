@@ -21,7 +21,7 @@
 
   /* ── Text ── */
   --text:         #C8905A;
-  --text-dim:     rgba(160, 110, 60, 0.48);
+  --text-dim:     rgba(160, 110, 60, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #C87830;   /* warm copper — primary */
@@ -67,7 +67,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(180, 90, 20, 0.28);
   --drop-icon-color:  rgba(200, 120, 48, 0.38);
-  --hint-sub-color:   rgba(150, 100, 55, 0.38);
+  --hint-sub-color:   rgba(150, 100, 55, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(200, 120, 48, 0.38);

@@ -17,7 +17,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #D88080;
-  --text-dim:     rgba(200, 90, 90, 0.45);
+  --text-dim:     rgba(200, 90, 90, 0.78);
 
   --accent-c:     #CC1010;   /* Sith red — pure, vivid */
   --accent-m:     #880808;   /* dark blood */
@@ -55,7 +55,7 @@
 
   --drop-hint-border: rgba(200, 16, 16, 0.28);
   --drop-icon-color:  rgba(200, 16, 16, 0.38);
-  --hint-sub-color:   rgba(160, 40, 40, 0.35);
+  --hint-sub-color:   rgba(160, 40, 40, 0.75);
 
   --rename-dashed:    rgba(200, 16, 16, 0.42);
   --rename-input-bg:  rgba(200, 16, 16, 0.07);

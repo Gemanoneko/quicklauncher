@@ -20,7 +20,7 @@
 
   /* ── Text ── */
   --text:         #BEA8A8;
-  --text-dim:     rgba(140, 120, 110, 0.50);
+  --text-dim:     rgba(140, 120, 110, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #CC1100;   /* Bureau red */
@@ -70,7 +70,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(180, 20, 0, 0.25);
   --drop-icon-color:  rgba(204, 17, 0, 0.32);
-  --hint-sub-color:   rgba(120, 80, 60, 0.35);
+  --hint-sub-color:   rgba(120, 80, 60, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(204, 17, 0, 0.36);

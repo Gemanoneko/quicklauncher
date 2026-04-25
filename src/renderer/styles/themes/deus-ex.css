@@ -20,7 +20,7 @@
 
   /* ── Text ── */
   --text:         #D0B870;
-  --text-dim:     rgba(208, 184, 112, 0.42);
+  --text-dim:     rgba(208, 184, 112, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #D4A520;   /* gold — primary */
@@ -66,7 +66,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(212, 165, 32, 0.20);
   --drop-icon-color:  rgba(212, 165, 32, 0.28);
-  --hint-sub-color:   rgba(212, 165, 32, 0.22);
+  --hint-sub-color:   rgba(212, 165, 32, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(212, 165, 32, 0.32);

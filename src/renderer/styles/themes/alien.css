@@ -13,7 +13,7 @@
   /* Typography */
   --font:                 'Consolas', 'Courier New', monospace;
   --text:                 #30BC30;
-  --text-dim:             rgba(48, 160, 48, 0.45);
+  --text-dim:             rgba(48, 160, 48, 0.78);
 
   /* Shape — hard rectangle, no softness */
   --radius:               0px;

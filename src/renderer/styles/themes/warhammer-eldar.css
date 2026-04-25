@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #80A8D0;
-  --text-dim:     rgba(90, 120, 170, 0.45);
+  --text-dim:     rgba(90, 120, 170, 0.78);
 
   --accent-c:     #3070C0;   /* wraithbone blue */
   --accent-m:     #C06020;   /* spirit stone amber */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(48, 112, 192, 0.25);
   --drop-icon-color:  rgba(48, 112, 192, 0.32);
-  --hint-sub-color:   rgba(90, 120, 170, 0.35);
+  --hint-sub-color:   rgba(90, 120, 170, 0.75);
 
   --rename-dashed:    rgba(48, 112, 192, 0.40);
   --rename-input-bg:  rgba(48, 112, 192, 0.07);

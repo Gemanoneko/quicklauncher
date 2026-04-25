@@ -18,7 +18,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #A89070;
-  --text-dim:     rgba(140, 115, 80, 0.45);
+  --text-dim:     rgba(140, 115, 80, 0.78);
 
   /* Torchlight amber + cold stone */
   --accent-c:     #C08830;   /* torchlight amber */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(192, 136, 48, 0.20);
   --drop-icon-color:  rgba(192, 136, 48, 0.28);
-  --hint-sub-color:   rgba(140, 115, 80, 0.30);
+  --hint-sub-color:   rgba(140, 115, 80, 0.75);
 
   --rename-dashed:    rgba(192, 136, 48, 0.35);
   --rename-input-bg:  rgba(192, 136, 48, 0.06);

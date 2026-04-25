@@ -21,7 +21,7 @@
 
   /* ── Text ── */
   --text:         #B89868;
-  --text-dim:     rgba(160, 130, 85, 0.45);
+  --text-dim:     rgba(160, 130, 85, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #C09040;   /* aged gold ink */
@@ -67,7 +67,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(192, 144, 64, 0.26);
   --drop-icon-color:  rgba(192, 144, 64, 0.38);
-  --hint-sub-color:   rgba(160, 130, 85, 0.40);
+  --hint-sub-color:   rgba(160, 130, 85, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(192, 144, 64, 0.42);

@@ -17,7 +17,7 @@
 
   --font:         'Segoe UI', sans-serif;
   --text:         #B098C0;
-  --text-dim:     rgba(148, 120, 168, 0.45);
+  --text-dim:     rgba(148, 120, 168, 0.78);
 
   --accent-c:     #C060A0;   /* mascot pink — too bright, unsettling */
   --accent-m:     #60C0A0;   /* corporate teal */
@@ -55,7 +55,7 @@
 
   --drop-hint-border: rgba(192, 96, 160, 0.25);
   --drop-icon-color:  rgba(192, 96, 160, 0.35);
-  --hint-sub-color:   rgba(148, 120, 168, 0.32);
+  --hint-sub-color:   rgba(148, 120, 168, 0.75);
 
   --rename-dashed:    rgba(192, 96, 160, 0.40);
   --rename-input-bg:  rgba(192, 96, 160, 0.07);

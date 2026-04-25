@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #8CBE9E;
-  --text-dim:     rgba(90, 135, 105, 0.45);
+  --text-dim:     rgba(90, 135, 105, 0.78);
 
   --accent-c:     #188040;   /* Slytherin emerald */
   --accent-m:     #909090;   /* silver */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(20, 100, 40, 0.24);
   --drop-icon-color:  rgba(24, 128, 64, 0.36);
-  --hint-sub-color:   rgba(80, 130, 100, 0.40);
+  --hint-sub-color:   rgba(80, 130, 100, 0.75);
 
   --rename-dashed:    rgba(24, 128, 64, 0.38);
   --rename-input-bg:  rgba(20, 100, 40, 0.07);

@@ -16,7 +16,7 @@
 
   --font:         'Consolas', monospace;
   --text:         #6098B0;
-  --text-dim:     rgba(72, 120, 148, 0.45);
+  --text-dim:     rgba(72, 120, 148, 0.78);
 
   --accent-c:     #2088C0;   /* digital blue */
   --accent-m:     #C04040;   /* danger red */
@@ -54,7 +54,7 @@
 
   --drop-hint-border: rgba(32, 136, 192, 0.25);
   --drop-icon-color:  rgba(32, 136, 192, 0.35);
-  --hint-sub-color:   rgba(72, 120, 148, 0.35);
+  --hint-sub-color:   rgba(72, 120, 148, 0.75);
 
   --rename-dashed:    rgba(32, 136, 192, 0.42);
   --rename-input-bg:  rgba(32, 136, 192, 0.07);

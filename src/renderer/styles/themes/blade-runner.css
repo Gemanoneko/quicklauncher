@@ -13,7 +13,7 @@
   /* Typography */
   --font:                 'Segoe UI', 'Arial', sans-serif;
   --text:                 #C09860;
-  --text-dim:             #5a3e20;
+  --text-dim:             #a07845;
 
   /* Shape — noir window: bottom-left corner cut, like rain-streaked frame */
   --radius:               2px;
@@ -69,7 +69,7 @@
   /* Drop hint */
   --drop-hint-border:     rgba(224, 122, 0, 0.3);
   --drop-icon-color:      rgba(224, 122, 0, 0.4);
-  --hint-sub-color:       #5a3e20;
+  --hint-sub-color:       #a07845;
 
   /* Rename */
   --rename-dashed:        rgba(224, 122, 0, 0.45);

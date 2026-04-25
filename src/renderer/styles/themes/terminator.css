@@ -13,7 +13,7 @@
   /* Typography — targeting computer monospace */
   --font:                 Consolas, 'Courier New', monospace;
   --text:                 #D09090;
-  --text-dim:             #602020;
+  --text-dim:             #b06060;
 
   /* Shape — rectangular targeting scanner, no chamfer */
   --radius:               0px;
@@ -68,7 +68,7 @@
   /* Drop hint */
   --drop-hint-border:     rgba(255, 32, 0, 0.3);
   --drop-icon-color:      rgba(255, 32, 0, 0.45);
-  --hint-sub-color:       #602020;
+  --hint-sub-color:       #b06060;
 
   /* Rename */
   --rename-dashed:        rgba(255, 32, 0, 0.5);

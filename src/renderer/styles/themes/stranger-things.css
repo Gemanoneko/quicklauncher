@@ -15,7 +15,7 @@
 
   --font:         'Segoe UI', 'Consolas', monospace;
   --text:         #C070A0;
-  --text-dim:     rgba(160, 70, 120, 0.45);
+  --text-dim:     rgba(160, 70, 120, 0.78);
 
   --accent-c:     #FF0066;   /* 80s neon pink-magenta */
   --accent-m:     #9900CC;   /* Upside Down deep purple */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(200, 0, 80, 0.28);
   --drop-icon-color:  rgba(255, 0, 102, 0.40);
-  --hint-sub-color:   rgba(180, 80, 130, 0.36);
+  --hint-sub-color:   rgba(180, 80, 130, 0.75);
 
   --rename-dashed:    rgba(255, 0, 102, 0.42);
   --rename-input-bg:  rgba(200, 0, 80, 0.07);

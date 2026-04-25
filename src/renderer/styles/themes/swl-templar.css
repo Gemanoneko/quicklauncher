@@ -18,7 +18,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #A89888;
-  --text-dim:     rgba(136, 120, 104, 0.45);
+  --text-dim:     rgba(136, 120, 104, 0.78);
 
   /* Crusader crimson + weathered stone grey + dark wood */
   --accent-c:     #A82020;   /* crusader crimson */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(168, 32, 32, 0.22);
   --drop-icon-color:  rgba(168, 32, 32, 0.30);
-  --hint-sub-color:   rgba(136, 120, 104, 0.32);
+  --hint-sub-color:   rgba(136, 120, 104, 0.75);
 
   --rename-dashed:    rgba(168, 32, 32, 0.35);
   --rename-input-bg:  rgba(168, 32, 32, 0.06);

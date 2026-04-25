@@ -16,7 +16,7 @@
 
   --font:         'Consolas', 'Courier New', monospace;
   --text:         #808CA0;
-  --text-dim:     rgba(90, 100, 120, 0.45);
+  --text-dim:     rgba(90, 100, 120, 0.78);
 
   --accent-c:     #4060A0;   /* droid blue-grey */
   --accent-m:     #A03030;   /* Grievous red */
@@ -54,7 +54,7 @@
 
   --drop-hint-border: rgba(60, 80, 140, 0.22);
   --drop-icon-color:  rgba(60, 80, 140, 0.30);
-  --hint-sub-color:   rgba(90, 100, 120, 0.32);
+  --hint-sub-color:   rgba(90, 100, 120, 0.75);
 
   --rename-dashed:    rgba(60, 80, 140, 0.38);
   --rename-input-bg:  rgba(60, 80, 140, 0.06);

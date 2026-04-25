@@ -18,7 +18,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #B88890;
-  --text-dim:     rgba(160, 108, 118, 0.45);
+  --text-dim:     rgba(160, 108, 118, 0.78);
 
   /* Red interference — the sightjack frequency */
   --accent-c:     #A01828;   /* sightjack red */
@@ -61,7 +61,7 @@
 
   --drop-hint-border: rgba(160, 24, 40, 0.20);
   --drop-icon-color:  rgba(160, 24, 40, 0.28);
-  --hint-sub-color:   rgba(130, 80, 90, 0.30);
+  --hint-sub-color:   rgba(130, 80, 90, 0.75);
 
   --rename-dashed:    rgba(160, 24, 40, 0.32);
   --rename-input-bg:  rgba(160, 24, 40, 0.06);

@@ -20,7 +20,7 @@
 
   /* ── Text ── */
   --text:         #C8DCF0;
-  --text-dim:     rgba(200, 220, 240, 0.42);
+  --text-dim:     rgba(200, 220, 240, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #00B8EC;   /* Alliance blue — primary */
@@ -66,7 +66,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(0, 184, 236, 0.18);
   --drop-icon-color:  rgba(0, 184, 236, 0.25);
-  --hint-sub-color:   rgba(0, 184, 236, 0.20);
+  --hint-sub-color:   rgba(0, 184, 236, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(0, 184, 236, 0.30);

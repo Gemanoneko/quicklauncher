@@ -15,7 +15,7 @@
 
   --font:         'Segoe UI', 'Consolas', monospace;
   --text:         #C8B8A0;
-  --text-dim:     rgba(180, 150, 120, 0.45);
+  --text-dim:     rgba(180, 150, 120, 0.78);
 
   --accent-c:     #E01020;   /* Akira red */
   --accent-m:     #00A8FF;   /* electric cyan-blue */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(200, 0, 20, 0.28);
   --drop-icon-color:  rgba(224, 16, 32, 0.40);
-  --hint-sub-color:   rgba(160, 100, 80, 0.40);
+  --hint-sub-color:   rgba(160, 100, 80, 0.75);
 
   --rename-dashed:    rgba(224, 16, 32, 0.45);
   --rename-input-bg:  rgba(200, 0, 20, 0.07);

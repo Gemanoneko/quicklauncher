@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #C08040;
-  --text-dim:     rgba(180, 110, 50, 0.45);
+  --text-dim:     rgba(180, 110, 50, 0.78);
 
   --accent-c:     #C41E2A;   /* Gryffindor scarlet */
   --accent-m:     #D4A800;   /* burnished gold */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(196, 30, 42, 0.25);
   --drop-icon-color:  rgba(212, 168, 0, 0.35);
-  --hint-sub-color:   rgba(180, 100, 40, 0.32);
+  --hint-sub-color:   rgba(180, 100, 40, 0.75);
 
   --rename-dashed:    rgba(212, 168, 0, 0.40);
   --rename-input-bg:  rgba(196, 30, 42, 0.07);

@@ -18,7 +18,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #404850;
-  --text-dim:     rgba(60, 68, 78, 0.40);
+  --text-dim:     rgba(60, 68, 78, 0.78);
 
   /* Runner's red — the ONE vivid color in a sterile world */
   --accent-c:     #E02020;
@@ -58,7 +58,7 @@
 
   --drop-hint-border: rgba(96, 104, 112, 0.20);
   --drop-icon-color:  rgba(224, 32, 32, 0.30);
-  --hint-sub-color:   rgba(96, 104, 112, 0.32);
+  --hint-sub-color:   rgba(96, 104, 112, 0.75);
 
   --rename-dashed:    rgba(224, 32, 32, 0.40);
   --rename-input-bg:  rgba(224, 32, 32, 0.05);

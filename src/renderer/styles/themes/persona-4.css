@@ -16,7 +16,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #E0C040;
-  --text-dim:     rgba(190, 155, 40, 0.45);
+  --text-dim:     rgba(190, 155, 40, 0.78);
 
   --accent-c:     #DDB000;   /* Midnight Channel gold */
   --accent-m:     #E86820;   /* Investigation orange */
@@ -58,7 +58,7 @@
 
   --drop-hint-border: rgba(200, 160, 0, 0.30);
   --drop-icon-color:  rgba(220, 176, 0, 0.42);
-  --hint-sub-color:   rgba(180, 140, 40, 0.38);
+  --hint-sub-color:   rgba(180, 140, 40, 0.75);
 
   --rename-dashed:    rgba(220, 176, 0, 0.45);
   --rename-input-bg:  rgba(200, 160, 0, 0.07);

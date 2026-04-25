@@ -20,7 +20,7 @@
 
   /* ── Text ── */
   --text:         #A0D8D0;
-  --text-dim:     rgba(160, 216, 208, 0.42);
+  --text-dim:     rgba(160, 216, 208, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #00E0C8;   /* cyber-teal — primary */
@@ -66,7 +66,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(0, 224, 200, 0.18);
   --drop-icon-color:  rgba(0, 224, 200, 0.25);
-  --hint-sub-color:   rgba(0, 224, 200, 0.20);
+  --hint-sub-color:   rgba(0, 224, 200, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(0, 224, 200, 0.30);

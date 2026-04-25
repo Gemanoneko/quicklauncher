@@ -18,7 +18,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #B08868;
-  --text-dim:     rgba(140, 100, 75, 0.45);
+  --text-dim:     rgba(140, 100, 75, 0.78);
 
   /* Blood crimson + aged heraldic gold + dark shadow */
   --accent-c:     #A82020;   /* blood crimson */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(168, 32, 32, 0.22);
   --drop-icon-color:  rgba(168, 32, 32, 0.30);
-  --hint-sub-color:   rgba(140, 100, 75, 0.32);
+  --hint-sub-color:   rgba(140, 100, 75, 0.75);
 
   --rename-dashed:    rgba(168, 32, 32, 0.38);
   --rename-input-bg:  rgba(168, 32, 32, 0.06);

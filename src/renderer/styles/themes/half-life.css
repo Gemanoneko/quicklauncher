@@ -14,7 +14,7 @@
   /* Typography — corporate science terminal */
   --font:                 Consolas, 'Courier New', monospace;
   --text:                 #A0B090;
-  --text-dim:             #446038;
+  --text-dim:             #7a9c6a;
 
   /* Shape — rectangular, no nonsense, this is a research facility */
   --radius:               0px;
@@ -69,7 +69,7 @@
   /* Drop hint */
   --drop-hint-border:     rgba(76, 112, 64, 0.35);
   --drop-icon-color:      rgba(222, 128, 0, 0.4);
-  --hint-sub-color:       #446038;
+  --hint-sub-color:       #7a9c6a;
 
   /* Rename */
   --rename-dashed:        rgba(222, 128, 0, 0.5);

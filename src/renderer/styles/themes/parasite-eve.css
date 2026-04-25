@@ -15,7 +15,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #C0A080;
-  --text-dim:     rgba(160, 130, 90, 0.45);
+  --text-dim:     rgba(160, 130, 90, 0.78);
 
   --accent-c:     #D48020;   /* mitochondrial amber */
   --accent-m:     #CC3830;   /* cellular combustion red */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(212, 128, 32, 0.22);
   --drop-icon-color:  rgba(212, 128, 32, 0.32);
-  --hint-sub-color:   rgba(160, 130, 90, 0.35);
+  --hint-sub-color:   rgba(160, 130, 90, 0.75);
 
   --rename-dashed:    rgba(212, 128, 32, 0.40);
   --rename-input-bg:  rgba(212, 128, 32, 0.07);

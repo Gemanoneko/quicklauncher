@@ -28,7 +28,11 @@
 
   /* ── Text ── */
   --text:         #c4d4e8;
-  --text-dim:     rgba(196, 212, 232, 0.45);
+  /* --text-dim: applied to 9–10 px functional copy (header version, settings labels,
+     drop-hint sub, picker placeholder). Alpha 0.45 composites to ~5:1 marginal in
+     base, sub-AA in many themes. 0.78 lifts the floor across the whole theme set
+     while preserving the "dimmer than primary" visual relationship. */
+  --text-dim:     rgba(196, 212, 232, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #00f0ff;   /* primary */
@@ -75,7 +79,11 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(0, 240, 255, 0.18);
   --drop-icon-color:  rgba(0, 240, 255, 0.25);
-  --hint-sub-color:   rgba(0, 240, 255, 0.20);
+  /* --hint-sub-color: drop-hint secondary at 9 px. Old 0.20 alpha rendered the
+     "or RIGHT-CLICK..." line near-invisible on dark themes (~2.5:1). 0.75 brings it
+     above the AA 4.5:1 floor on near-black backgrounds while staying clearly
+     subordinate to primary drop-hint copy. */
+  --hint-sub-color:   rgba(0, 240, 255, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(0, 240, 255, 0.30);

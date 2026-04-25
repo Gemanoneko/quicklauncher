@@ -14,7 +14,7 @@
   /* Typography — Aperture Science is clean corporate sans-serif */
   --font:                 'Segoe UI', 'Arial', sans-serif;
   --text:                 #3A4050;
-  --text-dim:             rgba(60, 65, 80, 0.40);
+  --text-dim:             rgba(60, 65, 80, 0.78);
 
   /* Shape — rectangular test chambers */
   --radius:               4px;

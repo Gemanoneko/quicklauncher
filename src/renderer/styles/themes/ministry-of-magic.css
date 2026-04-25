@@ -22,7 +22,7 @@
 
   /* ── Text ── */
   --text:         #9ABCAA;
-  --text-dim:     rgba(100, 140, 115, 0.45);
+  --text-dim:     rgba(100, 140, 115, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #007858;   /* Ministry emerald — official decree green */
@@ -68,7 +68,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(0, 100, 70, 0.26);
   --drop-icon-color:  rgba(0, 120, 88, 0.38);
-  --hint-sub-color:   rgba(80, 120, 100, 0.42);
+  --hint-sub-color:   rgba(80, 120, 100, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(0, 120, 88, 0.40);

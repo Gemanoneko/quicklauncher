@@ -20,7 +20,7 @@
 
   /* ── Text ── */
   --text:         #9888C8;
-  --text-dim:     rgba(130, 115, 170, 0.50);
+  --text-dim:     rgba(130, 115, 170, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #6040C0;   /* Morpheus violet */
@@ -66,7 +66,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(96, 64, 192, 0.22);
   --drop-icon-color:  rgba(120, 80, 220, 0.30);
-  --hint-sub-color:   rgba(110, 90, 150, 0.35);
+  --hint-sub-color:   rgba(110, 90, 150, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(96, 64, 192, 0.38);

@@ -17,7 +17,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #A0A0A8;
-  --text-dim:     rgba(120, 120, 130, 0.45);
+  --text-dim:     rgba(120, 120, 130, 0.78);
 
   /* Cold grey + Templar red — the only warmth is the cross */
   --accent-c:     #B01818;   /* Templar red */
@@ -56,7 +56,7 @@
 
   --drop-hint-border: rgba(176, 24, 24, 0.22);
   --drop-icon-color:  rgba(176, 24, 24, 0.30);
-  --hint-sub-color:   rgba(120, 120, 130, 0.32);
+  --hint-sub-color:   rgba(120, 120, 130, 0.75);
 
   --rename-dashed:    rgba(176, 24, 24, 0.35);
   --rename-input-bg:  rgba(176, 24, 24, 0.06);

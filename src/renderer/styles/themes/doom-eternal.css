@@ -16,7 +16,7 @@
 
   --font:         'Segoe UI', sans-serif;
   --text:         #D07878;
-  --text-dim:     rgba(190, 100, 100, 0.45);
+  --text-dim:     rgba(190, 100, 100, 0.78);
 
   --accent-c:     #E02020;   /* Doom red — VIVID */
   --accent-m:     #40A060;   /* argent energy green */
@@ -54,7 +54,7 @@
 
   --drop-hint-border: rgba(224, 32, 32, 0.25);
   --drop-icon-color:  rgba(224, 32, 32, 0.35);
-  --hint-sub-color:   rgba(160, 70, 70, 0.32);
+  --hint-sub-color:   rgba(160, 70, 70, 0.75);
 
   --rename-dashed:    rgba(224, 32, 32, 0.40);
   --rename-input-bg:  rgba(224, 32, 32, 0.07);

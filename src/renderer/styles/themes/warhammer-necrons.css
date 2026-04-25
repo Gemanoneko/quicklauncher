@@ -15,7 +15,7 @@
 
   --font:         'Segoe UI', 'Arial', sans-serif;
   --text:         #70A870;
-  --text-dim:     rgba(80, 130, 80, 0.45);
+  --text-dim:     rgba(80, 130, 80, 0.78);
 
   --accent-c:     #00B840;   /* gauss green */
   --accent-m:     #404840;   /* necrodermis grey */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(0, 184, 64, 0.25);
   --drop-icon-color:  rgba(0, 184, 64, 0.32);
-  --hint-sub-color:   rgba(80, 130, 80, 0.35);
+  --hint-sub-color:   rgba(80, 130, 80, 0.75);
 
   --rename-dashed:    rgba(0, 184, 64, 0.40);
   --rename-input-bg:  rgba(0, 184, 64, 0.07);

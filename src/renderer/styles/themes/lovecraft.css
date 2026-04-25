@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #90A4C4;
-  --text-dim:     rgba(90, 100, 130, 0.45);
+  --text-dim:     rgba(90, 100, 130, 0.78);
 
   --accent-c:     #4050A0;   /* deep archive blue */
   --accent-m:     #806020;   /* aged document gold */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(64, 80, 160, 0.22);
   --drop-icon-color:  rgba(80, 100, 180, 0.28);
-  --hint-sub-color:   rgba(90, 100, 130, 0.32);
+  --hint-sub-color:   rgba(90, 100, 130, 0.75);
 
   --rename-dashed:    rgba(64, 80, 160, 0.35);
   --rename-input-bg:  rgba(50, 65, 130, 0.07);

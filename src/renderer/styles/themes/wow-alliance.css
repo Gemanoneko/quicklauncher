@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #88A8D0;
-  --text-dim:     rgba(100, 130, 180, 0.45);
+  --text-dim:     rgba(100, 130, 180, 0.78);
 
   --accent-c:     #2060C0;   /* Alliance royal blue */
   --accent-m:     #C8A020;   /* burnished gold */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(32, 96, 192, 0.25);
   --drop-icon-color:  rgba(200, 160, 32, 0.30);
-  --hint-sub-color:   rgba(100, 130, 180, 0.35);
+  --hint-sub-color:   rgba(100, 130, 180, 0.75);
 
   --rename-dashed:    rgba(200, 160, 32, 0.40);
   --rename-input-bg:  rgba(32, 96, 192, 0.07);

@@ -20,7 +20,7 @@
 
   /* ── Text ── */
   --text:         #A8C0D8;
-  --text-dim:     rgba(130, 160, 196, 0.42);
+  --text-dim:     rgba(130, 160, 196, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #3888CC;   /* EVE capsuleer steel blue */
@@ -66,7 +66,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(40, 110, 180, 0.22);
   --drop-icon-color:  rgba(56, 136, 204, 0.32);
-  --hint-sub-color:   rgba(120, 160, 200, 0.30);
+  --hint-sub-color:   rgba(120, 160, 200, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(56, 136, 204, 0.35);

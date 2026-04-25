@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #C0B090;
-  --text-dim:     rgba(150, 130, 90, 0.45);
+  --text-dim:     rgba(150, 130, 90, 0.78);
 
   --accent-c:     #E8B830;   /* flashlight yellow-gold */
   --accent-m:     #CC2010;   /* horror red */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(200, 160, 60, 0.22);
   --drop-icon-color:  rgba(232, 184, 48, 0.30);
-  --hint-sub-color:   rgba(160, 130, 80, 0.35);
+  --hint-sub-color:   rgba(160, 130, 80, 0.75);
 
   --rename-dashed:    rgba(232, 184, 48, 0.38);
   --rename-input-bg:  rgba(200, 160, 60, 0.07);

@@ -21,7 +21,7 @@
 
   /* ── Text ── */
   --text:         #BEB090;
-  --text-dim:     rgba(190, 176, 144, 0.48);
+  --text-dim:     rgba(190, 176, 144, 0.78);
 
   /* ── Accents ── */
   --accent-c:     #C9A030;   /* Lannister gold / candlelight throne-room */
@@ -67,7 +67,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(150, 110, 25, 0.28);
   --drop-icon-color:  rgba(200, 155, 38, 0.38);
-  --hint-sub-color:   rgba(130, 95, 35, 0.40);
+  --hint-sub-color:   rgba(130, 95, 35, 0.75);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(200, 155, 38, 0.40);

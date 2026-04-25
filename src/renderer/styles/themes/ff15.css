@@ -15,7 +15,7 @@
 
   --font:         'Segoe UI', sans-serif;
   --text:         #909AA8;
-  --text-dim:     rgba(120, 130, 148, 0.45);
+  --text-dim:     rgba(120, 130, 148, 0.78);
 
   --accent-c:     #5068A0;   /* desaturated royal blue */
   --accent-m:     #C0A040;   /* campfire gold */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(80, 104, 160, 0.25);
   --drop-icon-color:  rgba(192, 160, 64, 0.28);
-  --hint-sub-color:   rgba(120, 130, 148, 0.35);
+  --hint-sub-color:   rgba(120, 130, 148, 0.75);
 
   --rename-dashed:    rgba(192, 160, 64, 0.40);
   --rename-input-bg:  rgba(80, 104, 160, 0.07);

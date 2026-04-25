@@ -15,7 +15,7 @@
 
   --font:         'Segoe UI', 'Consolas', monospace;
   --text:         #A0B4CC;
-  --text-dim:     rgba(100, 120, 150, 0.45);
+  --text-dim:     rgba(100, 120, 150, 0.78);
 
   --accent-c:     #3A7A9C;   /* ship blue / Belter teal */
   --accent-m:     #AA2010;   /* MCRN red */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(50, 100, 140, 0.25);
   --drop-icon-color:  rgba(58, 122, 156, 0.35);
-  --hint-sub-color:   rgba(80, 110, 140, 0.38);
+  --hint-sub-color:   rgba(80, 110, 140, 0.75);
 
   --rename-dashed:    rgba(58, 122, 156, 0.38);
   --rename-input-bg:  rgba(50, 100, 140, 0.07);

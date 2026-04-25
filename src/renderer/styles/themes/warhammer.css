@@ -14,7 +14,7 @@
   /* Typography — gothic serif */
   --font:                 Georgia, 'Times New Roman', serif;
   --text:                 #C8B896;
-  --text-dim:             #6B5840;
+  --text-dim:             #a8907a;
 
   /* Shape — heavy octagonal chamfer, like a heraldic shield */
   --radius:               0px;
@@ -64,7 +64,7 @@
   /* Drop hint */
   --drop-hint-border:     rgba(200, 144, 10, 0.3);
   --drop-icon-color:      rgba(200, 144, 10, 0.45);
-  --hint-sub-color:       #6B5840;
+  --hint-sub-color:       #a8907a;
 
   /* Rename */
   --rename-dashed:        rgba(200, 144, 10, 0.5);
