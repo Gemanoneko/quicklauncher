@@ -277,6 +277,29 @@ html, body {
   97%          { text-shadow: var(--glow-c); transform: translate(0); }
 }
 
+/* Filter chip — visible state for type-to-filter (UX Review §6C). Sits in
+   the header between the title area and the controls. */
+#filter-chip {
+  -webkit-app-region: no-drag;
+  display: flex; align-items: center; gap: 6px;
+  margin-left: 8px;
+  padding: 2px 6px 2px 8px;
+  background: var(--tile-hover-bg);
+  border: 1px solid var(--accent-c);
+  border-radius: var(--radius);
+  font-size: 11px; letter-spacing: 1px;
+  color: var(--accent-c);
+  max-width: 160px; min-height: 22px;
+}
+#filter-chip-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#filter-chip-clear {
+  border: none; background: transparent; color: var(--accent-c);
+  padding: 0; min-width: 18px; min-height: 18px;
+  font-size: 11px; line-height: 1; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+#filter-chip-clear:hover { color: #fff; box-shadow: none; background: transparent; border-color: transparent; }
+
 #header-controls { -webkit-app-region: no-drag; display: flex; gap: 6px; }
 /* Click target floor: WCAG 2.2 AA 24×24 (UX Review §2 / I7).
    Old padding 2px 7px rendered ~20×24 — under spec. */
@@ -352,6 +375,20 @@ button:active { background: var(--btn-active-bg); }
   box-shadow: var(--tile-hover-shadow);
 }
 .app-tile:active { background: var(--tile-active-bg); transform: scale(0.96); }
+/* WCAG 2.2 SC 2.4.7 (Focus Visible) + 2.4.11 (Focus Not Obscured): keyboard
+   focus must be clearly visible and not covered by other UI. The 2 px
+   accent ring + 2 px offset reads on every theme without overlapping the
+   tile sheen. (UX Review §6B / I2). */
+.app-tile {
+  outline: none;
+}
+.app-tile:focus-visible {
+  outline: 2px solid var(--accent-c);
+  outline-offset: 2px;
+  z-index: 5;
+}
+/* Hide tiles filtered out by type-to-filter (UX Review §6C / I3). */
+.app-tile.filter-hidden { display: none !important; }
 
 /* ── Tile hover micro-interaction — sheen sweep (default for all themes) ──── */
 .app-tile::before {
@@ -610,6 +647,21 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 }
 
 /* ── Installed apps picker ───────────────────────────────────────────────────── */
+/* ── Cheat-sheet overlay (UX Review §6D) ─────────────────────────────────── */
+.cheat-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.cheat-row {
+  display: flex; align-items: baseline; gap: 12px;
+  font-size: 11px; letter-spacing: 1px;
+}
+.cheat-key {
+  flex: 0 0 110px;
+  color: var(--accent-c);
+  text-shadow: var(--glow-c);
+  font-weight: 700;
+  font-family: var(--font);
+}
+.cheat-desc { color: var(--text); }
+
 .picker-panel {
   height: 100%; display: flex; flex-direction: column; padding: 20px 20px 14px;
 }

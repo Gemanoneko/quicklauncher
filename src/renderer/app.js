@@ -895,12 +895,22 @@ function renderGrid() {
   }
 
   apps.forEach(appItem => elAppGrid.appendChild(createAppTile(appItem)));
+  // Re-apply any active type-to-filter after a rebuild — innerHTML='' wiped
+  // the .filter-hidden class. (UX Review §6C / I3.)
+  if (_filterText) applyFilter();
 }
 
 function createAppTile(appItem) {
   const tile = document.createElement('div');
   tile.className = 'app-tile';
   tile.dataset.id = appItem.id;
+  // Keyboard a11y (UX Review §6B / I2): tiles are focusable buttons.
+  // role=button advertises the launch semantic; tabindex=0 puts them in
+  // the natural Tab order. Arrow-key 2D navigation is wired separately
+  // via the gridKeydown handler — it computes column count from layout.
+  tile.tabIndex = 0;
+  tile.setAttribute('role', 'button');
+  tile.setAttribute('aria-label', appItem.name);
 
   const iconWrapper = document.createElement('div');
   iconWrapper.className = 'tile-icon-wrap';
@@ -946,6 +956,14 @@ function createAppTile(appItem) {
     tile.addEventListener('click', () => {
       if (suppressNextClick) return;
       launchApp(appItem.path);
+    });
+    // Enter/Space launches the focused tile (UX Review §6B). Captured here
+    // (not on the grid) so edit-mode tiles don't accidentally launch.
+    tile.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        launchApp(appItem.path);
+      }
     });
   }
 
@@ -1364,6 +1382,193 @@ $('btn-browse-picker').addEventListener('click', async () => {
 $('btn-close-picker').addEventListener('click', () => {
   elAppsPicker.classList.add('hidden');
 });
+
+// ── Grid keyboard navigation, type-to-filter, ? cheat-sheet ─────────────────
+// (UX Review §6B–D / I2–I3 + P3.) Single keydown router on document so we
+// can interleave: arrow-key grid nav, in-grid type-to-filter, '?' cheat-sheet.
+let _filterText = '';
+
+function isOverlayOpen() {
+  return [
+    elSettingsOverlay,
+    elAppsPicker,
+    document.getElementById('cheatsheet-overlay'),
+  ].some(o => o && !o.classList.contains('hidden'));
+}
+
+function getVisibleTiles() {
+  return [...elAppGrid.querySelectorAll('.app-tile:not(.filter-hidden)')];
+}
+
+function updateFilterChip() {
+  const chip = $('filter-chip');
+  if (!chip) return;
+  if (_filterText) {
+    $('filter-chip-text').textContent = _filterText.toUpperCase();
+    chip.classList.remove('hidden');
+  } else {
+    chip.classList.add('hidden');
+  }
+}
+
+function applyFilter() {
+  const q = _filterText.toLowerCase();
+  const tiles = [...elAppGrid.querySelectorAll('.app-tile')];
+  for (const t of tiles) {
+    const id = t.dataset.id;
+    const appItem = apps.find(a => a.id === id);
+    if (!appItem) continue;
+    const match = !q || appItem.name.toLowerCase().includes(q);
+    t.classList.toggle('filter-hidden', !match);
+  }
+  updateFilterChip();
+}
+
+function setFilter(text) {
+  _filterText = text;
+  applyFilter();
+}
+
+function clearFilter() {
+  if (!_filterText) return;
+  _filterText = '';
+  applyFilter();
+}
+
+// Compute the number of grid columns from the actual rendered layout —
+// gracefully handles the user dragging the window narrow / wide and the
+// icon-size slider. Uses the second-row tile's offsetTop discontinuity.
+function computeColumnCount(tiles) {
+  if (tiles.length <= 1) return tiles.length || 1;
+  const firstTop = tiles[0].offsetTop;
+  let cols = 1;
+  for (let i = 1; i < tiles.length; i++) {
+    if (tiles[i].offsetTop !== firstTop) break;
+    cols++;
+  }
+  return cols;
+}
+
+function focusTileAtIndex(tiles, idx) {
+  if (!tiles.length) return;
+  const i = Math.max(0, Math.min(tiles.length - 1, idx));
+  tiles[i].focus();
+}
+
+function moveTileFocus(direction) {
+  const tiles = getVisibleTiles();
+  if (!tiles.length) return;
+  const focused = document.activeElement;
+  const cur = tiles.indexOf(focused);
+  if (cur === -1) {
+    focusTileAtIndex(tiles, 0);
+    return;
+  }
+  const cols = computeColumnCount(tiles);
+  let next = cur;
+  if (direction === 'left')  next = cur - 1;
+  if (direction === 'right') next = cur + 1;
+  if (direction === 'up')    next = cur - cols;
+  if (direction === 'down')  next = cur + cols;
+  if (next >= 0 && next < tiles.length) focusTileAtIndex(tiles, next);
+}
+
+function openCheatsheet() {
+  document.getElementById('cheatsheet-overlay').classList.remove('hidden');
+}
+function closeCheatsheet() {
+  document.getElementById('cheatsheet-overlay').classList.add('hidden');
+}
+
+// Single source of truth for app-level keydown. Document-level so we catch
+// keys when no specific element has focus. Inputs (text fields, settings
+// inputs) opt out via the `editingText` early-return.
+document.addEventListener('keydown', (e) => {
+  // Keys that must always pass through to native handlers in text fields
+  const tag = (e.target && e.target.tagName) || '';
+  const editingText = tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable);
+
+  // ? — toggle cheatsheet (works even if not editing)
+  // Note: '?' arrives as Shift+'/' on US layouts; e.key is '?' on most
+  // modern browsers regardless. Don't fire while typing into a real input.
+  if (!editingText && (e.key === '?' || (e.shiftKey && e.key === '/'))) {
+    const cs = document.getElementById('cheatsheet-overlay');
+    if (cs.classList.contains('hidden')) openCheatsheet();
+    else closeCheatsheet();
+    e.preventDefault();
+    return;
+  }
+
+  // Escape: close overlays first, then clear filter, then nothing.
+  // (Fullscreen-exit Escape is wired separately below in setupContextMenu.)
+  if (e.key === 'Escape') {
+    const cs = document.getElementById('cheatsheet-overlay');
+    if (!cs.classList.contains('hidden')) { closeCheatsheet(); e.preventDefault(); return; }
+    if (!elSettingsOverlay.classList.contains('hidden')) { elSettingsOverlay.classList.add('hidden'); e.preventDefault(); return; }
+    if (!elAppsPicker.classList.contains('hidden')) { elAppsPicker.classList.add('hidden'); e.preventDefault(); return; }
+    if (_filterText) { clearFilter(); e.preventDefault(); return; }
+    // Fall through to fullscreen / edit-mode handlers
+  }
+
+  // F11 — toggle fullscreen (UX Review §6E / P4)
+  if (!editingText && e.key === 'F11') {
+    e.preventDefault();
+    (async () => updateFullscreenButton(await window.api.invoke('toggle-fullscreen')))();
+    return;
+  }
+
+  // Beyond here, only react when no overlay is open and we're not in a text
+  // field — type-to-filter and arrow nav must not interfere with settings.
+  if (editingText || isOverlayOpen()) return;
+
+  // Arrow keys — grid 2D nav
+  if (e.key === 'ArrowLeft')  { moveTileFocus('left');  e.preventDefault(); return; }
+  if (e.key === 'ArrowRight') { moveTileFocus('right'); e.preventDefault(); return; }
+  if (e.key === 'ArrowUp')    { moveTileFocus('up');    e.preventDefault(); return; }
+  if (e.key === 'ArrowDown')  { moveTileFocus('down');  e.preventDefault(); return; }
+
+  // Enter / Space launch handled per-tile; if no tile is focused but a
+  // filter is active and Enter is pressed, launch the first visible tile.
+  if (e.key === 'Enter' && _filterText) {
+    const visible = getVisibleTiles();
+    if (visible.length) {
+      const id = visible[0].dataset.id;
+      const appItem = apps.find(a => a.id === id);
+      if (appItem) {
+        launchApp(appItem.path);
+        e.preventDefault();
+      }
+    }
+    return;
+  }
+
+  // Backspace edits filter
+  if (e.key === 'Backspace' && _filterText) {
+    setFilter(_filterText.slice(0, -1));
+    e.preventDefault();
+    return;
+  }
+
+  // Type-to-filter: printable keys with no Ctrl/Alt/Meta modifiers.
+  // (Shift is fine — for typed letters Shift produces uppercase.)
+  if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    setFilter(_filterText + e.key);
+    e.preventDefault();
+    return;
+  }
+});
+
+// Filter chip × button
+(function () {
+  const btn = $('filter-chip-clear');
+  if (btn) btn.addEventListener('click', () => clearFilter());
+})();
+
+// Cheatsheet close button
+(function () {
+  const btn = $('btn-close-cheatsheet');
+  if (btn) btn.addEventListener('click', () => closeCheatsheet());
+})();
 
 // ── Context menu (right-click → edit mode) ────────────────────────────────────
 function setupContextMenu() {

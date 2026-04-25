@@ -18,6 +18,10 @@
         <span id="title">QUICK<span class="accent">.</span>LAUNCH</span>
         <span id="header-version"></span>
       </div>
+      <div id="filter-chip" class="hidden" title="Type to filter — Esc to clear">
+        <span id="filter-chip-text"></span>
+        <button id="filter-chip-clear" type="button" title="Clear filter">✕</button>
+      </div>
       <div id="header-controls">
         <button id="btn-random-theme" title="Random theme">⚄</button>
         <button id="btn-settings" title="Settings">⚙</button>
@@ -122,6 +126,27 @@
       <div class="overlay-footer">
         <button id="btn-check-update">CHECK FOR UPDATES</button>
         <button id="btn-close-settings">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard cheat-sheet overlay -->
+  <div id="cheatsheet-overlay" class="overlay hidden">
+    <div class="overlay-panel">
+      <div class="overlay-title">// KEYBOARD SHORTCUTS</div>
+      <div class="cheat-list">
+        <div class="cheat-row"><span class="cheat-key">CTRL+SPACE</span><span class="cheat-desc">Show / hide window (rebindable)</span></div>
+        <div class="cheat-row"><span class="cheat-key">ARROWS</span><span class="cheat-desc">Move focus between tiles</span></div>
+        <div class="cheat-row"><span class="cheat-key">ENTER</span><span class="cheat-desc">Launch focused tile</span></div>
+        <div class="cheat-row"><span class="cheat-key">A–Z / 0–9</span><span class="cheat-desc">Type to filter tiles by name</span></div>
+        <div class="cheat-row"><span class="cheat-key">BACKSPACE</span><span class="cheat-desc">Edit filter (in filter mode)</span></div>
+        <div class="cheat-row"><span class="cheat-key">ESC</span><span class="cheat-desc">Clear filter / close overlay / hide window</span></div>
+        <div class="cheat-row"><span class="cheat-key">?</span><span class="cheat-desc">Toggle this cheat-sheet</span></div>
+        <div class="cheat-row"><span class="cheat-key">F11</span><span class="cheat-desc">Toggle fullscreen</span></div>
+        <div class="cheat-row"><span class="cheat-key">RIGHT-CLICK</span><span class="cheat-desc">Enter edit mode</span></div>
+      </div>
+      <div class="overlay-footer">
+        <button id="btn-close-cheatsheet">CLOSE</button>
       </div>
     </div>
   </div>
