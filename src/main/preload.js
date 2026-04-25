@@ -38,6 +38,11 @@ const ON_CHANNELS = new Set([
   'store-save-error',
   'fullscreen-changed',
   'launch-error',
+  // Tray-driven events (UX Review §7 / I5): the tray menu can open the
+  // Settings overlay and toggle persisted settings. The renderer listens
+  // to these so its local state and any open overlay stay in sync.
+  'tray-open-settings',
+  'settings-changed-externally',
 ]);
 
 contextBridge.exposeInMainWorld('api', {

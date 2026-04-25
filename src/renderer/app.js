@@ -1634,6 +1634,20 @@ function setupUpdateListeners() {
     showUpdateBanner(`COULD NOT LAUNCH "${safeName}" — ${reason}`, [], 8000);
     console.warn('Launch error:', reason, name);
   });
+
+  // Tray menu wiring (UX Review §7 / I5). The tray can:
+  //   - Open the Settings overlay (after the main process has already
+  //     shown/focused the window).
+  //   - Toggle Start-with-Windows / Random-theme persisted settings,
+  //     which fires settings-changed-externally so any open Settings
+  //     overlay reflects the new checkbox state immediately.
+  window.api.on('tray-open-settings', () => {
+    elSettingsOverlay.classList.remove('hidden');
+  });
+  window.api.on('settings-changed-externally', async () => {
+    settings = await window.api.invoke('get-settings');
+    applySettings();
+  });
 }
 
 function showUpdateBanner(text, actions, autoDismissMs = 0) {
