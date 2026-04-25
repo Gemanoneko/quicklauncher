@@ -1,10 +1,10 @@
 # QuickLaunch — Brief
 
 ## What It Does
-Cyberpunk-themed desktop quick launcher for Windows. Tray-resident Electron app that pops up a themeable grid of shortcuts (apps, files, URLs) for fast launching. Supports multiple themes (picked randomly on startup by default), global show/hide, single-instance lock, auto-launch on Windows login, and auto-updates.
+Cyberpunk-themed desktop quick launcher for Windows. Tray-resident Electron app that pops up a themeable grid of shortcuts (apps, files, URLs) for fast launching. Supports multiple themes (picked randomly on startup by default), a user-rebindable global show/hide hotkey (default `Ctrl+Space`), grid keyboard navigation and type-to-filter, single-instance lock, auto-launch on Windows login, and auto-updates.
 
 ## What Sergei Does With It
-Keeps it in the tray. Pops it open when he wants to launch something without hunting through the Start menu or Desktop. Cycles themes for fun.
+Keeps it in the tray. Pops it open with `Ctrl+Space` (or via the tray) when he wants to launch something without hunting through the Start menu or Desktop. Arrow keys to walk the grid, Enter to launch; type to filter live. Cycles themes for fun. `?` opens a cheat-sheet of all keyboard shortcuts.
 
 ## What It Explicitly Does Not Do
 - No system-wide search (Alfred/Raycast-style fuzzy search) — it's a curated grid, not a launcher bar
@@ -34,3 +34,5 @@ Keeps it in the tray. Pops it open when he wants to launch something without hun
 - The legacy `setup-git.ps1` in the repo root references the old path `c:\Antigravity Projects\Personal\QuickLaunch`. The tool has since moved to `WIP/QuickLaunch/`. The script is no longer needed (git is already correctly configured) and should be deleted in a future patch — flagged to Ender.
 - Single-instance lock means only one QuickLaunch process can run at a time — second launches are silently dropped.
 - Auto-launch registration uses `app.getPath('exe')` and is only applied for packaged builds (dev builds would register the bare Electron binary).
+- The global show/hide hotkey defaults to `Ctrl+Space` and is rebindable in Settings → GLOBAL SHOW/HIDE HOTKEY (click the field, press the desired combo, or click ✕ to disable). Bindings register via Electron's `globalShortcut` so they fire even when the window is hidden / unfocused. If a binding fails (already held by another app), the Settings panel surfaces a `CONFLICT — IN USE BY ANOTHER APP` status and reverts to the previously-bound value.
+- Theme contrast is gated by `scripts/check-theme-contrast.js` (run via `npm run check:contrast`, also invoked as `prebuild`). Legacy themes that fail AA only warn; new or modified themes must clear WCAG 2.2 AA. Baseline is `scripts/themes-baseline.json` and updates only via deliberate `--rebaseline` invocation.
