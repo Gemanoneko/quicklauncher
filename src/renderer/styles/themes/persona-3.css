@@ -22,7 +22,7 @@
 
   /* ── Text ── */
   --text:         #90B8E0;
-  --text-dim:     rgba(110, 150, 210, 0.78);
+  --text-dim:     rgba(110, 150, 210, 0.83);
 
   /* ── Accents ── */
   --accent-c:     #1E72D8;   /* electric Dark Hour blue */
@@ -68,7 +68,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(20, 80, 180, 0.25);
   --drop-icon-color:  rgba(30, 114, 216, 0.35);
-  --hint-sub-color:   rgba(100, 150, 210, 0.75);
+  --hint-sub-color:   rgba(100, 150, 210, 0.8);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(30, 114, 216, 0.40);

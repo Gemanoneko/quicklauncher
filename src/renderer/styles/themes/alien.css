@@ -13,7 +13,7 @@
   /* Typography */
   --font:                 'Consolas', 'Courier New', monospace;
   --text:                 #30BC30;
-  --text-dim:             rgba(48, 160, 48, 0.78);
+  --text-dim:             rgba(48, 160, 48, 0.88);
 
   /* Shape — hard rectangle, no softness */
   --radius:               0px;
@@ -68,7 +68,7 @@
   /* Drop hint */
   --drop-hint-border:     rgba(27, 200, 27, 0.3);
   --drop-icon-color:      rgba(27, 200, 27, 0.4);
-  --hint-sub-color:       #0a5008;
+  --hint-sub-color:       #428840;
 
   /* Rename */
   --rename-dashed:        rgba(27, 200, 27, 0.45);

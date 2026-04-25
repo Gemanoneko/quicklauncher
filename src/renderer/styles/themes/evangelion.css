@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(200, 70, 0, 0.25);
   --drop-icon-color:  rgba(224, 88, 0, 0.38);
-  --hint-sub-color:   rgba(160, 110, 20, 0.75);
+  --hint-sub-color:   rgba(160, 110, 20, 1);
 
   --rename-dashed:    rgba(224, 88, 0, 0.42);
   --rename-input-bg:  rgba(200, 70, 0, 0.07);

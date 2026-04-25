@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #CC8080;
-  --text-dim:     rgba(160, 90, 75, 0.78);
+  --text-dim:     #AC6657;
 
   --accent-c:     #CC0000;   /* hellfire red */
   --accent-m:     #FF4400;   /* ember orange */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(160, 0, 0, 0.28);
   --drop-icon-color:  rgba(204, 0, 0, 0.40);
-  --hint-sub-color:   rgba(130, 60, 40, 0.75);
+  --hint-sub-color:   #AA6450;
 
   --rename-dashed:    rgba(204, 0, 0, 0.42);
   --rename-input-bg:  rgba(160, 0, 0, 0.08);

@@ -17,7 +17,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #C0A868;
-  --text-dim:     rgba(170, 140, 80, 0.78);
+  --text-dim:     rgba(170, 140, 80, 0.83);
 
   --accent-c:     #C8A030;   /* Eagle Vision gold */
   --accent-m:     #A02020;   /* assassin red (hidden blade blood) */
@@ -55,7 +55,7 @@
 
   --drop-hint-border: rgba(200, 160, 48, 0.22);
   --drop-icon-color:  rgba(200, 160, 48, 0.30);
-  --hint-sub-color:   rgba(170, 140, 80, 0.75);
+  --hint-sub-color:   rgba(170, 140, 80, 0.85);
 
   --rename-dashed:    rgba(200, 160, 48, 0.38);
   --rename-input-bg:  rgba(200, 160, 48, 0.06);
