@@ -52,7 +52,14 @@ class Store extends EventEmitter {
         startWithWindows: true,
         randomTheme: true,
         theme: 'cyberpunk',
-        windowPosition: null
+        windowPosition: null,
+        // Global show/hide hotkey — Sergei's locked default 'Ctrl+Space'
+        // (UX Review §6A / I1, Decisions Locked In #1). Use null to disable.
+        globalHotkey: 'Ctrl+Space',
+        // Reduce motion: explicit user setting independent of OS pref.
+        // When true (or when prefers-reduced-motion: reduce is set at the OS
+        // level), persistent ambient animations are suppressed. (UX Review §5)
+        reducedMotion: false
       }
     };
   }

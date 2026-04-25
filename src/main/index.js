@@ -1,4 +1,4 @@
-const { app } = require('electron');
+const { app, globalShortcut } = require('electron');
 const path = require('path');
 
 // Single instance lock
@@ -30,6 +30,15 @@ app.whenReady().then(() => {
   setupTray(mainWindow, app, store);
   setupIPC(mainWindow, store, app);
   setupUpdater(mainWindow);
+
+  // ── Global show/hide hotkey ────────────────────────────────────────────
+  // Per UX Review §6A / I1 (Sergei's locked default Ctrl+Space, rebindable).
+  // globalShortcut is the only Electron mechanism that fires while the
+  // window is hidden / unfocused — exactly what's needed for a launcher.
+  // applyGlobalHotkey is invoked here at boot, and again from the renderer
+  // (via 'apply-global-hotkey' IPC) whenever the user changes the binding.
+  applyGlobalHotkey(store.get('settings').globalHotkey, mainWindow);
+  registerHotkeyIpc(store, () => mainWindow);
 
   store.on('save-error', () => {
     if (mainWindow && !mainWindow.isDestroyed()) {
@@ -67,3 +76,61 @@ app.on('second-instance', () => {
 app.on('window-all-closed', () => {
   // Intentionally empty — prevents the default quit so the tray icon stays alive
 });
+
+// Belt-and-braces: Electron unregisters globalShortcuts on process exit, but
+// being explicit avoids edge cases on rapid restart (cached registrations
+// occasionally survive on Windows when a child crash kills the renderer).
+app.on('will-quit', () => {
+  try { globalShortcut.unregisterAll(); } catch { /* noop */ }
+});
+
+// ── Global hotkey machinery ────────────────────────────────────────────────
+// Track the currently-registered accelerator so we can unregister cleanly
+// before applying a new one.
+let _activeHotkey = null;
+
+function applyGlobalHotkey(accel, win) {
+  // Accelerator string shape (e.g. 'Ctrl+Space', 'Alt+Shift+Q') is validated
+  // by globalShortcut.register itself — bad strings throw; we catch and
+  // report failure so the renderer can surface it in settings.
+  try {
+    if (_activeHotkey) {
+      globalShortcut.unregister(_activeHotkey);
+      _activeHotkey = null;
+    }
+    if (!accel) return { ok: true, registered: null };
+    const ok = globalShortcut.register(accel, () => {
+      // Show/hide toggle — restore from minimized first so the window
+      // reliably comes to the foreground.
+      if (!win || win.isDestroyed()) return;
+      if (win.isVisible() && win.isFocused()) {
+        win.hide();
+      } else {
+        if (win.isMinimized()) win.restore();
+        win.show();
+        win.focus();
+      }
+    });
+    if (!ok) {
+      console.warn(`[hotkey] register failed for "${accel}" — likely held by another app`);
+      return { ok: false, registered: null, reason: 'CONFLICT' };
+    }
+    _activeHotkey = accel;
+    return { ok: true, registered: accel };
+  } catch (err) {
+    console.warn(`[hotkey] register threw for "${accel}":`, err.message);
+    return { ok: false, registered: null, reason: 'INVALID' };
+  }
+}
+
+function registerHotkeyIpc(store, getWin) {
+  const { ipcMain } = require('electron');
+  ipcMain.handle('apply-global-hotkey', (_, accel) => {
+    // Persist + register. Renderer should call save-settings separately for
+    // the value to survive restart; this handler does the live re-bind.
+    return applyGlobalHotkey(accel, getWin());
+  });
+  ipcMain.handle('get-global-hotkey-status', () => ({
+    registered: _activeHotkey
+  }));
+}

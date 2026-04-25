@@ -1031,12 +1031,37 @@ function applySettings() {
   elChkStartup.checked = settings.startWithWindows !== false;
   elChkRandomTheme.checked = settings.randomTheme !== false;
 
+  // Reduced-motion is OS-or-user driven (UX Review §5). The user setting
+  // adds to (does not subtract from) the OS pref — when either is set,
+  // the body class is added and ambient infinite animations are suppressed
+  // via .reduced-motion overrides in base.css.
+  const elChkReducedMotion = $('chk-reduced-motion');
+  if (elChkReducedMotion) elChkReducedMotion.checked = settings.reducedMotion === true;
+  applyReducedMotion();
+
+  // Hotkey input — display whatever's persisted; null means disabled.
+  const elInputHotkey = $('input-hotkey');
+  if (elInputHotkey) elInputHotkey.value = settings.globalHotkey || '';
+
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
   $('theme-stylesheet').href = `styles/themes/${theme}.css`;
   elThemeSearch.value = '';
   startBannerCycle(theme);
 }
+
+// Apply reduced-motion: union of user setting and OS prefers-reduced-motion.
+// The body class drives the CSS overrides (defined in base.css).
+function applyReducedMotion() {
+  const osPref = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const userPref = settings.reducedMotion === true;
+  document.body.classList.toggle('reduced-motion', osPref || userPref);
+}
+
+// Re-evaluate when the OS pref changes mid-session (rare but possible).
+window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', () => {
+  applyReducedMotion();
+});
 
 function startBannerCycle(theme) {
   clearInterval(bannerInterval);
@@ -1567,6 +1592,118 @@ $('btn-done-edit').addEventListener('click', exitEditMode);
       if (active) active.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
     }
   });
+})();
+
+// ── Reduced-motion checkbox ─────────────────────────────────────────────────
+(function () {
+  const cb = $('chk-reduced-motion');
+  if (!cb) return;
+  cb.addEventListener('change', async (e) => {
+    settings.reducedMotion = e.target.checked;
+    applyReducedMotion();
+    await window.api.invoke('save-settings', settings);
+  });
+})();
+
+// ── Global hotkey rebinding ─────────────────────────────────────────────────
+// Pattern: input is readonly. Click to enter "recording" mode. Capture the
+// next non-modifier keydown and convert to Electron accelerator syntax. Send
+// to main for live re-registration; on success persist via save-settings.
+(function () {
+  const inputEl = $('input-hotkey');
+  const clearBtn = $('btn-hotkey-clear');
+  const statusEl = $('hotkey-status');
+  if (!inputEl) return;
+
+  let recording = false;
+
+  function setStatus(msg, isError) {
+    if (!statusEl) return;
+    statusEl.textContent = msg || '';
+    statusEl.classList.toggle('error', !!isError);
+  }
+
+  // Build an Electron accelerator from a KeyboardEvent. Returns null if
+  // the user pressed only modifiers (we wait for the actual key).
+  function eventToAccelerator(e) {
+    const parts = [];
+    if (e.ctrlKey)  parts.push('Ctrl');
+    if (e.altKey)   parts.push('Alt');
+    if (e.shiftKey) parts.push('Shift');
+    if (e.metaKey)  parts.push('Super');
+    const k = e.key;
+    // Skip pure-modifier presses
+    if (['Control', 'Alt', 'Shift', 'Meta'].includes(k)) return null;
+    let keyName = null;
+    if (k === ' ') keyName = 'Space';
+    else if (k === 'Escape') keyName = 'Escape';
+    else if (k === 'Enter') keyName = 'Return';
+    else if (k === 'Tab') keyName = 'Tab';
+    else if (k === 'Backspace') keyName = 'Backspace';
+    else if (k.length === 1) keyName = k.toUpperCase();
+    else keyName = k; // F-keys and special keys come through as-is (F1, ArrowUp…)
+    parts.push(keyName);
+    return parts.join('+');
+  }
+
+  async function tryApply(accel) {
+    const result = await window.api.invoke('apply-global-hotkey', accel);
+    if (result && result.ok) {
+      settings.globalHotkey = accel;
+      await window.api.invoke('save-settings', settings);
+      inputEl.value = accel || '';
+      setStatus(accel ? 'BOUND.' : 'DISABLED.', false);
+    } else {
+      const reason = result && result.reason === 'CONFLICT'
+        ? 'CONFLICT — IN USE BY ANOTHER APP'
+        : 'INVALID BINDING';
+      setStatus(reason, true);
+      // Restore previous value visually so the user isn't left in a stale state.
+      inputEl.value = settings.globalHotkey || '';
+    }
+  }
+
+  function startRecording() {
+    if (recording) return;
+    recording = true;
+    inputEl.classList.add('recording');
+    inputEl.value = 'PRESS KEYS...';
+    setStatus('Press your binding (Esc to cancel)', false);
+  }
+
+  function endRecording() {
+    recording = false;
+    inputEl.classList.remove('recording');
+    inputEl.blur();
+  }
+
+  inputEl.addEventListener('focus', startRecording);
+  inputEl.addEventListener('mousedown', (e) => {
+    // Don't let the readonly input trigger an extra focus toggle
+    if (recording) e.preventDefault();
+  });
+
+  inputEl.addEventListener('keydown', async (e) => {
+    if (!recording) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.key === 'Escape') {
+      inputEl.value = settings.globalHotkey || '';
+      setStatus('CANCELLED.', false);
+      endRecording();
+      return;
+    }
+    const accel = eventToAccelerator(e);
+    if (!accel) return; // pure modifier, keep waiting
+    await tryApply(accel);
+    endRecording();
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', async () => {
+      await tryApply(null);
+    });
+  }
 })();
 
 $('btn-random-theme').addEventListener('click', async () => {

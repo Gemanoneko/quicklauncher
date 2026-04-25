@@ -24,6 +24,8 @@ const INVOKE_CHANNELS = new Set([
   'exit-fullscreen',
   'download-update',
   'install-update',
+  'apply-global-hotkey',
+  'get-global-hotkey-status',
 ]);
 
 const ON_CHANNELS = new Set([

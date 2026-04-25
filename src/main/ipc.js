@@ -287,6 +287,16 @@ function setupIPC(win, store, electronApp) {
         sanitized.windowSize = { width: Math.round(width), height: Math.round(height) };
       }
     }
+    // globalHotkey: accept null (disabled), or a non-empty string up to 64 chars.
+    // String shape is validated lazily by globalShortcut.register at apply time.
+    if (settings.globalHotkey === null || settings.globalHotkey === '') {
+      sanitized.globalHotkey = null;
+    } else if (typeof settings.globalHotkey === 'string' && settings.globalHotkey.length <= 64) {
+      sanitized.globalHotkey = settings.globalHotkey;
+    }
+    if (typeof settings.reducedMotion === 'boolean') {
+      sanitized.reducedMotion = settings.reducedMotion;
+    }
     store.set('settings', sanitized);
   });
 

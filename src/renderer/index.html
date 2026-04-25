@@ -91,6 +91,23 @@
       </div>
 
       <div class="setting-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="chk-reduced-motion">
+          <span class="checkmark"></span>
+          REDUCE MOTION
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <label for="input-hotkey">GLOBAL SHOW/HIDE HOTKEY</label>
+        <div class="hotkey-row">
+          <input id="input-hotkey" class="hotkey-input" type="text" readonly placeholder="CLICK AND PRESS KEYS" autocomplete="off" spellcheck="false">
+          <button id="btn-hotkey-clear" type="button" title="Clear (disable hotkey)">✕</button>
+        </div>
+        <div id="hotkey-status" class="hotkey-status"></div>
+      </div>
+
+      <div class="setting-row">
         <label for="theme-search">SKIN</label>
         <div id="theme-picker" class="theme-picker">
           <input id="theme-search" class="theme-search" type="text" autocomplete="off" spellcheck="false" placeholder="SEARCH...">
