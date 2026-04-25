@@ -16,7 +16,7 @@
 
   --font:         'Segoe UI', Georgia, serif;
   --text:         #A88858;
-  --text-dim:     rgba(110, 80, 48, 0.78);
+  --text-dim:     #967858;
 
   --accent-c:     #CC4800;   /* volcanic ember */
   --accent-m:     #880000;   /* lava red */
@@ -58,7 +58,7 @@
 
   --drop-hint-border: rgba(160, 55, 0, 0.28);
   --drop-icon-color:  rgba(204, 72, 0, 0.40);
-  --hint-sub-color:   rgba(120, 70, 30, 0.75);
+  --hint-sub-color:   #A4724A;
 
   --rename-dashed:    rgba(204, 72, 0, 0.42);
   --rename-input-bg:  rgba(160, 55, 0, 0.08);

@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #9AAED0;
-  --text-dim:     rgba(100, 110, 140, 0.78);
+  --text-dim:     #707A98;
 
   --accent-c:     #5060A0;   /* spirit photography indigo-blue */
   --accent-m:     #C0A0C0;   /* ectoplasmic silver-violet */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(70, 80, 140, 0.26);
   --drop-icon-color:  rgba(80, 96, 160, 0.35);
-  --hint-sub-color:   rgba(110, 115, 145, 0.75);
+  --hint-sub-color:   #727795;
 
   --rename-dashed:    rgba(80, 96, 160, 0.38);
   --rename-input-bg:  rgba(70, 80, 140, 0.07);

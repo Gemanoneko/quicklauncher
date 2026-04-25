@@ -20,7 +20,7 @@
 
   /* ── Text ── */
   --text:         #AAAAAA;
-  --text-dim:     rgba(110, 110, 110, 0.78);
+  --text-dim:     #7A7A7A;
 
   /* ── Accents ── */
   --accent-c:     #BBBBBB;   /* clinical documentation white-grey */
@@ -70,7 +70,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(150, 150, 150, 0.22);
   --drop-icon-color:  rgba(187, 187, 187, 0.28);
-  --hint-sub-color:   rgba(120, 120, 120, 0.75);
+  --hint-sub-color:   rgba(120, 120, 120, 1);
 
   /* ── Rename ── */
   --rename-dashed:    rgba(187, 187, 187, 0.32);

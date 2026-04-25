@@ -15,7 +15,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #A0AADC;
-  --text-dim:     rgba(110, 135, 185, 0.78);
+  --text-dim:     rgba(110, 135, 185, 0.88);
 
   --accent-c:     #4068B0;   /* Ravenclaw blue */
   --accent-m:     #9A7030;   /* Ravenclaw bronze */
@@ -53,7 +53,7 @@
 
   --drop-hint-border: rgba(64, 100, 160, 0.26);
   --drop-icon-color:  rgba(64, 104, 176, 0.38);
-  --hint-sub-color:   rgba(100, 130, 175, 0.75);
+  --hint-sub-color:   rgba(100, 130, 175, 0.95);
 
   --rename-dashed:    rgba(64, 104, 176, 0.40);
   --rename-input-bg:  rgba(64, 100, 160, 0.07);

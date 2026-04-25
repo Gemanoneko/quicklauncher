@@ -17,7 +17,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #8898B0;
-  --text-dim:     rgba(100, 115, 140, 0.78);
+  --text-dim:     #707F98;
 
   /* Near-monochrome — cold steel blue, blood in snow red, frozen dark */
   --accent-c:     #6878A0;   /* cold steel blue */
@@ -57,7 +57,7 @@
 
   --drop-hint-border: rgba(104, 120, 160, 0.16);
   --drop-icon-color:  rgba(104, 120, 160, 0.22);
-  --hint-sub-color:   rgba(104, 120, 160, 0.75);
+  --hint-sub-color:   #6C7CA4;
 
   --rename-dashed:    rgba(104, 120, 160, 0.28);
   --rename-input-bg:  rgba(104, 120, 160, 0.05);

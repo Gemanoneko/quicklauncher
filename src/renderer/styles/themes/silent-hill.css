@@ -17,7 +17,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #3A3530;
-  --text-dim:     rgba(60, 55, 48, 0.78);
+  --text-dim:     rgba(60, 55, 48, 0.83);
 
   /* Near-monochrome — the only color is a faint rust bleed */
   --accent-c:     #6A5A4A;   /* fog brown-grey */
@@ -56,7 +56,7 @@
 
   --drop-hint-border: rgba(80, 70, 60, 0.20);
   --drop-icon-color:  rgba(80, 70, 60, 0.25);
-  --hint-sub-color:   rgba(80, 70, 60, 0.75);
+  --hint-sub-color:   rgba(80, 70, 60, 0.95);
 
   --rename-dashed:    rgba(80, 70, 60, 0.30);
   --rename-input-bg:  rgba(60, 55, 48, 0.06);

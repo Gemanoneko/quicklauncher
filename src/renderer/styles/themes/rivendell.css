@@ -16,7 +16,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #9AAAC8;
-  --text-dim:     rgba(130, 150, 185, 0.78);
+  --text-dim:     rgba(130, 150, 185, 0.83);
 
   --accent-c:     #6080B8;   /* elven silver-blue */
   --accent-m:     #C0A840;   /* warm elven gold */
@@ -54,7 +54,7 @@
 
   --drop-hint-border: rgba(80, 110, 170, 0.25);
   --drop-icon-color:  rgba(96, 128, 184, 0.38);
-  --hint-sub-color:   rgba(100, 130, 170, 0.75);
+  --hint-sub-color:   rgba(100, 130, 170, 0.95);
 
   --rename-dashed:    rgba(96, 128, 184, 0.40);
   --rename-input-bg:  rgba(80, 110, 170, 0.07);

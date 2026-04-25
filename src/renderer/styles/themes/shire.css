@@ -16,7 +16,7 @@
 
   --font:         Georgia, 'Times New Roman', serif;
   --text:         #A8C070;
-  --text-dim:     rgba(130, 160, 60, 0.78);
+  --text-dim:     rgba(130, 160, 60, 0.83);
 
   --accent-c:     #7A9838;   /* living Shire green */
   --accent-m:     #C87830;   /* pipe-smoke amber */
@@ -54,7 +54,7 @@
 
   --drop-hint-border: rgba(90, 120, 25, 0.25);
   --drop-icon-color:  rgba(120, 155, 40, 0.35);
-  --hint-sub-color:   rgba(100, 135, 35, 0.75);
+  --hint-sub-color:   rgba(100, 135, 35, 1);
 
   --rename-dashed:    rgba(120, 155, 40, 0.40);
   --rename-input-bg:  rgba(90, 120, 25, 0.07);

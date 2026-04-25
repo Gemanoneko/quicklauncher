@@ -16,7 +16,7 @@
 
   --font:         'Courier New', Consolas, monospace;
   --text:         #C08040;
-  --text-dim:     rgba(160, 100, 40, 0.78);
+  --text-dim:     #AC7034;
 
   --accent-c:     #CC2020;   /* Doom red — blood, keycards, hellfire */
   --accent-m:     #A08020;   /* ammo gold — shells, bullets, cells */
@@ -54,7 +54,7 @@
 
   --drop-hint-border: rgba(204, 32, 32, 0.25);
   --drop-icon-color:  rgba(204, 32, 32, 0.35);
-  --hint-sub-color:   rgba(160, 100, 40, 0.75);
+  --hint-sub-color:   #AC7034;
 
   --rename-dashed:    rgba(204, 32, 32, 0.42);
   --rename-input-bg:  rgba(204, 32, 32, 0.07);

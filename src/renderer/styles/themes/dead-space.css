@@ -15,7 +15,7 @@
   /* ── Typography — monospace engineering terminal / RIG HUD ── */
   --font:         Consolas, 'Courier New', monospace;
   --text:         #B0BCC8;
-  --text-dim:     rgba(80, 95, 110, 0.78);
+  --text-dim:     #6C7B8A;
 
   /* ── Shape — Ishimura viewport: top-right sheared like a blast door ── */
   --radius:       2px;
@@ -69,7 +69,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(224, 104, 32, 0.30);
   --drop-icon-color:  rgba(224, 104, 32, 0.45);
-  --hint-sub-color:   rgba(80, 95, 110, 0.75);
+  --hint-sub-color:   #6C7B8A;
 
   /* ── Rename ── */
   --rename-dashed:    rgba(224, 104, 32, 0.50);

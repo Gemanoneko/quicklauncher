@@ -22,7 +22,7 @@
 
   /* ── Text ── */
   --text:         #C8A870;
-  --text-dim:     rgba(160, 120, 60, 0.78);
+  --text-dim:     rgba(160, 120, 60, 0.93);
 
   /* ── Accents ── */
   --accent-c:     #C87830;   /* lantern flame amber */
@@ -68,7 +68,7 @@
   /* ── Drop hint ── */
   --drop-hint-border: rgba(100, 65, 20, 0.25);
   --drop-icon-color:  rgba(180, 120, 50, 0.35);
-  --hint-sub-color:   rgba(140, 95, 40, 0.75);
+  --hint-sub-color:   #9C6F38;
 
   /* ── Rename ── */
   --rename-dashed:    rgba(180, 120, 50, 0.40);
