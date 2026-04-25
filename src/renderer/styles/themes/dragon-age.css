@@ -22,6 +22,7 @@
 
   /* Blood crimson + aged heraldic gold + dark shadow */
   --accent-c:     #A82020;   /* blood crimson */
+  --accent-text:  #E04040;   /* Blood Mage red brightened — clears 3:1 against --bg */
   --accent-m:     #C8A030;   /* aged heraldic gold */
   --accent-y:     #301018;   /* dark shadow */
 

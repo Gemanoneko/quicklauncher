@@ -22,6 +22,7 @@
 
   /* Red interference — the sightjack frequency */
   --accent-c:     #A01828;   /* sightjack red */
+  --accent-text:  #E04050;   /* brighter sightjack red — clears 3:1 against --bg */
   --accent-m:     #582830;   /* dead blood */
   --accent-y:     #403038;   /* corrupted grey-violet */
 

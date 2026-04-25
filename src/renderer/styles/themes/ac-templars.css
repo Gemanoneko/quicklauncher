@@ -21,6 +21,7 @@
 
   /* Cold grey + Templar red — the only warmth is the cross */
   --accent-c:     #B01818;   /* Templar red */
+  --accent-text:  #E04848;   /* lifted Templar crimson — clears 3:1 against --bg */
   --accent-m:     #707880;   /* cold steel grey */
   --accent-y:     #282830;   /* dark stone */
 

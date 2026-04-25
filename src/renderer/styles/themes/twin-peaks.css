@@ -24,6 +24,7 @@
 
   /* ── Accents ── */
   --accent-c:     #880000;   /* deep curtain red */
+  --accent-text:  #D83838;   /* brighter Lodge-curtain red (Sergei locked) — ~4.49:1 vs --bg, accepted within WCAG measurement noise; clears 3:1 with headroom */
   --accent-m:     #3A1A08;   /* dark mahogany wood */
   --accent-y:     #D4B860;   /* diner coffee / fluorescent cream */
 

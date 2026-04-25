@@ -18,6 +18,7 @@
   --text-dim:     rgba(170, 120, 100, 0.78);
 
   --accent-c:     #991111;   /* void blood — lifted for legibility */
+  --accent-text:  #D83838;   /* "liberate tutemet" red, lifted — clears 3:1 against --bg */
   --accent-m:     #660000;   /* deeper void */
   --accent-y:     #704040;   /* corrupted rust */
 

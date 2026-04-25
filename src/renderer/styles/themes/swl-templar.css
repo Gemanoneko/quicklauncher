@@ -22,6 +22,7 @@
 
   /* Crusader crimson + weathered stone grey + dark wood */
   --accent-c:     #A82020;   /* crusader crimson */
+  --accent-text:  #E04040;   /* lifted crusader crimson — clears 3:1 against --bg */
   --accent-m:     #888078;   /* weathered stone grey */
   --accent-y:     #402018;   /* dark wood */
 

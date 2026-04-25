@@ -18,6 +18,7 @@
   --text-dim:     rgba(100, 120, 165, 0.78);
 
   --accent-c:     #1848A0;   /* Shinra blue */
+  --accent-text:  #5888E0;   /* Mako-tinged blue — clears 3:1 against --bg */
   --accent-m:     #20C890;   /* Mako / Lifestream green */
   --accent-y:     #102040;   /* deep navy */
 

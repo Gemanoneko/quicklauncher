@@ -24,6 +24,7 @@
 
   /* ── Accents ── */
   --accent-c:     #6040C0;   /* Morpheus violet */
+  --accent-text:  #9080E0;   /* sigil violet lifted — clears 3:1 against --bg */
   --accent-m:     #C08020;   /* Death's gold */
   --accent-y:     #202040;   /* void indigo */
 

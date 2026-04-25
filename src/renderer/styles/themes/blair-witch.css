@@ -22,6 +22,7 @@
 
   /* Near-monochrome — NO bright accents. Everything muted, washed out. */
   --accent-c:     #605848;   /* dead wood brown */
+  --accent-text:  #A89878;   /* moss / birch-bark — clears 3:1 against --bg */
   --accent-m:     #484038;   /* dark earth */
   --accent-y:     #706050;   /* faded leaf */
 

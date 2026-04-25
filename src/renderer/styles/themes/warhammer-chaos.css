@@ -18,6 +18,7 @@
   --text-dim:     rgba(150, 100, 100, 0.78);
 
   --accent-c:     #A01020;   /* Khorne blood red */
+  --accent-text:  #E03040;   /* brighter Khorne red — clears 3:1 against --bg */
   --accent-m:     #6020A0;   /* Slaanesh purple */
   --accent-y:     #408020;   /* Nurgle green */
 

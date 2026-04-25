@@ -18,6 +18,7 @@
   --text-dim:     rgba(90, 100, 130, 0.78);
 
   --accent-c:     #4050A0;   /* deep archive blue */
+  --accent-text:  #7888D0;   /* non-Euclidean violet-blue — clears 3:1 against --bg */
   --accent-m:     #806020;   /* aged document gold */
   --accent-y:     #302040;   /* cosmic violet-black */
 

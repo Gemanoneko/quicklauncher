@@ -23,6 +23,7 @@
 
   /* Accent palette — orange portal / blue portal / silver */
   --accent-c:             #FF6600;
+  --accent-text:          #A83400;   /* Aperture orange darkened for light --bg — ~4.75:1 */
   --accent-m:             #0060CC;
   --accent-y:             #0088FF;
 

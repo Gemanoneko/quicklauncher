@@ -18,6 +18,7 @@
   --text-dim:     rgba(130, 120, 165, 0.78);
 
   --accent-c:     #6848A0;   /* Eorzean purple */
+  --accent-text:  #A088D8;   /* crystal/aether lavender — clears 3:1 against --bg */
   --accent-m:     #D0A030;   /* gold trim */
   --accent-y:     #201838;   /* shadow */
 
