@@ -1696,6 +1696,11 @@ function hideUpdateBanner() {
   clearTimeout(autoDismissTimer);
   autoDismissTimer = null;
   $('update-banner').classList.add('hidden');
+  // Per UX Review §7: clear the tray icon's update-available indicator
+  // when the user dismisses the banner. The main process owns the tray
+  // state — fire-and-forget invoke, ignoring rejections (only failure
+  // mode is "main process gone", at which point we don't care).
+  try { window.api.invoke('dismiss-update'); } catch { /* noop */ }
 }
 
 // ── Button wiring ─────────────────────────────────────────────────────────────
