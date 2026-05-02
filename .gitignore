@@ -3,4 +3,6 @@ dist/
 .env
 *.log
 *.ps1
-.claude/
+# Claude Code per-machine settings — see Team/Docs/ProcessRules.md "Claude Code Settings"
+.claude/settings.local.json
+.claude/.cache/
