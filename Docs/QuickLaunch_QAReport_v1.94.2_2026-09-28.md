@@ -136,3 +136,6 @@ Separately, closing the app via `taskkill /F` (used throughout this pass to rese
 Core flows work and the fix delivers what it promises: CPU dropped by roughly two orders of magnitude in the unfocused/covered states at genuine 120 Hz, the picker shows far more apps than before (362→553) with all three add-and-launch categories (plain AppID, System32 tool, Store app) working, and all four crash-durability scenarios I threw at it recovered real data with nothing wiped. Nothing found here breaks the core flow Sergei actually uses. The two Major findings (the picker-count claim, and the silently-missing save-error banner) don't cost data or crash anything — they want a fast follow-up, not a hold.
 
 **Verdict:** GO
+
+## Addendum — tray Quit hands-on check (2026-09-28, after release)
+Sergei installed v1.94.2 and quit it from the tray's **Quit QuickLauncher**. Jane checked right after: `tasklist` showed no `QuickLauncher.exe` or `electron.exe` processes, and the installed `%LOCALAPPDATA%\Programs\QuickLauncher\QuickLauncher.exe` reports file version 1.94.2. **Pass**, which closes the gap noted above.
