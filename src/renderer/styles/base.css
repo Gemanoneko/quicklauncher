@@ -892,6 +892,28 @@ body.reduced-motion #app-entrance {
   #app-entrance { animation: entrance-fade 0.2s ease-out forwards !important; }
 }
 
+/* ── Idle pause (CPU) ─────────────────────────────────────────────────────────
+   app.js sets body.ql-paused while the window is unfocused or hidden. Every
+   theme runs infinite animations, and Chromium renders them at display rate
+   (120 Hz on Sergei's monitor) whenever the window is on screen — including
+   when it sits unfocused or covered behind other windows, which is most of
+   the day. That was ~75–105 % of one CPU core, doing nothing.
+   Paused, each animation freezes on its current frame (nothing jumps, hides
+   or resets) and resumes from the same frame on focus. Exceptions:
+   - #app-entrance: one-shot fade of an opaque overlay; freezing it on frame 0
+     would leave the window dark.
+   - tile hover feedback: the mouse can hover an unfocused window. */
+body.ql-paused *,
+body.ql-paused *::before,
+body.ql-paused *::after {
+  animation-play-state: paused !important;
+}
+body.ql-paused #app-entrance,
+body.ql-paused .app-tile:hover::before,
+body.ql-paused .app-tile:hover::after {
+  animation-play-state: running !important;
+}
+
 /* ── Tile drag-to-reorder ────────────────────────────────────────────────────── */
 .tile-drag-source {
   pointer-events: none !important;

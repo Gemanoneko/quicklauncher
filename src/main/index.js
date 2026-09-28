@@ -27,6 +27,9 @@ app.whenReady().then(() => {
   }
 
   mainWindow = createWindow(store);
+  // Windows logoff / shutdown / restart: the process is terminated right
+  // after this event, so flush any pending save now.
+  mainWindow.on('session-end', () => { try { store.flush(); } catch { /* noop */ } });
   setupTray(mainWindow, app, store);
   setupIPC(mainWindow, store, app);
   setupUpdater(mainWindow);
@@ -82,6 +85,9 @@ app.on('window-all-closed', () => {
 // occasionally survive on Windows when a child crash kills the renderer).
 app.on('will-quit', () => {
   try { globalShortcut.unregisterAll(); } catch { /* noop */ }
+  // Normal quit paths (including autoUpdater.quitAndInstall) — write any
+  // change still sitting in the store's 100 ms debounce.
+  try { store.flush(); } catch { /* noop */ }
 });
 
 // ── Global hotkey machinery ────────────────────────────────────────────────

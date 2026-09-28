@@ -365,8 +365,25 @@ function setupIPC(win, store, electronApp) {
       const ps = `
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
-$startDirs = @([Environment]::GetFolderPath('ApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs', [Environment]::GetFolderPath('CommonApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs')
+# Each path is parenthesised: PowerShell's comma binds tighter than '+', so
+# @(a + 'x', b + 'y') is ONE garbage string, which made every .lnk lookup
+# below find nothing and dropped most desktop apps from the picker.
+$startDirs = @(([Environment]::GetFolderPath('ApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs'), ([Environment]::GetFolderPath('CommonApplicationData') + '\\Microsoft\\Windows\\Start Menu\\Programs'))
 $wsh = New-Object -ComObject WScript.Shell
+# Walk the Start Menu once (not once per app) into an exact-name index.
+# Exact match only: a loose contains-match hands out other apps' icons
+# ("Access" -> "Accessibility..."); entries with no exact .lnk fall through to
+# the shell's own Start icon below, which is always the right one.
+$allLnk = @(Get-ChildItem -Path $startDirs -Filter '*.lnk' -Recurse -ErrorAction SilentlyContinue)
+$lnkByName = @{}
+foreach ($l in $allLnk) {
+  $k = $l.BaseName.ToLowerInvariant()
+  if (-not $lnkByName.ContainsKey($k)) { $lnkByName[$k] = $l }
+}
+function Find-StartLnk([string]$appName) {
+  if (-not $appName) { return $null }
+  return $lnkByName[$appName.ToLowerInvariant()]
+}
 $pkgMap = @{}
 Get-AppxPackage -ErrorAction SilentlyContinue | ForEach-Object { $pkgMap[$_.PackageFamilyName] = $_ }
 $steamInstall = $null
@@ -437,10 +454,11 @@ $apps = Get-StartApps | ForEach-Object {
   }
   # Fallback: if no icon found yet, try Start Menu shortcut (covers Win32 apps and
   # MSIX/Click-to-Run apps not listed by Get-AppxPackage e.g. Office 2021)
-  if (-not $iconPath -and -not $exePath) {
+  # (Not for URL/protocol IDs: those never had .lnk icons, and web links /
+  # non-Steam protocols can't be launched by launch-app, so they stay hidden.)
+  if (-not $iconPath -and -not $exePath -and $appId -notmatch '^[a-z][a-z0-9+.-]*://') {
     try {
-      $lnk = Get-ChildItem -Path $startDirs -Filter '*.lnk' -Recurse -ErrorAction SilentlyContinue |
-             Where-Object { $_.BaseName -ieq $name -or $name -ilike ('*' + $_.BaseName + '*') -or $_.BaseName -ilike ('*' + $name + '*') } | Select-Object -First 1
+      $lnk = Find-StartLnk $name
       if ($lnk) {
         $sc = $wsh.CreateShortcut($lnk.FullName)
         if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\\s*,') {
@@ -471,9 +489,12 @@ $apps = Get-StartApps | ForEach-Object {
   if ($exePath -and -not $iconPath) {
     try { $exeIconB64 = [IconHelper]::GetBase64($exePath) } catch {}
   }
-  # Last-resort for AppX apps where WindowsApps is inaccessible: ask the shell for the icon
+  # Last resort: ask the shell for the icon it shows in Start. Works for AppX
+  # (WindowsApps is inaccessible), System32/Windows known-folder IDs, localized
+  # names with no matching .lnk, and plain AUMIDs — every Start entry except
+  # URL/protocol IDs (web links that launch-app can't open).
   $shellIconB64 = $null
-  if (-not $iconPath -and -not $exeIconB64 -and $appId -match '^[^!\\\\]+![^!\\\\]+$') {
+  if (-not $iconPath -and -not $exeIconB64 -and $appId -notmatch '^[a-z][a-z0-9+.-]*://') {
     try { $shellIconB64 = [IconHelper]::GetThumbnailBase64("shell:AppsFolder\\$appId") } catch {}
   }
   [PSCustomObject]@{ Name=$name; AppID=$appId; IconPath=$iconPath; ExePath=$exePath; ExeIconB64=$exeIconB64; ShellIconB64=$shellIconB64 }
@@ -481,7 +502,7 @@ $apps = Get-StartApps | ForEach-Object {
 # Fallback: Get-StartApps returned nothing (broken on some Windows 11 builds).
 # Scan Start Menu .lnk files directly as a reliable alternative.
 if (-not $apps -or @($apps).Count -eq 0) {
-  $apps = Get-ChildItem -Path $startDirs -Filter '*.lnk' -Recurse -ErrorAction SilentlyContinue |
+  $apps = $allLnk |
     Where-Object { $_.Name -notmatch '^\s*$' } |
     ForEach-Object {
       $lnkFile = $_
@@ -509,9 +530,16 @@ $apps | ConvertTo-Json -Depth 2
       execFile('powershell.exe',
         ['-NoProfile', '-NonInteractive', '-Command', ps],
         { windowsHide: true, stdio: 'pipe', timeout: 45000, maxBuffer: 64 * 1024 * 1024 },
-        async (err, stdout) => {
+        async (err, stdout, stderr) => {
           installedAppsPromise = null;
-          if (err || !stdout) { resolve([]); return; }
+          if (err || !stdout) {
+            // Previously silent: a timeout / crash looked exactly like "no apps".
+            console.warn('[get-installed-apps] scan failed:',
+              err ? (err.killed ? `killed (timeout ${err.signal || ''})` : (err.code || err.message)) : 'empty output',
+              stderr ? String(stderr).slice(0, 2000) : '');
+            resolve([]);
+            return;
+          }
           try {
             let data = JSON.parse(stdout.trim());
             if (!Array.isArray(data)) data = data ? [data] : [];
@@ -553,7 +581,10 @@ $apps | ConvertTo-Json -Depth 2
               return { name: item.Name, appId: item.AppID, iconDataUrl };
             }));
             resolve(result);
-          } catch { resolve([]); }
+          } catch (e) {
+            console.warn('[get-installed-apps] could not parse scan output:', e && e.message);
+            resolve([]);
+          }
         }
       );
     });
@@ -562,8 +593,11 @@ $apps | ConvertTo-Json -Depth 2
   });
 
   ipcMain.handle('add-app-from-appid', (_, { name, appId, iconDataUrl }) => {
-    // Steam URLs and other protocol-based IDs are stored as-is; everything else uses shell:AppsFolder
-    const appPath = /^[a-z][a-z0-9+.-]*:\/\//i.test(appId) ? appId : `shell:AppsFolder\\${appId}`;
+    // Steam URLs and other protocol-based IDs are stored as-is; everything else uses shell:AppsFolder.
+    // Exception: a full Start Menu .lnk path (the IDs the Get-StartApps-empty fallback emits) is
+    // not an AppsFolder name — store it as a file path so launch-app opens it via shell.openPath.
+    const isLnkPath = /^[a-z]:\\.+\.lnk$/i.test(appId);
+    const appPath = (isLnkPath || /^[a-z][a-z0-9+.-]*:\/\//i.test(appId)) ? appId : `shell:AppsFolder\\${appId}`;
     return {
       id: randomUUID(),
       name,

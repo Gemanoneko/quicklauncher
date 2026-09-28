@@ -179,6 +179,9 @@ function setupTray(win, electronApp, store) {
       {
         label: 'Quit QuickLauncher',
         click: () => {
+          // app.exit() skips will-quit and kills the debounced save timer —
+          // write any pending change first.
+          try { store.flush(); } catch { /* never block quitting */ }
           electronApp.exit(0);
         }
       }

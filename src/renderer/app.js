@@ -1085,29 +1085,76 @@ window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',
   applyReducedMotion();
 });
 
+let bannerQuotes = null;
+let bannerIdx = 0;
+
 function startBannerCycle(theme) {
   clearInterval(bannerInterval);
   clearTimeout(bannerFadeTimer);
   bannerInterval = null;
   bannerFadeTimer = null;
+  bannerQuotes = null;
 
   const quotes = THEME_BANNERS[theme];
   if (!quotes) return;
 
   const textEl = document.getElementById('theme-banner-text');
-  let idx = 0;
+  bannerQuotes = quotes;
+  bannerIdx = 0;
   textEl.style.opacity = '1';
-  textEl.textContent = quotes[idx];
+  textEl.textContent = quotes[bannerIdx];
 
+  if (!idlePaused) scheduleBannerRotation();
+}
+
+function scheduleBannerRotation() {
+  clearInterval(bannerInterval);
+  bannerInterval = null;
+  if (!bannerQuotes) return;
+  const quotes = bannerQuotes;
+  const textEl = document.getElementById('theme-banner-text');
   bannerInterval = setInterval(() => {
     textEl.style.opacity = '0';
     bannerFadeTimer = setTimeout(() => {
-      idx = (idx + 1) % quotes.length;
-      textEl.textContent = quotes[idx];
+      bannerIdx = (bannerIdx + 1) % quotes.length;
+      textEl.textContent = quotes[bannerIdx];
       textEl.style.opacity = '1';
     }, 380);
   }, 14000);
 }
+
+// ── Idle pause (CPU) ──────────────────────────────────────────────────────────
+// Every theme runs infinite CSS animations, and Chromium renders them at the
+// display's refresh rate whenever the window is on screen — also when it is
+// unfocused or covered by other windows (Chromium doesn't treat this window as
+// occluded). While the window is unfocused or hidden, body.ql-paused freezes
+// them on their current frame (base.css) and the banner stops rotating; both
+// resume where they left off on focus.
+let idlePaused = false;
+
+function updateIdlePause(e) {
+  // Trust the event itself where there is one; hasFocus() covers the initial
+  // state and visibilitychange.
+  const type = e && e.type;
+  const focused = type === 'blur' ? false : type === 'focus' ? true : document.hasFocus();
+  const paused = document.hidden || !focused;
+  if (paused === idlePaused) return;
+  idlePaused = paused;
+  document.body.classList.toggle('ql-paused', paused);
+  if (paused) {
+    // Stop the rotation; an in-flight fade (≤380 ms) still completes, so the
+    // banner never freezes blank.
+    clearInterval(bannerInterval);
+    bannerInterval = null;
+  } else {
+    scheduleBannerRotation();
+  }
+}
+
+window.addEventListener('focus', updateIdlePause);
+window.addEventListener('blur', updateIdlePause);
+document.addEventListener('visibilitychange', updateIdlePause);
+updateIdlePause();
 
 elSliderIconSize.addEventListener('input', async (e) => {
   const size = parseInt(e.target.value, 10);
