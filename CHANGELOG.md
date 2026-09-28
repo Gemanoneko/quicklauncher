@@ -4,6 +4,13 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.94.2] - 2026-09-28
+
+### Fixed
+- Idle CPU: animations now pause when the window is unfocused, covered, or hidden.
+- Picker now shows many more installed apps.
+- Shortcuts survive a crash mid-save — corrupt files are recovered or set aside instead of being wiped.
+
 ## [v1.94.1] - 2026-04-25
 
 ### Changed
