@@ -25,7 +25,9 @@ const { EventEmitter } = require('events');
 //      the window gets focus, and every few seconds. Once the file reads
 //      again it is loaded exactly as at startup, this session's changes are
 //      merged into it (reconcile), and only the merged result is written —
-//      through the same .tmp → fsync → rename path.
+//      through the same .tmp → fsync → rename path. Still read-only after two
+//      failed timer re-checks (~10 s): the save-error banner is raised once
+//      per read-only stretch, unless a refused save already raised it.
 
 // Windows error codes that are usually transient (AV scanner, search indexer,
 // backup agent briefly holding the file). Worth a short retry.
@@ -123,6 +125,8 @@ class Store extends EventEmitter {
     this._roBase = null;       // copy of the data shown when read-only began (merge base)
     this._loadSource = null;   // where _load() got its data: main | tmp | bak | none
     this._recheckTimer = null;
+    this._roTicks = 0;          // failed timer re-checks in this read-only stretch
+    this._roBannerRaised = false; // save-error already raised in this read-only stretch
     // Renderer sync after a mid-session merge (setFromRenderer / rendererSynced).
     this._view = null;         // { apps, settings } the renderer holds while it may be stale
     this._syncSeq = 0;
@@ -235,8 +239,24 @@ class Store extends EventEmitter {
 
   _startRecheckTimer() {
     if (this._recheckTimer) return;
-    this._recheckTimer = setInterval(() => this.recheck(), Store.RECHECK_MS);
+    this._recheckTimer = setInterval(() => this._recheckTick(), Store.RECHECK_MS);
     if (this._recheckTimer.unref) this._recheckTimer.unref();
+  }
+
+  // Timer tick. Still read-only after two failed ticks (~10 s) and no refused
+  // save has raised the save-error banner yet in this read-only stretch →
+  // raise it once (same 'save-error' event, so it reaches the renderer through
+  // the same delivery queue). A lock that clears sooner shows nothing.
+  _recheckTick() {
+    this.recheck();
+    if (!this._readOnly) return;
+    this._roTicks++;
+    if (this._roTicks >= 2 && !this._roBannerRaised) {
+      this._roBannerRaised = true;
+      const err = new Error('store is read-only (data file is unreadable)');
+      console.error('[store] still read-only after two re-checks —', err.message);
+      this.emit('save-error', err);
+    }
   }
 
   // Focus / timer entry point. No-op unless read-only; writes the merged
@@ -272,6 +292,8 @@ class Store extends EventEmitter {
     const merged = this._loadSource === 'none' ? mine : reconcile(this._roBase, mine, disk);
     clearInterval(this._recheckTimer);
     this._recheckTimer = null;
+    this._roTicks = 0;
+    this._roBannerRaised = false;
     this._roCause = null;
     this._roBase = null;
     this.data = merged;
@@ -384,6 +406,7 @@ class Store extends EventEmitter {
     // Read-only: re-check before refusing — the file may be readable again,
     // in which case this.data is now the merged result and is saved below.
     if (this._readOnly && !this._recheck(retries)) {
+      this._roBannerRaised = true; // the 10 s read-only notice won't repeat it
       const err = new Error('store is read-only (data file is unreadable)');
       console.error('Failed to save store:', err.message);
       this.emit('save-error', err);
