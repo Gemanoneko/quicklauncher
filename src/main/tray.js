@@ -9,6 +9,7 @@ let tray = null;
 let iconDefault = null;
 let iconUpdate = null;
 let updateAvailable = false;
+let rebuildMenu = null;
 
 // Compose an "update available" tray-icon variant from the base icon
 // bitmap. The base icon is loaded, downsized to 16×16, and a small
@@ -189,8 +190,15 @@ function setupTray(win, electronApp, store) {
   };
 
   tray.setContextMenu(buildMenu());
+  rebuildMenu = () => tray.setContextMenu(buildMenu());
 
   tray.on('double-click', showOrHide);
 }
 
-module.exports = { setupTray, setUpdateAvailable };
+// Rebuild the menu from the store (its checkboxes are read at build time) —
+// used when settings change underneath it, e.g. a read-only store merged.
+function refreshTrayMenu() {
+  if (tray && rebuildMenu) rebuildMenu();
+}
+
+module.exports = { setupTray, setUpdateAvailable, refreshTrayMenu };

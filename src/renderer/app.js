@@ -850,6 +850,9 @@ async function init() {
   setupTileReorder();
   setupContextMenu();
   setupUpdateListeners();
+  // Listeners are registered: main delivers store messages it held back
+  // until now (e.g. the save error from a data file locked at login).
+  window.api.invoke('renderer-ready').catch(() => {});
   document.getElementById('app-version').textContent = `v${APP_VERSION}`;
   document.getElementById('header-version').textContent = `v${APP_VERSION}`;
   refreshMissingIcons();
@@ -1683,6 +1686,17 @@ function setupUpdateListeners() {
   window.api.on('store-save-error', () => {
     showUpdateBanner('SAVE ERROR — SETTINGS MAY NOT PERSIST', [], 8000);
     console.error('Store save failed');
+  });
+  // The data file became readable mid-session and main merged it with this
+  // session's changes: adopt the merged library and settings. The ack goes
+  // out synchronously right after adopting, so main knows every earlier save
+  // from here was based on the old copy.
+  window.api.on('store-reloaded', ({ seq, apps: mergedApps, settings: mergedSettings }) => {
+    apps = Array.isArray(mergedApps) ? mergedApps : apps;
+    settings = mergedSettings && typeof mergedSettings === 'object' ? mergedSettings : settings;
+    window.api.invoke('store-reload-ack', seq).catch(() => {});
+    applySettings();
+    renderGrid();
   });
   // Surface launch failures (missing target, exec error) — previously silent.
   // Per UX Review §10 / Critical C3 (NN/g: help users recognize, diagnose,

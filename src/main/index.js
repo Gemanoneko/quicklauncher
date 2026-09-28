@@ -1,4 +1,4 @@
-const { app, globalShortcut } = require('electron');
+const { app, globalShortcut, ipcMain } = require('electron');
 const path = require('path');
 
 // Single instance lock
@@ -10,12 +10,55 @@ if (!gotLock) {
 
 const { createWindow } = require('./window');
 const Store = require('./store');
-const { setupTray } = require('./tray');
+const { setupTray, refreshTrayMenu } = require('./tray');
 const { setupUpdater } = require('./updater');
 const { setupIPC, VALID_THEMES } = require('./ipc');
 
 let mainWindow = null;
 const store = new Store();
+
+// ── Store → renderer delivery ──────────────────────────────────────────────
+// A message sent before the page has registered its listeners is dropped.
+// The boot-time save error (data file locked at login) fires ~100 ms after
+// the window opens, long before the renderer's init() has subscribed — so
+// store messages wait until the renderer says it is listening.
+let rendererReady = false;
+let saveErrorPending = false;
+
+function sendToRenderer(channel, ...args) {
+  if (!rendererReady || !mainWindow || mainWindow.isDestroyed()) return false;
+  mainWindow.webContents.send(channel, ...args);
+  return true;
+}
+
+store.on('save-error', () => {
+  if (!sendToRenderer('store-save-error')) saveErrorPending = true;
+});
+// Read-only ended mid-session and the data file was merged with this
+// session's changes: the renderer adopts the merged state and acks it.
+// If it isn't listening yet, 'renderer-ready' delivers the latest state.
+store.on('renderer-sync', (state) => { sendToRenderer('store-reloaded', state); });
+// Settings the main process applied at boot from the read-only copy.
+store.on('reconciled', () => {
+  const accel = (store.get('settings') || {}).globalHotkey;
+  if (mainWindow && !mainWindow.isDestroyed() && accel !== _activeHotkey) {
+    applyGlobalHotkey(accel, mainWindow);
+  }
+  refreshTrayMenu();
+});
+
+ipcMain.handle('renderer-ready', () => {
+  rendererReady = true;
+  if (saveErrorPending) {
+    saveErrorPending = false;
+    sendToRenderer('store-save-error');
+  }
+  const pending = store.pendingRendererState();
+  if (pending) sendToRenderer('store-reloaded', pending);
+});
+ipcMain.handle('store-reload-ack', (_, seq) => {
+  if (Number.isInteger(seq)) store.rendererSynced(seq);
+});
 
 app.whenReady().then(() => {
   const s = store.get('settings');
@@ -27,6 +70,13 @@ app.whenReady().then(() => {
   }
 
   mainWindow = createWindow(store);
+  // A reloaded page must announce itself again before it gets store messages.
+  mainWindow.webContents.on('did-start-navigation', (details) => {
+    if (details && details.isMainFrame && !details.isSameDocument) rendererReady = false;
+  });
+  // Read-only store: opening the launcher re-checks the data file at once
+  // (the store also re-checks on a timer and before every refused save).
+  mainWindow.on('focus', () => { try { store.recheck(); } catch { /* noop */ } });
   // Windows logoff / shutdown / restart: the process is terminated right
   // after this event, so flush any pending save now.
   mainWindow.on('session-end', () => { try { store.flush(); } catch { /* noop */ } });
@@ -42,12 +92,6 @@ app.whenReady().then(() => {
   // (via 'apply-global-hotkey' IPC) whenever the user changes the binding.
   applyGlobalHotkey(store.get('settings').globalHotkey, mainWindow);
   registerHotkeyIpc(store, () => mainWindow);
-
-  store.on('save-error', () => {
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('store-save-error');
-    }
-  });
 
   // Apply auto-launch preference (packaged builds only — dev builds use the
   // bare Electron binary as exe path, which would register the wrong entry)

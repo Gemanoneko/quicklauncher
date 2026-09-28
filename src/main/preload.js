@@ -27,6 +27,10 @@ const INVOKE_CHANNELS = new Set([
   'dismiss-update',
   'apply-global-hotkey',
   'get-global-hotkey-status',
+  // Store delivery: the renderer is listening (queued store messages follow),
+  // and it has adopted a merged state pushed via 'store-reloaded'.
+  'renderer-ready',
+  'store-reload-ack',
 ]);
 
 const ON_CHANNELS = new Set([
@@ -37,6 +41,7 @@ const ON_CHANNELS = new Set([
   'update-not-available',
   'update-error',
   'store-save-error',
+  'store-reloaded',
   'fullscreen-changed',
   'launch-error',
   // Tray-driven events (UX Review §7 / I5): the tray menu can open the

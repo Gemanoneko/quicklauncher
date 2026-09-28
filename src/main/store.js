@@ -19,8 +19,13 @@ const { EventEmitter } = require('events');
 //      treated as "no data": the next candidate (.tmp, then .bak) is tried and
 //      the unreadable file is quarantined (renamed, not deleted).
 //   4. A data file that exists but can't be READ (locked by AV at login, ACL
-//      trouble) puts the store in read-only mode for the session, so defaults
-//      or a stale backup are never written over it.
+//      trouble) puts the store in read-only mode, so defaults or a stale
+//      backup are never written over it.
+//   5. Read-only mode is re-checked before every save it would refuse, when
+//      the window gets focus, and every few seconds. Once the file reads
+//      again it is loaded exactly as at startup, this session's changes are
+//      merged into it (reconcile), and only the merged result is written —
+//      through the same .tmp → fsync → rename path.
 
 // Windows error codes that are usually transient (AV scanner, search indexer,
 // backup agent briefly holding the file). Worth a short retry.
@@ -32,6 +37,72 @@ function sleepSync(ms) {
 
 function isPlainObject(v) {
   return v !== null && typeof v === 'object' && !Array.isArray(v);
+}
+
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+// ── Three-way merge ─────────────────────────────────────────────────────────
+// base = the copy the read-only session started from (what the user was
+// shown), mine = that copy plus the session's edits, disk = what the data
+// file holds now. The rules, in order of priority: nothing the user can see
+// is dropped; nothing on disk is dropped unless the user removed it this
+// session; the user's edits and additions win.
+
+function mergeApps(base, mine, disk) {
+  if (!Array.isArray(mine)) mine = [];
+  if (!Array.isArray(disk)) return mine;
+  if (!Array.isArray(base)) base = [];
+  // Disk hasn't moved since the copy the user edited: their list stands as is
+  // (order included).
+  if (same(base, disk)) return mine;
+  const baseById = new Map(base.map(a => [a && a.id, a]));
+  const mineById = new Map(mine.map(a => [a && a.id, a]));
+  const out = [];
+  for (const d of disk) {
+    const id = d && d.id;
+    const b = baseById.get(id);
+    const m = mineById.get(id);
+    if (b && !m) continue;                        // removed by the user this session
+    out.push(b && m && !same(b, m) ? m : d);      // edited this session → the user's version
+  }
+  const ids = new Set(out.map(a => a && a.id));
+  const paths = new Set(out.map(a => a && a.path));
+  for (const m of mine) {
+    const id = m && m.id;
+    if (ids.has(id)) continue;
+    // Added this session but already on disk under another id (re-added while
+    // the library wasn't visible). The renderer never allows two tiles with
+    // the same path either.
+    if (!baseById.has(id) && paths.has(m && m.path)) continue;
+    out.push(m);                                  // added this session, or shown but not on disk
+    ids.add(id);
+    paths.add(m && m.path);
+  }
+  return out;
+}
+
+function mergeFields(base, mine, disk) {
+  if (!isPlainObject(base)) base = {};
+  const out = { ...disk };
+  for (const k of Object.keys(mine)) {
+    if (!same(mine[k], base[k]) || !(k in disk)) out[k] = mine[k];
+  }
+  return out;
+}
+
+function mergeValue(key, base, mine, disk) {
+  if (key === 'apps') return mergeApps(base, mine, disk);
+  if (isPlainObject(mine) && isPlainObject(disk)) return mergeFields(base, mine, disk);
+  if (disk === undefined || !same(mine, base)) return mine;
+  return disk;
+}
+
+function reconcile(base, mine, disk) {
+  const out = { ...disk };
+  for (const k of Object.keys(mine)) {
+    out[k] = mergeValue(k, isPlainObject(base) ? base[k] : undefined, mine[k], disk[k]);
+  }
+  return out;
 }
 
 class Store extends EventEmitter {
@@ -46,9 +117,21 @@ class Store extends EventEmitter {
     // validated, or written by us). Only then may it be rotated into .bak.
     this._mainGood = false;
     this._mainAppsCount = 0;
-    // True when the data file exists but couldn't be read: never write it.
+    // True while the data file exists but can't be read: never write it.
     this._readOnly = false;
+    this._roCause = null;      // the file whose unreadability made the store read-only
+    this._roBase = null;       // copy of the data shown when read-only began (merge base)
+    this._loadSource = null;   // where _load() got its data: main | tmp | bak | none
+    this._recheckTimer = null;
+    // Renderer sync after a mid-session merge (setFromRenderer / rendererSynced).
+    this._view = null;         // { apps, settings } the renderer holds while it may be stale
+    this._syncSeq = 0;
+    this._pushed = new Map();  // seq → state pushed to the renderer, until acked
     this.data = this._load();
+    if (this._readOnly) {
+      this._roBase = structuredClone(this.data);
+      this._startRecheckTimer();
+    }
   }
 
   // Valid store shape: a plain object whose `apps` is an array (every version
@@ -86,22 +169,28 @@ class Store extends EventEmitter {
     }
   }
 
-  _load() {
+  // retries: read retries for the data file (startup: 5, ~1.5 s of sleeps on
+  // a held file). Mid-session re-checks pass 0 so the UI thread never sleeps.
+  _load(retries = 5) {
+    const other = Math.min(retries, 1);
     // 1. The data file itself. Up to ~2 s of retries if something holds it.
-    const main = this._readCandidate(this.dataPath, 5);
+    const main = this._readCandidate(this.dataPath, retries);
     if (main.ok) {
       this._mainGood = true;
       this._mainAppsCount = main.data.apps.length;
+      this._loadSource = 'main';
       return { ...this._defaults(), ...main.data };
     }
 
     if (main.reason === 'locked') {
       // The data file exists but is unreadable. It may be perfectly good, so it
-      // must not be overwritten this session. Show the newest readable copy.
+      // must not be overwritten until it can be read again. Show the newest
+      // readable copy.
       this._readOnly = true;
-      console.error(`[store] data file unreadable (${main.code}); read-only this session — nothing will be written`);
+      this._roCause = this.dataPath;
+      console.error(`[store] data file unreadable (${main.code}); read-only until it can be read — nothing will be written`);
       for (const p of [this.tmpPath, this.bakPath]) {
-        const r = this._readCandidate(p, 1);
+        const r = this._readCandidate(p, other);
         if (r.ok) return { ...this._defaults(), ...r.data };
       }
       return this._defaults();
@@ -110,13 +199,14 @@ class Store extends EventEmitter {
     // 2. Data file missing or corrupt: newest intact generation wins.
     //    .tmp is only ever left behind by a crash after it was fully written
     //    (it is fsync'ed before the rename); a partial .tmp fails validation.
-    const tmp = this._readCandidate(this.tmpPath, 1);
-    const bak = tmp.ok ? null : this._readCandidate(this.bakPath, 1);
+    const tmp = this._readCandidate(this.tmpPath, other);
+    const bak = tmp.ok ? null : this._readCandidate(this.bakPath, other);
     const recovered = tmp.ok ? tmp : (bak && bak.ok ? bak : null);
 
     if (main.reason === 'corrupt') this._quarantine(this.dataPath);
 
     if (recovered) {
+      this._loadSource = tmp.ok ? 'tmp' : 'bak';
       console.warn(`[store] data file ${main.reason} (${main.code || '-'}); recovered from ${path.basename(tmp.ok ? this.tmpPath : this.bakPath)}`);
       // Restore the data file promptly so there are two good copies again.
       this._save();
@@ -130,13 +220,105 @@ class Store extends EventEmitter {
     if (bak && bak.reason === 'locked') {
       // .bak exists but can't be read: don't rotate anything over it later.
       this._readOnly = true;
-      console.error(`[store] backup unreadable (${bak.code}); read-only this session`);
+      this._roCause = this.bakPath;
+      console.error(`[store] backup unreadable (${bak.code}); read-only until it can be read`);
     }
     if (main.reason === 'corrupt' || tmp.reason === 'corrupt' || (bak && bak.reason === 'corrupt')) {
       console.error('[store] no intact data file or backup found; unreadable files were quarantined as *.corrupt-<timestamp>');
     }
     // (All missing = first run: defaults, normal saving.)
+    this._loadSource = 'none';
     return this._defaults();
+  }
+
+  // ── Leaving read-only ─────────────────────────────────────────────────────
+
+  _startRecheckTimer() {
+    if (this._recheckTimer) return;
+    this._recheckTimer = setInterval(() => this.recheck(), Store.RECHECK_MS);
+    if (this._recheckTimer.unref) this._recheckTimer.unref();
+  }
+
+  // Focus / timer entry point. No-op unless read-only; writes the merged
+  // result as soon as the file reads again.
+  recheck() {
+    if (!this._readOnly) return;
+    if (this._recheck(0) && this._dirty) this.flush();
+  }
+
+  // While read-only: has the file that caused it become readable (or gone, or
+  // corrupt)? If so, load it exactly as at startup — same validation,
+  // quarantine and .tmp/.bak recovery — and merge this session's changes into
+  // it. Nothing is written here; the caller saves the merged data through the
+  // normal durable path. Returns true once the store is writable again.
+  _recheck(retries = 0) {
+    if (!this._readOnly) return true;
+    // Cheap probe first; while the file is still held this is one failed open.
+    if (this._readCandidate(this._roCause, retries).reason === 'locked') return false;
+
+    const mine = this.data;
+    this._readOnly = false;
+    this._mainGood = false;
+    this._mainAppsCount = 0;
+    const disk = this._load(retries);
+    // _load()'s recovery path schedules a save of its own; the merged save
+    // below replaces it.
+    clearTimeout(this._saveTimer);
+    this._saveTimer = null;
+    if (this._readOnly) return false; // unreadable again (or now the backup is)
+
+    // Nothing intact on disk any more (all missing or quarantined): this
+    // session's copy is the only one left, so it is kept whole.
+    const merged = this._loadSource === 'none' ? mine : reconcile(this._roBase, mine, disk);
+    clearInterval(this._recheckTimer);
+    this._recheckTimer = null;
+    this._roCause = null;
+    this._roBase = null;
+    this.data = merged;
+    if (this._loadSource === 'none' || !same(merged, disk)) this._dirty = true;
+    console.warn(`[store] data file readable again (loaded from ${this._loadSource}); merged this session's changes — saving resumes`);
+    this.emit('reconciled');
+    if (!same(mine.apps, merged.apps) || !same(mine.settings, merged.settings)) {
+      // The renderer still shows `mine`. Until it has applied the merged state
+      // its saves are merged against that copy (setFromRenderer), so a stale
+      // save can't overwrite what the merge brought back from disk.
+      this._view = { apps: mine.apps, settings: mine.settings };
+      this._pushRendererState();
+    }
+    return true;
+  }
+
+  _pushRendererState() {
+    const state = { seq: ++this._syncSeq, apps: this.data.apps, settings: this.data.settings };
+    this._pushed.set(state.seq, state);
+    this.emit('renderer-sync', state);
+  }
+
+  // A save from the renderer (whole `apps` array / whole `settings` object).
+  // Normally a plain set(). Right after a mid-session merge the renderer may
+  // still hold its pre-merge copy; its save is then merged against that copy
+  // and the result pushed back, until it acks the latest state.
+  setFromRenderer(key, value) {
+    if (!this._view || !(key in this._view)) return this.set(key, value);
+    const merged = mergeValue(key, this._view[key], value, this.data[key]);
+    this._view[key] = value; // what the renderer holds now
+    this.set(key, merged);
+    this._pushRendererState();
+  }
+
+  // The renderer adopted pushed state `seq`. It acks synchronously right after
+  // adopting it, so every save it sent before the ack was based on an older
+  // copy and has already been merged.
+  rendererSynced(seq) {
+    const st = this._pushed.get(seq);
+    if (!st) return;
+    for (const s of [...this._pushed.keys()]) if (s <= seq) this._pushed.delete(s);
+    this._view = seq === this._syncSeq ? null : { apps: st.apps, settings: st.settings };
+  }
+
+  // Latest un-acked state, for a renderer that (re)attaches mid-sync.
+  pendingRendererState() {
+    return this._view ? (this._pushed.get(this._syncSeq) || null) : null;
   }
 
   // Move an unreadable file aside (never delete it) so a later save can't
@@ -193,13 +375,16 @@ class Store extends EventEmitter {
   flush() {
     clearTimeout(this._saveTimer);
     this._saveTimer = null;
-    if (this._dirty) this._flush();
+    // Quit / logoff: a read-only re-check may wait out a short hold (~0.3 s).
+    if (this._dirty) this._flush(2);
   }
 
-  _flush() {
+  _flush(retries = 0) {
     this._saveTimer = null;
-    if (this._readOnly) {
-      const err = new Error('store is read-only this session (data file was unreadable at startup)');
+    // Read-only: re-check before refusing — the file may be readable again,
+    // in which case this.data is now the merged result and is saved below.
+    if (this._readOnly && !this._recheck(retries)) {
+      const err = new Error('store is read-only (data file is unreadable)');
       console.error('Failed to save store:', err.message);
       this.emit('save-error', err);
       return;
@@ -268,5 +453,9 @@ class Store extends EventEmitter {
     }
   }
 }
+
+// How often a read-only store re-checks the data file (one failed open per
+// tick while it is still held).
+Store.RECHECK_MS = 5000;
 
 module.exports = Store;
