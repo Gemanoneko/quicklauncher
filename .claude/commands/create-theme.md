@@ -15,19 +15,19 @@ Create a new CSS theme for QuickLaunch (Electron desktop widget launcher, `src/r
 - **Accessibility is non-negotiable**: The luma readability check (eff luma >= 72) is the minimum. Important text must be immediately readable. Decorative text fades into atmosphere. Icons must always be clearly visible over the background.
 - **Not everything is dark cyberpunk**: Some themes should be warm, some cold, some transparent, some dense. Some should be monochrome, some vibrant. Some textured, some clean. Match the franchise.
 
-### Transparency / Glassmorphism (available to ALL themes)
+### Transparency (available to ALL themes)
 
-The Electron window is `transparent: true` with `backdrop-filter: blur(18px)` already in base.css. To make a theme translucent:
+The Electron window is `transparent: true`, so a semi-transparent `--bg` lets the desktop show through — **sharp, not frosted.** `base.css` does set `backdrop-filter: blur(18px)` on `#app`, but it blurs nothing: Chromium can only blur page content behind an element, and the desktop is outside the page. (That no-op blur still costs about 3–5 % of a CPU core while the window is focused and animating.) To make a theme translucent:
 - Set `--bg` to a semi-transparent rgba: `rgba(R, G, B, 0.45–0.70)` — lower = more desktop visible
 - Set `--panel-bg` and `--overlay-bg` to slightly more opaque (0.80–0.90) for readability
-- The desktop wallpaper bleeds through with a frosted glass effect automatically
+- The wallpaper shows through as it is — there is no frosted-glass effect
 - Works best for: holographic/HUD themes (Ghost in the Shell), ethereal themes, glass/crystal themes
 - **Not every theme should be transparent.** Use it when it serves the franchise identity.
 
 ### Visual paradigms to experiment with (not an exhaustive list):
 
 - **Dark + colored accents** — the default. STOP defaulting to this for everything.
-- **Translucent/glassmorphic** — desktop bleeds through (Ghost in the Shell). Use `--bg: rgba(..., 0.45-0.70)`.
+- **Translucent** — desktop shows through, unblurred (Ghost in the Shell). Use `--bg: rgba(..., 0.45-0.70)`.
 - **Foggy/monochrome** — almost no color, LIGHT grey background, heavy grain. The opposite of dark mode. (Silent Hill)
 - **Neon wireframe** — pure black + 1-2 hard neon colors, geometric lines, no soft glow. (Tron)
 - **Warm mid-tone** — amber/sand/cream backgrounds that feel like firelight or parchment, NOT dark. (Dune, Indiana Jones)
@@ -216,23 +216,30 @@ A detailed, information-dense SVG with three-panel layout (left data + center em
 
 ### CPU-efficient animations (IMPORTANT)
 
-`base.css` promotes key elements to GPU compositor layers via `will-change`. This means repaints are isolated per-layer instead of repainting the entire window. Follow these rules to keep idle CPU under 1%:
+**While the window is unfocused or hidden, QuickLaunch pauses every animation** (`body.ql-paused` in `base.css`), so a theme costs about 0.5 % of a CPU core in the background. **While it is focused, every running animation is drawn at the display's refresh rate** (120 Hz on Sergei's monitor), and that is where the cost is. Measured 2026-09-28, focused, 120 Hz, in % of one CPU core:
 
-**Property cost tiers** (cheapest → most expensive):
-1. `opacity`, `transform` — **free** (GPU-composited, zero main-thread cost)
-2. `background-position` — **cheap** (promoted via `will-change` in base.css)
-3. `color`, `text-shadow` — **low** (small repaint area on text elements)
-4. `filter: brightness/saturate` — **moderate** (GPU shader, promoted in base.css)
+- **A whole theme with all its animations: 55–83 %.** Only a paused animation gets near 0 % (0.8 %).
+- **Any running animation keeps Chromium drawing every frame**, even one whose value rarely changes. The `#app` glow alone: ~55 % with smooth easing, 34–47 % stepped (`steps(10, jump-none)` or `steps(1)`), 0.8 % paused.
+- **`background-position` loops are not cheap.** One full-window `#particles` scroll alone: 30–39 %. Stepped to 30 position updates/s: 11–15 %. Rebuilt on `transform`: 16–19 %.
+- **Stepping one animation inside a full theme saves little** — 6–12 points for the glow, 0–9 for the particles — because the theme's other animations keep the window drawing anyway. A typical theme's other animations (title, readout, brackets, banner icon) cost 33–37 % together.
+
+`base.css` promotes key elements to GPU compositor layers via `will-change`, so each change repaints only its own layer, not the whole window. That limits what a change costs; it does not stop the window from drawing every frame.
+
+**Relative repaint cost per change** (cheapest → most expensive; only the numbers above were measured):
+1. `opacity`, `transform` — **cheapest** (compositor-only, no repaint) — but not free: still drawn every frame (see the `transform` number above)
+2. `color`, `text-shadow` — **low** (small repaint area on text elements)
+3. `filter: brightness/saturate` — **moderate** (GPU shader, promoted in base.css)
+4. `background-position` — **expensive** (repaints the whole layer on every change; `will-change` does not avoid that)
 5. `box-shadow` — **expensive** (full-element repaint, even on its own layer)
 6. `clip-path` — **expensive** (geometry recalc + repaint)
 
 **Rules for theme animations**:
-- **Prefer `opacity` and `transform`** for continuous animations (particles, breathing effects, fades)
-- **`box-shadow` on `#app`**: keep keyframe count low and duration ≥ 7s. The layer is promoted but each shadow change still triggers a repaint within that layer
+- **Prefer `opacity` and `transform`** for continuous animations (particles, breathing effects, fades) — they skip the repaint, though they still keep the window drawing
+- **`box-shadow` on `#app`**: one of the most expensive effects while focused (see the glow numbers above). Each shadow change repaints the promoted layer, and a smooth glow changes on every frame
 - **`filter` on `#header::before`**: already promoted — safe to use, but prefer `steps(1)` over smooth easing when possible (e.g., `hdr-bar-glitch` is cheaper than `hdr-bar-pulse`)
 - **`clip-path`**: only use with `steps(1)` so it changes a handful of times per cycle, not every frame
-- **`#particles` scrolling**: `background-position` is fine — the layer is promoted. Use `linear` timing for constant-speed scrolling (no easing overhead)
-- **Duration**: longer = fewer repaints/second. Prefer ≥ 5s for ambient animations. Reserve < 3s for small elements only (banner icon, title blink)
+- **`#particles` scrolling**: a smooth `background-position` scroll repaints the full-window layer every frame — 30–39 % on its own. Measure before adding a new one
+- **Duration does not make a smooth animation cheaper** — it changes on every frame whatever its length. Longer durations only mean fewer changes for stepped animations. Prefer ≥ 5s for ambient animations. Reserve < 3s for small elements only (banner icon, title blink)
 - **Do NOT add `will-change` in theme CSS** — `base.css` already declares it on `#app`, `#app::before`, `#header::before`, `#particles`, `#grid-container::before/::after`, `#title`, and `#theme-banner::before`. Duplicate `will-change` wastes GPU memory
 
 ---
@@ -395,6 +402,7 @@ All SVG background text MUST be easily readable at a glance. The container opaci
 ```
 
 ### App border animation — synchronized
+This is the pattern the shipped themes use. It is one of the costliest effects while the window is focused: about 55 % of a CPU core on its own at 120 Hz. Stepped timing (`steps(10, jump-none)`, `steps(1)`) measured 34–47 %, not near zero; only paused is (it pauses automatically while the window is unfocused).
 ```css
 #app { animation: <name> <n>s ease-in-out infinite; }
 @keyframes <name> {
@@ -427,7 +435,7 @@ The hover effect and particles are micro-interactions — they make the interfac
 - **Diagonal slashes** — aggressive, angular themes (Persona 5, Chaos)
 - **Rotated squares** — debris, horror (Control Hiss debris, corrupted fragments)
 
-**Particle motion**: `linear` timing for constant drift (cheapest). Match direction to theme — upward for rising energy/heat, downward for rain/falling, lateral for wind/space.
+**Particle motion**: `linear` timing for constant drift (no cheaper than other easings — any smooth scroll moves on every frame; see § CPU-efficient animations). Match direction to theme — upward for rising energy/heat, downward for rain/falling, lateral for wind/space.
 
 ---
 
