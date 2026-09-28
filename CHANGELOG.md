@@ -1,0 +1,62 @@
+# Changelog
+
+All notable changes to this tool are recorded here. Format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
+version tags rather than semantic versioning strictness.
+
+## [v1.94.1] - 2026-04-25
+
+### Changed
+- Per-theme `--accent-text` overrides rolled out for 13 dark/saturated themes.
+- Introduced the `--accent-text` CSS variable plus a linter row for it.
+- Failing-color title keyframes aligned with the new `--accent-text` variable.
+- Corrected the release-pipeline description in the brief to match local-publish reality.
+
+## [v1.94.0] - 2026-04-25
+
+### Added
+- Global `Ctrl+Space` show/hide hotkey, user-rebindable in settings.
+- Build-time theme contrast linter that gates new/changed themes and warns on legacy ones.
+- Grid arrow-key navigation, type-to-filter, and a `?` keyboard cheat-sheet overlay.
+- Default-off ambient animations honoring `reducedMotion` / OS preference.
+- Tray right-click menu expanded per UX review §7 / I5.
+- Tray update-available indicator dot per UX review §7.
+
+### Changed
+- Tile gap increased 4 → 8 px per UX review §1 / P1.
+- Click targets raised to the WCAG 2.2 AA 24×24 minimum.
+- `nameLower` cached on the tile dataset for filter performance (Senua M1).
+- Brief updated to describe the `Ctrl+Space` hotkey, keyboard surface, and contrast linter.
+
+### Fixed
+- Launch errors now surface instead of failing silently.
+- Contrast brightened on red-keyed themes (Gryffindor / Doom Eternal / Akira) and across
+  `--text-dim` / `--hint-sub-color` for all themes, plus targeted fixes for the Potterverse,
+  LotR, horror, sci-fi, cyber, period, adventure, drama, and franchise-cluster (SW/FF/WH/WoW)
+  theme sets.
+- IME composition keydown events no longer misfire input handling (Senua M2).
+- Tray `setupTray` now early-returns on an empty icon bitmap instead of erroring (Senua M3).
+- 12px body-text floor enforced on functional copy (§3 / I6).
+
+## [v1.93.5] - 2026-04-24
+
+### Changed
+- Full cleanup sweep: Majors M1, M3–M5, Minors, and re-review micro-fixes.
+
+## [v1.93.4] - 2026-04-24
+
+### Fixed
+- Atomic store writes with `.bak` recovery (Senua M2).
+
+## [v1.93.3] - 2026-04-24
+
+### Fixed
+- `release.mjs` `gh` path resolution on Windows.
+
+### Changed
+- `release.mjs` now sources `GH_TOKEN` from the `gh` CLI.
+
+## Earlier releases
+
+Releases before v1.93.3 (back through v1.0.0) are recorded only in git tag history —
+see `git log --oneline --decorate --tags` in this repo.

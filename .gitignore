@@ -6,3 +6,5 @@ dist/
 # Claude Code per-machine settings — see Team/Docs/ProcessRules.md "Claude Code Settings"
 .claude/settings.local.json
 .claude/.cache/
+
+scratch/ # local scratch dir — see Team/Docs/ProcessRules.md § Repository Hygiene

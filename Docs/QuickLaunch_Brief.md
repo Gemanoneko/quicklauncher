@@ -17,22 +17,42 @@ Keeps it in the tray. Pops it open with `Ctrl+Space` (or via the tray) when he w
   - `src/renderer/` — vanilla HTML/CSS/JS UI with per-theme stylesheets in `src/renderer/styles/themes/`
   - `preload.js` — context-bridge IPC surface
 - `electron-builder` for NSIS installers, `electron-updater` for auto-update
-- Local-publish release pipeline via `npm run release` → `scripts/release.mjs`, which sources `GH_TOKEN` from `gh auth token` and runs `electron-builder --publish always`. `scripts/cleanup-releases.js` runs as the final postbuild step, keeping the last 4 GitHub releases. There is no `.github/workflows/` — releases are built and published from Sergei's machine.
+- Local-publish release pipeline via `npm run release` → `scripts/release.mjs`, which sources `GH_TOKEN` from `gh auth token` and runs `electron-builder --publish always`. `scripts/cleanup-releases.js` runs as the `postbuild` step, keeping the last 4 GitHub releases. There is no `.github/workflows/` — releases are built and published from Sergei's machine.
+
+## Commands
+| Purpose | Command |
+|---|---|
+| Run in dev | `npm start` (plain `electron .` — no dev server) |
+| Theme contrast gate | `npm run check:contrast` (also runs as `prebuild`) |
+| Local installer, never publishes (packaged QA) | `npm run pack` |
+| Release (canonical) | `npm run release` — see ProcessRules § Release paths are per tool |
+| Fresh install on a new machine | `npm ci` |
+
+`npm run build` also publishes (it's what `release.mjs` calls with the token set) — don't run it directly for a release.
+
+## Names
+Folder `WIP/QuickLaunch/` · product name **QuickLauncher** (window title, tray menu, installer) · npm package and GitHub repo `quicklauncher`. In studio docs, "QuickLaunch" means this tool.
 
 ## Repo
 - GitHub: `https://github.com/Gemanoneko/quicklauncher`
 - Local: `WIP/QuickLaunch/`
-- Git status (as of 2026-04-24): clean, on `main`, in sync with origin.
 
 ## Current Version
-`1.93.0` (see `package.json`)
+See `package.json` (`version` field is the source of truth).
 
 ## Stage
-**Daily Use / Maintain** — tool is past prototype, actively used, has a working CI release pipeline.
+**Daily Use / Maintain** — past prototype, actively used, with a working local release pipeline (no CI) and `keep-last-4` cleanup.
+
+## Decision Log
+*Consequential choices only (ProcessRules § Decision Log in every tool Brief). The first two entries were reconstructed on 2026-09-28 from this Brief and the code; the alternatives weighed at the time weren't recorded.*
+
+| Decision | Chosen | Alternatives (why not) | Revisit when |
+|---|---|---|---|
+| Window lifecycle | **Tray-resident.** Closing the window hides it; `window-all-closed` deliberately does not quit. The process ends from the tray's **Quit QuickLauncher**, which calls `app.exit(0)` with no renderer round-trip. This is the recorded exception to ProcessRules § The close button must always quit the process — the invariant moves to the tray's Quit. | Quit on window close (a launcher that exits when closed can't answer the global hotkey). | The Quit path ever needs a renderer round-trip, or a close/quit hang is reported. |
+| Release path | **Local** `npm run release` via `scripts/release.mjs`, token from `gh auth token` (ProcessRules § Local Electron releases source GH_TOKEN from `gh` CLI). | GitHub Actions CI (not adopted — releases have been built and published from Sergei's machine since the tool joined the studio). | Releases need to happen from a machine without `gh` auth, or artifacts outgrow local builds. |
 
 ## Notes
-- The legacy `setup-git.ps1` in the repo root references the old path `c:\Antigravity Projects\Personal\QuickLaunch`. The tool has since moved to `WIP/QuickLaunch/`. The script is no longer needed (git is already correctly configured) and should be deleted in a future patch — flagged to Ender.
-- Single-instance lock means only one QuickLaunch process can run at a time — second launches are silently dropped.
+- Single-instance lock means only one QuickLaunch process can run at a time — second launches are silently dropped. Agents testing it must not collide with the instance Sergei is running, or grab his global hotkey (ProcessRules § Our tooling must not intrude on Sergei's machine).
 - Auto-launch registration uses `app.getPath('exe')` and is only applied for packaged builds (dev builds would register the bare Electron binary).
 - The global show/hide hotkey defaults to `Ctrl+Space` and is rebindable in Settings → GLOBAL SHOW/HIDE HOTKEY (click the field, press the desired combo, or click ✕ to disable). Bindings register via Electron's `globalShortcut` so they fire even when the window is hidden / unfocused. If a binding fails (already held by another app), the Settings panel surfaces a `CONFLICT — IN USE BY ANOTHER APP` status and reverts to the previously-bound value.
 - Theme contrast is gated by `scripts/check-theme-contrast.js` (run via `npm run check:contrast`, also invoked as `prebuild`). Legacy themes that fail AA only warn; new or modified themes must clear WCAG 2.2 AA. Baseline is `scripts/themes-baseline.json` and updates only via deliberate `--rebaseline` invocation.
