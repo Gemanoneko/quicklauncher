@@ -25,6 +25,7 @@ Keeps it in the tray. Pops it open with `Ctrl+Space` (or via the tray) when he w
 | Run in dev | `npm start` (plain `electron .` — no dev server) |
 | Theme contrast gate | `npm run check:contrast` (also runs as `prebuild`) |
 | Theme screenshot gallery (dev tooling; never launches the app) | `npm run gallery:themes -- --out=<dir> [--ref=<commit>] [--only=a,b]` · guard proof: `npm run gallery:themes -- --self-test` · options: `-- --help` |
+| Theme before/after compare (Sergei's batch sign-off images) | `npm run gallery:themes -- --compare --before=<dir> --after=<dir> --out=<dir> [--only=a,b] [--batch=<name>]` |
 | Local installer, never publishes (packaged QA) | `npm run pack` |
 | Release (canonical) | `npm run release` — see ProcessRules § Release paths are per tool |
 | Fresh install on a new machine | `npm ci` |
