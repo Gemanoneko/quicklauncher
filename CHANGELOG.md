@@ -4,6 +4,17 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.94.3] - 2026-09-29
+
+### Fixed
+- A locked shortcut file at login no longer leaves saving off for the whole session; the store re-checks and merges edits once the file is readable.
+- The save-error banner now reaches the screen, and only appears if saving is still off after about 10 s.
+- The app picker no longer freezes the app while it loads icons.
+- The Settings "Random theme on startup" checkbox persists.
+- Changing a setting no longer resets the window position or size.
+- The tray's Random theme and Start with Windows items follow the Settings checkboxes.
+- Leaving read-only is safe even if an internal listener fails.
+
 ## [v1.94.2] - 2026-09-28
 
 ### Fixed
