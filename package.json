@@ -8,6 +8,7 @@
     "start": "electron .",
     "clean:dist": "node scripts/clean-dist.js",
     "check:contrast": "node scripts/check-theme-contrast.js",
+    "gallery:themes": "node scripts/theme-gallery/run.mjs",
     "prebuild": "node scripts/check-theme-contrast.js",
     "build": "npm run clean:dist && electron-builder --win --publish always",
     "release": "node scripts/release.mjs",
