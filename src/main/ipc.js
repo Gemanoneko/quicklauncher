@@ -4,6 +4,7 @@ const fs = require('fs');
 const { execFile } = require('child_process');
 const { randomUUID } = require('crypto');
 const { checkForUpdates } = require('./updater');
+const { refreshTrayMenu } = require('./tray');
 const { trimIcon } = require('./icon-trim');
 const { encodeIcons } = require('./icon-worker');
 
@@ -226,22 +227,16 @@ function setupIPC(win, store, electronApp) {
     if (typeof settings.startWithWindows === 'boolean') {
       sanitized.startWithWindows = settings.startWithWindows;
     }
+    if (typeof settings.randomTheme === 'boolean') {
+      sanitized.randomTheme = settings.randomTheme;
+    }
     if (typeof settings.theme === 'string' && VALID_THEMES.has(settings.theme)) {
       sanitized.theme = settings.theme;
     }
-    if (settings.windowPosition && typeof settings.windowPosition === 'object') {
-      const { x, y } = settings.windowPosition;
-      if (typeof x === 'number' && typeof y === 'number') {
-        sanitized.windowPosition = { x: Math.round(x), y: Math.round(y) };
-      }
-    }
-    if (settings.windowSize && typeof settings.windowSize === 'object') {
-      const { width, height } = settings.windowSize;
-      if (typeof width === 'number' && typeof height === 'number'
-          && width >= 180 && height >= 150) {
-        sanitized.windowSize = { width: Math.round(width), height: Math.round(height) };
-      }
-    }
+    // windowPosition / windowSize are not taken from the renderer: window.js
+    // saves them on every move and resize, while the renderer only echoes the
+    // copy it fetched at init() — accepting it put the window back where it
+    // was at launch whenever any setting changed.
     // globalHotkey: accept null (disabled), or a non-empty string up to 64 chars.
     // String shape is validated lazily by globalShortcut.register at apply time.
     if (settings.globalHotkey === null || settings.globalHotkey === '') {
@@ -253,6 +248,9 @@ function setupIPC(win, store, electronApp) {
       sanitized.reducedMotion = settings.reducedMotion;
     }
     store.setFromRenderer('settings', sanitized); // see save-apps
+    // The tray's "Random theme on startup" checkbox is read when its menu is
+    // built: rebuild it so it matches the Settings overlay.
+    if ((store.get('settings') || {}).randomTheme !== current.randomTheme) refreshTrayMenu();
   });
 
   ipcMain.handle('launch-app', async (_, filePath) => {

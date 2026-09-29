@@ -25,9 +25,10 @@ const { EventEmitter } = require('events');
 //      the window gets focus, and every few seconds. Once the file reads
 //      again it is loaded exactly as at startup, this session's changes are
 //      merged into it (reconcile), and only the merged result is written —
-//      through the same .tmp → fsync → rename path. Still read-only after two
-//      failed timer re-checks (~10 s): the save-error banner is raised once
-//      per read-only stretch, unless a refused save already raised it.
+//      through the same .tmp → fsync → rename path. A save refused before the
+//      second failed timer re-check (~10 s) raises nothing; still read-only
+//      at that re-check: the save-error banner is raised once, and every
+//      save refused after it raises it again.
 
 // Windows error codes that are usually transient (AV scanner, search indexer,
 // backup agent briefly holding the file). Worth a short retry.
@@ -299,21 +300,33 @@ class Store extends EventEmitter {
     this.data = merged;
     if (this._loadSource === 'none' || !same(merged, disk)) this._dirty = true;
     console.warn(`[store] data file readable again (loaded from ${this._loadSource}); merged this session's changes — saving resumes`);
-    this.emit('reconciled');
     if (!same(mine.apps, merged.apps) || !same(mine.settings, merged.settings)) {
       // The renderer still shows `mine`. Until it has applied the merged state
       // its saves are merged against that copy (setFromRenderer), so a stale
-      // save can't overwrite what the merge brought back from disk.
+      // save can't overwrite what the merge brought back from disk. Set up
+      // before any listener runs, so no listener can skip it.
       this._view = { apps: mine.apps, settings: mine.settings };
       this._pushRendererState();
     }
+    // The timer is already stopped and the caller still has to write the
+    // merged data (the _flush in progress, or recheck()'s flush): a throwing
+    // listener must not skip that save.
+    this._emitSafe('reconciled');
     return true;
+  }
+
+  // emit(), except that a listener's exception is logged instead of thrown
+  // into the store (each listener runs even if an earlier one threw).
+  _emitSafe(name, ...args) {
+    for (const fn of this.rawListeners(name)) {
+      try { fn.apply(this, args); } catch (err) { console.error(`[store] '${name}' listener threw:`, err); }
+    }
   }
 
   _pushRendererState() {
     const state = { seq: ++this._syncSeq, apps: this.data.apps, settings: this.data.settings };
     this._pushed.set(state.seq, state);
-    this.emit('renderer-sync', state);
+    this._emitSafe('renderer-sync', state);
   }
 
   // A save from the renderer (whole `apps` array / whole `settings` object).
@@ -406,10 +419,16 @@ class Store extends EventEmitter {
     // Read-only: re-check before refusing — the file may be readable again,
     // in which case this.data is now the merged result and is saved below.
     if (this._readOnly && !this._recheck(retries)) {
-      this._roBannerRaised = true; // the 10 s read-only notice won't repeat it
       const err = new Error('store is read-only (data file is unreadable)');
       console.error('Failed to save store:', err.message);
-      this.emit('save-error', err);
+      // A lock that clears within ~10 s shows nothing: before the second
+      // failed timer re-check a refusal is only logged (the change stays
+      // _dirty and is written once the file reads). From then on every
+      // refused save raises the save-error banner.
+      if (this._roTicks >= 2) {
+        this._roBannerRaised = true; // the 10 s read-only notice won't repeat it
+        this.emit('save-error', err);
+      }
       return;
     }
     const json = JSON.stringify(this.data, null, 2);

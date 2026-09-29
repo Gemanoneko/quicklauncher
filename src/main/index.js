@@ -40,6 +40,8 @@ store.on('save-error', () => {
 store.on('renderer-sync', (state) => { sendToRenderer('store-reloaded', state); });
 // Settings the main process applied at boot from the read-only copy.
 store.on('reconciled', () => {
+  // A read-only save error still waiting for the renderer no longer applies.
+  saveErrorPending = false;
   const accel = (store.get('settings') || {}).globalHotkey;
   if (mainWindow && !mainWindow.isDestroyed() && accel !== _activeHotkey) {
     applyGlobalHotkey(accel, mainWindow);
