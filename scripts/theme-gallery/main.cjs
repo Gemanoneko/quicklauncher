@@ -141,8 +141,12 @@ const contract = parseContract();
 const version = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
 const THEMES_ALL = fs.readdirSync(path.join(RENDERER, 'styles', 'themes')).filter((f) => f.endsWith('.css')).map((f) => f.slice(0, -4)).sort();
 for (const t of THEMES_ALL) if (!/^[a-z0-9-]+$/.test(t)) { console.error('unexpected theme file name: ' + t); process.exit(2); }
-const THEMES = cfg.only && cfg.only.length ? cfg.only : THEMES_ALL;
-for (const t of THEMES) if (!THEMES_ALL.includes(t)) { console.error('unknown theme: ' + t); process.exit(2); }
+// Compare mode takes its theme list from the two gallery folders (run.mjs checked them).
+const THEMES = cfg.compare ? cfg.compare.themes.map((t) => t.theme) : cfg.only && cfg.only.length ? cfg.only : THEMES_ALL;
+for (const t of THEMES) {
+  if (!/^[a-z0-9-]+$/.test(t)) { console.error('unexpected theme name: ' + t); process.exit(2); }
+  if (!cfg.compare && !THEMES_ALL.includes(t)) { console.error('unknown theme: ' + t); process.exit(2); }
+}
 
 // ── mock IPC (the only thing the renderer can reach) ─────────────────────────
 const EXPECTED_IPC = new Set(['get-apps', 'get-settings', 'get-valid-themes', 'renderer-ready']);
@@ -500,7 +504,7 @@ async function makeSheetPage() {
       g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.fillStyle = L.bg; g.fillRect(0, 0, L.w, L.h); g.textBaseline = 'top';
       for (const o of L.ops) {
         if (o.t === 'rect') { g.fillStyle = o.c; g.fillRect(o.x, o.y, o.w, o.h); }
-        else if (o.t === 'text') { g.font = o.f; g.fillStyle = o.c; g.fillText(o.s, o.x, o.y, o.max); }
+        else if (o.t === 'text') { g.font = o.f; g.fillStyle = o.c; g.textAlign = o.a || 'left'; g.fillText(o.s, o.x, o.y, o.max); }
         else if (o.t === 'img') { const i = __imgs.get(o.k); if (i) g.drawImage(i, o.x, o.y, o.w, o.h); else { g.fillStyle = '#a00'; g.fillRect(o.x, o.y, o.w, o.h); } }
       }
       __imgs.clear(); return c.toDataURL('image/png'); };
@@ -519,7 +523,7 @@ async function drawSheet(win, file, layout, images) {
 
 const SHEET_BG = '#2b2d31', CELL_BG = '#3a3d42', INK = '#e8e8e8', DIM = '#a9adb3';
 const localDate = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
-const sheetFooter = () => `Captured ${localDate()} |${cfg.sourceLabel} | window ${cfg.width}x${cfg.height} at ${cfg.scale}x | loops frozen at ${cfg.freezeMs} ms, one-shots finished | transparent areas shown on ${CELL_BG}`;
+const sheetFooter = () => `Captured ${localDate()} | ${cfg.sourceLabel} | window ${cfg.width}x${cfg.height} at ${cfg.scale}x | loops frozen at ${cfg.freezeMs} ms, one-shots finished | transparent areas shown on ${CELL_BG}`;
 
 async function familySheet(win, title, list, file) {
   const cw = cfg.width, ch = cfg.height, pad = 14, lab = 22, head = 44, colHead = 20, foot = 26;
@@ -675,6 +679,25 @@ app.whenReady().then(async () => {
   ses.setPermissionCheckHandler(() => false);
 
   fs.mkdirSync(OUT, { recursive: true });
+  if (cfg.compare) {
+    // Compose before | after images only; no QuickLaunch page is loaded in this mode. Same
+    // process-level guards as a render (installed above and at the top of this file).
+    log(`compare ${cfg.compare.before.label} -> ${cfg.compare.after.label}; ${THEMES.length} theme(s); batch ${cfg.compare.batch}`);
+    writeStatus('starting');
+    const statusTimer = setInterval(() => writeStatus('rendering'), 1500);
+    await require('./compare.cjs').runCompare({
+      cfg, OUT, log, drawSheet, makeSheetPage, results, extra,
+      afterTheme: async (r) => {
+        done++;
+        log(`${String(done).padStart(3)}/${THEMES.length} ${r.theme} ${r.ok ? 'ok' : 'PROBLEM: ' + r.problems.join('; ')}`);
+        if ((cfg.checkpoints || []).includes(done)) await checkpoint(done);
+      },
+    });
+    clearInterval(statusTimer);
+    writeStatus('done');
+    finish(0, 'done');
+    return;
+  }
   for (const f of fs.readdirSync(OUT)) if (/^[a-z0-9-]+-(grid|settings|hover)\.png$/.test(f)) fs.unlinkSync(path.join(OUT, f));
   log(`source ${cfg.sourceLabel}; ${THEMES.length} theme(s); window ${cfg.width}x${cfg.height} at ${cfg.scale}x; ${cfg.gpu ? 'GPU' : 'software'} raster; freeze ${cfg.freezeMs} ms; ${cfg.concurrency} window(s)`);
   writeStatus('starting');

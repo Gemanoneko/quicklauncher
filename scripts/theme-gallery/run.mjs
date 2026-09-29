@@ -21,6 +21,16 @@
 //   --timeout=<s>       hard limit for the Electron run (default 540)
 //   --self-test         prove every guard can fire (renders one theme; writes to <work>/self-test)
 //
+// Compare mode (before | after, for sign-off)
+//   npm run gallery:themes -- --compare --before=<dir> --after=<dir> --out=<dir> [--only=a,b] [--batch=<name>]
+//   Writes <theme>-compare.png per theme (before left, after right; grid, settings, hover rows,
+//   each panel labelled with theme, BEFORE/AFTER and commit), batch-<name>.png (the whole batch's
+//   main grids in one image, sized for a chat preview), index.html and compare-manifest.json.
+//   Themes: --only, else every theme in the AFTER folder. Refuses, before starting anything, when
+//   either folder's run did not PASS, the two were captured differently (window, scale, raster,
+//   frame, Electron), or a theme or PNG is missing on either side.
+//   --before-label= / --after-label=  replace the default "v<version> @<commit>" panel labels
+//
 // Isolation: QuickLaunch's main process is never loaded; no window is shown or focused; no
 // tray, hotkey, audio or network; login-item APIs are counting no-ops. This script READS the
 // HKCU Run and StartupApproved\Run keys before and after and fails on any difference (it never
@@ -43,8 +53,10 @@ const opt = (k, d) => { const a = argv.find((x) => x.startsWith(`--${k}=`)); ret
 const flag = (k) => argv.includes(`--${k}`);
 if (flag('help') || flag('h')) { console.log(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').filter((l) => l.startsWith('//')).map((l) => l.slice(3)).join('\n')); process.exit(0); }
 const selfTest = flag('self-test');
+const compare = flag('compare');
+if (compare && selfTest) { console.error('--compare and --self-test are separate runs'); process.exit(2); }
 const WORK = path.resolve(opt('work', path.join(REPO, 'scratch', 'theme-gallery', '.work')));
-const OUT = path.resolve(selfTest ? path.join(WORK, 'self-test') : opt('out', path.join(REPO, 'scratch', 'theme-gallery', 'current')));
+const OUT = path.resolve(selfTest ? path.join(WORK, 'self-test') : opt('out', path.join(REPO, 'scratch', 'theme-gallery', compare ? 'compare' : 'current')));
 const ref = opt('ref', null);
 const only = opt('only', '') ? opt('only').split(',').map((s) => s.trim()).filter(Boolean) : (selfTest ? ['cyberpunk', 'dune'] : null);
 const num = (k, d) => { const v = Number(opt(k, d)); if (!Number.isFinite(v) || v <= 0) { console.error(`bad --${k}`); process.exit(2); } return v; };
@@ -64,6 +76,52 @@ for (const [label, p] of [['--out', OUT], ['--work', WORK]]) {
   if (appData && inside(path.join(appData, 'QuickLauncher'), p)) refuse.push(`${label} is inside the real QuickLauncher profile`);
   if (localAppData && inside(path.join(localAppData, 'Programs'), p)) refuse.push(`${label} is inside an installed-apps folder`);
   for (const sub of ['src', 'dist', 'node_modules', '.git']) if (inside(path.join(REPO, sub), p)) refuse.push(`${label} is inside the repo's ${sub}/`);
+}
+
+// Compare plan: both folders must be PASSing gallery runs captured the same way, and every
+// theme compared must have all three PNGs on both sides. Checked before anything starts.
+let comparePlan = null;
+if (compare) {
+  const localStamp = (iso) => { const d = new Date(iso); return Number.isNaN(+d) ? '?' : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+  const side = (label, dir, override) => {
+    if (!dir) { refuse.push(`--compare needs ${label}=<gallery folder>`); return null; }
+    const d = path.resolve(dir);
+    let m;
+    try { m = JSON.parse(fs.readFileSync(path.join(d, 'manifest.json'), 'utf8')); } catch { refuse.push(`${label}: no readable manifest.json in ${d}`); return null; }
+    if (m.tool !== 'scripts/theme-gallery' || !m.render || !Array.isArray(m.themes)) { refuse.push(`${label}: ${d} is not a theme-gallery folder`); return null; }
+    if (m.selfTest) refuse.push(`${label}: ${d} is a self-test folder`);
+    if (m.verdict !== 'PASS') refuse.push(`${label}: that gallery run did not PASS (${(m.failures || []).slice(0, 2).join('; ')})`);
+    const q = m.quicklaunch || {};
+    const short = String(q.commit || '').slice(0, 7) || '?';
+    const where = q.kind === 'snapshot' ? `@${short}` : `live@${short}${q.dirty && q.dirty.length ? '+uncommitted' : ''}`;
+    return { dir: d, m, info: { dir: d, label: override || `v${q.version} ${where}`, commit: q.commit || null, kind: q.kind, dirty: q.dirty || [], version: q.version, generated: m.generated, renderedLocal: localStamp(m.generated) } };
+  };
+  const B = side('--before', opt('before'), opt('before-label')), A = side('--after', opt('after'), opt('after-label'));
+  for (const [l, s] of [['--before', B], ['--after', A]]) if (s && (inside(s.dir, OUT) || inside(OUT, s.dir))) refuse.push(`--out overlaps ${l} (${s.dir})`);
+  if (B && A) {
+    for (const k of ['window', 'scale', 'raster', 'colorProfile', 'frame', 'states', 'tiles']) {
+      if (JSON.stringify(B.m.render[k]) !== JSON.stringify(A.m.render[k])) refuse.push(`not like for like: render.${k} is ${JSON.stringify(B.m.render[k])} before, ${JSON.stringify(A.m.render[k])} after; re-render one side with the same options`);
+    }
+    if (B.m.electron !== A.m.electron) refuse.push(`not like for like: Electron ${B.m.electron} before, ${A.m.electron} after; re-render BEFORE on this toolchain with --ref=<its commit>`);
+    const okThemes = (m) => new Map(m.themes.filter((t) => t.ok).map((t) => [t.theme, t.name]));
+    const bt = okThemes(B.m), at = okThemes(A.m);
+    const want = only || [...at.keys()].sort();
+    if (!want.length) refuse.push('no themes to compare');
+    const missing = want.filter((t) => !bt.has(t) || !at.has(t)).map((t) => `${t} (${[!bt.has(t) && 'not in BEFORE', !at.has(t) && 'not in AFTER'].filter(Boolean).join(', ')})`);
+    if (missing.length) refuse.push(`missing theme(s): ${missing.join(', ')}`);
+    for (const t of want) for (const s of ['grid', 'settings', 'hover']) for (const [l, x] of [['BEFORE', B], ['AFTER', A]]) {
+      if (!fs.existsSync(path.join(x.dir, `${t}-${s}.png`))) refuse.push(`${l}: ${t}-${s}.png missing`);
+    }
+    const batchName = opt('batch', '');
+    const r = B.m.render;
+    comparePlan = {
+      before: B.info, after: A.info,
+      themes: want.map((t) => ({ theme: t, name: at.get(t) || bt.get(t) || t.toUpperCase() })),
+      batch: batchName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'batch',
+      batchTitle: batchName || 'Theme batch',
+      footer: `Both sides: window ${r.window.join('x')} at ${r.scale}x, ${r.raster} raster, same frame rule | BEFORE rendered ${B.info.renderedLocal}, AFTER rendered ${A.info.renderedLocal} | transparent areas shown on #3a3d42`,
+    };
+  }
 }
 if (refuse.length) { console.error('REFUSED:\n  ' + refuse.join('\n  ')); process.exit(2); }
 
@@ -140,7 +198,10 @@ function netstat() {
 
 // ── source: live tree or pinned snapshot ─────────────────────────────────────
 let root = REPO, sourceLabel, source;
-if (ref) {
+if (compare) {
+  sourceLabel = `compare ${comparePlan.before.label} -> ${comparePlan.after.label}`;
+  source = { kind: 'compare', before: comparePlan.before, after: comparePlan.after };
+} else if (ref) {
   const sha = git('rev-parse', '--verify', `${ref}^{commit}`).trim();
   root = path.join(WORK, `src-${sha.slice(0, 12)}`);
   const done = path.join(root, '.complete');
@@ -180,14 +241,15 @@ const resultFile = path.join(WORK, 'result.json');
 const logFile = path.join(WORK, 'electron.log');
 const ackFile = path.join(WORK, 'sample-ack.txt');
 for (const f of [statusFile, resultFile, ackFile]) fs.rmSync(f, { force: true });
-const themeTotal = only ? only.length : fs.readdirSync(path.join(root, 'src', 'renderer', 'styles', 'themes')).filter((f) => f.endsWith('.css')).length;
+const themeTotal = compare ? comparePlan.themes.length : only ? only.length : fs.readdirSync(path.join(root, 'src', 'renderer', 'styles', 'themes')).filter((f) => f.endsWith('.css')).length;
 // Netstat / liveness samples: after the first theme and at 80 %; main.cjs waits for each one.
 const checkpoints = [...new Set([1, Math.max(1, Math.ceil(themeTotal * 0.8))])];
-fs.writeFileSync(cfgFile, JSON.stringify({ ...cfgBase, root, out: OUT, work: WORK, only, statusFile, resultFile, ackFile, checkpoints, sourceLabel: `QuickLaunch v${version}, ${sourceLabel}` }, null, 1));
+fs.writeFileSync(cfgFile, JSON.stringify({ ...cfgBase, root, out: OUT, work: WORK, only, compare: comparePlan, statusFile, resultFile, ackFile, checkpoints, sourceLabel: `QuickLaunch v${version}, ${sourceLabel}` }, null, 1));
 
 const electronExe = require('electron'); // path to this repo's electron.exe
 const electronVersion = JSON.parse(fs.readFileSync(path.join(REPO, 'node_modules', 'electron', 'package.json'), 'utf8')).version;
-console.log(`QuickLaunch theme gallery${selfTest ? ' SELF-TEST' : ''}: v${version}, ${sourceLabel}; Electron ${electronVersion}`);
+console.log(compare ? `QuickLaunch theme gallery COMPARE: ${sourceLabel}; ${themeTotal} theme(s); Electron ${electronVersion}`
+  : `QuickLaunch theme gallery${selfTest ? ' SELF-TEST' : ''}: v${version}, ${sourceLabel}; Electron ${electronVersion}`);
 console.log(`  out  ${OUT}\n  work ${WORK}`);
 
 const regBefore = snapshotRegistry();
@@ -200,7 +262,7 @@ const logStream = fs.createWriteStream(logFile);
 let lastLine = '';
 for (const s of [child.stdout, child.stderr]) s.on('data', (d) => {
   logStream.write(d);
-  for (const l of String(d).split(/\r?\n/)) if (l.startsWith('[gallery] ')) { lastLine = l.slice(10); if (/^\s*\d+\/\d+ |GUARD|FATAL|sheet |source |rendered /.test(lastLine)) console.log('  ' + lastLine); }
+  for (const l of String(d).split(/\r?\n/)) if (l.startsWith('[gallery] ')) { lastLine = l.slice(10); if (/^\s*\d+\/\d+ |GUARD|FATAL|sheet |source |rendered |compare |diff control/.test(lastLine)) console.log('  ' + lastLine); }
 });
 const exited = new Promise((res) => child.on('exit', (code, signal) => res({ code, signal })));
 
@@ -262,8 +324,15 @@ if (timedOut) fails.push('run timed out and was ended through its own handle');
 if (result.code !== 0) fails.push(`Electron exit code ${result.code}${res ? ` (${res.why})` : ''}`);
 const results = res ? res.results : [];
 const bad = results.filter((r) => !r.ok);
-const expected = only ? only.length : fs.readdirSync(path.join(root, 'src', 'renderer', 'styles', 'themes')).filter((f) => f.endsWith('.css')).length;
-if (results.length !== expected) fails.push(`rendered ${results.length} of ${expected} themes`);
+const expected = themeTotal;
+if (results.length !== expected) fails.push(`${compare ? 'compared' : 'rendered'} ${results.length} of ${expected} themes`);
+const cx = compare && res ? res.extra : {};
+if (compare) {
+  // The change figure must be able to see a change (grid vs hover of one theme), or "IDENTICAL" means nothing.
+  if (!cx.diffControl || !cx.diffControl.pass) fails.push(`diff control did not see a change (${cx.diffControl ? cx.diffControl.pair : 'not run'})`);
+  if (!cx.batchSheet) fails.push('no batch sheet written');
+  if (!fs.existsSync(path.join(OUT, 'index.html'))) fails.push('no index.html written');
+}
 if (bad.length) fails.push(`${bad.length} theme(s) with problems`);
 // A stale frame from another theme would show up as two themes with the same grid picture.
 function findDupes(list) {
@@ -307,9 +376,24 @@ if (selfTest) {
   if (sockets.length) fails.push(`${sockets.length} socket(s) owned by our processes: ${sockets.slice(0, 5).join(' | ')}`);
 }
 
-const pngs = results.reduce((n, r) => n + (r.states ? Object.values(r.states).filter((s) => s.file).length : 0), 0);
+const pngs = compare ? results.filter((r) => r.file).length : results.reduce((n, r) => n + (r.states ? Object.values(r.states).filter((s) => s.file).length : 0), 0);
 const procCount = seenPids.size;
-const manifest = {
+const isolation = {
+  counters, stubs: res ? res.stubs : null, ipcCalls: res ? res.ipc.calls : null, unexpectedIpc: unexpected.length,
+  registry: { before: regSummary(regBefore), after: regSummary(regAfter), changes: regChanges },
+  samples, processes: { started: [...seenPids].map(([pid, type]) => ({ pid, type })), leftAfterExit: left, exit: result, timedOut },
+};
+const changeText = (d) => (!d ? 'not compared' : d.sizeMismatch ? 'SIZE MISMATCH' : d.changedPx === 0 ? 'IDENTICAL' : `changed ${d.changedPct < 0.1 ? '<0.1' : d.changedPct.toFixed(1)}%`);
+if (compare) {
+  fs.writeFileSync(path.join(OUT, 'compare-manifest.json'), JSON.stringify({
+    tool: 'scripts/theme-gallery', mode: 'compare', generated: new Date().toISOString(), electron: electronVersion,
+    before: comparePlan.before, after: comparePlan.after, batch: comparePlan.batch,
+    themes: results.map((r) => ({ theme: r.theme, name: r.name, ok: r.ok, problems: r.problems, file: r.file, diffs: r.diffs })),
+    batchSheet: cx.batchSheet || null, index: 'index.html', diffControl: cx.diffControl || null,
+    isolation, wallMs: wall, verdict: fails.length ? 'FAIL' : 'PASS', failures: fails,
+  }, null, 1));
+}
+const manifest = compare ? null : {
   tool: 'scripts/theme-gallery', generated: new Date().toISOString(), selfTest,
   quicklaunch: { version, ...source }, electron: electronVersion,
   render: { window: [cfgBase.width, cfgBase.height], scale: cfgBase.scale, raster: cfgBase.gpu ? 'gpu' : 'software', colorProfile: 'srgb', transparentWindow: true,
@@ -317,22 +401,24 @@ const manifest = {
     states: { grid: 'main grid, nothing hovered', settings: 'Settings overlay open (btn-settings click)', hover: 'synthetic mouse move over tile #2 (Calculator), settled' },
     tiles: '14 mock tiles (scripts/theme-gallery/mock-data.cjs), store-default settings',
     displays: res ? res.extra.displays : null, displayEvents: res ? res.extra.displayEvents : null },
-  isolation: {
-    counters, stubs: res ? res.stubs : null, ipcCalls: res ? res.ipc.calls : null, unexpectedIpc: unexpected.length,
-    registry: { before: regSummary(regBefore), after: regSummary(regAfter), changes: regChanges },
-    samples, processes: { started: [...seenPids].map(([pid, type]) => ({ pid, type })), leftAfterExit: left, exit: result, timedOut },
-  },
+  isolation,
   wallMs: wall, themes: results.map((r) => ({ theme: r.theme, name: r.name, family: r.family, ok: r.ok, problems: r.problems, states: r.states, hoverTile: r.hoverTile, page: r.page, freeze: r.freeze, fonts: r.fonts, consoleErrors: r.consoleErrors, consoleWarnings: r.consoleWarnings, ms: r.ms })),
   sheets: res ? res.extra.sheets : [], selfTestControls: selfTest ? [...(res ? res.extra.selfTest : []), ...selfControls] : undefined,
   verdict: fails.length ? 'FAIL' : 'PASS', failures: fails,
 };
-fs.writeFileSync(path.join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 1));
+if (manifest) fs.writeFileSync(path.join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 1));
 
 console.log('');
-console.log(`  themes      ${results.length - bad.length}/${expected} clean, ${pngs} PNG, ${res ? res.extra.sheets.length : 0} contact sheet(s), ${(wall / 1000).toFixed(1)} s`);
+if (compare) {
+  console.log(`  compared    ${results.length - bad.length}/${expected} theme(s): ${pngs} compare PNG, batch sheet ${cx.batchSheet ? `${cx.batchSheet.file} ${cx.batchSheet.size.join('x')}` : 'MISSING'}, index.html, ${(wall / 1000).toFixed(1)} s`);
+  for (const r of results) console.log(`    ${r.theme.padEnd(22)} ${['grid', 'settings', 'hover'].map((s) => `${s} ${changeText(r.diffs && r.diffs[s])}`).join(' | ')}`);
+  console.log(`  diff check  ${cx.diffControl ? `${cx.diffControl.pair}: ${changeText(cx.diffControl)}` : 'not run'}`);
+} else {
+  console.log(`  themes      ${results.length - bad.length}/${expected} clean, ${pngs} PNG, ${res ? res.extra.sheets.length : 0} contact sheet(s), ${(wall / 1000).toFixed(1)} s`);
+}
 for (const r of bad) console.log(`    ${r.theme}: ${r.problems.join('; ')}`);
 console.log(`  guards      login-item ${counters.loginItem ?? '?'} | global-shortcut ${counters.globalShortcut ?? '?'} | show ${counters.windowShow ?? '?'} | focus ${(counters.windowFocus ?? 0) + (counters.appFocus ?? 0) + (counters.focusEvents ?? 0)} | dialogs ${counters.dialogs ?? '?'} | blocked requests ${counters.blockedRequests ?? '?'} | media ${counters.mediaStarted ?? '?'} | stubs intact ${res ? `${res.stubs.total - res.stubs.broken.length}/${res.stubs.total}` : '?'}`);
-console.log(`  ipc         ${res ? Object.entries(res.ipc.calls).map(([k, v]) => `${k} ${v}`).join(', ') : '?'} | outside allowlist ${unexpected.length}`);
+console.log(`  ipc         ${res ? Object.entries(res.ipc.calls).map(([k, v]) => `${k} ${v}`).join(', ') || 'none (no QuickLaunch page loaded)' : '?'} | outside allowlist ${unexpected.length}`);
 console.log(`  network     sockets owned by our processes: ${sockets.length} across ${samples.length} netstat sample(s) (control PID ${samples[0]?.control.pid}: ${samples[0]?.control.sockets} sockets)`);
 console.log(`  registry    before: ${regSummary(regBefore)}`);
 console.log(`              after:  ${regSummary(regAfter)} -> ${regChanges.length ? 'CHANGED: ' + regChanges.join('; ') : 'unchanged'}`);
@@ -340,5 +426,6 @@ console.log(`  processes   ${procCount} started (${[...new Set(seenPids.values()
 if (res && res.extra.displayEvents.length) console.log(`  displays    ${res.extra.displayEvents.length} display change event(s) during the run (captures are still size-gated)`);
 if (selfTest) for (const c of manifest.selfTestControls) console.log(`  control     ${c.pass ? 'fired' : 'DID NOT FIRE'}: ${c.control} -> ${c.observed}`);
 for (const f of fails) console.log(`  FAIL        ${f}`);
-console.log(`CITE: ql-theme-gallery ${selfTest ? 'SELF-TEST ' : ''}${fails.length ? 'FAIL' : 'PASS'} | v${version} ${source.kind === 'snapshot' ? '@' + source.commit.slice(0, 7) : 'live@' + source.commit.slice(0, 7) + (source.dirty.length ? '+dirty' : '')} | ${results.length - bad.length}/${expected} themes, ${pngs} PNG | login-item ${counters.loginItem ?? '?'} | ipc outside allowlist ${unexpected.length} | sockets ${sockets.length} | registry ${regChanges.length ? 'CHANGED' : 'unchanged'} | ${left.length} proc left`);
+if (compare) console.log(`CITE: ql-theme-gallery COMPARE ${fails.length ? 'FAIL' : 'PASS'} | before ${comparePlan.before.label} -> after ${comparePlan.after.label} | ${results.length - bad.length}/${expected} themes, ${pngs} compare PNG + batch sheet | login-item ${counters.loginItem ?? '?'} | ipc outside allowlist ${unexpected.length} | sockets ${sockets.length} | registry ${regChanges.length ? 'CHANGED' : 'unchanged'} | ${left.length} proc left`);
+else console.log(`CITE: ql-theme-gallery ${selfTest ? 'SELF-TEST ' : ''}${fails.length ? 'FAIL' : 'PASS'} | v${version} ${source.kind === 'snapshot' ? '@' + source.commit.slice(0, 7) : 'live@' + source.commit.slice(0, 7) + (source.dirty.length ? '+dirty' : '')} | ${results.length - bad.length}/${expected} themes, ${pngs} PNG | login-item ${counters.loginItem ?? '?'} | ipc outside allowlist ${unexpected.length} | sockets ${sockets.length} | registry ${regChanges.length ? 'CHANGED' : 'unchanged'} | ${left.length} proc left`);
 process.exit(fails.length ? 1 : 0);
