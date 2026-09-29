@@ -248,9 +248,12 @@ function setupIPC(win, store, electronApp) {
       sanitized.reducedMotion = settings.reducedMotion;
     }
     store.setFromRenderer('settings', sanitized); // see save-apps
-    // The tray's "Random theme on startup" checkbox is read when its menu is
-    // built: rebuild it so it matches the Settings overlay.
-    if ((store.get('settings') || {}).randomTheme !== current.randomTheme) refreshTrayMenu();
+    // The tray's "Start with Windows" and "Random theme on startup" checkboxes
+    // are read when its menu is built: rebuild it so it matches the Settings
+    // overlay.
+    const saved = store.get('settings') || {};
+    if (saved.startWithWindows !== current.startWithWindows
+        || saved.randomTheme !== current.randomTheme) refreshTrayMenu();
   });
 
   ipcMain.handle('launch-app', async (_, filePath) => {
