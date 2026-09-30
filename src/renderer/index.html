@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'self'">
   <title>QuickLauncher</title>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="styles/base.css">
   <link id="theme-stylesheet" rel="stylesheet" href="styles/themes/cyberpunk.css">
 </head>
@@ -67,7 +68,8 @@
 
   <!-- Settings overlay -->
   <div id="settings-overlay" class="overlay hidden">
-    <div class="overlay-panel">
+    <div class="overlay-panel scroll-panel">
+      <div class="overlay-scroll">
       <div class="overlay-title">// SETTINGS</div>
 
       <div class="setting-row">
@@ -122,6 +124,7 @@
       <div class="setting-row">
         <div class="setting-label">VERSION <span id="app-version" class="accent"></span></div>
       </div>
+      </div>
 
       <div class="overlay-footer">
         <button id="btn-check-update">CHECK FOR UPDATES</button>
@@ -132,7 +135,8 @@
 
   <!-- Keyboard cheat-sheet overlay -->
   <div id="cheatsheet-overlay" class="overlay hidden">
-    <div class="overlay-panel">
+    <div class="overlay-panel scroll-panel">
+      <div class="overlay-scroll">
       <div class="overlay-title">// KEYBOARD SHORTCUTS</div>
       <div class="cheat-list">
         <div class="cheat-row"><span class="cheat-key">CTRL+SPACE</span><span class="cheat-desc">Show / hide window (rebindable)</span></div>
@@ -144,6 +148,7 @@
         <div class="cheat-row"><span class="cheat-key">?</span><span class="cheat-desc">Toggle this cheat-sheet</span></div>
         <div class="cheat-row"><span class="cheat-key">F11</span><span class="cheat-desc">Toggle fullscreen</span></div>
         <div class="cheat-row"><span class="cheat-key">RIGHT-CLICK</span><span class="cheat-desc">Enter edit mode</span></div>
+      </div>
       </div>
       <div class="overlay-footer">
         <button id="btn-close-cheatsheet">CLOSE</button>

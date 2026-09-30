@@ -1072,6 +1072,59 @@ window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',
 
 let bannerQuotes = null;
 let bannerIdx = 0;
+let bannerGen = 0;   // bumped per theme start; a stale async first pick checks it and gives up
+
+// ── Banner fit check (theme spec, foundation A3) ─────────────────────────────
+// The banner is one line. A quote wider than the box is skipped: the rotation
+// shows the first quote, cyclically from the natural next one, that fits
+// (scrollWidth <= clientWidth). If none fits it shows the natural next one, so
+// the ellipsis stays as the last resort and the rotation never stops or blanks.
+// Measuring sets the text; every caller either measures while the text is
+// invisible (the fade-out) or restores the shown quote in the same task, so
+// no frame ever paints a candidate.
+function bannerQuoteFits(textEl, quote) {
+  textEl.textContent = quote;
+  return textEl.scrollWidth <= textEl.clientWidth;
+}
+
+// Index of the first fitting quote from `start`; leaves that quote in textEl.
+function pickFittingQuote(textEl, quotes, start) {
+  for (let k = 0; k < quotes.length; k++) {
+    const i = (start + k) % quotes.length;
+    if (bannerQuoteFits(textEl, quotes[i])) return i;
+  }
+  textEl.textContent = quotes[start];
+  return start;
+}
+
+// Resolves once the theme's stylesheet is applied and the banner's fonts are
+// loaded, so the first pick measures the theme's own type (bundled fonts use
+// font-display: block and lay out with fallback metrics until they arrive).
+// Every wait is bounded (2 s for the sheet, 3 s for the fonts), so the pick always happens.
+function whenBannerReady(theme, textEl) {
+  const link = $('theme-stylesheet');
+  const want = `/styles/themes/${theme}.css`;
+  const applied = () => {
+    try { return !!(link.sheet && link.sheet.href && link.sheet.href.endsWith(want) && link.sheet.cssRules); }
+    catch { return false; }
+  };
+  const bounded = (p, ms) => Promise.race([p, new Promise((r) => setTimeout(r, ms))]);
+  // Polled, not the link's load event: Chromium does not fire it reliably when an
+  // existing stylesheet link's href changes (seen in the gallery: the theme was
+  // applied and no load event came).
+  const sheet = new Promise((resolve) => {
+    const t0 = performance.now();
+    const poll = () => (applied() || performance.now() - t0 > 2000 ? resolve() : setTimeout(poll, 16));
+    poll();
+  });
+  return sheet.then(() => {
+    // Fetch the faces the banner text resolves to, then let any other pending load finish.
+    const cs = getComputedStyle(textEl);
+    const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    const load = Promise.resolve().then(() => document.fonts.load(font, textEl.textContent || 'A')).catch(() => null);
+    return bounded(load.then(() => document.fonts.ready), 3000);
+  });
+}
 
 function startBannerCycle(theme) {
   clearInterval(bannerInterval);
@@ -1079,6 +1132,7 @@ function startBannerCycle(theme) {
   bannerInterval = null;
   bannerFadeTimer = null;
   bannerQuotes = null;
+  const gen = ++bannerGen;
 
   const quotes = THEME_BANNERS[theme];
   if (!quotes) return;
@@ -1090,6 +1144,13 @@ function startBannerCycle(theme) {
   textEl.textContent = quotes[bannerIdx];
 
   if (!idlePaused) scheduleBannerRotation();
+
+  // First pick, once the theme and its fonts are in. Skipped when another theme
+  // started meanwhile or the rotation has already moved on (it measures itself).
+  whenBannerReady(theme, textEl).catch(() => null).then(() => {
+    if (gen !== bannerGen || bannerQuotes !== quotes || bannerIdx !== 0) return;
+    bannerIdx = pickFittingQuote(textEl, quotes, 0);
+  });
 }
 
 function scheduleBannerRotation() {
@@ -1099,10 +1160,17 @@ function scheduleBannerRotation() {
   const quotes = bannerQuotes;
   const textEl = document.getElementById('theme-banner-text');
   bannerInterval = setInterval(() => {
+    // Measured now and the shown quote put back in the same task (nothing paints
+    // in between). When the pick is the quote already shown (a theme where only
+    // one quote fits), the banner stays as it is instead of blinking.
+    const shown = bannerIdx;
+    const next = pickFittingQuote(textEl, quotes, (shown + 1) % quotes.length);
+    textEl.textContent = quotes[shown];
+    if (next === shown) return;
     textEl.style.opacity = '0';
     bannerFadeTimer = setTimeout(() => {
-      bannerIdx = (bannerIdx + 1) % quotes.length;
-      textEl.textContent = quotes[bannerIdx];
+      // Re-measured while invisible: the window may have been resized meanwhile.
+      bannerIdx = pickFittingQuote(textEl, quotes, next);
       textEl.style.opacity = '1';
     }, 380);
   }, 14000);
@@ -1828,20 +1896,38 @@ $('btn-done-edit').addEventListener('click', exitEditMode);
     });
   }
 
+  // The settings body scrolls (theme spec, foundation A1.4): the list is fixed,
+  // so it is placed from the input's position now and the body is locked while
+  // it is open (wheeling would otherwise move the input away from the list).
+  const scrollEl = searchEl.closest('.overlay-scroll');
+
   function openPicker() {
     buildList(searchEl.value);
+    // The focus event fires before Chromium scrolls a focused control into view,
+    // so bring the input fully into the scroller first, then measure it.
+    searchEl.scrollIntoView({ block: 'nearest' });
+    if (scrollEl) scrollEl.classList.add('picker-open');
     listEl.classList.remove('hidden');
-    // Position dropdown below the search input, extending to the app bottom edge
+    // Below the input by default; upward when there is under 150 px below and more room above.
     const rect = searchEl.getBoundingClientRect();
-    const appBottom = elApp.getBoundingClientRect().bottom;
-    listEl.style.top = (rect.bottom + 3) + 'px';
-    listEl.style.maxHeight = Math.max(80, appBottom - rect.bottom - 10) + 'px';
+    const below = innerHeight - rect.bottom - 10;
+    const above = rect.top - 10;
+    if (below < 150 && above > below) {
+      listEl.style.top = 'auto';
+      listEl.style.bottom = (innerHeight - rect.top + 3) + 'px';
+      listEl.style.maxHeight = Math.max(80, above - 3) + 'px';
+    } else {
+      listEl.style.top = (rect.bottom + 3) + 'px';
+      listEl.style.bottom = 'auto';
+      listEl.style.maxHeight = Math.max(80, below) + 'px';
+    }
     const sel = listEl.querySelector('.theme-picker-item.selected');
     if (sel) sel.scrollIntoView({ block: 'nearest' });
   }
 
   function closePicker() {
     listEl.classList.add('hidden');
+    if (scrollEl) scrollEl.classList.remove('picker-open');
     searchEl.value = '';
   }
 
