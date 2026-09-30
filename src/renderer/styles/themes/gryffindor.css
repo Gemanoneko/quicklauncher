@@ -3,6 +3,7 @@
    dark maroon ground, a static firelight glow low in the frame, a faint tartan
    weave, a gilt double rule around the tile field, parchment italic labels,
    gold accents and house scarlet as a fill (edit bar, banner pennant).
+   Title in the bundled Cinzel (foundation spec 2026-09-30, Part B).
    No crest, no lion, no text in the art; no looping motion.
    ══════════════════════════════════════════════════════════════════════════════ */
 
@@ -119,8 +120,9 @@
 #header:has(#filter-chip:not(.hidden))::after { display: none; }
 
 #title {
-  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-  font-weight: 700; font-style: normal; letter-spacing: 4px; text-shadow: none;
+  font-family: 'Cinzel', 'Palatino Linotype', Palatino, Georgia, serif;
+  font-weight: 700; font-style: normal; letter-spacing: 3px; text-shadow: none;
+  font-synthesis: none; line-height: 1.2;
 }
 
 /* ── Banner: scarlet swallow-tail pennant with gold hems and a sword ────────── */

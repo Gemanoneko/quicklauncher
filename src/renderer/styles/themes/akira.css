@@ -4,6 +4,7 @@
    banner strip with a Neo-Tokyo skyline and a red crater sun, a red-and-white
    capsule (header tag and banner icon) beside red katakana, and a capsule
    pill behind the hovered or focused label. No texture, no looping motion.
+   Title in the bundled Dela Gothic One (foundation spec 2026-09-30, Part B).
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -98,7 +99,7 @@
   pointer-events: none;
 }
 #header:has(#filter-chip:not(.hidden))::after { display: none; }
-#title { font-family: 'Arial Black', 'Segoe UI Black', 'Segoe UI', sans-serif; font-weight: 900; letter-spacing: 2px; color: #F5F5F5; text-shadow: none; }
+#title { font-family: 'Dela Gothic One', 'Arial Black', 'Segoe UI Black', 'Segoe UI', sans-serif; font-weight: 400; letter-spacing: 1px; font-synthesis: none; line-height: 1.2; color: #F5F5F5; text-shadow: none; }
 #title .accent { color: #FF4D57; }
 
 /* tiles */

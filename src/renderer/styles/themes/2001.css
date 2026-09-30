@@ -1,9 +1,10 @@
 /* ══ 2001: A SPACE ODYSSEY ════════════════════════════════════════════════════
    Batch 1 redraw (theme spec 2026-09-30, section 4). A light, sterile console:
-   off-white ground, near-black Semilight capitals, console blue for hover and
+   off-white ground, near-black Jost capitals, console blue for hover and
    focus, a small amber lamp strip, HAL red only in edit mode and the banner eye.
    Header art: a converging line pair leading to a small black slab.
    No texture layer and no looping motion (the batch's texture floor).
+   Title, labels and banner in the bundled Jost at 350 (foundation spec, Part B).
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -100,8 +101,9 @@
 #header:has(#filter-chip:not(.hidden))::after { display: none; }
 
 #title {
-  font-family: 'Segoe UI Semilight', 'Segoe UI', sans-serif;
+  font-family: 'Jost', 'Segoe UI Semilight', 'Segoe UI', sans-serif;
   font-weight: 350; letter-spacing: 5px; text-shadow: none;
+  font-synthesis: none;
 }
 
 /* ── Banner: white strip, HAL's eye ──────────────────────────────────────────── */
@@ -112,8 +114,9 @@
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Ccircle cx='11' cy='11' r='10.5' fill='rgb(28,28,32)'/%3E%3Ccircle cx='11' cy='11' r='8.5' fill='rgb(224,24,24)'/%3E%3Ccircle cx='11' cy='11' r='5' fill='rgb(200,16,16)'/%3E%3Ccircle cx='11' cy='11' r='2.2' fill='rgb(242,194,48)'/%3E%3C/svg%3E") center / 22px 22px no-repeat;
 }
 #theme-banner-text {
-  font-family: 'Segoe UI Semilight', 'Segoe UI', sans-serif;
+  font-family: 'Jost', 'Segoe UI Semilight', 'Segoe UI', sans-serif;
   font-weight: 350; letter-spacing: 0.5px; color: var(--text);
+  font-synthesis: none;
 }
 
 /* ── Tiles ───────────────────────────────────────────────────────────────────── */
@@ -125,7 +128,7 @@
   border-color: var(--tile-hover-border);
   box-shadow: var(--tile-hover-shadow);
 }
-.tile-label { font-family: 'Segoe UI Semilight', 'Segoe UI', sans-serif; }
+.tile-label { font-family: 'Jost', 'Segoe UI Semilight', 'Segoe UI', sans-serif; font-synthesis: none; }
 
 /* ── Base hover rules that assume a dark ground (white text on a pale fill) ──── */
 button:hover { color: var(--text); }
