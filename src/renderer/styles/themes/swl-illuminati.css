@@ -1,211 +1,110 @@
 /* ══ SECRET WORLD LEGENDS: ILLUMINATI ═════════════════════════════════════════
-   The Illuminati. New York. Labyrinth. Sex, drugs, and Rockefeller.
-   Corporate power meets occult conspiracy. They own EVERYTHING and they
-   want you to know it. Sharp electric blue — confidence is a weapon.
+   Batch 3 tone-down (theme spec 2026-09-30, section 5). New York, blue and
+   black: navy-black with silver type and thin steel-blue rules, a stepped
+   ziggurat in the header, an eye in a triangle and a setback skyline in the
+   banner, folded dossier-corner icon plates; one muted red for edit mode and
+   errors only. Segoe UI Semibold. No texture, no looping motion.
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --radius:       0px;
-  --app-clip:     none;
+  --radius: 6px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* SHARP CORPORATE BLUE — trading floor meets secret society */
-  --bg:           #040410;
-  --panel-bg:     rgba(4, 6, 16, 0.99);
-  --overlay-bg:   rgba(4, 5, 14, 0.97);
-  --header-bg:    rgba(0, 90, 210, 0.04);
-
-  --font:         'Segoe UI', 'Arial', sans-serif;
-  --text:         #70A0E0;
-  --text-dim:     rgba(90, 135, 210, 0.88);
-
-  /* Electric blue + money gold */
-  --accent-c:     #0072E8;   /* Illuminati blue — electric corporate */
-  --accent-m:     #C0A020;   /* money gold */
-  --accent-y:     #08102A;   /* dark corp blue-black */
-
-  --border:       rgba(0, 114, 232, 0.22);
-  --border-h:     rgba(0, 114, 232, 0.55);
-
-  --glow-c:       0 0 8px rgba(0,114,232,.65), 0 0 22px rgba(0,114,232,.22);
-  --glow-m:       0 0 6px rgba(192,160,32,.52), 0 0 18px rgba(192,160,32,.18);
-  --glow-y:       0 0 5px rgba(8,16,42,.42), 0 0 14px rgba(8,16,42,.14);
-
-  --pulse-glow:   inset 0 0 22px rgba(0,114,232,.06);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(0,114,232,.10);
-
-  --title-anim:   illum-title 8s steps(1) infinite;
-
-  --tile-hover-bg:     rgba(0, 114, 232, 0.08);
-  --tile-hover-border: rgba(0, 114, 232, 0.50);
-  --tile-hover-shadow: 0 0 14px rgba(0, 114, 232, 0.22);
-  --tile-active-bg:    rgba(0, 114, 232, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(0,114,232,.58)) drop-shadow(0 0 14px rgba(0,114,232,.22));
-  --tile-icon-fx:      brightness(0.92) saturate(1.3) contrast(1.15);
-  --tile-icon-shape:   polygon(8% 0%, 92% 0%, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0% 92%, 0% 8%);
-  --tile-label-spacing:   2px;
+  --bg: #070A12;
+  --panel-bg: #0F1522;
+  --overlay-bg: #070A12;
+  --header-bg: #0C1220;
+  --font: 'Segoe UI', Arial, sans-serif;
+  --text: #D4DCE8;
+  --text-dim: #93A3BC;
+  --accent-c: #3A72C4;
+  --accent-m: #E8707C;
+  --accent-y: #D4DCE8;
+  --accent-text: #8DB8F0;
+  --border: #1E2A40;
+  --border-h: #3A72C4;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #3A72C4;
+  --title-anim: none;
+  --tile-hover-bg: #10203A;
+  --tile-hover-border: #3A72C4;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #10203A;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: saturate(0.85) contrast(1.05);
+  --tile-icon-shape: polygon(0 0, 78% 0, 100% 22%, 100% 100%, 0 100%);
+  --tile-label-spacing: 1px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    700;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-throb 3s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 0.8s ease-out forwards;
-
-  --btn-hover-bg:   rgba(0, 114, 232, 0.10);
-  --btn-active-bg:  rgba(0, 114, 232, 0.22);
-
-  --drop-hint-border: rgba(0, 114, 232, 0.28);
-  --drop-icon-color:  rgba(0, 114, 232, 0.38);
-  --hint-sub-color:   #5078C8;
-
-  --rename-dashed:    rgba(0, 114, 232, 0.42);
-  --rename-input-bg:  rgba(0, 114, 232, 0.07);
-
-  --edit-bar-bg:          rgba(192, 160, 32, 0.07);
-  --edit-bar-border:      rgba(192, 160, 32, 0.42);
-  --edit-label-color:     #C0A020;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #C0A020;
-  --btn-done-border:      rgba(192, 160, 32, 0.42);
-  --btn-done-hover-bg:    rgba(192, 160, 32, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(0, 114, 232, 0.42);
-
-  --update-bg:             rgba(192, 160, 32, 0.06);
-  --update-border:         rgba(192, 160, 32, 0.32);
-  --update-color:          var(--accent-m);
-  --update-btn-border:     rgba(192, 160, 32, 0.28);
-  --update-btn-hover-bg:   rgba(192, 160, 32, 0.09);
-  --update-btn-hover-glow: var(--glow-m);
-
-  --btn-close-color:      #0072E8;
-  --btn-close-border:     rgba(0, 114, 232, 0.42);
-  --btn-close-hover-bg:   rgba(0, 114, 232, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(0, 114, 232, 0.07);
-  --picker-item-hover-bg:  rgba(0, 114, 232, 0.08);
-  --picker-item-active-bg: rgba(0, 114, 232, 0.16);
-  --picker-placeholder-bg: rgba(0, 114, 232, 0.07);
-
-  --skin-btn-active-bg:    rgba(0, 114, 232, 0.18);
-  --remove-btn-bg:         rgba(0, 114, 232, 0.85);
-  --remove-btn-border:     #0072E8;
+  --tile-label-weight: 600;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #152846;
+  --btn-active-bg: #1B3358;
+  --drop-hint-border: #2A3A58;
+  --drop-icon-color: #4A618A;
+  --hint-sub-color: #93A3BC;
+  --rename-dashed: #3A72C4;
+  --rename-input-bg: #10203A;
+  --edit-bar-bg: #1E0F14;
+  --edit-bar-border: #C4505E;
+  --edit-label-color: #F08A94;
+  --edit-label-glow: none;
+  --btn-done-color: #F08A94;
+  --btn-done-border: #C4505E;
+  --btn-done-hover-bg: #3A1620;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #4A618A;
+  --update-bg: #0E1A2E;
+  --update-border: #3A72C4;
+  --update-color: #D4DCE8;
+  --update-btn-border: #3A72C4;
+  --update-btn-hover-bg: #16294A;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #8DB8F0;
+  --btn-close-border: #3A72C4;
+  --btn-close-hover-bg: #16294A;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #10203A;
+  --picker-item-hover-bg: #10203A;
+  --picker-item-active-bg: #16294A;
+  --picker-placeholder-bg: #10203A;
+  --skin-btn-active-bg: #16294A;
+  --remove-btn-bg: #A8283A;
+  --remove-btn-border: #E8707C;
 }
 
-/* ── Sharp blue grain + corporate depth ──────────────────────────────────── */
-#app::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.04 0.06 0.18 0 0  0.03 0.05 0.12 0 0  0.06 0.10 0.30 0 0.02  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(2,3,10,0.86) 100%),
-    radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,40,100,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 30% 25% at 100% 100%, rgba(0,30,80,0.04) 0%, transparent 55%);
-  background-size: 200px 200px, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #A8283A; }
 
-#header::before {
-  background: linear-gradient(to bottom, #0072E8, rgba(0, 90, 180, 0.28));
-  box-shadow: 0 0 10px rgba(0,114,232,0.58), 0 0 26px rgba(0,114,232,0.20);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* ── Grid: The Illuminati Eye/Pyramid — centered, corporate authority ────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='8' font-weight='bold' letter-spacing='4' fill='rgba(0,114,232,0.50)'%3EILLUMINATI%3C/text%3E%3Ctext x='250' y='38' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(192,160,32,0.35)'%3ELABORINTH -- NEW YORK -- WE OWN EVERYTHING%3C/text%3E%3Cpath d='M 250,75 L 370,290 L 130,290 Z' fill='rgba(0,12,40,0.35)' stroke='rgba(0,114,232,0.45)' stroke-width='2'/%3E%3Cpath d='M 250,90 L 360,285 L 140,285 Z' fill='none' stroke='rgba(0,114,232,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 250,110 L 345,278 L 155,278 Z' fill='none' stroke='rgba(0,114,232,0.15)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='195' r='28' fill='rgba(0,20,60,0.35)' stroke='rgba(0,114,232,0.42)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='195' r='20' fill='none' stroke='rgba(0,114,232,0.25)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='192' rx='12' ry='8' fill='none' stroke='rgba(192,160,32,0.40)' stroke-width='1'/%3E%3Ccircle cx='250' cy='192' r='4' fill='rgba(192,160,32,0.50)'/%3E%3Ccircle cx='250' cy='192' r='1.5' fill='rgba(0,114,232,0.65)'/%3E%3Cline x1='250' y1='75' x2='250' y2='167' stroke='rgba(0,114,232,0.15)' stroke-width='0.5'/%3E%3Cline x1='250' y1='223' x2='250' y2='290' stroke='rgba(0,114,232,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='240' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(0,114,232,0.38)'%3ENOVUS ORDO SECLORUM%3C/text%3E%3Ctext x='250' y='255' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1.5' fill='rgba(192,160,32,0.30)'%3EANNUIT COEPTIS%3C/text%3E%3Ctext x='70' y='80' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(0,114,232,0.48)'%3EHANDLER%3C/text%3E%3Ctext x='70' y='95' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(192,160,32,0.48)'%3EKIRSTEN GEARY%3C/text%3E%3Cline x1='25' y1='100' x2='140' y2='100' stroke='rgba(0,114,232,0.18)' stroke-width='0.5'/%3E%3Ctext x='70' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(60,100,180,0.38)'%3EHOME BASE%3C/text%3E%3Ctext x='70' y='132' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(0,114,232,0.42)'%3ELABORINTH, NYC%3C/text%3E%3Ctext x='70' y='152' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(60,100,180,0.35)'%3EASSETS%3C/text%3E%3Crect x='25' y='156' width='110' height='5' fill='rgba(0,114,232,0.10)' rx='0'/%3E%3Crect x='25' y='156' width='99' height='5' fill='rgba(0,114,232,0.45)' rx='0'/%3E%3Ctext x='138' y='161' font-family='Segoe UI,Arial,sans-serif' font-size='5' font-weight='bold' fill='rgba(192,160,32,0.42)'%3EMAX%3C/text%3E%3Ctext x='430' y='80' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(0,114,232,0.45)'%3EOPERATIONS%3C/text%3E%3Ctext x='430' y='98' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(60,100,180,0.38)'%3EKINGSMOUTH%3C/text%3E%3Ctext x='430' y='114' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(60,100,180,0.35)'%3EEGYPT%3C/text%3E%3Ctext x='430' y='130' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(60,100,180,0.32)'%3ETRANSYLVANIA%3C/text%3E%3Ctext x='430' y='146' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(60,100,180,0.30)'%3ETOKYO%3C/text%3E%3Ctext x='430' y='162' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(192,160,32,0.32)'%3ESOUTH AFRICA%3C/text%3E%3Ctext x='250' y='310' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='3' fill='rgba(0,114,232,0.42)'%3ETHE EYE SEES ALL%3C/text%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(60,100,180,0.25)'%3EILLUMINATI -- LABYRINTH -- SECRET WORLD%3C/text%3E%3Ccircle cx='50' cy='55' r='0.7' fill='rgba(0,114,232,0.18)'/%3E%3Ccircle cx='450' cy='48' r='0.5' fill='rgba(192,160,32,0.14)'/%3E%3Ccircle cx='45' cy='300' r='0.8' fill='rgba(0,114,232,0.10)'/%3E%3Ccircle cx='455' cy='280' r='0.6' fill='rgba(192,160,32,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: illum-eye 8s ease-in-out infinite;
-}
-
-@keyframes illum-eye {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
+/* header: a steel-blue rule, a stepped ziggurat in the art zone */
+#header { border-bottom-color: #3A72C4; }
+#header::before { background: #3A72C4; box-shadow: none; }
 #header::after {
-  content: 'ILLUMINATI // LABYRINTH // WE OWN EVERYTHING';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', sans-serif; font-weight: 700;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(0, 160, 240, 0.58);
-  pointer-events: none; white-space: nowrap;
+  content: ''; position: absolute; top: 10px; right: 172px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Crect x='38.0' y='1.5' width='8' height='3' fill='rgb(141,184,240)' stroke='rgb(58,114,196)' stroke-width='1'/%3E%3Crect x='34.0' y='4.5' width='16' height='3' fill='rgb(16,30,58)' stroke='rgb(58,114,196)' stroke-width='1'/%3E%3Crect x='29.0' y='7.5' width='26' height='3' fill='rgb(16,30,58)' stroke='rgb(58,114,196)' stroke-width='1'/%3E%3Crect x='23.0' y='10.5' width='38' height='3' fill='rgb(16,30,58)' stroke='rgb(58,114,196)' stroke-width='1'/%3E%3Crect x='16.0' y='13.5' width='52' height='3' fill='rgb(16,30,58)' stroke='rgb(58,114,196)' stroke-width='1'/%3E%3Crect x='8.0' y='16.5' width='68' height='3' fill='rgb(16,30,58)' stroke='rgb(58,114,196)' stroke-width='1'/%3E%3Cpath d='M0 19.5 H10 M74 19.5 H84' stroke='rgb(58,114,196)' stroke-width='1'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
 }
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: 'Segoe UI', Arial, sans-serif; font-weight: 600; letter-spacing: 4px; color: #D4DCE8; text-shadow: none; }
+#title .accent { color: #6FA6F0; }
 
-#grid-container::after {
-  content: 'THE\AILLUMINATI\A-----------\ASEX DRUGS\AROCKEFELLER\A-----------\AWE OWN\AEVERYTHING\ATHE EYE\ASEES ALL';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Segoe UI', sans-serif; font-weight: 700;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 2px;
-  color: rgba(0, 114, 232, 0.08); white-space: pre;
-  animation: illum-readout 8s ease-in-out infinite;
-}
+/* tiles: dossier-corner plates */
+.app-tile { background: #0F1522; border-color: #1A2438; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: var(--tile-hover-bg); border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.tile-label { font-family: 'Segoe UI', Arial, sans-serif; }
 
-@keyframes illum-readout {
-  0%, 100% { color: rgba(0,114,232,.08); }
-  28%       { color: rgba(0,114,232,.12); }
-  65%       { color: rgba(0,114,232,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(0,114,232,.16); }
-  92%       { color: rgba(0,114,232,.08); }
-}
-
-#edit-bar::after {
-  content: 'CLASSIFIED // KIRSTEN GEARY SENDS HER REGARDS';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', sans-serif; font-weight: 700;
-  font-size: 8px; letter-spacing: 2px; color: rgba(192, 160, 32, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 5px; }
-
-@keyframes illum-title {
-  0%        { color: #70A0E0; text-shadow: 0 0 6px rgba(0,114,232,.50), 0 0 18px rgba(0,114,232,.18); }
-  60%       { color: #70A0E0; text-shadow: 0 0 6px rgba(0,114,232,.50); }
-  62%       { color: #60C0FF; text-shadow: 0 0 12px rgba(96,192,255,.80), 0 0 30px rgba(0,114,232,.35); opacity: 0.85; }
-  63%       { color: #C0A020; text-shadow: 0 0 6px rgba(192,160,32,.55); opacity: 0.6; }
-  64%       { color: #70A0E0; text-shadow: 0 0 8px rgba(0,114,232,.55); opacity: 1; }
-  87%       { color: #70A0E0; text-shadow: 0 0 6px rgba(0,114,232,.45); }
-  88%       { color: #A0D0FF; text-shadow: 0 0 22px rgba(160,208,255,.85), 0 0 50px rgba(0,114,232,.45); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #70A0E0; text-shadow: 0 0 8px rgba(0,114,232,.55); opacity: 1; }
-  100%      { color: #70A0E0; text-shadow: 0 0 6px rgba(0,114,232,.50), 0 0 18px rgba(0,114,232,.18); }
-}
-
-#app { animation: illum-border 8s steps(1) infinite; }
-@keyframes illum-border {
-  0%, 60%  { box-shadow: 0 0 0 1px rgba(0,114,232,.22), inset 0 0 20px rgba(0,114,232,.04); }
-  62%      { box-shadow: 0 0 0 1px rgba(0,114,232,.55), inset 0 0 30px rgba(0,114,232,.08); }
-  63%      { box-shadow: 0 0 0 1px rgba(192,160,32,.28), inset 0 0 18px rgba(192,160,32,.04); }
-  64%, 87% { box-shadow: 0 0 0 1px rgba(0,114,232,.28), inset 0 0 22px rgba(0,114,232,.05); }
-  88%      { box-shadow: 0 0 0 2px rgba(136,204,255,.80), inset 0 0 50px rgba(0,114,232,.15), 0 0 18px rgba(0,114,232,.28); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(0,114,232,.35), inset 0 0 22px rgba(0,114,232,.05); }
-}
-
-#theme-banner { background: rgba(4, 5, 14, 0.99); border-top-color: rgba(0, 114, 232, 0.22); }
-#theme-banner::before { content: '△'; color: #0072E8; font-size: 20px; }
-#theme-banner-text { font-family: 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 2px; color: rgba(0, 150, 240, 0.62); }
-
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='360'%3E%3Crect x='25' y='40' width='4' height='1' fill='rgba(0,114,232,0.18)' rx='0.5'/%3E%3Crect x='90' y='150' width='3' height='1' fill='rgba(192,160,32,0.12)' rx='0.5'/%3E%3Crect x='140' y='270' width='5' height='1' fill='rgba(0,114,232,0.14)' rx='0.5'/%3E%3Crect x='55' y='320' width='3' height='1' fill='rgba(0,114,232,0.16)' rx='0.5'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='500'%3E%3Crect x='35' y='70' width='4' height='1' fill='rgba(0,114,232,0.10)' rx='0.5'/%3E%3Crect x='140' y='250' width='3' height='1' fill='rgba(192,160,32,0.08)' rx='0.5'/%3E%3Crect x='200' y='420' width='5' height='1' fill='rgba(0,114,232,0.06)' rx='0.5'/%3E%3C/svg%3E") repeat;
-  background-size: 180px 360px, 250px 500px;
-  animation: illum-data 8s linear infinite;
-}
-@keyframes illum-data {
-  from { background-position: 0 -360px, 10px -500px; }
-  to   { background-position: 30px 0, -12px 0; }
-}
-
-.app-tile::before {
-  background: transparent;
-  border: 1px solid rgba(0, 114, 232, 0.30);
-}
-.app-tile:hover::before { animation: tile-flicker .4s steps(1, end) infinite; }
+/* banner: an eye in a triangle, a setback skyline at the right end */
+#theme-banner { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 34'%3E%3Cpath d='M0.0 34.0 L0.0 21.0 L3.0 21.0 L3.0 17.0 L7.0 17.0 L7.0 21.0 L10.0 21.0 L10.0 34.0 Z' fill='rgb(31,54,96)'/%3E%3Cpath d='M11.0 34.0 L11.0 14.0 L13.0 14.0 L13.0 9.0 L15.0 9.0 L15.0 5.0 L19.0 5.0 L19.0 9.0 L21.0 9.0 L21.0 14.0 L23.0 14.0 L23.0 34.0 Z' fill='rgb(31,54,96)'/%3E%3Cpath d='M17.0 5.0 V0.5' stroke='rgb(31,54,96)' stroke-width='0.9'/%3E%3Ccircle cx='17.0' cy='0.7' r='0.7' fill='rgb(141,184,240)'/%3E%3Cpath d='M24.0 34.0 L24.0 19.0 L27.0 19.0 L27.0 13.0 L31.0 13.0 L31.0 19.0 L34.0 19.0 L34.0 34.0 Z' fill='rgb(31,54,96)'/%3E%3Cpath d='M35.0 34.0 L35.0 16.0 L37.0 16.0 L37.0 11.0 L39.5 11.0 L39.5 7.0 L41.5 7.0 L41.5 3.5 L44.5 3.5 L44.5 7.0 L46.5 7.0 L46.5 11.0 L49.0 11.0 L49.0 16.0 L51.0 16.0 L51.0 34.0 Z' fill='rgb(31,54,96)'/%3E%3Cpath d='M43.0 3.5 V0.0' stroke='rgb(31,54,96)' stroke-width='0.9'/%3E%3Ccircle cx='43.0' cy='0.7' r='0.7' fill='rgb(141,184,240)'/%3E%3Cpath d='M52.0 34.0 L52.0 20.0 L55.0 20.0 L55.0 15.0 L59.0 15.0 L59.0 20.0 L62.0 20.0 L62.0 34.0 Z' fill='rgb(31,54,96)'/%3E%3Cpath d='M63.0 34.0 L63.0 13.0 L65.5 13.0 L65.5 9.0 L69.5 9.0 L69.5 13.0 L72.0 13.0 L72.0 34.0 Z' fill='rgb(31,54,96)'/%3E%3Cpath d='M67.5 9.0 V5.5' stroke='rgb(31,54,96)' stroke-width='0.9'/%3E%3Ccircle cx='67.5' cy='5.5' r='0.7' fill='rgb(141,184,240)'/%3E%3Cpath d='M73.0 34.0 L73.0 22.0 L76.0 22.0 L76.0 17.0 L81.0 17.0 L81.0 22.0 L84.0 22.0 L84.0 34.0 Z' fill='rgb(31,54,96)'/%3E%3Crect x='3' y='24' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='6' y='28' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='15' y='17' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='18' y='22' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='14' y='27' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='27' y='22' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='30' y='27' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='38' y='20' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='43' y='15' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='46' y='24' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='40' y='28' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='55' y='24' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='59' y='29' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='66' y='17' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='69' y='24' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='76' y='26' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3Crect x='80' y='30' width='1.4' height='1.8' fill='rgb(58,114,196)'/%3E%3C/svg%3E") right 12px bottom 0 / 84px 34px no-repeat, #0A0F1A; border-top-color: #3A72C4; }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M11 1.8 L21 19.4 H1 Z' fill='rgb(16,30,58)' stroke='rgb(141,184,240)' stroke-width='1.3' stroke-linejoin='round'/%3E%3Cpath d='M5.2 13.6 Q11 8.2 16.8 13.6 Q11 18.6 5.2 13.6 Z' fill='none' stroke='rgb(141,184,240)' stroke-width='1'/%3E%3Ccircle cx='11' cy='13.6' r='2.3' fill='rgb(58,114,196)'/%3E%3Ccircle cx='11' cy='13.6' r='0.9' fill='rgb(7,10,18)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: 'Segoe UI', Arial, sans-serif; font-weight: 600; letter-spacing: 0.2px; color: #D4DCE8; }

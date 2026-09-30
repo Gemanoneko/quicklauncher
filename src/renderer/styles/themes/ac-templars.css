@@ -1,219 +1,111 @@
 /* ══ ASSASSIN'S CREED: TEMPLARS ═══════════════════════════════════════════════
-   May the Father of Understanding guide us. Order. Purpose. Direction.
-   The red cross on cold stone. The Templar Order imposes structure
-   where the Assassins sow chaos. COLD AUTHORITARIAN GRID paradigm.
+   Batch 3 redraw (theme spec 2026-09-30, section 2). The Order behind
+   Abstergo: graphite and silver, a DNA helix in the header, silver hover,
+   red only on focus, edit mode and the small marks, and a light silver-glass
+   banner strip with a red lab-door disc and a Templar shield bearing a red
+   flared cross. Jost 400 (bundled) for the title, labels and banner.
+   No texture, no looping motion.
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --radius:       0px;
-  --app-clip:     none;
+  --radius: 6px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* COLD STONE — opaque, heavy, authoritarian. No transparency. */
-  --bg:           #08080A;
-  --panel-bg:     rgba(12, 12, 15, 0.99);
-  --overlay-bg:   rgba(8, 8, 10, 0.97);
-  --header-bg:    rgba(160, 20, 20, 0.04);
-
-  --font:         'Segoe UI', 'Arial', sans-serif;
-  --text:         #A0A0A8;
-  --text-dim:     rgba(120, 120, 130, 0.78);
-
-  /* Cold grey + Templar red — the only warmth is the cross */
-  --accent-c:     #B01818;   /* Templar red */
-  --accent-text:  #E04848;   /* lifted Templar crimson — clears 3:1 against --bg */
-  --accent-m:     #707880;   /* cold steel grey */
-  --accent-y:     #282830;   /* dark stone */
-
-  --border:       rgba(176, 24, 24, 0.20);
-  --border-h:     rgba(176, 24, 24, 0.50);
-
-  --glow-c:       0 0 6px rgba(176,24,24,.52), 0 0 18px rgba(176,24,24,.16);
-  --glow-m:       0 0 5px rgba(112,120,128,.42), 0 0 14px rgba(112,120,128,.12);
-  --glow-y:       0 0 5px rgba(40,40,48,.38), 0 0 14px rgba(40,40,48,.10);
-
-  --pulse-glow:   inset 0 0 20px rgba(176,24,24,.05);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 22px rgba(176,24,24,.08);
-
-  --title-anim:   templar-title 10s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(176, 24, 24, 0.07);
-  --tile-hover-border: rgba(176, 24, 24, 0.38);
-  --tile-hover-shadow: 0 0 12px rgba(176, 24, 24, 0.16);
-  --tile-active-bg:    rgba(176, 24, 24, 0.14);
-  --tile-icon-glow:    drop-shadow(0 0 4px rgba(176,24,24,.42)) drop-shadow(0 0 10px rgba(176,24,24,.14));
-  --tile-icon-fx:      brightness(0.88) saturate(0.75) contrast(1.15);
-  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-  --tile-label-spacing:   1.5px;
+  --bg: #0D0E10;
+  --panel-bg: #17191D;
+  --overlay-bg: #0D0E10;
+  --header-bg: #14161A;
+  --font: 'Segoe UI', Arial, sans-serif;
+  --text: #DDE1E6;
+  --text-dim: #979EA8;
+  --accent-c: #D0232E;
+  --accent-m: #FF5A64;
+  --accent-y: #DDE1E6;
+  --accent-text: #E9ECEF;
+  --border: #2E3238;
+  --border-h: #AEB4BC;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #D0232E;
+  --title-anim: none;
+  --tile-hover-bg: #1C1F25;
+  --tile-hover-border: #AEB4BC;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #1C1F25;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: saturate(0.85) contrast(1.05);
+  --tile-icon-shape: inset(0 round 9px);
+  --tile-label-spacing: 1.2px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
-
-  --btn-hover-bg:   rgba(176, 24, 24, 0.08);
-  --btn-active-bg:  rgba(176, 24, 24, 0.16);
-
-  --drop-hint-border: rgba(176, 24, 24, 0.22);
-  --drop-icon-color:  rgba(176, 24, 24, 0.30);
-  --hint-sub-color:   rgba(120, 120, 130, 0.75);
-
-  --rename-dashed:    rgba(176, 24, 24, 0.35);
-  --rename-input-bg:  rgba(176, 24, 24, 0.06);
-
-  --edit-bar-bg:          rgba(112, 120, 128, 0.07);
-  --edit-bar-border:      rgba(112, 120, 128, 0.35);
-  --edit-label-color:     #707880;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #707880;
-  --btn-done-border:      rgba(112, 120, 128, 0.38);
-  --btn-done-hover-bg:    rgba(112, 120, 128, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(176, 24, 24, 0.35);
-
-  --update-bg:             rgba(112, 120, 128, 0.06);
-  --update-border:         rgba(112, 120, 128, 0.28);
-  --update-color:          var(--accent-m);
-  --update-btn-border:     rgba(112, 120, 128, 0.25);
-  --update-btn-hover-bg:   rgba(112, 120, 128, 0.08);
-  --update-btn-hover-glow: var(--glow-m);
-
-  --btn-close-color:      #B01818;
-  --btn-close-border:     rgba(176, 24, 24, 0.38);
-  --btn-close-hover-bg:   rgba(176, 24, 24, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(176, 24, 24, 0.06);
-  --picker-item-hover-bg:  rgba(176, 24, 24, 0.07);
-  --picker-item-active-bg: rgba(176, 24, 24, 0.14);
-  --picker-placeholder-bg: rgba(176, 24, 24, 0.06);
-
-  --skin-btn-active-bg:    rgba(176, 24, 24, 0.14);
-  --remove-btn-bg:         rgba(176, 24, 24, 0.82);
-  --remove-btn-border:     #B01818;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #23272E;
+  --btn-active-bg: #2C3139;
+  --drop-hint-border: #3C4148;
+  --drop-icon-color: #6E7680;
+  --hint-sub-color: #979EA8;
+  --rename-dashed: #AEB4BC;
+  --rename-input-bg: #1C1F25;
+  --edit-bar-bg: #200E11;
+  --edit-bar-border: #D0232E;
+  --edit-label-color: #FF6A73;
+  --edit-label-glow: none;
+  --btn-done-color: #FF6A73;
+  --btn-done-border: #D0232E;
+  --btn-done-hover-bg: #3C1319;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #6E7680;
+  --update-bg: #1A1D22;
+  --update-border: #AEB4BC;
+  --update-color: #E9ECEF;
+  --update-btn-border: #AEB4BC;
+  --update-btn-hover-bg: #2A2E35;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E9ECEF;
+  --btn-close-border: #AEB4BC;
+  --btn-close-hover-bg: #2A2E35;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1C1F25;
+  --picker-item-hover-bg: #1C1F25;
+  --picker-item-active-bg: #262A31;
+  --picker-placeholder-bg: #1C1F25;
+  --skin-btn-active-bg: #262A31;
+  --remove-btn-bg: #A8101C;
+  --remove-btn-border: #FF5A64;
 }
 
-/* ── Cold stone grain + rigid authoritarian vignette ─────────────────────── */
-#app::after {
-  background:
-    /* Cold stone grain — desaturated, grey, rigid */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.2 0.2 0.22 0 0.02  0.2 0.2 0.22 0 0.02  0.22 0.22 0.25 0 0.02  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* Rigid grid lines — the Order imposes structure */
-    repeating-linear-gradient(0deg, transparent 0px, transparent 58px, rgba(112,120,128,0.018) 58px, rgba(112,120,128,0.018) 59px),
-    repeating-linear-gradient(90deg, transparent 0px, transparent 58px, rgba(112,120,128,0.018) 58px, rgba(112,120,128,0.018) 59px),
-    /* Cold vignette */
-    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(4,4,5,0.86) 100%),
-    /* Faint red from below — the Order's power */
-    radial-gradient(ellipse 40% 25% at 50% 100%, rgba(110,12,12,0.05) 0%, transparent 60%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #A8101C; }
 
-/* ── Header — Templar red accent bar ─────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #B01818, rgba(130, 15, 15, 0.25));
-  box-shadow: 0 0 8px rgba(176,24,24,0.50), 0 0 20px rgba(176,24,24,0.16);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* ── Grid: GRID/MOSAIC — Templar Cross at center, rigid structure ────────── */
-/* The cross is drawn with STRAIGHT LINES only. No curves. Order. */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Templar Cross — the red cross imposed on a grid */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='8' font-weight='bold' letter-spacing='4' fill='rgba(176,24,24,0.48)'%3ETHE TEMPLAR ORDER%3C/text%3E%3Ctext x='250' y='38' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(112,120,128,0.35)'%3EMAY THE FATHER OF UNDERSTANDING GUIDE US%3C/text%3E%3Crect x='225' y='70' width='50' height='240' fill='rgba(176,24,24,0.22)' stroke='rgba(176,24,24,0.38)' stroke-width='1.5'/%3E%3Crect x='150' y='145' width='200' height='50' fill='rgba(176,24,24,0.22)' stroke='rgba(176,24,24,0.38)' stroke-width='1.5'/%3E%3Crect x='228' y='73' width='44' height='234' fill='none' stroke='rgba(112,120,128,0.15)' stroke-width='0.5'/%3E%3Crect x='153' y='148' width='194' height='44' fill='none' stroke='rgba(112,120,128,0.15)' stroke-width='0.5'/%3E%3Crect x='232' y='76' width='36' height='228' fill='rgba(100,8,8,0.12)'/%3E%3Crect x='156' y='152' width='188' height='36' fill='rgba(100,8,8,0.12)'/%3E%3Cline x1='100' y1='70' x2='100' y2='310' stroke='rgba(112,120,128,0.08)' stroke-width='0.5'/%3E%3Cline x1='400' y1='70' x2='400' y2='310' stroke='rgba(112,120,128,0.08)' stroke-width='0.5'/%3E%3Cline x1='100' y1='70' x2='400' y2='70' stroke='rgba(112,120,128,0.08)' stroke-width='0.5'/%3E%3Cline x1='100' y1='310' x2='400' y2='310' stroke='rgba(112,120,128,0.08)' stroke-width='0.5'/%3E%3Cline x1='175' y1='70' x2='175' y2='310' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Cline x1='325' y1='70' x2='325' y2='310' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Cline x1='100' y1='120' x2='400' y2='120' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Cline x1='100' y1='220' x2='400' y2='220' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Cline x1='100' y1='265' x2='400' y2='265' stroke='rgba(112,120,128,0.05)' stroke-width='0.3'/%3E%3Ctext x='65' y='85' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(176,24,24,0.42)'%3EGRAND MASTER%3C/text%3E%3Ctext x='65' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.38)'%3EHAYTHAM KENWAY%3C/text%3E%3Ctext x='65' y='118' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.35)'%3EROBERT DE SABLE%3C/text%3E%3Ctext x='65' y='136' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.32)'%3ERODORIGO BORGIA%3C/text%3E%3Ctext x='430' y='85' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(176,24,24,0.42)'%3EDIRECTIVE%3C/text%3E%3Ctext x='430' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.38)'%3EORDER%3C/text%3E%3Ctext x='430' y='115' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.35)'%3EPURPOSE%3C/text%3E%3Ctext x='430' y='130' font-family='Segoe UI,Arial,sans-serif' font-size='6' fill='rgba(112,120,128,0.32)'%3EDIRECTION%3C/text%3E%3Ctext x='250' y='330' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' letter-spacing='3' fill='rgba(176,24,24,0.40)'%3ETHE FATHER OF UNDERSTANDING%3C/text%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(112,120,128,0.25)'%3ETEMPLAR ORDER -- ABSTERGO INDUSTRIES -- CONTROL%3C/text%3E%3Ccircle cx='55' cy='55' r='0.6' fill='rgba(176,24,24,0.14)'/%3E%3Ccircle cx='445' cy='50' r='0.5' fill='rgba(112,120,128,0.10)'/%3E%3Ccircle cx='50' cy='340' r='0.5' fill='rgba(176,24,24,0.08)'/%3E%3Ccircle cx='450' cy='340' r='0.6' fill='rgba(112,120,128,0.08)'/%3E%3C/svg%3E") center / contain no-repeat,
-    /* Underlying grid — the Order ALWAYS has structure visible */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect x='0' y='0' width='60' height='60' fill='none' stroke='rgba(112,120,128,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
-  background-size: contain, 60px 60px;
-  background-repeat: no-repeat, repeat;
-  background-position: center, 0 0;
-  opacity: 0.82;
-  animation: templar-cross 10s ease-in-out infinite;
-}
-
-@keyframes templar-cross {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
+/* header: glass panel, silver rule, a helix strip */
+#header { border-bottom-color: #8A9098; box-shadow: inset 0 1px 0 #262A30; }
+#header::before { background: #AEB4BC; box-shadow: none; }
 #header::after {
-  content: 'TEMPLAR ORDER // ABSTERGO // THE FATHER OF UNDERSTANDING';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(176, 60, 60, 0.58);
-  pointer-events: none; white-space: nowrap;
+  content: ''; position: absolute; top: 10px; right: 172px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cpath d='M3.50 4.75 V15.25 M7.00 3.00 V17.00 M10.50 4.75 V15.25 M17.50 15.25 V4.75 M24.50 15.25 V4.75 M31.50 4.75 V15.25 M35.00 3.00 V17.00 M38.50 4.75 V15.25 M45.50 15.25 V4.75 M49.00 17.00 V3.00 M52.50 15.25 V4.75 M59.50 4.75 V15.25 M66.50 4.75 V15.25 M73.50 15.25 V4.75 M77.00 17.00 V3.00 M80.50 15.25 V4.75' stroke='rgb(118,126,136)' stroke-width='0.9' fill='none'/%3E%3Cpath d='M21.00 17.00 V3.00 M63.00 3.00 V17.00' stroke='rgb(208,35,46)' stroke-width='1.1' fill='none'/%3E%3Cpath d='M0 10 Q7 -4 14 10 T28 10 T42 10 T56 10 T70 10 T84 10' stroke='rgb(201,205,210)' stroke-width='1.3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M0 10 Q7 24 14 10 T28 10 T42 10 T56 10 T70 10 T84 10' stroke='rgb(150,158,168)' stroke-width='1.3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
 }
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: 'Jost', 'Segoe UI', Arial, sans-serif; font-weight: 400; font-style: normal; font-synthesis: none; line-height: 1.2; letter-spacing: 4px; color: #E9ECEF; text-shadow: none; }
+#title .accent { color: #FF5A64; }
 
-#grid-container::after {
-  content: 'MAY THE\AFATHER OF\AUNDERSTANDING\AGUIDE US\A-----------\AORDER\APURPOSE\ADIRECTION\A-----------\ACONTROL';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(176, 24, 24, 0.08); white-space: pre;
-  animation: templar-readout 10s ease-in-out infinite;
-}
+/* tiles: glass cards, silver hover, red only on the focus ring */
+.app-tile { background: #17191D; border-color: #262A30; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: var(--tile-hover-bg); border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.tile-label { font-family: 'Jost', 'Segoe UI', Arial, sans-serif; }
 
-@keyframes templar-readout {
-  0%, 100% { color: rgba(176,24,24,.08); }
-  28%       { color: rgba(176,24,24,.12); }
-  65%       { color: rgba(176,24,24,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(176,24,24,.15); }
-  92%       { color: rgba(176,24,24,.08); }
-}
-
-#edit-bar::after {
-  content: 'ABSTERGO INDUSTRIES // ORDER THROUGH CONTROL';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 8px; letter-spacing: 2px; color: rgba(112, 120, 128, 0.38);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 5px; }
-
-@keyframes templar-title {
-  0%        { color: #A0A0A8; text-shadow: 0 0 5px rgba(176,24,24,.35), 0 0 16px rgba(176,24,24,.12); }
-  35%       { color: #C03030; text-shadow: 0 0 10px rgba(176,24,24,.55), 0 0 26px rgba(176,24,24,.20); }
-  65%       { color: #808088; text-shadow: 0 0 3px rgba(112,120,128,.25); }
-  87%       { color: #A0A0A8; text-shadow: 0 0 5px rgba(176,24,24,.30); }
-  88%       { color: #FF4444; text-shadow: 0 0 22px rgba(255,68,68,.78), 0 0 48px rgba(176,24,24,.38); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #A0A0A8; text-shadow: 0 0 6px rgba(176,24,24,.40); opacity: 1; }
-  100%      { color: #A0A0A8; text-shadow: 0 0 5px rgba(176,24,24,.35), 0 0 16px rgba(176,24,24,.12); }
-}
-
-#app { animation: templar-border 10s ease-in-out infinite; }
-@keyframes templar-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(176,24,24,.18), inset 0 0 18px rgba(176,24,24,.03); }
-  35%      { box-shadow: 0 0 0 1px rgba(176,24,24,.42), inset 0 0 26px rgba(176,24,24,.06); }
-  65%      { box-shadow: 0 0 0 1px rgba(112,120,128,.18), inset 0 0 16px rgba(112,120,128,.03); }
-  88%      { box-shadow: 0 0 0 2px rgba(255,68,68,.72), inset 0 0 45px rgba(176,24,24,.12), 0 0 16px rgba(176,24,24,.20); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(176,24,24,.32), inset 0 0 20px rgba(176,24,24,.04); }
-}
-
-#theme-banner { background: rgba(8, 8, 10, 0.99); border-top-color: rgba(176, 24, 24, 0.20); }
-#theme-banner::before { content: '✚'; color: #B01818; font-size: 20px; }
-#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 2px; color: rgba(176, 60, 60, 0.62); }
-
-/* NO particles. The Order is rigid. Nothing drifts. Everything is in place. */
-#particles {
-  background: none;
-}
-
-/* Tile: cold military scan */
-.app-tile::before {
-  width: 100%; height: 3px;
-  left: 0; top: -3px;
-  transform: none;
-  background: var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }
+/* banner: a silver glass strip, dark text, a red lab-door disc, a Templar shield at the right end */
+#theme-banner { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 38'%3E%3Cpath d='M1.5 1.5 H28.5 V18 C28.5 28.5 21.5 34.5 15 37 C8.5 34.5 1.5 28.5 1.5 18 Z' fill='rgb(246,248,250)' stroke='rgb(104,112,122)' stroke-width='1.3' stroke-linejoin='round'/%3E%3Cpath d='M10.1 3.6 H19.9 Q17.6 8.4 17 12 Q21.6 10.6 25.4 9.1 V18.9 Q21.6 17.4 17 16 Q17.6 19.6 19.9 24.4 H10.1 Q12.4 19.6 13 16 Q8.4 17.4 4.6 18.9 V9.1 Q8.4 10.6 13 12 Q12.4 8.4 10.1 3.6 Z' fill='rgb(208,35,46)' stroke='rgb(120,14,22)' stroke-width='0.7' stroke-linejoin='round'/%3E%3C/svg%3E") right 16px top 2px / 30px 38px no-repeat, #D5D9DE; border-top-color: #8A9098; }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Ccircle cx='11' cy='11' r='10' fill='rgb(208,35,46)'/%3E%3Cpath d='M11 5.2 L16 8.1 V13.9 L11 16.8 L6 13.9 V8.1 Z' fill='none' stroke='rgb(255,255,255)' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M11 5.2 V1.5 M16 8.1 L19.2 6.3 M16 13.9 L19.2 15.7 M11 16.8 V20.5 M6 13.9 L2.8 15.7 M6 8.1 L2.8 6.3' stroke='rgb(255,255,255)' stroke-width='0.9' fill='none'/%3E%3Ccircle cx='11' cy='11' r='2.2' fill='rgb(255,255,255)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: 'Jost', 'Segoe UI', Arial, sans-serif; font-weight: 400; letter-spacing: 0.4px; color: #0D0E10; }
