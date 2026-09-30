@@ -1,0 +1,45 @@
+/* ── Bundled fonts (theme spec, foundation 2026-09-30, Part B) ────────────────
+   Seven SIL OFL 1.1 families from google/fonts, shipped unmodified; each
+   family's OFL.txt sits next to its file (sources, sizes and SHA-256 in
+   README.md). Linked from index.html before base.css. Chromium fetches a file
+   only when a theme first uses its family, so themes that use none pay nothing.
+   The files are same-origin file: URLs, so the CSP's default-src 'self' covers
+   them (no font-src entry). font-display: block: the files are local, and swap
+   would paint the fallback first and then reflow the title and the banner.
+   Themes use ONLY these seven family strings, with font-synthesis: none and a
+   declared weight (UnifrakturCook 700, Cinzel 400-900, Jost 100-900, the rest 400). */
+@font-face {
+  font-family: 'Dela Gothic One';
+  src: url('delagothicone/DelaGothicOne-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Jost';
+  src: url('jost/Jost-VF.ttf') format('truetype');
+  font-weight: 100 900; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Cinzel';
+  src: url('cinzel/Cinzel-VF.ttf') format('truetype');
+  font-weight: 400 900; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Pirata One';
+  src: url('pirataone/PirataOne-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'UnifrakturCook';
+  src: url('unifrakturcook/UnifrakturCook-Bold.ttf') format('truetype');
+  font-weight: 700; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'IM Fell English';
+  src: url('imfellenglish/IMFeENrm28P.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Metamorphous';
+  src: url('metamorphous/Metamorphous-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: block;
+}
