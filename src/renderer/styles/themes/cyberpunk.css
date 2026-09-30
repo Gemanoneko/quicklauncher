@@ -1,305 +1,156 @@
-/* ══ CYBERPUNK ════════════════════════════════════════════════════════════════
-   Cyberpunk 2077 Night City — neon cyan + magenta on near-black void.
-   Chamfered octagon silhouette, glitch title, pulsing neon border.
+/* ══ CYBERPUNK 2077 ════════════════════════════════════════════════════════════
+   Batch 1 redraw (theme spec 2026-09-30, section 5). A flat Night City HUD:
+   near-black panels, hard CDPR yellow as the accent, cyan as the secondary
+   highlight, red for edit mode only, no magenta, no glow, no scanlines.
+   Top-left and bottom-right chamfers, a notch under the header, a hazard
+   stripe on the banner and a static glitch slice beside the title.
+   The one looping animation: a stepped title jitter (transform only).
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Backgrounds */
-  --bg:                   #040210;
-  --panel-bg:             rgba(4, 2, 18, 0.97);
-  --overlay-bg:           rgba(2, 1, 10, 0.88);
-  --header-bg:            rgba(6, 2, 28, 0.95);
-
-  /* Typography */
-  --font:                 'Consolas', 'Courier New', monospace;
-  --text:                 #c8f0ff;
-  --text-dim:             #7a9bb0;
-
-  /* Shape */
-  --radius:               3px;
-  --app-clip:             polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
-  --overlay-clip:         polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
-
-  /* Accent palette — cyan / magenta / yellow */
-  --accent-c:             #00f0ff;
-  --accent-m:             #ff00aa;
-  --accent-y:             #e8ff00;
-
-  /* Borders */
-  --border:               rgba(0, 240, 255, 0.18);
-  --border-h:             rgba(0, 240, 255, 0.65);
-
-  /* Glows */
-  --glow-c:               0 0 6px #00f0ff, 0 0 18px rgba(0, 240, 255, 0.45);
-  --glow-m:               0 0 6px #ff00aa, 0 0 18px rgba(255, 0, 170, 0.45);
-  --glow-y:               0 0 6px #e8ff00, 0 0 18px rgba(232, 255, 0, 0.45);
-  --pulse-glow:           inset 0 0 22px rgba(0, 240, 255, 0.25), inset 0 0 6px rgba(255, 0, 170, 0.12);
-
-  /* Scanlines */
-  --scanlines:            repeating-linear-gradient(
-                            to bottom,
-                            transparent 0px,
-                            transparent 3px,
-                            rgba(0, 0, 0, 0.28) 3px,
-                            rgba(0, 0, 0, 0.28) 4px
-                          );
-
-  /* Title animation */
-  --title-anim:           cp-glitch 10s infinite;
-
-  /* Tiles */
-  --tile-hover-bg:        rgba(0, 240, 255, 0.07);
-  --tile-hover-border:    #00f0ff;
-  --tile-hover-shadow:    0 0 10px rgba(0, 240, 255, 0.4), inset 0 0 8px rgba(0, 240, 255, 0.06);
-  --tile-active-bg:       rgba(0, 240, 255, 0.14);
-  --tile-icon-glow:       drop-shadow(0 0 6px #00f0ff) drop-shadow(0 0 12px rgba(0, 240, 255, 0.6));
-  --tile-icon-fx:         saturate(1.5) contrast(1.15);
-  --tile-icon-shape:      polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
-  --tile-label-spacing:   1.5px;
+  --radius: 0px;
+  --app-clip: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --overlay-clip: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --bg: #0B0B10;
+  --panel-bg: #12121A;
+  --overlay-bg: #0B0B10;
+  --header-bg: #12121A;
+  --font: Bahnschrift, 'Segoe UI', sans-serif;
+  --text: #F0F0F0;
+  --text-dim: #A2A2B4;
+  --accent-c: #FCEE0A;
+  --accent-m: #FF4D6A;
+  --accent-y: #02D7F2;
+  --accent-text: #FCEE0A;
+  --border: #34344A;
+  --border-h: #FCEE0A;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #FCEE0A;
+  --title-anim: cp-title-glitch 8s steps(1) infinite;
+  --tile-hover-bg: #242315;
+  --tile-hover-border: #FCEE0A;
+  --tile-hover-shadow: inset 3px 0 0 #FCEE0A;
+  --tile-active-bg: #242315;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: saturate(1.15) contrast(1.05);
+  --tile-icon-shape: polygon(24% 0, 100% 0, 100% 76%, 76% 100%, 0 100%, 0 24%);
+  --tile-label-spacing: 1.2px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-glow 3s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 1s ease-out forwards;
-
-  /* Buttons */
-  --btn-hover-bg:         rgba(0, 240, 255, 0.1);
-  --btn-active-bg:        rgba(0, 240, 255, 0.18);
-
-  /* Drop hint */
-  --drop-hint-border:     rgba(0, 240, 255, 0.35);
-  --drop-icon-color:      rgba(0, 240, 255, 0.45);
-  --hint-sub-color:       #7a9bb0;
-
-  /* Rename */
-  --rename-dashed:        rgba(0, 240, 255, 0.5);
-  --rename-input-bg:      rgba(0, 240, 255, 0.06);
-
-  /* Edit bar — magenta */
-  --edit-bar-bg:          rgba(255, 0, 170, 0.08);
-  --edit-bar-border:      rgba(255, 0, 170, 0.6);
-  --edit-label-color:     #ff00aa;
-  --edit-label-glow:      0 0 8px #ff00aa, 0 0 20px rgba(255, 0, 170, 0.5);
-  --btn-done-color:       #ff00aa;
-  --btn-done-border:      rgba(255, 0, 170, 0.6);
-  --btn-done-hover-bg:    rgba(255, 0, 170, 0.12);
-  --btn-done-hover-glow:  0 0 10px rgba(255, 0, 170, 0.6);
-  --btn-add-border:       rgba(0, 240, 255, 0.45);
-
-  /* Update banner — yellow */
-  --update-bg:            rgba(232, 255, 0, 0.06);
-  --update-border:        rgba(232, 255, 0, 0.55);
-  --update-color:         #e8ff00;
-  --update-btn-border:    rgba(232, 255, 0, 0.55);
-  --update-btn-hover-bg:  rgba(232, 255, 0, 0.1);
-  --update-btn-hover-glow: 0 0 10px rgba(232, 255, 0, 0.55);
-
-  /* Settings CLOSE — magenta */
-  --btn-close-color:      #ff00aa;
-  --btn-close-border:     rgba(255, 0, 170, 0.5);
-  --btn-close-hover-bg:   rgba(255, 0, 170, 0.1);
-  --btn-close-hover-glow: 0 0 10px rgba(255, 0, 170, 0.6);
-
-  /* Picker / search */
-  --picker-search-bg:         rgba(0, 240, 255, 0.05);
-  --picker-item-hover-bg:     rgba(0, 240, 255, 0.08);
-  --picker-item-active-bg:    rgba(0, 240, 255, 0.15);
-  --picker-placeholder-bg:    rgba(0, 240, 255, 0.06);
-
-  /* Skin / remove */
-  --skin-btn-active-bg:   rgba(0, 240, 255, 0.15);
-  --remove-btn-bg:        rgba(255, 0, 170, 0.12);
-  --remove-btn-border:    rgba(255, 0, 170, 0.55);
-
-  /* Drag */
-  --drag-over-glow:       inset 0 0 24px rgba(0, 240, 255, 0.3);
+  --tile-label-weight: 600;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.6s ease-out forwards;
+  --btn-hover-bg: #242315;
+  --btn-active-bg: #242315;
+  --drop-hint-border: #4A4A60;
+  --drop-icon-color: #8A8AA0;
+  --hint-sub-color: #A2A2B4;
+  --rename-dashed: #FCEE0A;
+  --rename-input-bg: #1C1C28;
+  --edit-bar-bg: #1F0A12;
+  --edit-bar-border: #FF003C;
+  --edit-label-color: #FF4D6A;
+  --edit-label-glow: none;
+  --btn-done-color: #FF4D6A;
+  --btn-done-border: #FF003C;
+  --btn-done-hover-bg: #3A0F1C;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #8A8AA0;
+  --update-bg: #06222A;
+  --update-border: #02D7F2;
+  --update-color: #02D7F2;
+  --update-btn-border: #02D7F2;
+  --update-btn-hover-bg: #0A3742;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #FF4D6A;
+  --btn-close-border: #FF003C;
+  --btn-close-hover-bg: #3A0F1C;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1C1C28;
+  --picker-item-hover-bg: #242315;
+  --picker-item-active-bg: #242315;
+  --picker-placeholder-bg: #1C1C28;
+  --skin-btn-active-bg: #242315;
+  --remove-btn-bg: #C8002E;
+  --remove-btn-border: #FF003C;
 }
 
-/* ── Scanline overlay + fractal noise ──────────────────────────────────────── */
-#app::after {
-  content: '';
+/* ── Settings: the version value takes the text-role accent, not the alert colour */
+#app-version { color: var(--accent-text); }
+
+/* The theme's one looping animation (on #title via --title-anim): a stepped
+   2 px jitter on transform only, active for 4 percent of an 8 s cycle. */
+@keyframes cp-title-glitch {
+  0%, 90%, 100% { transform: translateX(0); }
+  91% { transform: translateX(-2px); }
+  92% { transform: translateX(2px); }
+  93% { transform: translateX(-1px); }
+  94% { transform: translateX(0); }
+}
+
+/* ── Window: no texture, no scanlines ───────────────────────────────────────── */
+#app::after { background: none; }
+
+/* ── Corner brackets in the frame bands (container background, no scroll).
+      right 6px = 2 px inside the 4 px scrollbar gutter (positioning box includes it) */
+#grid-container {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.1 0.2 0.3 0 0.01  0.1 0.2 0.3 0 0.02  0.2 0.3 0.4 0 0.03  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 3px,
-      rgba(0, 0, 0, 0.22) 3px,
-      rgba(0, 0, 0, 0.22) 4px
-    );
-  opacity: 1;
-  pointer-events: none;
+    linear-gradient(#FCEE0A, #FCEE0A) left 2px top 2px / 8px 1px no-repeat,
+    linear-gradient(#FCEE0A, #FCEE0A) left 2px top 2px / 1px 8px no-repeat,
+    linear-gradient(#02D7F2, #02D7F2) right 6px top 2px / 8px 1px no-repeat,
+    linear-gradient(#02D7F2, #02D7F2) right 6px top 2px / 1px 8px no-repeat;
 }
 
-/* ── Header cyan left bar ──────────────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #00f0ff, rgba(0, 240, 255, 0.3));
-  box-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.5);
-}
-
-/* ── Grid corner brackets ──────────────────────────────────────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    /* top-left bracket */
-    linear-gradient(to right,  rgba(0, 240, 255, 0.35) 0px, rgba(0, 240, 255, 0.35) 2px, transparent 2px) 8px 8px / 18px 2px no-repeat,
-    linear-gradient(to bottom, rgba(0, 240, 255, 0.35) 0px, rgba(0, 240, 255, 0.35) 2px, transparent 2px) 8px 8px / 2px 18px no-repeat,
-    /* top-right bracket */
-    linear-gradient(to left,   rgba(0, 240, 255, 0.35) 0px, rgba(0, 240, 255, 0.35) 2px, transparent 2px) calc(100% - 8px) 8px / 18px 2px no-repeat,
-    linear-gradient(to bottom, rgba(0, 240, 255, 0.35) 0px, rgba(0, 240, 255, 0.35) 2px, transparent 2px) calc(100% - 9px) 8px / 2px 18px no-repeat,
-    /* bottom-left bracket */
-    linear-gradient(to right,  rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) 8px calc(100% - 8px) / 18px 2px no-repeat,
-    linear-gradient(to top,    rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) 8px calc(100% - 8px) / 2px 18px no-repeat,
-    /* bottom-right bracket */
-    linear-gradient(to left,   rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) calc(100% - 8px) calc(100% - 8px) / 18px 2px no-repeat,
-    linear-gradient(to top,    rgba(255, 0, 170, 0.35) 0px, rgba(255, 0, 170, 0.35) 2px, transparent 2px) calc(100% - 9px) calc(100% - 8px) / 2px 18px no-repeat;
-  animation: cp-bracket-sync 10s ease-in-out infinite;
-}
-@keyframes cp-bracket-sync {
-  0%, 87%, 90%, 100% { opacity: 1; }
-  88%                 { opacity: 1; filter: brightness(3) drop-shadow(0 0 4px #fff); }
-  89%                 { opacity: 0; }
-}
-
-/* ── Grid faint horizontal grid lines ─────────────────────────────────────── */
-#grid-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 63px,
-    rgba(0, 240, 255, 0.04) 63px,
-    rgba(0, 240, 255, 0.04) 64px
-  );
-}
-
-/* ── Glitch keyframes ──────────────────────────────────────────────────────── */
-@keyframes cp-glitch {
-  0%, 87%, 90%, 100% {
-    text-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.6);
-    transform: translate(0, 0);
-    clip-path: none;
-  }
-  88% {
-    text-shadow: 0 0 12px #fff, 0 0 28px rgba(255, 255, 255, 0.9);
-    transform: translate(0, 0);
-    clip-path: none;
-  }
-  89% {
-    text-shadow: none;
-    transform: translate(0, 0);
-    clip-path: none;
-    opacity: 0;
-  }
-  89.5% {
-    opacity: 1;
-  }
-  91% {
-    text-shadow: -3px 0 #ff00aa, 3px 0 #00f0ff;
-    transform: translate(-2px, 0);
-    clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
-  }
-  92% {
-    text-shadow: 3px 0 #ff00aa, -3px 0 #00f0ff;
-    transform: translate(2px, 0);
-    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
-  }
-  93% {
-    text-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.6);
-    transform: translate(0, 0);
-    clip-path: none;
-  }
-  95% {
-    text-shadow: -2px 0 #ff00aa, 2px 0 #e8ff00;
-    transform: translate(1px, 0);
-    clip-path: polygon(0 45%, 100% 45%, 100% 55%, 0 55%);
-  }
-  96% {
-    text-shadow: 0 0 8px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.6);
-    transform: translate(0, 0);
-    clip-path: none;
-  }
-}
-
-/* ── Flavor content ────────────────────────────────────────────────────────── */
+/* ── Header art (HZ, x 168 to 252, y 10 to 39): glitch slice, and a notch tab
+      sitting on the header's bottom rule (nothing paints below the header) ── */
 #header::after {
-  content: 'NIGHT CITY  ///  CORPO PLAZA  //  JACKED IN';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-size: 8px; letter-spacing: 2px; color: rgba(0, 240, 255, 0.45);
-  pointer-events: none; white-space: nowrap;
+  content: '';
+  position: absolute; top: 10px; right: 172px; left: auto;
+  width: 84px; height: 29px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 29'%3E%3Crect x='2' y='5' width='32' height='3' fill='rgb(252,238,10)'/%3E%3Crect x='10' y='11' width='36' height='2' fill='rgb(2,215,242)'/%3E%3Crect x='4' y='16' width='16' height='2' fill='rgb(252,238,10)'/%3E%3Crect x='0' y='26' width='12' height='3' fill='rgb(252,238,10)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 29px;
+  pointer-events: none;
+}
+/* The filter chip sits where the header art is: hide the art while the chip shows. */
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+
+#title {
+  font-family: Bahnschrift, 'Segoe UI', sans-serif;
+  font-stretch: 75%; font-weight: 600; letter-spacing: 3px;
+  text-shadow: 1px 0 0 #02D7F2;
+}
+#title .accent { color: #02D7F2; }
+
+/* ── Banner: yellow hazard stripe along the top, chamfered data-shard icon ─── */
+#theme-banner { border-top: 0; }
+#theme-banner::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: repeating-linear-gradient(135deg, #FCEE0A 0 6px, #0B0B10 6px 12px);
+  pointer-events: none;
+}
+#theme-banner::before {
+  content: '';
+  width: 22px; height: 22px;
+  font-size: 0; opacity: 1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpolygon points='5,2 20,2 20,15 15,20 2,20 2,5' fill='none' stroke='rgb(252,238,10)' stroke-width='1.8' stroke-linejoin='miter'/%3E%3Crect x='8' y='8' width='6' height='6' fill='rgb(252,238,10)'/%3E%3C/svg%3E") center / 22px 22px no-repeat;
+}
+#theme-banner-text {
+  font-family: Bahnschrift, 'Segoe UI', sans-serif;
+  font-stretch: 75%; font-weight: 600; letter-spacing: 1.5px; color: #F0F0F0;
 }
 
-#grid-container::after {
-  content: 'NEURAL LINK\AESTABLISHED\A\AJACKING IN\AV\'S NETSPACE\ATRACE ROUTE:\ANIGHT CITY\A\AICHOR FOUND\ANEUROMANCER\A  ONLINE\A\ADATA\AFLOOD';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(0, 240, 255, 0.10); white-space: pre;
-  animation: cp-readout 6s ease-in-out infinite;
-}
-@keyframes cp-readout {
-  0%, 100% { color: rgba(0, 240, 255, 0.10); }
-  50%      { color: rgba(0, 240, 255, 0.14); }
-  88%      { color: rgba(0, 240, 255, 0.01); }
-  89%      { color: rgba(0, 240, 255, 0.12); }
-}
-
-#edit-bar::after {
-  content: 'BREACH PROTOCOL ACTIVE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-size: 8px; letter-spacing: 2px; color: rgba(255, 0, 170, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(0, 4, 14, 0.95); border-top-color: rgba(0, 240, 255, 0.18); }
-#theme-banner::before { content: '◈'; color: #00f0ff; font-size: 20px; }
-
-/* ── Night City neon surge — corp billboard overload ────────────────────── */
-#app { animation: cp-neon-surge 10s ease-in-out infinite; }
-@keyframes cp-neon-surge {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(0,240,255,.18), inset 0 0 18px rgba(0,240,255,.04); }
-  25%      { box-shadow: 0 0 0 1px rgba(0,240,255,.45), inset 0 0 28px rgba(0,240,255,.08); }
-  26%      { box-shadow: 0 0 0 1px rgba(255,0,170,.35), inset 0 0 22px rgba(255,0,170,.06); }
-  27%      { box-shadow: 0 0 0 1px rgba(0,240,255,.55), inset 0 0 32px rgba(0,240,255,.10); }
-  28%      { box-shadow: 0 0 0 1px rgba(0,240,255,.22), inset 0 0 16px rgba(0,240,255,.04); }
-  75%      { box-shadow: 0 0 0 1px rgba(255,0,170,.42), inset 0 0 26px rgba(255,0,170,.07); }
-  76%      { box-shadow: 0 0 0 1px rgba(232,255,0,.28), inset 0 0 20px rgba(232,255,0,.05); }
-  77%      { box-shadow: 0 0 0 1px rgba(255,0,170,.52), inset 0 0 30px rgba(255,0,170,.09); }
-  87%      { box-shadow: 0 0 0 1px rgba(0,240,255,.18), inset 0 0 18px rgba(0,240,255,.04); }
-  88%      { box-shadow: 0 0 0 1px rgba(255,255,255,.9), inset 0 0 30px rgba(255,255,255,.15); }
-  89%      { box-shadow: 0 0 0 1px rgba(0,0,0,.6), inset 0 0 0 rgba(0,0,0,0); }
-  90%      { box-shadow: 0 0 0 1px rgba(0,240,255,.22), inset 0 0 18px rgba(0,240,255,.04); }
-}
-
-/* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
-#header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
+/* ── Tiles: chamfered plates, yellow menu-row bar on hover ──────────────────── */
+.app-tile { background: #12121A; border-color: #2A2A3A; }
+.app-tile::before { display: none; }
+.app-tile:hover,
+.app-tile:focus-visible {
   background: var(--tile-hover-bg);
+  border-color: var(--tile-hover-border);
+  box-shadow: var(--tile-hover-shadow);
 }
-.app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }
-
-/* ── Neon data rain — Night City pixel downpour ─────────────────────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='180'%3E%3Crect x='14' y='20' width='1.5' height='8' rx='0.5' fill='rgba(0,240,255,0.30)'/%3E%3Crect x='42' y='80' width='1.5' height='6' rx='0.5' fill='rgba(0,240,255,0.22)'/%3E%3Crect x='71' y='140' width='1.5' height='10' rx='0.5' fill='rgba(255,0,170,0.18)'/%3E%3Crect x='89' y='50' width='1.5' height='5' rx='0.5' fill='rgba(0,240,255,0.16)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='300'%3E%3Crect x='20' y='40' width='2' height='12' rx='0.5' fill='rgba(0,240,255,0.18)'/%3E%3Crect x='60' y='140' width='2' height='8' rx='0.5' fill='rgba(255,0,170,0.14)'/%3E%3Crect x='110' y='240' width='2' height='14' rx='0.5' fill='rgba(0,240,255,0.16)'/%3E%3Crect x='140' y='80' width='2' height='6' rx='0.5' fill='rgba(232,255,0,0.10)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='450'%3E%3Crect x='30' y='60' width='2.5' height='16' rx='0.5' fill='rgba(0,240,255,0.10)'/%3E%3Crect x='100' y='200' width='2.5' height='12' rx='0.5' fill='rgba(0,240,255,0.08)'/%3E%3Crect x='180' y='350' width='2.5' height='18' rx='0.5' fill='rgba(255,0,170,0.07)'/%3E%3C/svg%3E") repeat;
-  background-size: 100px 180px, 160px 300px, 220px 450px;
-  animation: cp-data-rain 4s linear infinite;
-}
-@keyframes cp-data-rain {
-  from { background-position: 0 -180px, 30px -300px, 60px -450px; }
-  to   { background-position: 0 0, 30px 0, 60px 0; }
-}
+.tile-label { font-family: Bahnschrift, 'Segoe UI', sans-serif; font-stretch: 87.5%; }

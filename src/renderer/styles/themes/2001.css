@@ -1,238 +1,140 @@
 /* ══ 2001: A SPACE ODYSSEY ════════════════════════════════════════════════════
-   HAL 9000 is operational. Discovery One approaches Jupiter. Ultra-minimal,
-   sterile, clinical — the only warmth is HAL's red eye, watching.
+   Batch 1 redraw (theme spec 2026-09-30, section 4). A light, sterile console:
+   off-white ground, near-black Semilight capitals, console blue for hover and
+   focus, a small amber lamp strip, HAL red only in edit mode and the banner eye.
+   Header art: a converging line pair leading to a small black slab.
+   No texture layer and no looping motion (the batch's texture floor).
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 6px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #020306;
-  --panel-bg:     rgba(4, 6, 12, 0.98);
-  --overlay-bg:   rgba(2, 3, 8, 0.96);
-  --header-bg:    rgba(160, 180, 210, 0.03);
-
-  --font:         'Segoe UI', 'Arial', sans-serif;
-  --text:         #A0B4CC;
-  --text-dim:     #687A95;
-
-  --accent-c:     #9AAEC8;   /* Discovery blue-white */
-  --accent-m:     #CC0000;   /* HAL red */
-  --accent-y:     #708090;   /* cold grey */
-
-  --border:       rgba(120, 145, 175, 0.18);
-  --border-h:     rgba(150, 175, 210, 0.45);
-
-  --glow-c:       0 0 5px rgba(154,174,200,.50), 0 0 14px rgba(154,174,200,.16);
-  --glow-m:       0 0 6px rgba(204,0,0,.65), 0 0 18px rgba(204,0,0,.20);
-  --glow-y:       0 0 5px rgba(112,128,144,.45), 0 0 12px rgba(112,128,144,.14);
-
-  --pulse-glow:   inset 0 0 12px rgba(120,145,175,.04);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 20px rgba(150,175,210,.08);
-
-  --title-anim:   hal-watch 10s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(120, 145, 175, 0.06);
-  --tile-hover-border: rgba(150, 175, 210, 0.28);
-  --tile-hover-shadow: 0 0 8px rgba(154, 174, 200, 0.14);
-  --tile-active-bg:    rgba(120, 145, 175, 0.12);
-  --tile-icon-glow:    drop-shadow(0 0 4px rgba(154,174,200,.50));
-  --tile-icon-fx:      brightness(0.92) saturate(0.6) contrast(1.1);
-  --tile-icon-shape:   circle(46% at 50% 50%);
-  --tile-label-spacing:   2px;
+  --bg: #F4F4F2;
+  --panel-bg: #FBFBFA;
+  --overlay-bg: #F4F4F2;
+  --header-bg: #E8E8E4;
+  --font: 'Segoe UI', Arial, sans-serif;
+  --text: #2A2A2E;
+  --text-dim: #5A5A62;
+  --accent-c: #2A5AA0;
+  --accent-m: #C41414;
+  --accent-y: #E8A020;
+  --accent-text: #2A5AA0;
+  --border: #B8B8B4;
+  --border-h: #2A5AA0;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #2A5AA0;
+  --title-anim: none;
+  --tile-hover-bg: #EBF1FB;
+  --tile-hover-border: #2A5AA0;
+  --tile-hover-shadow: inset 0 3px 0 #E8A020;
+  --tile-active-bg: #E6ECF6;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: saturate(0.7) brightness(0.85);
+  --tile-icon-shape: none;
+  --tile-label-spacing: 1.5px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    300;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
-  --app-entrance-anim:   entrance-zoom 2s ease-out forwards;
-
-  --btn-hover-bg:   rgba(120, 145, 175, 0.08);
-  --btn-active-bg:  rgba(120, 145, 175, 0.16);
-
-  --drop-hint-border: rgba(120, 145, 175, 0.20);
-  --drop-icon-color:  rgba(154, 174, 200, 0.28);
-  --hint-sub-color:   #687A95;
-
-  --rename-dashed:    rgba(154, 174, 200, 0.28);
-  --rename-input-bg:  rgba(120, 145, 175, 0.06);
-
-  --edit-bar-bg:          rgba(204, 0, 0, 0.06);
-  --edit-bar-border:      rgba(204, 0, 0, 0.35);
-  --edit-label-color:     #CC0000;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #CC0000;
-  --btn-done-border:      rgba(204, 0, 0, 0.38);
-  --btn-done-hover-bg:    rgba(204, 0, 0, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(150, 175, 210, 0.28);
-
-  --update-bg:             rgba(112, 128, 144, 0.05);
-  --update-border:         rgba(140, 160, 185, 0.28);
-  --update-color:          #708090;
-  --update-btn-border:     rgba(112, 128, 144, 0.25);
-  --update-btn-hover-bg:   rgba(112, 128, 144, 0.08);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #CC0000;
-  --btn-close-border:     rgba(204, 0, 0, 0.35);
-  --btn-close-hover-bg:   rgba(204, 0, 0, 0.08);
-  --btn-close-hover-glow: var(--glow-m);
-
-  --picker-search-bg:      rgba(120, 145, 175, 0.06);
-  --picker-item-hover-bg:  rgba(120, 145, 175, 0.07);
-  --picker-item-active-bg: rgba(120, 145, 175, 0.13);
-  --picker-placeholder-bg: rgba(120, 145, 175, 0.07);
-
-  --skin-btn-active-bg:    rgba(120, 145, 175, 0.14);
-  --remove-btn-bg:         rgba(204, 0, 0, 0.88);
-  --remove-btn-border:     #CC0000;
+  --tile-label-weight: 350;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 1.2s ease-out forwards;
+  --btn-hover-bg: #EBF1FB;
+  --btn-active-bg: #E6ECF6;
+  --drop-hint-border: #B8B8B4;
+  --drop-icon-color: #8A8A90;
+  --hint-sub-color: #5A5A62;
+  --rename-dashed: #2A5AA0;
+  --rename-input-bg: #EBF1FB;
+  --edit-bar-bg: #F6E0E0;
+  --edit-bar-border: #C41414;
+  --edit-label-color: #A81010;
+  --edit-label-glow: none;
+  --btn-done-color: #A81010;
+  --btn-done-border: #C41414;
+  --btn-done-hover-bg: #EFC8C8;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #8A8A90;
+  --update-bg: #FBEFD3;
+  --update-border: #E8A020;
+  --update-color: #7A4A00;
+  --update-btn-border: #B87400;
+  --update-btn-hover-bg: #F4DFAA;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #A81010;
+  --btn-close-border: #C41414;
+  --btn-close-hover-bg: #F6E0E0;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #EBF1FB;
+  --picker-item-hover-bg: #EBF1FB;
+  --picker-item-active-bg: #E6ECF6;
+  --picker-placeholder-bg: #EBF1FB;
+  --skin-btn-active-bg: #E6ECF6;
+  --remove-btn-bg: #C41414;
+  --remove-btn-border: #A81010;
 }
 
-/* ── Minimal: clean geometry, no noise — the void between stars ─────────────── */
-#app::after {
-  background:
-    /* HAL's subtle red vignette corner */
-    radial-gradient(ellipse 40% 40% at 0% 0%, rgba(180, 0, 0, 0.03) 0%, transparent 70%),
-    /* deep space vignette */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 45%, rgba(1, 2, 5, 0.70) 100%),
-    /* cold top edge */
-    linear-gradient(to bottom, rgba(120, 145, 175, 0.04) 0%, transparent 20%);
-  opacity: 1; pointer-events: none;
-}
+/* ── Settings: the version value takes the text-role accent, not the alert colour */
+#app-version { color: var(--accent-text); }
 
-/* ── Header cold silver bar ──────────────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #9AAEC8, rgba(120, 145, 175, 0.20));
-  box-shadow: 0 0 6px rgba(154, 174, 200, 0.40);
-}
+/* ── Window: no texture at all ───────────────────────────────────────────────── */
+#app::after { background: none; }
 
-/* ── Grid: HAL 9000 — the red eye, watching ─────────────────────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* HAL's outer iris ring */
-    radial-gradient(circle at 50% 42%, transparent 58px, rgba(200,0,0,0.14) 59px, rgba(200,0,0,0.14) 64px, transparent 65px),
-    /* HAL's inner iris ring */
-    radial-gradient(circle at 50% 42%, transparent 36px, rgba(220,0,0,0.20) 37px, rgba(220,0,0,0.20) 42px, transparent 43px),
-    /* HAL's pupil — central red point */
-    radial-gradient(circle at 50% 42%, rgba(255,40,0,0.28) 0px, rgba(220,0,0,0.18) 16px, rgba(180,0,0,0.08) 34px, transparent 40px),
-    /* lens flare — slight horizontal streak */
-    radial-gradient(ellipse 60% 8% at 50% 42%, rgba(200,0,0,0.06) 0%, transparent 100%),
-    /* cold Discovery hull ambient */
-    radial-gradient(ellipse 100% 70% at 50% 42%, rgba(8,12,24,0.08) 0%, transparent 80%),
-    /* floor line — clinical hospital white */
-    linear-gradient(to top, rgba(120,145,175,0.05) 0%, transparent 18%);
-  animation: hal-eye-pulse 8s ease-in-out infinite;
-}
-@keyframes hal-eye-pulse {
-  0%, 100% { opacity: 1; }
-  48%       { opacity: 0.7; }
-  50%       { opacity: 1; }
-  51%       { opacity: 0.4; }
-  52%       { opacity: 1; }
-}
+/* ── Header: flat grey, blue left tick ───────────────────────────────────────── */
+#header::before { background: #2A5AA0; box-shadow: none; }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+/* Header art (HZ, x 168 to 252): perspective pair converging on a black slab */
 #header::after {
-  content: 'DISCOVERY ONE  //  2001  //  HAL 9000 OPERATIONAL';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 8.5px; letter-spacing: 2.5px; color: rgba(160, 185, 218, 0.52);
-  pointer-events: none; white-space: nowrap;
+  content: '';
+  position: absolute; top: 10px; right: 172px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cpath d='M2 2 L66 10 M2 18 L66 10' fill='none' stroke='rgb(138,138,144)' stroke-width='1' stroke-linecap='round'/%3E%3Crect x='66' y='1' width='8' height='18' fill='rgb(17,17,20)'/%3E%3Cpolygon points='74,1 76,2.5 76,17.5 74,19' fill='rgb(58,58,64)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
+}
+/* The filter chip sits where the header art is: hide the art while the chip shows. */
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+
+#title {
+  font-family: 'Segoe UI Semilight', 'Segoe UI', sans-serif;
+  font-weight: 350; letter-spacing: 5px; text-shadow: none;
 }
 
-#grid-container::after {
-  content: 'DISCOVERY\AONE\A\AHAL 9000\AOPERATIONAL\A\AJUPITER\AAND BEYOND\ATHE INFINITE';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Segoe UI', sans-serif; letter-spacing: 2px;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(120, 145, 175, 0.09); white-space: pre;
-  animation: hal-readout 10s ease-in-out infinite;
+/* ── Banner: white strip, HAL's eye ──────────────────────────────────────────── */
+#theme-banner::before {
+  content: '';
+  width: 22px; height: 22px;
+  font-size: 0; opacity: 1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Ccircle cx='11' cy='11' r='10.5' fill='rgb(28,28,32)'/%3E%3Ccircle cx='11' cy='11' r='8.5' fill='rgb(224,24,24)'/%3E%3Ccircle cx='11' cy='11' r='5' fill='rgb(200,16,16)'/%3E%3Ccircle cx='11' cy='11' r='2.2' fill='rgb(242,194,48)'/%3E%3C/svg%3E") center / 22px 22px no-repeat;
 }
-@keyframes hal-readout {
-  0%, 100% { color: rgba(120, 145, 175, 0.09); }
-  50%      { color: rgba(120, 145, 175, 0.13); }
-  88%      { color: rgba(120, 145, 175, 0.01); }
-  89%      { color: rgba(120, 145, 175, 0.11); }
+#theme-banner-text {
+  font-family: 'Segoe UI Semilight', 'Segoe UI', sans-serif;
+  font-weight: 350; letter-spacing: 0.5px; color: var(--text);
 }
 
-#edit-bar::after {
-  content: "I'M AFRAID I CAN'T ALLOW THAT";
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 8px; letter-spacing: 2px; color: rgba(204, 0, 0, 0.38);
-  pointer-events: none; white-space: nowrap;
+/* ── Tiles ───────────────────────────────────────────────────────────────────── */
+.app-tile { background: #FBFBFA; border-color: #D4D4D0; }
+.app-tile::before { display: none; }
+.app-tile:hover,
+.app-tile:focus-visible {
+  background: var(--tile-hover-bg);
+  border-color: var(--tile-hover-border);
+  box-shadow: var(--tile-hover-shadow);
 }
+.tile-label { font-family: 'Segoe UI Semilight', 'Segoe UI', sans-serif; }
 
-#title { font-family: 'Segoe UI', sans-serif; letter-spacing: 5px; font-weight: 300; }
+/* ── Base hover rules that assume a dark ground (white text on a pale fill) ──── */
+button:hover { color: var(--text); }
+.btn-remove:hover { color: #fff; }
+.update-btn:hover { color: var(--update-color); }
+#filter-chip-clear:hover { color: var(--accent-text); }
 
-/* ── Title animation: HAL's patient, watching glow ──────────────────────────── */
-@keyframes hal-watch {
-  0%, 100% { text-shadow: 0 0 4px rgba(154,174,200,.45); color: #9AAEC8; }
-  45%      { text-shadow: 0 0 4px rgba(154,174,200,.45); color: #9AAEC8; }
-  50%      { text-shadow: 0 0 6px rgba(204,0,0,.55), 0 0 18px rgba(204,0,0,.18); color: #CC5050; }
-  55%      { text-shadow: 0 0 4px rgba(154,174,200,.45); color: #9AAEC8; }
+/* ── Skin select: base's arrow is 50 % white (invisible on this light panel);
+      only the image is replaced, base keeps its position and no-repeat ───── */
+.theme-search {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgb(74,74,82)'/%3E%3C/svg%3E");
 }
-
-/* ── App border: HAL's watchful patience — red flash in the dark ─────────────── */
-#app { animation: hal-watch-border 12s ease-in-out infinite; }
-@keyframes hal-watch-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(120,145,175,.18); }
-  44%      { box-shadow: 0 0 0 1px rgba(150,175,210,.32); }
-  46%      { box-shadow: 0 0 0 1px rgba(204,0,0,.35), inset 0 0 28px rgba(204,0,0,.06); }
-  47%      { box-shadow: 0 0 0 1px rgba(150,175,210,.28); }
-  89%      { box-shadow: 0 0 0 1px rgba(120,145,175,.18); }
-  90%      { box-shadow: 0 0 0 1px rgba(204,0,0,.22), inset 0 0 18px rgba(204,0,0,.04); }
-  91%      { box-shadow: 0 0 0 1px rgba(120,145,175,.18); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 3, 8, 0.98); border-top-color: rgba(120, 145, 175, 0.18); }
-#theme-banner::before { content: '⊙'; color: #CC0000; font-size: 20px; opacity: 0.8; }
-#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(130, 152, 185, 0.65); }
-
-/* ── Stargate sequence — Jupiter And Beyond The Infinite ─────────────────── */
-#particles {
-  background:
-    repeating-linear-gradient(180deg,
-      transparent 0px, transparent 38px,
-      rgba(154,174,200,0.10) 38px, rgba(200,220,255,0.07) 40px,
-      transparent 42px, transparent 72px,
-      rgba(204,0,0,0.07) 72px, rgba(220,60,60,0.05) 74px,
-      transparent 76px, transparent 108px,
-      rgba(100,120,200,0.08) 108px, rgba(140,160,230,0.06) 110px,
-      transparent 112px, transparent 150px,
-      rgba(154,174,200,0.06) 150px, rgba(180,200,240,0.05) 152px,
-      transparent 154px, transparent 190px
-    ),
-    repeating-linear-gradient(180deg,
-      transparent 0px, transparent 52px,
-      rgba(180,200,255,0.06) 52px, transparent 55px,
-      transparent 100px,
-      rgba(204,0,0,0.05) 100px, transparent 103px,
-      transparent 175px,
-      rgba(60,80,180,0.06) 175px, transparent 178px,
-      transparent 260px
-    );
-  background-size: 100% 190px, 100% 260px;
-  animation: hal-stargate 6s linear infinite;
-}
-@keyframes hal-stargate {
-  from { background-position: 0 0, 0 0; }
-  to   { background-position: 0 190px, 0 260px; }
-}
-
-/* ── Tile: HAL's watchful expanding ring ─────────────────────────────────── */
-.app-tile::before {
-  width: 18px; height: 18px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(204,0,0,0.50);
-}
-.app-tile:hover::before { animation: tile-radial .6s ease-out forwards; }
