@@ -854,3 +854,43 @@ Done when: scroll Settings to the end, close it, reopen it from the gear and fro
 ### Re-look
 
 **Parts B and C: no re-look needed.** **Part A: a light one.** After F1 and F2, send me four images only: settings at 180x150 and 220x300 for deus-ex and promise-mascot, plus Ender's F1 and F2 done-when numbers. I do not need the 101 sheets again.
+
+---
+
+## Review 2 (F1, F2 and the gate pair, light re-look) — Judy, 2026-09-30
+
+Looked at: commit 4bd069b (with 4436bb8), the eight r2 images plus `f2-reopen-sequence.png`, and the diff of `base.css`, `app.js` and the gate. Uncommitted, as instructed. QuickLaunch was not launched; my own Edge launches used `--user-data-dir=<scratchpad>/judy/profile`.
+
+### Verdict
+
+**Part A: approved.** F1 and F2 are done and verified. F3 below is one small extra fix, recommended, not blocking. Parts B and C stand as approved in Review 1.
+
+- **F1 verified.** 180x150 and 220x300, deus-ex and promise-mascot: the chunky horizontal bar is gone, the "64px" value and the clear button are back inside the panel, the footer wraps with CHECK FOR UPDATES above CLOSE and CLOSE keeps the bottom-right corner. I measured 101 themes at 180x150 in my mock: none has a sideways scroll (`scrollWidth` equals `clientWidth` in all 101).
+- **F2 verified.** `f2-reopen-sequence.png`: scrolled to 77, closed, reopened from the gear at scroll 0 with the title at y 14 to 37; the control run reopens at 77 (old bug reproduced). In the code, the gear, the tray handler and `openCheatsheet` all go through `showOverlayAtTop`, and no other path removes `hidden` from those two overlays.
+- **Gate pair verified.** The lowest of the 15 redesigned themes is stranger-things at 4.73, above 4.5. The count is 46 in the gate against my 45; the difference is mirrors-edge, which the gate measures at 2.95 and my flattening put at 3.13. The gate's own method is the one that counts. I take 46.
+
+### Ruling on item 1: CHECK FOR UPDATES wider than the footer at 180 px — accept, no fix
+
+I measured all 101 at 180x150 (mock): the button is 138 to 156 px wide, its right edge is at W-20 in every theme, and its **left edge is never left of x 4** (akira and lcars at 4.0, gryffindor and parasite-eve 5.2, warhammer 5.5; Ender's Electron numbers give 4.7 for the worst). 89 of 101 start left of x 20 (Ender counts 88). So the button pokes into the left padding by up to 16 px, but it is never clipped, never touches another control, and stays clear of the clipped corners (in deus-ex and ghost-shell the corner cuts are 18 and 20 px and the wrapped row sits well above them; lcars' 16 px radius is only at the bottom 16 px). It happens only between 180 and about 196 px wide, and the window minimum is 180. Wrapping the label to two lines would cost about 11 px of the 64 px the body has left at 180x150, which is a worse trade.
+My F1 done-when said "inside x 20 to W-20". That was stricter than the goal. **Amend it to: both footer buttons fully inside the window with at least 3 px to each edge, right edges at W-20.** Nothing to change in the code.
+
+### Ruling on item 2: cheat-sheet at narrow widths — real defect, worse than reported; one small fix
+
+Measured in the mock. It is not only "(rebindable)" below 235 px. The key column is a fixed 110 px, so the description column is the window width minus 162 px: **18 px at 180, 38 px at 200, 58 px at 220**. At 180 every description is clipped mid-word ("Move", "focu", "betw", "tiles" for "Move focus between tiles"); at 220 "Show / hid", "(rebindabl". It used to show a sideways scrollbar (a glitch, but the text could be reached); now the overflow is hidden and the text cannot be reached. Pre-existing in cause, silent in effect. Fix: below 260 px, stack the key above its description.
+
+```css
+/* Cheat-sheet in narrow windows (under 260 px): key above description, so nothing is clipped. */
+@media (max-width: 259px) {
+  .cheat-row { flex-wrap: wrap; row-gap: 1px; }
+  .cheat-key { flex-basis: 100%; }
+}
+```
+
+Add it to `base.css` after the F1 block. Tested (deus-ex, promise-mascot): at 180, 200, 235, 250 and 260 wide `scrollWidth` equals `clientWidth` and no cheat text runs past the right edge; the longest key and word ("RIGHT-CLICK", "(rebindable)") are about 90 px against 140 px of room at 180. At 260, 424, 640 and 1024 the cheat-sheet renders **0 pixels differently** (deus-ex at 640 and 1024 shows a difference that a no-op rule also produces, so it is animation noise in the mock, not the rule). The settings overlay is untouched.
+Done when (Ender): at 180x300, 200x300 and 235x300 in deus-ex, promise-mascot and one wide-tracked theme, no `.cheat-key` or `.cheat-desc` text extends past x W-20, the list scrolls, CLOSE is pinned; at 260 and above the rendering is pixel-identical.
+
+**Review 2 fix count: 1 (F3, Minor).** Sergei's window (424 or larger) is not affected either way.
+
+### Re-look
+
+None needed. If F3 goes in, Ender's numbers from the done-when are enough; I do not need images.
