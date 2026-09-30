@@ -782,3 +782,75 @@ What is left: cream newsprint with a fine grain; ink-outlined paper cards with h
 
 - This spec: `C:\Antigravity Projects\Studio Illuminati\WIP\QuickLaunch\Docs\QuickLaunch_ThemeSpec_Foundation_2026-09-30.md`
 - Scratch (session scratchpad, not in the repo): `judy\found\` holds the mock harness `fh.py` (every launch passes `--user-data-dir=<scratchpad>\judy\profile`), the prototype paper theme `pm_paper.css`, the A1 prototype `overlay_final.py`, and the measurement scripts.
+
+---
+
+## Review 1 (implementation) — Judy, 2026-09-30
+
+Reviewed: commits 857b77e (fonts), 0c6658a (Part A), 1039ec6 (gryffindor, 2001, akira), aa837e1 (promise-mascot), on `wip/theme-fidelity`. Uncommitted, as instructed. QuickLaunch was not launched. My own Edge launches (headless, mock harness) all passed `--user-data-dir=<scratchpad>/judy/profile`.
+
+### Verdicts
+
+| Part | Verdict | Fixes |
+|---|---|---|
+| A. Base layout | **Approved after 2 fixes.** Both are small, both in the new settings scroller. Nothing else is wrong across the 101 themes. | F1, F2 |
+| B. Fonts and the three adopters | **Approved, no fixes.** | 0 |
+| C. promise-mascot paper | **Approved, no fixes.** Squint score 4 stands (C.6, C.7 item 12). | 0 |
+
+**Fix count: 2** (both Part A, both Minor).
+
+### What I checked myself (not taken from the run report)
+
+- **All 101 settings shots** on 9 contact sheets: title and footer inside the window in every theme, clipped themes (deus-ex, ghost-shell, warhammer, mass-effect, lcars radius) keep both corners, thumb visible, no broken row. The SKIN peek at scroll 0 reads as intended.
+- **Pixel diff, 86 legacy themes, `current` vs `after-f01-nofit`, grid and hover:** all 86 change, and every diff lies inside the header text box (none touches tiles, art or banner). A crop of x 180 to 267 across all 86 headers shows no stray ellipsis or remnant. Reason it is safe: all 86 `#header::after` rules set only `transform` (no border, padding, background or shadow), so width 0 paints nothing.
+- **Fit check on vs off:** exactly 20 themes differ, banner only, and the 20 are the list in A5. None of the 15 batch themes is among them. All 20 new lines fit without an ellipsis.
+- **15 batch themes against their approved shots:** cyberpunk, dead-space, persona-4, shire, stranger-things, nonary-games, parasite-eve, persona-3, persona-5, siren, yakuza identical in grid and hover. gryffindor differs only in the title (x 12 to 147, y 8 to 31), akira only in the title (x 12 to 134, y 9 to 31), 2001 in title, labels and banner, promise-mascot everywhere (intended).
+- **Title right edges, measured independently with the real font files loaded:** gryffindor 140.3, 2001 149.5, akira 134.9, promise-mascot 134.9. These match Ender's numbers to the decimal, all under 156. Stacks: 2001 title 5 to 21, version 22 to 34 inside the 40 px header; the other three 6.4 to 32.6.
+- **Gate:** `npm run check:contrast` gives 101 checked, 0 errors, 12 legacy warnings (the baseline). Font file sizes match the B1 table byte for byte; `package.json` packages `src/**/*`, so the fonts ship.
+- **promise-mascot states I rendered myself from the shipped CSS** (mock, not Electron): edit mode with remove buttons, hover on a remove button, rename input, apps picker, hotkey recording and error text, settings at 424, 640, 1024. All readable, nothing over content. Darkest pixel of the edit label 5.89:1 and of the update text 7.70:1, matching C.1. `infinite` count 0, no backslash in the file.
+
+### Fixes
+
+**F1. Narrow windows: the settings body overflows sideways and CHECK FOR UPDATES is clipped (Part A, Minor).**
+This is wider than Ender's finding (item 3). Measured in the mock with the shipped `base.css`, deus-ex (Consolas, the widest footer):
+
+| Window width | Footer | Body |
+|---|---|---|
+| 244 and up | fits | fits |
+| 180 to about 243 | CHECK FOR UPDATES starts at x -43 (180) and x -3 (220); its left edge and label are cut | fits down to about 217 |
+| below about 217 | as above | `scrollWidth` 199 against `clientWidth` 172 at 180: a **horizontal scrollbar appears** (the custom `::-webkit-scrollbar` sets only a width, so it draws as a chunky 15 px bar with a `--text-dim` thumb), and the hotkey clear button and the "64px" value are pushed out of the panel |
+
+The old layout clipped the same controls silently; the new scroller turns that into a visible glitch, so it is worse than before at those widths. 180 is the window minimum, so it is reachable. Add this block to `base.css` after the `@media (max-height: 480px)` block:
+
+```css
+/* Narrow windows (180 px up to about 245 px wide): nothing may overflow sideways. */
+.scroll-panel > .overlay-scroll { overflow-x: hidden; }
+.scroll-panel .hotkey-input,
+.scroll-panel input[type="range"] { min-width: 0; }
+.scroll-panel > .overlay-footer { flex-wrap: wrap; row-gap: 6px; }
+```
+
+Effect: the footer buttons wrap (CHECK FOR UPDATES above, CLOSE below, both right-aligned, so CLOSE keeps the bottom-right corner), the hotkey field and slider shrink, the row widths stay inside the panel. Tested in the mock: at 180x150, 180x500, 200x500 and 240x500 `scrollWidth` equals `clientWidth`, both buttons sit at x 20 to 160 (or 40 to 180 at 200), the clear button right edge is at W-20, the "64px" value is whole. At 424x300, 640x420 and 1024x700 the settings and cheat-sheet renderings are **0 pixels different** from today's in deus-ex and promise-mascot (warhammer differs only inside its own title flicker animation).
+Done when (Ender): at 180x150, 200x500 and 240x500, in deus-ex, promise-mascot and one wide-tracked theme, `.overlay-scroll` has `scrollWidth <= clientWidth`, both footer buttons are fully inside x 20 to W-20, and the three normal sizes are pixel-identical.
+
+**F2. Settings and the cheat-sheet reopen at the scroll position they were closed at (Part A, Minor).**
+Measured: a scroller's offset survives hide and show (set 57, hide, show, still 57). SKIN is the last interactive row and the one Sergei will use, so almost every reopen will land at the bottom with the title and the ICON SIZE row cut off, which looks like a glitch. Required behaviour: **every open of Settings and of the cheat-sheet starts at scroll 0.** Three open sites in `app.js`: the gear click (`btn-settings`, when it opens rather than closes), the `tray-open-settings` handler, and `openCheatsheet()`. Setting `.overlay-scroll`'s `scrollTop` to 0 on open is enough; the skin list's `picker-open` lock is already cleared on close.
+Done when: scroll Settings to the end, close it, reopen it from the gear and from the tray; the title is at y 14 to 35 both times. Same for the cheat-sheet.
+
+### Rulings on items 1 to 5
+
+1. **Shire right band, 1 px at 640 and 2 px at 1024: enough, no nudge.** The plank is `right 5px`, 10 px wide, so its inner edge is at W-15; the ring's outer edge is at W-16 (tile edge W-20, plus offset 2 and width 2). That is 1 px at every size (the 2 at 1024 is sub-pixel rounding of the column width), and it is the same geometry Sergei approved at 424 with the scrollbar showing. Before the gutter, at 640 and 1024 the ring overlapped the plank by 3 px, so this is an improvement, not a regression. The rule is "nothing inside tile field + 4 px"; 1 px clear passes it. The other three (yakuza 3, nonary-games 3, gryffindor 4) have more room.
+2. **CLOSE label contrast in legacy themes: leave to their batches, but put the pair in the gate.** The real number is larger than 13. I computed `--btn-close-color` on the flattened `--panel-bg` for all 101: **45 themes are under 4.5:1**, of which 13 are under 3.0:1 (exactly Ender's 13, worst twin-peaks 2.01, then hogwarts 2.31, event-horizon 2.42; the rest run up to half-life 4.42). **All 15 batch themes pass.** CHECK FOR UPDATES uses `--text` and passes in all 101. This is not a regression: the label colour and ratio are unchanged, and the button was equally faint at 1024x700 before; what changed is that the default window now shows it. Fixing it at base level would change approved themes (they choose their own CLOSE colour on purpose), and fixing it in the 45 themes is a redesign-batch job (every one of the 45 has a batch). So: (a) Ender adds `--btn-close-color` on `--panel-bg` (4.5:1) to the contrast gate as part of audit item 9.5, baselined for the 45 so nothing else moves; (b) every batch spec I write carries it as a gate line (promise-mascot already has it, 7.01:1). **Offer for Sergei, not done:** if he does not want to wait for the batches, a one-variable edit in 45 unredesigned themes fixes it now; that touches themes he has not asked to change, so it is his call.
+3. **180x150: rule = fix, see F1.** The clip is not only at the minimum; it starts below about 244 px wide.
+4. **The banner staying put when only one quote fits: accept.** The old behaviour faded the same text out and in every 14 s, a blink with no information. Holding still is calmer and is what the 8 one-line themes should do until their batches. The fallback (no quote fits: rotate to the natural next, ellipsis as last resort) is correct.
+5. **2001 without `line-height: 1.2`: fine, leave it.** B2 rule 8 is for display faces; Jost is a text face. Measured with the real font: the stack is 5 to 34 in the 40 px header (5 px above, 6 below), title line 16 px; with 1.2 it would sit 1.4 px tighter and change an approved look for nothing. B4 stands as written.
+
+### Noted, no fix
+
+- **Keyboard scrolling of the settings body.** After opening Settings with the gear or the tray, PageDown and the arrows do nothing until a control has focus (the document router returns early while an overlay is open). Tab reaches every control and scrolls it into view, so nothing is unreachable. Offered, not specced: give `.overlay-scroll` `tabindex="-1"` and focus it on open.
+- **Packaged-build checks (Futaba, not me).** I could not test Electron 32. On the packaged build confirm: at 640x420 the last tile column ends at x 620 (`scrollbar-gutter: stable` together with the 4 px custom scrollbar), the 6 px settings thumb draws, and the Dela Gothic One title shows in akira and promise-mascot. This is unresolved item 2 above; it stays open until then.
+- **Three thumbs still under 3:1** (lovecraft 2.51, dragon-age 2.75, warhammer-chaos 2.93), as A1.9 item 6 said. My recomputation gives the same three.
+
+### Re-look
+
+**Parts B and C: no re-look needed.** **Part A: a light one.** After F1 and F2, send me four images only: settings at 180x150 and 220x300 for deus-ex and promise-mascot, plus Ender's F1 and F2 done-when numbers. I do not need the 101 sheets again.
