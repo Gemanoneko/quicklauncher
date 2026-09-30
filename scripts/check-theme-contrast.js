@@ -162,12 +162,18 @@ function auditTheme(themePath, baseCss) {
   const accent     = parseColor(get('accent-c'));
   const accentText = parseColor(get('accent-text'));
   const hintSub    = parseColor(get('hint-sub-color'));
+  const closeText  = parseColor(get('btn-close-color'));
+  const panelRaw   = get('panel-bg');
+  const panelBg    = parseColor(panelRaw);
 
   if (!bg) {
     findings.push({ kind: 'error', msg: '--bg failed to parse' });
     return findings;
   }
   const bgFlat = flatten(bg);
+  // The settings CLOSE label sits on the panel, not on --bg. An unparseable
+  // panel colour is a finding (not a silent skip): this pair has no other gate.
+  if (!panelBg) findings.push({ kind: 'fail', msg: `--panel-bg failed to parse (${panelRaw})` });
 
   const checks = [
     { label: '--text on --bg',           color: text,       threshold: AA_NORMAL_TEXT },
@@ -179,12 +185,21 @@ function auditTheme(themePath, baseCss) {
     // not body prose — body uses --text and is already gated above).
     { label: '--accent-text on --bg',    color: accentText, threshold: AA_UI_ELEMENT  },
     { label: '--hint-sub-color on --bg', color: hintSub,    threshold: AA_NORMAL_TEXT },
+    // #btn-close-settings: a transparent button on the settings panel, so the
+    // label paints --btn-close-color on --panel-bg (flattened on black like
+    // --bg). Added 2026-09-30 (foundation review 1): the settings footer is now
+    // on screen at the default window size. 45 unchanged legacy themes are
+    // under 4.5:1 today; the hash baseline keeps them warn-only until their
+    // redesign batch, and a new or changed theme must pass.
+    { label: '--btn-close-color on --panel-bg', color: closeText, on: panelBg, threshold: AA_NORMAL_TEXT },
   ];
 
   for (const c of checks) {
     if (!c.color) continue; // var not set / unparseable — skip silently
-    const fgFlat = flatten(composite(c.color, bgFlat));
-    const ratio = contrast(fgFlat, bgFlat);
+    if ('on' in c && !c.on) continue; // its surface failed to parse — reported above
+    const under = 'on' in c ? flatten(c.on) : bgFlat;
+    const fgFlat = flatten(composite(c.color, under));
+    const ratio = contrast(fgFlat, under);
     if (ratio < c.threshold) {
       findings.push({
         kind: 'fail',

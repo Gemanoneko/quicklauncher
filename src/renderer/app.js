@@ -1578,8 +1578,17 @@ function moveTileFocus(direction) {
   if (next >= 0 && next < tiles.length) focusTileAtIndex(tiles, next);
 }
 
+// Settings and the cheat-sheet scroll inside their panel, and a scroller keeps
+// its offset while hidden. Every open starts at the top (theme spec, foundation
+// review 1, F2): show the overlay first, then reset (a hidden scroller has no box).
+function showOverlayAtTop(el) {
+  el.classList.remove('hidden');
+  const sc = el.querySelector('.overlay-scroll');
+  if (sc) sc.scrollTop = 0;
+}
+
 function openCheatsheet() {
-  document.getElementById('cheatsheet-overlay').classList.remove('hidden');
+  showOverlayAtTop(document.getElementById('cheatsheet-overlay'));
 }
 function closeCheatsheet() {
   document.getElementById('cheatsheet-overlay').classList.add('hidden');
@@ -1764,7 +1773,7 @@ function setupUpdateListeners() {
   //     which fires settings-changed-externally so any open Settings
   //     overlay reflects the new checkbox state immediately.
   window.api.on('tray-open-settings', () => {
-    elSettingsOverlay.classList.remove('hidden');
+    showOverlayAtTop(elSettingsOverlay);
   });
   window.api.on('settings-changed-externally', async () => {
     settings = await window.api.invoke('get-settings');
@@ -1827,7 +1836,8 @@ function hideUpdateBanner() {
 
 // ── Button wiring ─────────────────────────────────────────────────────────────
 $('btn-settings').addEventListener('click', () => {
-  elSettingsOverlay.classList.toggle('hidden');
+  if (elSettingsOverlay.classList.contains('hidden')) showOverlayAtTop(elSettingsOverlay);
+  else elSettingsOverlay.classList.add('hidden');
 });
 
 $('btn-hide').addEventListener('click', () => {
