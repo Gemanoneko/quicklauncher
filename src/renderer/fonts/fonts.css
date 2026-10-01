@@ -1,14 +1,15 @@
 /* ── Bundled fonts (theme spec, foundation 2026-09-30, Part B) ────────────────
-   Eight SIL OFL 1.1 families from google/fonts, shipped unmodified; each
+   Eleven SIL OFL 1.1 families from google/fonts, shipped unmodified; each
    family's OFL.txt sits next to its file (sources, sizes and SHA-256 in
    README.md). Linked from index.html before base.css. Chromium fetches a file
    only when a theme first uses its family, so themes that use none pay nothing.
    The files are same-origin file: URLs, so the CSP's default-src 'self' covers
    them (no font-src entry). font-display: block: the files are local, and swap
    would paint the fallback first and then reflow the title and the banner.
-   Themes use ONLY these eight family strings, with font-synthesis: none and a
+   Themes use ONLY these eleven family strings, with font-synthesis: none and a
    declared weight (UnifrakturCook 700, Cinzel 400-900, Jost 100-900, Cormorant
-   Garamond 300-700 italic only, the rest 400). */
+   Garamond 300-700 italic only, Libre Franklin 100-900, Oxanium 200-800, the
+   rest 400). */
 @font-face {
   font-family: 'Dela Gothic One';
   src: url('delagothicone/DelaGothicOne-Regular.ttf') format('truetype');
@@ -48,4 +49,19 @@
   font-family: 'Cormorant Garamond';
   src: url('cormorantgaramond/CormorantGaramond-Italic-VF.ttf') format('truetype');
   font-weight: 300 700; font-style: italic; font-display: block;
+}
+@font-face {
+  font-family: 'Libre Franklin';
+  src: url('librefranklin/LibreFranklin-VF.ttf') format('truetype');
+  font-weight: 100 900; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Black Ops One';
+  src: url('blackopsone/BlackOpsOne-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Oxanium';
+  src: url('oxanium/Oxanium-VF.ttf') format('truetype');
+  font-weight: 200 800; font-style: normal; font-display: block;
 }
