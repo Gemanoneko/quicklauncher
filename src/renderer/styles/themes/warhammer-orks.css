@@ -5,9 +5,9 @@
    a cleaver icon, a battered plate with bullet holes, uneven window corners.
    Impact title and banner, Segoe UI Semibold body. No texture, no looping
    motion.
-   Spec flag 5 (label face), built at the spec default "keep": tile labels in
-   Ink Free 400 (the face has one weight). The whole choice is the .tile-label
-   rule below; its 13 px size and 14.4 px line height are sized for Ink Free.
+   Spec flag 5 (label face) ruled Impact (spec Addendum A.5): tile labels in
+   Impact 400, 12 px, 0.4 px tracking, 14.4 px line height, the same face as
+   the title and the banner. The whole choice is the .tile-label rule below.
    ============================================================================== */
 
 :root {
@@ -119,7 +119,7 @@
 .app-tile { background: #241E14; border-color: #4A3F2A; border-radius: 2px; }
 .app-tile::before { display: none; }
 .app-tile:hover, .app-tile:focus-visible { background: var(--tile-hover-bg); border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
-.tile-label { font-family: 'Ink Free', 'Segoe Print', 'Segoe UI', sans-serif; font-synthesis: none; font-size: 13px; line-height: 14.4px; overflow: clip; overflow-clip-margin: 3px; }
+.tile-label { font-family: Impact, 'Arial Black', 'Segoe UI', sans-serif; font-synthesis: none; font-size: 12px; letter-spacing: 0.4px; line-height: 14.4px; overflow: clip; overflow-clip-margin: 3px; }
 /* no drop shadow under the plates: the crooked clip would show its box on the lighter tile ground */
 .tile-icon, .app-tile:hover .tile-icon { filter: sepia(0.2) saturate(1.1) contrast(1.05); }
 /* crooked: every third plate and label sits a degree or two off true */
