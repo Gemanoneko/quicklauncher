@@ -19,6 +19,9 @@ const ICONS = [
 ];
 
 const REGION_CAP = 8;
+// Items a region can hold (spec 2.7, Q3). Grid, Column and Row have no cap.
+// The work-area fit rule that can lower these arrives with Fan and Ring (M5).
+const ITEM_CAPS = Object.freeze({ fan: 10, ring: 12 });
 const NAME_MAX = 24;
 const MIGRATED_NAME = 'QUICK.LAUNCH';
 const REGIONS_VERSION = 1;
@@ -105,16 +108,51 @@ function replaceRegionItems(apps, regionId, items) {
 
 /** Move one item to the end of another region. Returns the new list, or null if the item is unknown. */
 function moveItem(apps, itemId, targetRegionId) {
+  return moveItemTo(apps, itemId, targetRegionId, Infinity);
+}
+
+/**
+ * Move one item into another region at `index` (0 = first; clamped, so
+ * Infinity = last), counted among the target's items. The other items keep
+ * their order. Returns the new list, or null if the item is unknown.
+ */
+function moveItemTo(apps, itemId, targetRegionId, index) {
   const list = Array.isArray(apps) ? apps : [];
   const item = list.find((a) => a && a.id === itemId);
   if (!item) return null;
   const rest = list.filter((a) => a !== item);
   const moved = { ...item, regionId: targetRegionId };
-  // Insert after the target's last item so it lands at the end of that region.
-  let at = -1;
-  rest.forEach((a, i) => { if (a && a.regionId === targetRegionId) at = i; });
-  if (at < 0) rest.push(moved); else rest.splice(at + 1, 0, moved);
+  const slots = [];
+  rest.forEach((a, i) => { if (a && a.regionId === targetRegionId) slots.push(i); });
+  if (!slots.length) { rest.push(moved); return rest; }
+  const n = Number.isFinite(index) ? Math.max(0, Math.floor(index)) : slots.length;
+  if (n >= slots.length) rest.splice(slots[slots.length - 1] + 1, 0, moved);
+  else rest.splice(slots[n], 0, moved);
   return rest;
+}
+
+/** How many items a region of this layout holds (Infinity = no cap). */
+function capacityOf(layout) {
+  return ITEM_CAPS[layout] || Infinity;
+}
+
+/** The drop-rejected text for a full region (spec 9.3). */
+function fullText(cap) {
+  return `FULL (${cap} max)`;
+}
+
+/**
+ * Can `target` take one more item from another region (spec 5.3)? A drop on
+ * the source itself, on nothing, or on a full region is refused; refusing
+ * means the drag is cancelled and the tile stays where it was.
+ * Returns { ok, reason, cap }.
+ */
+function dropDecision({ target, sourceId, count, cap }) {
+  if (!target) return { ok: false, reason: 'none' };
+  if (target.id === sourceId) return { ok: false, reason: 'self' };
+  const c = Number.isFinite(cap) ? cap : capacityOf(target.layout);
+  if (count >= c) return { ok: false, reason: 'full', cap: c, text: fullText(c) };
+  return { ok: true, reason: 'ok', cap: c };
 }
 
 function defaultGridRect(workArea) {
@@ -277,7 +315,8 @@ function deleteConfirmText(region, items) {
 }
 
 module.exports = {
-  LAYOUTS, BUILT_LAYOUTS, ICONS, REGION_CAP, NAME_MAX, MIGRATED_NAME, REGIONS_VERSION, GRID, STRINGS,
-  cleanRect, validateName, nextDefaultName, effectiveTheme, itemsOf, replaceRegionItems, moveItem,
+  LAYOUTS, BUILT_LAYOUTS, ICONS, REGION_CAP, ITEM_CAPS, NAME_MAX, MIGRATED_NAME, REGIONS_VERSION, GRID, STRINGS,
+  cleanRect, validateName, nextDefaultName, effectiveTheme, itemsOf, replaceRegionItems, moveItem, moveItemTo,
+  capacityOf, fullText, dropDecision,
   defaultGridRect, migrate, repairItems, pickOtherTheme, deleteConfirmText,
 };

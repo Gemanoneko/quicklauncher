@@ -301,6 +301,10 @@ function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null
     if (id) ctl.ack(id, seq);
   });
 
+  // --ql-test-hooks: a launch is recorded, never run (a self-test must not
+  // open an app window on Sergei's desktop). manager:test 'launches' reads it.
+  const testLaunches = [];
+
   ipcMain.handle('launch-app', async (e, filePath) => {
     if (typeof filePath !== 'string' || !filePath) return;
 
@@ -310,6 +314,10 @@ function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null
     const isProtocol = filePath.startsWith('shell:') || filePath.startsWith('steam://');
     const isKnown = !!matchedApp || isProtocol;
     if (!isKnown) return;
+    if (testHooks) {
+      testLaunches.push({ path: filePath, region: regionOf(e), at: Date.now() });
+      return;
+    }
 
     // Display name for error reporting (renderer surfaces this verbatim)
     const displayName = matchedApp ? matchedApp.name : filePath;
@@ -657,6 +665,13 @@ $apps | ConvertTo-Json -Depth 2
   onRegion('region:tile-menu', (id, a) => {
     if (typeof a.itemId === 'string') ctl.popupTileMenu(id, a.itemId, num(a.x), num(a.y));
   });
+  // A tile dragged out of its region (source page) and the slot it lands in (target page).
+  onRegion('region:tile-drag', (id, a) => ctl.tileDragFrom(id, {
+    phase: String(a.phase || ''), itemId: typeof a.itemId === 'string' ? a.itemId : '', x: num(a.x), y: num(a.y),
+  }));
+  onRegion('region:tile-drop', (id, a) => ctl.tileDropFrom(id, {
+    dragId: num(a.dragId), index: Number.isInteger(a.index) && a.index >= 0 ? a.index : Infinity,
+  }));
   onRegion('region:rename', (id, a) => ctl.rename(id, typeof a.name === 'string' ? a.name : ''));
   onRegion('region:cycle', (id, a) => { ctl.cycle(id, num(a.dir) < 0 ? -1 : 1); });
   onRegion('region:open-manager', (id, a) => {
@@ -700,6 +715,16 @@ $apps | ConvertTo-Json -Depth 2
       case 'describe': return { ok: true, regions: ctl.describe(), hidden: ctl.isHidden(), active: ctl.activeId, workArea: ctl.workArea(), managerVisible: !!(mgr.window && mgr.window.isVisible()) };
       case 'metrics': return { ok: true, ...ctl.metrics() };
       case 'move-item': return ctl.moveItemToRegion(String(a.itemId || ''), String(a.regionId || ''));
+      // M2: a stand-in work area and resume run the real display / resume
+      // handlers without touching the display; menus are recorded, not shown.
+      case 'set-work-area': ctl.setTestWorkArea(a.rect && typeof a.rect === 'object' ? a.rect : null); return { ok: true };
+      case 'resume': ctl.testResume(); return { ok: true };
+      case 'displace': return ctl.testDisplace(String(a.regionId || ''), num(a.dx), num(a.dy));
+      case 'set-cap': return ctl.setTestCap(String(a.regionId || ''), a.cap === null ? null : num(a.cap));
+      case 'menus': return { ok: true, menus: ctl.menuLog.slice() };
+      case 'menu-click': return ctl.menuClick(Array.isArray(a.path) ? a.path.map(num) : []);
+      case 'launches': return { ok: true, launches: testLaunches.slice() };
+      case 'tile-drag': return { ok: true, drag: ctl.tileDrag ? { sourceId: ctl.tileDrag.sourceId, targetId: ctl.tileDrag.targetId, dropping: ctl.tileDrag.dropping } : null };
       case 'toggle-all': ctl.toggleAll(); return { ok: true, hidden: ctl.isHidden() };
       case 'place': return ctl.place(String(a.regionId || ''), String(a.where || ''));
       case 'random-theme': return ctl.randomTheme(String(a.regionId || ''));

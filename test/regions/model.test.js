@@ -148,3 +148,38 @@ test('deleteConfirmText: spec 3.4 lines, empty region needs no box', () => {
   const mixed = M.deleteConfirmText(reg, [{ kind: 'moved' }, { kind: 'moved' }, {}]);
   assert.equal(mixed.detail, '2 shortcuts move back to the desktop.\n1 other shortcut is removed from QuickLauncher. The apps stay installed.');
 });
+
+// ── M2: between regions ────────────────────────────────────────────────────
+test('moveItemTo: lands at the slot among the target\'s items; everything else keeps its order', () => {
+  const apps = [
+    { id: 'a', regionId: 'r1' }, { id: 'x', regionId: 'r2' }, { id: 'b', regionId: 'r1' },
+    { id: 'y', regionId: 'r2' }, { id: 'z', regionId: 'r2' },
+  ];
+  const ids = (list, r) => list.filter((i) => i.regionId === r).map((i) => i.id);
+  assert.deepEqual(ids(M.moveItemTo(apps, 'a', 'r2', 0), 'r2'), ['a', 'x', 'y', 'z'], 'first');
+  assert.deepEqual(ids(M.moveItemTo(apps, 'a', 'r2', 2), 'r2'), ['x', 'y', 'a', 'z'], 'middle');
+  assert.deepEqual(ids(M.moveItemTo(apps, 'a', 'r2', 3), 'r2'), ['x', 'y', 'z', 'a'], 'after the last');
+  assert.deepEqual(ids(M.moveItemTo(apps, 'a', 'r2', 99), 'r2'), ['x', 'y', 'z', 'a'], 'past the end clamps');
+  assert.deepEqual(ids(M.moveItemTo(apps, 'a', 'r2', -4), 'r2'), ['a', 'x', 'y', 'z'], 'below 0 clamps');
+  const out = M.moveItemTo(apps, 'a', 'r2', 1);
+  assert.deepEqual(ids(out, 'r1'), ['b'], 'source keeps the rest in order');
+  assert.equal(out.length, apps.length, 'nothing lost or duplicated');
+  assert.equal(out.find((i) => i.id === 'a').regionId, 'r2');
+  assert.deepEqual(ids(M.moveItemTo(apps, 'b', 'r3', 0), 'r3'), ['b'], 'into an empty region');
+  assert.equal(M.moveItemTo(apps, 'nope', 'r2', 0), null);
+  assert.equal(apps[0].regionId, 'r1', 'input not modified');
+});
+
+test('capacityOf and dropDecision: Grid takes any number; a full Fan or Ring, the source, or nothing is refused', () => {
+  assert.equal(M.capacityOf('grid'), Infinity);
+  assert.equal(M.capacityOf('fan'), 10);
+  assert.equal(M.capacityOf('ring'), 12);
+  assert.deepEqual(M.dropDecision({ target: null }), { ok: false, reason: 'none' });
+  assert.equal(M.dropDecision({ target: { id: 'r1', layout: 'grid' }, sourceId: 'r1', count: 0 }).reason, 'self');
+  assert.equal(M.dropDecision({ target: { id: 'r2', layout: 'grid' }, sourceId: 'r1', count: 500 }).ok, true);
+  const full = M.dropDecision({ target: { id: 'r2', layout: 'ring' }, sourceId: 'r1', count: 12 });
+  assert.deepEqual([full.ok, full.reason, full.text], [false, 'full', 'FULL (12 max)']);
+  assert.equal(M.dropDecision({ target: { id: 'r2', layout: 'fan' }, sourceId: 'r1', count: 9 }).ok, true);
+  assert.equal(M.dropDecision({ target: { id: 'r2', layout: 'fan' }, sourceId: 'r1', count: 10 }).text, 'FULL (10 max)');
+  assert.equal(M.dropDecision({ target: { id: 'r2', layout: 'grid' }, sourceId: 'r1', count: 3, cap: 3 }).reason, 'full', 'explicit cap');
+});

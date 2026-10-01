@@ -1288,12 +1288,18 @@ function handleReorderMove(e) {
     reorderState.ghost = ghost;
 
     src.classList.add('tile-drag-source');
+    // Regions: the tile may be carried to another region (region.js).
+    if (window.qlTileDragOut) window.qlTileDragOut.start(reorderState);
   }
 
   // Move ghost to cursor (centered)
   const g = reorderState.ghost;
   g.style.left = (e.clientX - parseFloat(g.style.width)  / 2) + 'px';
   g.style.top  = (e.clientY - parseFloat(g.style.height) / 2) + 'px';
+
+  // Outside this window: the main process relays the drag to the region
+  // under the pointer (region.js), so nothing is reordered here.
+  if (window.qlTileDragOut && window.qlTileDragOut.move(e, reorderState)) return;
 
   // Find which tile the cursor is over (ghost has pointer-events:none)
   const el = document.elementFromPoint(e.clientX, e.clientY);
@@ -1311,7 +1317,7 @@ function handleReorderMove(e) {
   }
 }
 
-async function handleReorderUp() {
+async function handleReorderUp(e) {
   document.removeEventListener('mousemove', handleReorderMove);
   document.removeEventListener('mouseup', handleReorderUp);
   if (!reorderState) return;
@@ -1332,6 +1338,10 @@ async function handleReorderUp() {
   suppressNextClick = true;
   document.addEventListener('click', () => { suppressNextClick = false; }, { once: true, capture: true });
 
+  // Released outside this window: it lands in the region under the pointer,
+  // or the drag is cancelled and the tile stays (region.js).
+  if (window.qlTileDragOut && window.qlTileDragOut.end(e, state)) return;
+
   // Derive new order from DOM positions
   const allTiles = [...elAppGrid.querySelectorAll('.app-tile')];
   const newIndex = allTiles.indexOf(state.srcEl);
@@ -1349,6 +1359,7 @@ async function handleReorderUp() {
 function cancelReorder() {
   document.removeEventListener('mousemove', handleReorderMove);
   document.removeEventListener('mouseup', handleReorderUp);
+  if (window.qlTileDragOut) window.qlTileDragOut.cancel();
   if (!reorderState?.dragging) { reorderState = null; return; }
   reorderState.ghost?.remove();
   reorderState.srcEl.classList.remove('tile-drag-source');

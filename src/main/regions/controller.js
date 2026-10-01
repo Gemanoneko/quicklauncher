@@ -18,6 +18,9 @@ const INDEX_HTML = path.join(__dirname, '../../renderer/index.html');
 const PRELOAD = path.join(__dirname, '../preload.js');
 const WATCHDOG_MS = 1000;
 const SAVE_RECT_MS = 400;
+const DISPLAY_SETTLE_MS = 300;  // display events come in bursts
+const RESUME_SETTLE_MS = 1000;  // the work area is often not final the moment the PC wakes
+const DROP_REPLY_MS = 2000;     // a target page that does not answer a drop cancels it
 
 const sameRect = (a, b) => !!a && !!b && a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
 const menuLabel = (s) => String(s).replace(/&/g, '&&'); // Windows menus read & as a mnemonic
@@ -40,6 +43,14 @@ class RegionController extends EventEmitter {
     this._ticking = false;
     this._displayTimer = null;
     this.saveErrorPending = false;
+    this.tileDrag = null;      // a tile dragged out of its region (spec 5.3), see tileDragFrom
+    this._tileDragSeq = 0;
+    // --ql-test-hooks only: a stand-in work area (no display is changed), item
+    // caps per region, and native menus recorded instead of shown.
+    this._testWorkArea = null;
+    this._testCaps = new Map();
+    this.menuLog = [];
+    this._lastMenu = null;
   }
 
   // ── store accessors ────────────────────────────────────────────────────────
@@ -48,7 +59,7 @@ class RegionController extends EventEmitter {
   settings() { return this.store.get('settings') || {}; }
   apps() { return this.store.get('apps') || []; }
   primaryId() { const r = this.regions(); return r.length ? r[0].id : null; }
-  workArea() { return screen.getPrimaryDisplay().workArea; }
+  workArea() { return this._testWorkArea ? { ...this._testWorkArea } : screen.getPrimaryDisplay().workArea; }
   themes() { return [...this.validThemes]; }
 
   _setRegions(list) { this.store.set('regions', list); }
@@ -84,14 +95,26 @@ class RegionController extends EventEmitter {
     this.regions().forEach((r, i) => this._spawn(r, fitted[i]));
 
     this._watchdog = setInterval(() => this._tickAll(), WATCHDOG_MS);
-    const onDisplay = () => {
+    // Display changes and sleep/resume (spec 4.4): the home-layout rule in
+    // relayoutAll. A drag in flight is cancelled first (its coordinates
+    // belong to the old work area).
+    this._onDisplay = (reason = 'display change') => {
+      this._cancelGestures(reason);
       clearTimeout(this._displayTimer);
-      this._displayTimer = setTimeout(() => this.relayoutAll('display change'), 300);
+      this._displayTimer = setTimeout(() => this.relayoutAll(reason), DISPLAY_SETTLE_MS);
     };
-    screen.on('display-metrics-changed', onDisplay);
-    screen.on('display-added', onDisplay);
-    screen.on('display-removed', onDisplay);
-    try { powerMonitor.on('resume', () => setTimeout(() => this.relayoutAll('resume'), 1000)); } catch { /* noop */ }
+    this._onResume = () => {
+      this._cancelGestures('resume');
+      clearTimeout(this._resumeTimer);
+      this._resumeTimer = setTimeout(() => this.relayoutAll('resume'), RESUME_SETTLE_MS);
+    };
+    screen.on('display-metrics-changed', () => this._onDisplay());
+    screen.on('display-added', () => this._onDisplay());
+    screen.on('display-removed', () => this._onDisplay());
+    try {
+      powerMonitor.on('suspend', () => this._cancelGestures('suspend'));
+      powerMonitor.on('resume', () => this._onResume());
+    } catch { /* noop */ }
     if (this.testHooks) {
       this._metricsTimer = setInterval(() => this.log({ event: 'metrics', ...this.metrics() }), 10000);
     }
@@ -129,10 +152,17 @@ class RegionController extends EventEmitter {
     return region.layout === 'grid' ? { width: M.GRID.minWidth, height: M.GRID.minHeight } : { width: 0, height: 0 };
   }
 
+  // The rect the user last chose for a region: the saved one, or the one a
+  // move or resize just ended on while its save is still in the debounce.
+  _homeRect(region) {
+    const rt = this.rt.get(region.id);
+    return rt && rt.pendingSave ? rt.pendingSave.rect : region.rect;
+  }
+
   _fitAll() {
     const inner = P.innerArea(this.workArea());
     const regs = this.regions();
-    return P.relayout(regs.map((r) => r.rect), inner, regs.map((r) => this._minFor(r))).rects;
+    return P.relayout(regs.map((r) => this._homeRect(r)), inner, regs.map((r) => this._minFor(r))).rects;
   }
 
   _windowRectDip(region, shown) {
@@ -149,6 +179,7 @@ class RegionController extends EventEmitter {
     const rt = {
       id: region.id, shown: { ...(shown || region.rect) }, host: null, win: null, wc: null,
       ready: false, sentTheme: null, syncedSeq: this.latestSeq, windows: 0, drag: null, resize: null, saveTimer: null,
+      pendingSave: null,
     };
     this.rt.set(region.id, rt);
     rt.host = new RegionHost({
@@ -194,6 +225,8 @@ class RegionController extends EventEmitter {
       win.on('closed', () => {
         this.byWc.delete(wcId);
         if (rt.win === win) { rt.win = null; rt.wc = null; rt.ready = false; }
+        const t = this.tileDrag;
+        if (t && (t.sourceId === rt.id || t.targetId === rt.id)) this._cancelTileDrag('window closed', { notifySource: true });
       });
       let settled = false;
       win.once('ready-to-show', () => { settled = true; resolve(win); });
@@ -232,24 +265,60 @@ class RegionController extends EventEmitter {
     return [...this.rt.values()].filter((r) => r.id !== exceptId).map((r) => r.shown);
   }
 
+  /**
+   * Display change, sleep/resume (spec 4.4, the home-layout rule): every
+   * region is shown at its home rect fitted to the current work area
+   * (clamped, then moved off any overlap, Grid may shrink) and NOTHING is
+   * saved, so the same work area again brings the saved places back. Every
+   * window is re-applied even when its DIP rect did not change: a scale
+   * change moves the physical rect, and the shell may have moved our parent.
+   */
   relayoutAll(reason) {
+    this._cancelGestures(reason);
     const fitted = this._fitAll();
+    let moved = 0;
     this.regions().forEach((r, i) => {
       const rt = this.rt.get(r.id);
-      if (rt && !sameRect(rt.shown, fitted[i])) this._applyShown(rt, fitted[i]);
+      if (!rt) return;
+      if (!sameRect(rt.shown, fitted[i])) moved++;
+      this._applyShown(rt, fitted[i]);
     });
-    this.log({ event: 'relayout', reason, workArea: this.workArea() });
+    this.log({ event: 'relayout', reason, workArea: this.workArea(), moved });
   }
 
+  /**
+   * Stop every drag in flight: region moves and resizes, and a tile on its
+   * way to another region. The pages are told so they drop their own state.
+   */
+  _cancelGestures(reason) {
+    for (const rt of this.rt.values()) {
+      if (!rt.drag && !rt.resize) continue;
+      rt.drag = null;
+      rt.resize = null;
+      this._command(rt.id, 'cancel-drag');
+    }
+    if (this.tileDrag) this._cancelTileDrag(reason, { notifySource: true });
+  }
+
+  // A user move or resize ended: the rect AND the work area it was made on
+  // are taken now, so a display change inside the debounce cannot replace
+  // them with a fitted rect (spec 4.4: only the user changes the saved layout).
   _saveRectSoon(rt) {
+    const wa = this.workArea();
+    rt.pendingSave = { rect: { ...rt.shown }, home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height } };
     clearTimeout(rt.saveTimer);
     rt.saveTimer = setTimeout(() => {
       rt.saveTimer = null;
-      if (!this.region(rt.id)) return;
-      const wa = this.workArea();
-      this._updateRegion(rt.id, { rect: { ...rt.shown }, home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height } });
-      if (this.testHooks) this.log({ event: 'rect-saved', region: rt.id.slice(0, 8), rect: rt.shown });
+      this._writePendingRect(rt);
     }, SAVE_RECT_MS);
+  }
+
+  _writePendingRect(rt) {
+    const p = rt.pendingSave;
+    rt.pendingSave = null;
+    if (!p || !this.region(rt.id)) return;
+    this._updateRegion(rt.id, { rect: p.rect, home: p.home });
+    if (this.testHooks) this.log({ event: 'rect-saved', region: rt.id.slice(0, 8), rect: p.rect });
   }
 
   // ── renderer-facing: scope by sender ─────────────────────────────────────────
@@ -468,7 +537,9 @@ class RegionController extends EventEmitter {
     this.store.set('apps', this.apps().filter((a) => !(a && a.regionId === id)));
     this._setRegions(now.filter((r) => r.id !== id));
     const rt = this.rt.get(id);
-    if (rt) { clearTimeout(rt.saveTimer); rt.host.stop(); this.rt.delete(id); }
+    const t = this.tileDrag;
+    if (t && (t.sourceId === id || t.targetId === id)) this._cancelTileDrag('region deleted', { notifySource: true });
+    if (rt) { clearTimeout(rt.saveTimer); rt.pendingSave = null; rt.host.stop(); this.rt.delete(id); }
     if (this.activeId === id) this.activeId = this.primaryId();
     this._mirrorPrimaryTheme();
     this._pushThemes();
@@ -532,17 +603,135 @@ class RegionController extends EventEmitter {
     return { ok: true };
   }
 
-  moveItemToRegion(itemId, targetId) {
+  /** Item cap of a region (spec 2.7). Test hooks can set one to exercise the full path. */
+  _capOf(region) {
+    if (this.testHooks && this._testCaps.has(region.id)) return this._testCaps.get(region.id);
+    return M.capacityOf(region.layout);
+  }
+
+  _dropDecision(targetId, sourceId) {
+    const target = targetId ? this.region(targetId) : null;
+    if (!target) return M.dropDecision({ target: null });
+    return M.dropDecision({ target, sourceId, count: M.itemsOf(this.apps(), targetId).length, cap: this._capOf(target) });
+  }
+
+  /** Move a shortcut to another region (tile menu Move to, a tile dropped there). `index` among the target's items; default last. */
+  moveItemToRegion(itemId, targetId, index = Infinity) {
     const item = this.apps().find((a) => a && a.id === itemId);
     if (!item || !this.region(targetId) || item.regionId === targetId) return { ok: false };
     const from = item.regionId;
-    const next = M.moveItem(this.apps(), itemId, targetId);
+    const dec = this._dropDecision(targetId, from);
+    if (!dec.ok) return { ok: false, error: dec.text || dec.reason };
+    const next = M.moveItemTo(this.apps(), itemId, targetId, index);
     if (!next) return { ok: false };
     this.store.set('apps', next);
     this._pushItems(from);
     this._pushItems(targetId);
     this._managerChanged();
-    return { ok: true };
+    return { ok: true, index: M.itemsOf(next, targetId).findIndex((a) => a.id === itemId) };
+  }
+
+  // ── a tile dragged to another region (spec 5.3, U5) ──────────────────────
+  // The source page keeps the pointer (capture) and reports where it is, in
+  // its own client coordinates, only while it is outside the source window.
+  // The main process knows where every region is: it turns that into a
+  // desktop point, finds the region under it and has that page draw the drop
+  // slot and a copy of the tile (the source window clips its own ghost). On
+  // release the target page names the slot and the main process moves the
+  // item. A release on no region, in a gap or rim, or on a full region
+  // cancels: the tile stays where it was.
+  _tileTargets(sourceId) {
+    if (this.hidden) return [];
+    return [...this.rt.values()]
+      .filter((rt) => rt.id !== sourceId && rt.ready && rt.wc && !rt.wc.isDestroyed()
+        && (rt.host.mode === 'attached' || rt.host.mode === 'fallback'))
+      .map((rt) => ({ id: rt.id, rect: rt.shown }));
+  }
+
+  _pageToDesktop(id, x, y) {
+    const rt = this.rt.get(id);
+    const region = this.region(id);
+    if (!rt || !region || !Number.isFinite(x) || !Number.isFinite(y)) return null;
+    const w = this._windowRectDip(region, rt.shown);
+    return { x: w.x + x, y: w.y + y };
+  }
+
+  _desktopToPage(id, p) {
+    const rt = this.rt.get(id);
+    const region = this.region(id);
+    if (!rt || !region) return null;
+    const w = this._windowRectDip(region, rt.shown);
+    return { x: Math.round(p.x - w.x), y: Math.round(p.y - w.y) };
+  }
+
+  _sendPreview(id, msg) {
+    const rt = this.rt.get(id);
+    if (rt && rt.wc && !rt.wc.isDestroyed()) rt.wc.send('region:tile-drop-preview', msg);
+  }
+
+  _cancelTileDrag(reason, { notifySource = false } = {}) {
+    const t = this.tileDrag;
+    if (!t) return;
+    this.tileDrag = null;
+    clearTimeout(t.replyTimer);
+    if (t.targetId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id });
+    if (t.reply) t.reply({ ok: true, result: 'cancelled', reason });
+    if (notifySource) this._command(t.sourceId, 'cancel-tile-drag');
+    this.log({ event: 'tile-drag', result: 'cancelled', reason, item: String(t.itemId).slice(0, 8) });
+  }
+
+  /** From the source page. phase: start | move | end | cancel; x, y in the source page. */
+  tileDragFrom(id, { phase, itemId, x, y } = {}) {
+    if (phase === 'start') {
+      if (this.tileDrag) this._cancelTileDrag('replaced');
+      const item = this.apps().find((a) => a && a.id === itemId && a.regionId === id);
+      if (!item || !this.rt.has(id)) return { ok: false };
+      this.tileDrag = { id: ++this._tileDragSeq, sourceId: id, itemId, targetId: null, dropping: null, reply: null, replyTimer: null };
+      return { ok: true, dragId: this.tileDrag.id };
+    }
+    const t = this.tileDrag;
+    if (!t || t.sourceId !== id || t.dropping) return { ok: false };
+    if (phase === 'cancel') { this._cancelTileDrag('released in the source region'); return { ok: true }; }
+    const p = this._pageToDesktop(id, x, y);
+    const hitId = p ? P.regionAt(p, this._tileTargets(id)) : null;
+    const dec = this._dropDecision(hitId, id);
+    if (phase === 'move') {
+      if (t.targetId && t.targetId !== hitId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id });
+      const entering = hitId && hitId !== t.targetId;
+      t.targetId = hitId;
+      if (hitId) {
+        const item = this.apps().find((a) => a && a.id === t.itemId);
+        const msg = { phase: 'over', dragId: t.id, ...this._desktopToPage(hitId, p), rejected: dec.ok ? null : (dec.text || null) };
+        if (entering && item) msg.item = { name: String(item.name || ''), iconDataUrl: String(item.iconDataUrl || '') };
+        this._sendPreview(hitId, msg);
+      }
+      return { ok: true, over: hitId, rejected: dec.ok ? null : dec.reason };
+    }
+    if (phase === 'end') {
+      if (!dec.ok) { this._cancelTileDrag(dec.reason === 'full' ? 'full region' : 'not on a region'); return { ok: true, result: 'cancelled', reason: dec.reason }; }
+      if (t.targetId && t.targetId !== hitId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id });
+      t.targetId = hitId;
+      t.dropping = hitId;
+      // The target page names its slot (region:tile-drop); the source waits for the outcome.
+      return new Promise((resolve) => {
+        t.reply = resolve;
+        t.replyTimer = setTimeout(() => { if (this.tileDrag === t) this._cancelTileDrag('target page did not answer'); }, DROP_REPLY_MS);
+        this._sendPreview(hitId, { phase: 'drop', dragId: t.id, ...this._desktopToPage(hitId, p) });
+      });
+    }
+    return { ok: false };
+  }
+
+  /** From the target page: the slot the dropped tile goes to. */
+  tileDropFrom(id, { dragId, index } = {}) {
+    const t = this.tileDrag;
+    if (!t || t.id !== dragId || t.dropping !== id) return { ok: false };
+    this.tileDrag = null;
+    clearTimeout(t.replyTimer);
+    const res = this.moveItemToRegion(t.itemId, id, Number.isFinite(index) ? index : Infinity);
+    this.log({ event: 'tile-drag', result: res.ok ? 'moved' : 'refused', item: String(t.itemId).slice(0, 8), to: id.slice(0, 8), index: res.index });
+    if (t.reply) t.reply({ ok: true, result: res.ok ? 'moved' : 'cancelled', reason: res.ok ? null : res.error, index: res.index });
+    return res;
   }
 
   addItems(regionId, entries) {
@@ -588,6 +777,7 @@ class RegionController extends EventEmitter {
   isHidden() { return this.hidden; }
 
   hideAll() {
+    this._cancelGestures('hidden');
     this.hidden = true;
     for (const rt of this.rt.values()) {
       rt.host.setHidden(true);
@@ -694,7 +884,7 @@ class RegionController extends EventEmitter {
       { label: 'Settings…', click: () => this.manager && this.manager.open('settings') },
       { label: 'Hide all regions', click: () => this.hideAll() },
     ];
-    Menu.buildFromTemplate(tpl).popup({ window: rt.win, x: Math.round(x), y: Math.round(y) });
+    this._popup('region', rt, tpl, x, y);
   }
 
   popupTileMenu(id, itemId, x, y) {
@@ -706,11 +896,67 @@ class RegionController extends EventEmitter {
     const tpl = [
       { label: 'Rename', click: () => this._command(id, 'rename-tile', { itemId }) },
       others.length
-        ? { label: 'Move to', submenu: others.map((r) => ({ label: menuLabel(r.name), click: () => this.moveItemToRegion(itemId, r.id) })) }
+        ? {
+          label: 'Move to',
+          // A full Fan or Ring is listed but disabled (spec 9.2).
+          submenu: others.map((r) => ({ label: menuLabel(r.name), enabled: this._dropDecision(r.id, id).ok, click: () => this.moveItemToRegion(itemId, r.id) })),
+        }
         : { label: 'Move to', enabled: false },
       { label: 'Remove', click: () => this._command(id, 'remove-tile', { itemId }) },
     ];
+    this._popup('tile', rt, tpl, x, y, { itemId });
+  }
+
+  // Native menu at a point in the region page. With --ql-test-hooks it is
+  // recorded instead (the self-test never shows a menu); menuClick() runs
+  // an item of the last one through its real click handler.
+  _popup(kind, rt, tpl, x, y, extra = {}) {
+    if (this.testHooks) {
+      const view = (items) => items.filter((i) => i.type !== 'separator').map((i) => ({
+        label: i.label, enabled: i.enabled !== false, ...(i.type === 'checkbox' ? { checked: !!i.checked } : {}),
+        ...(i.submenu ? { submenu: view(i.submenu) } : {}),
+      }));
+      this._lastMenu = tpl.filter((i) => i.type !== 'separator');
+      this.menuLog.push({ kind, region: rt.id, x: Math.round(x), y: Math.round(y), items: view(tpl), ...extra, at: Date.now() });
+      if (this.menuLog.length > 50) this.menuLog.shift();
+      return;
+    }
     Menu.buildFromTemplate(tpl).popup({ window: rt.win, x: Math.round(x), y: Math.round(y) });
+  }
+
+  menuClick(path) {
+    let items = this._lastMenu;
+    let item = null;
+    for (const i of Array.isArray(path) ? path : []) {
+      item = items && items[i];
+      items = item && item.submenu ? item.submenu.filter((s) => s.type !== 'separator') : null;
+    }
+    if (!item || typeof item.click !== 'function' || item.enabled === false) return { ok: false };
+    item.click(item);
+    return { ok: true, label: item.label };
+  }
+
+  // ── test hooks: a stand-in work area and resume (no display is changed) ──
+  setTestWorkArea(rect) {
+    this._testWorkArea = rect ? { x: Math.round(rect.x), y: Math.round(rect.y), width: Math.round(rect.width), height: Math.round(rect.height) } : null;
+    this._onDisplay('test work area');
+  }
+
+  testResume() { this._onResume(); }
+
+  /** Put one region's window somewhere else WITHOUT changing its rect (proves a relayout re-applies every window). */
+  testDisplace(id, dx, dy) {
+    const rt = this.rt.get(id);
+    const region = this.region(id);
+    if (!rt || !region) return { ok: false };
+    const r = this._screenRect(region, rt.shown);
+    return { ok: rt.host.setScreenRect({ left: r.left + dx, top: r.top + dy, right: r.right + dx, bottom: r.bottom + dy }) };
+  }
+
+  setTestCap(id, cap) {
+    if (cap === null || cap === undefined) this._testCaps.delete(id);
+    else this._testCaps.set(id, Math.max(0, Math.floor(cap)));
+    return { ok: true };
   }
 
   // ── Manager view of the state ─────────────────────────────────────────────
@@ -739,7 +985,8 @@ class RegionController extends EventEmitter {
     return this.regions().map((r) => {
       const rt = this.rt.get(r.id);
       return {
-        id: r.id, name: r.name, saved: r.rect, shown: rt ? rt.shown : null, ready: rt ? rt.ready : false,
+        id: r.id, name: r.name, saved: r.rect, home: r.home, pendingSave: rt ? rt.pendingSave : null,
+        shown: rt ? rt.shown : null, ready: rt ? rt.ready : false, dragging: rt ? !!(rt.drag || rt.resize) : false,
         windows: rt ? rt.windows : 0, host: rt ? rt.host.describe() : null,
         windowDip: rt ? this._windowRectDip(r, rt.shown) : null,
         screenRect: rt ? this._screenRect(r, rt.shown) : null,
@@ -765,6 +1012,9 @@ class RegionController extends EventEmitter {
   releaseAll() {
     clearInterval(this._watchdog);
     clearInterval(this._metricsTimer);
+    clearTimeout(this._displayTimer);
+    clearTimeout(this._resumeTimer);
+    this._cancelTileDrag('quit');
     this._watchdog = null;
     let released = 0;
     for (const rt of this.rt.values()) {
@@ -778,11 +1028,9 @@ class RegionController extends EventEmitter {
   /** Write rect saves still inside their 400 ms debounce (quit paths call this before store.flush). */
   flushPendingRects() {
     for (const rt of this.rt.values()) {
-      if (!rt.saveTimer) continue;
       clearTimeout(rt.saveTimer);
       rt.saveTimer = null;
-      const wa = this.workArea();
-      this._updateRegion(rt.id, { rect: { ...rt.shown }, home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height } });
+      this._writePendingRect(rt);
     }
   }
 }

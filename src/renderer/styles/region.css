@@ -48,6 +48,24 @@ body.region.region-active #app::before { border-color: var(--border-h); }
 body.region.region-snapped #app::before { border-color: var(--accent-c); }
 body.region.region-blocked #app::before { border-color: var(--accent-m); }
 
+/* A tile carried here from another region (spec 2.1 drop target states):
+   valid = 2 px --accent-c outline on the region box and a dashed slot at the
+   nearest position; rejected (full) = the same outline in --accent-m, with
+   the FULL text in the banner (region.js). */
+body.region.tile-drop-valid #app::before { border-width: 2px; border-color: var(--accent-c); }
+body.region.tile-drop-rejected #app::before { border-width: 2px; border-color: var(--accent-m); }
+#app-grid .app-tile.drop-slot {
+  border: 2px dashed var(--accent-c) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+#app-grid .app-tile.drop-slot::before,
+#app-grid .app-tile.drop-slot::after { display: none !important; }
+#app-grid .app-tile.drop-slot > * { visibility: hidden; }
+/* The slot shows where the tile lands, so the empty-region hint steps aside. */
+body.region.tile-drop-preview #drop-hint { display: none; }
+
 /* After a rebuild (Explorer restart) the entrance fade does not replay. */
 body.region.no-entrance #app-entrance { display: none !important; animation: none !important; }
 

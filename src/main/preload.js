@@ -39,6 +39,10 @@ const INVOKE_CHANNELS = new Set([
   'region:rename',
   'region:cycle',
   'region:open-manager',
+  // A tile dragged to another region: the source reports the pointer, the
+  // target names the slot it dropped into.
+  'region:tile-drag',
+  'region:tile-drop',
 ]);
 
 const ON_CHANNELS = new Set([
@@ -60,6 +64,8 @@ const ON_CHANNELS = new Set([
   'region:command',
   'region:items-changed',
   'region:reset-view',
+  // Drop target: show the slot and a copy of the tile, clear it, or drop.
+  'region:tile-drop-preview',
 ]);
 
 contextBridge.exposeInMainWorld('api', {

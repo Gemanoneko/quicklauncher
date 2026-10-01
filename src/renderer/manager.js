@@ -480,8 +480,11 @@
       ['F6 / SHIFT+F6', 'Next / previous region'],
       ['F2', 'Rename the focused tile (edit mode) or region name'],
       ['DELETE', 'Remove the focused tile (edit mode)'],
+      ['CTRL+ARROWS', 'Move the focused tile one place (edit mode)'],
+      ['MENU / SHIFT+F10', 'Tile menu (edit mode); region menu (name focused)'],
       ['ALT+ARROWS', 'Nudge the region 8 px (name focused); with SHIFT 32 px'],
       ['DRAG HEADER', 'Move the region; hold ALT to skip snapping'],
+      ['DRAG A TILE', 'Reorder it, or drop it on another region'],
       ['RIGHT-CLICK', 'Edit mode; on the header: region menu'],
       ['?', 'This list'],
     ];

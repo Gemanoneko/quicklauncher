@@ -1,6 +1,6 @@
 # QuickLaunch regions: tech plan v1 (Ender, 2026-10-01)
 
-Status: plan for the regions build. Milestone 1 is built (uncommitted) on `wip/regions`, cut from `wip/regions-spike` (`bfc5887`) in the worktree `C:\Antigravity Projects\QuickLaunch-regions-spike`.
+Status: plan for the regions build. Milestone 1 is built and committed (`300b733`) on `wip/regions`, cut from `wip/regions-spike` (`bfc5887`) in the worktree `C:\Antigravity Projects\QuickLaunch-regions-spike`. Milestone 2 is built, uncommitted (§6).
 Inputs: Judy's `QuickLaunch_Regions_UXSpec_2026-10-01.md` (all defaults accepted by Sergei, Q1 to Q11), `QuickLaunch_Regions_Layouts_2026-10-01.svg`, Makoto's `Team/Research/QuickLaunch_Regions_2026-09-30.md`, the spike note `QuickLaunch_RegionsSpike_2026-09-30.md` and Sergei's spike run log of 2026-10-01 (6/6 PASS).
 
 Sergei's defaults, as built: Ctrl+Space toggles (Q1); Match all off reverts to each region's own theme (Q2); a full Fan or Ring blocks (Q3); deleting a region removes its reference shortcuts and moves its desktop files back (Q4); `.url` accepted (Q5); filter on the active region (Q6); built-in glyphs (Q7); quotes in Grid only (Q8); random theme re-rolls all regions (Q9); icons under a region stay hidden (Q10); an `.exe` is added by reference, never moved (Q11).
@@ -127,7 +127,7 @@ Goal: a `.lnk` or `.url` that sits directly in a Desktop folder moves into a Qui
 | # | Name | Sergei can | Proves (spec 11) | Size |
 |---|---|---|---|---|
 | **M1** | **Regions foundation (Grid)** | Use today's grid as region 1 on the desktop layer, under his windows, through Win+D and an Explorer restart. Create more Grid regions (tray or Manager), move them by the header, resize from the rim, rename, set a theme per region or Match all, move tiles between regions with the tile menu, delete a region. Manager for regions and settings. Ctrl+Space hides or shows all. | **U1** real keys (type-to-filter, rename in the handle, F6), **U3** script move and resize, **U4** native menus and boxes for a desktop child, **U6** several regions (memory and CPU measured at 8). | built |
-| M2 | Between regions | Drag a tile from one region to another (target slot plus a copy of the tile under the pointer, main process relays the drag); a drop on empty desktop or a full region cancels; Ctrl+Arrow, Delete, Menu key on tiles. Display changes and sleep/resume follow the home-layout rule. | **U5** (region to region), **U7** | M |
+| M2 | Between regions | Drag a tile from one region to another (target slot plus a copy of the tile under the pointer, main process relays the drag); a drop on empty desktop or a full region cancels; Ctrl+Arrow, Delete, Menu key on tiles. Display changes and sleep/resume follow the home-layout rule. | **U5** (region to region), **U7** | built (§6) |
 | M3 | Desktop files move in | Drop desktop shortcuts on a region: they leave the desktop and come back with ↩, region delete or Move all back. Moved shortcuts section in the Manager. `.url` accepted. | **U5** (desktop icons onto a region), **U8** | L |
 | M4 | Column and Row | Switch a region to Column or Row: size follows content, scrolls past 90%, compact header or leading cell, edit cluster; layout switch keeps the anchor and finds room. Gallery shots of all 101 themes in both. | | M |
 | M5 | Fan and Ring | Fan (max 10, four directions) and Ring (max 12) from the geometry in spec 2.7 (unit-tested against Judy's table); hub with name, ⋯ and edit cluster; chips dim for the filter; refusals at the cap. Transparent parts click through. | **U2** | L |
@@ -179,3 +179,63 @@ Bug found by the self-test and fixed: `start()` and the first watchdog tick coul
 3. A rejected rename in the header shows the `--accent-m` border and the error as the field's tooltip; there is no room for a line below the field in a 40 px header. The Manager field shows the line below as specified.
 4. The Manager's layout select and + NEW REGION offer Grid only until M4/M5.
 5. The 16 region glyphs are simple line drawings made for M1; they need Judy's review.
+
+---
+
+## 6. M2 as built
+
+**Scope:** spec 5.3 (a tile dragged to another region: slot, copy of the tile, cancel rules; tile menu Move to with a full region disabled), 2.1 drop-target states (valid, rejected) and the reflow animation, 7.4 tile keys (Ctrl+Arrow, Delete, Menu key and Shift+F10), 4.4 display changes and sleep/resume. Proves **U5** (region to region) and **U7** as far as a self-test can (see the end of this section). Not in M2: a tile dragged onto the desktop and desktop icons dropped on a region (M3), Column, Row, Fan and Ring (M4, M5).
+
+**How the drag works**
+- The source keeps today's drag-to-reorder (mouse capture, today's ghost). `app.js` got four one-line hooks; the rest lives in `region.js`.
+- While the pointer is outside the source window, the source sends its page coordinates to the main process (one call in flight, the newest position wins). The main process adds the source window's DIP origin and hit-tests the other regions' panel rects (`placement.regionAt`; a Grid's rim and the 12 px gaps count as desktop). It sends the region under the pointer `region:tile-drop-preview` (`over`, `leave`, `drop`); the tile's name and icon go once, on entering.
+- The target draws the 2 px `--accent-c` outline, a dashed slot at the nearest position and a copy of the tile under the pointer (today's drag ghost, built from its own tile markup). The slot index (`tile-order.js`) takes the row nearest the pointer, then the nearest tile in it, before or after it by its centre; while the pointer is on the slot it stays, so the reflow cannot make it jump. Tiles reflow with a 120 ms ease, off under reduced motion.
+- On release the main process cancels unless the point is on another region with room. Otherwise it asks the target page for the slot (`region:tile-drop`), moves the item there (`model.moveItemTo`), sends both pages their items and then answers the source. A target that does not answer within 2 s cancels.
+- A full region (Fan 10, Ring 12; a Grid is never full) shows the outline in `--accent-m` and `FULL (n max)` in its banner, and the release cancels; the tile menu's Move to lists it disabled. In M2 this is only reachable through the `set-cap` test hook.
+- Hide all, a display change, sleep, a source or target window closing, or a deleted region cancel the drag; the source is told (`cancel-tile-drag`) and restores its order.
+
+**Tile keys:** Ctrl+Arrow in edit mode moves the focused tile one place among the visible tiles (Left or Up earlier, Right or Down later), keeps the focus on it and saves. Delete (from M1) now leaves the focus on the tile that takes its place. The Menu key and Shift+F10 (from M1) open the tile menu once: the `contextmenu` event Chromium sends after the key is skipped for 800 ms (M1 would have opened a second menu). The Manager's cheat-sheet lists Ctrl+Arrows, Menu / Shift+F10 and dragging a tile.
+
+**Display changes and sleep/resume (home-layout rule)**
+- Every relayout re-applies every window, not only the regions whose DIP rect changed: a scale change moves the physical rect, and the shell may move our parent.
+- A move or resize takes its rect and its work area when it ends. The 400 ms save writes those, and a relayout inside that debounce uses them. M1 read `rt.shown` when the timer fired, so a display change inside the debounce could save a fitted rect or move the region back to its old place.
+- A drag in flight (region move, resize, tile) is cancelled on a display change, on sleep and on resume.
+- When regions still overlap after the fit, every region shrinks a step (never below its minimum) and the fit runs again (`placement.relayout`). The first pass is unchanged, so on the display the layout was saved on, the saved rects come back exactly. 8 Grids on an 800 x 600 stand-in: 6 overlapping pairs in M1, none now. Worst case 45 ms of main-thread time, once per display change.
+- Resume: relayout 1 s after `resume`, as in M1; display events that follow run it again.
+
+**Files**
+
+| Area | Files |
+|---|---|
+| Main | `regions/controller.js` (drag relay, full check, display and resume rules, test hooks), `regions/model.js` (`moveItemTo`, `capacityOf`, `dropDecision`), `regions/placement.js` (`regionAt`, the shrink-all retry), `ipc.js` (`region:tile-drag`, `region:tile-drop`, test hooks), `preload.js` (3 channels) |
+| Renderer | `tile-order.js` (new, pure: slot index, Ctrl+Arrow order), `region.js` (source hooks, drop target, keys), `app.js` (4 hooks in drag-to-reorder, `handleReorderUp(e)`), `index.html` (one script tag), `styles/region.css` (outline, slot), `manager.js` (cheat-sheet rows) |
+| Tests | `test/regions/controller.test.js` and `tile-order.test.js` (new), `model.test.js`, `placement.test.js`; `scripts/regions-selftest.mjs` (M2 section) |
+| Try-it | `scripts/tryit-regions.mjs` (M2 steps, including display and sleep) |
+
+**Test hooks added (`--ql-test-hooks` only, inert otherwise):** native menus are recorded, never shown (`menus`; `menu-click` runs an item's real click handler); `launch-app` records instead of launching (`launches`); a stand-in work area runs the real display-change handler without touching the display (`set-work-area`); `resume` runs the real resume handler; `displace` moves one window without changing its rect; `set-cap` sets a region's item cap; `tile-drag` reads the drag state.
+
+**Measured (2026-10-01, `electron-builder --win --dir` build of this tree, through `scripts/qa/quicklaunch-safe-launch.mjs`, 5120 x 1392 DIP work area at 150%)**
+
+| Run | Result |
+|---|---|
+| Unit tests (`npm run test:regions`, node:test pass count) | 55/55: 31 from M1, 24 for M2. `controller.test.js` runs the real controller with `electron` and the desktop host stubbed. |
+| Unit positive control (scratch mutation runner on copies of `src/` and `test/`) | 12/12 mutants caught: each M2 rule broken on its own fails at least one test. Before that, the slot test found a real bug: a drop in the empty cells after the last tile landed before the last tile. |
+| Self-test, synthetic seed | 64/64 (42 from M1, 22 for M2). |
+| Self-test, copy of the real data file | 64/64; the real file's size and mtime unchanged. |
+| Self-test, `--probe` | 51/64. M1's 2 probes, plus 9 M2 probes: hidden slot, wrong half of the tile, release on a region, no cap, Ctrl+Arrow outside edit mode, late `contextmenu`, Place on the small display, no resume, no display change. They fail 11 M2 checks: the missing cap fails 2, and Place on the small display also fails "display back", since that rect now meets region 1's home. Nothing else fails. |
+| Self-test, `--fallback` | 64/64 once, 63/64 twice: the foreground check saw our process's window in front (11 and 45 samples; in the run with diagnostics, from boot, before any M2 step). See the finding below. |
+| Foreground (attached runs) | Sampled every 500 ms in every run: never ours, never the desktop. |
+
+**Not provable without real input (Sergei's try-it, `node scripts/tryit-regions.mjs`):** a real pointer drag between two desktop-child windows (the self-test dispatches DOM mouse events inside the source page; the relay, hit test, preview, drop and data are real), that mouse moves outside the source window still reach it while the button is down, the real Menu key's follow-up `contextmenu`, a real resolution or scale change, and real sleep and resume.
+
+**Build workaround:** the contrast gate fails on 13 old themes on this branch, and `npm run build` runs it as `prebuild`. M2 was built with `node scripts/clean-dist.js && npx electron-builder --win --dir --publish never`, which runs no npm lifecycle hook. The themes were not touched.
+
+**Deviations and choices for Judy**
+1. The slot is a 2 px dashed `--accent-c` box the size of a tile; the spec gives no colour.
+2. In an empty Grid the drop hint hides while a slot shows (they would overlap).
+3. The copy under the pointer is today's drag ghost (0.93 opacity, 1.1 scale, 2 degree tilt), since spec 2.1 keeps today's ghost; "translucent" in 5.3 may mean lighter.
+4. Shift+F10 also opens the tile menu (5.3 names only the Menu key; 7.4 pairs the two for the region menu).
+5. Ctrl+Up and Ctrl+Down move one place, like Left and Right ("one place earlier or later"), not one row.
+6. The reflow animation runs in the drop target only; today's in-region reorder still moves tiles without one.
+
+**Finding outside M2 (M1 fallback path):** fallback region windows (`--ql-no-desktop-layer`, or no desktop for 10 s) are ordinary activatable top-level windows just above the desktop. In 2 of 3 fallback self-test runs our window was in front for 5 to 22 s; in the run with diagnostics this started at boot, before any M2 step. The likely cause is Windows activating the next window in z-order when the window above it closes or minimises (Sergei was using the PC during the runs). Candidate fix: `WS_EX_NOACTIVATE` on fallback windows, plus explicit activation on a click so keys still arrive. That changes fallback keyboard behaviour, so it waits for a decision. Fallback self-test runs are paused until then, because each one can take focus.

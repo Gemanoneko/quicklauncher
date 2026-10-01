@@ -257,10 +257,34 @@ function placeAt(where, r, inner, others) {
  * Display change (spec 4.4): fit every region on the current area without
  * touching what is saved. Regions are taken in order (primary first); each is
  * clamped (Grid may shrink to its minimum), then moved to the nearest free
- * spot if it overlaps one already placed. Returns rects in input order; a
- * region with no room anywhere keeps its clamped rect (overlap is reported).
+ * spot if it overlaps one already placed. If some region still finds no
+ * room, every region shrinks a step (never below its minimum) and the fit
+ * runs again, so a small display shows all of them apart when they can fit
+ * at all. The first pass is the plain fit, so on the display the layout was
+ * saved on, the saved rects come back unchanged. Returns rects in input
+ * order; a region with no room anywhere keeps its clamped rect (overlap is
+ * reported).
  */
 function relayout(rects, inner, mins) {
+  const minOf = (i) => (mins && mins[i]) || { width: 0, height: 0 };
+  let res = relayoutOnce(rects, inner, mins);
+  let scale = 1;
+  while (res.overlaps) {
+    const atMin = rects.every((r, i) => Math.round(r.width * scale) <= minOf(i).width && Math.round(r.height * scale) <= minOf(i).height);
+    if (atMin) break;
+    scale *= 0.85;
+    const smaller = rects.map((r, i) => ({
+      ...r,
+      width: Math.max(minOf(i).width, Math.round(r.width * scale)),
+      height: Math.max(minOf(i).height, Math.round(r.height * scale)),
+    }));
+    const next = relayoutOnce(smaller, inner, mins);
+    if (next.overlaps <= res.overlaps) res = next;
+  }
+  return res;
+}
+
+function relayoutOnce(rects, inner, mins) {
   const placed = [];
   const out = [];
   let overlaps = 0;
@@ -285,8 +309,23 @@ function relayout(rects, inner, mins) {
   return { rects: out, overlaps };
 }
 
+/**
+ * Which region's visible box holds `point` (spec 5.3 drop target)? `entries`
+ * is [{ id, rect }] with PANEL rects, so a Grid's invisible resize rim and the
+ * 12 px gap count as empty desktop. Left and top edges are inside, right and
+ * bottom edges are not. Returns the id or null.
+ */
+function regionAt(point, entries) {
+  if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) return null;
+  for (const e of entries || []) {
+    const r = e && e.rect;
+    if (r && point.x >= r.x && point.x < right(r) && point.y >= r.y && point.y < bottom(r)) return e.id;
+  }
+  return null;
+}
+
 module.exports = {
   GAP, MARGIN, SNAP,
   innerArea, tooClose, inside, fits, clampInto, findFree, placeNew,
-  moveConstrained, snap, dragStep, resizeStep, placeAt, relayout,
+  moveConstrained, snap, dragStep, resizeStep, placeAt, relayout, regionAt,
 };

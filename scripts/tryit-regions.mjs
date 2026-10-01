@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * tryit-regions.mjs: Sergei's try-it for the regions build (M1).
+ * tryit-regions.mjs: Sergei's try-it for the regions build (M2: between regions).
  *
  *   node "C:\Antigravity Projects\QuickLaunch-regions-spike\scripts\tryit-regions.mjs"
  *
@@ -42,21 +42,38 @@ seed.settings = { ...(seed.settings || {}), startWithWindows: false, globalHotke
 writeFileSync(join(profile, 'quicklauncher-data.json'), `${JSON.stringify(seed, null, 2)}\n`);
 
 console.log(`
-QuickLaunch regions, try-it 1 (${seed.apps.length} of your shortcuts, copied; your real data is not touched)
+QuickLaunch regions, try-it 2: between regions (${seed.apps.length} of your shortcuts, copied;
+your real data is not touched)
 
-Your grid is now region "QUICK.LAUNCH", on the desktop behind your windows.
 If your normal QuickLauncher is open, hide it first. The test one has its own
-tray icon (its menu has "Regions..." and "New region"). Hotkey: ${HOTKEY}.
+tray icon. Hotkey: ${HOTKEY}. The run closes by itself after 5 minutes; run
+this again for the steps you did not reach.
 
- 1. Win+D: the region stays. Click it, type a few letters: tiles filter.
- 2. Drag its header to move it. Drag an edge or corner to resize it.
- 3. Tray > New region > Grid (twice). Drag them around: they never overlap.
- 4. Click the region's ... button: the region menu opens. Try Rename and Place.
- 5. Right-click a tile (edit mode), right-click it again: Move to > a region.
- 6. ${HOTKEY}: all regions hide; again: they come back.
- 7. Task Manager > Windows Explorer > Restart: regions come back in ~1 s.
- 8. Tray > Regions...: the Manager. Rename, icon, theme, Match all, delete.
- 9. Tray > Quit QuickLauncher. (It closes by itself after 5 minutes.)
+Drag between regions
+ 1. Tray > New region > Grid. Drag a tile from QUICK.LAUNCH onto the new
+    region and hold it there: the new region gets a bright 2 px border, a
+    dashed slot where the tile will land, and a copy of the tile under the
+    pointer. Move along its tiles: the slot follows. Let go: the tile is there.
+ 2. Drag a tile out and let go on empty desktop, or in the gap between two
+    regions: nothing moves, nothing launches.
+ 3. Drag a tile within its own region: it reorders, as before.
+
+Keys on tiles (edit mode)
+ 4. Right-click inside a region (not on its header) for edit mode. Click an
+    empty spot in it, then press Right arrow until a tile has the focus ring.
+ 5. Ctrl+Right / Ctrl+Left: the tile moves one place. Menu key (or
+    Shift+F10): ONE tile menu opens; Move to sends it to another region.
+    Delete: the tile goes and the focus ring moves to the next tile.
+
+Display and sleep (the home-layout rule)
+ 6. Settings > System > Display: pick a smaller resolution, Keep changes.
+    The regions squeeze onto the screen without overlapping (Grids may
+    shrink). Change it back: every region returns exactly where it was.
+    Optional: the same with Scale (150% to 125% and back), or with the
+    taskbar moved to another edge and back.
+ 7. Start > Power > Sleep. Wake the PC: the regions are where they were.
+
+ 8. Tray > Quit QuickLauncher.
 `);
 
 const guard = spawn(process.execPath, [GUARD, '--exe', EXE, '--profile', profile, '--timeout', String(TIMEOUT), '--', '--ql-no-update-check'],
@@ -67,14 +84,21 @@ const stopGuard = () => { try { guard.kill('SIGINT'); } catch { /* gone */ } };
 process.on('SIGINT', stopGuard);
 const code = await new Promise((r) => guard.on('exit', (c) => r(c)));
 
-// What the run did, from the app's own log: desktop layer, rebuilds, regions.
+// What the run did, from the app's own log.
 let log = '';
 try { log = readFileSync(join(profile, 'ql-safe-launch.log'), 'utf8'); } catch { /* none */ }
 const ev = log.split(/\r?\n/).filter((l) => l.startsWith('[regions] ')).map((l) => { try { return JSON.parse(l.slice(10)); } catch { return null; } }).filter(Boolean);
 const recovered = ev.filter((e) => e.event === 'mode' && e.recovered).map((e) => e.recoveredMs);
 const fallback = ev.filter((e) => e.event === 'mode' && e.to === 'fallback').length;
 const created = ev.filter((e) => e.event === 'region-created').length;
+const drops = ev.filter((e) => e.event === 'tile-drag');
+const moved = drops.filter((e) => e.result === 'moved').length;
+const cancelled = drops.filter((e) => e.result === 'cancelled').length;
+const relayouts = ev.filter((e) => e.event === 'relayout');
+const byReason = relayouts.reduce((m, e) => { m[e.reason] = (m[e.reason] || 0) + 1; return m; }, {});
 console.log(out.trim());
-console.log(`\nRegions created: ${created}. Back on the desktop after a loss: ${recovered.length ? recovered.map((m) => `${m} ms`).join(', ') : 'no loss seen'}. Fallback windows: ${fallback}.`);
+console.log(`\nRegions created: ${created}. Tiles dropped on another region: ${moved}; drags cancelled: ${cancelled}.`);
+console.log(`Display/sleep re-layouts: ${relayouts.length ? Object.entries(byReason).map(([k, v]) => `${k} ${v}`).join(', ') : 'none seen'}.`);
+console.log(`Back on the desktop after a loss: ${recovered.length ? recovered.map((m) => `${m} ms`).join(', ') : 'no loss seen'}. Fallback windows: ${fallback}.`);
 console.log(`Log: ${join(profile, 'ql-safe-launch.log')}`);
 process.exit(code || 0);

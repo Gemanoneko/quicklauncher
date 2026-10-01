@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * regions-selftest.mjs: M1 self-test of the packaged regions build.
+ * regions-selftest.mjs: M1 + M2 self-test of the packaged regions build.
  *
  *   npm run selftest:regions -- [--guard <quicklaunch-safe-launch.mjs>] [--exe <QuickLauncher.exe>]
  *                               [--seed <data file to copy>] [--port 9341] [--timeout 240]
@@ -9,15 +9,19 @@
  * (scripts/qa/quicklaunch-safe-launch.mjs) on a fresh profile in %TEMP%, with
  * --ql-test-hooks (the Manager opens hidden, never shown or focused) and a
  * remote-debugging port. It then drives the pages over CDP with
- * Runtime.evaluate only: no OS input, no synthetic clicks or keys, no native
- * menus or message boxes. The foreground window is sampled the whole time
- * (koffi, read-only) and must never become ours or the desktop because of us.
+ * Runtime.evaluate only: no OS input. M2's tile drags and keys are DOM events
+ * dispatched inside a page; native menus and app launches are recorded by
+ * --ql-test-hooks, never shown or run; no message box is opened. The display
+ * is never changed (a stand-in work area runs the display-change handler).
+ * The foreground window is sampled the whole time (koffi, read-only) and must
+ * never become ours or the desktop because of us.
  *
  * --seed copies a data file into the profile (the source is only read) and
  * forces the guard's safe settings (startWithWindows false, globalHotkey null,
  * randomTheme false). Without --seed a synthetic library is used.
  * --probe injects an uncaught error and an overlapping button, to prove the
- * error and hit-area checks can fail. Exit 0 when every check passes.
+ * error and hit-area checks can fail, plus the M2 faults and wrong inputs
+ * listed in m2Checks. Exit 0 when every check passes.
  */
 import { spawn } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -65,7 +69,7 @@ if (!existsSync(EXE)) { console.error(`selftest: no build at ${EXE} (npm run pac
 // ── results ─────────────────────────────────────────────────────────────────
 const results = [];
 function check(name, ok, evidence) {
-  results.push({ name, ok: !!ok, evidence });
+  results.push({ name, ok: !!ok, evidence, at: Date.now() });
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${evidence !== undefined ? `  | ${typeof evidence === 'string' ? evidence : JSON.stringify(evidence)}` : ''}`);
 }
 
@@ -125,7 +129,7 @@ const guardDone = new Promise((r) => guard.on('exit', (code) => r(code)));
 let ourPid = null;
 const fgSamples = [];
 const fgStart = fg ? fg() : null;
-const fgTimer = fg ? setInterval(() => fgSamples.push(fg()), 500) : null;
+const fgTimer = fg ? setInterval(() => fgSamples.push({ ...fg(), at: Date.now() }), 500) : null;
 
 // ── tiny CDP client ─────────────────────────────────────────────────────────
 async function targets() {
@@ -456,6 +460,9 @@ async function run() {
     console.log(`shots: ${SHOTS}`);
   }
 
+  // ── M2: between regions, tile keys, display change and resume ────────────
+  await m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner });
+
   // Delete an empty region (no confirm box for an empty region)
   const lastId = ids[ids.length - 1];
   const del = await mgr.eval(`window.api.invoke('manager:delete-region', ${JSON.stringify(lastId)})`);
@@ -484,6 +491,316 @@ async function run() {
   await mgr.eval(`window.api.invoke('manager:test', 'quit')`).catch(() => {});
 }
 
+// ── M2 checks ───────────────────────────────────────────────────────────────
+// Tile drags are DOM mouse events dispatched inside the source page (the same
+// listeners a real drag reaches; no OS input). The main process relays them
+// to the target page for real. Menus and launches are recorded by the app's
+// --ql-test-hooks instead of being shown or run. The display is never
+// changed: a stand-in work area runs the app's real display-change handler.
+// --probe adds 9 faults or wrong inputs here; exactly those 9 checks must fail.
+async function m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner }) {
+  const T = (op, arg = {}) => mgr.eval(`window.api.invoke('manager:test', ${JSON.stringify(op)}, ${JSON.stringify(arg)})`);
+  const desc = () => T('describe');
+  const reg = (d, id) => d.regions.find((r) => r.id === id);
+  const SIM = `window.__qlSim = window.__qlSim || (() => {
+    const fire = (type, x, y, el) => (el || document).dispatchEvent(new MouseEvent(type, { clientX: x, clientY: y, button: 0, buttons: type === 'mouseup' ? 0 : 1, bubbles: true, cancelable: true, view: window }));
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const tiles = () => [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')];
+    return {
+      press(index) { const t = tiles()[index]; if (!t) return null; const r = t.getBoundingClientRect(); this.x = r.left + r.width / 2; this.y = r.top + r.height / 2; fire('mousedown', this.x, this.y, t); this.x += 8; this.y += 8; fire('mousemove', this.x, this.y); return t.dataset.id; },
+      async moveTo(x, y, steps = 6) { const x0 = this.x, y0 = this.y; for (let i = 1; i <= steps; i++) { this.x = x0 + (x - x0) * i / steps; this.y = y0 + (y - y0) * i / steps; fire('mousemove', this.x, this.y); await wait(30); } },
+      release() { fire('mouseup', this.x, this.y); return true; },
+      order() { return tiles().map((t) => t.dataset.id); },
+      key(key, mods = {}) { const el = document.activeElement || document.body; el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...mods })); return document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.id || null : null; },
+      focusTile(index) { const t = tiles()[index]; if (t) t.focus(); return !!t && document.activeElement === t; },
+    };
+  })(); true`;
+  const PREVIEW = `(() => { const s = document.querySelector('#app-grid .drop-slot'); const r = s && s.getBoundingClientRect();
+    const all = [...document.querySelectorAll('#app-grid .app-tile')];
+    return { slot: !!s, slotW: r ? Math.round(r.width) : 0, slotH: r ? Math.round(r.height) : 0, slotIndex: s ? all.indexOf(s) : -1,
+      ghost: !!document.querySelector('body > .drag-ghost'), valid: document.body.classList.contains('tile-drop-valid'),
+      rejected: document.body.classList.contains('tile-drop-rejected'), banner: document.getElementById('theme-banner-text').textContent,
+      border: getComputedStyle(document.getElementById('app'), '::before').borderTopWidth }; })()`;
+  const page = (id) => sessions[id];
+  for (const id of [r1id, r2id, r3id]) await page(id).eval(SIM);
+  const order = (id) => page(id).eval('__qlSim.order()');
+  const toPage = (d, srcId, p) => { const w = reg(d, srcId).windowDip; return { x: p.x - w.x, y: p.y - w.y }; };
+  // Slots, tile copies and drop outlines left in any region page (the drag's source excepted, for mid-drag reads).
+  const leftovers = async (exceptId = null) => {
+    let n = 0;
+    for (const id of ids) {
+      const s = sessions[id];
+      if (!s || id === exceptId) continue;
+      n += await s.eval(`document.querySelectorAll('#app-grid .drop-slot, body > .drag-ghost').length + (document.body.classList.contains('tile-drop-valid') || document.body.classList.contains('tile-drop-rejected') ? 1 : 0)`).catch(() => 0);
+    }
+    return n;
+  };
+  const dataIds = (id) => readData().apps.filter((a) => a.regionId === id).map((a) => a.id);
+  // A desktop point at least 40 px from every region panel.
+  const emptyPoint = (d) => {
+    const panels = d.regions.map((r) => r.shown);
+    for (let y = inner.y + 40; y < inner.y + inner.height - 40; y += 24) {
+      for (let x = inner.x + 40; x < inner.x + inner.width - 40; x += 24) {
+        if (panels.every((r) => x < r.x - 40 || x > r.x + r.width + 40 || y < r.y - 40 || y > r.y + r.height + 40)) return { x, y };
+      }
+    }
+    return null;
+  };
+  const launches0 = (await T('launches')).launches.length;
+
+  // A. Drag a tile from region 1 onto Tools: slot, copy of the tile, outline; then drop.
+  let d = await desc();
+  const P3 = reg(d, r3id).shown;
+  const intoR3 = { x: P3.x + 60, y: P3.y + 100 };
+  const before1 = await order(r1id);
+  const dragged = await page(r1id).eval('__qlSim.press(0)');
+  let p = toPage(d, r1id, intoR3);
+  await page(r1id).eval(`__qlSim.moveTo(${p.x}, ${p.y})`);
+  await sleep(250);
+  // (CSSOM, not a <style> element: the page's CSP blocks inline style sheets.)
+  if (PROBE) await page(r3id).eval(`(() => { const s = document.querySelector('#app-grid .drop-slot'); if (s) s.style.setProperty('display', 'none', 'important'); return true; })()`);
+  const pv = await page(r3id).eval(PREVIEW);
+  if (PROBE) await page(r3id).eval(`(() => { const s = document.querySelector('#app-grid .drop-slot'); if (s) s.style.removeProperty('display'); return true; })()`);
+  const src1 = await page(r1id).eval(`({ ghost: !!document.querySelector('body > .drag-ghost'), placeholder: (() => { const t = document.querySelector('.tile-drag-source'); return t ? [...document.querySelectorAll('#app-grid .app-tile')].indexOf(t) : -1; })() })`);
+  check('drag between regions: the target shows the slot, a copy of the tile and the 2 px outline; the source keeps its placeholder',
+    pv.slot && pv.slotW > 20 && pv.slotH > 20 && pv.slotIndex === 0 && pv.ghost && pv.valid && pv.border === '2px' && src1.placeholder === 0,
+    { target: pv, source: src1 });
+  await page(r1id).eval('__qlSim.release()');
+  await sleep(700);
+  const after1 = await order(r1id);
+  const after3 = await order(r3id);
+  check('drag between regions: the drop moves the item; both pages and the data file agree; nothing left on screen',
+    after3.length === 1 && after3[0] === dragged && !after1.includes(dragged) && after1.length === before1.length - 1
+    && JSON.stringify(dataIds(r3id)) === JSON.stringify(after3) && JSON.stringify(dataIds(r1id)) === JSON.stringify(after1) && (await leftovers()) === 0,
+    { r1: after1.length, r3: after3, dragged });
+
+  // B. The slot decides the place: the left half of Tools' first tile = first place.
+  d = await desc();
+  const firstRect = await page(r3id).eval(`(() => { const r = document.querySelector('#app-grid .app-tile').getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; })()`);
+  const W3 = reg(d, r3id).windowDip;
+  const leftHalf = { x: W3.x + firstRect.left + (PROBE ? firstRect.width - 8 : 8), y: W3.y + firstRect.top + firstRect.height / 2 };
+  const dragged2 = await page(r1id).eval('__qlSim.press(0)');
+  p = toPage(d, r1id, leftHalf);
+  await page(r1id).eval(`__qlSim.moveTo(${p.x}, ${p.y})`);
+  await sleep(250);
+  const pv2 = await page(r3id).eval(PREVIEW);
+  await page(r1id).eval('__qlSim.release()');
+  await sleep(700);
+  const after3b = await order(r3id);
+  check('drag between regions: dropped on the left half of the first tile, it takes the first place',
+    after3b.length === 2 && after3b[0] === dragged2 && after3b[1] === dragged && pv2.slotIndex === 0 && JSON.stringify(dataIds(r3id)) === JSON.stringify(after3b),
+    { slotIndex: pv2.slotIndex, r3: after3b });
+
+  // C. Released on empty desktop: cancelled (from Tools; the probe releases on region 1 instead).
+  d = await desc();
+  const empty = emptyPoint(d);
+  const before3c = await order(r3id);
+  const before1c = await order(r1id);
+  const appsBefore = JSON.stringify(readData().apps);
+  await page(r3id).eval('__qlSim.press(0)');
+  const P1 = reg(d, r1id).shown;
+  p = toPage(d, r3id, PROBE ? { x: P1.x + 60, y: P1.y + 100 } : (empty || { x: -99999, y: -99999 }));
+  await page(r3id).eval(`__qlSim.moveTo(${p.x}, ${p.y})`);
+  await sleep(200);
+  const midC = await leftovers(r3id);
+  await page(r3id).eval('__qlSim.release()');
+  await sleep(700);
+  check('drag between regions: released on empty desktop it is cancelled; the tile stays, nothing is saved',
+    !!empty && midC === 0 && JSON.stringify(await order(r3id)) === JSON.stringify(before3c) && JSON.stringify(await order(r1id)) === JSON.stringify(before1c)
+    && JSON.stringify(readData().apps) === appsBefore && (await leftovers()) === 0,
+    { point: empty, previewWhileOverDesktop: midC });
+
+  // D. Released 3 px outside region 1's visible box (its invisible rim): cancelled too.
+  d = await desc();
+  const P1d = reg(d, r1id).shown;
+  const W3d = reg(d, r3id).windowDip;
+  const rimPoint = { x: P1d.x - 3, y: P1d.y + 60 };
+  const rimInsideSource = rimPoint.x >= W3d.x && rimPoint.x < W3d.x + W3d.width && rimPoint.y >= W3d.y && rimPoint.y < W3d.y + W3d.height;
+  const before3d = await order(r3id);
+  await page(r3id).eval('__qlSim.press(0)');
+  p = toPage(d, r3id, rimPoint);
+  await page(r3id).eval(`__qlSim.moveTo(${p.x}, ${p.y})`);
+  await sleep(200);
+  await page(r3id).eval('__qlSim.release()');
+  await sleep(700);
+  check('drag between regions: released on a region\'s invisible rim (outside its box) it is cancelled',
+    !rimInsideSource && JSON.stringify(await order(r3id)) === JSON.stringify(before3d) && (await leftovers()) === 0, { rimPoint, rimInsideSource });
+
+  // E. A full region refuses: rejected outline and FULL text, release cancels, Move to lists it disabled.
+  const cnt1 = (await order(r1id)).length;
+  if (!PROBE) await T('set-cap', { regionId: r1id, cap: cnt1 });
+  d = await desc();
+  const before3e = await order(r3id);
+  await page(r3id).eval('__qlSim.press(0)');
+  p = toPage(d, r3id, { x: reg(d, r1id).shown.x + 60, y: reg(d, r1id).shown.y + 100 });
+  await page(r3id).eval(`__qlSim.moveTo(${p.x}, ${p.y})`);
+  await sleep(250);
+  const pvE = await page(r1id).eval(PREVIEW);
+  await page(r3id).eval('__qlSim.release()');
+  await sleep(700);
+  const after3e = await order(r3id);
+  check('full region: the rejected outline and "FULL (n max)" show, no slot; the release changes nothing',
+    pvE.rejected && !pvE.slot && pvE.banner === `FULL (${cnt1} max)` && pvE.border === '2px' && JSON.stringify(after3e) === JSON.stringify(before3e)
+    && (await order(r1id)).length === cnt1 && (await leftovers()) === 0,
+    { preview: { rejected: pvE.rejected, slot: pvE.slot, banner: pvE.banner }, r3: after3e.length });
+  await page(r3id).eval(`enterEditMode(), __qlSim.focusTile(0)`);
+  const menusE0 = (await T('menus')).menus.length;
+  await page(r3id).eval(`__qlSim.key('ContextMenu')`);
+  await sleep(200);
+  const menusE = (await T('menus')).menus;
+  const tileMenuE = menusE.length > menusE0 ? menusE[menusE.length - 1] : null;
+  const moveToE = tileMenuE && tileMenuE.items.find((i) => i.label === 'Move to');
+  const r1Name = await page(r1id).eval('document.title');
+  const fullEntry = moveToE && moveToE.submenu.find((s) => s.label === r1Name);
+  check('full region: the tile menu\'s Move to lists it disabled', !!fullEntry && fullEntry.enabled === false && moveToE.submenu.some((s) => s.enabled), moveToE && moveToE.submenu);
+  await T('set-cap', { regionId: r1id, cap: null });
+  await page(r3id).eval(`exitEditMode(), true`);
+  await sleep(900);
+
+  // F. Tile keys in edit mode (region 1): Ctrl+Arrow, Delete, Menu key / Shift+F10.
+  const k0 = await order(r1id);
+  if (!PROBE) await page(r1id).eval(`enterEditMode(), true`);
+  await page(r1id).eval(`__qlSim.focusTile(0)`);
+  const focusedAfter = await page(r1id).eval(`__qlSim.key('ArrowRight', { ctrlKey: true })`);
+  await sleep(400);
+  const k1 = await order(r1id);
+  check('Ctrl+Arrow (edit mode): the focused tile moves one place later, keeps focus, and is saved',
+    k0.length >= 2 && k1[0] === k0[1] && k1[1] === k0[0] && focusedAfter === k0[0] && JSON.stringify(dataIds(r1id)) === JSON.stringify(k1), { before: k0.slice(0, 3), after: k1.slice(0, 3), focus: focusedAfter });
+  if (PROBE) await page(r1id).eval(`enterEditMode(), true`);
+  await page(r1id).eval(`(() => { const t = [...document.querySelectorAll('#app-grid .app-tile')].find((x) => x.dataset.id === ${JSON.stringify(k0[0])}); t.focus(); return true; })()`);
+  await page(r1id).eval(`__qlSim.key('ArrowLeft', { ctrlKey: true })`);
+  await sleep(300);
+  await page(r1id).eval(`__qlSim.focusTile(0), __qlSim.key('ArrowLeft', { ctrlKey: true })`);
+  await sleep(300);
+  check('Ctrl+Arrow: back again restores the order; at the first place it does nothing', JSON.stringify(await order(r1id)) === JSON.stringify(k0), await order(r1id));
+
+  const menus0 = (await T('menus')).menus.length;
+  await page(r1id).eval(`__qlSim.focusTile(0), __qlSim.key('ContextMenu')`);
+  if (PROBE) await sleep(900);
+  await page(r1id).eval(`(() => { const t = document.activeElement; t.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 10, clientY: 10 })); return true; })()`);
+  await sleep(200);
+  const menus1 = (await T('menus')).menus;
+  const newMenus = menus1.slice(menus0);
+  check('Menu key (edit mode): one tile menu for the focused tile (the contextmenu Chromium sends after it is skipped)',
+    newMenus.length === 1 && newMenus[0].kind === 'tile' && newMenus[0].itemId === k0[0], newMenus.map((m) => ({ kind: m.kind, item: m.itemId })));
+  await sleep(900);
+  await page(r1id).eval(`(() => { const t = document.activeElement; t.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 10, clientY: 10 })); return true; })()`);
+  await page(r1id).eval(`__qlSim.focusTile(0), __qlSim.key('F10', { shiftKey: true })`);
+  await sleep(200);
+  const menus2 = (await T('menus')).menus.slice(menus1.length);
+  check('right-click after that window and Shift+F10 each open the tile menu', menus2.length === 2 && menus2.every((m) => m.kind === 'tile'), menus2.map((m) => m.kind));
+  // Move to, through the recorded menu's real click handler: Tools.
+  const last = menus2[menus2.length - 1];
+  const moveIdx = last ? last.items.findIndex((i) => i.label === 'Move to') : -1;
+  const toolsName = await page(r3id).eval('document.title');
+  const toolsIdx = moveIdx >= 0 ? last.items[moveIdx].submenu.findIndex((s) => s.label === toolsName) : -1;
+  const clicked = await T('menu-click', { path: [moveIdx, toolsIdx] });
+  await sleep(500);
+  check('tile menu Move to > Tools moves the tile to the end of Tools', clicked.ok && (await order(r3id)).slice(-1)[0] === k0[0] && !(await order(r1id)).includes(k0[0]), clicked);
+  const kd = await order(r1id);
+  await page(r1id).eval(`__qlSim.focusTile(0)`);
+  const focusAfterDelete = await page(r1id).eval(`(async () => { __qlSim.key('Delete'); await new Promise((r) => setTimeout(r, 400)); return document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.id || null : null; })()`);
+  const kd2 = await order(r1id);
+  check('Delete (edit mode): the focused tile is removed and focus goes to the tile now in its place',
+    kd.length >= 1 && kd2.length === kd.length - 1 && !kd2.includes(kd[0]) && (kd2.length === 0 || focusAfterDelete === kd2[0]) && JSON.stringify(dataIds(r1id)) === JSON.stringify(kd2), { before: kd.length, after: kd2.length, focus: focusAfterDelete });
+  await page(r1id).eval(`exitEditMode(), true`);
+  const v0 = await order(r3id);
+  await page(r3id).eval(`__qlSim.focusTile(0), __qlSim.key('ArrowRight', { ctrlKey: true })`);
+  await sleep(300);
+  check('Ctrl+Arrow outside edit mode does not reorder', JSON.stringify(await order(r3id)) === JSON.stringify(v0));
+
+  // G. Display change through a stand-in work area (the display is not touched).
+  const savedRegions = () => JSON.stringify(readData().regions.map((r) => ({ id: r.id, rect: r.rect, home: r.home })));
+  const atRects = (dd) => dd.regions.every((r) => r.host.win.rect && r.host.win.rect.left === r.screenRect.left && r.host.win.rect.top === r.screenRect.top
+    && r.host.win.rect.width === r.screenRect.right - r.screenRect.left && r.host.win.rect.height === r.screenRect.bottom - r.screenRect.top);
+  const insideOf = (dd, area) => dd.regions.filter((r) => { const s = r.shown; return s.x < area.x || s.y < area.y || s.x + s.width > area.x + area.width || s.y + s.height > area.y + area.height; }).length;
+  const clashes = (dd) => { const s = dd.regions.map((r) => r.shown); let n = 0; for (let i = 0; i < s.length; i++) for (let j = i + 1; j < s.length; j++) if (tooClose(s[i], s[j])) n++; return n; };
+  await sleep(600);
+  const saved0 = savedRegions();
+  const roomy = { x: wa.x, y: wa.y, width: Math.min(wa.width, 2400), height: Math.min(wa.height, 1000) };
+  await T('set-work-area', { rect: roomy });
+  await sleep(700);
+  let dg = await desc();
+  const roomyInner = { x: roomy.x + 12, y: roomy.y + 12, width: roomy.width - 24, height: roomy.height - 24 };
+  check('display change (stand-in 2400 x 1000): every region fits inside with the 12 px gap, windows really moved',
+    insideOf(dg, roomyInner) === 0 && clashes(dg) === 0 && atRects(dg), { outside: insideOf(dg, roomyInner), clashes: clashes(dg), atRects: atRects(dg) });
+  const tiny = { x: wa.x, y: wa.y, width: 800, height: 600 };
+  await T('set-work-area', { rect: tiny });
+  await sleep(700);
+  // Probe: a user action (Place, from the region menu) while on the small display does save.
+  if (PROBE) { await T('place', { regionId: r2id, where: 'top-left' }); await sleep(700); }
+  dg = await desc();
+  const tinyInner = { x: tiny.x + 12, y: tiny.y + 12, width: tiny.width - 24, height: tiny.height - 24 };
+  await sleep(500);
+  check('display change (stand-in 800 x 600): all 8 regions inside and apart (Grids shrink), saved layout untouched',
+    insideOf(dg, tinyInner) === 0 && clashes(dg) === 0 && atRects(dg) && savedRegions() === saved0, { outside: insideOf(dg, tinyInner), clashes: clashes(dg), savedUnchanged: savedRegions() === saved0 });
+  await T('set-work-area', { rect: null });
+  await sleep(700);
+  dg = await desc();
+  const back = dg.regions.every((r) => JSON.stringify(r.shown) === JSON.stringify(r.saved));
+  check('display back: every region returns to its saved place exactly (home-layout rule)', back && atRects(dg),
+    dg.regions.filter((r) => JSON.stringify(r.shown) !== JSON.stringify(r.saved)).map((r) => ({ shown: r.shown, saved: r.saved })));
+
+  // A move that ends inside the 400 ms save debounce keeps the user's rect when the display changes.
+  dg = await desc();
+  const S3 = reg(dg, r3id).shown;
+  const dy = S3.y + S3.height + 32 + 12 <= inner.y + inner.height ? 32 : -32;
+  await sessions[r3id].eval(`window.api.invoke('region:nudge', { dx: 0, dy: ${dy} })`);
+  const chosen = reg(await desc(), r3id).pendingSave;
+  await T('set-work-area', { rect: tiny });
+  await sleep(900);
+  const rec3 = readData().regions.find((r) => r.id === r3id);
+  await T('set-work-area', { rect: null });
+  await sleep(700);
+  const back3 = reg(await desc(), r3id);
+  check('a move saved during a display change keeps the rect and work area it was made on',
+    !!chosen && JSON.stringify(rec3.rect) === JSON.stringify(chosen.rect) && JSON.stringify(rec3.home) === JSON.stringify({ x: wa.x, y: wa.y, width: wa.width, height: wa.height })
+    && JSON.stringify(back3.shown) === JSON.stringify(chosen.rect), { chosen: chosen && chosen.rect, saved: rec3.rect, home: rec3.home });
+
+  // Resume re-applies every window, even one whose rect did not change.
+  await T('displace', { regionId: r2id, dx: 40, dy: 0 });
+  await sleep(150);
+  const moved = reg(await desc(), r2id);
+  const displaced = moved.host.win.rect.left !== moved.screenRect.left;
+  if (!PROBE) await T('resume');
+  await sleep(1600);
+  dg = await desc();
+  check('resume: every window is put back at its computed rect (one was displaced on purpose)', displaced && atRects(dg), { displaced, r2: { got: reg(dg, r2id).host.win.rect, want: reg(dg, r2id).screenRect } });
+  if (PROBE) { await T('resume'); await sleep(1600); }
+
+  // A drag in flight stops on a display change: tile drag (preview cleared) and region move.
+  d = await desc();
+  await page(r3id).eval('__qlSim.press(0)');
+  p = toPage(d, r3id, { x: reg(d, r1id).shown.x + 60, y: reg(d, r1id).shown.y + 100 });
+  await page(r3id).eval(`__qlSim.moveTo(${p.x}, ${p.y})`);
+  await sleep(250);
+  const midG = await page(r1id).eval(PREVIEW);
+  await sessions[r2id].eval(`(async () => { await window.api.invoke('region:drag', { phase: 'start' }); return window.api.invoke('region:drag', { phase: 'move', dx: -10, dy: 0, alt: true }); })()`);
+  if (!PROBE) await T('set-work-area', { rect: roomy });
+  await sleep(700);
+  const afterG = await page(r1id).eval(PREVIEW);
+  const srcG = await page(r3id).eval(`({ reorder: reorderState === null, ghost: !!document.querySelector('body > .drag-ghost') })`);
+  const regionMove = await sessions[r2id].eval(`window.api.invoke('region:drag', { phase: 'move', dx: -30, dy: 0, alt: true })`);
+  const dragState = (await T('tile-drag')).drag;
+  check('a display change stops drags in flight: the tile preview clears, the source drops its drag, a region move stops',
+    midG.slot && !afterG.slot && !afterG.ghost && !afterG.valid && srcG.reorder && !srcG.ghost && dragState === null && regionMove && regionMove.ok === false,
+    { previewBefore: midG.slot, previewAfter: afterG.slot, source: srcG, regionMove, dragState });
+  await page(r3id).eval('__qlSim.release()');
+  await sessions[r2id].eval(`window.api.invoke('region:drag', { phase: 'end' })`);
+  await T('set-work-area', { rect: null });
+  await sleep(700);
+
+  // No drag launched anything; a plain click is recorded (positive control of the launch log).
+  const launchesDrag = (await T('launches')).launches.length - launches0;
+  for (const id of [r2id, r3id, r1id]) {
+    if (await page(id).eval(`(() => { const t = document.querySelector('#app-grid .app-tile'); if (t) t.click(); return !!t; })()`)) break;
+  }
+  await sleep(300);
+  const launchesClick = (await T('launches')).launches.length - launches0;
+  check('no drag launched an app; a plain click is recorded (test hooks never run it)', launchesDrag === 0 && launchesClick === 1, { duringDrags: launchesDrag, afterClick: launchesClick });
+  check('the last region is still empty (the delete check below must not need a confirm box)', dataIds(ids[ids.length - 1]).length === 0);
+}
+
 let failed = false;
 try {
   await run();
@@ -498,7 +815,13 @@ const out = guardOut.join('');
 const pidLine = /pid (\d+)/.exec(out);
 ourPid = pidLine ? Number(pidLine[1]) : null;
 if (fg) {
-  const ours = fgSamples.filter((s) => s.cls === 'Progman' || s.cls === 'WorkerW' || (ourPid && s.pid === ourPid)).length;
+  const hits = fgSamples.filter((s) => s.cls === 'Progman' || s.cls === 'WorkerW' || (ourPid && s.pid === ourPid));
+  const ours = hits.length;
+  // Which window, and during which step (the next check recorded after it).
+  for (const h of hits.slice(0, 6)) {
+    const next = results.find((r) => r.at >= h.at);
+    console.log(`foreground hit: ${h.cls} ${ourPid && h.pid === ourPid ? '(our process)' : '(not our process)'} before check: ${next ? next.name : 'end of run'}`);
+  }
   const changed = fgSamples.filter((s) => fgStart && s.hwnd !== fgStart.hwnd).length;
   check('focus: the foreground never became ours or the desktop', ours === 0, { samples: fgSamples.length, oursOrDesktop: ours, otherChanges: changed });
 }

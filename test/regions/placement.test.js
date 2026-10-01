@@ -112,3 +112,30 @@ test('relayout: Grid shrinks toward its minimum on a tiny display', () => {
   const { rects } = P.relayout([R(0, 0, 424, 300)], tiny, [MIN]);
   assert.deepEqual(rects[0], { x: 12, y: 12, width: 276, height: 236 });
 });
+
+test('regionAt: the visible box only; edges, rims and gaps', () => {
+  const list = [{ id: 'a', rect: R(100, 100) }, { id: 'b', rect: R(100 + 424 + 12, 100) }];
+  assert.equal(P.regionAt({ x: 300, y: 250 }, list), 'a');
+  assert.equal(P.regionAt({ x: 100, y: 100 }, list), 'a', 'top-left corner is inside');
+  assert.equal(P.regionAt({ x: 524, y: 250 }, list), null, 'right edge is outside');
+  assert.equal(P.regionAt({ x: 530, y: 250 }, list), null, 'the 12 px gap (and each 6 px rim) is desktop');
+  assert.equal(P.regionAt({ x: 536, y: 250 }, list), 'b');
+  assert.equal(P.regionAt({ x: 300, y: 400 }, list), null, 'bottom edge is outside');
+  assert.equal(P.regionAt({ x: NaN, y: 1 }, list), null);
+  assert.equal(P.regionAt(null, list), null);
+});
+
+test('relayout: 8 Grid regions on an 800 x 600 display all fit apart (each shrinks toward its minimum)', () => {
+  const big = P.innerArea({ x: 0, y: 0, width: 5120, height: 1392 });
+  const saved = [];
+  for (let i = 0; i < 8; i++) saved.push(P.placeNew({ width: 424, height: 300 }, big, saved));
+  const small = P.innerArea({ x: 0, y: 0, width: 800, height: 600 });
+  const mins = saved.map(() => MIN);
+  const { rects, overlaps } = P.relayout(saved, small, mins);
+  assert.equal(overlaps, 0);
+  assert.ok(rects.every((r) => P.inside(r, small)), 'all inside');
+  for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++) assert.ok(!P.tooClose(rects[i], rects[j]), `${i} and ${j} apart`);
+  assert.ok(rects.every((r) => r.width >= 180 && r.height >= 150), 'never below the minimum');
+  // Back on the big display: the saved rects, untouched.
+  assert.deepEqual(P.relayout(saved, big, mins).rects, saved);
+});
