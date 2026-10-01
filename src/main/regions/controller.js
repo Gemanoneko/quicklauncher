@@ -226,8 +226,11 @@ class RegionController extends EventEmitter {
         this.byWc.delete(wcId);
         if (rt.win === win) { rt.win = null; rt.wc = null; rt.ready = false; }
         const t = this.tileDrag;
-        if (t && (t.sourceId === rt.id || t.targetId === rt.id)) this._cancelTileDrag('window closed', { notifySource: true });
+        if (t && (t.sourceId === rt.id || t.targetId === rt.id)) this._cancelTileDrag('window closed', { notifySource: true, instant: true });
       });
+      // Activated (a click on a fallback window, or keyboard focus given to a
+      // desktop child): this is the active region (spec 7.3, fallback focus 3).
+      win.on('focus', () => { if (rt.win === win) this.setActive(rt.id); });
       let settled = false;
       win.once('ready-to-show', () => { settled = true; resolve(win); });
       win.webContents.once('did-fail-load', (_e, code, desc) => {
@@ -297,7 +300,7 @@ class RegionController extends EventEmitter {
       rt.resize = null;
       this._command(rt.id, 'cancel-drag');
     }
-    if (this.tileDrag) this._cancelTileDrag(reason, { notifySource: true });
+    if (this.tileDrag) this._cancelTileDrag(reason, { notifySource: true, instant: true });
   }
 
   // A user move or resize ended: the rect AND the work area it was made on
@@ -538,7 +541,7 @@ class RegionController extends EventEmitter {
     this._setRegions(now.filter((r) => r.id !== id));
     const rt = this.rt.get(id);
     const t = this.tileDrag;
-    if (t && (t.sourceId === id || t.targetId === id)) this._cancelTileDrag('region deleted', { notifySource: true });
+    if (t && (t.sourceId === id || t.targetId === id)) this._cancelTileDrag('region deleted', { notifySource: true, instant: true });
     if (rt) { clearTimeout(rt.saveTimer); rt.pendingSave = null; rt.host.stop(); this.rt.delete(id); }
     if (this.activeId === id) this.activeId = this.primaryId();
     this._mirrorPrimaryTheme();
@@ -669,12 +672,15 @@ class RegionController extends EventEmitter {
     if (rt && rt.wc && !rt.wc.isDestroyed()) rt.wc.send('region:tile-drop-preview', msg);
   }
 
-  _cancelTileDrag(reason, { notifySource = false } = {}) {
+  // instant: a system cancel (display change, sleep, hide all, a window or
+  // region gone, no answer): the target drops its slot with no animation.
+  // Otherwise (the user let go elsewhere) the gap closes through the reflow.
+  _cancelTileDrag(reason, { notifySource = false, instant = false } = {}) {
     const t = this.tileDrag;
     if (!t) return;
     this.tileDrag = null;
     clearTimeout(t.replyTimer);
-    if (t.targetId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id });
+    if (t.targetId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id, instant });
     if (t.reply) t.reply({ ok: true, result: 'cancelled', reason });
     if (notifySource) this._command(t.sourceId, 'cancel-tile-drag');
     this.log({ event: 'tile-drag', result: 'cancelled', reason, item: String(t.itemId).slice(0, 8) });
@@ -683,7 +689,7 @@ class RegionController extends EventEmitter {
   /** From the source page. phase: start | move | end | cancel; x, y in the source page. */
   tileDragFrom(id, { phase, itemId, x, y } = {}) {
     if (phase === 'start') {
-      if (this.tileDrag) this._cancelTileDrag('replaced');
+      if (this.tileDrag) this._cancelTileDrag('replaced', { instant: true });
       const item = this.apps().find((a) => a && a.id === itemId && a.regionId === id);
       if (!item || !this.rt.has(id)) return { ok: false };
       this.tileDrag = { id: ++this._tileDragSeq, sourceId: id, itemId, targetId: null, dropping: null, reply: null, replyTimer: null };
@@ -715,7 +721,7 @@ class RegionController extends EventEmitter {
       // The target page names its slot (region:tile-drop); the source waits for the outcome.
       return new Promise((resolve) => {
         t.reply = resolve;
-        t.replyTimer = setTimeout(() => { if (this.tileDrag === t) this._cancelTileDrag('target page did not answer'); }, DROP_REPLY_MS);
+        t.replyTimer = setTimeout(() => { if (this.tileDrag === t) this._cancelTileDrag('target page did not answer', { instant: true }); }, DROP_REPLY_MS);
         this._sendPreview(hitId, { phase: 'drop', dragId: t.id, ...this._desktopToPage(hitId, p) });
       });
     }
@@ -729,6 +735,8 @@ class RegionController extends EventEmitter {
     this.tileDrag = null;
     clearTimeout(t.replyTimer);
     const res = this.moveItemToRegion(t.itemId, id, Number.isFinite(index) ? index : Infinity);
+    // The target keeps its slot until its new items arrive; refused, none come, so it drops it.
+    if (!res.ok) this._sendPreview(id, { phase: 'leave', dragId: t.id, instant: true });
     this.log({ event: 'tile-drag', result: res.ok ? 'moved' : 'refused', item: String(t.itemId).slice(0, 8), to: id.slice(0, 8), index: res.index });
     if (t.reply) t.reply({ ok: true, result: res.ok ? 'moved' : 'cancelled', reason: res.ok ? null : res.error, index: res.index });
     return res;
@@ -953,6 +961,22 @@ class RegionController extends EventEmitter {
     return { ok: rt.host.setScreenRect({ left: r.left + dx, top: r.top + dy, right: r.right + dx, bottom: r.bottom + dy }) };
   }
 
+  /** Drop an attached region to fallback now (desktop child to top-level); the watchdog re-attaches it. */
+  testForceFallback(id) {
+    const rt = this.rt.get(id);
+    const ok = !!(rt && rt.host.testDropToFallback && rt.host.testDropToFallback());
+    // Read now: the next watchdog tick (up to 1 s) re-attaches it.
+    return { ok, after: rt ? rt.host.describe() : null };
+  }
+
+  /** Run the window's own 'focus' listeners (what an activation does) without activating anything. */
+  testEmitFocus(id) {
+    const rt = this.rt.get(id);
+    if (!rt || !rt.win || rt.win.isDestroyed()) return { ok: false };
+    rt.win.emit('focus');
+    return { ok: true, active: this.activeId === id };
+  }
+
   setTestCap(id, cap) {
     if (cap === null || cap === undefined) this._testCaps.delete(id);
     else this._testCaps.set(id, Math.max(0, Math.floor(cap)));
@@ -1014,7 +1038,7 @@ class RegionController extends EventEmitter {
     clearInterval(this._metricsTimer);
     clearTimeout(this._displayTimer);
     clearTimeout(this._resumeTimer);
-    this._cancelTileDrag('quit');
+    this._cancelTileDrag('quit', { instant: true });
     this._watchdog = null;
     let released = 0;
     for (const rt of this.rt.values()) {

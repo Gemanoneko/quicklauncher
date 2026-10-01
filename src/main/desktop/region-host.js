@@ -202,6 +202,13 @@ class RegionHost extends EventEmitter {
     return d.focusIfDesktopForeground(this.hwnd);
   }
 
+  /** --ql-test-hooks: drop an attached region to fallback now (the desktop-child to top-level path); the next tick re-attaches it. */
+  testDropToFallback() {
+    if (this.mode !== 'attached' || !this.win || this.win.isDestroyed()) return false;
+    this._goFallback('test: drop to fallback');
+    return true;
+  }
+
   describe() {
     return { mode: this.mode, layout: this.layout, hidden: this.hidden, stats: { ...this.stats }, win: d.describe(this.hwnd) };
   }

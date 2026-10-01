@@ -721,6 +721,9 @@ $apps | ConvertTo-Json -Depth 2
       case 'resume': ctl.testResume(); return { ok: true };
       case 'displace': return ctl.testDisplace(String(a.regionId || ''), num(a.dx), num(a.dy));
       case 'set-cap': return ctl.setTestCap(String(a.regionId || ''), a.cap === null ? null : num(a.cap));
+      // M2b: the desktop-child to top-level path, and an activation's own listeners.
+      case 'force-fallback': return ctl.testForceFallback(String(a.regionId || ''));
+      case 'emit-focus': return ctl.testEmitFocus(String(a.regionId || ''));
       case 'menus': return { ok: true, menus: ctl.menuLog.slice() };
       case 'menu-click': return ctl.menuClick(Array.isArray(a.path) ? a.path.map(num) : []);
       case 'launches': return { ok: true, launches: testLaunches.slice() };

@@ -204,11 +204,22 @@ function insertAfterForBottomOfNormalBand(selfHwnd) {
   return i === 0 ? C.HWND_TOP : list[i - 1];
 }
 
+// Windows' SetParent ACTIVATES a top-level window it moves, even a hidden one,
+// and that can take the foreground from Sergei's app (TechPlan section 7.1,
+// measured). So a window that already is top-level is never re-parented. A
+// desktop child still is, and while it carries WS_CHILD (the style changes
+// only after the call), which a child cannot be activated with.
+function toTopLevelParent(hwnd) {
+  if (W.GetAncestor(hwnd, C.GA_PARENT) === W.GetDesktopWindow()) return false;
+  W.SetParent(hwnd, 0);
+  return true;
+}
+
 // Fallback: an ordinary top-level tool window sunk to just above the desktop,
 // never activated. `show` false keeps it hidden.
 function detachToTopLevel(hwnd, screenRect, { show = true } = {}) {
   W.ShowWindow(hwnd, C.SW_HIDE);
-  W.SetParent(hwnd, 0);
+  toTopLevelParent(hwnd);
   const style = W.GetWindowLongW(hwnd, C.GWL_STYLE);
   W.SetWindowLongW(hwnd, C.GWL_STYLE, (style & ~C.WS_CHILD) | C.WS_POPUP);
   const ex = W.GetWindowLongW(hwnd, C.GWL_EXSTYLE);
@@ -238,7 +249,7 @@ function hide(hwnd) { return !!W.ShowWindow(hwnd, C.SW_HIDE); }
 function releaseFromShell(hwnd) {
   if (!available || !W.IsWindow(hwnd)) return false;
   W.ShowWindow(hwnd, C.SW_HIDE);
-  W.SetParent(hwnd, 0);
+  toTopLevelParent(hwnd); // a fallback window is already out of the shell's tree
   const style = W.GetWindowLongW(hwnd, C.GWL_STYLE);
   W.SetWindowLongW(hwnd, C.GWL_STYLE, (style & ~C.WS_CHILD) | C.WS_POPUP);
   return true;

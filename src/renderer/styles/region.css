@@ -51,11 +51,13 @@ body.region.region-blocked #app::before { border-color: var(--accent-m); }
 /* A tile carried here from another region (spec 2.1 drop target states):
    valid = 2 px --accent-c outline on the region box and a dashed slot at the
    nearest position; rejected (full) = the same outline in --accent-m, with
-   the FULL text in the banner (region.js). */
+   the FULL text in the banner (region.js). The slot takes --accent-text, 3:1
+   or more in all 101 themes (addendum A1); its height is set from a real
+   tile (region.js). */
 body.region.tile-drop-valid #app::before { border-width: 2px; border-color: var(--accent-c); }
 body.region.tile-drop-rejected #app::before { border-width: 2px; border-color: var(--accent-m); }
 #app-grid .app-tile.drop-slot {
-  border: 2px dashed var(--accent-c) !important;
+  border: 2px dashed var(--accent-text) !important;
   background: transparent !important;
   box-shadow: none !important;
   pointer-events: none;
@@ -65,6 +67,13 @@ body.region.tile-drop-rejected #app::before { border-width: 2px; border-color: v
 #app-grid .app-tile.drop-slot > * { visibility: hidden; }
 /* The slot shows where the tile lands, so the empty-region hint steps aside. */
 body.region.tile-drop-preview #drop-hint { display: none; }
+
+/* Screen-reader status line for Ctrl+Arrow moves (addendum A5): 1 x 1, clipped. */
+.ql-sr-status {
+  position: fixed; left: 0; top: 0; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+  white-space: nowrap; pointer-events: none;
+}
 
 /* After a rebuild (Explorer restart) the entrance fade does not replay. */
 body.region.no-entrance #app-entrance { display: none !important; animation: none !important; }

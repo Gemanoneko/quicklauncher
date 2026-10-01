@@ -24,8 +24,19 @@ class FakeHost extends EventEmitter {
   describe() { return { mode: this.mode }; }
   stop() { return { released: true }; }
 }
+let wcSeq = 100;
+class FakeBrowserWindow extends EventEmitter {
+  constructor() {
+    super();
+    this.webContents = Object.assign(new EventEmitter(), { id: ++wcSeq, send() {}, isDestroyed: () => false });
+    this.destroyed = false;
+  }
+  loadFile() {}
+  isDestroyed() { return this.destroyed; }
+  destroy() { this.destroyed = true; this.emit('closed'); }
+}
 const fakeElectron = {
-  BrowserWindow: class {},
+  BrowserWindow: FakeBrowserWindow,
   Menu: { buildFromTemplate: () => ({ popup() {} }) },
   dialog: { showMessageBox: async () => ({ response: 0 }) },
   screen: {
@@ -297,5 +308,52 @@ test('a drag of an item the source does not own is refused', () => {
   try {
     assert.equal(t.ctl.tileDragFrom('r1', { phase: 'start', itemId: 'b0' }).ok, false);
     assert.deepEqual(t.ctl.tileDragFrom('r1', { phase: 'move', ...inR2 }), { ok: false });
+  } finally { t.done(); }
+});
+
+// ── M2b ─────────────────────────────────────────────────────────────────────
+test('an activated region window (its focus event) becomes the active region (fallback focus 3)', async () => {
+  const t = make();
+  try {
+    assert.equal(t.ctl.activeId, 'r1');
+    const rt = t.ctl.rt.get('r2');
+    const pending = t.ctl._createRegionWindow(rt);
+    const win = rt.win;
+    win.emit('ready-to-show');
+    await pending;
+    win.emit('focus');
+    assert.equal(t.ctl.activeId, 'r2');
+  } finally { t.done(); }
+});
+
+test('the target closes its slot through the reflow when the pointer leaves, at once on a system cancel (A6)', () => {
+  const t = make();
+  try {
+    t.ctl.tileDragFrom('r1', { phase: 'start', itemId: 'a0' });
+    t.ctl.tileDragFrom('r1', { phase: 'move', ...inR2 });
+    t.ctl.tileDragFrom('r1', { phase: 'move', ...onDesktop });
+    const leave = t.of('r2', 'region:tile-drop-preview').at(-1).msg;
+    assert.deepEqual([leave.phase, !!leave.instant], ['leave', false], 'pointer left: animated close');
+    t.ctl.tileDragFrom('r1', { phase: 'move', ...inR2 });
+    fireDisplay();
+    const cancel = t.of('r2', 'region:tile-drop-preview').at(-1).msg;
+    assert.deepEqual([cancel.phase, cancel.instant], ['leave', true], 'display change: instant');
+  } finally { t.done(); }
+});
+
+test('a drop the main process refuses tells the target to drop the slot it kept (A6)', async () => {
+  const t = make();
+  try {
+    t.ctl.tileDragFrom('r1', { phase: 'start', itemId: 'a0' });
+    t.ctl.tileDragFrom('r1', { phase: 'move', ...inR2 });
+    const pending = t.ctl.tileDragFrom('r1', { phase: 'end', ...inR2 });
+    const drop = t.of('r2', 'region:tile-drop-preview').at(-1).msg;
+    t.ctl.setTestCap('r2', 2); // r2 fills up before the page answers
+    const res = t.ctl.tileDropFrom('r2', { dragId: drop.dragId, index: 0 });
+    assert.equal(res.ok, false);
+    assert.equal((await pending).result, 'cancelled');
+    const last = t.of('r2', 'region:tile-drop-preview').at(-1).msg;
+    assert.deepEqual([last.phase, last.instant], ['leave', true]);
+    assert.deepEqual(t.ids('r2'), ['b0', 'b1']);
   } finally { t.done(); }
 });

@@ -310,3 +310,38 @@ From the Electron 32.3.3 and Chromium 128 source (read, not run):
 **Side finding (diagnostics, not product code):** the first diagnostic build called koffi from inside an Electron `hookWindowMessage` callback that fired during another koffi call (`SetParent`). The main process hung and later died with `0xC0000005`. A fix must never call koffi from a window-message hook.
 
 **Launches:** 3, all through the guard on temp profiles with no hotkey, and all closed (guard: exited, 0 left, startup keys unchanged, real data untouched). Sergei's foreground changed in launch 1 (3.5 s) and in launch 2: a 59 ms blip at the region delete, and 0.35 s at quit. Our in-process reading 0.1 s after the delete showed his app back in front. It did not change in launch 3.
+
+### 7.4 M2b as built (Ender, 2026-10-01)
+
+Builds Judy's "Addendum — M2 rulings" and the "Fallback focus — recommendation" (Option A, approved by Sergei) from the UX spec, on top of section 6. Uncommitted in the worktree.
+
+**Rulings**
+- A1: the slot is `2px dashed var(--accent-text)`, no fill; its height is set from a visible tile's `offsetHeight` when it is made, so no row grows (95 px slot = 95 px tile, measured in view and edit mode).
+- A2, A3: the hint stays hidden for the preview, and the copy stays today's ghost (both as built in M2, now measured).
+- A4: Shift+F10 = the Menu key. On a tile in view mode either key puts the region in edit mode with focus back on that tile; the 800 ms `contextmenu` skip stays.
+- A5: Ctrl+Up / Ctrl+Down move `cols` places (`computeColumnCount` on the visible tiles, as the plain arrows use); outside the visible tiles nothing happens. `tile-order.stepOrder` takes the signed count. Each move sets a visually hidden `role="status"` line (`Moved to 8 of 12.`, class `ql-sr-status`). Cheat-sheet text as ruled.
+- A6: the slot closes through the 120 ms reflow when the pointer leaves. After a drop it stays until the region's new items replace it, or until a refusal (the main process now sends an instant `leave`) or a 2.5 s timeout. A system cancel (display change, sleep, hide all, a window or region gone, no answer, quit) sends `leave` with `instant: true`, and the slot goes at once. In-region reorder is unchanged.
+
+**Option A**
+- `desktop-layer.js` `toTopLevelParent`: `SetParent(hwnd, NULL)` is skipped when the window's parent already is the desktop; `detachToTopLevel` and `releaseFromShell` use it. A desktop child is still re-parented while it carries `WS_CHILD`; its style changes only after the call. Unit-tested on the module with koffi replaced by a recording fake (guard and call order).
+- A region window's `focus` event makes it the active region (`--border-h`, no glow); nothing else happens on activation. The first click is untouched (Chromium's `MA_ACTIVATE`).
+- Test hooks: `force-fallback` (an attached region drops to fallback, desktop child to top-level, and the watchdog re-attaches it within a second) and `emit-focus` (runs the window's own focus listeners, activating nothing).
+
+**Focus gate:** the 500 ms sampler is gone. `scripts/fg-observer.mjs` (read-only, out-of-process WinEvent hooks; class and process name only) runs from before the launch until after the app has quit. `scripts/fg-verdict.cjs` fails the run on any foreground change to a window of the build under test. A second check requires the observer to have seen our top-level windows: 8 in fallback mode, and the forced drop in attached mode. Positive control: the verdict replayed on today's real captures of the unguarded `SetParent` (section 7.1 launches 1 and 2) fails them (1 and 8 events) and passes launch 3. `--probe` also injects one such event.
+
+**Tests**
+
+| Run | Result |
+|---|---|
+| Unit (`npm run test:regions`, node:test pass count) | 68/68 (55 from M2, 13 new). |
+| Unit positive control (scratch mutation runner) | 19/19 mutants caught (12 from M2 + 7 new: the Option A guard, `WS_CHILD` order, rows as single steps, activation, instant cancel, kept slot on refusal, case in the gate). |
+| Self-test, attached, synthetic seed | 73/73 (launch 2). |
+| Self-test, attached, copy of the real data file | 73/73, final script (launch 10); the real file's size and mtime unchanged. |
+| Self-test, fallback (Option A, observer gate) | 72/72 (launch 9); 17 of our top-level windows seen, 0 foreground changes. |
+| Self-test, `--probe` | 51/73 (launch 11): M1's 2, M2's 9 probes (11 checks) and 9 new probes (slot colour, copy opacity, hint, reduced motion on leave, Shift+F10 with no tile focused, Ctrl+Right for Ctrl+Down, no activation, the wrong region's state after the drop, a foreground event for this build) fail exactly those 22 checks. |
+
+Three test-side lessons, none a product change: the hook's state read 400 ms after the drop already saw the region re-attached (now read inside the hook); a probe that changes the slot's colour must wait out the tile's 120 ms `border-color` transition, which outranks even inline `!important`; in fallback the regions sit under other windows and Chromium stops their animation clock, so the reflow recorder counts only animations the slot's removal created.
+
+**Launches:** 11, all through the guard on temp profiles with no hotkey, all closed (guard: exited, 0 left, startup keys unchanged, real data untouched): 4 attached, 2 fallback (after Option A, with the gate), 5 probe (attached). The observer logged 3 foreground changes in all 11 runs, all between Sergei's own apps (Slack and claude.exe: 1 in launch 1, 2 in launch 6). None went to the test build. The 6 events "to this build" in the probe runs are the injected probe events.
+
+**Not provable without real input:** that a real click on a fallback region activates it and keys arrive (Judy's optional 30-second step: `scripts/tryit-regions.mjs --fallback`), and Option A's risk 1 (Windows handing focus to a fallback window when the one above it closes), which needs input to provoke.

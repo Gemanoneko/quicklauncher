@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
- * tryit-regions.mjs: Sergei's try-it for the regions build (M2: between regions).
+ * tryit-regions.mjs: Sergei's try-it for the regions build (M2 + M2b: between regions).
  *
  *   node "C:\Antigravity Projects\QuickLaunch-regions-spike\scripts\tryit-regions.mjs"
+ *   node "...\scripts\tryit-regions.mjs" --fallback   (Judy's optional 30-second fallback check)
  *
  * Runs the worktree build through the studio's QA launch guard on a fresh
  * profile in %TEMP%, with a COPY of the real shortcuts (the real data file is
@@ -27,6 +28,9 @@ const HOTKEY = 'Ctrl+Shift+Space'; // free on Sergei's machine (2026-10-01); Ctr
 // --timeout <s> (5-300): shorter runs for checking this script itself.
 const ti = process.argv.indexOf('--timeout');
 const TIMEOUT = ti > 0 ? Math.max(5, Math.min(300, Number(process.argv[ti + 1]) || 300)) : 300;
+// --fallback: Judy's optional 30-second check of fallback mode (regions as
+// ordinary windows just above the desktop, --ql-no-desktop-layer).
+const FALLBACK = process.argv.includes('--fallback');
 
 if (!existsSync(EXE)) { console.error(`No build at ${EXE}. Ask Ender for a build.`); process.exit(1); }
 if (!GUARD) { console.error('The QA launch guard (scripts/qa/quicklaunch-safe-launch.mjs) was not found.'); process.exit(1); }
@@ -41,7 +45,23 @@ if (!seed || !Array.isArray(seed.apps)) seed = { apps: [], settings: {} };
 seed.settings = { ...(seed.settings || {}), startWithWindows: false, globalHotkey: HOTKEY };
 writeFileSync(join(profile, 'quicklauncher-data.json'), `${JSON.stringify(seed, null, 2)}\n`);
 
-console.log(`
+if (FALLBACK) {
+  console.log(`
+QuickLaunch regions, fallback check (30 seconds; ${seed.apps.length} of your shortcuts, copied)
+
+The regions open as ordinary windows just above the desktop (fallback mode).
+They must NOT take the focus by themselves: whatever you were in keeps it.
+
+ 1. Click a region once (not its header). Type a letter: the filter chip in
+    the header shows it and the tiles filter.
+ 2. Right-click inside it for edit mode, press Right arrow until a tile has the
+    focus ring, then Ctrl+Right: the tile moves one place.
+ 3. Tray > Quit QuickLauncher.
+
+If the letter does not appear, or a region took the focus without a click,
+tell Jane.
+`);
+} else console.log(`
 QuickLaunch regions, try-it 2: between regions (${seed.apps.length} of your shortcuts, copied;
 your real data is not touched)
 
@@ -61,9 +81,22 @@ Drag between regions
 Keys on tiles (edit mode)
  4. Right-click inside a region (not on its header) for edit mode. Click an
     empty spot in it, then press Right arrow until a tile has the focus ring.
- 5. Ctrl+Right / Ctrl+Left: the tile moves one place. Menu key (or
-    Shift+F10): ONE tile menu opens; Move to sends it to another region.
+ 5. Ctrl+Right / Ctrl+Left: the tile moves one place; Ctrl+Down / Ctrl+Up:
+    one row, same column (nothing at the last or first row). Menu key or
+    Shift+F10: ONE tile menu opens; Move to sends it to another region.
     Delete: the tile goes and the focus ring moves to the next tile.
+    Out of edit mode, Shift+F10 on a focused tile puts the region in edit
+    mode with the focus still on that tile.
+
+How the drop looks (Judy's six, M2b)
+ a. The dashed slot is the theme's bright text accent and exactly a tile's
+    height: no row below jumps, also in edit mode.
+ b. Hover a tile over an EMPTY region: its drop hint hides; move away: back.
+ c. The copy under the pointer looks like the tile you picked up.
+ d. Move a tile over a region and away again: the gap closes smoothly, the
+    way it opened. Reordering inside one region stays instant.
+ e. Let go on a region: no flicker of the gap closing before the tile shows.
+ f. Optional, 30 s: run this script again with --fallback and follow its steps.
 
 Display and sleep (the home-layout rule)
  6. Settings > System > Display: pick a smaller resolution, Keep changes.
@@ -76,7 +109,7 @@ Display and sleep (the home-layout rule)
  8. Tray > Quit QuickLauncher.
 `);
 
-const guard = spawn(process.execPath, [GUARD, '--exe', EXE, '--profile', profile, '--timeout', String(TIMEOUT), '--', '--ql-no-update-check'],
+const guard = spawn(process.execPath, [GUARD, '--exe', EXE, '--profile', profile, '--timeout', String(TIMEOUT), '--', '--ql-no-update-check', ...(FALLBACK ? ['--ql-no-desktop-layer'] : [])],
   { stdio: ['ignore', 'pipe', 'inherit'] });
 let out = '';
 guard.stdout.on('data', (d) => { out += String(d); });

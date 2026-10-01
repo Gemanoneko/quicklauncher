@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * regions-selftest.mjs: M1 + M2 self-test of the packaged regions build.
+ * regions-selftest.mjs: M1 + M2 + M2b self-test of the packaged regions build.
  *
  *   npm run selftest:regions -- [--guard <quicklaunch-safe-launch.mjs>] [--exe <QuickLauncher.exe>]
  *                               [--seed <data file to copy>] [--port 9341] [--timeout 240]
@@ -13,15 +13,17 @@
  * dispatched inside a page; native menus and app launches are recorded by
  * --ql-test-hooks, never shown or run; no message box is opened. The display
  * is never changed (a stand-in work area runs the display-change handler).
- * The foreground window is sampled the whole time (koffi, read-only) and must
- * never become ours or the desktop because of us.
+ * Focus gate: scripts/fg-observer.mjs (out of process, read-only WinEvent
+ * hooks) logs every foreground change from before the launch until after the
+ * app has quit; no foreground change may go to a window of this build.
  *
  * --seed copies a data file into the profile (the source is only read) and
  * forces the guard's safe settings (startWithWindows false, globalHotkey null,
  * randomTheme false). Without --seed a synthetic library is used.
  * --probe injects an uncaught error and an overlapping button, to prove the
  * error and hit-area checks can fail, plus the M2 faults and wrong inputs
- * listed in m2Checks. Exit 0 when every check passes.
+ * listed in m2Checks and m2bChecks, and a foreground event for this build in
+ * the observer's log. Exit 0 when every check passes.
  */
 import { spawn } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -73,26 +75,6 @@ function check(name, ok, evidence) {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${evidence !== undefined ? `  | ${typeof evidence === 'string' ? evidence : JSON.stringify(evidence)}` : ''}`);
 }
 
-// ── foreground sampler (read-only Win32) ────────────────────────────────────
-let fg = null;
-try {
-  const koffi = require(join(REPO, 'node_modules', 'koffi'));
-  const user32 = koffi.load('user32.dll');
-  const GetForegroundWindow = user32.func('intptr __stdcall GetForegroundWindow()');
-  const GetWindowThreadProcessId = user32.func('uint32 __stdcall GetWindowThreadProcessId(intptr hwnd, void *pid)');
-  const GetClassNameW = user32.func('int __stdcall GetClassNameW(intptr hwnd, void *buf, int max)');
-  fg = () => {
-    const h = GetForegroundWindow();
-    const pid = Buffer.alloc(4);
-    GetWindowThreadProcessId(h, pid);
-    const buf = Buffer.alloc(512);
-    const n = GetClassNameW(h, buf, 256);
-    return { hwnd: Number(h), pid: pid.readUInt32LE(0), cls: n > 0 ? buf.toString('utf16le', 0, n * 2) : '' };
-  };
-} catch (e) {
-  console.log(`note: foreground sampler unavailable (${e.message})`);
-}
-
 // ── seed ────────────────────────────────────────────────────────────────────
 const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
 const PROFILE = join(tmpdir(), 'ql-regions-selftest', stamp);
@@ -118,6 +100,16 @@ writeFileSync(DATA, seedText);
 const N = seed.apps.length;
 console.log(`profile ${PROFILE}  (${N} shortcut(s), ${SEED ? 'copied seed' : 'synthetic seed'})`);
 
+// ── foreground observer (out of process, read-only), started before the launch ──
+const { readEvents, foregroundVerdict } = require('./fg-verdict.cjs');
+const OBS_LOG = join(PROFILE, 'fg-observer.jsonl');
+const observer = spawn(process.execPath, [join(HERE, 'fg-observer.mjs'), OBS_LOG, String(TIMEOUT + 180)], { stdio: 'ignore', windowsHide: true });
+const observerDone = new Promise((r) => observer.on('exit', (c) => r(c)));
+for (let i = 0; i < 50; i++) {
+  if (existsSync(OBS_LOG) && /"ev":"hooks"/.test(readFileSync(OBS_LOG, 'utf8'))) break;
+  await sleep(100);
+}
+
 // ── launch through the guard ────────────────────────────────────────────────
 const guardOut = [];
 const guard = spawn(process.execPath, [GUARD, '--exe', EXE, '--profile', PROFILE, '--timeout', String(TIMEOUT),
@@ -126,10 +118,6 @@ guard.stdout.on('data', (d) => guardOut.push(String(d)));
 guard.stderr.on('data', (d) => guardOut.push(String(d)));
 const guardDone = new Promise((r) => guard.on('exit', (code) => r(code)));
 
-let ourPid = null;
-const fgSamples = [];
-const fgStart = fg ? fg() : null;
-const fgTimer = fg ? setInterval(() => fgSamples.push({ ...fg(), at: Date.now() }), 500) : null;
 
 // ── tiny CDP client ─────────────────────────────────────────────────────────
 async function targets() {
@@ -462,6 +450,8 @@ async function run() {
 
   // ── M2: between regions, tile keys, display change and resume ────────────
   await m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner });
+  // ── M2b: Judy's six rulings, activation, the drop to fallback ─────────────
+  await m2bChecks({ mgr, sessions, ids, wa, inner });
 
   // Delete an empty region (no confirm box for an empty region)
   const lastId = ids[ids.length - 1];
@@ -491,18 +481,8 @@ async function run() {
   await mgr.eval(`window.api.invoke('manager:test', 'quit')`).catch(() => {});
 }
 
-// ── M2 checks ───────────────────────────────────────────────────────────────
-// Tile drags are DOM mouse events dispatched inside the source page (the same
-// listeners a real drag reaches; no OS input). The main process relays them
-// to the target page for real. Menus and launches are recorded by the app's
-// --ql-test-hooks instead of being shown or run. The display is never
-// changed: a stand-in work area runs the app's real display-change handler.
-// --probe adds 9 faults or wrong inputs here; exactly those 9 checks must fail.
-async function m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner }) {
-  const T = (op, arg = {}) => mgr.eval(`window.api.invoke('manager:test', ${JSON.stringify(op)}, ${JSON.stringify(arg)})`);
-  const desc = () => T('describe');
-  const reg = (d, id) => d.regions.find((r) => r.id === id);
-  const SIM = `window.__qlSim = window.__qlSim || (() => {
+// Page-side drag and key helpers (DOM events inside the page; no OS input).
+const SIM_SOURCE = `window.__qlSim = window.__qlSim || (() => {
     const fire = (type, x, y, el) => (el || document).dispatchEvent(new MouseEvent(type, { clientX: x, clientY: y, button: 0, buttons: type === 'mouseup' ? 0 : 1, bubbles: true, cancelable: true, view: window }));
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const tiles = () => [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')];
@@ -515,6 +495,18 @@ async function m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner }) {
       focusTile(index) { const t = tiles()[index]; if (t) t.focus(); return !!t && document.activeElement === t; },
     };
   })(); true`;
+
+// ── M2 checks ───────────────────────────────────────────────────────────────
+// Tile drags are DOM mouse events dispatched inside the source page (the same
+// listeners a real drag reaches; no OS input). The main process relays them
+// to the target page for real. Menus and launches are recorded by the app's
+// --ql-test-hooks instead of being shown or run. The display is never
+// changed: a stand-in work area runs the app's real display-change handler.
+// --probe adds 9 faults or wrong inputs here; exactly those 9 checks must fail.
+async function m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner }) {
+  const T = (op, arg = {}) => mgr.eval(`window.api.invoke('manager:test', ${JSON.stringify(op)}, ${JSON.stringify(arg)})`);
+  const desc = () => T('describe');
+  const reg = (d, id) => d.regions.find((r) => r.id === id);
   const PREVIEW = `(() => { const s = document.querySelector('#app-grid .drop-slot'); const r = s && s.getBoundingClientRect();
     const all = [...document.querySelectorAll('#app-grid .app-tile')];
     return { slot: !!s, slotW: r ? Math.round(r.width) : 0, slotH: r ? Math.round(r.height) : 0, slotIndex: s ? all.indexOf(s) : -1,
@@ -522,7 +514,7 @@ async function m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner }) {
       rejected: document.body.classList.contains('tile-drop-rejected'), banner: document.getElementById('theme-banner-text').textContent,
       border: getComputedStyle(document.getElementById('app'), '::before').borderTopWidth }; })()`;
   const page = (id) => sessions[id];
-  for (const id of [r1id, r2id, r3id]) await page(id).eval(SIM);
+  for (const id of [r1id, r2id, r3id]) await page(id).eval(SIM_SOURCE);
   const order = (id) => page(id).eval('__qlSim.order()');
   const toPage = (d, srcId, p) => { const w = reg(d, srcId).windowDip; return { x: p.x - w.x, y: p.y - w.y }; };
   // Slots, tile copies and drop outlines left in any region page (the drag's source excepted, for mid-drag reads).
@@ -801,6 +793,272 @@ async function m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner }) {
   check('the last region is still empty (the delete check below must not need a confirm box)', dataIds(ids[ids.length - 1]).length === 0);
 }
 
+// ── M2b checks (UX spec "Addendum — M2 rulings", Futaba measures 1 to 6; the
+// fallback-focus block). Same means as m2Checks: DOM events inside a page,
+// recorded menus, test hooks; no OS input. Region 6 gets 12 tiles saved
+// through its own page (fake paths; test hooks never launch). --probe adds 8
+// faults or wrong inputs here; each named check must then fail.
+async function m2bChecks({ mgr, sessions, ids, wa, inner }) {
+  const T = (op, arg = {}) => mgr.eval(`window.api.invoke('manager:test', ${JSON.stringify(op)}, ${JSON.stringify(arg)})`);
+  const desc = () => T('describe');
+  const reg = (d, id) => d.regions.find((r) => r.id === id);
+  const page = (id) => sessions[id];
+  const rT = ids[6]; // 12 tiles
+  const rE = ids[5]; // stays empty
+  const rS = ids[3]; // the drag source, with 3 tiles of its own (the M2 probes can empty Tools)
+  const toPage = (d, srcId, p) => { const w = reg(d, srcId).windowDip; return { x: p.x - w.x, y: p.y - w.y }; };
+  const REC = `window.__qlRec = window.__qlRec || (() => {
+    // Counts only animations the slot's removal itself created: everything present at take() is marked
+    // seen (a covered fallback window does not advance its clock, so older ones can stay 'running').
+    const log = [];
+    const seen = new WeakSet();
+    const plain = (el) => el.getAnimations().filter((a) => a.constructor.name === 'Animation' && a.playState === 'running').length;
+    const fresh = (el) => el.getAnimations().filter((a) => a.constructor.name === 'Animation' && a.playState === 'running' && !seen.has(a)).length;
+    new MutationObserver((ms) => { for (const m of ms) for (const n of m.removedNodes) {
+      if (n.classList && n.classList.contains('drop-slot') && !n.isConnected) log.push([...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')].filter((t) => fresh(t) > 0).length);
+    } }).observe(document.getElementById('app-grid'), { childList: true });
+    return { take() { const out = log.splice(0); document.getAnimations().forEach((a) => seen.add(a)); return out; }, plain };
+  })(); true`;
+  for (const id of [rT, rE, rS]) { await page(id).eval(SIM_SOURCE); await page(id).eval(REC); }
+  const resolved = (id, token) => page(id).eval(`(() => { const e = document.createElement('div'); e.style.color = 'var(${token})'; document.body.appendChild(e); const c = getComputedStyle(e).color; e.remove(); return c; })()`);
+  const setTheme = async (id, theme, accentC) => {
+    await mgr.eval(`window.api.invoke('manager:update-region', ${JSON.stringify(id)}, { theme: ${JSON.stringify(theme)} })`);
+    for (let i = 0; i < 40; i++) {
+      if (await page(id).eval(`getComputedStyle(document.documentElement).getPropertyValue('--accent-c').trim().toLowerCase() === ${JSON.stringify(accentC)}`)) return true;
+      await sleep(150);
+    }
+    return false;
+  };
+  // 12 tiles in region 6, saved through its page (ALPHA / BETA names for the filter case).
+  await page(rT).eval(`(async () => { apps = Array.from({ length: 12 }, (_, i) => ({ id: 'm2b-' + i, name: (i % 2 ? 'BETA ' : 'ALPHA ') + i, path: 'C:\\\\m2b\\\\t' + i + '.exe', iconDataUrl: '' })); renderGrid(); await saveApps(); return true; })()`);
+  await sleep(300);
+  await page(rS).eval(`(async () => { apps = Array.from({ length: 3 }, (_, i) => ({ id: 'src-' + i, name: 'SOURCE ' + i, path: 'C:\\\\m2b\\\\s' + i + '.exe', iconDataUrl: '' })); renderGrid(); await saveApps(); return true; })()`);
+  await sleep(300);
+  const OS_REDUCED = await page(rT).eval(`matchMedia('(prefers-reduced-motion: reduce)').matches`);
+
+  // Hover from region 3 (rS) over a tile of the target, measure, then leave to empty desktop and let go.
+  const hoverOverTile = async (targetId, tileIndex, measure, probeFn = null) => {
+    const d = await desc();
+    const r = await page(targetId).eval(`(() => { const t = [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')][${tileIndex}]; if (!t) return null; const b = t.getBoundingClientRect(); return { x: b.left + 10, y: b.top + b.height / 2 }; })()`);
+    const W = reg(d, targetId).windowDip;
+    const over = r ? { x: W.x + r.x, y: W.y + r.y } : { x: reg(d, targetId).shown.x + 60, y: reg(d, targetId).shown.y + 100 };
+    await page(rS).eval('__qlSim.press(0)');
+    let p = toPage(d, rS, over);
+    await page(rS).eval(`__qlSim.moveTo(${p.x}, ${p.y})`);
+    await sleep(300);
+    // A probe waits out the tile's 120 ms border-color transition (it outranks even inline !important).
+    if (probeFn) { await probeFn(); await sleep(250); }
+    const m = await measure();
+    const empty = emptyDesktopPoint(d, inner);
+    p = toPage(d, rS, empty);
+    await page(targetId).eval('__qlRec.take(), true');
+    await page(rS).eval(`__qlSim.moveTo(${p.x}, ${p.y}, 3)`);
+    await sleep(350);
+    const afterLeave = await page(targetId).eval(`({ anim: __qlRec.take(), hint: getComputedStyle(document.getElementById('drop-hint')).display, slot: !!document.querySelector('#app-grid .drop-slot') })`);
+    await page(rS).eval('__qlSim.release()');
+    await sleep(400);
+    return { m, afterLeave };
+  };
+  const SLOT = (id) => page(id).eval(`(() => { const s = document.querySelector('#app-grid .drop-slot'); const t = [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')][0];
+    const g = document.querySelector('body > .drag-ghost');
+    return s ? { probe: s.dataset.probe || null, slots: document.querySelectorAll('#app-grid .drop-slot').length, color: getComputedStyle(s).borderTopColor, style: getComputedStyle(s).borderTopStyle, width: getComputedStyle(s).borderTopWidth, h: s.offsetHeight, tileH: t ? t.offsetHeight : -1,
+      ghostOpacity: g ? getComputedStyle(g).opacity : null, ghostTransform: g ? getComputedStyle(g).transform : null } : null; })()`);
+
+  // 1 + 3. Slot colour and height (twin-peaks and the default theme, view and edit mode); the copy.
+  const slotRuns = [];
+  let ghost = null;
+  let probeInfo = null;
+  for (const [theme, accentC] of [['twin-peaks', '#880000'], ['cyberpunk', '#00f0ff']]) {
+    const loaded = await setTheme(rT, theme, accentC);
+    const want = await resolved(rT, '--accent-text');
+    const accent = await resolved(rT, '--accent-c');
+    for (const edit of [false, true]) {
+      await page(rT).eval(edit ? 'enterEditMode(), true' : 'exitEditMode(), true');
+      const probeColour = PROBE && theme === 'twin-peaks' && !edit
+        // Probe: the slot drawn in M2's --accent-c (the token it uses is pointed at --accent-c on the slot itself).
+        ? () => page(rT).eval(`(() => { const s = document.querySelector('#app-grid .drop-slot'); if (s) { s.style.setProperty('--accent-text', 'var(--accent-c)'); s.dataset.probe = '1'; } return { found: !!s, count: document.querySelectorAll('#app-grid .drop-slot').length, after: s ? getComputedStyle(s).borderTopColor : null }; })()`) : null;
+      const probeGhost = PROBE && theme === 'twin-peaks' && !edit
+        ? async () => { probeInfo = await probeColour(); await page(rT).eval(`(() => { const g = document.querySelector('body > .drag-ghost'); if (g) g.style.setProperty('opacity', '0.6', 'important'); return true; })()`); } : null;
+      const { m } = await hoverOverTile(rT, 1, async () => {
+        const s = await SLOT(rT);
+        const src = await page(rS).eval(`(() => { const g = document.querySelector('body > .drag-ghost'); return g ? getComputedStyle(g).transform : null; })()`);
+        return { ...s, srcTransform: src };
+      }, probeGhost);
+      slotRuns.push({ theme, edit, loaded, want, accentDiffers: accent !== want, ...m });
+      if (!ghost && m) ghost = m;
+    }
+    await page(rT).eval('exitEditMode(), true');
+  }
+  check('slot (A1): 2 px dashed --accent-text in twin-peaks and cyberpunk; its height equals a tile\'s in view and edit mode',
+    slotRuns.length === 4 && slotRuns.every((r) => r.loaded && r.color === r.want && r.style === 'dashed' && r.width === '2px' && r.h === r.tileH) && slotRuns.some((r) => r.theme === 'twin-peaks' && r.accentDiffers),
+    { runs: slotRuns.map((r) => ({ theme: r.theme, edit: r.edit, color: r.color, want: r.want, h: r.h, tileH: r.tileH, probe: r.probe, slots: r.slots })), probeInfo });
+  check('copy (A3): the target\'s copy has opacity 0.93 and the same transform as the source ghost',
+    !!ghost && ghost.ghostOpacity === '0.93' && !!ghost.ghostTransform && ghost.ghostTransform === ghost.srcTransform,
+    ghost && { opacity: ghost.ghostOpacity, target: ghost.ghostTransform, source: ghost.srcTransform });
+
+  // 2. The empty-region hint: hidden mid-preview, back after the pointer leaves.
+  await page(rE).eval('exitEditMode(), true');
+  const hintBefore = await page(rE).eval(`getComputedStyle(document.getElementById('drop-hint')).display`);
+  const { m: hintMid, afterLeave: hintAfter } = await hoverOverTile(rE, 0,
+    () => page(rE).eval(`getComputedStyle(document.getElementById('drop-hint')).display`),
+    PROBE ? () => page(rE).eval(`document.getElementById('drop-hint').style.setProperty('display', 'flex', 'important'), true`) : null);
+  if (PROBE) await page(rE).eval(`document.getElementById('drop-hint').style.removeProperty('display'), true`);
+  check('empty region (A2): the hint is display none mid-preview and back after the pointer leaves',
+    hintBefore !== 'none' && hintMid === 'none' && hintAfter.hint !== 'none' && hintAfter.hint === hintBefore, { before: hintBefore, mid: hintMid, after: hintAfter.hint });
+
+  // 6. Reflow: the close animates when the pointer leaves; none under reduced motion; none in-region; none on a system cancel.
+  const closeNormal = await hoverOverTile(rT, 1, async () => true, PROBE ? () => page(rT).eval(`document.body.classList.add('reduced-motion'), true`) : null);
+  if (PROBE) await page(rT).eval(`document.body.classList.remove('reduced-motion'), true`);
+  await page(rT).eval(`document.body.classList.add('reduced-motion'), true`);
+  const closeReduced = await hoverOverTile(rT, 1, async () => true);
+  await page(rT).eval(`document.body.classList.remove('reduced-motion'), true`);
+  // System cancel: a display change (stand-in work area) while hovering.
+  let d = await desc();
+  await page(rS).eval('__qlSim.press(0)');
+  const tile1 = await page(rT).eval(`(() => { const b = [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')][1].getBoundingClientRect(); return { x: b.left + 10, y: b.top + b.height / 2 }; })()`);
+  let pp = toPage(d, rS, { x: reg(d, rT).windowDip.x + tile1.x, y: reg(d, rT).windowDip.y + tile1.y });
+  await page(rS).eval(`__qlSim.moveTo(${pp.x}, ${pp.y})`);
+  await sleep(300);
+  const hadSlot = await page(rT).eval(`!!document.querySelector('#app-grid .drop-slot')`);
+  await page(rT).eval('__qlRec.take(), true');
+  await T('set-work-area', { rect: { x: wa.x, y: wa.y, width: Math.min(wa.width, 2400), height: Math.min(wa.height, 1000) } });
+  await sleep(500);
+  const cancelAnim = await page(rT).eval('__qlRec.take()');
+  await page(rS).eval('__qlSim.release()');
+  await T('set-work-area', { rect: null });
+  await sleep(700);
+  // In-region reorder in Tools: no animation is ever created on its tiles.
+  const reorderAnim = await page(rS).eval(`(async () => {
+    const tiles = () => [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')];
+    if (tiles().length < 2) return { tiles: tiles().length, animated: 0 };
+    const b = tiles()[1].getBoundingClientRect();
+    __qlSim.press(0); let animated = 0;
+    for (let i = 1; i <= 6; i++) { await __qlSim.moveTo(b.left + b.width * 0.75, b.top + b.height / 2, 1); animated = Math.max(animated, tiles().filter((t) => __qlRec.plain(t) > 0).length); }
+    __qlSim.release(); await new Promise((r) => setTimeout(r, 200));
+    animated = Math.max(animated, tiles().filter((t) => __qlRec.plain(t) > 0).length);
+    return { tiles: tiles().length, animated };
+  })()`);
+  const normalAnim = (closeNormal.afterLeave.anim || []).reduce((a, b) => Math.max(a, b), 0);
+  const reducedAnim = (closeReduced.afterLeave.anim || []).reduce((a, b) => Math.max(a, b), 0);
+  check('reflow (A6): the gap closes with a running animation when the pointer leaves; none under reduced motion, in-region reorder or a system cancel',
+    (OS_REDUCED ? normalAnim === 0 : normalAnim > 0) && reducedAnim === 0 && hadSlot && cancelAnim.length >= 1 && cancelAnim.every((n) => n === 0) && reorderAnim.animated === 0 && reorderAnim.tiles >= 2,
+    { osReducedMotion: OS_REDUCED, onLeave: closeNormal.afterLeave.anim, reduced: closeReduced.afterLeave.anim, systemCancel: cancelAnim, inRegion: reorderAnim });
+
+  // 4. Shift+F10 = the Menu key: edit mode one tile menu per press; view mode enters edit mode on that tile.
+  await page(rT).eval('enterEditMode(), __qlSim.focusTile(0)');
+  const m0 = (await T('menus')).menus.length;
+  await page(rT).eval(`__qlSim.key('F10', { shiftKey: true }), document.activeElement.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })), true`);
+  await sleep(150);
+  await page(rT).eval(`__qlSim.focusTile(0), __qlSim.key('ContextMenu'), document.activeElement.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })), true`);
+  await sleep(200);
+  const editMenus = (await T('menus')).menus.slice(m0);
+  const view = [];
+  for (const [key, mods] of [['F10', { shiftKey: true }], ['ContextMenu', {}]]) {
+    await sleep(900);
+    await page(rT).eval('exitEditMode(), true');
+    const id = PROBE && key === 'F10'
+      ? await page(rT).eval(`(document.activeElement && document.activeElement.blur(), document.body.focus(), null)`)
+      : await page(rT).eval(`(__qlSim.focusTile(2), document.activeElement.dataset.id)`);
+    await page(rT).eval(`__qlSim.key(${JSON.stringify(key)}, ${JSON.stringify(mods)}), true`);
+    await sleep(150);
+    view.push({ key, ...(await page(rT).eval(`({ edit: document.body.classList.contains('edit-mode'), focus: document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.id || null : null })`)), want: id || 'm2b-2' });
+  }
+  const viewMenus = (await T('menus')).menus.length - m0 - editMenus.length;
+  check('Shift+F10 = Menu key (A4): one tile menu per press in edit mode; in view mode the region enters edit mode with focus on that tile',
+    editMenus.length === 2 && editMenus.every((m) => m.kind === 'tile' && m.itemId === 'm2b-0') && viewMenus === 0 && view.every((v) => v.edit && v.focus === v.want),
+    { editMenus: editMenus.map((m) => m.itemId), view, viewMenus });
+
+  // 5. Ctrl+Up / Ctrl+Down move one row (12 tiles; 5 columns if the region can be made that wide).
+  const cols = () => page(rT).eval(`computeColumnCount([...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot):not(.filter-hidden)')])`);
+  for (let i = 0; i < 4 && (await cols()) !== 5; i++) {
+    const c = await cols();
+    const dx = (5 - c) * 104 + (c < 5 ? 8 : -8);
+    for (const edge of ['right', 'left']) {
+      const r = await page(rT).eval(`(async () => { await window.api.invoke('region:resize', { phase: 'start', edges: { ${edge}: true } }); const r = await window.api.invoke('region:resize', { phase: 'move', dx: ${edge === 'right' ? dx : -dx}, dy: 0, alt: true }); await window.api.invoke('region:resize', { phase: 'end' }); return r; })()`);
+      await sleep(250);
+      if (r && !r.blocked) break;
+    }
+  }
+  const C = await cols();
+  const order = () => page(rT).eval('__qlSim.order()');
+  const step = (list, visible, id, delta) => { // the rule, written out independently of tile-order.js
+    const vi = visible.indexOf(id); const ni = vi + delta;
+    if (vi < 0 || ni < 0 || ni >= visible.length) return list;
+    const rest = list.filter((x) => x !== id); const at = rest.indexOf(visible[ni]);
+    rest.splice(delta < 0 ? at : at + 1, 0, id); return rest;
+  };
+  await page(rT).eval('enterEditMode(), true');
+  const cases = [];
+  const press = async (index, key) => {
+    const before = await order();
+    const id = before[index];
+    await page(rT).eval(`(() => { const t = [...document.querySelectorAll('#app-grid .app-tile')].find((x) => x.dataset.id === ${JSON.stringify(id)}); t.focus(); return true; })()`);
+    const k = PROBE && cases.length === 0 ? 'ArrowRight' : key;
+    await page(rT).eval(`__qlSim.key(${JSON.stringify(k)}, { ctrlKey: true }), true`);
+    await sleep(250);
+    const after = await order();
+    const want = step(before, before, id, key === 'ArrowDown' ? C : -C);
+    const st = await page(rT).eval(`({ status: document.querySelector('.ql-sr-status') ? document.querySelector('.ql-sr-status').textContent : null, focus: document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.id : null })`);
+    cases.push({ index, key, ok: JSON.stringify(after) === JSON.stringify(want), moved: JSON.stringify(after) !== JSON.stringify(before), to: after.indexOf(id), focus: st.focus === id, status: st.status });
+  };
+  await press(2, 'ArrowDown');                // to 2 + C
+  await press(12 - C + (C === 5 ? 1 : 0), 'ArrowDown'); // 5 columns: index 8, nothing
+  await press(Math.max(0, C - 2), 'ArrowUp');  // 5 columns: index 3, nothing
+  await press(2 + C, 'ArrowUp');              // back to 2
+  // With a filter: only the visible (ALPHA) tiles count.
+  await page(rT).eval(`setFilter('alpha'), true`);
+  const fBefore = await order();
+  const fVisible = await page(rT).eval(`[...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot):not(.filter-hidden)')].map((t) => t.dataset.id)`);
+  const fC = await cols();
+  await page(rT).eval(`(() => { const t = [...document.querySelectorAll('#app-grid .app-tile:not(.filter-hidden)')][0]; t.focus(); return true; })()`);
+  await page(rT).eval(`__qlSim.key('ArrowDown', { ctrlKey: true }), true`);
+  await sleep(250);
+  const fAfter = await order();
+  const fWant = step(fBefore, fVisible, fVisible[0], fC);
+  await page(rT).eval(`clearFilter(), exitEditMode(), true`);
+  const [a, b, c2, e] = cases;
+  check(`Ctrl+Up / Ctrl+Down (A5, ${C} columns, 12 tiles): one row; off the visible tiles nothing; the status line says the place`,
+    C >= 2 && a.ok && a.moved && a.to === 2 + C && a.focus && a.status === `Moved to ${3 + C} of 12.` && b.ok && !b.moved && c2.ok && !c2.moved && e.ok && e.to === 2
+    && fVisible.length > fC && JSON.stringify(fAfter) === JSON.stringify(fWant) && JSON.stringify(fAfter) !== JSON.stringify(fBefore),
+    { columns: C, cases, filter: { visible: fVisible.length, columns: fC, ok: JSON.stringify(fAfter) === JSON.stringify(fWant) } });
+
+  // Fallback focus 3: an activation makes the region active: --border-h, no focus ring, no filter chip.
+  await setTheme(rE, 'cyberpunk', '#00f0ff'); // a theme without the border-pulse animation
+  const wasActive = (await desc()).active === rE;
+  const act = PROBE ? { ok: true, probe: 'no activation' } : await T('emit-focus', { regionId: rE });
+  await sleep(300);
+  const actState = await page(rE).eval(`(() => { const e = document.createElement('div'); e.style.color = 'var(--border-h)'; document.body.appendChild(e); const want = getComputedStyle(e).color; e.remove();
+    return { active: document.body.classList.contains('region-active'), border: getComputedStyle(document.getElementById('app'), '::before').borderTopColor, want,
+      ring: !!document.querySelector(':focus-visible'), chip: !document.getElementById('filter-chip').classList.contains('hidden') }; })()`);
+  check('activation (fallback focus 3): the region becomes active with the --border-h border; no tile ring, no filter chip',
+    !wasActive && act.ok && actState.active && actState.border === actState.want && !actState.ring && !actState.chip, { wasActive, ...actState });
+
+  // Option A, risk 2: the desktop-child to top-level path (attached mode): drop to fallback, then back.
+  if (!FALLBACK) {
+    const rF = ids[4];
+    // The state is read inside the hook, right after the drop: the next watchdog tick re-attaches.
+    // (Probe: the other region's state is read instead.)
+    const f = await T('force-fallback', { regionId: rF });
+    const mid = PROBE ? reg(await desc(), ids[3]).host : f.after;
+    let back = null;
+    for (let i = 0; i < 20; i++) { back = reg(await desc(), rF); if (back.host.mode === 'attached') break; await sleep(250); }
+    check('drop to fallback (Option A risk 2): a desktop child becomes a shown top-level window, then re-attaches (the observer gate covers it)',
+      f.ok && !!mid && mid.mode === 'fallback' && !mid.win.child && mid.win.visible && back.host.mode === 'attached' && back.host.win.child && back.host.win.z && back.host.win.z.above,
+      { forced: f.ok, mid: mid && { mode: mid.mode, child: mid.win.child, visible: mid.win.visible }, back: { mode: back.host.mode, child: back.host.win.child } });
+  }
+}
+
+// A desktop point at least 40 px from every region panel (shared by the M2 and M2b checks).
+function emptyDesktopPoint(d, inner) {
+  const panels = d.regions.map((r) => r.shown);
+  for (let y = inner.y + 40; y < inner.y + inner.height - 40; y += 24) {
+    for (let x = inner.x + 40; x < inner.x + inner.width - 40; x += 24) {
+      if (panels.every((r) => x < r.x - 40 || x > r.x + r.width + 40 || y < r.y - 40 || y > r.y + r.height + 40)) return { x, y };
+    }
+  }
+  return { x: -99999, y: -99999 };
+}
+
 let failed = false;
 try {
   await run();
@@ -810,21 +1068,22 @@ try {
 }
 for (const s of pages.values()) s.close();
 const code = await Promise.race([guardDone, sleep((TIMEOUT + 60) * 1000).then(() => 'timeout')]);
-if (fgTimer) clearInterval(fgTimer);
 const out = guardOut.join('');
-const pidLine = /pid (\d+)/.exec(out);
-ourPid = pidLine ? Number(pidLine[1]) : null;
-if (fg) {
-  const hits = fgSamples.filter((s) => s.cls === 'Progman' || s.cls === 'WorkerW' || (ourPid && s.pid === ourPid));
-  const ours = hits.length;
-  // Which window, and during which step (the next check recorded after it).
-  for (const h of hits.slice(0, 6)) {
-    const next = results.find((r) => r.at >= h.at);
-    console.log(`foreground hit: ${h.cls} ${ourPid && h.pid === ourPid ? '(our process)' : '(not our process)'} before check: ${next ? next.name : 'end of run'}`);
-  }
-  const changed = fgSamples.filter((s) => fgStart && s.hwnd !== fgStart.hwnd).length;
-  check('focus: the foreground never became ours or the desktop', ours === 0, { samples: fgSamples.length, oursOrDesktop: ours, otherChanges: changed });
-}
+// The observer runs on past the app's exit, so the quit path is covered too.
+await sleep(800);
+writeFileSync(`${OBS_LOG}.stop`, '');
+if ((await Promise.race([observerDone, sleep(6000).then(() => 'timeout')])) === 'timeout') { try { observer.kill(); } catch { /* gone */ } }
+const fgEvents = readEvents(existsSync(OBS_LOG) ? readFileSync(OBS_LOG, 'utf8') : '');
+// --probe: one foreground event for this build, as the unguarded SetParent produced (TechPlan 7.1).
+if (PROBE) fgEvents.push({ t: Date.now(), ev: 'FOREGROUND', now: { cls: 'Chrome_WidgetWin_1', proc: EXE, visible: false }, prev: { cls: 'probe', proc: 'probe.exe', visible: true } });
+const fv = foregroundVerdict(fgEvents, { exe: EXE });
+for (const c of fv.changes) console.log(`foreground change +${c.at} ms: ${c.from} -> ${c.to}${c.ours ? '   <-- THIS BUILD' : ''}`);
+console.log(`foreground changes during the run: ${fv.changes.length} (to this build: ${fv.ours.length})`);
+check('focus: no foreground change went to this build (out-of-process observer, launch to after quit)', fv.ok && fv.started && fv.ended,
+  { hooks: fv.hooksOk, toThisBuild: fv.ours.length, allChanges: fv.changes.length });
+// Liveness: the hook sees this build's top-level windows (fallback windows; in attached mode the forced drop to fallback).
+const needShows = FALLBACK ? 8 : 1;
+check('focus: the observer saw top-level windows of this build (it is watching our process)', fv.ourShows >= needShows, { ourShows: fv.ourShows, need: needShows });
 check('guard: clean run (exited, nothing left, startup keys and real data untouched)', code === 0 && /ended by exited/.test(out) && /remaining 0/.test(out.replace(/remaining\s+/, 'remaining ')),
   (out.match(/CITE:.*$/m) || ['no CITE line'])[0]);
 // Renderer errors: Chromium logs console messages with --enable-logging.

@@ -58,3 +58,29 @@ test('stepOrder: with a filter, the tile passes the next VISIBLE tile', () => {
   assert.deepEqual(T.stepOrder(order, visible, 'a', 1), ['b', 'c', 'a', 'd']);
   assert.deepEqual(T.stepOrder(order, visible, 'c', -1), ['c', 'a', 'b', 'd']);
 });
+
+// ── M2b (addendum A5): Ctrl+Up / Ctrl+Down move one row ─────────────────────
+test('stepOrder: a signed place count; the tile goes after (later) or before (earlier) the tile at the target place', () => {
+  const v = ['a', 'b', 'c', 'd', 'e'];
+  assert.deepEqual(T.stepOrder(v, v, 'a', 3), ['b', 'c', 'd', 'a', 'e'], 'the addendum example');
+  assert.deepEqual(T.stepOrder(v, v, 'e', -3), ['a', 'e', 'b', 'c', 'd']);
+  assert.equal(T.stepOrder(v, v, 'c', 3), null, 'past the end: nothing, no clamp');
+  assert.equal(T.stepOrder(v, v, 'b', -2), null, 'before the start: nothing, no wrap');
+  assert.equal(T.stepOrder(v, v, 'b', 0), null);
+});
+
+test('stepOrder: 12 tiles, 5 columns (Futaba measure 5)', () => {
+  const order = Array.from({ length: 12 }, (_, i) => 't' + i);
+  const down2 = T.stepOrder(order, order, 't2', 5);
+  assert.equal(down2.indexOf('t2'), 7, 'Ctrl+Down on index 2 goes to 7');
+  assert.equal(T.stepOrder(order, order, 't8', 5), null, 'index 8 down: nothing');
+  assert.equal(T.stepOrder(order, order, 't3', -5), null, 'index 3 up: nothing');
+  assert.equal(T.stepOrder(order, order, 't7', -5).indexOf('t7'), 2, 'index 7 up goes to 2');
+  assert.deepEqual(T.stepOrder(down2, down2, 't2', -5), order, 'and back');
+});
+
+test('stepOrder: with a filter, a row is counted in visible tiles only', () => {
+  const order = ['a0', 'b1', 'a2', 'b3', 'a4', 'b5', 'a6', 'b7'];
+  const visible = ['a0', 'a2', 'a4', 'a6'];
+  assert.deepEqual(T.stepOrder(order, visible, 'a0', 2), ['b1', 'a2', 'b3', 'a4', 'a0', 'b5', 'a6', 'b7']);
+});

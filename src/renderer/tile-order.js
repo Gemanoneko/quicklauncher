@@ -47,15 +47,20 @@
   }
 
   /**
-   * Ctrl+Arrow (spec 5.3, 7.4): move `id` one place earlier (delta -1) or later
-   * (+1) among the tiles the user can see (a filter may hide some). `order` is
-   * every item id in display order, `visible` the shown ones in the same order.
-   * Returns the new order, or null at either end.
+   * Ctrl+Arrow (spec addendum A5): move `id` by `delta` places among the tiles
+   * the user can see (a filter may hide some): -1 / +1 for Left / Right,
+   * -cols / +cols for Up / Down (one row). The tile goes before the tile now
+   * at the target place when moving earlier, after it when moving later; the
+   * tiles in between shift one place. A target outside the visible tiles does
+   * nothing (no clamp, no wrap), like the plain arrows. `order` is every item
+   * id in display order, `visible` the shown ones in the same order.
+   * Returns the new order, or null.
    */
   function stepOrder(order, visible, id, delta) {
     const vi = visible.indexOf(id);
-    if (vi < 0 || !order.includes(id)) return null;
-    const ni = vi + (delta < 0 ? -1 : 1);
+    const d = Math.trunc(delta);
+    if (vi < 0 || !d || !order.includes(id)) return null;
+    const ni = vi + d;
     if (ni < 0 || ni >= visible.length) return null;
     const neighbour = visible[ni];
     const rest = order.filter((x) => x !== id);

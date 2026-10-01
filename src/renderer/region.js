@@ -2,10 +2,10 @@
    the grid itself is app.js, unchanged; this file adds what makes the page a
    region. It uses app.js globals at call time: apps, renderGrid,
    enterEditMode, exitEditMode, clearFilter, startRename, removeApp,
-   addAppFromDialog, createAppTile, saveApps, cancelReorder; and
+   addAppFromDialog, createAppTile, saveApps, cancelReorder, computeColumnCount; and
    tile-order.js (window.QL_TILE_ORDER), loaded before it.
    global api, apps, renderGrid, enterEditMode, exitEditMode, clearFilter,
-   startRename, removeApp, addAppFromDialog, createAppTile, saveApps, cancelReorder */
+   startRename, removeApp, addAppFromDialog, createAppTile, saveApps, cancelReorder, computeColumnCount */
 (function () {
   'use strict';
   const api = window.api;
@@ -455,7 +455,10 @@
   }
 
   function makeSlot() {
-    // Same inner boxes as a tile (both hidden, region.css), so the slot is a tile's size in every theme.
+    // Same inner boxes as a tile (both hidden, region.css). Its height is a
+    // real tile's, to the pixel (addendum A1): the slot's 2 px border against
+    // the tile's 1 px, or edit mode's renameable label, would otherwise make
+    // its row taller and shift every row below. The width comes from the grid.
     const el = document.createElement('div');
     el.className = 'app-tile drop-slot';
     el.setAttribute('aria-hidden', 'true');
@@ -465,6 +468,8 @@
     label.className = 'tile-label';
     label.textContent = String.fromCharCode(160); // one line of label height (nbsp)
     el.append(wrap, label);
+    const ref = gridTiles().find((t) => !t.classList.contains('filter-hidden'));
+    if (ref && ref.offsetHeight) el.style.height = `${ref.offsetHeight}px`;
     return el;
   }
 
@@ -478,8 +483,26 @@
     drop.slotIndex = index;
   }
 
-  function removeSlot() {
-    if (drop && drop.slot) { drop.slot.remove(); drop.slot = null; drop.slotIndex = -1; }
+  // The slot goes through the same reflow when the pointer leaves, so the gap
+  // closes as it opened (addendum A6); at once on a system cancel.
+  function removeSlot({ animate = false } = {}) {
+    if (!drop || !drop.slot) return;
+    const s = drop.slot;
+    drop.slot = null;
+    drop.slotIndex = -1;
+    if (animate && s.isConnected) reflow(() => s.remove()); else s.remove();
+  }
+
+  // After a drop the slot stays until this page's new items replace it
+  // (renderGrid), so no frame shows the gap closed (A6). A refused drop, or
+  // items that never come, take it away.
+  let kept = null; // { dragId, slot, timer }
+  function dropKeptSlot() {
+    if (!kept) return;
+    clearTimeout(kept.timer);
+    kept.slot.remove();
+    kept = null;
+    if (!drop) body.classList.remove('tile-drop-preview');
   }
 
   function placeGhost(x, y) {
@@ -518,12 +541,13 @@
     }
   }
 
-  function endDropPreview() {
+  function endDropPreview({ animate = false, keepHintHidden = false } = {}) {
     if (!drop) return;
-    removeSlot();
+    removeSlot({ animate });
     if (drop.ghost) drop.ghost.remove();
     if (drop.bannerText !== null) elBannerText.textContent = drop.bannerText;
-    body.classList.remove('tile-drop-valid', 'tile-drop-rejected', 'tile-drop-preview');
+    body.classList.remove('tile-drop-valid', 'tile-drop-rejected');
+    if (!keepHintHidden) body.classList.remove('tile-drop-preview');
     drop = null;
   }
 
@@ -542,25 +566,41 @@
 
   function dropHere(m) {
     // Released here: the slot under the pointer (computed fresh if no 'over' arrived first).
+    dropKeptSlot();
     if (!drop || drop.dragId !== m.dragId) {
       endDropPreview();
       drop = { dragId: m.dragId, item: null, ghost: null, slot: null, slotIndex: -1, rejected: null, bannerText: null };
     }
     const index = slotIndexAt(m.x, m.y).index;
-    endDropPreview();
-    api.invoke('region:tile-drop', { dragId: m.dragId, index }).catch(() => {});
+    const slot = drop.slot && drop.slot.isConnected ? drop.slot : null;
+    drop.slot = null;
+    endDropPreview({ keepHintHidden: !!slot });
+    if (slot) kept = { dragId: m.dragId, slot, timer: setTimeout(dropKeptSlot, 2500) };
+    api.invoke('region:tile-drop', { dragId: m.dragId, index }).catch(() => dropKeptSlot());
   }
 
   api.on('region:tile-drop-preview', (m) => {
     if (!m || typeof m !== 'object' || !Number.isFinite(m.dragId)) return;
     if (m.phase === 'over' && Number.isFinite(m.x) && Number.isFinite(m.y)) dropOver(m);
-    else if (m.phase === 'leave') { if (drop && drop.dragId === m.dragId) endDropPreview(); }
+    else if (m.phase === 'leave') {
+      if (drop && drop.dragId === m.dragId) endDropPreview({ animate: !m.instant });
+      if (kept && kept.dragId === m.dragId) dropKeptSlot();
+    }
     else if (m.phase === 'drop' && Number.isFinite(m.x) && Number.isFinite(m.y)) dropHere(m);
   });
 
-  // Ctrl+Arrow (edit mode): one place earlier or later among the visible tiles (spec 5.3, 7.4).
+  // Each Ctrl+Arrow move is announced in a visually hidden status line (A5).
+  const srStatus = document.createElement('div');
+  srStatus.className = 'ql-sr-status';
+  srStatus.setAttribute('role', 'status');
+  srStatus.setAttribute('aria-live', 'polite');
+  body.appendChild(srStatus);
+  const visibleTiles = () => [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot):not(.filter-hidden)')];
+
+  // Ctrl+Arrow (edit mode, addendum A5): Left / Right one place, Up / Down one
+  // row (the column count the plain arrows use), among the visible tiles.
   async function moveTileBy(id, delta) {
-    const visible = [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot):not(.filter-hidden)')].map((t) => t.dataset.id);
+    const visible = visibleTiles().map((t) => t.dataset.id);
     const next = T.stepOrder(apps.map((a) => a.id), visible, id, delta);
     if (!next) return;
     const byId = new Map(apps.map((a) => [a.id, a]));
@@ -568,6 +608,8 @@
     renderGrid();
     const tile = tileOf(id);
     if (tile) tile.focus();
+    const shown = visibleTiles();
+    srStatus.textContent = `Moved to ${shown.indexOf(tile) + 1} of ${shown.length}.`;
     await saveApps();
   }
 
@@ -612,12 +654,26 @@
     if (handleFocused && e.key === 'F2') { stop(e); startRegionRename(); return; }
     if (handleFocused && menuKey) { stop(e); keyMenuUntil = performance.now() + 800; openRegionMenuAtButton(); return; }
     const tile = focus && focus.closest ? focus.closest('.app-tile:not(.drop-slot)') : null;
+    // Menu key or Shift+F10 on a tile in view mode: as a right-click on a tile,
+    // the region enters edit mode; focus stays on that tile, so the next press
+    // opens its menu (addendum A4).
+    if (tile && !isEditing() && menuKey) {
+      stop(e);
+      keyMenuUntil = performance.now() + 800;
+      const id = tile.dataset.id;
+      enterEditMode(); // re-renders the grid
+      const again = tileOf(id);
+      if (again) again.focus();
+      return;
+    }
     if (tile && isEditing()) {
       if (e.key === 'F2') { stop(e); renameTile(tile.dataset.id); return; }
       if (e.key === 'Delete') { stop(e); removeFocusedTile(tile); return; }
       if (e.ctrlKey && !e.altKey && !e.metaKey && ARROWS[e.key]) {
         stop(e);
-        moveTileBy(tile.dataset.id, e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1);
+        const row = e.key === 'ArrowUp' || e.key === 'ArrowDown';
+        const step = row ? computeColumnCount(visibleTiles()) : 1;
+        moveTileBy(tile.dataset.id, (e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1) * step);
         return;
       }
       if (menuKey) {
@@ -646,7 +702,8 @@
   api.on('region:items-changed', (items) => {
     if (!Array.isArray(items)) return;
     apps = items;
-    renderGrid();
+    renderGrid(); // also replaces a slot kept after a drop
+    dropKeptSlot();
   });
   // Hidden and shown again: back in view mode (spec 7.2).
   api.on('region:reset-view', () => {
