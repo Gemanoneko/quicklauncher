@@ -1,262 +1,131 @@
-/* ══ WARHAMMER 40,000 ══════════════════════════════════════════════════════════
-   The Imperium of Man. Grimdark gothic future.
-   Imperial gold on ash and parchment, etched into the void like scripture
-   carved into adamantium. Ave Imperator.
-   ══════════════════════════════════════════════════════════════════════════════ */
+/* == WARHAMMER 40K: IMPERIUM ===================================================
+   Batch 4 tone-down with a new frame (theme spec 2026-10-01, section 6).
+   Gothic gold and parchment: a blind arcade under the header, piers with
+   red-glass lancet niches, two purity seals in the header, an aged-parchment
+   banner with a wax seal and a triple-lancet window, an octagonal window,
+   arch-crowned plates. Bundled UnifrakturCook title (lowercase), Cinzel 500
+   labels and IM Fell English banner; Palatino body. No texture, no looping
+   motion.
+   Spec flag 1 (parchment), built at the spec default "bright": the banner
+   surface #C8B78A is the last value of the #theme-banner background below and
+   appears nowhere else. "Mid" is that one hex set to #A89868 (ink 6.42:1).
+   ============================================================================== */
 
 :root {
-  /* Backgrounds */
-  --bg:                   #080401;
-  --panel-bg:             rgba(12, 7, 2, 0.98);
-  --overlay-bg:           rgba(8, 4, 1, 0.93);
-  --header-bg:            rgba(16, 9, 2, 0.97);
-
-  /* Typography — gothic serif */
-  --font:                 Georgia, 'Times New Roman', serif;
-  --text:                 #C8B896;
-  --text-dim:             #a8907a;
-
-  /* Shape — heavy octagonal chamfer, like a heraldic shield */
-  --radius:               0px;
-  --app-clip:             polygon(0 16px, 16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px));
-  --overlay-clip:         polygon(0 16px, 16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px));
-
-  /* Accent palette — imperial gold / blood red / bone */
-  --accent-c:             #C8900A;
-  --accent-m:             #8B0000;
-  --accent-y:             #D4A820;
-
-  /* Borders */
-  --border:               rgba(200, 144, 10, 0.22);
-  --border-h:             rgba(200, 144, 10, 0.70);
-
-  /* Glows — candlelight and ember */
-  --glow-c:               0 0 6px rgba(200, 144, 10, 0.7), 0 0 20px rgba(200, 144, 10, 0.3), 0 0 40px rgba(200, 144, 10, 0.1);
-  --glow-m:               0 0 6px rgba(139, 0, 0, 0.8), 0 0 18px rgba(139, 0, 0, 0.4);
-  --glow-y:               0 0 6px rgba(212, 168, 32, 0.7), 0 0 20px rgba(212, 168, 32, 0.3);
-  --pulse-glow:           inset 0 0 28px rgba(200, 144, 10, 0.15), inset 0 0 8px rgba(139, 0, 0, 0.1);
-
-  /* Scanlines — parchment crosshatch grain */
-  --scanlines:            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cline x1='0' y1='6' x2='6' y2='0' stroke='rgba(200,144,10,0.04)' stroke-width='0.5'/%3E%3Cline x1='-1' y1='1' x2='1' y2='-1' stroke='rgba(200,144,10,0.04)' stroke-width='0.5'/%3E%3Cline x1='5' y1='7' x2='7' y2='5' stroke='rgba(200,144,10,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
-
-  /* Title — candle-flicker pulse with occasional red flash */
-  --title-anim:           wh-flicker 7s ease-in-out infinite;
-
-  /* Tiles */
-  --tile-hover-bg:        rgba(200, 144, 10, 0.07);
-  --tile-hover-border:    #C8900A;
-  --tile-hover-shadow:    0 0 10px rgba(200, 144, 10, 0.4), inset 0 0 8px rgba(200, 144, 10, 0.05);
-  --tile-active-bg:       rgba(200, 144, 10, 0.14);
-  --tile-icon-glow:       drop-shadow(0 0 5px rgba(200, 144, 10, 0.8)) drop-shadow(0 0 12px rgba(200, 144, 10, 0.4));
-  --tile-icon-fx:         sepia(0.2) contrast(1.25) brightness(0.88);
-  --tile-icon-shape:      polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
-  --tile-label-spacing:   1.5px;
+  --radius: 0px;
+  --app-clip: polygon(0 14px, 14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px));
+  --overlay-clip: polygon(0 14px, 14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px));
+  --bg: #0E0C0A;
+  --panel-bg: #16120D;
+  --overlay-bg: #0E0C0A;
+  --header-bg: #17120C;
+  --font: 'Palatino Linotype', Palatino, Georgia, serif;
+  --text: #D9C9A1;
+  --text-dim: #A8996F;
+  --accent-c: #C79A2C;
+  --accent-m: #E2615A;
+  --accent-y: #C79A2C;
+  --accent-text: #E6C566;
+  --border: #3A2E18;
+  --border-h: #C79A2C;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #C79A2C;
+  --title-anim: none;
+  --tile-hover-bg: #1D1710;
+  --tile-hover-border: #C79A2C;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #1D1710;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: sepia(0.15) saturate(0.9) contrast(1.05);
+  --tile-icon-shape: polygon(0 26%, 6% 14%, 50% 0, 94% 14%, 100% 26%, 100% 100%, 0 100%);
+  --tile-label-spacing: 0.6px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 1.2s ease-out forwards;
-
-  /* Buttons */
-  --btn-hover-bg:         rgba(200, 144, 10, 0.1);
-  --btn-active-bg:        rgba(200, 144, 10, 0.18);
-
-  /* Drop hint */
-  --drop-hint-border:     rgba(200, 144, 10, 0.3);
-  --drop-icon-color:      rgba(200, 144, 10, 0.45);
-  --hint-sub-color:       #a8907a;
-
-  /* Rename */
-  --rename-dashed:        rgba(200, 144, 10, 0.5);
-  --rename-input-bg:      rgba(200, 144, 10, 0.06);
-
-  /* Edit bar — blood red */
-  --edit-bar-bg:          rgba(139, 0, 0, 0.1);
-  --edit-bar-border:      rgba(139, 0, 0, 0.65);
-  --edit-label-color:     #AA1010;
-  --edit-label-glow:      0 0 8px rgba(139, 0, 0, 0.8), 0 0 20px rgba(139, 0, 0, 0.4);
-  --btn-done-color:       #AA1010;
-  --btn-done-border:      rgba(139, 0, 0, 0.6);
-  --btn-done-hover-bg:    rgba(139, 0, 0, 0.14);
-  --btn-done-hover-glow:  0 0 10px rgba(139, 0, 0, 0.6);
-  --btn-add-border:       rgba(200, 144, 10, 0.45);
-
-  /* Update banner — bright imperial gold */
-  --update-bg:            rgba(212, 168, 32, 0.07);
-  --update-border:        rgba(212, 168, 32, 0.6);
-  --update-color:         #D4A820;
-  --update-btn-border:    rgba(212, 168, 32, 0.55);
-  --update-btn-hover-bg:  rgba(212, 168, 32, 0.1);
-  --update-btn-hover-glow: 0 0 10px rgba(212, 168, 32, 0.55);
-
-  /* Settings CLOSE — blood red */
-  --btn-close-color:      #AA1010;
-  --btn-close-border:     rgba(139, 0, 0, 0.5);
-  --btn-close-hover-bg:   rgba(139, 0, 0, 0.1);
-  --btn-close-hover-glow: 0 0 10px rgba(139, 0, 0, 0.6);
-
-  /* Picker / search */
-  --picker-search-bg:         rgba(200, 144, 10, 0.05);
-  --picker-item-hover-bg:     rgba(200, 144, 10, 0.08);
-  --picker-item-active-bg:    rgba(200, 144, 10, 0.15);
-  --picker-placeholder-bg:    rgba(200, 144, 10, 0.06);
-
-  /* Skin / remove */
-  --skin-btn-active-bg:   rgba(200, 144, 10, 0.15);
-  --remove-btn-bg:        rgba(139, 0, 0, 0.14);
-  --remove-btn-border:    rgba(139, 0, 0, 0.6);
-
-  /* Drag */
-  --drag-over-glow:       inset 0 0 28px rgba(200, 144, 10, 0.25);
+  --tile-label-weight: 500;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #2A2012;
+  --btn-active-bg: #382B17;
+  --drop-hint-border: #4A3C1E;
+  --drop-icon-color: #7C6A3A;
+  --hint-sub-color: #A8996F;
+  --rename-dashed: #C79A2C;
+  --rename-input-bg: #1D1710;
+  --edit-bar-bg: #2B0E0D;
+  --edit-bar-border: #B0181B;
+  --edit-label-color: #EE857C;
+  --edit-label-glow: none;
+  --btn-done-color: #EE857C;
+  --btn-done-border: #B0181B;
+  --btn-done-hover-bg: #451514;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #7C6A3A;
+  --update-bg: #1E1810;
+  --update-border: #8A6E2C;
+  --update-color: #E6C566;
+  --update-btn-border: #8A6E2C;
+  --update-btn-hover-bg: #33281A;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E6C566;
+  --btn-close-border: #8A6E2C;
+  --btn-close-hover-bg: #33281A;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1D1710;
+  --picker-item-hover-bg: #1D1710;
+  --picker-item-active-bg: #2A2012;
+  --picker-placeholder-bg: #1D1710;
+  --skin-btn-active-bg: #2A2012;
+  --remove-btn-bg: #A01418;
+  --remove-btn-border: #E2615A;
 }
 
-/* ── Ember pulse — like candlelight in a cathedral, with Blood God flash ────── */
-#app { animation: wh-ember 10s ease-in-out infinite; }
-/* CPU-efficient: box-shadow ≥ 10s, minimal keyframes (tier 5) */
-@keyframes wh-ember {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(200,144,10,.22), inset 0 0 22px rgba(200,144,10,.10); }
-  35%      { box-shadow: 0 0 0 1px rgba(200,144,10,.48), inset 0 0 34px rgba(200,144,10,.18); }
-  65%      { box-shadow: 0 0 0 1px rgba(139,0,0,.30), inset 0 0 22px rgba(139,0,0,.08); }
-  88%      { box-shadow: 0 0 0 2px rgba(255,208,96,.82), inset 0 0 50px rgba(200,144,10,.20), 0 0 18px rgba(200,144,10,.28); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(200,144,10,.42), inset 0 0 26px rgba(200,144,10,.12); }
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #A01418; }
+.hotkey-input::placeholder, .theme-search::placeholder { color: var(--text-dim); }
 
-/* ── Header — heavy gold bottom border, imperial authority ─────────────────── */
-#header {
-  border-bottom: 2px solid rgba(200, 144, 10, 0.55);
-  box-shadow: 0 2px 12px rgba(200, 144, 10, 0.2), 0 1px 0 rgba(139, 0, 0, 0.3);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* ── Header left bar — imperial gold fading to blood red (heraldic gradient) ── */
-#header::before {
-  width: 6px;
-  background: linear-gradient(to bottom, #D4A820 0%, #C8900A 52%, #8B0000 100%);
-  box-shadow: 0 0 10px rgba(200,144,10,.8), 0 0 24px rgba(200,144,10,.4), 2px 0 16px rgba(139,0,0,.3);
-}
-
-/* ── Parchment crosshatch scanlines — barely visible grain ─────────────────── */
-#app::after {
-  content: '';
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cline x1='0' y1='8' x2='8' y2='0' stroke='rgba(200,168,100,0.04)' stroke-width='0.6'/%3E%3Cline x1='-1' y1='1' x2='1' y2='-1' stroke='rgba(200,168,100,0.04)' stroke-width='0.6'/%3E%3Cline x1='7' y1='9' x2='9' y2='7' stroke='rgba(200,168,100,0.04)' stroke-width='0.6'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 85% 85% at 50% 50%, transparent 50%, rgba(4, 2, 0, 0.45) 100%);
-  opacity: 1;
+/* header: a 3 px line inside it, the faction's emblem in the art zone */
+#header { border-bottom-color: #C79A2C; box-shadow: inset 0 -2px 0 #C79A2C; }
+#header::before { background: #C79A2C; box-shadow: none; }
+#header::after {
+  content: ''; position: absolute; top: 10px; right: 172px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Crect x='3' y='1' width='78' height='1.4' fill='rgb(122,92,24)'/%3E%3Ccircle cx='2.4' cy='1.7' r='1.7' fill='rgb(199,154,44)'/%3E%3Ccircle cx='81.6' cy='1.7' r='1.7' fill='rgb(199,154,44)'/%3E%3Cline x1='19' y1='2.4' x2='19' y2='3.2' stroke='rgb(122,92,24)' stroke-width='0.9'/%3E%3Cpath d='M16.4 8.6 H21.6 V19.4 L19 16.9 L16.4 19.4 Z' fill='rgb(217,201,161)' stroke='rgb(122,92,24)' stroke-width='0.5' stroke-linejoin='round'/%3E%3Ccircle cx='19' cy='7' r='4.3' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='0.9'/%3E%3Ccircle cx='19' cy='7' r='2.3' fill='none' stroke='rgb(204,70,66)' stroke-width='0.7'/%3E%3Cpath d='M37.5 19.2 V10 Q37.5 5.4 42 3.2 Q46.5 5.4 46.5 10 V19.2 Z' fill='rgb(44,34,18)' stroke='rgb(199,154,44)' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M39.7 19.2 V10.4 Q39.7 7.4 42 6.2 Q44.3 7.4 44.3 10.4 V19.2 Z' fill='rgb(100,12,14)'/%3E%3Cpath d='M42 6.2 V19.2' stroke='rgb(122,92,24)' stroke-width='0.6'/%3E%3Cline x1='65' y1='2.4' x2='65' y2='3.2' stroke='rgb(122,92,24)' stroke-width='0.9'/%3E%3Cpath d='M62.4 8.6 H67.6 V19.4 L65 16.9 L62.4 19.4 Z' fill='rgb(217,201,161)' stroke='rgb(122,92,24)' stroke-width='0.5' stroke-linejoin='round'/%3E%3Ccircle cx='65' cy='7' r='4.3' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='0.9'/%3E%3Ccircle cx='65' cy='7' r='2.3' fill='none' stroke='rgb(204,70,66)' stroke-width='0.7'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
   pointer-events: none;
 }
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: 'UnifrakturCook', 'Palatino Linotype', Palatino, Georgia, serif; font-weight: 700; font-style: normal; font-synthesis: none; line-height: 1.2; font-size: 12px; letter-spacing: 3px; text-transform: lowercase; color: #E6C566; text-shadow: none; }
+#title .accent { color: #E2615A; }
 
-/* ── Grid: Style B — The Imperial Aquila (double-headed eagle seal) ───────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='4' fill='rgba(200,144,10,0.50)'%3EIMPERIUM OF MAN%3C/text%3E%3Ctext x='250' y='36' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(200,144,10,0.32)'%3EAVE IMPERATOR -- TERRA -- M41%3C/text%3E%3Ccircle cx='250' cy='185' r='90' fill='none' stroke='rgba(200,144,10,0.25)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='185' r='86' fill='none' stroke='rgba(200,144,10,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='185' r='95' fill='none' stroke='rgba(200,144,10,0.10)' stroke-width='0.5' stroke-dasharray='4,8'/%3E%3Ccircle cx='250' cy='175' r='10' fill='rgba(200,144,10,0.30)' stroke='rgba(200,144,10,0.40)' stroke-width='1'/%3E%3Ccircle cx='250' cy='175' r='6' fill='rgba(139,0,0,0.35)'/%3E%3Ccircle cx='247' cy='173' r='1.5' fill='rgba(200,144,10,0.50)'/%3E%3Ccircle cx='253' cy='173' r='1.5' fill='rgba(200,144,10,0.50)'/%3E%3Cpath d='M 247,178 L 250,181 L 253,178' fill='none' stroke='rgba(200,144,10,0.40)' stroke-width='0.8'/%3E%3Cpath d='M 240,170 C 220,155 190,148 160,155 C 140,160 125,172 120,178' fill='none' stroke='rgba(200,144,10,0.35)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 260,170 C 280,155 310,148 340,155 C 360,160 375,172 380,178' fill='none' stroke='rgba(200,144,10,0.35)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 120,178 C 115,175 108,180 105,186 C 100,195 98,205 102,210' fill='none' stroke='rgba(200,144,10,0.28)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 380,178 C 385,175 392,180 395,186 C 400,195 402,205 398,210' fill='none' stroke='rgba(200,144,10,0.28)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 160,155 C 155,148 148,142 142,140' fill='none' stroke='rgba(200,144,10,0.22)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 340,155 C 345,148 352,142 358,140' fill='none' stroke='rgba(200,144,10,0.22)' stroke-width='1' stroke-linecap='round'/%3E%3Cpath d='M 170,158 C 162,145 150,135 140,132' fill='none' stroke='rgba(200,144,10,0.20)' stroke-width='0.8'/%3E%3Cpath d='M 330,158 C 338,145 350,135 360,132' fill='none' stroke='rgba(200,144,10,0.20)' stroke-width='0.8'/%3E%3Cpath d='M 180,162 C 168,150 155,142 148,140' fill='none' stroke='rgba(200,144,10,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 320,162 C 332,150 345,142 352,140' fill='none' stroke='rgba(200,144,10,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 240,175 C 235,190 232,208 236,220 L 250,240 L 264,220 C 268,208 265,190 260,175' fill='none' stroke='rgba(200,144,10,0.22)' stroke-width='1'/%3E%3Cline x1='250' y1='190' x2='250' y2='235' stroke='rgba(200,144,10,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='210,165 215,158 220,165' fill='rgba(200,144,10,0.25)'/%3E%3Cpolygon points='280,165 285,158 290,165' fill='rgba(200,144,10,0.25)'/%3E%3Ctext x='250' y='260' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='3' fill='rgba(200,144,10,0.42)'%3EAQUILA IMPERIALIS%3C/text%3E%3Ctext x='250' y='274' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(200,144,10,0.28)'%3ETHE EMPEROR PROTECTS%3C/text%3E%3Ctext x='80' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(200,144,10,0.42)'%3ECRUSADE%3C/text%3E%3Ctext x='80' y='95' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.50)'%3EINDOMITUS%3C/text%3E%3Cline x1='25' y1='100' x2='135' y2='100' stroke='rgba(200,144,10,0.18)' stroke-width='0.5'/%3E%3Ctext x='80' y='118' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3ESECTOR%3C/text%3E%3Ctext x='80' y='130' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.48)'%3ESEGMENTUM SOLAR%3C/text%3E%3Ctext x='80' y='148' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3ETHREAT%3C/text%3E%3Crect x='25' y='152' width='110' height='5' fill='rgba(200,144,10,0.10)' rx='1'/%3E%3Crect x='25' y='152' width='88' height='5' fill='rgba(139,0,0,0.48)' rx='1'/%3E%3Ctext x='138' y='157' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(139,0,0,0.42)'%3ECRITICAL%3C/text%3E%3Ctext x='80' y='175' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3EFAITH%3C/text%3E%3Crect x='25' y='179' width='110' height='5' fill='rgba(200,144,10,0.10)' rx='1'/%3E%3Crect x='25' y='179' width='99' height='5' fill='rgba(200,144,10,0.45)' rx='1'/%3E%3Ctext x='138' y='184' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(200,144,10,0.40)'%3EABSOLUTE%3C/text%3E%3Ctext x='420' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(200,144,10,0.42)'%3EFORCES%3C/text%3E%3Ctext x='420' y='95' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.48)'%3ESPACE MARINES%3C/text%3E%3Cline x1='365' y1='100' x2='475' y2='100' stroke='rgba(200,144,10,0.18)' stroke-width='0.5'/%3E%3Ctext x='420' y='118' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3ECHAPTER%3C/text%3E%3Ctext x='420' y='130' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(139,0,0,0.48)'%3EBLOOD ANGELS%3C/text%3E%3Ctext x='420' y='148' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.38)'%3EPRIMARCH%3C/text%3E%3Ctext x='420' y='160' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.45)'%3ESANGUINIUS%3C/text%3E%3Ctext x='420' y='178' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3ESTATUS%3C/text%3E%3Ctext x='420' y='190' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.42)'%3ECRUSADING%3C/text%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(200,144,10,0.22)' stroke-width='0.7'/%3E%3Ctext x='70' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3ESECTOR%3C/text%3E%3Ctext x='70' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.48)'%3ESOLAR%3C/text%3E%3Ctext x='190' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3ETHREAT%3C/text%3E%3Ctext x='190' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(139,0,0,0.48)'%3EHERESY%3C/text%3E%3Ctext x='320' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3EIMPERIUM%3C/text%3E%3Ctext x='320' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(200,144,10,0.45)'%3EENDURES%3C/text%3E%3Ctext x='440' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(200,144,10,0.35)'%3EEMPEROR%3C/text%3E%3Ctext x='440' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(212,168,32,0.50)'%3EPROTECTS%3C/text%3E%3Cline x1='130' y1='312' x2='130' y2='344' stroke='rgba(200,144,10,0.15)' stroke-width='0.5'/%3E%3Cline x1='255' y1='312' x2='255' y2='344' stroke='rgba(200,144,10,0.15)' stroke-width='0.5'/%3E%3Cline x1='380' y1='312' x2='380' y2='344' stroke='rgba(200,144,10,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='362' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(200,144,10,0.25)'%3EADMINISTRATUM TERRA -- IMPERIUM OF MAN -- M41.999%3C/text%3E%3Ccircle cx='45' cy='65' r='0.8' fill='rgba(200,144,10,0.20)'/%3E%3Ccircle cx='455' cy='55' r='0.6' fill='rgba(200,144,10,0.16)'/%3E%3Ccircle cx='40' cy='250' r='0.7' fill='rgba(139,0,0,0.14)'/%3E%3Ccircle cx='460' cy='260' r='0.8' fill='rgba(200,144,10,0.12)'/%3E%3Ccircle cx='50' cy='340' r='0.5' fill='rgba(200,144,10,0.10)'/%3E%3Ccircle cx='450' cy='345' r='0.6' fill='rgba(139,0,0,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: wh-aquila 10s ease-in-out infinite;
-}
-
-/* CPU-efficient: opacity-only (tier 1) */
-@keyframes wh-aquila {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* the Emperor's light — synchronized blackout */
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
-/* ── Gothic gold border filaments at grid edges ─────────────────────────────── */
-#grid-container::after {
-  content: 'THE EMPEROR\APROTECTS\A-----------\AFOR THE\AIMPERIUM\AOF MAN\A-----------\APURITY SEAL\AREQUIRED\A\AHERESY\ADETECTED';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(200, 144, 10, 0.08); white-space: pre;
-  animation: wh-readout 10s ease-in-out infinite;
-}
-
-@keyframes wh-readout {
-  0%, 100% { color: rgba(200,144,10,.08); }
-  28%       { color: rgba(200,144,10,.12); }
-  65%       { color: rgba(200,144,10,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(200,144,10,.15); }
-  92%       { color: rgba(200,144,10,.08); }
-}
-
-/* ── Overlay panel — parchment panel with octagonal clip ───────────────────── */
-.overlay-panel {
-  border: 1px solid rgba(200, 144, 10, 0.45);
-  box-shadow: 0 0 20px rgba(200, 144, 10, 0.15), inset 0 0 30px rgba(200, 144, 10, 0.04);
-}
-
-/* ── Title: candle-flicker with 88% sync — color + text-shadow (tier 3) ───── */
-@keyframes wh-flicker {
-  0%        { color: #C8B896; text-shadow: 0 0 6px rgba(200,144,10,.55), 0 0 18px rgba(200,144,10,.22); }
-  35%       { color: #D4A820; text-shadow: 0 0 10px rgba(212,168,32,.70), 0 0 26px rgba(200,144,10,.30); }
-  65%       { color: #A08860; text-shadow: 0 0 4px rgba(200,144,10,.35); }
-  87%       { color: #C8B896; text-shadow: 0 0 6px rgba(200,144,10,.50); }
-  88%       { color: #FFD060; text-shadow: 0 0 22px rgba(255,208,96,.85), 0 0 50px rgba(200,144,10,.45); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #C8B896; text-shadow: 0 0 8px rgba(200,144,10,.60); opacity: 1; }
-  100%      { color: #C8B896; text-shadow: 0 0 6px rgba(200,144,10,.55), 0 0 18px rgba(200,144,10,.22); }
-}
-
-/* ── Flavor content ────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'IMPERIUM OF MAN // AVE IMPERATOR // ONLY IN DEATH DOES DUTY END';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 144, 10, 0.55);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'THE EMPEROR\APROTECTS\A\AFOR THE\AIMPERIUM\A\AOMNIS\AARCANUM\A\APURITY\ASEAL\AREQUIRED\A\AHERESY\ADETECTED';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 9px; line-height: 1.6; text-align: right;
-  color: rgba(200, 144, 10, 0.10); white-space: pre;
-}
-
-#edit-bar::after {
-  content: 'HERESY DETECTED';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(139, 0, 0, 0.50);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: bold; letter-spacing: 5px; }
-
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(4, 2, 0, 0.98); border-top-color: rgba(200, 144, 10, 0.30); }
-#theme-banner::before { content: '☩'; color: #C8900A; font-size: 22px; font-family: Georgia, serif; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 144, 10, 0.55); }
-
-/* ── Phase 4E: tile radial ring ──────────────────────────────────────────── */
-.app-tile::before {
-  width: 20px; height: 20px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
-
-/* ── Battle ash — elongated cinder flakes falling through cathedral light ── */
-#particles {
+/* frame: four corner caps over two side strips over a top course (all inside the 8 px bands) */
+#grid-container {
   background:
-    /* Ash flake layer 1 — larger fragments */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='400'%3E%3Crect x='22' y='45' width='7' height='2' rx='1' fill='rgba(160,130,80,0.22)' transform='rotate(-8,22,45)'/%3E%3Crect x='78' y='155' width='5' height='2' rx='1' fill='rgba(120,100,60,0.18)' transform='rotate(12,78,155)'/%3E%3Crect x='138' y='295' width='8' height='2' rx='1' fill='rgba(140,110,70,0.20)' transform='rotate(-5,138,295)'/%3E%3Crect x='58' y='355' width='6' height='2' rx='1' fill='rgba(100,80,50,0.16)' transform='rotate(15,58,355)'/%3E%3Crect x='105' y='220' width='7' height='2' rx='1' fill='rgba(180,140,80,0.18)' transform='rotate(-10,105,220)'/%3E%3C/svg%3E") repeat,
-    /* Ash flake layer 2 — finer dust */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='600'%3E%3Crect x='38' y='78' width='10' height='1.5' rx='0.75' fill='rgba(140,100,50,0.13)' transform='rotate(-6,38,78)'/%3E%3Crect x='128' y='258' width='8' height='1.5' rx='0.75' fill='rgba(120,85,40,0.10)' transform='rotate(9,128,258)'/%3E%3Crect x='208' y='458' width='12' height='1.5' rx='0.75' fill='rgba(160,120,60,0.09)' transform='rotate(-14,208,458)'/%3E%3C/svg%3E") repeat;
-  background-size: 180px 400px, 260px 600px;
-  animation: wh-battle-ash 10s linear infinite;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='rgb(26,20,11)'/%3E%3Crect x='0.5' y='0.5' width='7' height='7' fill='none' stroke='rgb(122,92,24)' stroke-width='0.9'/%3E%3Cpath d='M4 1.6 L6.4 4 L4 6.4 L1.6 4 Z' fill='rgb(199,154,44)'/%3E%3C/svg%3E") left 1px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='rgb(26,20,11)'/%3E%3Crect x='0.5' y='0.5' width='7' height='7' fill='none' stroke='rgb(122,92,24)' stroke-width='0.9'/%3E%3Cpath d='M4 1.6 L6.4 4 L4 6.4 L1.6 4 Z' fill='rgb(199,154,44)'/%3E%3C/svg%3E") right 5px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='rgb(26,20,11)'/%3E%3Crect x='0.5' y='0.5' width='7' height='7' fill='none' stroke='rgb(122,92,24)' stroke-width='0.9'/%3E%3Cpath d='M4 1.6 L6.4 4 L4 6.4 L1.6 4 Z' fill='rgb(199,154,44)'/%3E%3C/svg%3E") left 1px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='rgb(26,20,11)'/%3E%3Crect x='0.5' y='0.5' width='7' height='7' fill='none' stroke='rgb(122,92,24)' stroke-width='0.9'/%3E%3Cpath d='M4 1.6 L6.4 4 L4 6.4 L1.6 4 Z' fill='rgb(199,154,44)'/%3E%3C/svg%3E") right 5px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Crect width='8' height='24' fill='rgb(26,20,11)'/%3E%3Crect x='0' width='1' height='24' fill='rgb(122,92,24)'/%3E%3Crect x='7' width='1' height='24' fill='rgb(122,92,24)'/%3E%3Cpath d='M2 19 V9.4 Q2 6.4 4 4.6 Q6 6.4 6 9.4 V19 Z' fill='rgb(100,12,14)' stroke='rgb(199,154,44)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='1.6' r='0.9' fill='rgb(199,154,44)'/%3E%3Ccircle cx='4' cy='22.4' r='0.9' fill='rgb(199,154,44)'/%3E%3C/svg%3E") left 1px top 0 / 8px 24px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Crect width='8' height='24' fill='rgb(26,20,11)'/%3E%3Crect x='0' width='1' height='24' fill='rgb(122,92,24)'/%3E%3Crect x='7' width='1' height='24' fill='rgb(122,92,24)'/%3E%3Cpath d='M2 19 V9.4 Q2 6.4 4 4.6 Q6 6.4 6 9.4 V19 Z' fill='rgb(100,12,14)' stroke='rgb(199,154,44)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='1.6' r='0.9' fill='rgb(199,154,44)'/%3E%3Ccircle cx='4' cy='22.4' r='0.9' fill='rgb(199,154,44)'/%3E%3C/svg%3E") right 5px top 0 / 8px 24px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 9'%3E%3Crect width='12' height='9' fill='rgb(26,20,11)'/%3E%3Crect y='0' width='12' height='0.8' fill='rgb(122,92,24)'/%3E%3Cpath d='M0.6 9 V5.4 Q0.8 2.4 6 1.2 Q11.2 2.4 11.4 5.4 V9' fill='rgb(44,34,18)' stroke='rgb(122,92,24)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Ccircle cx='6' cy='5.8' r='1' fill='rgb(199,154,44)'/%3E%3C/svg%3E") left 0 top 0 / 12px 9px repeat-x;
 }
-@keyframes wh-battle-ash {
-  from { background-position: 0 -400px, 15px -600px; }
-  to   { background-position: 20px 0, -10px 0; }
+
+/* tiles */
+.app-tile { background: #17130E; border-color: #33291A; border-radius: 0px; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: var(--tile-hover-bg); border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.tile-label { font-family: 'Cinzel', 'Palatino Linotype', Palatino, Georgia, serif; font-synthesis: none; }
+
+/* banner: surface, a top course, the faction's big motif at the right end, an icon at the left */
+#theme-banner {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 34'%3E%3Crect x='2' y='31' width='80' height='3' fill='rgb(40,28,14)'/%3E%3Cpath d='M6 31 V17 Q6 11.4 14 8 Q22 11.4 22 17 V31 Z' fill='rgb(40,28,14)' stroke='rgb(122,92,24)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M30 31 V13 Q30 6.4 42 1.6 Q54 6.4 54 13 V31 Z' fill='rgb(40,28,14)' stroke='rgb(122,92,24)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M62 31 V17 Q62 11.4 70 8 Q78 11.4 78 17 V31 Z' fill='rgb(40,28,14)' stroke='rgb(122,92,24)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M9 31 V18 Q9 14.4 14 12 Q19 14.4 19 18 V31 Z' fill='rgb(100,12,14)'/%3E%3Cpath d='M65 31 V18 Q65 14.4 70 12 Q75 14.4 75 18 V31 Z' fill='rgb(100,12,14)'/%3E%3Cpath d='M34 31 V14 Q34 9.4 42 5.6 Q50 9.4 50 14 V31 Z' fill='rgb(232,198,102)'/%3E%3Cpath d='M14 12 V31 M70 12 V31 M42 5.6 V31 M9 23 H19 M65 23 H75 M34 21 H50' stroke='rgb(40,28,14)' stroke-width='0.9' fill='none'/%3E%3C/svg%3E") right 12px bottom 0 / 84px 34px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 6'%3E%3Crect y='0' width='14' height='0.9' fill='rgb(122,92,24)'/%3E%3Crect y='5.1' width='14' height='0.9' fill='rgb(122,92,24)'/%3E%3Cpath d='M7 1.7 L9.2 3 L7 4.3 L4.8 3 Z' fill='rgb(160,20,24)'/%3E%3C/svg%3E") left 0 top 0 / 14px 6px repeat-x, #C8B78A;
+  border-top-color: #8A6E2C;
 }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M8.2 11 H13.8 V21.4 L11 19.2 L8.2 21.4 Z' fill='rgb(236,226,196)' stroke='rgb(122,92,24)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Ccircle cx='11' cy='8' r='7.2' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='1.3'/%3E%3Ccircle cx='11' cy='8' r='4.4' fill='none' stroke='rgb(204,70,66)' stroke-width='1'/%3E%3Ccircle cx='11' cy='8' r='1.6' fill='rgb(100,12,14)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: 'IM Fell English', Georgia, 'Times New Roman', serif; font-size: 12px; font-weight: 400; font-style: normal; font-synthesis: none; letter-spacing: 0; color: #1C1309; margin-right: 90px; }
