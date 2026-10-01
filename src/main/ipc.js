@@ -1,4 +1,4 @@
-const { ipcMain, dialog, shell, app, nativeImage, screen } = require('electron');
+const { ipcMain, dialog, shell, app, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
@@ -185,19 +185,72 @@ function resolveIconPath(p) {
 // Returns the in-flight promise if one is already running.
 let installedAppsPromise = null;
 
-function setupIPC(win, store, electronApp) {
+// Global settings a page may change, validated field by field. Only fields
+// present in `settings` come back, so a caller sends a patch. The theme and
+// the window rects are not global settings any more: themes belong to
+// regions (controller), rects are saved by the main process.
+function settingsPatch(settings) {
+  const patch = {};
+  if (typeof settings.iconSize === 'number' && settings.iconSize >= 32 && settings.iconSize <= 128) {
+    patch.iconSize = settings.iconSize;
+  }
+  if (typeof settings.startWithWindows === 'boolean') patch.startWithWindows = settings.startWithWindows;
+  if (typeof settings.randomTheme === 'boolean') patch.randomTheme = settings.randomTheme;
+  // globalHotkey: null (disabled), or a non-empty string up to 64 chars.
+  // String shape is validated lazily by globalShortcut.register at apply time.
+  if ('globalHotkey' in settings) {
+    if (settings.globalHotkey === null || settings.globalHotkey === '') patch.globalHotkey = null;
+    else if (typeof settings.globalHotkey === 'string' && settings.globalHotkey.length <= 64) patch.globalHotkey = settings.globalHotkey;
+  }
+  if (typeof settings.reducedMotion === 'boolean') patch.reducedMotion = settings.reducedMotion;
+  return patch;
+}
+
+// A picker entry (Start menu AppID, Steam URL or Start menu .lnk) as a shortcut.
+function entryFromAppId({ name, appId, iconDataUrl }) {
+  if (typeof name !== 'string' || typeof appId !== 'string' || !name || !appId) return null;
+  // Steam URLs and other protocol-based IDs are stored as-is; everything else uses shell:AppsFolder.
+  // Exception: a full Start Menu .lnk path (the IDs the Get-StartApps-empty fallback emits) is
+  // not an AppsFolder name — store it as a file path so launch-app opens it via shell.openPath.
+  const isLnkPath = /^[a-z]:\\.+\.lnk$/i.test(appId);
+  const appPath = (isLnkPath || /^[a-z][a-z0-9+.-]*:\/\//i.test(appId)) ? appId : `shell:AppsFolder\\${appId}`;
+  return {
+    id: randomUUID(),
+    name: name.slice(0, 100),
+    path: appPath,
+    iconDataUrl: typeof iconDataUrl === 'string' ? iconDataUrl : '',
+  };
+}
+
+const DIALOG_OPTS = {
+  title: 'Add Application',
+  filters: [{ name: 'Applications & Shortcuts', extensions: ['exe', 'lnk'] }],
+  properties: ['openFile'],
+};
+
+// ctl: RegionController, mgr: Manager. Every handler is scoped by the sender:
+// a region page gets and saves its own region's items; the Manager gets the
+// manager:* channels. A call from anything else is ignored.
+function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null } = {}) {
   // Compile icon helper DLL in the background (async, non-blocking).
   // Must finish before any icon extraction calls use iconHelperLoadSnippet().
   compileIconHelperDll();
+
+  const regionOf = (e) => ctl.regionIdOf(e.sender);
+  const fromManager = (e) => mgr.isSender(e.sender);
 
   // Authoritative list of theme identifiers, derived from the CSS files on disk
   // (see VALID_THEMES module constant). Renderer calls this at startup to stay in sync.
   ipcMain.handle('get-valid-themes', () => [...VALID_THEMES]);
 
-  ipcMain.handle('get-apps', () => store.get('apps'));
+  ipcMain.handle('get-apps', (e) => {
+    const id = regionOf(e);
+    return id ? ctl.itemsForRenderer(id) : [];
+  });
 
-  ipcMain.handle('save-apps', (_, apps) => {
-    if (!Array.isArray(apps)) return;
+  ipcMain.handle('save-apps', (e, apps) => {
+    const id = regionOf(e);
+    if (!id || !Array.isArray(apps)) return;
     // Validate and strip to known shape; silently drop malformed entries
     const sanitized = apps
       .filter(a => a && typeof a === 'object')
@@ -208,55 +261,47 @@ function setupIPC(win, store, electronApp) {
         iconDataUrl: typeof a.iconDataUrl === 'string' ? a.iconDataUrl : '',
       }))
       .filter(a => a.id && a.path);
-    // setFromRenderer, not set: right after a read-only store merged the data
-    // file mid-session, this save may come from the renderer's pre-merge copy.
-    store.setFromRenderer('apps', sanitized);
+    // The controller replaces only this region's items. Right after a
+    // read-only store merged the data file mid-session, a save from a page
+    // that still shows the pre-merge copy is merged against that copy.
+    ctl.saveItemsFromRenderer(id, sanitized);
   });
 
-  ipcMain.handle('get-settings', () => store.get('settings'));
+  ipcMain.handle('get-settings', (e) => {
+    const id = regionOf(e);
+    return id ? ctl.settingsFor(id) : store.get('settings');
+  });
 
-  ipcMain.handle('save-settings', (_, settings) => {
+  ipcMain.handle('save-settings', (e, settings) => {
     if (!settings || typeof settings !== 'object' || Array.isArray(settings)) return;
-    const current = store.get('settings');
-    const sanitized = { ...current };
-
-    if (typeof settings.iconSize === 'number'
-        && settings.iconSize >= 32 && settings.iconSize <= 128) {
-      sanitized.iconSize = settings.iconSize;
+    const id = regionOf(e);
+    if (id) {
+      // A region page has no settings UI of its own; only its theme (⚄) changes.
+      ctl.applyRegionSettings(id, settings);
+      return;
     }
-    if (typeof settings.startWithWindows === 'boolean') {
-      sanitized.startWithWindows = settings.startWithWindows;
-    }
-    if (typeof settings.randomTheme === 'boolean') {
-      sanitized.randomTheme = settings.randomTheme;
-    }
-    if (typeof settings.theme === 'string' && VALID_THEMES.has(settings.theme)) {
-      sanitized.theme = settings.theme;
-    }
-    // windowPosition / windowSize are not taken from the renderer: window.js
-    // saves them on every move and resize, while the renderer only echoes the
-    // copy it fetched at init() — accepting it put the window back where it
-    // was at launch whenever any setting changed.
-    // globalHotkey: accept null (disabled), or a non-empty string up to 64 chars.
-    // String shape is validated lazily by globalShortcut.register at apply time.
-    if (settings.globalHotkey === null || settings.globalHotkey === '') {
-      sanitized.globalHotkey = null;
-    } else if (typeof settings.globalHotkey === 'string' && settings.globalHotkey.length <= 64) {
-      sanitized.globalHotkey = settings.globalHotkey;
-    }
-    if (typeof settings.reducedMotion === 'boolean') {
-      sanitized.reducedMotion = settings.reducedMotion;
-    }
-    store.setFromRenderer('settings', sanitized); // see save-apps
+    if (!fromManager(e)) return;
+    const current = store.get('settings') || {};
+    ctl.applySettingsPatch(settingsPatch(settings));
     // The tray's "Start with Windows" and "Random theme on startup" checkboxes
-    // are read when its menu is built: rebuild it so it matches the Settings
-    // overlay.
+    // are read when its menu is built: rebuild it so it matches the Manager.
     const saved = store.get('settings') || {};
     if (saved.startWithWindows !== current.startWithWindows
         || saved.randomTheme !== current.randomTheme) refreshTrayMenu();
   });
 
-  ipcMain.handle('launch-app', async (_, filePath) => {
+  // Store delivery: each page says when it is listening, and acks a merged state.
+  ipcMain.handle('renderer-ready', (e) => {
+    const id = regionOf(e);
+    if (id) ctl.rendererReady(id);
+    else if (fromManager(e)) mgr.rendererReady();
+  });
+  ipcMain.handle('store-reload-ack', (e, seq) => {
+    const id = regionOf(e);
+    if (id) ctl.ack(id, seq);
+  });
+
+  ipcMain.handle('launch-app', async (e, filePath) => {
     if (typeof filePath !== 'string' || !filePath) return;
 
     // Only launch paths that are in the stored app list, or known-safe protocol URIs
@@ -274,9 +319,10 @@ function setupIPC(win, store, electronApp) {
     // Per Judy's UX Review (2026-04-25, §10 / Critical C3): silent failure was
     // a major NN/g "help users recover from errors" violation — clicking a tile
     // that pointed at a missing/broken target produced no feedback at all.
+    // Shown in the region that launched it (spec 7.5).
     const reportFailure = (reason) => {
-      if (win && !win.isDestroyed()) {
-        win.webContents.send('launch-error', { name: displayName, reason });
+      if (e.sender && !e.sender.isDestroyed()) {
+        e.sender.send('launch-error', { name: displayName, reason });
       }
     };
 
@@ -545,28 +591,17 @@ $apps | ConvertTo-Json -Depth 2
     return installedAppsPromise;
   });
 
-  ipcMain.handle('add-app-from-appid', (_, { name, appId, iconDataUrl }) => {
-    // Steam URLs and other protocol-based IDs are stored as-is; everything else uses shell:AppsFolder.
-    // Exception: a full Start Menu .lnk path (the IDs the Get-StartApps-empty fallback emits) is
-    // not an AppsFolder name — store it as a file path so launch-app opens it via shell.openPath.
-    const isLnkPath = /^[a-z]:\\.+\.lnk$/i.test(appId);
-    const appPath = (isLnkPath || /^[a-z][a-z0-9+.-]*:\/\//i.test(appId)) ? appId : `shell:AppsFolder\\${appId}`;
-    return {
-      id: randomUUID(),
-      name,
-      path: appPath,
-      iconDataUrl: iconDataUrl || ''
-    };
-  });
+  ipcMain.handle('add-app-from-appid', (_, arg) => entryFromAppId(arg || {}));
 
-  ipcMain.handle('add-app-dialog', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-      title: 'Add Application',
-      filters: [
-        { name: 'Applications & Shortcuts', extensions: ['exe', 'lnk'] }
-      ],
-      properties: ['openFile']
-    });
+  ipcMain.handle('add-app-dialog', async (e) => {
+    // A region is a desktop child: a dialog owned by it would be owned by the
+    // desktop window (and disable it while open). Regions get an unowned
+    // dialog (spec U4 fallback, used from the start).
+    if (!regionOf(e) && !fromManager(e)) return null;
+    const parent = fromManager(e) ? mgr.window : null;
+    const { canceled, filePaths } = parent
+      ? await dialog.showOpenDialog(parent, DIALOG_OPTS)
+      : await dialog.showOpenDialog(DIALOG_OPTS);
     if (canceled || !filePaths.length) return null;
     return buildAppEntry(filePaths[0]);
   });
@@ -579,14 +614,6 @@ $apps | ConvertTo-Json -Depth 2
       if (!fs.existsSync(filePath)) return null;
     } catch { return null; }
     return buildAppEntry(filePath);
-  });
-
-  ipcMain.handle('resize-window', (_, { width, height }) => {
-    const { width: sw, height: sh } = screen.getPrimaryDisplay().workAreaSize;
-    win.setContentSize(
-      Math.min(Math.max(width, 200), sw),
-      Math.min(Math.max(height, 150), sh)
-    );
   });
 
   ipcMain.handle('set-auto-launch', (_, enabled) => {
@@ -606,38 +633,79 @@ $apps | ConvertTo-Json -Depth 2
     checkForUpdates();
   });
 
-  ipcMain.handle('show-window', () => win.show());
-  ipcMain.handle('hide-window', () => win.hide());
+  // ╌ on any region hides all of them (spec 7.2).
+  ipcMain.handle('hide-window', (e) => { if (regionOf(e)) ctl.hideAll(); });
 
-  let preFullscreenBounds = null;
-
-  function exitFullscreen() {
-    win.setFullScreen(false);
-    if (preFullscreenBounds) {
-      win.setBounds(preFullscreenBounds);
-      preFullscreenBounds = null;
-    }
-    win.webContents.send('fullscreen-changed', false);
-  }
-
-  ipcMain.handle('toggle-fullscreen', () => {
-    if (win.isFullScreen()) {
-      exitFullscreen();
-      return false;
-    } else {
-      preFullscreenBounds = win.getBounds();
-      win.setFullScreen(true);
-      return true;
-    }
+  // ── Region pages (region.js) ──────────────────────────────────────────────
+  const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+  const onRegion = (channel, fn) => ipcMain.handle(channel, (e, arg) => {
+    const id = regionOf(e);
+    return id ? fn(id, arg && typeof arg === 'object' ? arg : {}) : null;
+  });
+  onRegion('region:info', (id) => ctl.info(id));
+  onRegion('region:pointer-down', (id) => { ctl.onPointerDown(id); });
+  onRegion('region:drag', (id, a) => ctl.drag(id, {
+    phase: String(a.phase || ''), dx: num(a.dx), dy: num(a.dy), alt: !!a.alt,
+  }));
+  onRegion('region:resize', (id, a) => ctl.resize(id, {
+    phase: String(a.phase || ''), dx: num(a.dx), dy: num(a.dy), alt: !!a.alt,
+    edges: a.edges && typeof a.edges === 'object'
+      ? { left: !!a.edges.left, right: !!a.edges.right, top: !!a.edges.top, bottom: !!a.edges.bottom } : {},
+  }));
+  onRegion('region:nudge', (id, a) => ctl.nudge(id, num(a.dx), num(a.dy)));
+  onRegion('region:menu', (id, a) => { ctl.popupRegionMenu(id, num(a.x), num(a.y)); });
+  onRegion('region:tile-menu', (id, a) => {
+    if (typeof a.itemId === 'string') ctl.popupTileMenu(id, a.itemId, num(a.x), num(a.y));
+  });
+  onRegion('region:rename', (id, a) => ctl.rename(id, typeof a.name === 'string' ? a.name : ''));
+  onRegion('region:cycle', (id, a) => { ctl.cycle(id, num(a.dir) < 0 ? -1 : 1); });
+  onRegion('region:open-manager', (id, a) => {
+    const view = ['regions', 'settings', 'picker', 'cheatsheet'].includes(a.view) ? a.view : 'regions';
+    mgr.open(view, { regionId: id });
   });
 
-  // Renderer-scoped Escape handling (see 'exit-fullscreen' handler below).
-  ipcMain.handle('exit-fullscreen', () => {
-    if (win.isFullScreen()) {
-      exitFullscreen();
-      return false;
+  // ── Manager ───────────────────────────────────────────────────────────────
+  const onManager = (channel, fn) => ipcMain.handle(channel, (e, ...args) => (fromManager(e) ? fn(...args) : null));
+  onManager('manager:state', () => ({ ...ctl.managerState(), version: electronApp.getVersion() }));
+  onManager('manager:create-region', (layout) => ctl.createRegion(typeof layout === 'string' ? layout : 'grid'));
+  onManager('manager:update-region', (id, patch) => {
+    if (typeof id !== 'string' || !patch || typeof patch !== 'object') return { ok: false };
+    if (typeof patch.name === 'string') return ctl.rename(id, patch.name);
+    if (typeof patch.icon === 'string') return ctl.setIcon(id, patch.icon);
+    if (typeof patch.theme === 'string') return ctl.setTheme(id, patch.theme);
+    return { ok: false };
+  });
+  onManager('manager:delete-region', (id) => (typeof id === 'string' ? ctl.deleteRegion(id, { parent: mgr.window }) : { ok: false }));
+  onManager('manager:set-match-all', (on) => ctl.setMatchAll(!!on));
+  onManager('manager:set-shared-theme', (theme) => (typeof theme === 'string' ? ctl.setSharedTheme(theme) : { ok: false }));
+  onManager('manager:add-installed', (regionId, item) => {
+    const entry = entryFromAppId(item || {});
+    if (typeof regionId !== 'string' || !entry) return { ok: false };
+    return ctl.addItems(regionId, [entry]);
+  });
+  onManager('manager:add-file', async (regionId) => {
+    if (typeof regionId !== 'string' || !ctl.region(regionId)) return { ok: false };
+    const parent = mgr.window;
+    const { canceled, filePaths } = parent ? await dialog.showOpenDialog(parent, DIALOG_OPTS) : await dialog.showOpenDialog(DIALOG_OPTS);
+    if (canceled || !filePaths.length) return { ok: false, cancelled: true };
+    return ctl.addItems(regionId, [await buildAppEntry(filePaths[0])]);
+  });
+  onManager('manager:close', () => { mgr.close(); });
+
+  // Self-test operations. Refused unless the app runs with --ql-test-hooks.
+  onManager('manager:test', (op, arg) => {
+    if (!testHooks) return { ok: false, error: 'test hooks are off' };
+    const a = arg && typeof arg === 'object' ? arg : {};
+    switch (op) {
+      case 'describe': return { ok: true, regions: ctl.describe(), hidden: ctl.isHidden(), active: ctl.activeId, workArea: ctl.workArea(), managerVisible: !!(mgr.window && mgr.window.isVisible()) };
+      case 'metrics': return { ok: true, ...ctl.metrics() };
+      case 'move-item': return ctl.moveItemToRegion(String(a.itemId || ''), String(a.regionId || ''));
+      case 'toggle-all': ctl.toggleAll(); return { ok: true, hidden: ctl.isHidden() };
+      case 'place': return ctl.place(String(a.regionId || ''), String(a.where || ''));
+      case 'random-theme': return ctl.randomTheme(String(a.regionId || ''));
+      case 'quit': setTimeout(() => { if (quit) quit('self-test'); }, 50); return { ok: true };
+      default: return { ok: false, error: `unknown op ${op}` };
     }
-    return win.isFullScreen();
   });
 }
 

@@ -1,0 +1,68 @@
+/* Region window (regions spec 2.2, 4, 7). Loaded after the theme so these win.
+   body.region is set by region.js on every region page. */
+
+/* The header is the handle: script-driven drag (region.js), never the OS drag
+   region, which does not apply to a desktop child and cannot keep the
+   placement rules. */
+body.region #header,
+body.region #header * { -webkit-app-region: no-drag !important; }
+body.region #header { cursor: move; }
+body.region #header button,
+body.region #filter-chip { cursor: pointer; }
+
+/* Title: [region icon 20][name]; the version line is in the Manager's Settings. */
+body.region #header-version { display: none; }
+body.region #title-area {
+  flex-direction: row; align-items: center; gap: 6px;
+  min-width: 0; flex: 0 1 auto; outline: none;
+}
+body.region #title-area:focus-visible { outline: 2px solid var(--accent-c); outline-offset: 2px; }
+#region-icon {
+  flex: none; width: 20px; height: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--accent-text);
+}
+#region-icon svg { width: 20px; height: 20px; display: block; }
+body.region #title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+body.region.edit-mode #title.renameable { cursor: text; border-bottom: 1px dashed var(--rename-dashed); }
+body.region.edit-mode #title.renameable:hover { border-bottom-color: var(--accent-c); }
+.region-rename-input {
+  width: 160px; max-width: 100%;
+  background: var(--rename-input-bg);
+  border: 1px solid var(--accent-c);
+  border-radius: 2px;
+  color: var(--accent-text);
+  font-family: var(--font); font-size: 12px; letter-spacing: 0.4px;
+  padding: 1px 4px; outline: none; box-shadow: var(--glow-c);
+  -webkit-user-select: text; user-select: text;
+}
+.region-rename-input.invalid { border-color: var(--accent-m); box-shadow: var(--glow-m); }
+
+/* Grid: a 6 px transparent resize rim around the panel (spec 4.3). */
+body.region.layout-grid { padding: 6px; }
+body.region.layout-grid #app { height: 100%; }
+
+/* Active region: the border switches to --border-h (spec 2.1). While a
+   drag is snapped or blocked: --accent-c / --accent-m (spec 4.1.6). */
+body.region.region-active #app::before { border-color: var(--border-h); }
+body.region.region-snapped #app::before { border-color: var(--accent-c); }
+body.region.region-blocked #app::before { border-color: var(--accent-m); }
+
+/* After a rebuild (Explorer restart) the entrance fade does not replay. */
+body.region.no-entrance #app-entrance { display: none !important; animation: none !important; }
+
+/* Resize grip: 12 x 12 at the bottom-right while the pointer is over the region. */
+#resize-grip {
+  position: fixed; right: 0; bottom: 0; width: 12px; height: 12px;
+  z-index: 1000; display: none; cursor: nwse-resize;
+  color: var(--text-dim);
+}
+#resize-grip svg { width: 12px; height: 12px; display: block; }
+body.region.layout-grid.pointer-inside #resize-grip { display: block; }
+body.region.region-moving, body.region.region-moving * { cursor: move !important; user-select: none !important; }
+
+/* Resize cursors while the pointer is in a rim zone (region.js sets the class on <html>). */
+html.rim-nwse, html.rim-nwse * { cursor: nwse-resize !important; }
+html.rim-nesw, html.rim-nesw * { cursor: nesw-resize !important; }
+html.rim-ew, html.rim-ew * { cursor: ew-resize !important; }
+html.rim-ns, html.rim-ns * { cursor: ns-resize !important; }

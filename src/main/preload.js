@@ -15,13 +15,9 @@ const INVOKE_CHANNELS = new Set([
   'add-app-from-appid',
   'add-app-dialog',
   'add-app-from-path',
-  'resize-window',
   'set-auto-launch',
   'check-update',
-  'show-window',
   'hide-window',
-  'toggle-fullscreen',
-  'exit-fullscreen',
   'download-update',
   'install-update',
   'dismiss-update',
@@ -31,6 +27,18 @@ const INVOKE_CHANNELS = new Set([
   // and it has adopted a merged state pushed via 'store-reloaded'.
   'renderer-ready',
   'store-reload-ack',
+  // Region window (region.js): which region this page is, pointer and key
+  // events the main process acts on, and the Manager it opens.
+  'region:info',
+  'region:pointer-down',
+  'region:drag',
+  'region:resize',
+  'region:nudge',
+  'region:menu',
+  'region:tile-menu',
+  'region:rename',
+  'region:cycle',
+  'region:open-manager',
 ]);
 
 const ON_CHANNELS = new Set([
@@ -42,13 +50,16 @@ const ON_CHANNELS = new Set([
   'update-error',
   'store-save-error',
   'store-reloaded',
-  'fullscreen-changed',
   'launch-error',
-  // Tray-driven events (UX Review §7 / I5): the tray menu can open the
-  // Settings overlay and toggle persisted settings. The renderer listens
-  // to these so its local state and any open overlay stay in sync.
-  'tray-open-settings',
+  // Settings changed in the main process (tray checkbox, Manager, theme of
+  // this region changed elsewhere): the page re-reads its settings.
   'settings-changed-externally',
+  // Region window: name/icon/active state, commands from the native region
+  // and tile menus, items changed by the main process, back to view mode.
+  'region:state',
+  'region:command',
+  'region:items-changed',
+  'region:reset-view',
 ]);
 
 contextBridge.exposeInMainWorld('api', {

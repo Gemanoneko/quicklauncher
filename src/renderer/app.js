@@ -1134,13 +1134,21 @@ function scheduleBannerRotation() {
 // them on their current frame (base.css) and the banner stops rotating; both
 // resume where they left off on focus.
 let idlePaused = false;
+// A region sits on the desktop all day: it animates only while the pointer
+// is over it or it has keyboard focus (regions spec, "Changes to today's window").
+let pointerInside = false;
+let lastFocused = false;
 
 function updateIdlePause(e) {
   // Trust the event itself where there is one; hasFocus() covers the initial
   // state and visibilitychange.
   const type = e && e.type;
-  const focused = type === 'blur' ? false : type === 'focus' ? true : document.hasFocus();
-  const paused = document.hidden || !focused;
+  const focused = type === 'blur' ? false : type === 'focus' ? true
+    : (type === 'mouseenter' || type === 'mouseleave') ? lastFocused : document.hasFocus();
+  lastFocused = focused;
+  if (type === 'mouseenter') pointerInside = true;
+  if (type === 'mouseleave') pointerInside = false;
+  const paused = document.hidden || (!focused && !pointerInside);
   if (paused === idlePaused) return;
   idlePaused = paused;
   document.body.classList.toggle('ql-paused', paused);
@@ -1157,6 +1165,8 @@ function updateIdlePause(e) {
 window.addEventListener('focus', updateIdlePause);
 window.addEventListener('blur', updateIdlePause);
 document.addEventListener('visibilitychange', updateIdlePause);
+document.documentElement.addEventListener('mouseenter', updateIdlePause);
+document.documentElement.addEventListener('mouseleave', updateIdlePause);
 updateIdlePause();
 
 elSliderIconSize.addEventListener('input', async (e) => {
@@ -1568,14 +1578,7 @@ document.addEventListener('keydown', (e) => {
     if (!elSettingsOverlay.classList.contains('hidden')) { elSettingsOverlay.classList.add('hidden'); e.preventDefault(); return; }
     if (!elAppsPicker.classList.contains('hidden')) { elAppsPicker.classList.add('hidden'); e.preventDefault(); return; }
     if (_filterText) { clearFilter(); e.preventDefault(); return; }
-    // Fall through to fullscreen / edit-mode handlers
-  }
-
-  // F11 — toggle fullscreen (UX Review §6E / P4)
-  if (!editingText && e.key === 'F11') {
-    e.preventDefault();
-    (async () => updateFullscreenButton(await window.api.invoke('toggle-fullscreen')))();
-    return;
+    // Fall through to the edit-mode handler
   }
 
   // Beyond here, only react when no overlay is open and we're not in a text
@@ -1643,15 +1646,6 @@ function setupContextMenu() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && editMode) exitEditMode();
   });
-
-  // Escape exits fullscreen. Scoped to the renderer window (previously a
-  // process-wide globalShortcut, which stole Escape from every other app).
-  document.addEventListener('keydown', async (e) => {
-    if (e.key !== 'Escape') return;
-    if (isFullscreen) {
-      updateFullscreenButton(await window.api.invoke('exit-fullscreen'));
-    }
-  });
 }
 
 // ── Update banner ─────────────────────────────────────────────────────────────
@@ -1707,15 +1701,8 @@ function setupUpdateListeners() {
     console.warn('Launch error:', reason, name);
   });
 
-  // Tray menu wiring (UX Review §7 / I5). The tray can:
-  //   - Open the Settings overlay (after the main process has already
-  //     shown/focused the window).
-  //   - Toggle Start-with-Windows / Random-theme persisted settings,
-  //     which fires settings-changed-externally so any open Settings
-  //     overlay reflects the new checkbox state immediately.
-  window.api.on('tray-open-settings', () => {
-    elSettingsOverlay.classList.remove('hidden');
-  });
+  // Settings changed in the main process (tray checkbox, the Manager, or this
+  // region's theme changed elsewhere): re-read and re-apply them.
   window.api.on('settings-changed-externally', async () => {
     settings = await window.api.invoke('get-settings');
     applySettings();
@@ -1776,26 +1763,15 @@ function hideUpdateBanner() {
 }
 
 // ── Button wiring ─────────────────────────────────────────────────────────────
+// Settings, the installed-app picker and the cheat-sheet live in the Manager
+// window (regions spec 8); a region opens it.
 $('btn-settings').addEventListener('click', () => {
-  elSettingsOverlay.classList.toggle('hidden');
+  window.api.invoke('region:open-manager', { view: 'settings' });
 });
 
 $('btn-hide').addEventListener('click', () => {
   window.api.invoke('hide-window');
 });
-
-let isFullscreen = false;
-
-function updateFullscreenButton(fs) {
-  isFullscreen = fs;
-  $('btn-fullscreen').title = fs ? 'Exit fullscreen' : 'Fullscreen';
-}
-
-$('btn-fullscreen').addEventListener('click', async () => {
-  updateFullscreenButton(await window.api.invoke('toggle-fullscreen'));
-});
-
-window.api.on('fullscreen-changed', (fs) => updateFullscreenButton(fs));
 
 $('btn-close-settings').addEventListener('click', () => {
   elSettingsOverlay.classList.add('hidden');
@@ -1807,7 +1783,9 @@ $('btn-check-update').addEventListener('click', () => {
 });
 
 $('btn-add-edit').addEventListener('click', addAppFromDialog);
-$('btn-add-installed').addEventListener('click', openInstalledAppsPicker);
+$('btn-add-installed').addEventListener('click', () => {
+  window.api.invoke('region:open-manager', { view: 'picker' });
+});
 $('btn-done-edit').addEventListener('click', exitEditMode);
 
 // ── Skin selection (searchable picker) ───────────────────────────────────────

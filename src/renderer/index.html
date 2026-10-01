@@ -6,6 +6,8 @@
   <title>QuickLauncher</title>
   <link rel="stylesheet" href="styles/base.css">
   <link id="theme-stylesheet" rel="stylesheet" href="styles/themes/cyberpunk.css">
+  <!-- Region window rules (rim, handle, active border); after the theme so they win. -->
+  <link rel="stylesheet" href="styles/region.css">
 </head>
 <body>
   <div id="app">
@@ -15,6 +17,7 @@
     <!-- Header bar (draggable) -->
     <div id="header">
       <div id="title-area">
+        <span id="region-icon" aria-hidden="true"></span>
         <span id="title">QUICK<span class="accent">.</span>LAUNCH</span>
         <span id="header-version"></span>
       </div>
@@ -23,10 +26,10 @@
         <button id="filter-chip-clear" type="button" title="Clear filter">✕</button>
       </div>
       <div id="header-controls">
-        <button id="btn-random-theme" title="Random theme">⚄</button>
-        <button id="btn-settings" title="Settings">⚙</button>
-        <button id="btn-hide" title="Hide to tray">╌</button>
-        <button id="btn-fullscreen" title="Fullscreen">⛶</button>
+        <button id="btn-random-theme" title="Random theme for this region" aria-label="Random theme for this region">⚄</button>
+        <button id="btn-settings" title="Settings" aria-label="Settings">⚙</button>
+        <button id="btn-hide" title="Hide all regions to tray" aria-label="Hide all regions to tray">╌</button>
+        <button id="btn-region-menu" title="Region menu" aria-label="Region menu">⋯</button>
       </div>
     </div>
 
@@ -165,6 +168,8 @@
     </div>
   </div>
 
+  <script src="region-icons.js"></script>
   <script src="app.js"></script>
+  <script src="region.js"></script>
 </body>
 </html>

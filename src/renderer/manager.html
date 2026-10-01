@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'self'">
+  <title>QuickLauncher</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link id="theme-stylesheet" rel="stylesheet" href="styles/themes/cyberpunk.css">
+  <link rel="stylesheet" href="styles/manager.css">
+</head>
+<body class="manager">
+  <div id="app">
+    <div id="particles"></div>
+
+    <div id="header">
+      <div id="title-area">
+        <span id="title">QUICK<span class="accent">.</span>LAUNCH</span>
+      </div>
+      <div id="mgr-tabs" role="tablist">
+        <button id="tab-regions" class="mgr-tab" role="tab" aria-selected="true" title="Regions">REGIONS</button>
+        <button id="tab-settings" class="mgr-tab" role="tab" aria-selected="false" title="Settings">SETTINGS</button>
+      </div>
+      <div id="header-controls">
+        <button id="btn-mgr-close" title="Close" aria-label="Close">✕</button>
+      </div>
+    </div>
+
+    <div id="mgr-body">
+      <!-- REGIONS view (spec 8.1) -->
+      <section id="view-regions" role="tabpanel" aria-labelledby="tab-regions">
+        <div class="mgr-head">
+          <div class="overlay-title mgr-title">// REGIONS</div>
+          <button id="btn-new-region" title="Create a region">+ NEW REGION</button>
+        </div>
+        <div id="mgr-cap" class="mgr-note hidden"></div>
+        <div class="mgr-matchall">
+          <label class="checkbox-label" title="Show one theme in every region. Each region keeps its own theme for when this is off.">
+            <input type="checkbox" id="chk-match-all">
+            <span class="checkmark"></span>
+            MATCH ALL REGIONS
+          </label>
+          <div id="shared-theme-wrap" class="mgr-shared hidden">
+            <span class="setting-label">SHARED THEME</span>
+            <div id="shared-theme-slot"></div>
+          </div>
+        </div>
+        <div id="region-list" role="list"></div>
+      </section>
+
+      <!-- SETTINGS view (spec 8.2): today's rows minus SKIN -->
+      <section id="view-settings" class="hidden" role="tabpanel" aria-labelledby="tab-settings">
+        <div class="overlay-title mgr-title">// SETTINGS</div>
+
+        <div class="setting-row">
+          <label for="slider-icon-size">ICON SIZE</label>
+          <div class="slider-row">
+            <input type="range" id="slider-icon-size" min="32" max="128" step="8" value="64" title="Icon size in every region">
+            <span id="icon-size-val">64px</span>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label class="checkbox-label" title="Start QuickLauncher when you sign in to Windows">
+            <input type="checkbox" id="chk-startup">
+            <span class="checkmark"></span>
+            START WITH WINDOWS
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <label class="checkbox-label" title="Pick a new theme for every region at each start">
+            <input type="checkbox" id="chk-random-theme">
+            <span class="checkmark"></span>
+            RANDOM THEME ON STARTUP
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <label class="checkbox-label" title="Stop ambient animations">
+            <input type="checkbox" id="chk-reduced-motion">
+            <span class="checkmark"></span>
+            REDUCE MOTION
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <label for="input-hotkey">GLOBAL SHOW/HIDE HOTKEY</label>
+          <div class="hotkey-row">
+            <input id="input-hotkey" class="hotkey-input" type="text" readonly placeholder="CLICK AND PRESS KEYS" autocomplete="off" spellcheck="false" title="Click, then press the keys">
+            <button id="btn-hotkey-clear" type="button" title="Clear (disable hotkey)">✕</button>
+          </div>
+          <div id="hotkey-status" class="hotkey-status"></div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">VERSION <span id="app-version" class="accent"></span></div>
+        </div>
+
+        <div class="setting-row">
+          <button id="btn-open-cheatsheet" class="mgr-link" title="Open the list of keyboard shortcuts">KEYBOARD SHORTCUTS</button>
+        </div>
+      </section>
+    </div>
+
+    <div id="mgr-footer" class="overlay-footer hidden">
+      <button id="btn-check-update" title="Check for a newer version">CHECK FOR UPDATES</button>
+      <button id="btn-close-settings" title="Close">CLOSE</button>
+    </div>
+  </div>
+
+  <!-- Theme list (one, shared by every theme picker) -->
+  <div id="theme-picker-list" class="theme-picker-list hidden" role="listbox"></div>
+
+  <!-- Region icon popover: 4 x 4 glyphs -->
+  <div id="glyph-popover" class="mgr-popover hidden" role="listbox" aria-label="Region icon"></div>
+
+  <!-- Installed apps picker -->
+  <div id="apps-picker" class="overlay hidden">
+    <div class="overlay-panel picker-panel">
+      <div id="picker-title" class="overlay-title">// ADD INSTALLED APP</div>
+      <input type="text" id="picker-search" class="picker-search" placeholder="SEARCH..." autocomplete="off" spellcheck="false" title="Type to filter the list">
+      <div id="picker-loading" class="picker-loading hidden">SCANNING INSTALLED APPS...</div>
+      <div id="picker-list"></div>
+      <div class="overlay-footer">
+        <button id="btn-browse-picker" title="Choose a file">BROWSE...</button>
+        <button id="btn-close-picker" title="Close">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard cheat-sheet -->
+  <div id="cheatsheet-overlay" class="overlay hidden">
+    <div class="overlay-panel mgr-cheat-panel">
+      <div class="overlay-title">// KEYBOARD SHORTCUTS</div>
+      <div class="cheat-list" id="cheat-list"></div>
+      <div class="overlay-footer">
+        <button id="btn-close-cheatsheet" title="Close">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="theme-names.js"></script>
+  <script src="region-icons.js"></script>
+  <script src="manager.js"></script>
+</body>
+</html>

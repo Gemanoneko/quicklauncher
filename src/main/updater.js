@@ -13,17 +13,18 @@ function setTrayUpdateAvailable(flag) {
   } catch { /* noop — tray module unavailable in tests / abnormal startup */ }
 }
 
-let _win = null;
+// Returns the webContents that shows update banners: the primary region's
+// page, which changes when the primary region is deleted or rebuilt.
+let _target = () => null;
 
-// Guard: only send if the window is still alive
+// Guard: only send if the page is still alive
 function send(channel, ...args) {
-  if (_win && !_win.isDestroyed() && _win.webContents && !_win.webContents.isDestroyed()) {
-    _win.webContents.send(channel, ...args);
-  }
+  const wc = _target();
+  if (wc && !wc.isDestroyed()) wc.send(channel, ...args);
 }
 
-function setupUpdater(win) {
-  _win = win;
+function setupUpdater(getTarget) {
+  _target = typeof getTarget === 'function' ? getTarget : () => null;
 
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
@@ -83,8 +84,9 @@ function setupUpdater(win) {
     autoUpdater.quitAndInstall(true, true);
   });
 
-  // Auto-check 5 seconds after launch (packaged only)
-  if (app.isPackaged) {
+  // Auto-check 5 seconds after launch (packaged only). --ql-no-update-check
+  // (runtime flag) skips it for local test builds, which have no update feed.
+  if (app.isPackaged && !process.argv.includes('--ql-no-update-check')) {
     setTimeout(() => checkForUpdates(), 5000);
   }
 }

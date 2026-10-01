@@ -1,0 +1,105 @@
+/* Manager window (regions spec 8). Uses the primary region's theme tokens. */
+
+body.manager #app { height: 100vh; }
+body.manager #title-area { flex-direction: row; align-items: center; }
+
+/* Tabs sit in the header, after the title. */
+#mgr-tabs { display: flex; gap: 6px; margin: 0 auto 0 16px; -webkit-app-region: no-drag; }
+.mgr-tab { min-height: 24px; padding: 3px 10px; }
+.mgr-tab.active { border-color: var(--accent-c); color: var(--accent-text); box-shadow: var(--glow-c); }
+
+#mgr-body {
+  flex: 1; min-height: 0;
+  overflow-y: auto; overflow-x: hidden;
+  padding: 16px 20px;
+  position: relative; z-index: 2;
+  scrollbar-gutter: stable;
+}
+#mgr-body::-webkit-scrollbar { width: 6px; }
+#mgr-body::-webkit-scrollbar-track { background: transparent; }
+#mgr-body::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 3px; }
+
+#mgr-footer {
+  padding: 10px 20px 14px;
+  background: var(--panel-bg);
+  position: relative; z-index: 2;
+  flex-shrink: 0; flex-wrap: wrap; row-gap: 6px;
+}
+
+.mgr-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.mgr-title { margin-bottom: 0; flex: 1; min-width: 0; }
+body.manager #view-settings .mgr-title { margin-bottom: 16px; }
+.mgr-note { font-size: 12px; letter-spacing: 1px; color: var(--accent-m); margin-bottom: 10px; }
+
+.mgr-matchall {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px;
+  margin-bottom: 12px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.mgr-shared { display: flex; align-items: center; gap: 8px; }
+.mgr-shared .mgr-theme { width: 210px; }
+
+#region-list { display: flex; flex-direction: column; gap: 6px; }
+.mgr-region {
+  display: grid;
+  grid-template-columns: 32px minmax(110px, 1.2fr) 84px minmax(120px, 1fr) 34px 24px;
+  align-items: start; gap: 8px;
+  padding: 6px; border: 1px solid transparent; border-radius: var(--radius);
+  transition: border-color .2s;
+}
+.mgr-region.mgr-flash { border-color: var(--accent-c); }
+/* Below 520 px the row wraps to two lines (spec 8.1). */
+@media (max-width: 519px) {
+  .mgr-region { grid-template-columns: 32px minmax(0, 1fr) 84px 24px; }
+  .mgr-region .mgr-theme { grid-column: 2 / 4; grid-row: 2; }
+  .mgr-region .mgr-count { grid-column: 4; grid-row: 2; text-align: center; }
+}
+
+.mgr-icon-btn, .mgr-glyph {
+  width: 32px; height: 32px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--accent-text);
+}
+.mgr-icon-btn svg, .mgr-glyph svg { width: 20px; height: 20px; display: block; }
+
+.mgr-name-wrap { min-width: 0; }
+.mgr-name, .mgr-layout {
+  width: 100%; height: 28px;
+  background: var(--rename-input-bg);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--accent-text);
+  font-family: var(--font); font-size: 12px; letter-spacing: 1px;
+  padding: 4px 8px; outline: none;
+}
+.mgr-name { -webkit-user-select: text; user-select: text; }
+.mgr-name:focus, .mgr-layout:focus { border-color: var(--accent-c); box-shadow: var(--glow-c); }
+.mgr-name.invalid { border-color: var(--accent-m); box-shadow: var(--glow-m); }
+.mgr-layout option { background: var(--panel-bg); color: var(--text); }
+.mgr-error { font-size: 12px; letter-spacing: 1px; color: var(--accent-m); margin-top: 3px; }
+.theme-search.mgr-theme { height: 28px; min-width: 0; }
+.mgr-count { font-size: 12px; color: var(--text-dim); text-align: right; line-height: 28px; }
+.mgr-delete {
+  width: 24px; height: 24px; margin-top: 2px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.mgr-disabled { opacity: .45; cursor: default !important; }
+.mgr-disabled:hover { background: transparent; box-shadow: none; border-color: var(--border); color: var(--text); }
+
+.mgr-popover {
+  position: fixed; z-index: 500;
+  display: grid; grid-template-columns: repeat(4, 32px); gap: 4px;
+  padding: 6px;
+  background: var(--panel-bg);
+  border: 1px solid var(--accent-c); border-radius: var(--radius);
+  box-shadow: var(--glow-c);
+}
+
+.mgr-link {
+  border: none; padding: 0; min-height: 24px;
+  background: transparent; color: var(--accent-text);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.mgr-link:hover { background: transparent; box-shadow: none; color: var(--accent-text); }
+
+.mgr-cheat-panel { max-height: 100%; overflow-y: auto; }
+body.manager .cheat-key { flex-basis: 130px; }

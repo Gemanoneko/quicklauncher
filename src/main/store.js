@@ -356,6 +356,13 @@ class Store extends EventEmitter {
     return this._view ? (this._pushed.get(this._syncSeq) || null) : null;
   }
 
+  // The pre-merge copy the renderers still show (undefined when none is
+  // pending). With several region pages, the controller replaces one
+  // region's items inside this copy before calling setFromRenderer().
+  rendererView(key) {
+    return this._view ? this._view[key] : undefined;
+  }
+
   // Move an unreadable file aside (never delete it) so a later save can't
   // replace the only remaining copy of the user's data.
   _quarantine(p) {
