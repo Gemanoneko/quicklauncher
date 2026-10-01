@@ -28,7 +28,7 @@ const elSliderIconSize = $('slider-icon-size');
 const elIconSizeVal    = $('icon-size-val');
 const elUpdateText     = $('update-text');
 
-// ── Banner quotes (3 per theme) ───────────────────────────────────────────────
+// ── Banner quotes (2 to 6 per theme) ──────────────────────────────────────────
 const THEME_BANNERS = {
   'cyberpunk':    ['WAKE UP, SAMURAI. WE HAVE A CITY TO BURN.',
                    'NEVER FADE AWAY.',
@@ -627,54 +627,37 @@ const THEME_BANNERS = {
     'WE WILL NOT LET DARKNESS CONSUME THIS WORLD.',
     'LOK TAR-- WAIT. FOR THE ALLIANCE!',
   ],
-  'ff6': [
-    'NOTHING CAN KILL THE MUSIC. NOTHING.',
-    'LIFE... DREAMS... HOPE... WHERE DO THEY COME FROM? WHERE DO THEY GO?',
-    'THE ESPERS ARE NOT WEAPONS. THEY ARE LIVING BEINGS.',
-    'I WILL FIND MY OWN REASON TO FIGHT.',
-    'SON OF A SUBMARINER!',
-  ],
-  'ff8': [
-    'WHATEVER.',
-    'I DREAMT I WAS A MORON.',
-    'RIGHT AND WRONG ARE NOT WHAT SEPARATE US. JUST DIFFERENT STANDPOINTS.',
-    'SEED. BALAMB GARDEN. REPORTING FOR DUTY.',
-    'EVEN IF THE WORLD BECOMES YOUR ENEMY, I WILL PROTECT YOU.',
-  ],
-  'ff9': [
-    'YOU DON\'T NEED A REASON TO HELP PEOPLE.',
-    'I WILL FIND MY PURPOSE IN LIFE. SOMEDAY.',
-    'HOW DO YOU PROVE THAT YOU EXIST? MAYBE WE DON\'T EXIST.',
-    'THE CRYSTAL TELLS ALL.',
-    'TO BE FORGOTTEN IS WORSE THAN DEATH.',
-  ],
   'ff10': [
-    'THIS IS MY STORY.',
-    'NOW! THIS IS IT! NOW IS THE TIME TO CHOOSE!',
-    'STAY AWAY FROM THE SUMMONER!',
-    'SIN IS OUR PUNISHMENT FOR OUR VANITY.',
-    'I KNOW IT SOUNDS SELFISH. BUT THIS IS MY STORY.',
+    'Listen to my story.',
+    'This is my story.',
   ],
   'ff14': [
-    'HEAR. FEEL. THINK.',
-    'A SMILE BETTER SUITS A HERO.',
-    'PRAY RETURN TO THE WAKING SANDS.',
-    'SUCH DEVASTATION. THIS WAS NOT MY INTENTION.',
-    'THE LIGHT SHALL NOT EXPIRE.',
+    'Hear. Feel. Think.',
+    'A smile better suits a hero.',
   ],
   'ff15': [
-    'A KING PUSHES ONWARD ALWAYS, ACCEPTING THE CONSEQUENCES.',
-    'WALK TALL, MY SON.',
-    'THAT\'S IT! I\'VE COME UP WITH A NEW RECIPE!',
-    'THE LINE BETWEEN LIGHT AND DARKNESS IS PAPER THIN.',
-    'KINGS OF LUCIS. COME TO ME.',
+    "I've come up with a new recipe!",
+    'A king pushes onward always.',
+  ],
+  'ff6': [
+    'I prefer the term treasure hunting!',
+    'My life is a chip in your pile.',
+    "I'm a god! I'm all-powerful!",
   ],
   'ff7': [
-    'LET\'S MOSEY.',
-    'THERE AIN\'T NO GETTING OFF THIS TRAIN WE\'RE ON.',
-    'I WILL NEVER BE A MEMORY.',
-    'THE PLANET IS DYING. SLOWLY BUT SURELY IT IS DYING.',
-    'SOLDIER 1ST CLASS. CLOUD STRIFE.',
+    'Not interested.',
+    "Let's mosey.",
+    "There ain't no gettin' offa this train we're on.",
+  ],
+  'ff8': [
+    '...Whatever.',
+    'Booyaka!',
+    'Everything will be fine now...',
+  ],
+  'ff9': [
+    "You don't need a reason to help people.",
+    'To be forgotten is worse than death.',
+    'How do you prove that you exist...?',
   ],
 };
 
