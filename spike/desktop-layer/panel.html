@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self'">
+<title>Regions spike</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+  body { font: 13px/1.35 "Segoe UI", sans-serif; color: #e8eaf0; }
+  .panel {
+    position: absolute; inset: 0; box-sizing: border-box; padding: 14px;
+    background: rgb(30, 34, 48); border-radius: 22px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .row { display: flex; align-items: center; justify-content: space-between; }
+  h1 { font-size: 14px; margin: 0; font-weight: 600; }
+  #close { width: 24px; height: 24px; border: 0; border-radius: 6px; background: #3a4058; color: #fff; cursor: pointer; }
+  #status { font-size: 12px; color: #aab0c4; min-height: 32px; }
+  #btn { height: 34px; border: 0; border-radius: 8px; background: #4a6cf7; color: #fff; font-size: 13px; cursor: pointer; }
+  #type { height: 30px; border-radius: 8px; border: 1px solid #50577a; background: #151823; color: #fff; padding: 0 8px; font-size: 13px; }
+  #type:focus { outline: 2px solid #8ea2ff; }
+  .controls { display: contents; }
+  #steps, .divider, .opt { display: none; }
+
+  /* Try-it view (?view=steps): big numbered steps Sergei follows without reading the rest. */
+  .steps-view .panel { padding: 18px 20px; gap: 12px; }
+  .steps-view h1 { font-size: 16px; }
+  .steps-view #close { width: 34px; height: 34px; font-size: 20px; line-height: 1; border-radius: 8px; }
+  .steps-view #status { min-height: 0; font-size: 13px; }
+  .steps-view #steps { display: block; }
+  #steps p { margin: 0 0 10px; font-size: 13px; color: #aab0c4; }
+  #steps ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  #steps li { display: flex; align-items: flex-start; gap: 12px; font-size: 19px; line-height: 1.3; font-weight: 600; }
+  #steps .n {
+    flex: 0 0 32px; height: 32px; border-radius: 16px; background: #4a6cf7; color: #fff;
+    font-size: 17px; display: flex; align-items: center; justify-content: center;
+  }
+  #steps .t { padding-top: 3px; }
+  .steps-view .divider { display: block; height: 1px; background: #3a4058; margin-top: auto; }
+  .steps-view .opt { display: block; font-size: 12px; color: #8a90a6; }
+  .steps-view .controls { display: flex; gap: 8px; }
+  .steps-view #btn { flex: 0 0 auto; padding: 0 12px; }
+  .steps-view #type { flex: 1 1 auto; min-width: 0; height: 34px; box-sizing: border-box; }
+</style>
+</head>
+<body>
+  <div class="panel">
+    <div class="row"><h1>Regions spike</h1><button id="close" title="Quit the spike">×</button></div>
+    <div id="status">starting…</div>
+    <div id="steps">
+      <p>Recording to a log. Do these in order:</p>
+      <ol>
+        <li><span class="n">1</span><span class="t">Press Win+D. Wait 5 s.</span></li>
+        <li><span class="n">2</span><span class="t">Press Win+D. Wait 5 s.</span></li>
+        <li><span class="n">3</span><span class="t">Task Manager → Windows Explorer → Restart.</span></li>
+        <li><span class="n">4</span><span class="t">Wait 10 s, then click the ×.</span></li>
+      </ol>
+    </div>
+    <div class="divider"></div>
+    <div class="opt">Optional: click the button, type in the box. Only counts are logged.</div>
+    <div class="controls">
+      <button id="btn">Click me (0)</button>
+      <input id="type" placeholder="Click here, then type" spellcheck="false">
+    </div>
+  </div>
+  <script src="panel.js"></script>
+</body>
+</html>

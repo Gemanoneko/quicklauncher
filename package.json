@@ -56,7 +56,8 @@
     }
   },
   "dependencies": {
-    "electron-updater": "^6.3.0"
+    "electron-updater": "^6.3.0",
+    "koffi": "^3.3.2"
   },
   "devDependencies": {
     "electron": "^32.0.0",
