@@ -4,7 +4,7 @@ Reviewer: Judy. Branch `wip/theme-fidelity`, spec `QuickLaunch_ThemeSpec_Batch06
 
 **In scope:** star-wars-republic, -separatist, -empire, -rebel, -sith, -mando against the spec; Ender's four deviations; the three new fonts. **Sergei delegated the beauty calls**, so section 3 rules on each deviation and the required fixes carry what differs from the build.
 
-**Verdict:** CHANGES REQUESTED. Two fixes, both in `star-wars-empire.css` (F1, F2); Republic, Separatist, Rebel, Sith and Mando are approved as built. Details and the fix text are at the end.
+**Verdict (first review, superseded by section 10, which ends APPROVED):** CHANGES REQUESTED. Two fixes, both in `star-wars-empire.css` (F1, F2); Republic, Separatist, Rebel, Sith and Mando are approved as built. Details and the fix text are at the end.
 
 ## 1. What was tested, and on what
 
@@ -152,3 +152,52 @@ All under `...\scratchpad\batch6-review\sheets\`:
 4. **For Sergei (no code), decide only if he sees them.** The separatist header glyphs are faint on the tan (note 1, section 6 item 1); Empire squints at 3; the long Cyrillic names still cut in every theme (section 6 item 6). None blocks.
 
 Rulings, short: Empire scope **accept**, Empire body face **change** (F2); Rebel Black Ops One **accept**; Sith Oxanium, labels and 4 px **accept**; "Visual Studio 2022" ellipsis **reject** (F1).
+
+## 10. Re-check of F1 and F2 (Judy, 2026-10-01)
+
+Scope: only the two Empire fixes Ender applied. Nothing in the repo was edited by me, no git, nothing that takes focus; the spec's F3 text update (mine) is still not done. This section only adds to the review above.
+
+### 10.1 What was tested, and on what
+
+- **The tree.** `star-wars-empire.css` is now `d617d882` (written 16:51). The other five theme files, `app.js` and `fonts.css` are byte-identical to the first review (`d49a2e3c`, `315aab9a`, `ca4e8e95`, `aaf73851`, `f2480bc3`, `a85b2c25`, `f20fc24e`), checked at the start and again at the end.
+- **Diff against the pre-fix copy.** Ender's scratch asar still holds the pre-fix Empire (sha1 `226e86fa`, the same hash I recorded before, so the baseline is the file I reviewed). The diff is exactly what F1 and F2 prescribed: `--font` (line 21), `--tile-label-spacing: 0px` (line 44), the `.tile-label` rule at 11 px with `line-height: 13.8px` (line 123), and the header comment (now says Libre Franklin is the body face, Bahnschrift the fallback). Nothing else moved: no colour, no SVG, no other rule. Against the spec text my extractor now reports exactly five differing lines, all font lines (`--font`, `--tile-label-spacing`, `#title`, `.tile-label`, `#theme-banner-text`), builtSha `9cf7a793`.
+- **Runs: 2 harness launches** on Ender's harness (unmodified, same hashes as before), my driver unmodified from the first review, no fix stylesheet this time: `j-r1` (descender sweep and the A/B/C probe on their own) and `j-r2` (everything else, plus my overflow scan). Both exited 0. Statics: 0 `infinite`, `@keyframes`, `will-change`, `backdrop-filter`, `!important`, 0 CR bytes; `check:contrast` 101 checked, 0 errors, 32 legacy warnings (none of the six).
+
+### 10.2 F1, labels: PASS
+
+Label ink widths in the 100 px box, measured in the running app on the built file (no probe stylesheet): Visual Studio 2022 **97.7**, Visual Studio Code **97.2**, Windows Terminal **95.3**, Command Prompt **95.3**, Диспетчер задач **92.4**, Командная строка **99.5**; none ellipsizes. These are the same figures as my probe-stylesheet run and Ender's, to the digit, so the file does what the probe said. The six standard labels: Notepad 44.7, Calculator 52.9, Paint 27.0, Terminal 44.8, Browser 43.5, Files 24.3. Tile height **94.797** and label height 13.797 at 1x, 1.5x, 2x and scrolled one row (94.7 to 95.4 required). Still cut, as every theme cuts them (base 100 px box): "Панель управления" 106.5 and "Проводник Windows" 111.1. A side effect I did not ask for and like: the long mock name "Spreadsheet Editor", which ellipsized in Empire at 640 x 420 before, now fits (seen in `RC-empire-E.png`). Viewed at 3x (Ender's `f1-labels-row1-3x.png`) and at 1.5x in my own grid and hover renders: Libre Franklin 500 at 11 px is clean, one weight, evenly spaced, nothing crowded; the hover white double line is unchanged.
+
+**Descenders:** built 0 px at all six set-and-scale cells (Latin and Cyrillic at 1x, 1.5x, 2x), with the positive control reading **153, 403, 486 (Latin) and 198, 535, 656 (Cyrillic)**, so the sweep can fail and did not.
+
+### 10.3 F2, body face: PASS
+
+Platform fonts now read Libre Franklin (web) for `#header-version`, `.overlay-title`, `.setting-row label`, `#icon-size-val`, `#theme-search`, `#btn-close-settings`, `#btn-check-update`, `#app-version`, `.edit-label`, `#btn-done-edit`, `#btn-add-edit`, `#update-text`, `.update-btn` and `#filter-chip-text` (header button glyphs stay Segoe UI Symbol, as everywhere). My override probe from the first review, run again against the built file, reads **zero width difference** in all eight states, so the build equals what I tested. Overflow scan of every visible element in Settings at 424, Settings at 640, Settings scrolled to the end, edit, update, edit plus update, chip and the cheat sheet: **no overflow**, except the edit-mode tile's remove-button corner (124 in 122 px), which is the base behaviour and the same before the fix. Viewed: the Settings screen, the skin picker, the edit bar, the update bar under the banner and the chip are one face now; the update line and the banner line match. One cosmetic difference, not a defect: the icon-size value "64px" is regular weight where it was bold in Bahnschrift.
+
+### 10.4 Everything else I re-measured on the fixed Empire
+
+| Check | Result |
+|---|---|
+| Title edge at 424, 640, 1024 (1x), 424 at 1.5x and 2x (gate 156) | 144.05 in all five (unchanged) |
+| Banner lines, 3 strings at 424, 640, 1024, 1.5x | all on one line; widest ends 273.9, 46.1 px before the text box edge and 56.1 px before the motif |
+| A/B/C overlap and keep-out, 22 states (11 at 1x, 11 at 1.5x) | **0 / 0** in all 22 (strict 0); planted-block control 238 px; smallest art-to-content distance 1.33 px (the banner meets the bar below it) |
+| Window clips, 10 state-and-scale cells | 0 clipped points, corners `0000` (square window) |
+| Rendered text contrast, 28 roles | lowest 8.34 (declared 8.34) |
+| Colour discipline, art-only capture | red only (32 px header, 3 px banner lamp), 0 off-palette pixels |
+| Hidden-tiles sigma, loops at capture, hover loops | 0.00, 0, 0 |
+| Console errors | 0 |
+| Real icons on the plate | 0 lost on all six icons (no plate cut) |
+
+### 10.5 Anything still wrong
+
+Nothing that blocks. The three Notes from the review stand unchanged and are Sergei's to see or ignore: the Separatist header glyphs are faint on the tan (3.16:1 rendered), Empire squints at 3, and two long Cyrillic names still cut in every theme. The spec text (F3, mine) still reads the old way for Empire, Rebel and Sith and is the only open item; it does not need a build change.
+
+### 10.6 Process and cleanup
+
+- **Browsers: I started none** (`headless-browser.mjs list`: no leases, before and after).
+- **Leak sweep: 0.** Read-only CIM listing of all 514 processes after the last run, by command line: **0 non-shell processes** naming `batch6-review`, `harness6.cjs`, `b6-config`, `QL-B6-Measure` or a lease path; **0 `electron.exe`, 0 `msedge.exe`, 0 `quicklauncher.exe`**. Both runs printed "leftover processes naming the run folder: 0"; killed: 0 (no timeout, both exited 0 on their own), no `taskkill /IM`. The `bash.exe` wrappers that carry my scratch path are excluded by name, as in the first review.
+- **Focus and side effects.** Both runs read `windowShow 0, windowFocus 0, appFocus 0, loginItem 0, globalShortcut 0, dialogs 0, blockedRequests 0, windowOpens 0`.
+- **Scratch.** `...\scratchpad\batch6-review\`: `runs\j-r1`, `runs\j-r2`, `recheck.cjs`, `sheets\RC-empire-A.png` to `-E.png` (grid and hover, edit and update, Settings and picker, chip and scrolled, 640 grid and Settings scrolled to the end).
+
+**Verdict:** APPROVED
+
+F1 and F2 are done and reproduce; Empire is approved as built. With the first review's five approvals, all six batch-6 themes are approved. Open after this: F3 (Judy, spec text) and Futaba's QA on a fresh build of the committed tree (the scratch packaged build in `batch6-build\build` predates the Sith tracking change and is stale).
