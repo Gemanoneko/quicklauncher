@@ -158,3 +158,65 @@ Both launches went through `node scripts/qa/quicklaunch-safe-launch.mjs` from th
 - **Not verified:** only these two themes and these label states; "1.5x" is emulated scale on a 150% panel; the other four themes were not re-measured (their files are unchanged from the reviewed tree).
 
 **Verdict:** APPROVED
+
+---
+
+## 9. Re-check — flag rulings (Judy, 2026-10-01)
+
+Scope: Ender's build of the batch-4 flag-rulings addendum (spec A.0 to A.8) on `wip/theme-fidelity`, HEAD `58521bf`, uncommitted. Only that build. Not touched: the regions files, any code, any commit. The only files I wrote are this section and the batch-4 spec update (section 9.7). Scratch root: `C:\Users\AnGeLZzZ\AppData\Local\Temp\claude\C--Antigravity-Projects-Studio-Illuminati\890801c3-8abf-4cee-b670-698e2f31ad7c\scratchpad`, my files under `judy-review\rc2\`.
+
+### 9.1 Rulings on Ender's two items
+
+1. **Eldar labels at 13.5 px instead of 14 px: ACCEPTED, and the spec now says 13.5.** The 14 px was my estimate and it was wrong for one name. Measured in Electron on the built font, "Visual Studio 2022" is 95.50 px at 13 px, **98.90 px at 13.5 px (built)**, 99.57 at 13.6, 100.57 at 13.75 and 102.29 at 14 px, against the label cap of 100 px (`max-width: icon size + 36px` in `base.css`). So 14 px truncates it (the 14 px run is the positive control), 13.5 px keeps 1.1 px of room, 13.6 also fits (0.4 px of room) and 13.75 does not, so Ender's choice is the safe one. Line height, label box (14.396 px) and tile height (94.729 px) do not move. It reads at 1x (6x pixel crops of the label strip, native and forced hover). The 15 px lever in my E8 was therefore impossible; it is replaced (weight 700 measures 99.27 px for the same name and still fits).
+2. **Chaos header comment still says "spiked collar icon": Minor, comment only, and the omission was mine.** Line 4 of `warhammer-chaos.css` describes the old drawing; the icon is now a brass-banded horn. A.6.1 told Ender to change the Orks and Eldar header comments but not this one, so he built what the spec said. Rule: change "a spiked collar icon" to "a brass-banded horn icon" in the same commit. No rendering changes, so I do not need to see it again beyond a diff showing only that line. The other five header comments were read and name nothing that changed. A.6.1 now names the line.
+
+### 9.2 The tree is what Ender hashed
+
+- **`sha1-after.txt`: 106 of 106 files OK** (`sha1sum -c` from the tool root). Against `sha1-before.txt` exactly eight entries differ: the six `warhammer*.css`, `fonts.css`, `fonts/README.md`. `git status` shows the same set plus the `cormorantgaramond/` folder and the spec; nothing else from this build.
+- **Fonts.** `CormorantGaramond-Italic-VF.ttf` is 715,644 bytes, SHA-256 `0f48ea6a...611c530d`; `OFL.txt` is 4,387 bytes, SHA-256 `60700d35...f6956`. Both equal the README table. `git hash-object` gives `0d914e76...` and `507d70f4...`, the upstream blob ids the README quotes.
+- **The build under test is the tree.** I extracted Ender's `batch4-flags\build\win-unpacked\resources\app.asar` (sha1 `82cf1fc658355ed55a973ce6253cf89f1da26ab4`) with the repo's own `@electron/asar`: 133 files in `src`, 0 differ from the working tree, none missing either way.
+- **Spec against files.** The ten CSS blocks of the addendum compared line for line with the theme files: the six art and label blocks (Chaos, Tyranids, Necrons, Imperium two, Orks) are byte-equal; the Eldar `#title`, `#theme-banner-text` and `.tile-label` rules are byte-equal after the 13.5 px update (the first draft differed in exactly that number); the `@font-face` block is byte-equal to the new lines in `fonts.css`. Both Necrons remove-button lines read `#B5301F`.
+- **Gates.** I ran `npm run check:contrast`: 101 themes checked, 0 errors, exit 0, no Warhammer theme in the 36 legacy warnings. `grep -c infinite` is 0 in all six files; `getAnimations()` reports 0 infinite animations in all six themes at capture and at the end of the run.
+
+### 9.3 How I ran it
+
+Six guarded launches of Ender's build, all through `node scripts/qa/quicklaunch-safe-launch.mjs` from the studio root on fresh temp profiles (`fl1`, `sw-orks`, `sw-eldar`, `hv-eldar`, `lv-eldar`, `cy1`). Each driver ran only after that profile's own `DevToolsActivePort` named the port I had chosen. All six ended PASS, 0 processes left, `Run` and `StartupApproved\Run` unchanged; Sergei's instance (PID 4916) was never touched. The driver sends no `Input.*` events (Runtime.evaluate, CSS, DOM queries, Emulation and Page.captureScreenshot only), a pointer-events guard sheet keeps the real cursor from hovering anything, and the hover look was forced with `CSS.forcePseudoState`. No headless browser was used. The updater "ENOENT app-update.yml" line in the launch logs is the scratch build having no update file, as in earlier rounds. 0 console exceptions in any run.
+
+### 9.4 The four redrawn icons, read at 1x
+
+Crops: `rc2\out-fl1\<theme>-banner-icon-1x-8x.png`, `<theme>-header-art-1x-6x.png`, `<theme>-win-1x-3x.png` (the 1x render, pixels enlarged without smoothing).
+
+| Icon | What 1x shows | Reads as |
+|---|---|---|
+| Chaos banner | one curved grey horn on a brass band with a hot-red crack, base flush on the slot edge | **a horn** (a fang is the next-nearest reading; not a wheel, not a sun) |
+| Tyranid header | two toothed bone crescents closing on a pink bulb, a spiral tendril with a pink dot on each side | **jaws around a gem**; at the smallest size the pair can also read as an eye with heavy lids, which is the spec's own watch item, not a miss |
+| Necrons banner | a pyramid with a bronze capstone, one green seam and a green horizon | **a pyramid** (no Y, no eye) |
+| Necrons remove button | fill `rgb(181,48,31)` = `#B5301F`, bronze ring `#E6B85C`, white cross, 24 x 24 | **a red remove button** with the bronze trim kept |
+| Imperium banner and the two header seals | a lumpy red wax blob with a dark lancet stamp, on two paper tails of different length, same drawing in both places | **a wax seal** (no rings, no rosette) |
+
+This is my read of the pixels, not a fan test. One note, no change asked: the Chaos horn and the Tyranid banner talon share one silhouette; colour (iron and brass against bone and pink) and the header art separate them.
+
+### 9.5 Fonts, fit and descenders
+
+- **Platform fonts (`CSS.getPlatformFontsForNode`).** Orks: title, labels and banner are **Impact** (the header version stays Segoe UI Semibold), including the digits and the Cyrillic labels "Калькулятор" and "Жёсткий диск". Eldar: title, labels and banner are **Cormorant Garamond** (reported as "Cormorant Garamond Light", the variable font's default instance name; the declared 600, 600 and 500 are applied), including digits and the same Cyrillic labels; the header version stays Palatino Linotype. Negative control: a family that does not exist reports Times New Roman, so the call names the real face.
+- **Lining figures (Eldar, E4).** 6x crops of "7-Zip 23.01" and "Visual Studio 2022" show lining digits; the same text with `font-variant-numeric: normal` goes old-style, so the feature is what is rendered. Orks digits (Impact) are lining and clean.
+- **Title edge (E2).** Eldar `#title` ink right edge is x 132 at 424 x 300, 640 x 420 and 1024 x 700 (gate 156); Orks 110.
+- **Fit (E3), 1x, 1.5x and 2x.** Eldar and Orks truncate only "Spreadsheet Editor Pro". "Visual Studio 2022" is 98.90 px (Eldar) and 98.72 px (Orks) in the 100 px cap; "Notepad++ x64" and "7-Zip 23.01" fit in both.
+- **Descenders (E6, the F1 sweep: "gypsy Yy jq" and "Typing", 1x, 1.5x, 2x, scroll 0, 37, 81, six labels each, 108 samples per theme, built against an `overflow: visible` reference).** Orks **0 of 108** clipped rows; Eldar **0 of 108**. Noise floor 0 in both. Positive control, the old plain `overflow: hidden`: Eldar cuts **108 of 108** (1 to 4 rows), so the check can fail and the 3 px clip margin is what protects Cormorant's tails. **Orks: the old plain clip also cuts 0 of 108**, so for Impact the sweep proves "nothing is cut" but cannot show the margin matters (Impact's descenders end inside the box); the 6x crop of "gypsy Yy jq" shows whole g, y, p, j tails. Tile and label heights are identical built against old in all 6 states, and the edit-mode rename underline sits at identical coordinates at 1x, 1.5x and 2x in both themes.
+- **Type at 1x (E8).** Eldar title, labels (native and forced hover) and banner line read clearly on the navy ground and the teal hover. The title ("QUICK.LAUNCH", 13 px, 600) is the thinnest text in the batch: hairline serifs, greyer than the labels. Readable; the lever is title weight 700 if Sergei finds it faint.
+
+### 9.6 Not verified
+
+- The 11-state A/B/C overlap probe and the hue scan of the art zones: not re-run (Ender's claims, not mine). What I can say is that the icon slots and the `#header::after` box (`top: 10px; right: 172px; 84 x 20`) are byte-equal to the spec text, so no box moved.
+- That Jane gave the one-word go for the Cormorant download that A.2 required. The README cites A.2 as the approval; I saw the files, not the go.
+- The Palatino fallback widths at 13.5 px (only matters if the font file fails to load).
+- "1.5x" is an emulated scale on a 150% panel; one machine; ClearType fringes can differ elsewhere.
+- Whether a fan names the icons as I do (section 9.4 is my read).
+
+### 9.7 Spec update (done) and findings
+
+- **Spec updated to match the build** (`Docs/QuickLaunch_ThemeSpec_Batch04_2026-10-01.md`, addendum only; still uncommitted): A.2 item 3 now carries `font-size: 13.5px`; a new "Label size: 13.5 px" paragraph gives the measured table and the Palatino-fallback caveat; the estimate sentence in "Why these numbers" is corrected; E3 carries the measured widths and the 14 px failure; E8's levers drop the impossible 15 px; the "Not verified" line is updated; A.6.1 names the Chaos header comment; the addendum status line records the amendment. After the edit the ten CSS blocks match the theme files line for line (the `@font-face` block lives in `fonts.css` and matches it).
+- **F5, Minor, Ender, comment only:** `warhammer-chaos.css` line 4, "a spiked collar icon" becomes "a brass-banded horn icon". Fold into the commit; no re-check needed beyond the one-line diff.
+- **Notes, no change asked:** Tyranid header can read as an eye at the smallest size (spec lever: drop the bulb highlight, widen the gap by 1 px each side). Eldar title is the thinnest text (lever above). Chaos horn and Tyranid talon share a silhouette. The Orks descender control is vacuous for Impact, as above.
+
+**Verdict:** APPROVED

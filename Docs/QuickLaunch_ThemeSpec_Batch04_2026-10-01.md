@@ -2616,3 +2616,279 @@ Nothing was launched in QuickLaunch. Each item has a verify step above; none blo
 8. **Tall windows:** the side strips repeat down the container and the top course repeats along it; the art is anchored to the frame, never scaled. Looks right at 1024 x 700 in the mock.
 9. **The `.app-tile` radius and its `overflow: hidden`** clip the edit-mode remove button at the rounded corners in warhammer-eldar (top-right 4 px) and warhammer-tyranids (top-right 6 px); the base already clips it at the tile edge (the button sits at `top:-2px; right:-2px`), and the larger radii do not change that visibly in the mock.
 
+
+---
+
+## Addendum — flag rulings (Sergei delegated to Judy, 2026-10-01)
+
+Status: complete. Sergei left the batch-4 open choices to Judy ("decide yourself — what will be more beautiful"). Batch 4 is committed at `35d4e25` on `wip/theme-fidelity`. This addendum answers the five flags of section 8 and the four icon misreads of the batch-4 review (section 4, plus the Necrons remove button), and it **supersedes** the passages listed in A.7 (the earlier sections are not edited; where they disagree, this addendum is the contract). Doc only: no CSS or JS was edited, nothing was committed or pushed, the other batches, the batch-5 files and the regions worktree were not touched. This file is still uncommitted. **Amended after the Electron re-check (review file, "Re-check — flag rulings"):** the Eldar label size is **13.5 px, not 14 px** (A.2 item 3, "Label size" paragraph, E3, E8), and A.6.1 now names the Chaos header comment. The text below is what is built.
+
+Method in one paragraph: I rebuilt the batch-4 mock (the repo's current `src/renderer` copied read-only into the scratchpad, headless Edge 154, temp profile, no Electron, no QuickLaunch launch) and rendered the candidates on the real built theme files with the candidate rules appended. The mock reproduces the shipped numbers exactly (Orks as built: tile 95.41, title edge 111.27, NOTEPAD 47.02, CALCULATOR 54.93), so the new numbers are comparable. Nothing here sends `Input.*` events. Evidence files are listed in A.8.
+
+### A.0 Rulings at a glance
+
+| # | Question | Ruling | Why, in one line |
+|---|---|---|---|
+| 1 | Imperium parchment banner | **bright** (`#C8B78A` stays, no change) | the mid `#A89868` renders as dirty khaki: the gold rule, red diamonds and seal lose their pop; bright is the one place the cathedral reads as a manuscript |
+| 2 | Cormorant Garamond for Eldar | **yes**, one new bundled OFL file (the italic) | the elegant, swooping italic is what Aeldari type should look like; Palatino italic is sturdy where the theme is graceful; display roles only (title, labels, banner), the body stays Palatino |
+| 3 | Tyranid banner | **keep both lines** (no change) | the banner always shows line 1 then line 2, 14 s apart, so the opening ellipsis finishes the thought (cancer, then prey); one line would sit frozen |
+| 4 | Chaos colour | **red and brass only** (no change) | the audit's own complaint was "four gods at once is no god"; a second god colour would split a picture that already reads Khorne |
+| 5 | Ork labels | **Impact** | solid strokes match the Impact title and banner and the bolted plates, read at 1x where Ink Free is one pixel thin, and "Visual Studio 2022" fits where Ink Free cut it |
+| 6 | Redraw the four misread icons | **yes, all four**, and the Necrons remove button goes red | each new drawing is one dominant shape that reads at 22 px and 1x before it reads as anything else; full specs in A.6 |
+
+### A.1 Ruling 1: Imperium parchment, bright
+
+No change. I rendered the strip both ways on the built theme, in the grid and in edit mode, where it sits between a dark grid and a dark edit bar (the ac-templars worry). At `#A89868` the strip turns olive, the red diamonds and the wax lose contrast against it and the whole bottom edge looks dirty instead of aged; at `#C8B78A` it reads as parchment and the red seal and gold rule hold. The brightness the batch-4 review measured (banner 8.9 times the header ground) is the theme's signature, and the edit-mode view reads fine because the red edit bar underneath is dark and warm. The one-hex lever stays on record in section 6 if Sergei ever finds it loud. Ink on parchment stays 9.24:1. Flag 1 closed.
+
+### A.2 Ruling 2: Cormorant Garamond for Eldar, yes
+
+**This is the font request in the Foundation B7 form.** Sergei delegated the choice, so the ruling is Judy's, but the file is not downloaded until Jane confirms the delegation covers the download (the README says any other font needs a new approval). The file name, source and size are below so that confirmation can be one word. I downloaded nothing: sizes and licence come from the `google/fonts` directory listing and `METADATA.pb`, read as web pages.
+
+| Item | Value |
+|---|---|
+| Family (CSS) | `'Cormorant Garamond'`, italic, variable weight 300 to 700 |
+| File | `CormorantGaramond-Italic[wght].ttf` (italic only; the roman file, 1,195,560 bytes, is not needed by Eldar and is not requested) |
+| Source URL | `https://raw.githubusercontent.com/google/fonts/main/ofl/cormorantgaramond/CormorantGaramond-Italic%5Bwght%5D.ttf` |
+| Size | 715,644 bytes (0.68 MiB; the bundle grows from 3.05 MiB to 3.73 MiB) |
+| Licence | SIL Open Font License 1.1 (`METADATA.pb`: `OFL`); copyright "Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant)" |
+| Licence file | `https://raw.githubusercontent.com/google/fonts/main/ofl/cormorantgaramond/OFL.txt`, 4,387 bytes, ships next to the font |
+| Coverage | Latin, Latin Extended, Cyrillic, Cyrillic Extended, Vietnamese (`METADATA.pb` subsets) |
+| Stored as | `src/renderer/fonts/cormorantgaramond/CormorantGaramond-Italic-VF.ttf` (renamed for the brackets, as Jost and Cinzel were; the font bytes are unchanged) and `src/renderer/fonts/cormorantgaramond/OFL.txt` |
+| SHA-256 | Ender records both at download, into the README tables (I have not seen the file) |
+
+**Ender's steps** (after Jane's go): download the two files from the URLs above into `src/renderer/fonts/cormorantgaramond/`; add the block below to `src/renderer/fonts/fonts.css` (and change its comment "Seven" to "Eight" and the weight list); add one row to each README table (family, file, URL, bytes, SHA-256), change "Seven font files ... exactly these seven" to eight and name this addendum as the approval; change README "Use only the seven family strings" to eight.
+
+```css
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('cormorantgaramond/CormorantGaramond-Italic-VF.ttf') format('truetype');
+  font-weight: 300 700; font-style: italic; font-display: block;
+}
+```
+
+**Eldar rules.** I class Cormorant Garamond as a text face, like Jost and IM Fell English (the Foundation lets text faces set more than the title), so it sets exactly three roles: `#title`, `.tile-label` and `#theme-banner-text`. The body, settings, pickers and version stay Palatino Linotype italic (their sizes are fixed in `base.css`, and Cormorant's small x-height would make 11 px settings text too small). Four edits in `warhammer-eldar.css`:
+
+1. In `:root`: `--tile-label-weight: 400;` becomes `--tile-label-weight: 600;`.
+2. `#title` replaces the current rule (the `.accent` rule below it stays):
+```css
+#title { font-family: 'Cormorant Garamond', 'Palatino Linotype', Palatino, Georgia, serif; font-synthesis: none; font-weight: 600; font-style: italic; line-height: 1.2; font-size: 13px; letter-spacing: 3px; font-variant-numeric: lining-nums; color: #F0EBDD; text-shadow: none; }
+```
+3. `.tile-label` replaces the current rule (this also carries the F1 clip of the batch-4 review, so review item F3 for Eldar is satisfied by this text). **The size is 13.5 px, not the 14 px of the first draft** (measured in Electron: 14 px truncates "Visual Studio 2022"; see "Label size" below):
+```css
+.tile-label { font-family: 'Cormorant Garamond', 'Palatino Linotype', Palatino, Georgia, serif; font-synthesis: none; font-size: 13.5px; line-height: 14.4px; font-variant-numeric: lining-nums; overflow: clip; overflow-clip-margin: 3px; }
+```
+4. `#theme-banner-text` replaces the current rule:
+```css
+#theme-banner-text { font-family: 'Cormorant Garamond', 'Palatino Linotype', Palatino, Georgia, serif; font-synthesis: none; font-size: 14px; font-weight: 500; font-style: italic; letter-spacing: 0.3px; font-variant-numeric: lining-nums; color: #F0EBDD; margin-right: 90px; }
+```
+Also change the header comment lines that say "Spec flag 2 (Cormorant Garamond), built at the spec default: no new font" to say the flag was ruled yes in this addendum.
+
+**Why these numbers (estimates from the typeface's known proportions, not measurements: the font is not on this machine and I may not download it).** Cormorant has a small x-height (roughly 0.38 em against Palatino's roughly 0.47) and narrow letters, so it must be set larger to match: 14 px Cormorant italic was expected to be close to 12 px Palatino italic in width per letter (so labels and banner keep their fit) and within a few percent in x-height. **That estimate was right for the banner and the title and wrong by 2 px for the widest label; see "Label size" below, where the measured numbers replace it.** Weight 600 is the semibold, which keeps the hairlines alive at 1x (the font's heaviest is 700). The label `line-height` stays at the fixed 14.4 px (12 px times 1.2 today), so the tile height does not move off 95.39; Cormorant's tall descenders should then reach about 1 px past the line box and are protected by the existing `overflow-clip-margin: 3px`. The title goes to 13 px with 3 px tracking: against Palatino at 11 px with 4 px tracking (edge 145.28) my estimate for the edge is 138 to 150 against the 156 gate; **Ender's number wins and the ladder applies**. **The stack falls back to Palatino Linotype italic if the file fails to load**: the title still ends before 156 (about 148), the labels run larger (an ellipsis on "Visual Studio 2022" is the worst case), the banner lines still end well before x 320. Nothing breaks.
+
+**Label size: 13.5 px (ruled after measurement, Electron, 2026-10-01).** The label box is capped at `icon size + 36px`, which is 100 px at the default icon size. "Visual Studio 2022" in Cormorant Garamond italic 600 measures 95.50 px at 13 px, **98.90 px at 13.5 px (built)**, 99.57 px at 13.6 px, 100.57 px at 13.75 px (ellipsis) and 102.29 px at 14 px (ellipsis, the first draft). 13.5 px keeps 1.1 px under the cap and reads at 1x (6x pixel crops of the label strip and the forced hover state were read). Nothing else in the rule moves: `line-height` stays 14.4 px, the label box stays 14.396 px and the tile 94.729 px. Banner (14 px, 500) and title (13 px, 600, 3 px tracking) are as specified; the title ink edge is x 132 at 424 x 300, 640 x 420 and 1024 x 700 (gate 156). If the file ever failed to load, the stack falls back to Palatino Linotype italic at 13.5 px, which is wider than the 12 px the theme used before; its widths were not measured, and "Visual Studio 2022" may truncate in that case only.
+
+**Lining figures.** Cormorant's default figures are old-style (a web search says so; unverified until the digit crop below), so `font-variant-numeric: lining-nums` is on all three roles; Ender proves it with a digit crop and a positive control.
+
+**Done when (additions for Eldar, measured by Ender, re-checked by Judy):**
+
+- E1. `fontsRendered` lists `Cormorant Garamond` (positive control); a misspelled probe family falls back (negative control).
+- E2. `#title` right edge at most 156 at 424 x 300, 640 x 420 and 1024 x 700 (ladder: tracking down 1 px at a time to 1 px, then 12 px). The title stack (title plus version line, now 15.6 px for the title line) stays inside the 40 px header with at least 2 px above the header line at y 37; if not, `line-height: 1.1`.
+- E3. The six standard labels, "Visual Studio 2022", "Notepad++ x64" and "7-Zip 23.01" show no ellipsis at 1x (measured: 98.90, 77.35 and 57.96 px against the 100 px cap; "Spreadsheet Editor Pro" at 119.68 px is the one name that truncates, as it should); tile height stays 94.7 to 95.4 and the label box height stays 14.39. At the first-draft 14 px this check fails ("Visual Studio 2022" is 102.29 px).
+- E4. Lining figures: a 6x crop of "7-Zip 23.01" and "Visual Studio 2022" shows lining digits; with `font-variant-numeric: normal` on the same text the digits go old-style (the control proves the font and the feature are what is rendered). The header version stays Palatino and is not touched.
+- E5. Cyrillic: `CSS.getPlatformFontsForNode` on "Калькулятор" and "Жёсткий диск" is reported in the receipt (Cormorant Garamond expected; a glyph fallback to Palatino Linotype is accepted but must be named).
+- E6. Descenders: the batch-4 F1 sweep (labels "gypsy Yy jq" and "Typing", 1x, 1.5x, 2x, three scroll offsets) reads 0 clipped rows against an `overflow: visible` reference; the edit-mode rename underline does not move.
+- E7. The packaged build contains the font and `OFL.txt` (asar listing) and is launched before the release is announced.
+- E8. Judy's 1x crop of title, labels and banner on the navy ground and on the teal hover reads clearly. **Levers if the type looks thin, in order:** label weight 700 (measured: "Visual Studio 2022" is 99.27 px at 13.5 px / 700, still inside the 100 px cap), then title weight 700 (re-measure the title edge against 156). Label size is **not** a lever: above 13.6 px "Visual Studio 2022" truncates. If neither satisfies, Eldar goes back to Palatino by deleting the three rules (the stack already degrades); the font stays bundled for the four later themes the Foundation lists.
+
+**Not verified (updated after the re-check):** the Cormorant estimates above were replaced by Electron measurements (label size 13.5 px; all three roles render in Cormorant Garamond with lining figures and Cyrillic, per the review file); still not measured: the Palatino fallback widths at 13.5 px, and that the italic file alone is enough (no Eldar element uses a roman style, checked by reading the file, and `font-synthesis: none` would show a fallback glyph if one did). Flag 2 closed.
+
+### A.3 Ruling 3: Tyranid banner, keep both lines
+
+No change. `app.js` starts on line 1 and every 14 s fades to the next line in order, so the viewer always meets "There is a cancer eating at the Imperium." first and "...it must know us only as Prey." after it; the opening ellipsis is the continuation of the line just seen. With one line the banner would never move. Both lines fit with 24.3 px to spare (0.8). Flag 3 closed. (If a third Czevak line is ever wanted it needs a shorter clause than the two dropped for length; that is an offer, not a change.)
+
+### A.4 Ruling 4: Chaos, red and brass only
+
+No change. Red, brass and iron is one god and one material, which is what the redraw was for; the audit's finding on the old file was that four god colours at once meant no god was chosen. A thin Nurgle green or Tzeentch blue would bring back exactly that split, and it would have to be added to the colour-discipline check (Done when 6) as a deliberate exception. The warp purple that already appears in the hover and pressed tile fills is the only concession to a second hue and stays. Flag 4 closed.
+
+### A.5 Ruling 5: Ork labels in Impact
+
+Decision: labels use Impact, the same face as the title and the banner. Measured on the mock (1x, Orks, as built against Impact 12 px):
+
+| | As built (Ink Free 13 px) | **Impact 12 px, 0.4 px tracking (ruled)** | Impact 13 px, 0.3 px (rejected) |
+|---|---|---|---|
+| NOTEPAD / CALCULATOR / PAINT / TERMINAL / BROWSER / FILES (ink px) | 47.02 / 54.93 / 29.54 / 48.77 / 46.58 / 25.10 | 43.91 / 55.76 / 27.48 / 46.97 / 44.15 / 25.30 | 46.65 / 59.07 / 29.10 / 49.81 / 46.90 / 26.73 |
+| Truncated with an ellipsis (14 test names) | "Visual Studio 2022", "Spreadsheet Editor Pro" | **"Spreadsheet Editor Pro"** only | "Visual Studio 2022", "Spreadsheet Editor Pro", "Windows Terminal" |
+| Tile height / label box | 95.41 / 14.98 | **95.41 / 14.94** (unchanged) | 95.41 / 14.97 |
+
+13 px is rejected because three common names truncate. The platform font reported for "gypsy Yy jq", "Typing", "jumpy quaff", "Notepad", "Paint" and the Cyrillic "Жёсткий диск" is **Impact** in every case (`CSS.getPlatformFontsForNode`); Impact covers Cyrillic. Digits are lining ("7-Zip 23.01", "Visual Studio 2022", "Notepad++ x64" read cleanly in the 1x crop). Descenders: the clip against an `overflow: visible` reference differs by **0 pixels** at 1x and 2x on six test labels with the rule below; the positive control (the same rule with plain `overflow: hidden`) differs by 2.4 and 4.7 weighted pixels, so the check can fail, and the clip margin from the review's F1 stays in the rule.
+
+Replace the `.tile-label` rule in `warhammer-orks.css` (it keeps the F1 clip, so review item F3 for Orks is satisfied by this text):
+```css
+.tile-label { font-family: Impact, 'Arial Black', 'Segoe UI', sans-serif; font-synthesis: none; font-size: 12px; letter-spacing: 0.4px; line-height: 14.4px; overflow: clip; overflow-clip-margin: 3px; }
+```
+Also: change the file header comment that says flag 5 is built at the default "keep" (Ink Free) to say it was ruled Impact; keep the ±0.7 degree rotation (heavier strokes carry the softer raster better than Ink Free's one-pixel strokes did); nothing else changes. No colour is touched, so `npm run check:contrast` is unchanged. Edit mode: the rename underline stays where it is; Impact's descenders are short and stop just above the dashes, so they no longer cross them (Ink Free's `p` did; side by side in `underline-compare.png`), which also closes the re-check's note on that point. Wherever the Orks sections name Ink Free (2.2 type table, 2.3 rule, 2.5 label line, the 0.7 fonts-table row, Orks watch item 1) read Impact 400, 12 px, 0.4 px tracking, line height 14.4 px; "Done when" 9 now expects `fontsRendered` to list `Impact` and `Segoe UI Semibold` (Ink Free leaves the list); "Done when" 10 still holds (the descenders of "Spreadsheet Editor" are uncut; the measured check above covers it). The Ork-label flag (flag 5) and the review's Ink Free notes (digits low, `q` like `a`, rotated fringe) are closed with it.
+
+### A.6 Ruling 6: redraw the four misread icons, yes
+
+All four are redrawn, plus the Necrons remove button. Every new drawing was rendered in the real theme at 1x, 3x and 6x and read at the pixel level (8x crops of the 1x render); each has one dominant shape. Boxes, positions and colours are the ones the spec already uses; no gate pair, motion, font or geometry changes, so the A/B/C probe sees the same boxes. Colours are all from each theme's existing art. Encoding is B1 0.2 (`<` as `%3C`, `>` as `%3E`, `#` as `%23`, newlines removed, single quotes inside the double-quoted `url()`); the encoded strings below are exactly what I rendered.
+
+#### A.6.1 warhammer-chaos: banner icon, a spiked ring becomes one brass-banded horn
+
+Why: at 22 px the old ring with seven radial spikes reads as a sawblade or a sun before it reads as a collar. The new icon is a single curved iron horn on a tilted brass band with one hot crack: the same curve family as the three spikes at the other end of the banner, so the two ends rhyme. It is a plain curved spike (the trademark note still holds: no Star of Chaos, no sigil, no rune, no horned figure). Painted pixels x 2.0 to 21.0, y 0.3 to 22.0 (the flush base ends on the slot's bottom edge). Colours: iron (98,82,82), steel outline (176,160,150), brass (184,134,58) with (110,78,34) and (226,178,96), hot red (222,76,48). Replaces the `icon` SVG of 1.3 and the `#theme-banner::before` rule:
+
+SVG source (`icon`):
+```
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'>
+<path d='M3.2 22 C2.6 12.6 8.4 4.4 20.6 0.8 C16.2 6.6 14.8 14 15.2 22 Z' fill='rgb(98,82,82)' stroke='rgb(176,160,150)' stroke-width='0.8' stroke-linejoin='round'/>
+<path d='M6 14.4 C7 10 10.6 6 16.6 3.2' fill='none' stroke='rgb(200,186,176)' stroke-opacity='0.6' stroke-width='0.9' stroke-linecap='round'/>
+<path d='M9.4 16.4 L11.2 13.4 L9.8 12 L12 8.6' fill='none' stroke='rgb(222,76,48)' stroke-width='1' stroke-linejoin='round' stroke-linecap='round'/>
+<path d='M2.6 16.6 L15.6 15.6 L15.7 19 L2.9 20 Z' fill='rgb(184,134,58)' stroke='rgb(110,78,34)' stroke-width='0.8' stroke-linejoin='round'/><path d='M3.4 17.6 L15 16.7' stroke='rgb(226,178,96)' stroke-width='0.7'/>
+</svg>
+```
+Rule (replace the whole `#theme-banner::before` rule):
+```css
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M3.2 22 C2.6 12.6 8.4 4.4 20.6 0.8 C16.2 6.6 14.8 14 15.2 22 Z' fill='rgb(98,82,82)' stroke='rgb(176,160,150)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M6 14.4 C7 10 10.6 6 16.6 3.2' fill='none' stroke='rgb(200,186,176)' stroke-opacity='0.6' stroke-width='0.9' stroke-linecap='round'/%3E%3Cpath d='M9.4 16.4 L11.2 13.4 L9.8 12 L12 8.6' fill='none' stroke='rgb(222,76,48)' stroke-width='1' stroke-linejoin='round' stroke-linecap='round'/%3E%3Cpath d='M2.6 16.6 L15.6 15.6 L15.7 19 L2.9 20 Z' fill='rgb(184,134,58)' stroke='rgb(110,78,34)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M3.4 17.6 L15 16.7' stroke='rgb(226,178,96)' stroke-width='0.7'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+```
+Also change the header comment of `warhammer-chaos.css` (line 4): "a spiked collar icon" reads "a brass-banded horn icon". The first build left the old wording because this section did not name the comment; it is a comment only and changes no rendering. (The same file's "Spec flag 4 ... built at the spec default \"keep\"" line stays: flag 4 was ruled keep, A.4. The Imperium, Necrons and Tyranids header comments were read and name nothing that changed.)
+
+Watch item: the horn is grey on blood-dark and less bright than the old brass ring; if Sergei finds it dim, lift the fill from (98,82,82) to (118,100,100) in the SVG (the motif at the right end keeps (98,82,82)).
+
+#### A.6.2 warhammer-tyranids: header art, "horns" become toothed mandibles around the bulb
+
+Why: the two long blades that swept from the outer edges to a point at the centre read as horns, wings or a moustache above the gem. The new `hz` is two toothed bone crescents that close on the pink bulb like jaws (three teeth on each inner edge, hooked tips top and bottom), with a spiral tendril ending in a pink dot on each side (the curl-and-dot of the frame's corner tendrils). It is still "a pair of mandibles and a bulb" (the kit table in 0.3 does not change) and it is drawn inside the same 84 x 20 box. Painted pixels x 6.5 to 77.5, y 0.5 to 19.5 (was x 1.5 to 82.5, y 1.8 to 19.3): at 424 x 300 the art starts at window x 174.5, 32 px clear of the title edge (141.89) and ends at x 245.5, about 27 px before the first header button. Colours: the existing bone gradient and pinks. Replaces the `hz` SVG of 3.3; the rule below keeps the spec's `#header::after` rule and changes only the `url(...)`:
+
+SVG source (`hz`):
+```
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='rgb(230,217,184)'/><stop offset='1' stop-color='rgb(160,140,116)'/></linearGradient></defs><path d='M23.4 10.8 C17 11.4 12.6 12.6 9.6 11.2 C6.6 9.8 6.4 6.2 8.8 5.2 C10.8 4.4 12.4 6.2 11.2 7.8' fill='none' stroke='rgb(196,67,107)' stroke-width='1.1' stroke-linecap='round'/><circle cx='11.2' cy='7.8' r='1.1' fill='rgb(240,138,168)'/><g transform='translate(84,0) scale(-1,1)'><path d='M23.4 10.8 C17 11.4 12.6 12.6 9.6 11.2 C6.6 9.8 6.4 6.2 8.8 5.2 C10.8 4.4 12.4 6.2 11.2 7.8' fill='none' stroke='rgb(196,67,107)' stroke-width='1.1' stroke-linecap='round'/><circle cx='11.2' cy='7.8' r='1.1' fill='rgb(240,138,168)'/></g><path d='M38 0.8 C29.6 1.2 23 5.4 23.2 10 C23.4 14.6 29.8 18.8 38 19.2 C33.4 17 31 13.8 31 10 C31 6.2 33.4 3 38 0.8 Z' fill='url(#g)' stroke='rgb(160,140,116)' stroke-width='0.6' stroke-linejoin='round'/>
+<path d='M31 10.4 L35 8.8 L32.2 6.4 Z M31.6 14.2 L35.4 12.8 L32.6 10.4 Z M31.4 6.6 L35 5.2 L32.4 2.8 Z' fill='url(#g)' stroke='rgb(160,140,116)' stroke-width='0.4' stroke-linejoin='round'/>
+<path d='M26.6 4.2 C25 5.6 24.4 7.4 24.4 9.4' fill='none' stroke='rgb(255,248,240)' stroke-opacity='0.55' stroke-width='0.8' stroke-linecap='round'/><g transform='translate(84,0) scale(-1,1)'><path d='M38 0.8 C29.6 1.2 23 5.4 23.2 10 C23.4 14.6 29.8 18.8 38 19.2 C33.4 17 31 13.8 31 10 C31 6.2 33.4 3 38 0.8 Z' fill='url(#g)' stroke='rgb(160,140,116)' stroke-width='0.6' stroke-linejoin='round'/>
+<path d='M31 10.4 L35 8.8 L32.2 6.4 Z M31.6 14.2 L35.4 12.8 L32.6 10.4 Z M31.4 6.6 L35 5.2 L32.4 2.8 Z' fill='url(#g)' stroke='rgb(160,140,116)' stroke-width='0.4' stroke-linejoin='round'/>
+<path d='M26.6 4.2 C25 5.6 24.4 7.4 24.4 9.4' fill='none' stroke='rgb(255,248,240)' stroke-opacity='0.55' stroke-width='0.8' stroke-linecap='round'/></g>
+<ellipse cx='42' cy='10' rx='4.4' ry='5.6' fill='rgb(196,67,107)' stroke='rgb(123,42,110)' stroke-width='0.8'/><ellipse cx='40.8' cy='7.8' rx='1.4' ry='2' fill='rgb(240,138,168)' fill-opacity='0.75'/>
+</svg>
+```
+Rule (replace the whole `#header::after` rule):
+```css
+#header::after {
+  content: ''; position: absolute; top: 10px; right: 172px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='rgb(230,217,184)'/%3E%3Cstop offset='1' stop-color='rgb(160,140,116)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M23.4 10.8 C17 11.4 12.6 12.6 9.6 11.2 C6.6 9.8 6.4 6.2 8.8 5.2 C10.8 4.4 12.4 6.2 11.2 7.8' fill='none' stroke='rgb(196,67,107)' stroke-width='1.1' stroke-linecap='round'/%3E%3Ccircle cx='11.2' cy='7.8' r='1.1' fill='rgb(240,138,168)'/%3E%3Cg transform='translate(84,0) scale(-1,1)'%3E%3Cpath d='M23.4 10.8 C17 11.4 12.6 12.6 9.6 11.2 C6.6 9.8 6.4 6.2 8.8 5.2 C10.8 4.4 12.4 6.2 11.2 7.8' fill='none' stroke='rgb(196,67,107)' stroke-width='1.1' stroke-linecap='round'/%3E%3Ccircle cx='11.2' cy='7.8' r='1.1' fill='rgb(240,138,168)'/%3E%3C/g%3E%3Cpath d='M38 0.8 C29.6 1.2 23 5.4 23.2 10 C23.4 14.6 29.8 18.8 38 19.2 C33.4 17 31 13.8 31 10 C31 6.2 33.4 3 38 0.8 Z' fill='url(%23g)' stroke='rgb(160,140,116)' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpath d='M31 10.4 L35 8.8 L32.2 6.4 Z M31.6 14.2 L35.4 12.8 L32.6 10.4 Z M31.4 6.6 L35 5.2 L32.4 2.8 Z' fill='url(%23g)' stroke='rgb(160,140,116)' stroke-width='0.4' stroke-linejoin='round'/%3E%3Cpath d='M26.6 4.2 C25 5.6 24.4 7.4 24.4 9.4' fill='none' stroke='rgb(255,248,240)' stroke-opacity='0.55' stroke-width='0.8' stroke-linecap='round'/%3E%3Cg transform='translate(84,0) scale(-1,1)'%3E%3Cpath d='M38 0.8 C29.6 1.2 23 5.4 23.2 10 C23.4 14.6 29.8 18.8 38 19.2 C33.4 17 31 13.8 31 10 C31 6.2 33.4 3 38 0.8 Z' fill='url(%23g)' stroke='rgb(160,140,116)' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpath d='M31 10.4 L35 8.8 L32.2 6.4 Z M31.6 14.2 L35.4 12.8 L32.6 10.4 Z M31.4 6.6 L35 5.2 L32.4 2.8 Z' fill='url(%23g)' stroke='rgb(160,140,116)' stroke-width='0.4' stroke-linejoin='round'/%3E%3Cpath d='M26.6 4.2 C25 5.6 24.4 7.4 24.4 9.4' fill='none' stroke='rgb(255,248,240)' stroke-opacity='0.55' stroke-width='0.8' stroke-linecap='round'/%3E%3C/g%3E%3Cellipse cx='42' cy='10' rx='4.4' ry='5.6' fill='rgb(196,67,107)' stroke='rgb(123,42,110)' stroke-width='0.8'/%3E%3Cellipse cx='40.8' cy='7.8' rx='1.4' ry='2' fill='rgb(240,138,168)' fill-opacity='0.75'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
+}
+```
+Watch item: at 1x the pair can read as an eye with heavy lids. The teeth and the hooked tips are what say "jaws"; if Sergei still sees an eye, remove the bulb's highlight ellipse and widen the gap by 1 px each side.
+
+#### A.6.3 warhammer-necrons: banner icon, the hexagon with three seams becomes one pyramid; remove button goes red
+
+**Icon.** Why: the hexagon with three seams radiating from the centre read as a Y in a hexagon (a peace sign or a car badge). The new icon is one pyramid with a bronze capstone, one vertical seam and a green horizon, the header's pyramid drawn as an icon. No eye, no node, no three-way seam (so no Y and no eye-in-a-triangle). Painted pixels x 0.8 to 21.3, y 2.0 to 21.0. Colours: the header pyramid's own (30,44,38) fill, (183,185,176) silver, (176,144,72) bronze, (43,214,96) and (18,110,52) green. Replaces the `icon` SVG of 5.3 and the rule:
+
+SVG source (`icon`):
+```
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'>
+<path d='M11 2.6 L20.2 18.2 H1.8 Z' fill='rgb(30,44,38)' stroke='rgb(183,185,176)' stroke-width='1.2' stroke-linejoin='round'/>
+<path d='M11 2.6 L13.4 6.7 H8.6 Z' fill='rgb(176,144,72)'/>
+<path d='M11 7.2 V18' stroke='rgb(43,214,96)' stroke-width='1.3' fill='none'/>
+<rect x='0.8' y='18.6' width='20.4' height='1.4' fill='rgb(43,214,96)'/><rect x='0.8' y='20' width='20.4' height='0.9' fill='rgb(18,110,52)'/>
+</svg>
+```
+Rule (replace the whole `#theme-banner::before` rule):
+```css
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M11 2.6 L20.2 18.2 H1.8 Z' fill='rgb(30,44,38)' stroke='rgb(183,185,176)' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M11 2.6 L13.4 6.7 H8.6 Z' fill='rgb(176,144,72)'/%3E%3Cpath d='M11 7.2 V18' stroke='rgb(43,214,96)' stroke-width='1.3' fill='none'/%3E%3Crect x='0.8' y='18.6' width='20.4' height='1.4' fill='rgb(43,214,96)'/%3E%3Crect x='0.8' y='20' width='20.4' height='0.9' fill='rgb(18,110,52)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+```
+
+**Remove button.** Why: bronze was the only destructive control in the batch that matched the decorative trim, so it did not read as "remove". The other five themes use a red fill; Necrons now does too, with its bronze ring kept (the ring stays the bronze trim, the red is the fill only). Fill `#B5301F`. Two edits in `warhammer-necrons.css`: in `:root` set `--remove-btn-bg: #B5301F;` (the border variable stays `#E6B85C`), and the rule becomes `.btn-remove:hover { background: #B5301F; }`. Contrast, computed with the gate's formula (the review's "`#7A2020` at 3:1" was not reachable: that colour is 1.74:1 against the tile; the ring is what carries the boundary):
+
+| Theme | fill / tile | ring / tile | ring / fill | white cross / fill |
+|---|---|---|---|---|
+| imperium | 2.30 | 5.36 | 2.34 | 8.05 |
+| chaos | 2.28 | 5.16 | 2.26 | 8.23 |
+| orks | 2.12 | 7.02 | 3.30 | 7.78 |
+| tyranids | 2.59 | 9.23 | 3.57 | 7.12 |
+| eldar | 2.50 | 5.62 | 2.24 | 6.56 |
+| necrons as built (bronze) | 3.01 | 9.62 | 3.20 | 5.91 |
+| **necrons ruled `#B5301F`** | **2.88** | **9.62** | **3.34** | **6.16** |
+
+The new fill is closer to the tile than the bronze was, but it is better than every other theme's fill, the ring is the highest ring in the batch, and the cross clears 4.5. The gate does not read the remove-button variables (grep of `check-theme-contrast.js`), so `npm run check:contrast` is unchanged. Section 5.6 "Done when" 6 changes to "no purple, blue or red, **except the fill of the tile remove button**". Section 5.5's edit-bar line ("The tile remove button is `#8A5A14` ...") reads `#B5301F` with the `#E6B85C` ring. The edit bar itself stays bronze.
+
+#### A.6.4 warhammer (Imperium): banner icon and header seals, the rosette becomes a purity seal
+
+Why: the red target (a big disc with concentric rings) on a short V-notched ribbon is a prize rosette. The new drawing is a lumpy wax blob with no rings (a small dark lancet stamped into it, no cross), hanging from two narrow paper tails of different lengths with square cuts and a few lines of script on the longer one, so it reads as wax on a scroll. Colours: wax (160,20,24), (100,12,14), (204,70,66); paper (240,232,204) and (226,214,178); ink (100,72,22) (a darker brown than the old (122,92,24) gold outline, so the paper holds against the parchment banner). Painted pixels of the icon x 5.0 to 17.3, y 0.5 to 21.8.
+
+**The seal is drawn in two places, so both change or neither does** (otherwise the window shows two different seals): the banner icon, and the two seals in the header art, which are the same drawing at 0.78 scale (wax centred on the old seal positions x 19 and x 65, tails ending at y 19.6). The header art keeps its rail, its hangers, its lancet and its 84 x 20 box; painted pixels x 0.5 to 83.5, y 0.0 to 20.0 (was y 0.0 to 19.8). Replaces the `icon` and `hz` SVGs of 6.3.
+
+SVG source (`icon`):
+```
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'>
+<path d='M11.6 8 H15.8 L16.4 19.4 L12.4 19.8 Z' fill='rgb(226,214,178)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/>
+<path d='M6 8 H10.2 V21.4 H6 Z' fill='rgb(240,232,204)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/>
+<path d='M7.2 13 H9 M7.2 15.2 H9 M7.2 17.4 H9' stroke='rgb(100,72,22)' stroke-width='0.6' fill='none'/>
+<path d='M11 1.1 C13 0.6 14.8 1.4 15.6 3 C17 3.8 17.2 5.8 16.2 7.2 C16.4 8.8 15.2 10.2 13.6 10.4 C12.4 11.4 10.2 11.4 9 10.4 C7.2 10.4 6 8.8 6.2 7.2 C5 5.8 5.4 3.8 6.8 3 C7.6 1.6 9.2 0.8 11 1.1 Z' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='0.9' stroke-linejoin='round'/>
+<path d='M7.6 4 C8.4 2.8 9.8 2.4 11.2 2.7' fill='none' stroke='rgb(204,70,66)' stroke-width='0.9' stroke-linecap='round'/>
+<path d='M11 4.2 Q12.6 5.4 12.6 7.6 V8.6 H9.4 V7.6 Q9.4 5.4 11 4.2 Z' fill='rgb(100,12,14)'/>
+</svg>
+```
+Rule (replace the whole `#theme-banner::before` rule):
+```css
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M11.6 8 H15.8 L16.4 19.4 L12.4 19.8 Z' fill='rgb(226,214,178)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Cpath d='M6 8 H10.2 V21.4 H6 Z' fill='rgb(240,232,204)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Cpath d='M7.2 13 H9 M7.2 15.2 H9 M7.2 17.4 H9' stroke='rgb(100,72,22)' stroke-width='0.6' fill='none'/%3E%3Cpath d='M11 1.1 C13 0.6 14.8 1.4 15.6 3 C17 3.8 17.2 5.8 16.2 7.2 C16.4 8.8 15.2 10.2 13.6 10.4 C12.4 11.4 10.2 11.4 9 10.4 C7.2 10.4 6 8.8 6.2 7.2 C5 5.8 5.4 3.8 6.8 3 C7.6 1.6 9.2 0.8 11 1.1 Z' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M7.6 4 C8.4 2.8 9.8 2.4 11.2 2.7' fill='none' stroke='rgb(204,70,66)' stroke-width='0.9' stroke-linecap='round'/%3E%3Cpath d='M11 4.2 Q12.6 5.4 12.6 7.6 V8.6 H9.4 V7.6 Q9.4 5.4 11 4.2 Z' fill='rgb(100,12,14)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+```
+SVG source (`hz`):
+```
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'>
+<rect x='3' y='1' width='78' height='1.4' fill='rgb(122,92,24)'/><circle cx='2.4' cy='1.7' r='1.7' fill='rgb(199,154,44)'/><circle cx='81.6' cy='1.7' r='1.7' fill='rgb(199,154,44)'/>
+<line x1='19' y1='2.4' x2='19' y2='3.4' stroke='rgb(122,92,24)' stroke-width='0.9'/><g transform='translate(10.42,2.9) scale(0.78)'><path d='M11.6 8 H15.8 L16.4 19.4 L12.4 19.8 Z' fill='rgb(226,214,178)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/>
+<path d='M6 8 H10.2 V21.4 H6 Z' fill='rgb(240,232,204)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/>
+<path d='M7.2 13 H9 M7.2 15.2 H9 M7.2 17.4 H9' stroke='rgb(100,72,22)' stroke-width='0.6' fill='none'/>
+<path d='M11 1.1 C13 0.6 14.8 1.4 15.6 3 C17 3.8 17.2 5.8 16.2 7.2 C16.4 8.8 15.2 10.2 13.6 10.4 C12.4 11.4 10.2 11.4 9 10.4 C7.2 10.4 6 8.8 6.2 7.2 C5 5.8 5.4 3.8 6.8 3 C7.6 1.6 9.2 0.8 11 1.1 Z' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='0.9' stroke-linejoin='round'/>
+<path d='M7.6 4 C8.4 2.8 9.8 2.4 11.2 2.7' fill='none' stroke='rgb(204,70,66)' stroke-width='0.9' stroke-linecap='round'/>
+<path d='M11 4.2 Q12.6 5.4 12.6 7.6 V8.6 H9.4 V7.6 Q9.4 5.4 11 4.2 Z' fill='rgb(100,12,14)'/></g>
+<path d='M37.5 19.2 V10 Q37.5 5.4 42 3.2 Q46.5 5.4 46.5 10 V19.2 Z' fill='rgb(44,34,18)' stroke='rgb(199,154,44)' stroke-width='1' stroke-linejoin='round'/>
+<path d='M39.7 19.2 V10.4 Q39.7 7.4 42 6.2 Q44.3 7.4 44.3 10.4 V19.2 Z' fill='rgb(100,12,14)'/><path d='M42 6.2 V19.2' stroke='rgb(122,92,24)' stroke-width='0.6'/>
+<line x1='65' y1='2.4' x2='65' y2='3.4' stroke='rgb(122,92,24)' stroke-width='0.9'/><g transform='translate(56.42,2.9) scale(0.78)'><path d='M11.6 8 H15.8 L16.4 19.4 L12.4 19.8 Z' fill='rgb(226,214,178)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/>
+<path d='M6 8 H10.2 V21.4 H6 Z' fill='rgb(240,232,204)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/>
+<path d='M7.2 13 H9 M7.2 15.2 H9 M7.2 17.4 H9' stroke='rgb(100,72,22)' stroke-width='0.6' fill='none'/>
+<path d='M11 1.1 C13 0.6 14.8 1.4 15.6 3 C17 3.8 17.2 5.8 16.2 7.2 C16.4 8.8 15.2 10.2 13.6 10.4 C12.4 11.4 10.2 11.4 9 10.4 C7.2 10.4 6 8.8 6.2 7.2 C5 5.8 5.4 3.8 6.8 3 C7.6 1.6 9.2 0.8 11 1.1 Z' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='0.9' stroke-linejoin='round'/>
+<path d='M7.6 4 C8.4 2.8 9.8 2.4 11.2 2.7' fill='none' stroke='rgb(204,70,66)' stroke-width='0.9' stroke-linecap='round'/>
+<path d='M11 4.2 Q12.6 5.4 12.6 7.6 V8.6 H9.4 V7.6 Q9.4 5.4 11 4.2 Z' fill='rgb(100,12,14)'/></g>
+</svg>
+```
+Rule (replace the whole `#header::after` rule):
+```css
+#header::after {
+  content: ''; position: absolute; top: 10px; right: 172px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Crect x='3' y='1' width='78' height='1.4' fill='rgb(122,92,24)'/%3E%3Ccircle cx='2.4' cy='1.7' r='1.7' fill='rgb(199,154,44)'/%3E%3Ccircle cx='81.6' cy='1.7' r='1.7' fill='rgb(199,154,44)'/%3E%3Cline x1='19' y1='2.4' x2='19' y2='3.4' stroke='rgb(122,92,24)' stroke-width='0.9'/%3E%3Cg transform='translate(10.42,2.9) scale(0.78)'%3E%3Cpath d='M11.6 8 H15.8 L16.4 19.4 L12.4 19.8 Z' fill='rgb(226,214,178)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Cpath d='M6 8 H10.2 V21.4 H6 Z' fill='rgb(240,232,204)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Cpath d='M7.2 13 H9 M7.2 15.2 H9 M7.2 17.4 H9' stroke='rgb(100,72,22)' stroke-width='0.6' fill='none'/%3E%3Cpath d='M11 1.1 C13 0.6 14.8 1.4 15.6 3 C17 3.8 17.2 5.8 16.2 7.2 C16.4 8.8 15.2 10.2 13.6 10.4 C12.4 11.4 10.2 11.4 9 10.4 C7.2 10.4 6 8.8 6.2 7.2 C5 5.8 5.4 3.8 6.8 3 C7.6 1.6 9.2 0.8 11 1.1 Z' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M7.6 4 C8.4 2.8 9.8 2.4 11.2 2.7' fill='none' stroke='rgb(204,70,66)' stroke-width='0.9' stroke-linecap='round'/%3E%3Cpath d='M11 4.2 Q12.6 5.4 12.6 7.6 V8.6 H9.4 V7.6 Q9.4 5.4 11 4.2 Z' fill='rgb(100,12,14)'/%3E%3C/g%3E%3Cpath d='M37.5 19.2 V10 Q37.5 5.4 42 3.2 Q46.5 5.4 46.5 10 V19.2 Z' fill='rgb(44,34,18)' stroke='rgb(199,154,44)' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M39.7 19.2 V10.4 Q39.7 7.4 42 6.2 Q44.3 7.4 44.3 10.4 V19.2 Z' fill='rgb(100,12,14)'/%3E%3Cpath d='M42 6.2 V19.2' stroke='rgb(122,92,24)' stroke-width='0.6'/%3E%3Cline x1='65' y1='2.4' x2='65' y2='3.4' stroke='rgb(122,92,24)' stroke-width='0.9'/%3E%3Cg transform='translate(56.42,2.9) scale(0.78)'%3E%3Cpath d='M11.6 8 H15.8 L16.4 19.4 L12.4 19.8 Z' fill='rgb(226,214,178)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Cpath d='M6 8 H10.2 V21.4 H6 Z' fill='rgb(240,232,204)' stroke='rgb(100,72,22)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Cpath d='M7.2 13 H9 M7.2 15.2 H9 M7.2 17.4 H9' stroke='rgb(100,72,22)' stroke-width='0.6' fill='none'/%3E%3Cpath d='M11 1.1 C13 0.6 14.8 1.4 15.6 3 C17 3.8 17.2 5.8 16.2 7.2 C16.4 8.8 15.2 10.2 13.6 10.4 C12.4 11.4 10.2 11.4 9 10.4 C7.2 10.4 6 8.8 6.2 7.2 C5 5.8 5.4 3.8 6.8 3 C7.6 1.6 9.2 0.8 11 1.1 Z' fill='rgb(160,20,24)' stroke='rgb(100,12,14)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M7.6 4 C8.4 2.8 9.8 2.4 11.2 2.7' fill='none' stroke='rgb(204,70,66)' stroke-width='0.9' stroke-linecap='round'/%3E%3Cpath d='M11 4.2 Q12.6 5.4 12.6 7.6 V8.6 H9.4 V7.6 Q9.4 5.4 11 4.2 Z' fill='rgb(100,12,14)'/%3E%3C/g%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
+}
+```
+Colour discipline (6.6 item 6) still holds: red only in the seals, niches, banner icon, diamonds, edit mode and remove button; nothing blue, green or purple. Section 6's watch item 3 ("rosette") and Watch item 3 of section 8 (seal and hexagon icons) are closed by A.6.3 and A.6.4.
+
+#### A.6.5 Done when for the four redraws (Ender measures, Judy re-checks)
+
+1. The three banner icons and the two `hz` pieces are exactly the strings above (a byte diff of the `url(...)` values against this text is the check); nothing else in the six files changes except A.2 (Eldar), A.5 (Orks) and the Necrons remove-button lines.
+2. A/B/C overlap probe at 424 x 300, 640 x 420 and 1024 x 700 and in the chip, edit, update and focus-ring states for chaos, tyranids, necrons and imperium: overlap 0 px, art in the keep-out 0 px (the boxes are unchanged; the new art sits inside the old painted extents except the Tyranid art, which is smaller). Use `visibility: hidden` on the banner icon in the art-off override, as 0.4 says.
+3. At 1x the banner icons read as a horn, a pyramid and a wax seal (8x pixel crops of the 1x render, as I took them), and the Tyranid header reads as jaws around a gem; a fan, asked to name what each is, should not say "wheel", "Y", "rosette" or "horns".
+4. Necrons edit mode: the tile remove buttons are red with the bronze ring and a white cross; the hover state stays the same red.
+5. `npm run check:contrast`, `grep -c infinite` on all four files and `loopingAnimationsAtCapture` are unchanged (0 infinite, 0 loops, no new gate failures).
+6. Chaos "Done when" 6, Necrons 6 (with the remove-button exception), Imperium 6 and Tyranids 6 hold on a hue scan of the art zones (the hue scan of the batch-4 review, the same method).
+
+### A.7 What this addendum supersedes in the sections above
+
+| Where | What changes |
+|---|---|
+| 1.3 (chaos) `icon` SVG and `#theme-banner::before` rule; 1.1 icon notes; Chaos watch items | A.6.1 |
+| 2.2 type table, 2.3 `.tile-label` rule, 2.5 label line, 2.6 "Done when" 9 (`fontsRendered` loses Ink Free), Orks watch item 1, the 0.7 fonts-table row for Ink Free, the file header comment (orks); section 7 rank 3 (an Ork wish font) is no longer needed | A.5 |
+| 3.3 (tyranids) `hz` SVG and `#header::after` rule; the "mandibles" wording of 0.3 stays (the art is still a pair of mandibles and a bulb) | A.6.2 |
+| 4.2 type table, 4.3 `:root` weight, `#title`, `.tile-label`, `#theme-banner-text`; 4.6 "Done when" 9 (`fontsRendered` now lists `Palatino Linotype` and `Cormorant Garamond`); 0.7 fonts table (add the row: `'Cormorant Garamond'`, italic 600/500, warhammer-eldar title, labels and banner, Cyrillic yes); section 7 rank 1 (taken) | A.2 |
+| 5.3 (necrons) `icon` SVG and rule; 5.5 edit-bar and remove-button line; 5.6 "Done when" 6; Necrons watch item 1 (hexagon) | A.6.3 |
+| 6.3 (imperium) `icon` SVG, `hz` SVG and both rules; Imperium watch items 1 and the seal part of 3 | A.6.4, A.1 |
+| Section 8 flags 1 to 5; "Seal and hexagon icons" watch item; section 8 summary "Type" line (add Cormorant Garamond) | answered in A.0 to A.5 |
+| The batch-4 review (F4, for Sergei): spiked wheel, mandibles, Y badge, rosette, bronze remove button, and his five flags | answered here; F2 (`THEME_BANNERS` comment) is untouched; F3 (spec text for the Orks and Eldar `.tile-label` rules) is satisfied by A.2 and A.5 |
+
+### A.8 Verification, process and what I did not verify
+
+- **The text of this addendum is the contract and was tested as text:** I pasted the five CSS rules that carry the new art (three `#theme-banner::before`, two `#header::after`) straight out of this file into the four built themes (Necrons with its two remove-button lines) and rendered 424 x 300 at 1x: **0 differing pixels** against the candidates I judged, in all four; the control (the old Chaos icon against the new) differs by 67.7 weighted pixels, so the comparison can fail. The Orks rule is byte-identical to the one measured in A.5.
+- **Rendered:** every candidate on the built theme files (chaos, necrons, imperium, tyranids at 424 x 300, 1x and 3x; Necrons and Imperium also in edit mode; Imperium bright and mid side by side; Orks as built, Impact 12 px and Impact 13 px at 1x and 3x, grid and edit; the awkward-names shot). The numbers in A.5 come from the same measure function the batch-4 work used and reproduce the shipped Orks numbers exactly.
+- **Evidence** (all under the session scratchpad, `...\scratchpad\judy\b4flags\out\`): `c3-icons-1x-8x.png` (chaos, necrons, imperium banner icons, 1x pixels at 8x), `k4.png` (Tyranid header at 1x, 8x), `r4-sheet.png` and `r1-sheet.png` (old against new, 1x at 8x beside vector at 6x), `r5-sheet.png` (Imperium header seals old against new), `c1-warhammer-*-new-grid.png` and `c1-warhammer-necrons-new-edit.png` (full window at 3x), `c2-bright-vs-mid-edit.png` and `c2-warhammer-new-mid-grid.png` (parchment), `oi12-warhammer-orks-grid-3x.png`, `oi12-warhammer-orks-edit-3x.png`, `oi12-names-crop3x.png` and `underline-compare.png` (Impact labels; the last stacks Ink Free over Impact in edit mode), `*-measure.json`.
+- **Not verified:** Cormorant Garamond itself (not rendered: A.2 numbers are estimates); Electron renders (this is the Edge mock; Ender's numbers win, as in 0.4); Impact and the new art on a Windows install without ClearType; the full 11-state A/B/C probe and the hue scan on the new art (Ender runs both, A.6.5); the other 95 themes (nothing here touches them).
+- **Process:** no QuickLaunch launch was made. The mock used headless Edge on temp profiles inside the scratchpad, driven with `Runtime.evaluate`, `Emulation`, `Page.captureScreenshot` and read-only DOM and CSS calls (no `Input.*`). This build of headless Edge writes no `DevToolsActivePort` file, so port ownership was proved a different way: the browser root PID found by its command line (our profile path, no `--type=`) had to be the PID that netstat shows listening on the chosen port before any driver call. Every Edge tree was ended by that root PID and a command-line sweep after each run; the final sweep is recorded in the report to Jane.
