@@ -735,3 +735,115 @@ Each answers in one word. The default is what the spec builds if there is no ans
 
 - Diagram sheet (true geometry, S = 64): `WIP/QuickLaunch/Docs/QuickLaunch_Regions_Layouts_2026-10-01.svg`.
 - Nothing in `src/`, the theme files, the spike branch or git history was touched.
+
+---
+
+## Addendum — M2 rulings (Judy, 2026-10-01)
+
+Status: final, uncommitted. Sergei handed these six points to Judy ("decide what's more beautiful/better"); none needs him. The addendum **replaces** the spec above where they differ: 2.1 (drop target, reflow), 2.8 (empty cells), 5.3 ("translucent copy", "Menu key", "one place"), 7.4 (Menu key, Ctrl+Arrow) and 9.2 (tile menu key).
+Inputs: Ender's TechPlan section 6 (HEAD `3939f29`); `region.css`, `region.js`, `tile-order.js`, `base.css`, today's drag and arrow keys in `app.js`; and a scratch run of the contrast gate's own maths over all 101 themes (colours flattened on black, as the gate does; nothing in the repo written). No app was launched. Sizes are DIP.
+
+| # | Point | Ruling | Why |
+|---|---|---|---|
+| 1 | Slot colour | `--accent-text`, 2 px dashed, no fill | `--accent-c` is under 3:1 in 13 themes; `--accent-text` is 3:1 or more in all 101 |
+| 2 | Hint under the slot | Hint hidden for the whole preview, as built | The slot, the outline and the copy already say where; the hint sits under the first slot |
+| 3 | The copy | Today's ghost, unchanged | It completes the source's clipped ghost; two looks would split one object |
+| 4 | Shift+F10 | Yes, same as the Menu key | The Windows key for a context menu; most laptops have no Menu key |
+| 5 | Ctrl+Up / Down | One row (as plain Up / Down), not one place | A vertical key moves vertically; one place would repeat Left and Right |
+| 6 | Reflow | Target only, plus the close on leave; today's in-region reorder stays instant | Animating it makes its hit test swap back and forth |
+
+### A1. Slot colour
+
+- **Border `2px dashed var(--accent-text)`; fill `transparent`.** Radius (the tile's `var(--radius)`), `box-shadow: none` and the hidden inner boxes stay as built. Only the colour changes from `--accent-c`.
+- **Measured.** `--accent-c` on `--bg` is under the 3:1 non-text floor in 13 themes (lowest `twin-peaks`, 2.02:1). `--accent-text` is 3:1 or more in all 101 (lowest `warhammer-tyranids`, 3.02:1) and differs from `--accent-c` in exactly those 13. The slot is the one cue that says where the tile lands, so it takes the token the gate guarantees.
+- **No fill.** An 8% accent tint put the dash under 3:1 against its own inside in 3 themes (lowest 2.91:1).
+- **The region outline stays `--accent-c`** (2.1, 4.1.6). In the 13 themes it is under 3:1, but it is the second cue; the slot, the copy and the opened gap are the first.
+- **Same size as a tile, to the pixel.** Set the slot's `height` from a real tile's `offsetHeight` when it is made (the width comes from the grid column). Otherwise the slot's 2 px border against the tile's 1 px makes its row 2 px taller and every row below shifts (from the CSS, not measured); in edit mode the renameable label's 1 px border adds a further 1 px to the tiles.
+- **M4, M5:** every dashed landing slot uses this token, including the empty-state cell of 2.8 when it takes a drop.
+
+### A2. The empty-region hint
+
+- **Hidden while the preview shows**, as built: `body.region.tile-drop-preview #drop-hint { display: none; }`. No fade.
+- It comes back the moment the preview ends and the region is still empty (pointer left, drag cancelled). After a drop the tile is there and the hint stays gone, as today.
+- **Why.** The hint is centred over the whole tile field and the first slot is its top-left cell, so they overlap. The hint's job, telling the user how to put something in, is done: they are doing it, and the outline, slot and copy show where.
+- **M4, M5:** Column, Row, Fan and Ring have an empty-state cell (2.8). During a preview that cell IS the landing slot: no second slot is drawn, its ⊕ and `DROP HERE` hide, and it takes the A1 border.
+
+### A3. The copy under the pointer
+
+- **Today's drag ghost, unchanged:** `opacity: 0.93`, `transform: scale(1.10) rotate(2deg)`, today's shadow, 1 px `--border-h`, `--panel-bg` surface, `z-index: 9999`, `pointer-events: none`, centred on the pointer, the size of a tile in that region, built from the target's own markup so it wears the target's theme (all as built). Spec 5.3's "translucent copy" means this ghost.
+- **Why.** While the pointer crosses the gap between two regions the source still shows the inner part of its own ghost and the target shows the rest. A lighter copy would show one object in two looks; lightening both changes today's in-region drag, which nobody has asked for.
+- **It covers the slot when the pointer is on it.** Accepted: the ghost is larger than the slot (1.10), so no dash leaks out, and the outline, the opened gap and the reflow still say where it lands.
+- **AA.** The ghost carries its own `--panel-bg` surface, so what lies beneath shows through by 1 - alpha x 0.93: 11% at the default alpha 0.96, and at most 24% in the lowest of the 101 themes (`ac-assassins`, 0.82; 5 themes are under 0.96). That is today's ghost in every theme. It exists only during a drag, is not focusable and not a hit target, and the icon identifies the tile as well as the label; no new contrast claim is made for the label under it.
+
+### A4. Shift+F10
+
+Yes. The Menu key (`ContextMenu`) and Shift+F10 do exactly the same thing:
+
+| Focus | Result |
+|---|---|
+| A tile, edit mode | Tile menu (9.2) at the tile's bottom-left corner, as built |
+| A tile, view mode | As a right-click on a tile does today: this region enters edit mode. Focus is on the same tile afterwards, so the next press opens the menu |
+| The handle or ⋯ | Region menu at the ⋯ button's bottom-left, as built |
+| A text field | Not ours: the field's own menu, as built |
+
+- **Why.** Shift+F10 is the Windows keyboard route to a context menu and the only one on a keyboard with no Menu key (most laptops). Without it the tile menu, and so "Move to", has no keyboard route there (WCAG 2.1.1; Jakob's Law). 7.4 already pairs the two keys for the region menu.
+- The 800 ms skip of the `contextmenu` event the key sends afterwards stays, so one press opens one menu.
+- Wording: in 5.3, 5.4 and 9.2 "the Menu key" reads "the Menu key or Shift+F10"; the 7.4 row reads "Region menu (handle or ⋯ focused); tile menu (tile focused, edit mode)". The cheat-sheet row `MENU / SHIFT+F10` stays as built.
+
+### A5. Ctrl+Up and Ctrl+Down
+
+**One row**, as plain Up and Down move the focus:
+
+| Key (edit mode, tile focused) | Grid |
+|---|---|
+| Ctrl+Left / Ctrl+Right | The tile moves 1 place earlier / later among the visible tiles |
+| Ctrl+Up / Ctrl+Down | The tile moves `cols` places earlier / later: the same column, one row up / down |
+
+- `cols` is the count plain Up and Down already use (`computeColumnCount` on the visible tiles). The target place is the current one plus or minus `cols`. **If it falls outside the visible tiles nothing happens: no clamp, no wrap**, exactly like the plain arrows. The tiles in between shift one place.
+- In `tile-order.js`, `stepOrder(order, visible, id, delta)` takes the signed place count (1 or `cols`) instead of its sign. The neighbour is `visible[vi + delta]`; the tile goes before it when moving earlier, after it when later. Example: visible `a b c d e`, `a` by +3 gives `b c d a e`.
+- With a filter active only the visible tiles count. Focus stays on the moved tile, scrolled into view, and the order is saved after each press (all as built).
+- **Announce each move:** `Moved to 4 of 12.` (its place among the visible tiles) in a visually hidden `role="status"` node (`aria-live="polite"`, 1 x 1, clipped, `pointer-events: none`). No visible change. Focus lands on a re-created tile of the same name, which a screen reader may not announce.
+- **Why.** Up and Down that only repeat Left and Right would send the tile sideways under a vertical key, and a tile 3 rows down would need about 15 presses at 5 columns. The plain arrows move a row; Ctrl+Arrow is the same step carrying the tile.
+- **M4, M5:** Ctrl+Arrow follows each layout's plain-arrow map (7.4). Column: Up and Down move 1, Left and Right do nothing. Row: the reverse. Fan and Ring: Left and Up move -1, Right and Down +1, never wrapping, even in Ring.
+- Cheat-sheet row text: `CTRL+ARROWS` / `Move the focused tile; Up and Down move a row (edit mode)`.
+
+### A6. Reflow animation
+
+- **Target only, as built:** 120 ms, `ease`, transform only, off under reduced motion (the setting or the OS).
+- **Add the close.** When the pointer leaves the target, the slot goes out through the same reflow, so the gap closes in 120 ms as it opened. A slot that opens smoothly and snaps shut reads as a glitch.
+- **On release** no frame between the release and the new tile may show the gap closed. If release now removes the slot before the region's items arrive, keep the slot until they do (`renderGrid` replaces it).
+- **On a system cancel** (display change, sleep, Hide all, a window closing, the 2 s no-answer cancel) the slot goes at once, with no animation.
+- **Source region:** closes its gap at once when the item leaves, as Delete does today.
+- **Today's in-region reorder stays instant, and M2 does not animate it.** It finds the tile under the pointer with `elementFromPoint` while tiles move; tiles sliding under a still pointer would swap back and forth. (The target avoids this with final rects, `rectOf`.) Unifying the two later means moving that hit test to final rects first.
+- **Why one place animates and the other does not.** In the target a tile appears from nowhere and everything shifts, so the motion explains where the gap came from. A swap inside one region needs no explanation and its feel already works.
+
+### Checks on the six
+
+- **AA, all 101 themes.** A1 measured above (lowest 3.02:1). A2 removes text. A3 is today's ghost (drag-time only; see its AA note). A4 and A6 add no colour. A5 adds one string for screen readers only; the cheat-sheet row uses the existing, gated `--text`.
+- **Nothing covers anything.** The slot is a tile in the grid flow, not an overlay. The hint is removed, not added. The copy is today's drag-time ghost with `pointer-events: none`. The status node is 1 x 1, clipped, `pointer-events: none`. No other element is added.
+- **Tooltips.** None of the six adds an interactive control, so no new tooltip. Only the cheat-sheet text of two rows changes (A4, A5).
+
+**Futaba measures** (each seen to fail on a deliberate break first):
+1. Slot: computed `border-top-color` equals the resolved `--accent-text` in `twin-peaks` and in the default theme; slot height equals its neighbour tile's, in view and in edit mode.
+2. Empty Grid, mid-preview: `#drop-hint` computed `display: none`; after the pointer leaves it is back.
+3. The copy's computed `opacity` is 0.93 and its `transform` matches the source ghost's.
+4. Shift+F10 and the Menu key: edit mode, the tile menu is recorded once per press; view mode, the region enters edit mode and `document.activeElement` is that tile.
+5. 12 tiles, 5 columns: Ctrl+Down on index 2 moves it to 7; on index 8 nothing; Ctrl+Up on index 3 nothing; index 7 up goes to 2. With a filter, only visible tiles count.
+6. Within 120 ms of the pointer leaving the target, the moved tiles have a running animation; under reduced motion none; in-region reorder never creates one.
+
+### Fallback focus — recommendation (Judy, 2026-10-01; tech options: TechPlan section 7)
+
+**Option A:** skip `SetParent(hwnd, NULL)` on a window that is already top-level (`detachToTopLevel` and `releaseFromShell`). B stays in reserve. This is also Ender's stated preference in section 7; the build details below are Judy's.
+
+**Why.** The fallback contract is "same UX" (section 11): a region never takes focus when it appears (section 1) and keys work after one click (U1). A meets both: Ender measured zero foreground events and zero `WM_ACTIVATE` over boot, 7 creates, a rebuild, a delete and quit, and a click activates the window as it does any window. B only adds cover against a Windows hand-over that no run showed, in a mode that runs only when the desktop layer has failed; it costs a worse failure (if Windows refuses our `SetForegroundWindow` after a click, the region gets no keys and flashes) and cannot be proven without a real click. C drops filter typing, tile keys, Menu key and header rename, which breaks "same UX".
+
+**Ender builds:**
+1. **Gate = the out-of-process foreground observer, not the 500 ms sampler.** No region window takes the foreground at create, rebuild, delete, quit, or the drop to fallback after 10 s. The check must be seen to fail on the stock code first (it did in launches 1 and 2). The desktop-child to top-level path (drop to fallback, quit from the desktop layer) is Ender's risk 2: A is not done until the observer shows it clean there too.
+2. **The first click does its normal job and also activates.** A tile click launches, a header press starts a move, ⋯ opens the menu, a right-click enters edit mode. No click-to-focus step, and the first click is never swallowed (keep Chromium's `MA_ACTIVATE`).
+3. **On activation** the region becomes the active region (7.3): border `--border-h`, no glow. No tile focus ring and no filter chip appear on activation (the ring is keyboard-only, `:focus-visible`). The first arrow key then focuses tile 1 and shows the ring (today's `moveTileFocus`); the first Tab goes to the handle's ⋯ (7.4); a typed letter filters this region.
+4. A click raising the region above windows it overlaps, and Win+D minimising it, stay as section 11 says. The hotkey still shows with `SWP_NOACTIVATE` and moves no focus.
+5. No new control, string or tooltip.
+
+**Switch to B only if** a fallback region is ever seen taking the foreground when Sergei did not just click it. B then ships with items 2 and 3 unchanged (`win.focus()` on pointer-down must still pass the click through and draw the same active border).
+
+**Sergei:** no click check is needed to adopt A; the observer run is the gate. One optional 30-second step goes into his M2 try-it: start with `--ql-no-desktop-layer`, click a region, type a letter (the filter chip shows it), then Ctrl+Arrow in edit mode. If the letter does not appear, tell Jane; that reopens this block.

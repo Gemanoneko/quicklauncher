@@ -238,4 +238,75 @@ Bug found by the self-test and fixed: `start()` and the first watchdog tick coul
 5. Ctrl+Up and Ctrl+Down move one place, like Left and Right ("one place earlier or later"), not one row.
 6. The reflow animation runs in the drop target only; today's in-region reorder still moves tiles without one.
 
-**Finding outside M2 (M1 fallback path):** fallback region windows (`--ql-no-desktop-layer`, or no desktop for 10 s) are ordinary activatable top-level windows just above the desktop. In 2 of 3 fallback self-test runs our window was in front for 5 to 22 s; in the run with diagnostics this started at boot, before any M2 step. The likely cause is Windows activating the next window in z-order when the window above it closes or minimises (Sergei was using the PC during the runs). Candidate fix: `WS_EX_NOACTIVATE` on fallback windows, plus explicit activation on a click so keys still arrive. That changes fallback keyboard behaviour, so it waits for a decision. Fallback self-test runs are paused until then, because each one can take focus.
+**Finding outside M2 (M1 fallback path):** fallback region windows (`--ql-no-desktop-layer`, or no desktop for 10 s) are ordinary activatable top-level windows just above the desktop. In 2 of 3 fallback self-test runs our window was in front for 5 to 22 s; in the run with diagnostics this started at boot, before any M2 step. The likely cause is Windows activating the next window in z-order when the window above it closes or minimises (Sergei was using the PC during the runs). Candidate fix: `WS_EX_NOACTIVATE` on fallback windows, plus explicit activation on a click so keys still arrive. That changes fallback keyboard behaviour, so it waits for a decision. Fallback self-test runs are paused until then, because each one can take focus. *Superseded by §7: the cause is now measured, and it is not the next-window handover.*
+
+---
+
+## 7. Fallback focus — options (Ender, 2026-10-01)
+
+Tech facts for Judy's pick. Nothing in `src/` changed. Every prototype ran as a scratch copy of the M2 packaged build (`3939f29`, `app.asar` repacked in the session scratchpad), launched through the QA launch guard on a temp profile with no hotkey and driven by the M2 self-test `--fallback` over CDP. No synthetic input was sent. A read-only out-of-process WinEvent observer logged every foreground change, by class and process name only.
+
+### 7.1 Root cause (measured)
+
+`desktop-layer.js` calls `SetParent(hwnd, NULL)` on a window that is already top-level, and Windows' `SetParent` **activates** the window it moves. Inside the call, Windows moves the window to the top of the normal band (`WM_WINDOWPOSCHANGING` with `SWP_NOSIZE | SWP_NOMOVE`, no `SWP_NOACTIVATE`) and then sends `WM_ACTIVATEAPP` (active) and `WM_ACTIVATE` (`WA_ACTIVE`) synchronously. The JS stack at that `WM_ACTIVATE` is `detachToTopLevel` line 211 (`SetParent`), called from `RegionHost._goFallback`. There are two call sites:
+
+| Call | When, in fallback | Evidence |
+|---|---|---|
+| `detachToTopLevel` | every fallback window: boot, region create, rebuild | Launch 1 (today's code): 0.6 s after start, Sergei's Explorer window lost the foreground to our region window while it was **still hidden**, raised above every window except the 2 topmost ones. It stayed ours for 3.5 s, until he clicked Chrome. |
+| `releaseFromShell` | region delete; every region at quit | Launch 2 (first call guarded, second not): boot and 7 creates were clean. At the region delete, his foreground (claude.exe) went to our hidden window, which was destroyed 59 ms later. At quit it went to our hidden windows 8 times in 0.35 s. |
+
+Likely reason it happened in only 2 of 3 runs: the activation reaches the foreground only when Windows' foreground rules let our process take it at that instant. Otherwise it stays inside our process and nothing visible happens. It won in launch 1, at both calls in launch 2, and in 2 of the 3 M2 runs. The M2 guess (Windows handing focus to the next window when one closes) was wrong: no foreground event in any run came from that.
+
+Ruled out: `show` / `showInactive`, because the fallback show is already one `SetWindowPos(SWP_SHOWWINDOW | SWP_NOACTIVATE)` and the activation happens before it. Also ruled out: our own JS, which made no `focus`, `show`, `blur`, `moveTop` or `setFocusable` call on a region window in launches 2 and 3.
+
+**The self-test's focus check cannot see this.** It samples the foreground every 500 ms. In launch 2 the observer saw our window take the foreground 9 times, but the sampler counted 0 and the check passed. The check that can fail is an out-of-process `EVENT_SYSTEM_FOREGROUND` hook, which failed as it should in launches 1 and 2.
+
+### 7.2 Keyboard facts, measured without input
+
+These were measured on hidden windows built like a region window. The test sent `WM_MOUSEACTIVATE` ("left button pressed over the client area") to our own hidden window. That is a question to the window procedure, not input, and nothing was activated. The table shows Chromium's answer:
+
+| Window | `isFocusable()` | Chromium's answer | What it means |
+|---|---|---|---|
+| Fallback window as built today | true | `MA_ACTIVATE` | A click activates the window, so keys reach the page after a click. |
+| Same, plus `WS_EX_NOACTIVATE` set through koffi | false | `MA_ACTIVATE` | Chromium still asks to be activated. Microsoft's docs say Windows does not activate a `WS_EX_NOACTIVATE` window on a click; one real click is needed to confirm. `win.focus()` still works, because Chromium's own `CanActivate` stays true (Chromium 128 source). |
+| Electron `setFocusable(false)` | false | `MA_NOACTIVATEANDEAT` | Windows discards every press on the region: no pointer-down, no click, no drag. |
+| Created with `focusable: false` | false | `MA_NOACTIVATEANDEAT` | Same. |
+
+From the Electron 32.3.3 and Chromium 128 source (read, not run):
+- `setFocusable(true)` adds a taskbar button (`ITaskbarList::AddTab`), then calls `Focus(false)`, which hands the foreground to the next visible window below ours. For a fallback region, that window is the desktop.
+- `win.focus()` does nothing while `focusable` is false. Otherwise it calls `SetWindowPos(HWND_TOP)` and then `SetForegroundWindow`.
+
+**The hotkey works the same in every option.** Ctrl+Space shows or hides all regions and never moves focus: `showAll` uses `SetWindowPos(SWP_SHOWWINDOW | SWP_NOACTIVATE)` and never calls `SetParent`.
+
+### 7.3 Options
+
+**A. Don't re-parent a window that is already top-level.** In `detachToTopLevel` and `releaseFromShell`, skip `SetParent(hwnd, NULL)` when the window's parent is already the desktop window.
+- Keyboard: the same as today's fallback design. Before a click, keys go to whatever app has focus. After a click on a region, Windows activates it, so the filter, the tile keys (Ctrl+Arrow, Delete), Menu key / Shift+F10 and rename in the header all get keys.
+- Mouse: unchanged. A click also raises the region above any window that overlaps it, as with any window. Win+D minimises it.
+- Proven in launch 3 (both calls guarded): boot, 7 creates, a rebuild, a delete and quit all ran. Result 64/64, **zero** foreground events and zero `WM_ACTIVATE` on any region window. claude.exe had the foreground at the start and at the end.
+- Risk 1: Windows can still hand focus to a fallback window when the window above it closes or minimises. Microsoft documents this for activatable windows. It was not seen in any run and was not provoked, because provoking it needs input.
+- Risk 2: a region that was a desktop child still needs `SetParent(NULL)` when it drops to fallback after 10 s or quits from the desktop layer. Whether that call activates is not measured: the window still has `WS_CHILD` at that moment, and the 500 ms sampler in M1/M2 could not have caught it.
+- Size: S (two guarded lines), plus S for moving the self-test's focus check to the foreground observer.
+
+**B. A, plus `WS_EX_NOACTIVATE` on fallback windows, activated by our code on a click.** The region's pointer-down already reaches the main process (`onPointerDown`). In fallback it would call `win.focus()`.
+- Keyboard: as A, both before and after a click.
+- Mouse: as A, including the raise on a click (`win.focus()` puts the region on top).
+- Removes A's risk 1: Microsoft's docs say Windows never hands focus to a `WS_EX_NOACTIVATE` window when another window closes or minimises.
+- Risk: two behaviours need a real click to confirm. First, that Windows does not activate the region on the click by itself. Second, that Windows accepts our `SetForegroundWindow` right after the click (the rules allow it when our process received the last input). If the second ever fails, the region gets no keys and Windows flashes it instead.
+- Size: S to M (the style bit at detach, a fallback branch in `focusAfterClick`, and one try-it step for Sergei).
+
+**C. A, plus `WS_EX_NOACTIVATE`, never activated (mouse-only fallback).**
+- Keyboard: no keys ever reach a fallback region, so no filter typing, tile keys, Menu key / Shift+F10 or rename in the header. The hotkey still works. Rename, settings and the picker stay available in the Manager.
+- Mouse: clicks, drags and right-click menus work, because the press goes through without activating the window. The menus are then probably mouse-only (not measured). The region never rises above other windows.
+- Risk: the lowest focus risk, but it drops the spec's "same UX" promise for fallback.
+- Size: S.
+
+**D. Electron `focusable: false`, turned on when needed: not workable.** Measured: Windows discards every press on the region while it is unfocusable, so the page never sees the pointer-down that would turn focus on. From the source: turning focus on adds a taskbar button and hands the foreground to the window below.
+
+`showInactive` is not an option: fallback already shows windows that way, and the activation happens before the show.
+
+**Ender's technical preference: A.** It removes the measured cause, keeps the specified keyboard behaviour, is the smallest change, and is proven with zero foreground events. Add B only if a fallback region is ever seen taking focus when another window closes. Either way, the self-test's focus check should move to the foreground observer, since the 500 ms sampler missed every event in launch 2.
+
+**Side finding (diagnostics, not product code):** the first diagnostic build called koffi from inside an Electron `hookWindowMessage` callback that fired during another koffi call (`SetParent`). The main process hung and later died with `0xC0000005`. A fix must never call koffi from a window-message hook.
+
+**Launches:** 3, all through the guard on temp profiles with no hotkey, and all closed (guard: exited, 0 left, startup keys unchanged, real data untouched). Sergei's foreground changed in launch 1 (3.5 s) and in launch 2: a 59 ms blip at the region delete, and 0.35 s at quit. Our in-process reading 0.1 s after the delete showed his app back in front. It did not change in launch 3.
