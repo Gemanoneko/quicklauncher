@@ -8,6 +8,8 @@
     "start": "electron .",
     "clean:dist": "node scripts/clean-dist.js",
     "check:contrast": "node scripts/check-theme-contrast.js",
+    "check:hover": "node scripts/theme-gallery/run.mjs --hover-check",
+    "check": "npm run check:contrast && npm run check:hover",
     "gallery:themes": "node scripts/theme-gallery/run.mjs",
     "prebuild": "node scripts/check-theme-contrast.js",
     "build": "npm run clean:dist && electron-builder --win --publish always",

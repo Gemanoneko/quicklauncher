@@ -31,6 +31,19 @@
 //   frame, Electron), or a theme or PNG is missing on either side.
 //   --before-label= / --after-label=  replace the default "v<version> @<commit>" panel labels
 //
+// Hover legibility gate (npm run check:hover; definition: Docs/QuickLaunch_HoverFix57_Spec_2026-10-02.md section 5)
+//   npm run check:hover [-- --only a,b] [--rebaseline] [--ref=<git ref>]
+//   40 readings per theme (hover and pressed on 17 controls, tile names, skin rows, installed-picker rows),
+//   measured in offscreen 520x760 windows at 1x (hover.cjs). Exit 0 pass, 1 a failing pair not in
+//   scripts/themes-hover-baseline.json, 2 harness failure (pairs measured not themes x 40, a positive control
+//   that does not fail, a guard counter, a process left, a registry change, the 180 s hard limit).
+//   --only a,b            measure only these themes (baseline still applies to them)
+//   --rebaseline          delete baseline entries that pass now (it never adds one; whole roster only)
+//   --processes=<n>       Electron processes the roster is split over (default 4)
+//   --concurrency=<n>     offscreen windows per process (default 6)
+//   --out=<dir>           where hover-readings.json goes (default <work>/hover; work default scratch/theme-gallery/.work-hover)
+//   --neuter-control=pc1,pc2  make a positive control pass on purpose, to see it void the run (exit 2)
+//
 // Isolation: QuickLaunch's main process is never loaded; no window is shown or focused; no
 // tray, hotkey, audio or network; login-item APIs are counting no-ops. This script READS the
 // HKCU Run and StartupApproved\Run keys before and after and fails on any difference (it never
@@ -49,22 +62,39 @@ const require = createRequire(import.meta.url);
 
 // ── args ─────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2);
-const opt = (k, d) => { const a = argv.find((x) => x.startsWith(`--${k}=`)); return a ? a.slice(k.length + 3) : d; };
+// --key=value, or --key value (the hover gate's documented form is `--only a,b`).
+const opt = (k, d) => {
+  const a = argv.find((x) => x.startsWith(`--${k}=`));
+  if (a) return a.slice(k.length + 3);
+  const i = argv.indexOf(`--${k}`);
+  return i > -1 && argv[i + 1] !== undefined && !argv[i + 1].startsWith('--') ? argv[i + 1] : d;
+};
 const flag = (k) => argv.includes(`--${k}`);
 if (flag('help') || flag('h')) { console.log(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').filter((l) => l.startsWith('//')).map((l) => l.slice(3)).join('\n')); process.exit(0); }
 const selfTest = flag('self-test');
 const compare = flag('compare');
+const hoverCheck = flag('hover-check');
 if (compare && selfTest) { console.error('--compare and --self-test are separate runs'); process.exit(2); }
-const WORK = path.resolve(opt('work', path.join(REPO, 'scratch', 'theme-gallery', '.work')));
-const OUT = path.resolve(selfTest ? path.join(WORK, 'self-test') : opt('out', path.join(REPO, 'scratch', 'theme-gallery', compare ? 'compare' : 'current')));
+if (hoverCheck && (compare || selfTest)) { console.error('--hover-check is a separate run (no --compare or --self-test)'); process.exit(2); }
+const WORK = path.resolve(opt('work', path.join(REPO, 'scratch', 'theme-gallery', hoverCheck ? '.work-hover' : '.work')));
+const OUT = path.resolve(selfTest ? path.join(WORK, 'self-test') : opt('out', hoverCheck ? path.join(WORK, 'hover') : path.join(REPO, 'scratch', 'theme-gallery', compare ? 'compare' : 'current')));
 const ref = opt('ref', null);
 const only = opt('only', '') ? opt('only').split(',').map((s) => s.trim()).filter(Boolean) : (selfTest ? ['cyberpunk', 'dune'] : null);
 const num = (k, d) => { const v = Number(opt(k, d)); if (!Number.isFinite(v) || v <= 0) { console.error(`bad --${k}`); process.exit(2); } return v; };
-const cfgBase = {
+// The hover gate's numbers are defined at one geometry (520x760 CSS px at 1x, software raster),
+// so those options are fixed in that mode; its hard limit is 180 s for the whole run.
+const HOVER_LIMIT_SEC = 180;
+const cfgBase = hoverCheck ? {
+  scale: 1, width: 520, height: 760, freezeMs: 0, concurrency: Math.round(num('concurrency', 6)),
+  timeoutSec: HOVER_LIMIT_SEC - 5, gpu: false, selfTest: false,
+  hover: { fps: Math.round(num('fps', 120)), neuter: (opt('neuter-control', '') || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean) },
+} : {
   scale: num('scale', 1.5), width: Math.round(num('width', 424)), height: Math.round(num('height', 300)),
   freezeMs: Math.round(num('freeze-ms', 2500)), concurrency: Math.round(num('concurrency', 3)),
   timeoutSec: Math.round(num('timeout', 540)), gpu: flag('gpu'), selfTest,
 };
+const rebaseline = flag('rebaseline');
+const HOVER_BASELINE = path.join(REPO, 'scripts', 'themes-hover-baseline.json');
 
 // ── refusals ─────────────────────────────────────────────────────────────────
 const lc = (p) => path.resolve(p).toLowerCase();
@@ -72,6 +102,23 @@ const inside = (parent, child) => { const r = path.relative(lc(parent), lc(child
 const appData = process.env.APPDATA || '';
 const localAppData = process.env.LOCALAPPDATA || '';
 const refuse = [];
+if (hoverCheck) {
+  for (const k of ['scale', 'width', 'height', 'freeze-ms', 'timeout']) if (opt(k, null) !== null) refuse.push(`--${k} is fixed in --hover-check mode`);
+  if (flag('gpu')) refuse.push('--gpu is not available in --hover-check mode (software raster only)');
+  if (rebaseline && only) refuse.push('--rebaseline needs the whole roster; drop --only');
+  if (rebaseline && ref) refuse.push('--rebaseline reads the live tree; drop --ref');
+  for (const c of cfgBase.hover.neuter) if (!['pc1', 'pc2'].includes(c)) refuse.push(`--neuter-control: unknown control ${c} (pc1, pc2)`);
+} else if (rebaseline) refuse.push('--rebaseline belongs to --hover-check');
+// The hover baseline is read before anything starts: a missing or malformed file voids the run.
+let hoverBaseline = null;
+if (hoverCheck) {
+  try {
+    const b = JSON.parse(fs.readFileSync(HOVER_BASELINE, 'utf8'));
+    if (!b || typeof b !== 'object' || Array.isArray(b)) throw new Error('not a JSON object');
+    for (const [t, v] of Object.entries(b)) if (!Array.isArray(v) || v.some((x) => typeof x !== 'string')) throw new Error(`"${t}" is not a list of pair ids`);
+    hoverBaseline = b;
+  } catch (e) { refuse.push(`hover baseline ${path.relative(REPO, HOVER_BASELINE)}: ${e.message}`); }
+}
 for (const [label, p] of [['--out', OUT], ['--work', WORK]]) {
   if (appData && inside(path.join(appData, 'QuickLauncher'), p)) refuse.push(`${label} is inside the real QuickLauncher profile`);
   if (localAppData && inside(path.join(localAppData, 'Programs'), p)) refuse.push(`${label} is inside an installed-apps folder`);
@@ -235,43 +282,60 @@ const version = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf
 // ── run ──────────────────────────────────────────────────────────────────────
 fs.mkdirSync(WORK, { recursive: true });
 fs.mkdirSync(OUT, { recursive: true });
-const cfgFile = path.join(WORK, 'config.json');
-const statusFile = path.join(WORK, 'status.json');
-const resultFile = path.join(WORK, 'result.json');
-const logFile = path.join(WORK, 'electron.log');
-const ackFile = path.join(WORK, 'sample-ack.txt');
-for (const f of [statusFile, resultFile, ackFile]) fs.rmSync(f, { force: true });
-const themeTotal = compare ? comparePlan.themes.length : only ? only.length : fs.readdirSync(path.join(root, 'src', 'renderer', 'styles', 'themes')).filter((f) => f.endsWith('.css')).length;
-// Netstat / liveness samples: after the first theme and at 80 %; main.cjs waits for each one.
-const checkpoints = [...new Set([1, Math.max(1, Math.ceil(themeTotal * 0.8))])];
-fs.writeFileSync(cfgFile, JSON.stringify({ ...cfgBase, root, out: OUT, work: WORK, only, compare: comparePlan, statusFile, resultFile, ackFile, checkpoints, sourceLabel: `QuickLaunch v${version}, ${sourceLabel}` }, null, 1));
+const themeList = compare ? comparePlan.themes.map((t) => t.theme) : only ? only : fs.readdirSync(path.join(root, 'src', 'renderer', 'styles', 'themes')).filter((f) => f.endsWith('.css')).map((f) => f.slice(0, -4)).sort();
+const themeTotal = themeList.length;
+// The hover gate splits the roster over several Electron processes: one process composites every
+// offscreen frame on a single thread (about 55 captures/s whatever its window count), so separate
+// processes are what scales. Every other mode runs exactly one process.
+const shardCount = hoverCheck ? Math.max(1, Math.min(Math.round(num('processes', 4)), themeTotal)) : 1;
+const shards = Array.from({ length: shardCount }, (_, k) => {
+  const dir = shardCount === 1 ? WORK : path.join(WORK, `p${k + 1}`);
+  fs.mkdirSync(dir, { recursive: true });
+  const s = { k, dir, cfgFile: path.join(dir, 'config.json'), statusFile: path.join(dir, 'status.json'), resultFile: path.join(dir, 'result.json'), logFile: path.join(dir, 'electron.log'), ackFile: path.join(dir, 'sample-ack.txt') };
+  for (const f of [s.statusFile, s.resultFile, s.ackFile]) fs.rmSync(f, { force: true });
+  // Round-robin, so every process gets a like mix of themes.
+  s.themes = shardCount === 1 ? null : themeList.filter((_, i) => i % shardCount === k);
+  const n = s.themes ? s.themes.length : themeTotal;
+  // Netstat / liveness samples: after the first theme and at 80 %; main.cjs waits for each one.
+  s.checkpoints = [...new Set([1, Math.max(1, Math.ceil(n * 0.8))])];
+  const shardOnly = shardCount === 1 ? only : s.themes;
+  const shardHover = hoverCheck ? { hover: { ...cfgBase.hover, controls: k === 0 } } : {};
+  fs.writeFileSync(s.cfgFile, JSON.stringify({ ...cfgBase, ...shardHover, root, out: OUT, work: dir, only: shardOnly, compare: comparePlan, statusFile: s.statusFile, resultFile: s.resultFile, ackFile: s.ackFile, checkpoints: s.checkpoints, sourceLabel: `QuickLaunch v${version}, ${sourceLabel}` }, null, 1));
+  return s;
+});
+const checkpointTotal = shards.reduce((n, s) => n + s.checkpoints.length, 0);
 
 const electronExe = require('electron'); // path to this repo's electron.exe
 const electronVersion = JSON.parse(fs.readFileSync(path.join(REPO, 'node_modules', 'electron', 'package.json'), 'utf8')).version;
-console.log(compare ? `QuickLaunch theme gallery COMPARE: ${sourceLabel}; ${themeTotal} theme(s); Electron ${electronVersion}`
-  : `QuickLaunch theme gallery${selfTest ? ' SELF-TEST' : ''}: v${version}, ${sourceLabel}; Electron ${electronVersion}`);
-console.log(`  out  ${OUT}\n  work ${WORK}`);
+if (hoverCheck) console.log(`[hover] QuickLaunch hover legibility gate: v${version}, ${sourceLabel}; ${themeTotal} theme(s) x 40 readings; Electron ${electronVersion}; ${shardCount} process(es) x ${cfgBase.concurrency} window(s)`);
+else {
+  console.log(compare ? `QuickLaunch theme gallery COMPARE: ${sourceLabel}; ${themeTotal} theme(s); Electron ${electronVersion}`
+    : `QuickLaunch theme gallery${selfTest ? ' SELF-TEST' : ''}: v${version}, ${sourceLabel}; Electron ${electronVersion}`);
+  console.log(`  out  ${OUT}\n  work ${WORK}`);
+}
 
 const regBefore = snapshotRegistry();
 fs.writeFileSync(path.join(WORK, 'registry-before.json'), JSON.stringify(regBefore, null, 1));
 const t0 = Date.now();
 const env = { ...process.env };
 delete env.ELECTRON_RUN_AS_NODE;
-const child = spawn(electronExe, [path.join(HERE, 'main.cjs'), `--qlg-config=${cfgFile}`], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, env });
-const logStream = fs.createWriteStream(logFile);
 let lastLine = '';
-for (const s of [child.stdout, child.stderr]) s.on('data', (d) => {
-  logStream.write(d);
-  for (const l of String(d).split(/\r?\n/)) if (l.startsWith('[gallery] ')) { lastLine = l.slice(10); if (/^\s*\d+\/\d+ |GUARD|FATAL|sheet |source |rendered |compare |diff control/.test(lastLine)) console.log('  ' + lastLine); }
-});
-const exited = new Promise((res) => child.on('exit', (code, signal) => res({ code, signal })));
+const showLine = hoverCheck ? /GUARD|FATAL|failed/ : /^\s*\d+\/\d+ |GUARD|FATAL|sheet |source |rendered |compare |diff control/;
+for (const s of shards) {
+  s.child = spawn(electronExe, [path.join(HERE, 'main.cjs'), `--qlg-config=${s.cfgFile}`], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, env });
+  s.logStream = fs.createWriteStream(s.logFile);
+  for (const st of [s.child.stdout, s.child.stderr]) st.on('data', (d) => {
+    s.logStream.write(d);
+    for (const l of String(d).split(/\r?\n/)) if (l.startsWith('[gallery] ')) { lastLine = l.slice(10); if (showLine.test(lastLine)) console.log('  ' + (shardCount > 1 ? `[p${s.k + 1}] ` : '') + lastLine); }
+  });
+  s.exited = new Promise((resolve) => s.child.on('exit', (code, signal) => { s.exit = { code, signal }; resolve(s.exit); }));
+}
 
 const seenPids = new Map(); // pid -> type
 const samples = [];
-let status = null;
-const readStatus = () => { try { status = JSON.parse(fs.readFileSync(statusFile, 'utf8')); for (const p of status.pids) seenPids.set(p.pid, p.type); } catch { /* not yet */ } };
+const readStatus = (s) => { try { s.status = JSON.parse(fs.readFileSync(s.statusFile, 'utf8')); for (const p of s.status.pids) seenPids.set(p.pid, p.type); } catch { /* not yet */ } };
 async function sample(label) {
-  readStatus();
+  for (const s of shards) readStatus(s);
   const pids = [...seenPids.keys()];
   const tl = tasklist();
   const ns = netstat();
@@ -282,24 +346,34 @@ async function sample(label) {
   samples.push({ label, pidsKnown: pids.length, alive: alive.length, sockets, control: { pid: ctlPid, sockets: (ns.get(ctlPid) || []).length } });
 }
 let timedOut = false;
-const deadline = Date.now() + (cfgBase.timeoutSec + 45) * 1000;
-const sampled = new Set();
-let result = null;
-while (!result) {
-  const r = await Promise.race([exited, sleep(250).then(() => null)]);
-  if (r) { result = r; break; }
-  readStatus();
-  const pending = status && Array.isArray(status.checkpoints) ? status.checkpoints.filter((c) => !sampled.has(c)) : [];
-  if (pending.length) {
-    for (const c of pending) sampled.add(c);
-    await sample(`checkpoint after ${pending.join(' + ')} of ${status.total} themes`);
-    for (const c of pending) fs.appendFileSync(ackFile, `${c}\n`);
+const deadline = hoverCheck ? t0 + HOVER_LIMIT_SEC * 1000 : Date.now() + (cfgBase.timeoutSec + 45) * 1000;
+const sampled = new Set(); // `${process}:${checkpoint}`
+const allExited = Promise.all(shards.map((s) => s.exited));
+for (;;) {
+  const r = await Promise.race([allExited, sleep(250).then(() => null)]);
+  if (r) break;
+  for (const s of shards) {
+    readStatus(s);
+    const pending = s.status && Array.isArray(s.status.checkpoints) ? s.status.checkpoints.filter((c) => !sampled.has(`${s.k}:${c}`)) : [];
+    if (pending.length) {
+      for (const c of pending) sampled.add(`${s.k}:${c}`);
+      await sample(`${shardCount > 1 ? `process ${s.k + 1}: ` : ''}checkpoint after ${pending.join(' + ')} of ${s.status.total} themes`);
+      for (const c of pending) fs.appendFileSync(s.ackFile, `${c}\n`);
+    }
   }
-  if (Date.now() > deadline) { timedOut = true; console.log('  TIMEOUT: ending the Electron process this script started (own handle)'); child.kill(); result = await exited; }
+  if (Date.now() > deadline) {
+    timedOut = true;
+    console.log(`  TIMEOUT: ending the Electron process(es) this script started (own handles)`);
+    for (const s of shards) if (!s.exit) s.child.kill();
+    await allExited;
+    break;
+  }
 }
-logStream.end();
+for (const s of shards) s.logStream.end();
 const wall = Date.now() - t0;
-readStatus();
+for (const s of shards) readStatus(s);
+// The exit reported: the first non-zero one, else process 1's.
+const result = (shards.find((s) => s.exit && s.exit.code !== 0) || shards[0]).exit;
 
 // Every process the run started must be gone. Chromium children follow the main process out.
 let left = [];
@@ -314,8 +388,33 @@ const regAfter = snapshotRegistry();
 fs.writeFileSync(path.join(WORK, 'registry-after.json'), JSON.stringify(regAfter, null, 1));
 const regChanges = diffRegistry(regBefore, regAfter);
 
+// The results of every process, merged into one (a single process's result is used as it is).
 let res = null;
-try { res = JSON.parse(fs.readFileSync(resultFile, 'utf8')); } catch (e) { console.log(`  no result file: ${e.message}`); }
+{
+  const parts = [];
+  for (const s of shards) { try { parts.push(JSON.parse(fs.readFileSync(s.resultFile, 'utf8'))); } catch (e) { console.log(`  no result file${shardCount > 1 ? ` from process ${s.k + 1}` : ''}: ${e.message}`); } }
+  if (parts.length === 1 && shards.length === 1) res = parts[0];
+  else if (parts.length === shards.length) {
+    const hx = parts.map((p) => p.extra && p.extra.hover).filter(Boolean);
+    const calls = {};
+    for (const p of parts) for (const [k, v] of Object.entries(p.ipc.calls)) calls[k] = (calls[k] || 0) + v;
+    const counters = {};
+    for (const p of parts) for (const [k, v] of Object.entries(p.counters)) counters[k] = (counters[k] || 0) + v;
+    const profile = {};
+    for (const h of hx) for (const [k, v] of Object.entries(h.profile || {})) profile[k] = (profile[k] || 0) + v;
+    res = {
+      code: (parts.find((p) => p.code !== 0) || parts[0]).code, why: [...new Set(parts.map((p) => p.why))].join(' | '),
+      counters, guardHits: parts.flatMap((p) => p.guardHits || []),
+      stubs: { total: parts.reduce((n, p) => n + p.stubs.total, 0), broken: parts.flatMap((p) => p.stubs.broken) },
+      ipc: { calls, unexpected: parts.flatMap((p) => p.ipc.unexpected) },
+      results: parts.flatMap((p) => p.results).sort((a, b) => a.theme.localeCompare(b.theme)),
+      extra: {
+        displays: parts[0].extra ? parts[0].extra.displays : null, displayEvents: parts.flatMap((p) => (p.extra && p.extra.displayEvents) || []),
+        hover: hx.length === parts.length ? { ...hx[0], preflight: hx.map((h) => h.preflight).find(Boolean) || null, pcs: hx.flatMap((h) => h.pcs), measureMs: Math.max(...hx.map((h) => h.measureMs || 0)), profile } : null,
+      },
+    };
+  }
+}
 
 // ── verdict ──────────────────────────────────────────────────────────────────
 const fails = [];
@@ -325,7 +424,7 @@ if (result.code !== 0) fails.push(`Electron exit code ${result.code}${res ? ` ($
 const results = res ? res.results : [];
 const bad = results.filter((r) => !r.ok);
 const expected = themeTotal;
-if (results.length !== expected) fails.push(`${compare ? 'compared' : 'rendered'} ${results.length} of ${expected} themes`);
+if (results.length !== expected) fails.push(`${compare ? 'compared' : hoverCheck ? 'measured' : 'rendered'} ${results.length} of ${expected} themes`);
 const cx = compare && res ? res.extra : {};
 if (compare) {
   // The change figure must be able to see a change (grid vs hover of one theme), or "IDENTICAL" means nothing.
@@ -347,13 +446,99 @@ const guardFails = Object.entries(counters).filter(([, v]) => v > 0);
 if (res && res.stubs.broken.length) fails.push(`stubs replaced: ${res.stubs.broken.join(', ')}`);
 const unexpected = res ? res.ipc.unexpected : [];
 const sockets = samples.flatMap((s) => s.sockets);
-if (sampled.size < checkpoints.length || !samples.length) fails.push(`${sampled.size} of ${checkpoints.length} checkpoints sampled mid-run (${samples.length} sample(s))`);
+if (sampled.size < checkpointTotal || !samples.length) fails.push(`${sampled.size} of ${checkpointTotal} checkpoints sampled mid-run (${samples.length} sample(s))`);
 for (const s of samples) {
   if (s.alive < 1) fails.push(`liveness detector saw none of our processes during the run (${s.label})`);
   if (!(s.control.sockets > 0)) fails.push(`netstat control PID showed no sockets (${s.label})`);
 }
 if (left.length) fails.push(`${left.length} process(es) still running after exit: ${left.join(', ')}`);
 if (regChanges.length) fails.push(`registry changed: ${regChanges.join('; ')}`);
+
+// ── hover gate verdict (check:hover): exit 0 pass, 1 new failing pair, 2 harness failure ──
+if (hoverCheck) {
+  const hx = (res && res.extra && res.extra.hover) || null;
+  for (const [k, v] of guardFails) fails.push(`guard ${k} = ${v}`);
+  if (res && res.stubs.broken.length === 0 && res.stubs.total === 0) fails.push('no guard stubs installed');
+  if (unexpected.length) fails.push(`${unexpected.length} IPC call(s) outside get-apps/get-settings/get-valid-themes/renderer-ready/get-installed-apps: ${[...new Set(unexpected.map((u) => u.channel))].join(', ')}`);
+  if (sockets.length) fails.push(`${sockets.length} socket(s) owned by our processes: ${sockets.slice(0, 5).join(' | ')}`);
+  if (hx && hx.preflight) fails.unshift(hx.preflight); // the cause, ahead of the counts it voids
+  if (!hx) fails.push('no hover readings in the result');
+  else if (hx.perTheme !== 40) fails.push(`the gate defines ${hx.perTheme} readings per theme, not 40`);
+  for (const r of bad) fails.push(`${r.theme}: ${r.problems.slice(0, 2).join('; ')}${r.problems.length > 2 ? ` (+${r.problems.length - 2} more)` : ''}`);
+  const measured = results.reduce((n, r) => n + (r.rows || []).filter((x) => !x.error && typeof x.ratio === 'number').length, 0);
+  if (measured !== expected * 40) fails.push(`${measured} pair(s) measured, expected ${expected} theme(s) x 40 = ${expected * 40}`);
+  const pcs = hx ? [...hx.pcs].sort((a, b) => a.id.localeCompare(b.id)) : [];
+  for (const id of ['PC1', 'PC2']) {
+    const pc = pcs.find((p) => p.id === id);
+    if (!pc) fails.push(`positive control ${id} did not run`);
+    else if (!pc.failed) fails.push(`positive control ${id} (${pc.what}) did not fail: ${pc.pair} read ${pc.ratio2 ?? '?'}:1, must be under ${pc.under}:1${pc.problems.length ? ` [${pc.problems.join('; ')}]` : ''}`);
+  }
+
+  // Baseline: a failing pair not listed for its theme is an error; listed = grandfathered;
+  // a listed pair that passes is a note. --rebaseline only ever deletes entries.
+  const pairIds = new Set((hx ? hx.pairs : []).map((p) => p.pair));
+  const allThemes = fs.readdirSync(path.join(root, 'src', 'renderer', 'styles', 'themes')).filter((f) => f.endsWith('.css')).map((f) => f.slice(0, -4));
+  const byTheme = new Map(results.map((r) => [r.theme, r]));
+  const errors = [], grand = [], fixedEntries = [], invalidEntries = [];
+  for (const r of results) for (const x of r.rows || []) if (x.fail) ((hoverBaseline[r.theme] || []).includes(x.pair) ? grand : errors).push({ theme: r.theme, ...x });
+  for (const [t, list] of Object.entries(hoverBaseline)) for (const p of list) {
+    if (!allThemes.includes(t)) { if (!only) invalidEntries.push({ theme: t, pair: p, why: 'no such theme' }); continue; }
+    if (!pairIds.has(p)) { invalidEntries.push({ theme: t, pair: p, why: 'not a pair id' }); continue; }
+    const x = byTheme.has(t) ? (byTheme.get(t).rows || []).find((y) => y.pair === p) : null;
+    if (x && !x.error && !x.fail) fixedEntries.push({ theme: t, pair: p, ratio2: x.ratio2 });
+  }
+  const label = (x) => `${x.label}${x.alpha < 1 ? `@${x.alpha}` : ''}`;
+  const line = (x) => `      ${x.pair}: ${label(x)} on ${x.fill} = ${x.ratio2.toFixed(2)}:1 (needs ${x.floor}:1)`;
+  const group = (list) => { const m = new Map(); for (const x of list) m.set(x.theme, [...(m.get(x.theme) || []), x]); return m; };
+  const relBase = path.relative(REPO, HOVER_BASELINE).split(path.sep).join('/');
+  if (grand.length) {
+    const g = group(grand);
+    console.log(`\n[hover] WARNINGS (grandfathered in ${relBase}): ${grand.length} pair(s) in ${g.size} theme(s)`);
+    for (const [t, list] of g) { console.log(`  - ${t}`); for (const x of list) console.log(line(x)); }
+  }
+  if (errors.length) {
+    const g = group(errors);
+    console.log(`\n[hover] ERRORS (under threshold and not in ${relBase}): ${errors.length} pair(s) in ${g.size} theme(s)`);
+    for (const [t, list] of g) { console.log(`  - ${t}`); for (const x of list) console.log(line(x)); }
+  }
+  for (const f of fixedEntries) console.log(`[hover] note: ${f.theme} ${f.pair} passes now (${f.ratio2}:1): fixed, remove it from the baseline`);
+  for (const f of invalidEntries) console.log(`[hover] note: baseline entry ${f.theme} ${f.pair}: ${f.why}`);
+  let rebaselined = null;
+  if (rebaseline) {
+    if (fails.length) console.log('[hover] --rebaseline skipped: the run is void');
+    else {
+      const drop = new Set([...fixedEntries, ...invalidEntries].map((f) => `${f.theme}\n${f.pair}`));
+      const next = {};
+      for (const t of Object.keys(hoverBaseline).sort()) {
+        const keep = hoverBaseline[t].filter((p) => !drop.has(`${t}\n${p}`));
+        if (keep.length) next[t] = keep;
+      }
+      rebaselined = drop.size;
+      if (drop.size) fs.writeFileSync(HOVER_BASELINE, JSON.stringify(next, null, 2) + '\n');
+      console.log(`[hover] --rebaseline: removed ${drop.size} entr${drop.size === 1 ? 'y' : 'ies'} (it never adds one; accepting a failure is a hand edit of ${relBase})`);
+    }
+  }
+
+  for (const pc of pcs) console.log(`  control     ${pc.id} ${pc.failed ? 'fired' : 'DID NOT FIRE'}: ${pc.what}: ${pc.pair} ${pc.label || '?'} on ${pc.fill || '?'} = ${pc.ratio2 ?? '?'}:1 (must be under ${pc.under}:1)`);
+  console.log(`  guards      login-item ${counters.loginItem ?? '?'} | global-shortcut ${counters.globalShortcut ?? '?'} | show ${counters.windowShow ?? '?'} | focus ${(counters.windowFocus ?? 0) + (counters.appFocus ?? 0) + (counters.focusEvents ?? 0)} | dialogs ${counters.dialogs ?? '?'} | blocked requests ${counters.blockedRequests ?? '?'} | media ${counters.mediaStarted ?? '?'} | stubs intact ${res ? `${res.stubs.total - res.stubs.broken.length}/${res.stubs.total}` : '?'} | ipc outside allowlist ${unexpected.length}`);
+  const dEv = (res && res.extra && res.extra.displayEvents) || [];
+  if (dEv.length) console.log(`  displays    ${dEv.length} display change event(s) during the run (every page re-checks its window size, every capture must settle)`);
+  console.log(`  isolation   sockets ${sockets.length} (${samples.length} netstat sample(s)) | registry ${regChanges.length ? 'CHANGED' : 'unchanged'} | processes ${seenPids.size} started, ${left.length} left, exit ${result.code}${timedOut ? ' after timeout' : ''} | ${(wall / 1000).toFixed(1)} s`);
+  const report = {
+    tool: 'scripts/theme-gallery --hover-check', generated: new Date().toISOString(), quicklaunch: { version, ...source }, electron: electronVersion,
+    definition: 'Docs/QuickLaunch_HoverFix57_Spec_2026-10-02.md section 5', window: [cfgBase.width, cfgBase.height], scale: cfgBase.scale,
+    baseline: relBase, pcs, errors: errors.length, grandfathered: grand.length, fixedEntries, invalidEntries, rebaselined,
+    themes: results.map((r) => ({ theme: r.theme, ok: r.ok, problems: r.problems, ms: r.ms, rows: r.rows })),
+    measureMs: hx ? hx.measureMs : null, profile: hx ? hx.profile : null, wallMs: wall,
+    isolation: { counters, stubs: res ? res.stubs : null, ipcCalls: res ? res.ipc.calls : null, unexpectedIpc: unexpected.length, registry: { before: regSummary(regBefore), after: regSummary(regAfter), changes: regChanges }, samples, processes: { started: [...seenPids].map(([pid, type]) => ({ pid, type })), leftAfterExit: left, exit: result, timedOut } },
+    verdict: fails.length ? 'VOID' : errors.length ? 'FAIL' : 'PASS', failures: fails,
+  };
+  fs.writeFileSync(path.join(OUT, 'hover-readings.json'), JSON.stringify(report, null, 1));
+  console.log(`  readings    ${path.join(OUT, 'hover-readings.json')}`);
+  for (const f of fails) console.log(`[hover] VOID: ${f}`);
+  console.log(`[hover] ${results.length} theme(s), ${measured} pair(s) measured, ${errors.length} error${errors.length === 1 ? '' : 's'}, ${grand.length} grandfathered.${fails.length ? ' RUN VOID (harness failure, exit 2).' : ''}`);
+  process.exit(fails.length ? 2 : errors.length ? 1 : 0);
+}
 
 const selfControls = [];
 if (selfTest) {

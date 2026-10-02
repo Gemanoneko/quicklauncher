@@ -302,9 +302,15 @@ function main() {
   console.log(`[contrast] ${themes.length} theme(s) checked, 0 errors, ${warnings.length} legacy warning(s).`);
 }
 
-try {
-  main();
-} catch (err) {
-  console.error('[contrast] linter crashed:', err.stack || err.message);
-  process.exit(2);
+// The WCAG maths is shared with the rendered hover gate (scripts/theme-gallery/hover.cjs),
+// so both gates compute a ratio the same way. Requiring this file does not run the linter.
+module.exports = { composite, luminance, contrast, AA_NORMAL_TEXT, AA_UI_ELEMENT };
+
+if (require.main === module) {
+  try {
+    main();
+  } catch (err) {
+    console.error('[contrast] linter crashed:', err.stack || err.message);
+    process.exit(2);
+  }
 }

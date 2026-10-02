@@ -6,6 +6,8 @@
 // QuickLaunch's own main process (src/main/*) is never loaded: there is no tray, no global
 // hotkey, no updater, no store and no login-item code in this process. src/main/preload.js
 // is only READ as text, to copy its channel allowlists.
+// With cfg.hover (run.mjs --hover-check) it runs the hover legibility gate (hover.cjs) instead of
+// screenshots, under the same guards.
 //
 // Guards (all counted; the run fails if any count is non-zero):
 //   - app.setLoginItemSettings / getLoginItemSettings, globalShortcut.*, BrowserWindow
@@ -149,7 +151,8 @@ for (const t of THEMES) {
 }
 
 // ── mock IPC (the only thing the renderer can reach) ─────────────────────────
-const EXPECTED_IPC = new Set(['get-apps', 'get-settings', 'get-valid-themes', 'renderer-ready']);
+// The hover gate also opens the installed-apps picker, which asks for the installed list.
+const EXPECTED_IPC = new Set(['get-apps', 'get-settings', 'get-valid-themes', 'renderer-ready', ...(cfg.hover ? ['get-installed-apps'] : [])]);
 const ipcCalls = {};
 const unexpectedIpc = [];
 const themeOfWc = new Map();
@@ -166,7 +169,7 @@ ipcMain.handle('qlg:invoke', (e, channel, args) => {
     case 'set-auto-launch': hit('loginItem', `IPC set-auto-launch(${JSON.stringify(args)}) from renderer (${theme})`); return false;
     case 'apply-global-hotkey': hit('globalShortcut', `IPC apply-global-hotkey from renderer (${theme})`); return { ok: false, reason: 'INVALID' };
     case 'get-global-hotkey-status': return { ok: true, accelerator: null };
-    case 'get-installed-apps': return [];
+    case 'get-installed-apps': return cfg.hover ? require('./hover.cjs').INSTALLED_ROWS.map((r) => ({ ...r })) : [];
     case 'toggle-fullscreen': case 'exit-fullscreen': return false;
     default: return null; // save-*, launch-app, add-app-*, window and update channels: counted no-ops
   }
@@ -692,6 +695,21 @@ app.whenReady().then(async () => {
         log(`${String(done).padStart(3)}/${THEMES.length} ${r.theme} ${r.ok ? 'ok' : 'PROBLEM: ' + r.problems.join('; ')}`);
         if ((cfg.checkpoints || []).includes(done)) await checkpoint(done);
       },
+    });
+    clearInterval(statusTimer);
+    writeStatus('done');
+    finish(0, 'done');
+    return;
+  }
+  if (cfg.hover) {
+    // Hover legibility gate (check:hover): readings only, no PNGs. Same process-level guards.
+    log(`hover source ${cfg.sourceLabel}; ${THEMES.length} theme(s); window ${cfg.width}x${cfg.height} at ${cfg.scale}x; ${cfg.concurrency} window(s)`);
+    writeStatus('starting');
+    const statusTimer = setInterval(() => writeStatus('measuring'), 1500);
+    await require('./hover.cjs').runHover({
+      cfg, log, js, waitFor, sleep, FRAMES, mock, themeOfWc, extra, results, INDEX, RENDERER, THEMES, emulate, viewportProblem,
+      isFinished: () => finished,
+      checkpoint: async (n) => { done = n; return checkpoint(n); },
     });
     clearInterval(statusTimer);
     writeStatus('done');
