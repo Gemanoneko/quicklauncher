@@ -216,6 +216,15 @@ function sha256(s) {
   return crypto.createHash('sha256').update(s).digest('hex');
 }
 
+// Fingerprint of a theme file for the baseline (used to record AND compare).
+// Line endings are normalised to LF first: git stores the themes with LF, but
+// a Windows checkout with core.autocrlf=true writes them as CRLF, and hashing
+// the raw bytes made every unchanged legacy theme read as "changed". The
+// recorded hashes were taken on LF content, so LF input hashes exactly as before.
+function themeHash(css) {
+  return sha256(css.replace(/\r\n/g, '\n'));
+}
+
 function loadBaseline() {
   if (!fs.existsSync(BASELINE_FILE)) return {};
   try {
@@ -248,7 +257,7 @@ function main() {
 
   for (const t of themes) {
     const css = fs.readFileSync(t.file, 'utf8');
-    const hash = sha256(css);
+    const hash = themeHash(css);
     newBaseline[t.name] = hash;
 
     const findings = auditTheme(t.file, baseCss);
