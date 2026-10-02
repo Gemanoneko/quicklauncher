@@ -354,3 +354,22 @@ All 15 readings stay passing; none gets worse. The cause is rule (b) or, for `to
 | `pip-boy` | `edit-done`, `set-close` hover and pressed (label `#64A000` to `#64A001`: a rounding step of the colour round trip, not a visible change) | 6.19, 6.02 | 6.19, 6.02 |
 | `the-sandman` | `tile-remove` hover and pressed (fill `#C08020` to `#B4781D`) | 3.31 | 3.72 |
 | `tomb-raider` | `edit-done` hover and pressed (label `#788080` to `#878E8E`) | 4.51 | 5.46 |
+
+## Build check (Judy, 2026-10-02, tree `c5caaf0` plus Ender's uncommitted gate and fix): **APPROVED**
+
+I ran `npm run check:hover` myself in that tree (offscreen, output sent to my scratch folder) and compared its 4,040 readings with my after-fix sweep and my before-fix sweep.
+
+| Check | Result |
+|---|---|
+| Gate run | `101 theme(s), 4040 pair(s) measured, 0 errors, 0 grandfathered`, exit 0, 36.6 s; guards all 0; `processes 36 started, 0 left`; registry unchanged; baseline `{}` |
+| Positive controls | PC1 `1.65:1` (my number: 1.65), PC2 `2.32:1` (my number: 2.32, to the digit) |
+| Pass or fail, gate against my sweep, 4,040 readings | **0 flips** |
+| Label colours | 4,024 of 4,040 identical; 16 off by one colour step (Edge 154 against Electron 32.3.3 rounding in the band). Nothing near a threshold depends on it |
+| Lowest margin over the 350 pairs the fix repaired, in the gate's own numbers | **0.21** (`silent-hill` current-skin row, 4.71). Whole roster: lowest is the untouched `ff6` pressed 4.56 (my sweep: 4.56) |
+| Readings that differ from my sweep by more than 0.05 | 964 in the after-fix state (Ender counts 878 against the before state). Within 1.0 of their floor the largest difference is 0.28 (`life-is-strange` tile name, mine 5.38, gate 5.10); the largest anywhere is 0.74 on readings at 14 to 17:1 that nothing depends on |
+
+**Why the differences are acceptable.** They sit on see-through fills and tile names. My sweep drove a mock page, so the ground behind a translucent fill (tile art, header, panel) was not the one the real app paints; the gate drives the real `app.js` and is the truth. No difference changes a pass or a fail, and none touches a fixed pair's margin by more than 0.29.
+
+**One correction to this spec's wording.** Section 6 step 1 said Ender's readings must match Appendix A within 0.05 on every pair. That was too strict for a mock-page sweep. The standard that holds, and that Ender met, is: the failing set matches exactly (350 pairs, 56 themes), the "worst now" reading of each of the 56 themes matches within 0.05 (56 of 56), and every label colour matches except the 16 one-step Electron roundings. **From here the gate's numbers are authoritative and Appendix A is an estimate.** No change to the fix, the values in 2.3 or the gate definition is needed.
+
+Leak count for this check: 0. Method: the gate reports `36 started, 0 left`; `headless-browser.mjs list` shows no leases; a process listing (CIM query) before my run showed 0 `electron.exe` and 0 `QuickLauncher.exe`, and 0 processes whose command line names my scratch folder afterwards. One thing to know: right after my run a different run of the gate (started at 13:14:34, default work folder, not mine) showed 36 Electron processes; they ended by themselves within about 80 s and the count returned to 0. I started and ended nothing of anyone else's.
