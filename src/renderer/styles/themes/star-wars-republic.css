@@ -85,8 +85,7 @@
 #app-version { color: var(--accent-text); }
 .btn-remove:hover { background: #8E1C1A; }
 .hotkey-input::placeholder, .theme-search::placeholder { color: var(--text-dim); }
-/* base hover rules that assume a dark ground (white text on a pale fill) */
-button:hover { color: var(--text); }
+/* hover label colours for controls on pale fills; plain buttons take --btn-hover-text (base default #fff) */
 .btn-remove:hover { color: #fff; }
 .update-btn:hover { color: var(--update-color); }
 #filter-chip-clear:hover { color: var(--accent-text); }

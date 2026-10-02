@@ -86,6 +86,7 @@
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(0, 240, 255, 0.09);
   --btn-active-bg:  rgba(0, 240, 255, 0.18);
+  --btn-hover-text: #fff;   /* label colour on a hovered or pressed button: sits on --btn-hover-bg and --btn-active-bg */
 
   /* ── Drop hint ── */
   --drop-hint-border: rgba(0, 240, 255, 0.18);
@@ -355,7 +356,7 @@ button:hover {
   background: var(--btn-hover-bg);
   border-color: var(--accent-c);
   box-shadow: var(--glow-c);
-  color: #fff;
+  color: var(--btn-hover-text);
 }
 button:active { background: var(--btn-active-bg); }
 
@@ -494,7 +495,7 @@ button:active { background: var(--btn-active-bg); }
   border-color: var(--remove-btn-border);
   color: #fff; z-index: 10;
 }
-.btn-remove:hover { background: var(--accent-m); box-shadow: var(--glow-m); }
+.btn-remove:hover { background: var(--accent-m); box-shadow: var(--glow-m); color: #fff; }
 
 /* ── Drop hint ───────────────────────────────────────────────────────────────── */
 #drop-hint {
