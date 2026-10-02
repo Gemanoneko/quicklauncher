@@ -66,6 +66,9 @@
   /* Buttons */
   --btn-hover-bg:         rgba(255, 102, 0, 0.1);
   --btn-active-bg:        rgba(255, 102, 0, 0.17);
+  --btn-hover-text: #3A4050;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 0.41;
 
   /* Drop hint */
   --drop-hint-border:     rgba(192, 204, 216, 0.2);
@@ -304,3 +307,6 @@
   from { background-position: 0 0, 15px 0; }
   to   { background-position: 50px -360px, -30px -520px; }
 }
+/* hover labels on a pale ground: these two base rules hard-code white (their fills are not --btn-hover-bg) */
+.update-btn:hover { color: var(--btn-hover-text); }
+#filter-chip-clear:hover { color: var(--btn-hover-text); }

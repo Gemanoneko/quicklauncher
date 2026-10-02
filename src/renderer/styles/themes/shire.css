@@ -46,6 +46,7 @@
   --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
   --btn-hover-bg: #2F2513;
   --btn-active-bg: #2F2513;
+  --hover-label-floor: 0.73;
   --drop-hint-border: #6B4A2B;
   --drop-icon-color: #A89A78;
   --hint-sub-color: #BDB292;

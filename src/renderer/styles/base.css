@@ -87,6 +87,9 @@
   --btn-hover-bg:   rgba(0, 240, 255, 0.09);
   --btn-active-bg:  rgba(0, 240, 255, 0.18);
   --btn-hover-text: #fff;   /* label colour on a hovered or pressed button: sits on --btn-hover-bg and --btn-active-bg */
+  --hover-label-floor: 0.64;     /* hover/selected label lightness floor (oklch L); light-ground themes set 0 */
+  --hover-label-ceiling: 1;      /* ceiling; a light-ground theme whose labels are too light for its ground sets ~0.3 to 0.45 */
+  --remove-hover-ceiling: 0.62;  /* the tile remove hover fill is held at or below this lightness so the white X reads */
 
   /* ── Drop hint ── */
   --drop-hint-border: rgba(0, 240, 255, 0.18);
@@ -495,7 +498,7 @@ button:active { background: var(--btn-active-bg); }
   border-color: var(--remove-btn-border);
   color: #fff; z-index: 10;
 }
-.btn-remove:hover { background: var(--accent-m); box-shadow: var(--glow-m); color: #fff; }
+.btn-remove:hover { background: oklch(from var(--accent-m) min(l, var(--remove-hover-ceiling)) calc(c * min(1, var(--remove-hover-ceiling) / max(l, 0.0001))) h); box-shadow: var(--glow-m); color: #fff; }
 
 /* ── Drop hint ───────────────────────────────────────────────────────────────── */
 #drop-hint {
@@ -840,6 +843,31 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 .theme-picker-empty {
   padding: 12px 10px; text-align: center;
   font-family: var(--font); font-size: 12px; letter-spacing: 1px; color: var(--text-dim);
+}
+
+/* ── Hover legibility ────────────────────────────────────────────────────────── */
+/* A label painted in a theme colour on a hover, pressed or selected highlight is
+   held inside a lightness band (oklch L, 0 to 1). Hue is kept; chroma is scaled so
+   the result stays in gamut. A colour already inside the band does not move.
+   Dark-ground themes use the defaults (floor 0.64, no ceiling). A pale-ground theme
+   sets --hover-label-floor: 0 and, if its labels are too light for the ground,
+   --hover-label-ceiling: ~0.42, and the same rule pulls them down instead. */
+#btn-done-edit      { --hover-src: var(--btn-done-color); }
+#btn-close-settings { --hover-src: var(--btn-close-color); }
+.tile-label.renameable,
+.theme-picker-item  { --hover-src: var(--accent-text); }
+#btn-done-edit:hover,
+#btn-close-settings:hover,
+.tile-label.renameable:hover,
+.theme-picker-item:hover,
+.theme-picker-item.active,
+.theme-picker-item.selected {
+  color: oklch(from var(--hover-src)
+    clamp(var(--hover-label-floor), l, var(--hover-label-ceiling))
+    calc(c * min(1,
+      (1 - clamp(var(--hover-label-floor), l, var(--hover-label-ceiling))) / max(1 - l, 0.0001),
+      clamp(var(--hover-label-floor), l, var(--hover-label-ceiling)) / max(l, 0.0001)))
+    h);
 }
 
 /* ── Tile hover keyframes ────────────────────────────────────────────────────── */
