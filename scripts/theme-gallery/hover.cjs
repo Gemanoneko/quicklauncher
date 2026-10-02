@@ -18,13 +18,32 @@
 //     text node's range rect padded 3 px sideways and 2 px up and down, clipped to the element's
 //     border box; non-label = channel-difference sum from the label colour >= 60; the most
 //     frequent colour always counts; no non-label pixel -> all pixels).
+//   - Gradient fills (added 2026-10-02, Futaba's hover56 QA finding F2): (a) and (b) judge a
+//     smooth gradient only by its most frequent colour, which can be its best end. So the fill
+//     also gets (c) its worst point behind the label: the text box is captured a second time with
+//     the label's ink switched off (text fill, stroke, shadow and decoration transparent, through
+//     a user-origin style on the label element; its `color`, so currentColor borders, is kept);
+//     at every pixel the label's ink paints (where the two captures differ) the fill is the median
+//     by luminance of its 7x7 neighbourhood in that ink-free capture, and the lowest-contrast one
+//     counts as a fill candidate when it is worse than (a) and (b). Anything covering under half
+//     of that window (a line, a dashed underline, fine grain, a neighbour's letter) does not count;
+//     a gradient keeps its value there.
+//     The ink-free capture is taken when (c) can matter: the element, the label or their
+//     ::before/::after paint a background-image, mask-image or border-image; the ring of the text
+//     box outside the range rect is clipped away on a side; the flat reading is within 10 % of the
+//     floor; or the ring's own worst point (the same median, over ring pixels of the normal
+//     capture, where there is no glyph) reads more than 2 % worse than the flat reading. A linear
+//     or conic gradient shows its worst colour in that ring, because the colours inside a
+//     rectangle are the colours on its edge. --ink-free-all takes it for every reading, to audit
+//     the trigger. Not seen: a radial gradient on an ancestor whose worst point lies wholly
+//     inside the range rect (the ring stays one colour).
 //   - Ratio: the WCAG function of scripts/check-theme-contrast.js (shared, not copied).
-//   - Two positive controls run first, on fixture copies of a theme's text set through the
-//     DevTools protocol (nothing is written to disk); run.mjs voids the run if either passes.
+//   - Three positive controls run first, on fixture copies of a theme's text set through the
+//     DevTools protocol (nothing is written to disk); run.mjs voids the run if any passes.
 const fs = require('fs');
 const path = require('path');
 const { BrowserWindow } = require('electron');
-const { contrast, composite, AA_NORMAL_TEXT, AA_UI_ELEMENT } = require('../check-theme-contrast.js');
+const { contrast, composite, luminance, AA_NORMAL_TEXT, AA_UI_ELEMENT } = require('../check-theme-contrast.js');
 
 const PROF = { frames: 0, grab: 0, n: 0 }; // capture timing (ms waiting for frames, ms in capturePage, grabs), in the report
 const FLOOR = { label: AA_NORMAL_TEXT, glyph: AA_UI_ELEMENT };
@@ -140,14 +159,35 @@ const INSTALL_READER = `(() => {
     const r = box.getBoundingClientRect();
     const rg = document.createRange(); rg.selectNodeContents(txt); const rr = rg.getBoundingClientRect();
     const cs = getComputedStyle(txt), cb = getComputedStyle(box);
+    // Image layers that can make the fill vary under the text (pseudo-elements only when rendered).
+    const img = (v) => !!v && v !== 'none';
+    const layers = (e) => [null, '::before', '::after'].filter((p) => {
+      const s = getComputedStyle(e, p);
+      if (p && (s.content === 'none' || s.content === 'normal' || s.display === 'none')) return false;
+      return img(s.backgroundImage) || img(s.webkitMaskImage) || img(s.maskImage) || img(s.borderImageSource);
+    }).map((p) => (e === box ? 'box' : 'label') + (p || ''));
     return { rect: [r.left, r.top, r.width, r.height], xrect: [rr.left, rr.top, rr.width, rr.height],
       color: cs.color, rgba: cv(cs.color), bg: cb.backgroundColor, bgRGBA: cv(cb.backgroundColor),
-      hasImg: cb.backgroundImage !== 'none', text: (txt.textContent || '').trim().slice(0, 24) };
+      hasImg: cb.backgroundImage !== 'none', paint: [...layers(box), ...(txt === box ? [] : layers(txt))],
+      text: (txt.textContent || '').trim().slice(0, 24) };
+  };
+  // The label's ink on or off (INK_OFF below); returns whether the attribute is now as asked.
+  window.__qlhInk = (sel, sub, off) => {
+    const box = document.querySelector(sel);
+    const txt = box && (sub ? box.querySelector(sub) : box);
+    if (!txt) return false;
+    if (off) txt.setAttribute('data-qlh-ink', 'off'); else txt.removeAttribute('data-qlh-ink');
+    return (txt.getAttribute('data-qlh-ink') === 'off') === !!off;
   };
   return true;
 })()`;
 
 const NO_MOTION = '*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; } #app-entrance { display: none !important; }';
+// The label's ink, switched off for the ink-free capture: text fill, stroke, shadow and decoration
+// of the label element, its descendants and their ::before/::after (user origin, so it outranks a
+// theme's !important). `color` is left alone, so currentColor borders and backgrounds stay.
+const INK_SEL = ['', ' *'].flatMap((d) => ['', '::before', '::after', '::marker'].map((p) => `[data-qlh-ink="off"]${d}${p}`)).join(', ');
+const INK_OFF = `${INK_SEL} { -webkit-text-fill-color: transparent !important; -webkit-text-stroke-color: transparent !important; text-shadow: none !important; text-decoration-color: transparent !important; text-emphasis-color: transparent !important; }`;
 const hex = (rgb) => '#' + rgb.slice(0, 3).map((v) => v.toString(16).padStart(2, '0')).join('').toUpperCase();
 
 /** The label's text box: its range rect padded 3 px sideways and 2 px up and down, clipped to the element's border box (whole CSS px at 1x). */
@@ -159,17 +199,130 @@ function textBox(m, t, vw, vh) {
   const cx = Math.floor(x0), cy = Math.floor(y0);
   const cw = Math.max(2, Math.ceil(x1 - cx)), ch = Math.max(2, Math.ceil(y1 - cy));
   if (cx < 0 || cy < 0 || cx + cw > vw || cy + ch > vh) return { error: `text box ${cx},${cy} ${cw}x${ch} is outside the ${vw}x${vh} view` };
-  return { box: [cx, cy, cw, ch] };
+  // The text's own range rect inside the text box (box pixels, end exclusive): where the glyphs are.
+  const ix0 = Math.max(0, Math.floor(xl - cx)), iy0 = Math.max(0, Math.floor(xt - cy));
+  const ix1 = Math.min(cw, Math.ceil(xl + xw - cx)), iy1 = Math.min(ch, Math.ceil(xt + xh - cy));
+  return { box: [cx, cy, cw, ch], inner: [ix0, iy0, Math.max(ix0 + 1, ix1), Math.max(iy0 + 1, iy1)] };
 }
 
-/** Fill candidates and the worst reading for one label, from the BGRA capture of its text box. */
+/** sRGB of pixel i of a BGRA capture (the window is opaque black; composited anyway, as everywhere here). */
+const px = (bmp, i) => { const a = bmp[i + 3] / 255; return [Math.round(bmp[i + 2] * a), Math.round(bmp[i + 1] * a), Math.round(bmp[i] * a)]; };
+
+// The ink-free capture is skipped when the ring shows nothing more than 2 % worse than (a)/(b) and the
+// reading is at least 10 % above its floor: a skipped reading can then be off by under 2 %, never by enough
+// to change its verdict (on the 2026-10-02 roster, measured against --ink-free-all: worst skip 3.0 %).
+const RING_TOL = 0.02, NEAR_FLOOR = 1.10;
+
+/**
+ * Why the fill can vary under the text, or null when the ink-on capture shows it cannot matter:
+ * 'paint' an image layer on the element or label, 'edge' the ring outside the range rect is missing
+ * on a side (clipped), 'near' the flat reading is within 10 % of the floor, 'ring' the ring's worst
+ * point (the same 7x7 median, over ring pixels only) reads more than 2 % worse than the flat reading.
+ */
+function inkFreeReason(img, m, inner, flatRatio, floor, all) {
+  if (all) return 'all';
+  if (m.paint && m.paint.length) return 'paint';
+  const [x0, y0, x1, y1] = inner;
+  if (x0 < 1 || y0 < 1 || img.w - x1 < 1 || img.h - y1 < 1) return 'edge';
+  if (flatRatio < floor * NEAR_FLOOR) return 'near';
+  const rw = ringWorst(img, labelOf(m), inner);
+  return rw && rw.ratio < flatRatio * (1 - RING_TOL) ? 'ring' : null;
+}
+
+const MED_R = 3; // median window radius: 7x7 px at 1x, about one glyph cell
+
+/** Colour keys (0xRRGGBB) and a luminance-ordering key per pixel of a BGRA capture. */
+function keyed(img) {
+  const n = img.w * img.h, col = new Int32Array(n), ord = new Float64Array(n), lum = new Map();
+  for (let p = 0; p < n; p++) {
+    const [r, g, b] = px(img.bmp, p * 4);
+    const k = (r << 16) | (g << 8) | b;
+    let v = lum.get(k);
+    if (v === undefined) { v = luminance({ r, g, b }); lum.set(k, v); }
+    col[p] = k; ord[p] = Math.round(v * 2 ** 28) * 2 ** 24 + k; // luminance first, colour key breaks ties; exact below 2^53
+  }
+  return { col, ord };
+}
+
+/** Median by luminance of the (2R+1)^2 window around (x, y), clipped to the image and to `keep` (when given). Returns a colour key, or -1. */
+function windowMedian(K, w, h, x, y, keep, buf) {
+  let n = 0;
+  for (let v = Math.max(0, y - MED_R); v <= Math.min(h - 1, y + MED_R); v++) {
+    for (let u = Math.max(0, x - MED_R); u <= Math.min(w - 1, x + MED_R); u++) {
+      const p = v * w + u;
+      if (!keep || keep(u, v)) buf[n++] = p;
+    }
+  }
+  if (!n) return -1;
+  // Quickselect the lower median by ord (deterministic: ord is unique per colour, ties are same colour).
+  const k = (n - 1) >> 1;
+  let lo = 0, hi = n - 1;
+  while (lo < hi) {
+    const pv = K.ord[buf[(lo + hi) >> 1]];
+    let i = lo, j = hi;
+    while (i <= j) {
+      while (K.ord[buf[i]] < pv) i++;
+      while (K.ord[buf[j]] > pv) j--;
+      if (i <= j) { const t = buf[i]; buf[i] = buf[j]; buf[j] = t; i++; j--; }
+    }
+    if (k <= j) hi = j; else if (k >= i) lo = i; else break;
+  }
+  return K.col[buf[k]];
+}
+
+/**
+ * The worst point of the ink-free fill behind the label: at every pixel the label's ink paints
+ * (where the ink-on and ink-free captures differ; the range rect if they never do), the fill is the
+ * median by luminance of its 7x7 neighbourhood in the ink-free capture (clipped to the text box).
+ * Anything covering less than half of that window (a line, a dashed underline, a speck, fine grain,
+ * a neighbour's letter) does not count; a gradient keeps its value at that point. Returns the
+ * lowest-contrast one against the label, and how many ink pixels were judged.
+ */
+function worstPoint(free, on, L, inner) {
+  const { w, h } = free;
+  const pts = [];
+  for (let p = 0, i = 0; p < w * h; p++, i += 4) {
+    if (free.bmp[i] !== on.bmp[i] || free.bmp[i + 1] !== on.bmp[i + 1] || free.bmp[i + 2] !== on.bmp[i + 2] || free.bmp[i + 3] !== on.bmp[i + 3]) pts.push(p);
+  }
+  const inkPx = pts.length;
+  if (!inkPx) { const [x0, y0, x1, y1] = inner; for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) pts.push(y * w + x); }
+  const K = keyed(free), buf = new Int32Array((2 * MED_R + 1) ** 2), ratios = new Map();
+  let worst = null;
+  for (const p of pts) {
+    const x = p % w, y = (p - x) / w;
+    const k = windowMedian(K, w, h, x, y, null, buf);
+    let ratio = ratios.get(k);
+    if (ratio === undefined) { const bg = { r: k >> 16, g: (k >> 8) & 255, b: k & 255, a: 1 }; ratio = contrast(composite(L, bg), bg); ratios.set(k, ratio); }
+    if (!worst || ratio < worst.ratio) worst = { rgb: [k >> 16, (k >> 8) & 255, k & 255], ratio, at: [x, y] };
+  }
+  return { ...worst, inkPx };
+}
+
+/** The same median, taken on the ink-on capture over the ring only (no glyphs there), at every ring pixel: the worst. */
+function ringWorst(img, L, inner) {
+  const { w, h } = img;
+  const [x0, y0, x1, y1] = inner;
+  const ring = (u, v) => u < x0 || u >= x1 || v < y0 || v >= y1;
+  const K = keyed(img), buf = new Int32Array((2 * MED_R + 1) ** 2), ratios = new Map();
+  let worst = null;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    if (!ring(x, y)) continue;
+    const k = windowMedian(K, w, h, x, y, ring, buf);
+    if (k < 0) continue;
+    let ratio = ratios.get(k);
+    if (ratio === undefined) { const bg = { r: k >> 16, g: (k >> 8) & 255, b: k & 255, a: 1 }; ratio = contrast(composite(L, bg), bg); ratios.set(k, ratio); }
+    if (!worst || ratio < worst.ratio) worst = { rgb: [k >> 16, (k >> 8) & 255, k & 255], ratio };
+  }
+  return worst;
+}
+
+/** Fill candidates (a) and (b) and the worst reading for one label, from the BGRA capture of its text box. */
 function readFill(img, m, t) {
-  const L = { r: m.rgba[0], g: m.rgba[1], b: m.rgba[2], a: m.rgba[3] };
+  const L = labelOf(m);
   const hist = (skipNear) => {
     const map = new Map();
     for (let i = 0; i < img.w * img.h * 4; i += 4) {
-      const a = img.bmp[i + 3] / 255; // the window is opaque black; composite anyway
-      const r = Math.round(img.bmp[i + 2] * a), g = Math.round(img.bmp[i + 1] * a), b = Math.round(img.bmp[i] * a);
+      const [r, g, b] = px(img.bmp, i);
       if (skipNear && Math.abs(r - L.r) + Math.abs(g - L.g) + Math.abs(b - L.b) < 60) continue;
       const k = (r << 16) | (g << 8) | b;
       map.set(k, (map.get(k) || 0) + 1);
@@ -188,14 +341,15 @@ function readFill(img, m, t) {
     const ratio = contrast(composite(L, bg), bg);
     if (!worst || ratio < worst.ratio) worst = { ...c, ratio };
   }
-  return { ratio: worst.ratio, fill: hex(worst.rgb), src: worst.src, candidates: cands.length, allNear };
+  return { ratio: worst.ratio, rgb: worst.rgb, fill: hex(worst.rgb), src: worst.src, candidates: cands.length, allNear };
 }
+const labelOf = (m) => ({ r: m.rgba[0], g: m.rgba[1], b: m.rgba[2], a: m.rgba[3] });
 
 async function runHover(o) {
   const { cfg, log, js, waitFor, sleep, FRAMES, mock, themeOfWc, extra, results, INDEX, RENDERER, THEMES, checkpoint, emulate, viewportProblem, isFinished } = o;
   const hc = cfg.hover || {};
   const neuter = new Set(hc.neuter || []);
-  extra.hover = { perTheme: PER_THEME, pairs: READINGS.map((r) => ({ pair: r.pair, kind: r.kind, floor: r.floor })), pcs: [], window: [cfg.width, cfg.height], scale: cfg.scale, fps: hc.fps };
+  extra.hover = { perTheme: PER_THEME, pairs: READINGS.map((r) => ({ pair: r.pair, kind: r.kind, floor: r.floor })), pcs: [], window: [cfg.width, cfg.height], scale: cfg.scale, fps: hc.fps, inkFreeAll: !!hc.inkFreeAll };
 
   // ── positive controls (fixture theme text, set over the real theme's stylesheet) ─────────
   const pcJobs = [];
@@ -212,6 +366,15 @@ async function runHover(o) {
       what: neuter.has('pc2') ? 'real 2001 theme with an explicit --hover-label-floor: 0 (neutered)'
         : `real 2001 theme with its --hover-label-floor: 0 line stripped${stripped === src ? ' (2001.css has no such line)' : ''}`,
       fixture: neuter.has('pc2') ? `${src}\n:root { --hover-label-floor: 0; }\n` : stripped });
+    // A smooth gradient under a white label whose most frequent colour is its black start, so the flat
+    // candidates read it as white on black (Futaba's R1 blind spot): it ramps to white under the last
+    // letters. Its image-layer trigger is ignored, so the control fires only through the ring trigger,
+    // the ink-free capture and the worst point, and it must fail on the gradient candidate.
+    const end = neuter.has('pc3') ? '#333333' : '#FFFFFF';
+    const grad = `linear-gradient(90deg, #000000 0%, #000000 45%, ${end} 80%, ${end} 100%)`;
+    pcJobs.push({ kind: 'pc', id: 'PC3', theme: 'cyberpunk', pair: 'edit-add-file/hover', under: 2, needSrc: 'grad', noPaintTrigger: true, neutered: neuter.has('pc3'),
+      what: `fixture hover fill ${grad} under a white label, ${hc.inkFreeAll ? 'ink-free capture forced (--ink-free-all: the trigger is not exercised)' : 'found by the ring trigger only'}`,
+      fixture: `/* check:hover PC3 fixture */\n#btn-add-edit:hover { background: ${grad} !important; color: #FFFFFF !important; }\n` });
   }
 
   function makeWindow() {
@@ -252,6 +415,26 @@ async function runHover(o) {
     const sz = img.getSize();
     return { w: sz.width, h: sz.height, bmp: img.toBitmap() };
   }
+  // A capture is used once two consecutive grabs agree, each taken after two animation frames
+  // (so the frame holding the forced state has been produced; grabs without that wait read stale
+  // frames that still agreed with each other).
+  async function settle(win, box, what) {
+    const [, , cw, ch] = box;
+    let prev = null, img = null, grabs = 0, stable = false;
+    for (let k = 0; k < 6 && !stable; k++) {
+      const q0 = Date.now();
+      await js(win, FRAMES);
+      const q1 = Date.now();
+      img = await grab(win, box);
+      PROF.frames += q1 - q0; PROF.grab += Date.now() - q1; PROF.n++;
+      grabs++;
+      if (img.w !== cw || img.h !== ch) { prev = null; continue; }
+      if (prev && prev.bmp.equals(img.bmp)) stable = true;
+      prev = img;
+    }
+    if (!stable) throw new Error(`${what} never settled in ${grabs} grabs`);
+    return { img, grabs };
+  }
 
   /** One page: load, reach each scene, take every reading in `readings`. */
   async function measurePage(win, job, readings) {
@@ -262,6 +445,7 @@ async function runHover(o) {
     await win.loadFile(INDEX);
     emulate(win);
     await wc.insertCSS(NO_MOTION, { cssOrigin: 'user' });
+    await wc.insertCSS(INK_OFF, { cssOrigin: 'user' });
     await waitFor(win, `(() => { const l = document.getElementById('theme-stylesheet'); if (!l || !l.sheet || !l.sheet.href || !l.sheet.href.endsWith('/styles/themes/${job.theme}.css')) return false; try { if (!l.sheet.cssRules.length) return false; } catch { return false; } return document.querySelectorAll('#app-grid .app-tile').length === ${mock.TILE_COUNT} && document.getElementById('header-version').textContent.length > 0; })()`, 10000, `theme ${job.theme} applied`);
     await js(win, `(async () => { await document.fonts.ready; await Promise.all([...document.images].map((i) => i.decode().catch(() => null))); return true; })()`);
     await js(win, `(() => { try { clearInterval(bannerInterval); clearTimeout(bannerFadeTimer); bannerInterval = null; document.getElementById('theme-banner-text').style.opacity = '1'; return true; } catch (e) { return String(e); } })()`);
@@ -323,25 +507,36 @@ async function runHover(o) {
             if (m.error) throw new Error(m.error);
             const tb = textBox(m, r, cfg.width, cfg.height);
             if (tb.error) throw new Error(tb.error);
-            const [, , cw, ch] = tb.box;
-            // A capture is used once two consecutive grabs agree, each taken after two animation frames
-            // (so the frame holding the forced state has been produced; grabs without that wait read stale
-            // frames that still agreed with each other).
-            let prev = null, img = null, grabs = 0, stable = false;
-            for (let k = 0; k < 6 && !stable; k++) {
-              const q0 = Date.now();
-              await js(win, FRAMES);
-              const q1 = Date.now();
-              img = await grab(win, tb.box);
-              PROF.frames += q1 - q0; PROF.grab += Date.now() - q1; PROF.n++;
-              grabs++;
-              if (img.w !== cw || img.h !== ch) { prev = null; continue; }
-              if (prev && prev.bmp.equals(img.bmp)) stable = true;
-              prev = img;
+            const on = await settle(win, tb.box, 'capture');
+            const flat = readFill(on.img, m, r);
+            let grabs = on.grabs, free = null;
+            const ink = inkFreeReason(on.img, job.noPaintTrigger ? { ...m, paint: [] } : m, tb.inner, flat.ratio, r.floor, hc.inkFreeAll);
+            if (ink) {
+              // The same text box with the label's ink off (forced states stay; nothing else changes).
+              if (!(await js(win, `__qlhInk(${JSON.stringify(r.sel)}, ${JSON.stringify(r.sub || null)}, true)`))) throw new Error('could not switch the label ink off');
+              try {
+                // Identical captures with the ink on and off mean the frame was still the old one (settle
+                // again, once) or the ink-off style did not paint, which is only plausible when the label is
+                // invisible on its fill anyway (checked below).
+                for (let k = 0; k < 2 && (!free || (free.bmp.equals(on.img.bmp) && flat.ratio > 1.1)); k++) {
+                  const off = await settle(win, tb.box, 'ink-free capture');
+                  grabs += off.grabs;
+                  free = off.img;
+                }
+              } finally {
+                await js(win, `__qlhInk(${JSON.stringify(r.sel)}, ${JSON.stringify(r.sub || null)}, false)`);
+              }
+              PROF.inkFree = (PROF.inkFree || 0) + 1;
+              PROF[`ink_${ink}`] = (PROF[`ink_${ink}`] || 0) + 1;
             }
-            if (!stable) throw new Error(`capture never settled in ${grabs} grabs`);
-            const a = readFill(img, m, r);
-            Object.assign(row, { label: hex(m.rgba), alpha: m.rgba[3], color: m.color, fill: a.fill, src: a.src, ratio: a.ratio, ratio2: +a.ratio.toFixed(2), fail: a.ratio < r.floor, textBox: tb.box, text: m.text, grabs });
+            // (c) the gradient's worst point; it counts only when strictly worse, so a flat fill reads as before.
+            const grad = free ? worstPoint(free, on.img, labelOf(m), tb.inner) : null;
+            const a = grad && grad.ratio < flat.ratio ? { ...flat, ratio: grad.ratio, rgb: grad.rgb, fill: hex(grad.rgb), src: 'grad' } : { ...flat };
+            a.flatRatio = flat.ratio;
+            a.grad = grad ? { fill: hex(grad.rgb), ratio: +grad.ratio.toFixed(3), at: grad.at, inkPx: grad.inkPx } : null;
+            if (free && free.bmp.equals(on.img.bmp) && a.flatRatio > 1.1) throw new Error(`the ink-free capture equals the ink-on capture (label ${hex(m.rgba)} reads ${a.flatRatio.toFixed(2)}:1, so its ink is visible)`);
+            Object.assign(row, { label: hex(m.rgba), alpha: m.rgba[3], color: m.color, fill: a.fill, src: a.src, ratio: a.ratio, ratio2: +a.ratio.toFixed(2), fail: a.ratio < r.floor, textBox: tb.box, text: m.text, grabs,
+              ink: ink || null, ...(a.grad ? { grad: a.grad, flat2: +a.flatRatio.toFixed(2) } : {}) });
           } catch (e) {
             row.error = String(e.message || e).slice(0, 200);
           }
@@ -383,10 +578,12 @@ async function runHover(o) {
         if (job.kind === 'pc') {
           const r = rows[0];
           const pc = { id: job.id, theme: job.theme, pair: job.pair, what: job.what, under: job.under, neutered: job.neutered, problems,
-            label: r && r.label, fill: r && r.fill, ratio: r && r.ratio, ratio2: r && r.ratio2 };
+            label: r && r.label, fill: r && r.fill, ratio: r && r.ratio, ratio2: r && r.ratio2, src: r && r.src, ink: r && r.ink,
+            ...(job.needSrc ? { needSrc: job.needSrc, flat2: r && r.flat2 } : {}) };
+          if (job.needSrc && r && r.src !== job.needSrc && !r.error) problems.push(`read from the ${r.src || '?'} candidate, not ${job.needSrc}`);
           pc.failed = !problems.length && typeof pc.ratio === 'number' && pc.ratio < job.under;
           extra.hover.pcs.push(pc);
-          log(`${job.id} ${job.what}: ${job.pair} ${pc.label || '?'} on ${pc.fill || '?'} = ${pc.ratio2 ?? '?'}:1 -> ${pc.failed ? `fails (under ${job.under}), control fired` : 'DID NOT FAIL'}${problems.length ? ' [' + problems.join('; ') + ']' : ''}`);
+          log(`${job.id} ${job.what}: ${job.pair} ${pc.label || '?'} on ${pc.fill || '?'} = ${pc.ratio2 ?? '?'}:1${job.needSrc ? ` (${pc.src}; without it ${pc.flat2 ?? '?'}:1)` : ''} -> ${pc.failed ? `fails (under ${job.under}), control fired` : 'DID NOT FAIL'}${problems.length ? ' [' + problems.join('; ') + ']' : ''}`);
           continue;
         }
         results.push({ theme: job.theme, ok: problems.length === 0, problems, rows, ms: Date.now() - s0 });

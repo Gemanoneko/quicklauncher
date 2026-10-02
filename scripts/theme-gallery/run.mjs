@@ -34,7 +34,9 @@
 // Hover legibility gate (npm run check:hover; definition: Docs/QuickLaunch_HoverFix57_Spec_2026-10-02.md section 5)
 //   npm run check:hover [-- --only a,b] [--rebaseline] [--ref=<git ref>]
 //   40 readings per theme (hover and pressed on 17 controls, tile names, skin rows, installed-picker rows),
-//   measured in offscreen 520x760 windows at 1x (hover.cjs). Exit 0 pass, 1 a failing pair not in
+//   measured in offscreen 520x760 windows at 1x (hover.cjs). Where a gradient can matter (image layer, a ring
+//   around the text that reads over 2 % worse, a reading within 10 % of its floor) the text box is captured again
+//   with the label's ink off and the fill is also judged at its worst point. Exit 0 pass, 1 a failing pair not in
 //   scripts/themes-hover-baseline.json, 2 harness failure (pairs measured not themes x 40, a positive control
 //   that does not fail, a guard counter, a process left, a registry change, the 180 s hard limit).
 //   --only a,b            measure only these themes (baseline still applies to them)
@@ -42,7 +44,11 @@
 //   --processes=<n>       Electron processes the roster is split over (default 4)
 //   --concurrency=<n>     offscreen windows per process (default 6)
 //   --out=<dir>           where hover-readings.json goes (default <work>/hover; work default scratch/theme-gallery/.work-hover)
-//   --neuter-control=pc1,pc2  make a positive control pass on purpose, to see it void the run (exit 2)
+//   --neuter-control=pc1,pc2,pc3  make a positive control pass on purpose, to see it void the run (exit 2)
+//                         (PC1 flat hover fill, PC2 light theme without its opt-out, PC3 smooth gradient fill)
+//   --ink-free-all        take the ink-free capture for every reading, not only where it can matter (about
+//                         twice as slow; audits the trigger: verdicts must equal a normal run's, and a reading
+//                         the trigger skipped may read up to 2 % lower here)
 //
 // Isolation: QuickLaunch's main process is never loaded; no window is shown or focused; no
 // tray, hotkey, audio or network; login-item APIs are counting no-ops. This script READS the
@@ -87,7 +93,7 @@ const HOVER_LIMIT_SEC = 180;
 const cfgBase = hoverCheck ? {
   scale: 1, width: 520, height: 760, freezeMs: 0, concurrency: Math.round(num('concurrency', 6)),
   timeoutSec: HOVER_LIMIT_SEC - 5, gpu: false, selfTest: false,
-  hover: { fps: Math.round(num('fps', 120)), neuter: (opt('neuter-control', '') || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean) },
+  hover: { fps: Math.round(num('fps', 120)), neuter: (opt('neuter-control', '') || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean), inkFreeAll: flag('ink-free-all') },
 } : {
   scale: num('scale', 1.5), width: Math.round(num('width', 424)), height: Math.round(num('height', 300)),
   freezeMs: Math.round(num('freeze-ms', 2500)), concurrency: Math.round(num('concurrency', 3)),
@@ -107,8 +113,11 @@ if (hoverCheck) {
   if (flag('gpu')) refuse.push('--gpu is not available in --hover-check mode (software raster only)');
   if (rebaseline && only) refuse.push('--rebaseline needs the whole roster; drop --only');
   if (rebaseline && ref) refuse.push('--rebaseline reads the live tree; drop --ref');
-  for (const c of cfgBase.hover.neuter) if (!['pc1', 'pc2'].includes(c)) refuse.push(`--neuter-control: unknown control ${c} (pc1, pc2)`);
-} else if (rebaseline) refuse.push('--rebaseline belongs to --hover-check');
+  for (const c of cfgBase.hover.neuter) if (!['pc1', 'pc2', 'pc3'].includes(c)) refuse.push(`--neuter-control: unknown control ${c} (pc1, pc2, pc3)`);
+} else {
+  if (rebaseline) refuse.push('--rebaseline belongs to --hover-check');
+  if (flag('ink-free-all')) refuse.push('--ink-free-all belongs to --hover-check');
+}
 // The hover baseline is read before anything starts: a missing or malformed file voids the run.
 let hoverBaseline = null;
 if (hoverCheck) {
@@ -468,10 +477,10 @@ if (hoverCheck) {
   const measured = results.reduce((n, r) => n + (r.rows || []).filter((x) => !x.error && typeof x.ratio === 'number').length, 0);
   if (measured !== expected * 40) fails.push(`${measured} pair(s) measured, expected ${expected} theme(s) x 40 = ${expected * 40}`);
   const pcs = hx ? [...hx.pcs].sort((a, b) => a.id.localeCompare(b.id)) : [];
-  for (const id of ['PC1', 'PC2']) {
+  for (const id of ['PC1', 'PC2', 'PC3']) {
     const pc = pcs.find((p) => p.id === id);
     if (!pc) fails.push(`positive control ${id} did not run`);
-    else if (!pc.failed) fails.push(`positive control ${id} (${pc.what}) did not fail: ${pc.pair} read ${pc.ratio2 ?? '?'}:1, must be under ${pc.under}:1${pc.problems.length ? ` [${pc.problems.join('; ')}]` : ''}`);
+    else if (!pc.failed) fails.push(`positive control ${id} (${pc.what}) did not fail: ${pc.pair} read ${pc.ratio2 ?? '?'}:1${pc.needSrc ? ` from the ${pc.src || '?'} candidate` : ''}, must be under ${pc.under}:1${pc.needSrc ? ` from the ${pc.needSrc} candidate` : ''}${pc.problems.length ? ` [${pc.problems.join('; ')}]` : ''}`);
   }
 
   // Baseline: a failing pair not listed for its theme is an error; listed = grandfathered;
@@ -488,7 +497,7 @@ if (hoverCheck) {
     if (x && !x.error && !x.fail) fixedEntries.push({ theme: t, pair: p, ratio2: x.ratio2 });
   }
   const label = (x) => `${x.label}${x.alpha < 1 ? `@${x.alpha}` : ''}`;
-  const line = (x) => `      ${x.pair}: ${label(x)} on ${x.fill} = ${x.ratio2.toFixed(2)}:1 (needs ${x.floor}:1)`;
+  const line = (x) => `      ${x.pair}: ${label(x)} on ${x.fill}${x.src === 'grad' ? ` (gradient, worst point; its flat fill reads ${x.flat2}:1)` : ''} = ${x.ratio2.toFixed(2)}:1 (needs ${x.floor}:1)`;
   const group = (list) => { const m = new Map(); for (const x of list) m.set(x.theme, [...(m.get(x.theme) || []), x]); return m; };
   const relBase = path.relative(REPO, HOVER_BASELINE).split(path.sep).join('/');
   if (grand.length) {
@@ -519,17 +528,19 @@ if (hoverCheck) {
     }
   }
 
-  for (const pc of pcs) console.log(`  control     ${pc.id} ${pc.failed ? 'fired' : 'DID NOT FIRE'}: ${pc.what}: ${pc.pair} ${pc.label || '?'} on ${pc.fill || '?'} = ${pc.ratio2 ?? '?'}:1 (must be under ${pc.under}:1)`);
+  for (const pc of pcs) console.log(`  control     ${pc.id} ${pc.failed ? 'fired' : 'DID NOT FIRE'}: ${pc.what}: ${pc.pair} ${pc.label || '?'} on ${pc.fill || '?'} = ${pc.ratio2 ?? '?'}:1${pc.needSrc ? ` (${pc.src || '?'} candidate; without it ${pc.flat2 ?? '?'}:1)` : ''} (must be under ${pc.under}:1)`);
   console.log(`  guards      login-item ${counters.loginItem ?? '?'} | global-shortcut ${counters.globalShortcut ?? '?'} | show ${counters.windowShow ?? '?'} | focus ${(counters.windowFocus ?? 0) + (counters.appFocus ?? 0) + (counters.focusEvents ?? 0)} | dialogs ${counters.dialogs ?? '?'} | blocked requests ${counters.blockedRequests ?? '?'} | media ${counters.mediaStarted ?? '?'} | stubs intact ${res ? `${res.stubs.total - res.stubs.broken.length}/${res.stubs.total}` : '?'} | ipc outside allowlist ${unexpected.length}`);
   const dEv = (res && res.extra && res.extra.displayEvents) || [];
   if (dEv.length) console.log(`  displays    ${dEv.length} display change event(s) during the run (every page re-checks its window size, every capture must settle)`);
+  const prof = (hx && hx.profile) || {};
+  console.log(`  ink-free    ${prof.inkFree || 0} of ${measured + pcs.length} readings captured again with the label's ink off${hx && hx.inkFreeAll ? ' (--ink-free-all)' : ` (image layer ${prof.ink_paint || 0}, clipped ring ${prof.ink_edge || 0}, near the floor ${prof.ink_near || 0}, ring over 2 % worse ${prof.ink_ring || 0})`}; ${results.reduce((n, r) => n + (r.rows || []).filter((x) => x.src === 'grad').length, 0)} read from a gradient's worst point`);
   console.log(`  isolation   sockets ${sockets.length} (${samples.length} netstat sample(s)) | registry ${regChanges.length ? 'CHANGED' : 'unchanged'} | processes ${seenPids.size} started, ${left.length} left, exit ${result.code}${timedOut ? ' after timeout' : ''} | ${(wall / 1000).toFixed(1)} s`);
   const report = {
     tool: 'scripts/theme-gallery --hover-check', generated: new Date().toISOString(), quicklaunch: { version, ...source }, electron: electronVersion,
     definition: 'Docs/QuickLaunch_HoverFix57_Spec_2026-10-02.md section 5', window: [cfgBase.width, cfgBase.height], scale: cfgBase.scale,
     baseline: relBase, pcs, errors: errors.length, grandfathered: grand.length, fixedEntries, invalidEntries, rebaselined,
     themes: results.map((r) => ({ theme: r.theme, ok: r.ok, problems: r.problems, ms: r.ms, rows: r.rows })),
-    measureMs: hx ? hx.measureMs : null, profile: hx ? hx.profile : null, wallMs: wall,
+    measureMs: hx ? hx.measureMs : null, profile: hx ? hx.profile : null, inkFreeAll: hx ? !!hx.inkFreeAll : null, wallMs: wall,
     isolation: { counters, stubs: res ? res.stubs : null, ipcCalls: res ? res.ipc.calls : null, unexpectedIpc: unexpected.length, registry: { before: regSummary(regBefore), after: regSummary(regAfter), changes: regChanges }, samples, processes: { started: [...seenPids].map(([pid, type]) => ({ pid, type })), leftAfterExit: left, exit: result, timedOut } },
     verdict: fails.length ? 'VOID' : errors.length ? 'FAIL' : 'PASS', failures: fails,
   };
@@ -582,12 +593,12 @@ const manifest = compare ? null : {
   tool: 'scripts/theme-gallery', generated: new Date().toISOString(), selfTest,
   quicklaunch: { version, ...source }, electron: electronVersion,
   render: { window: [cfgBase.width, cfgBase.height], scale: cfgBase.scale, raster: cfgBase.gpu ? 'gpu' : 'software', colorProfile: 'srgb', transparentWindow: true,
-    frame: `looping animations paused at currentTime ${cfgBase.freezeMs} ms; one-shot animations (entrance, hover flourishes) and transitions finished; banner rotation stopped on quote #1`,
+    frame: `looping animations paused at currentTime ${cfgBase.freezeMs} ms; one-shot animations (entrance, hover flourishes) and transitions finished; banner rotation stopped on the app's first pick (quote #1, or the first quote after it that fits the banner)`,
     states: { grid: 'main grid, nothing hovered', settings: 'Settings overlay open (btn-settings click)', hover: 'synthetic mouse move over tile #2 (Calculator), settled' },
     tiles: '14 mock tiles (scripts/theme-gallery/mock-data.cjs), store-default settings',
     displays: res ? res.extra.displays : null, displayEvents: res ? res.extra.displayEvents : null },
   isolation,
-  wallMs: wall, themes: results.map((r) => ({ theme: r.theme, name: r.name, family: r.family, ok: r.ok, problems: r.problems, states: r.states, hoverTile: r.hoverTile, page: r.page, freeze: r.freeze, fonts: r.fonts, consoleErrors: r.consoleErrors, consoleWarnings: r.consoleWarnings, ms: r.ms })),
+  wallMs: wall, themes: results.map((r) => ({ theme: r.theme, name: r.name, family: r.family, ok: r.ok, problems: r.problems, states: r.states, hoverTile: r.hoverTile, page: r.page, banner: r.banner, freeze: r.freeze, fonts: r.fonts, consoleErrors: r.consoleErrors, consoleWarnings: r.consoleWarnings, ms: r.ms })),
   sheets: res ? res.extra.sheets : [], selfTestControls: selfTest ? [...(res ? res.extra.selfTest : []), ...selfControls] : undefined,
   verdict: fails.length ? 'FAIL' : 'PASS', failures: fails,
 };

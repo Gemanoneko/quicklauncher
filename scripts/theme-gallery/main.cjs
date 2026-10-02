@@ -217,7 +217,37 @@ async function freeze(win) {
   return js(win, FREEZE);
 }
 
-const PAGE_STATE = (theme) => `(() => ({
+// The banner shows one quote at a time. Since the banner fit check (app.js pickFittingQuote, theme spec
+// foundation A3, commit 0c6658a) the app's first pick is quote #1 only when it fits the one-line box;
+// otherwise it is the first quote after it that fits (quote #1 again when none does). That pick runs
+// asynchronously once the theme's fonts are in. This probe measures every quote the way the app does
+// (scrollWidth <= clientWidth on the banner itself, after the banner's fonts have loaded), in one task
+// that puts the shown text back, so nothing paints and the app's own pick is not disturbed. A snapshot
+// from before the fit check (--ref) has no pickFittingQuote and always shows quote #1.
+const BANNER_PROBE = (theme) => `(async () => {
+  const quotes = (typeof THEME_BANNERS !== 'undefined' && THEME_BANNERS['${theme}']) || null;
+  if (!quotes || !quotes.length) return { quotes: 0 };
+  const el = document.getElementById('theme-banner-text');
+  const cs = getComputedStyle(el);
+  try { await document.fonts.load(cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily, quotes.join(' ')); } catch { /* measured anyway */ }
+  await document.fonts.ready;
+  const shown = el.textContent;
+  const fit = quotes.map((q) => { el.textContent = q; return [el.scrollWidth, el.clientWidth]; });
+  el.textContent = shown;
+  const fitRule = typeof pickFittingQuote === 'function';
+  const first = fit.findIndex(([s, c]) => s <= c);
+  return { quotes: quotes.length, fit, fitRule, expected: fitRule && first > 0 ? first : 0 };
+})()`;
+const BANNER_SHOWN = (theme) => `(() => { const q = THEME_BANNERS['${theme}'] || []; return q.indexOf(document.getElementById('theme-banner-text').textContent); })()`;
+/** The banner verdict, from the probe and the index shown (both 0-based). A pure function, so --self-test can show it fail. */
+function bannerProblem(b) {
+  if (!b || !b.quotes || b.shown === b.expected) return null;
+  const rule = b.fitRule ? 'the first quote that fits the banner' : 'quote #1 (no fit rule in this source)';
+  const shown = b.shown < 0 ? 'text that is not one of its quotes' : `quote #${b.shown + 1}`;
+  return `banner shows ${shown} of ${b.quotes}, expected #${b.expected + 1}, ${rule} (quote widths ${b.fit.map(([s, c]) => `${s}/${c}`).join(', ')} px)`;
+}
+
+const PAGE_STATE = (theme, expected) => `(() => ({
   visibility: document.visibilityState,
   hasFocus: document.hasFocus(),
   qlPaused: document.body.classList.contains('ql-paused'),
@@ -227,7 +257,7 @@ const PAGE_STATE = (theme) => `(() => ({
   viewport: [innerWidth, innerHeight],
   hovered: document.querySelectorAll('.app-tile:hover, button:hover, input:hover').length,
   banner: document.getElementById('theme-banner-text').textContent,
-  bannerExpected: (typeof THEME_BANNERS !== 'undefined' && THEME_BANNERS['${theme}']) ? THEME_BANNERS['${theme}'][0] : null,
+  bannerExpected: (typeof THEME_BANNERS !== 'undefined' && THEME_BANNERS['${theme}']) ? THEME_BANNERS['${theme}'][${Number(expected) || 0}] : null,
   name: (typeof THEME_NAMES !== 'undefined' && THEME_NAMES['${theme}']) || null,
   bodyFont: getComputedStyle(document.body).fontFamily,
   tiles: document.querySelectorAll('#app-grid .app-tile').length,
@@ -431,18 +461,29 @@ async function renderTheme(win, theme, outDir) {
   await wc.insertCSS('*, *::before, *::after { animation-play-state: paused !important; }', { cssOrigin: 'user' });
   await waitFor(win, `(() => { const l = document.getElementById('theme-stylesheet'); if (!l || !l.sheet || !l.sheet.href || !l.sheet.href.endsWith('/styles/themes/${theme}.css')) return false; try { if (!l.sheet.cssRules.length) return false; } catch { return false; } return document.querySelectorAll('#app-grid .app-tile').length === ${mock.TILE_COUNT} && document.getElementById('header-version').textContent.length > 0; })()`, 10000, `theme ${theme} applied`);
   await js(win, `(async () => { await document.fonts.ready; await Promise.all([...document.images].map((i) => i.decode().catch(() => null))); return true; })()`);
-  // The banner rotates every 14 s; stop it so every capture shows quote #1.
+  // The banner rotates every 14 s; stop the rotation so every capture shows the app's first pick
+  // (BANNER_PROBE above), and wait until that pick has been made.
   await js(win, `(() => { try { clearInterval(bannerInterval); clearTimeout(bannerFadeTimer); bannerInterval = null; document.getElementById('theme-banner-text').style.opacity = '1'; return true; } catch (e) { return String(e); } })()`);
+  const banner = await js(win, BANNER_PROBE(theme));
+  if (banner.quotes) {
+    const b0 = Date.now();
+    banner.shown = await js(win, BANNER_SHOWN(theme));
+    while (banner.shown !== banner.expected && Date.now() - b0 < 6000) { await sleep(40); banner.shown = await js(win, BANNER_SHOWN(theme)); }
+    banner.waitedMs = Date.now() - b0;
+  }
   await js(win, FRAMES);
   await sleep(150);
 
   const r = { theme, family: familyOf(theme), ok: true, problems: [], states: {}, freeze: {} };
-  r.page = await js(win, PAGE_STATE(theme));
+  r.banner = banner.quotes ? { quotes: banner.quotes, shown: banner.shown + 1, expected: banner.expected + 1, fitRule: banner.fitRule, fit: banner.fit, waitedMs: banner.waitedMs } : null;
+  r.page = await js(win, PAGE_STATE(theme, banner.expected));
   r.name = r.page.name || theme.toUpperCase();
   if (r.page.hovered) r.problems.push(`${r.page.hovered} element(s) hovered before the grid capture`);
   if (r.page.visibility !== 'visible') r.problems.push(`page visibility ${r.page.visibility}`);
   if (viewportProblem(r.page)) r.problems.push(viewportProblem(r.page));
-  if (r.page.bannerExpected && r.page.banner !== r.page.bannerExpected) r.problems.push('banner is not quote #1');
+  const bp = bannerProblem(banner);
+  if (bp) r.problems.push(bp);
+  else if (r.page.bannerExpected && r.page.banner !== r.page.bannerExpected) r.problems.push('banner text changed after the pick was confirmed');
   r.meta = await js(win, CSSOM_META);
   Object.assign(r.meta, staticMeta(fs.readFileSync(path.join(RENDERER, 'styles', 'themes', theme + '.css'), 'utf8')));
   if (r.meta.keyframesRaw !== r.meta.keyframes.length) r.problems.push(`@keyframes: ${r.meta.keyframesRaw} in the file, ${r.meta.keyframes.length} kept by the CSS parser`);
@@ -778,6 +819,8 @@ app.whenReady().then(async () => {
       extra.selfTest.push({ control: 'network block sees a page fetch to an external host', expected: 'blocked >= 1 (gate FAILS)', observed: `blocked ${counters.blockedRequests - before.blockedRequests}`, pass: counters.blockedRequests > before.blockedRequests });
       const intact = stubsIntact();
       extra.selfTest.push({ control: 'counting stubs installed on every guarded API', expected: `${intact.total} intact`, observed: `${intact.total - intact.broken.length} intact`, pass: intact.broken.length === 0 });
+      const bp = bannerProblem({ quotes: 3, fit: [[480, 400], [300, 400], [200, 400]], fitRule: true, expected: 1, shown: 0 });
+      extra.selfTest.push({ control: 'banner check on a page showing quote #1 where #2 is the first that fits (in memory)', expected: 'problem (gate FAILS)', observed: bp || 'no problem', pass: !!bp });
     } catch (e) {
       extra.selfTest.push({ control: 'self-test ran', expected: 'no error', observed: e.message, pass: false });
     } finally { win.destroy(); }
