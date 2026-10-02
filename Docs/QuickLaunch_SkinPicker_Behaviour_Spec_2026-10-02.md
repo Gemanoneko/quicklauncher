@@ -22,6 +22,7 @@ Judy. Written 2026-10-02. Every UX call below is made. One item changes what the
 | 8 | How is a pick confirmed? | The skin changes at once (the whole window re-skins) and the list closes. No toast, no new string. Picking the skin that is already current closes the list and saves nothing. Section 4. |
 | 9 | **Flag for Sergei** | Row 6 changes which rows appear for short queries: 313 of 47,952 two- and three-character queries list fewer rows, 231 of them become NO MATCHES (they listed only junk), and in 16 the row Enter picks is now a real match instead of junk. Nothing else here changes what the tool does. **Decided: yes (Addendum, ruling 1).** |
 | 10 | New controls, strings, tooltips | **None.** No new control, so no tooltip is owed (ProcessRules § A new control is born with its tooltip). No new or changed user-facing string. |
+| 11 | F1 to F3 of Futaba's QA of this build (double-click leak, Enter-row cue, stale list) | Ruled in **Addendum C ("F1–F3 rulings 2026-10-02", below)**: a double-click on a row picks once and never reaches the control the list covered; the Enter row also shows a ↵ glyph; an open list follows an outside skin change. No flag for Sergei. |
 
 ## 1. What is wrong, measured on HEAD
 
@@ -139,6 +140,7 @@ Tint alone cannot carry "the highlighted row is what Enter picks" (finding i). T
 - The **Enter row** (the highlighted row, class `active`) gets a **2 px bar on its left edge**, drawn as an inset box-shadow so nothing moves, in **`var(--text)`**.
 - The **current-skin row** keeps only its tint and its text colour. **Mouse hover** keeps only its tint: no bar, so the bar always means "Enter picks this".
 - On first open the Enter row and the current skin are the same row and show both.
+- **Addendum C (F2):** the Enter row also carries a ↵ glyph at its right end, because hover paints the same tint as the Enter row and the bar alone is a position cue.
 
 Why `var(--text)` and not the accent colour: measured on rendered pixels, 101 skins, bar against the Enter row's own tint and against a plain row:
 
@@ -217,7 +219,7 @@ No string is added or changed. The field keeps `SEARCH...`, the empty list keeps
 
 - **No new element.** The list is the existing dismissible dropdown, the one exception class in ProcessRules § No UI element may cover another. At 424 x 300 it covers the settings rows above the field and the title, as today (Futaba's N1); that is by design. Only OPEN shows the list; PARKED and IDLE hide it, so after a pick nothing stays covered.
 - **Hit rects, measured:** field `x 20, y 198, 384 x 26`; list above it `x 20, y 10, 384 x 185` (bottom 195, 3 px gap); at 520 x 420 the list is `x 20, y 10, 480 x 273.5`, bottom 283.5, field top 286.5 (gap 3). Rows are 26 px high, full list width.
-- A click on the open list's rows is a pick wherever the list covers a control; that is what the list is for. Closing the list first (Esc, click outside the list, Tab) is how to reach a covered control.
+- A click on the open list's rows is a pick wherever the list covers a control; that is what the list is for. Closing the list first (Esc, click outside the list, Tab) is how to reach a covered control. **Addendum C (F1):** the close does not leak: the second press of a double-click on a row is swallowed and never reaches the control the list was covering.
 
 ## 9. Edits for Ender
 
@@ -417,3 +419,213 @@ Real window, away window only: real fullscreen with Settings open: the first Esc
 - **Section 0 row 9:** closed (ruling 1). **Section 5:** the Rename-input row and the Fullscreen, edit mode row are now built, per A.3. **Section 10 A12:** the second Esc closes Settings **only**; edit mode and fullscreen stay until further presses (B1). **Section 11 items 1 and 2:** done by Parts A and B; item 3 stays an offer.
 - **Section 9** gains no new files: `app.js` (the picker block, `applySettings`, `closeSettings`, the matcher, and A.3), `index.html` (`tabindex` and the ESC row), `base.css` (the bar rule).
 - **Evidence for this addendum.** Prototype `proto2` = the picker build plus A.3 and the Part B string, built and run offscreen the same way as section 12. 5 more headless launches (ladder on HEAD, ladder on `proto2`, two cheat-sheet fit measurements, the 35 probes on `proto2`), all through `launchHeadless` and all closed with `remaining: 0`; `headless-browser.mjs list` shows no leases. No code, no git, nothing in the repo edited except this file.
+
+## Addendum — F1–F3 rulings 2026-10-02
+
+Judy. This is Part C of the addendum set (Parts A and B are above). Source: Futaba's `QuickLaunch_QA_SkinPicker_2026-10-02.md` (F1 Major, F2 and F3 Minor, pattern alert 1). Measured on the committed renderer of `239fede` (branch `wip/theme-fidelity`), headless Edge 154, real mouse and key input. Where this addendum and sections 0 to 12 or the two addenda above disagree, **this addendum wins**; three pointers are added in place (section 0 row 11, section 3.8, section 8). Written, not committed: Sully commits this file before Ender is briefed (ProcessRules § Delegation-brief hardening, item 5). No code and no git by me; the scratch prototype `p2` (path in C.7) is a measuring tool, Ender owns the code.
+
+### C.0 Decisions in one table
+
+| # | Finding | Ruling | Changes what the tool does? |
+|---|---|---|---|
+| 1 | **F1** double-click on a row hits the control the list covered | The list stays a dismissible dropdown over live controls (the exception class; at 424 x 300 it cannot be moved off them, C.1.1). **The close stops leaking:** after a pointer pick, the rest of that click sequence (every mouse event with a higher click count than the pick press) is swallowed. A double-click on a row picks once and does nothing else. | No. It removes an action nobody asked for. One visible consequence is stated in C.1.5. |
+| 2 | **F2** Enter-row cue is subtle next to a hovered row | The Enter row also carries a **↵ glyph** at its right end, in the text colour. The glyph is on exactly one row whenever Enter would act. | No. Appearance only. |
+| 3 | **F3** open list goes stale after an outside skin change | The list **follows** the change: the current-skin marker moves; the Enter row follows only when it was resting on the current skin of an unfiltered list. No rebuild, text and scroll untouched. | No. It removes a wrong pick (Enter reverting the skin). |
+| 4 | New controls, strings, tooltips | **None.** The glyph is a drawn shape inside an existing row, not a control and not a string. | none owed |
+| 5 | Considered, **not** chosen | Hover moves the Enter row (Windows menu convention). It changes what Enter picks when the pointer rests on the list, so it is Sergei's call, not mine. C.2.5. | **flag, offer only** |
+
+Flag for Sergei: **none required.** Row 5 is an offer; nothing is built for it.
+
+### C.1 F1: the close must not leak clicks
+
+**C.1.1 What the list covers (measured, Cyberpunk, 424 x 300, Settings scrolled to SKIN).** The open list is `x 20, y 10, 384 x 185` and covers every control above the SKIN field:
+
+| Covered control | Hit rect `x y w x h` | Content width |
+|---|---|---|
+| ICON SIZE slider | 20 15 338 x 4 | n/a |
+| START WITH WINDOWS label | 20 33 384 x 14 | 176 px |
+| RANDOM THEME ON STARTUP label | 20 57 384 x 14 | 218 px |
+| REDUCE MOTION label | 20 81 384 x 14 | 137 px |
+| GLOBAL SHOW/HIDE HOTKEY label | 20 105 384 x 14 | 180 px |
+| Hotkey field | 20 125 354 x 25 | n/a |
+| Hotkey clear button | 380 126 24 x 24 | n/a |
+| SKIN label | 20 178 384 x 14 | 31 px |
+
+Two facts that matter. (1) There is no safe row: a press can land on a control or on the empty Settings body between them, depending on the list's scroll position and on the re-skin, which moves the rows. (2) The labels are full-width boxes around much shorter text: a press on empty space to the right of `REDUCE MOTION` toggles it. That answers Futaba's open question on the BUREAU case: it was both the layout (the re-skin moves rows) and a hit box wider than it looks. Moving or shrinking the list is not available at this window size (62% of the height is the list); the dropdown exception stands.
+
+**C.1.2 What HEAD does (measured).** 163 double-clicks, each on a fresh page: 3 skins (BLAIR WITCH, CONTROL: THE BUREAU, DEAD SPACE) x 7 list positions x 3 gaps between the presses (0, 100, 200 ms) = 63, plus every one of the other 100 skins as the picked skin at one position = 100. A press is a CDP mouse press carrying click count 1, then 2 (what Chromium reports for a real double-click).
+
+| Result on `239fede` | Trials |
+|---|---|
+| Second press (with its release, click and dblclick) reached the page | **163 of 163** |
+| A control reacted | **79**: icon-size slider moved 10; hotkey field started recording 12 (the next key pressed would be bound as the global hotkey); a checkbox flipped 49 (REDUCE MOTION 43, START WITH WINDOWS 3, RANDOM THEME 3); the SKIN label reopened the list 8 |
+| No control reacted, but focus left the SKIN field (the press landed on empty Settings body, the field lost its parked state) | **84** |
+| Clean | **0** |
+
+The first press's own release and click are harmless: in all 163 they landed on the Settings body or a setting row and nothing reacted. The leak is only the second press and what follows from it.
+
+**C.1.3 The rule (exact).** After a **primary-button press on a list row** has run `pick(key)` (section 3.4, unchanged), arm a guard:
+
+1. Remember `n` = the pick press's click count (`event.detail`, 1 in practice; use 1 if it is 0).
+2. For the next 1000 ms, listen on `window`, **capture phase**, for `mousedown`, `mouseup`, `click` and `dblclick`.
+3. On each event:
+   - `mousedown` with `detail <= n`: **disarm** and let it through (a new gesture).
+   - any of the four with `detail > n`: call `preventDefault()` and `stopImmediatePropagation()`.
+   - anything else passes (the pick's own release and click, which have `detail` equal to `n`).
+4. Disarm (remove the four listeners, clear the timer) on a new gesture, after 1000 ms, and before arming again.
+
+In words: a double-click on a row picks once; the second press, its release, its click and the double-click event never reach the page. `detail` is the browser's own click count, computed from the OS double-click time and distance, so "second click of a double-click" means exactly what Windows means by it, and the rule follows the user's mouse settings. Capture on `window` is first in line, ahead of every control's handler. `preventDefault()` on the press stops the focus move, the slider drag, the hotkey field's focus-to-record and the text selection; on the click it stops label activation.
+
+**C.1.4 Why this and not something else.**
+
+| Option | Verdict |
+|---|---|
+| Pick on release instead of press | No: the second press still lands on the covered control. |
+| Keep the list's hit area alive for the double-click time (invisible shield) | No: it steals a deliberate click on a covered control for half a second, and it is a hit area nobody can see (§ No UI element may cover another). The guard takes nothing from a fresh click (C.1.5). |
+| Delay hiding the list by the double-click time | No: the picked row sits there for half a second after the skin has changed; the tool feels slow on every pick to cover a rare gesture. |
+| Pointer capture on the row | No: capture ends at the release; the second press is a new sequence. |
+| Move the list away from live controls | Not possible at 424 x 300 (C.1.1). |
+
+**C.1.5 Edge cases.**
+
+| Case | Behaviour |
+|---|---|
+| Double-click on a row | One pick, one save (none if the row is the current skin). The second press is ignored. The SKIN field keeps focus (parked). Nothing is selected. |
+| Triple-click | The same; the third press is ignored too. |
+| Single click on a row | Picks; nothing is swallowed. |
+| A **fresh** click on another control right after a pick (150 ms later, 40+ px away) | Acts normally. |
+| A click on the slider 1.3 s after a pick | Acts normally (guard gone). |
+| A press at the **same pixel** within the OS double-click time | Ignored. This is the one visible cost: it is what Windows calls a double-click, and waiting out the double-click time makes the second click count. |
+| Enter pick, right or middle click on a row, Esc, a click outside, Tab, a press on the scrollbar or on NO MATCHES | Do not arm the guard (no pointer pick). |
+| Picking the current skin by click | Arms the guard (the list still closed under the pointer). |
+| Double-click on a control with no pick before it | Normal: two toggles. |
+| Pick, reopen with the keyboard, click another row 0.2 s later | The second pick lands (a fresh press, `detail` 1, disarms the guard). |
+| Touch and pen | Not covered; the tool is used with a mouse. |
+
+Known, accepted: the covered button may flash its pressed look while the swallowed press is held (`button:active` is the only pressed style in `base.css`); nothing happens.
+
+**C.1.6 Measured on the prototype `p2`.** The same 163 double-clicks: **163 of 163 clean** (no control reacted, focus stayed in the field, no text selected, exactly one save or none, no event with a count of 2 reached the page). Controls: the guard emptied (`p1off`) leaks on 63 of 63 geometry trials and a control reacts in 34 (slider 9, hotkey recording 11, checkbox 7, SKIN label 7), so the guard is what fixes it; a guard that swallows everything for a second (a deliberately wrong build) fails the "fresh click 150 ms later" and "second pick 0.2 s later" rows, so those rows can fail; all ten control checks pass on `p2` (a fresh click 150 ms later, a slider click 1.3 s later, a double-click with no pick, a double-click after an Enter pick, the expiry, a triple-click, a second pick 0.2 s later, a right-click, Enter twice).
+
+### C.2 F2: say which row Enter picks
+
+**C.2.1 What is wrong.** Hover and the Enter row are painted by the **same** rule (`.theme-picker-item:hover, .theme-picker-item.active { background: var(--picker-item-hover-bg) }`), so a resting pointer makes a second row look exactly like the Enter row. The 2 px bar (section 3.8) passes 3:1 (min 4.96), but a bar says *where*; nothing says *what it means*. This is a real case, not a taste: after a mouse pick the pointer rests where the picked row was, and a keyboard reopen puts the list under it.
+
+**C.2.2 Ruling.** The Enter row (class `active`) gets a **↵ glyph** at its right end, drawn in `var(--text)`. Rules:
+
+- It is on **exactly one row** whenever Enter would act, and on none otherwise (NO MATCHES, hidden list). It moves with the Enter row: arrows, typing, the F3 follow.
+- It is **never** drawn for hover or for the current-skin row alone. On first open (unfiltered) the Enter row is the current skin, so it shows there: Enter on it keeps the skin, which is true.
+- The 2 px bar stays. Tints are unchanged.
+- It is part of the row: no control, no tooltip, no string, nothing announced.
+
+**C.2.3 Geometry and CSS (exact, as measured).** Two values change in the existing `.theme-picker-item` rule and one rule is added after `.theme-picker-item.active { box-shadow: ... }`:
+
+```css
+.theme-picker-item { position: relative; padding: 6px 32px 6px 10px; /* was: padding: 6px 10px; the rest unchanged */ }
+
+.theme-picker-item.active::after {
+  content: ''; position: absolute; right: 10px; top: 50%; width: 12px; height: 12px; margin-top: -6px;
+  background: var(--text);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M10.5 2v4.5h-8M5 4 2.5 6.5 5 9' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M10.5 2v4.5h-8M5 4 2.5 6.5 5 9' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+```
+
+The right padding is on **all** rows so the Enter row never reflows when it moves. No theme overrides these rows' padding, position or `::after` (only `stranger-things.css` touches the row text colour), and the glyph takes the skin's own `--text`, so no theme edit is needed.
+
+**C.2.4 Measured.**
+
+| Check | Result |
+|---|---|
+| Glyph against its own row's tint, rendered pixels, the most contrasting pixel of the glyph box, 101 skins | 100% scale: min **4.92:1**, median 8.95, **0 under 3:1** (Silent Hill is the minimum). 150% scale: min **4.88:1**, 0 under 3:1. (WCAG 1.4.11 asks 3:1.) |
+| Ink pixels in the glyph box | min 32 at 100%, min 168 at 150% (it is a visible shape in every skin) |
+| Shipped CSP (`default-src 'self' data:; script-src 'self'`), page served over http with the CSP tag intact | The mask renders (50 ink pixels, `::after` 12 px, mask applied). |
+| Row wrapping from the extra right padding, nine skins with different fonts (worst case shown) | 424 px and wider: **0 rows wrap**, as before. 300 px: at most 2 names wrap (before: 0). 240 px: at most 20 of 101 (before: 14). 180 px, the window minimum: at most 62 (before: 40). The widest name is 227 px. This is the cost; the default window is unaffected. |
+| The 35 picker probes of section 12, on `239fede` and on `p2` | **113 of 113 on both.** |
+| Eyes (offscreen crops, hover two rows from the Enter row): Cyberpunk, 2001 (light), Stranger Things, Silent Hill | Three rows share one tint; only one carries the bar **and** the glyph, and that one reads at once in each. |
+
+**C.2.5 Considered, not chosen.** (a) A wider bar: a bigger version of the same kind of cue; judgment, not measured. (b) **Hover moves the Enter row** (the Windows menu and combobox rule: one cursor, mouse and keys share it). It would remove the two-cursor state altogether and I would take it in a new tool. Here it changes what Enter picks while the pointer rests on the list, it reverses section 3.1 ("hover does not move the highlight", Futaba's X5), and it needs "real pointer movement only" logic so a list that rebuilds under a resting pointer does not retarget Enter. That is behaviour, so it is Sergei's call. **Offer, not fired:** if the glyph does not settle it in the away-window look at 150%, ask Sergei.
+
+### C.3 F3: the open list follows an outside skin change
+
+**C.3.1 What is wrong (measured, HEAD).** Unfiltered list open, the store answers a different skin (`settings-changed-externally`, the real handler): the window re-skins, but the list still marks the old skin as current and highlights it. **Enter then switches back to the old skin** (1 save, skin reverted). Causes: `store-reloaded` and `settings-changed-externally` both end in `applySettings()`, and the open list never hears about it.
+
+**C.3.2 The rule (exact).** Whenever `applySettings()` has run and the picker is **OPEN**, bring the list's marks up to date. The step is idempotent (it compares marks with the current skin), so it needs no "did the skin change" bookkeeping, and it is a no-op for every other `applySettings()` call (tray toggles, own picks, which close the list first):
+
+1. Not OPEN: do nothing (the next open reads the current skin).
+2. `want` = the row whose key is the current skin (none when a filter hides it). `sel` = the row marked `selected`. If they are the same row: stop.
+3. Move the `selected` mark from `sel` to `want`.
+4. If the list is **unfiltered** (no search token) **and** `sel` was the Enter row: the Enter row moves to `want` and the list scrolls it to the centre (section 3.1). Otherwise the Enter row, the scroll position and the field text are left exactly as they are.
+5. Never rebuild the list, never touch focus or the field text.
+
+Why step 4 is shaped like that: an unfiltered list with the highlight still on the current skin is the "Enter keeps the skin" state (section 3.4 step 2); if only the marker moved, Enter would switch to the old skin, which is the bug. A highlight the user moved (arrows) or a filtered list is the user's, so it stays.
+
+**C.3.3 Measured (HEAD against `p2`, seven situations, nine checks, the real event path).**
+
+| # | Situation | HEAD | `p2` |
+|---|---|---|---|
+| S1 | Unfiltered, highlight untouched; outside change to MORDOR | marker stays on CYBERPUNK; Enter then **reverts the skin** (1 save) | marker and Enter row move to MORDOR, centred and fully visible; Enter keeps MORDOR, **0 saves** |
+| S2 | Unfiltered, arrowed two rows away | marker stale | marker moves; Enter row unchanged |
+| S3 | `sith` typed (MORDOR filtered out) | passes | passes: no marker, row and text untouched |
+| S4 | `star wars` typed, change to MANDALORIAN | marker missing | marker moves to MANDALORIAN; Enter row stays on row 1 |
+| S5 | Outside change that is not a skin change (icon size) | passes | passes: list identical, nothing moves |
+| S6 | Closed (parked), then reopen | passes | passes |
+| S7 | Own pick, reopen | passes | passes |
+
+HEAD 4 of 9; `p2` 9 of 9.
+
+### C.4 Edits for Ender
+
+Function names, not line numbers. Two files; `index.html` is untouched.
+
+**`src/renderer/app.js`**
+
+1. **Picker block, list `mousedown` handler:** after `pick(item.dataset.value)`, call `swallowRestOfClick(e)`.
+2. **Picker block, new `swallowRestOfClick(down)`:** C.1.3. The reference is the function of that name in `p2\src\renderer\app.js`; it is about fifteen lines.
+3. **Picker block, new `syncCurrentSkin()`:** C.3.2, and `applySettings()` calls it as its last step. The picker block comes later in the file than `applySettings()`, so a small hook declared above `applySettings()` is needed; the prototype used `var onSkinApplied` (any seam is fine, the behaviour is the contract).
+
+**`src/renderer/styles/base.css`**
+
+4. The two changed values in `.theme-picker-item` and the new `.theme-picker-item.active::after` rule, exactly as in C.2.3.
+
+Not touched: the themes, `index.html`, the main process, the preload, `package.json`, the `blur` and `Esc` code, the matcher.
+
+### C.5 Acceptance (Futaba)
+
+Real key and mouse input, 424 x 300, Settings open, current skin CYBERPUNK unless stated. "Clean" means: exactly one save (none when the row is the current skin), list closed, field empty and focused, Settings open, slider, checkboxes and hotkey field unchanged, nothing selected, no recording.
+
+| # | Do | Expect |
+|---|---|---|
+| C1 | Double-click a row (any gap, press count 1 then 2) at every list position, on at least BLAIR WITCH, CONTROL: THE BUREAU and DEAD SPACE; then each of the 100 other skins as the picked skin | Clean every time. No event with a click count of 2 reaches the page. (Reference: 163 of 163.) |
+| C2 | Triple-click a row | Clean. |
+| C3 | Pick by click; 150 ms later click a control 40+ px away (the REDUCE MOTION label) | That control reacts. |
+| C4 | Pick by click; click the slider 1.3 s later | The slider moves. |
+| C5 | No pick: double-click the REDUCE MOTION label | Two toggles, the checkbox ends where it began. |
+| C6 | Pick with Enter; double-click the slider | The slider moves. |
+| C7 | Right-click a row | No pick, list stays, no save; a later double-click elsewhere is normal. |
+| C8 | Pick by click; open with ArrowDown; click another row within 0.2 s | The second pick lands (2 saves). |
+| C9 | Render the open list in the 101 skins with the pointer resting on one row | The ↵ glyph is on the Enter row only, never on the hovered row; glyph against the row tint at least 3:1 at 100% and 150% (measured min 4.92 and 4.88). |
+| C10 | Type `zzz`; hide the list with Esc | No glyph on NO MATCHES or on a hidden list. |
+| C11 | At 424 x 300 and at 640 x 420 | No row wraps; the glyph does not touch the label. |
+| C12 | S1 to S7 of C.3.3 | As the `p2` column. |
+| C13 | Every row of A1 to A31, B1 to B13 | Still pass. |
+
+**Real window, away window only** (ProcessRules § Sergei is not QA): (1) a real double-click on a row, three skins, a real mouse: slider, checkboxes and hotkey field unchanged and the field still focused. This is the one thing I cannot measure: the browser delivers the click count from real OS input, and every number here used the count the test sent. If the second press arrives with a count of 1 on the real build, Ender reports back; no one improvises a time-and-distance guess. (2) Eyes on the ↵ at 150% in a dark and a light skin, with the pointer resting on a different row. (3) The same rows on the packaged build's Electron 32 (Chromium 128): this was measured on Edge 154.
+
+### C.6 Found while measuring (offers, not fired)
+
+1. **The wheel can scroll the Enter row out of view, and Enter then acts on a row nobody can see.** Measured on HEAD: six wheel ticks moved the list from 208 to 928, and the Enter row was fully out of view. With the glyph the cue scrolls away with the row. In that run Enter closed the list on the unseen row (the current skin, so nothing changed; an arrowed row would have switched the skin). Proposed: Enter with the Enter row not fully visible scrolls it into view and picks nothing; the second Enter picks. It changes what Enter does, so Sergei's call.
+2. **Settings labels are hit boxes wider than their text** (C.1.1): the `REDUCE MOTION` label is 384 x 14 around 137 px of text, and the hotkey label (`for="input-hotkey"`) is 384 x 14 around 180 px, so a press on empty space beside it focuses the field and starts recording. Proposed: size the label to its text. Appearance of the hit area only, no visible change.
+3. **The open list is see-through in some skins.** `--panel-bg` of the list has alpha 0.82 in ghost-shell, rivendell and wow-scourge (the slider, checkboxes and hotkey field show through the rows, seen in ghost-shell), 0.97 to 0.99 in 57 skins, 1.0 in 41. Proposed: an opaque list (the panel colour laid over `--bg`). Appearance only.
+4. **For Jane, one sentence for ProcessRules § No UI element may cover another** (Futaba's pattern alert is three cases of one shape): *A dismissible overlay that closes on press swallows the rest of that press's click sequence, so a double-click never operates what the overlay covered.*
+
+### C.7 Evidence and machine safety
+
+**Method.** Headless Edge 154.0.4258.48, started only through `scripts/qa/headless-browser.mjs` (`launchHeadless`, a lease and a Job Object), each launch closed by its own `lease.close()`. Input went to the headless page over the DevTools protocol (`Input.dispatchMouseEvent` with an explicit click count, `Input.dispatchKeyEvent`, `Input.insertText`, `Input.dispatchMouseEvent` wheel): never an OS input event, no window shown, nothing took focus. The page believes it has focus through `Emulation.setFocusEmulationEnabled`. The real `index.html`, `base.css`, theme CSS and `app.js` ran against a stub `window.api` that records every call. Scratch trees: `head\` = `git archive 239fede src/renderer` (CSP tag removed in the scratch copy only so file URLs run; the CSP test has its own copy with the tag intact, over http), `p1\` = head plus F1 and F3, `p2\` = `p1` plus the F2 CSS exactly as in C.2.3.
+
+**Positive controls.** HEAD through the same sweep leaks in 163 of 163 (C.1.2); `p1off` (the prototype with the guard emptied) leaks as HEAD does; a deliberately wrong guard (swallows every press for a second) fails the two "fresh click" rows; HEAD fails F3 rows S1, S2 and S4; the leak counter was run while a sweep was live and listed its lease (the only way to know the counter can see).
+
+**Faults found and removed before any number was used.** (1) A first `python3` heredoc hung and was stopped with `TaskStop` (no process left); no Python after that. (2) The scratch copy of the renderer has CRLF line endings, so my first patch found no anchor; the builder now normalises. (3) The first F2 screenshots hovered a row that was outside the list, so no hover showed; the hover row is now chosen inside the list. (4) `tar` read `C:` as a remote host in the CSP test; the copy now uses the earlier extract.
+
+**Scratch** (`C:\Users\AnGeLZzZ\AppData\Local\Temp\claude\C--Antigravity-Projects-Studio-Illuminati\ee1f77cf-5889-412e-b022-29b9109a8847\scratchpad\picker-f1\`): `head\`, `p1\`, `p1off\`, `p1bad\`, `p2\`, `lib.mjs`, `dbl.mjs`, `sweep.mjs`, `controls.mjs`, `f3.mjs`, `f2shots.mjs`, `f2measure.mjs`, `f2wrap.mjs`, `f2csp.mjs`, `hit.mjs`, `wheel.mjs`, `probes35.mjs`, `summ.mjs`, `leak.mjs`, `runs\*.json`, `shots\*.png`.
+
+**Machine safety.** 25 headless Edge launches (by my count of the closing lines), every one through `launchHeadless` and closed by its own `lease.close()` with `remaining: 0`; four of them ended on a script error of mine and still closed in `finally`. Electron and QuickLauncher launched: 0. Browsers started outside the library: 0. Killed by me: 0 (no `taskkill`, no kill by name or PID). The one background shell of mine that hung (a `python3` heredoc waiting on input) was stopped with `TaskStop`. **Leak count: 0.** Method, three read-only listings after the last run: (1) `node scripts/qa/headless-browser.mjs list`: **no leases** (while a sweep was live it listed my lease `judy-f1-sweep-p2` with 7 processes, the positive control that the listing can see mine); (2) the guard's own process snapshot (`leak.mjs`): 0 browser processes inside a guard lease, 0 Electron or QuickLauncher; (3) a CIM listing of all 495 processes (`leak.ps1`, run as a file, never as a command string): **0** whose command line names my scratch folder, lease labels or script names, shells excluded. The 37 `msedge.exe` and `chrome.exe` processes on the machine are not mine. The 12 python processes are not mine either (uv-cache tool servers started 10:22 to 12:37, a comic-metadata app started 18:17; mine was a `python3` stub, stopped earlier, and is not in the list). Repo: the only file I touched is this spec (the addendum and three pointers in sections 0, 3.8 and 8); `src/` is as committed; Ender's `scripts/theme-gallery/*` and the regions worktree were not touched.
