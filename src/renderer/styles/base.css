@@ -832,7 +832,9 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 /* theme-picker rows + empty state: 12 px floor + letter-spacing
    dropped to 1 px. UX Review §3 / I6. */
 .theme-picker-item {
-  padding: 6px 10px;
+  /* Right padding on every row leaves room for the Enter-row glyph, so no row reflows
+     when the Enter row moves. Picker spec Part C, C.2.3. */
+  position: relative; padding: 6px 32px 6px 10px;
   font-family: var(--font); font-size: 12px; letter-spacing: 1px;
   color: var(--text); cursor: pointer;
   transition: background .08s, color .08s;
@@ -844,6 +846,15 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
    tint alone cannot tell it from the current-skin row. Inset shadow, so nothing moves.
    Picker behaviour spec 2026-10-02, section 3.8. */
 .theme-picker-item.active { box-shadow: inset 2px 0 0 var(--text); }
+/* ...and a return-arrow glyph at its right end, in the text colour: it says what the row
+   means, which a hovered row (same tint) never shows. A drawn shape, not a string.
+   Picker spec Part C, C.2.2 and C.2.3. */
+.theme-picker-item.active::after {
+  content: ''; position: absolute; right: 10px; top: 50%; width: 12px; height: 12px; margin-top: -6px;
+  background: var(--text);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M10.5 2v4.5h-8M5 4 2.5 6.5 5 9' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M10.5 2v4.5h-8M5 4 2.5 6.5 5 9' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 .theme-picker-empty {
   padding: 12px 10px; text-align: center;
   font-family: var(--font); font-size: 12px; letter-spacing: 1px; color: var(--text-dim);

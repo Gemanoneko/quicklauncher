@@ -1127,6 +1127,10 @@ async function saveApps() {
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────────
+// Set by the skin picker (declared further down): brings an open list's marks up to
+// date with the skin applySettings() just applied. Picker spec Part C, C.3.
+let onSkinApplied = null;
+
 function applySettings() {
   const size = settings.iconSize || 64;
   document.documentElement.style.setProperty('--icon-size', size + 'px');
@@ -1152,6 +1156,7 @@ function applySettings() {
   $('theme-stylesheet').href = `styles/themes/${theme}.css`;
   // The SKIN field is not written here: the picker owns its text (a pick empties it).
   startBannerCycle(theme);
+  if (onSkinApplied) onSkinApplied();
 }
 
 // Apply reduced-motion: union of user setting and OS prefers-reduced-motion.
@@ -2090,6 +2095,49 @@ $('btn-done-edit').addEventListener('click', exitEditMode);
     setActive(items[Math.max(0, Math.min(items.length - 1, idx))]);
   }
 
+  // A row press picks and the list is gone at once, so the rest of that click sequence
+  // (the second press of a double-click, its release, click and dblclick) would land on
+  // whatever the list covered. For up to 1 s, swallow every mouse event whose click count
+  // is above the pick press's; a press with a lower or equal count is a new gesture and
+  // ends the guard. The count is the browser's own (OS double-click time and distance).
+  // Picker spec Part C, C.1.3.
+  let disarmClickGuard = null;
+  function swallowRestOfClick(down) {
+    if (disarmClickGuard) disarmClickGuard();
+    const pickCount = down.detail || 1;
+    const types = ['mousedown', 'mouseup', 'click', 'dblclick'];
+    const onEvent = (e) => {
+      if (e.type === 'mousedown' && e.detail <= pickCount) { disarm(); return; }   // a new gesture
+      if (e.detail > pickCount) { e.preventDefault(); e.stopImmediatePropagation(); }
+    };
+    const disarm = () => {
+      clearTimeout(timer);
+      types.forEach(t => window.removeEventListener(t, onEvent, true));
+      if (disarmClickGuard === disarm) disarmClickGuard = null;
+    };
+    const timer = setTimeout(disarm, 1000);
+    types.forEach(t => window.addEventListener(t, onEvent, true));   // capture: ahead of every control
+    disarmClickGuard = disarm;
+  }
+
+  // After applySettings() (an outside change: store reload, settings changed elsewhere)
+  // with the list open: move the current-skin mark to the current skin. The Enter row
+  // follows only when it sat on the current skin of an unfiltered list (the "Enter keeps
+  // the skin" state); an arrowed row or a filtered list is the user's and stays. Never
+  // rebuilds, never touches focus or the field text. Idempotent, so a call that changed
+  // no skin is a no-op. Picker spec Part C, C.3.2.
+  function syncCurrentSkin() {
+    if (!open) return;
+    const want = rowEls().find(r => r.dataset.value === currentKey()) || null;
+    const sel  = listEl.querySelector('.theme-picker-item.selected');
+    if (sel === want) return;
+    const follow = sel && sel === activeRow() && !searchTokens(searchEl.value).length;
+    if (sel) sel.classList.remove('selected');
+    if (want) want.classList.add('selected');
+    if (follow && want) setActive(want, 'center');
+  }
+  onSkinApplied = syncCurrentSkin;
+
   searchEl.addEventListener('focus', () => { if (!open) openPicker(); });
   searchEl.addEventListener('click', () => { if (!open) openPicker(); });
   searchEl.addEventListener('input', () => { if (open) refresh(); else openPicker(); });
@@ -2104,11 +2152,12 @@ $('btn-done-edit').addEventListener('click', exitEditMode);
 
   // Any press in the list keeps focus in the field: a row press picks (primary
   // button only, on press), a scrollbar press scrolls, NO MATCHES does nothing.
+  // A row pick also swallows the rest of its click sequence (see swallowRestOfClick).
   listEl.addEventListener('mousedown', (e) => {
     e.preventDefault();
     if (e.button !== 0 || !open) return;
     const item = e.target.closest('.theme-picker-item');
-    if (item) pick(item.dataset.value);
+    if (item) { pick(item.dataset.value); swallowRestOfClick(e); }
   });
 
   window.addEventListener('resize', () => { if (open) place(); });
