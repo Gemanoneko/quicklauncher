@@ -759,8 +759,129 @@ const THEME_NAMES = {
   'parasite-eve':        'PARASITE EVE',
   'ff7':                 'FINAL FANTASY VII',
 };
+
+// Extra phrases the skin search matches, on top of each theme's label and key.
+// Add one only for a franchise or common name not in the label, a short form
+// people really type, a numeral or spelling variant, or a former name; never
+// trivia, three or four phrases at most. The key stays the saved value.
+const THEME_ALIASES = {
+  'lcars':                ['star trek'],
+  'pip-boy':              ['fallout'],
+  'ghost-shell':          ['gits'],
+  'warhammer':            ['wh40k', 'w40k'],
+  'warhammer-chaos':      ['wh40k', 'w40k'],
+  'warhammer-orks':       ['wh40k', 'w40k', 'orcs'],
+  'warhammer-eldar':      ['wh40k', 'w40k'],
+  'warhammer-necrons':    ['wh40k', 'w40k'],
+  'warhammer-tyranids':   ['wh40k', 'w40k'],
+  'ff6':                  ['ffvi', 'final fantasy 6'],
+  'ff7':                  ['ffvii', 'final fantasy 7'],
+  'ff8':                  ['ffviii', 'final fantasy 8'],
+  'ff9':                  ['ffix', 'final fantasy 9'],
+  'ff10':                 ['ffx', 'final fantasy 10'],
+  'ff14':                 ['ffxiv', 'final fantasy 14'],
+  'ff15':                 ['ffxv', 'final fantasy 15'],
+  'wow-horde':            ['world of warcraft'],
+  'wow-scourge':          ['world of warcraft'],
+  'wow-legion':           ['world of warcraft'],
+  'wow-alliance':         ['world of warcraft'],
+  'wow-nightelf':         ['world of warcraft', 'night elf'],
+  'half-life':            ['hl'],
+  'star-wars-rebel':      ['rebels'],
+  'star-wars-empire':     ['imperial'],
+  'star-wars-separatist': ['cis'],
+  'star-wars-republic':   ['old republic'],
+  'doctor-who':           ['dr who'],
+  'evangelion':           ['neon genesis'],
+  'resident-evil':        ['biohazard'],
+  'hogwarts':             ['harry potter', 'hp', 'hogwarts'],
+  'ministry-of-magic':    ['harry potter', 'hp', 'hogwarts'],
+  'gryffindor':           ['harry potter', 'hp', 'hogwarts'],
+  'ravenclaw':            ['harry potter', 'hp', 'hogwarts'],
+  'hufflepuff':           ['harry potter', 'hp', 'hogwarts'],
+  'slytherin':            ['harry potter', 'hp', 'hogwarts'],
+  'rivendell':            ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
+  'shire':                ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
+  'mordor':               ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
+  'lovecraft':            ['cthulhu'],
+  'persona-3':            ['p3'],
+  'persona-4':            ['p4'],
+  'persona-5':            ['p5'],
+  'fatal-frame':          ['project zero'],
+  'game-of-thrones':      ['got'],
+  'promise-mascot':       ['pma'],
+  'mortal-kombat':        ['mk'],
+  'life-is-strange':      ['lis'],
+  'tomb-raider':          ['lara croft'],
+  'swl-illuminati':       ['secret world legends', 'tsw'],
+  'swl-templar':          ['secret world legends', 'tsw'],
+  'swl-dragon':           ['secret world legends', 'tsw'],
+  'ac-assassins':         ['assassins creed'],
+  'ac-templars':          ['assassins creed'],
+  'metal-gear':           ['mgs'],
+};
+
 const ALL_THEMES = Object.keys(THEME_BANNERS)
   .sort((a, b) => (THEME_NAMES[a] || a).localeCompare(THEME_NAMES[b] || b));
+
+// ── Skin search matching ─────────────────────────────────────────────────────
+// Every typed word must start a word of the theme's label, key or aliases
+// (tier 0); a word found anywhere inside them still matches, listed after
+// (tier 1), so nothing that matched the old substring search stops matching.
+
+// Lowercase; drop ' ’ and . (MIRROR'S -> mirrors, S.T.A.L.K.E.R. -> stalker);
+// every other run of non-letters/non-digits, any script, becomes one space.
+function normSearchText(s) {
+  return String(s).toLowerCase()
+    .replace(/['’.]/g, '')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim();
+}
+
+// A field's words, plus all of them joined when it has more than one
+// (PIP-BOY also gives "pipboy", HALF-LIFE "halflife").
+function searchWords(s) {
+  const n = normSearchText(s);
+  if (!n) return [];
+  const words = n.split(' ');
+  return words.length > 1 ? [...words, words.join('')] : words;
+}
+
+// Query words; "the" is dropped unless it is all there is.
+function searchTokens(query) {
+  const tokens = normSearchText(query).split(' ').filter(Boolean);
+  const meaningful = tokens.filter(t => t !== 'the');
+  return meaningful.length ? meaningful : tokens;
+}
+
+// Built once: each theme's searchable words (label as the row shows it, key, aliases).
+const THEME_SEARCH_WORDS = new Map(ALL_THEMES.map(key => [key, [
+  ...searchWords(THEME_NAMES[key] || key.toUpperCase()),
+  ...searchWords(key),
+  ...(THEME_ALIASES[key] || []).flatMap(searchWords),
+]]));
+
+// 0 = every token starts a word, 1 = every token is inside a word, -1 = no match.
+function themeSearchTier(key, tokens) {
+  const words = THEME_SEARCH_WORDS.get(key) || [];
+  if (tokens.every(t => words.some(w => w.startsWith(t)))) return 0;
+  if (tokens.every(t => words.some(w => w.includes(t)))) return 1;
+  return -1;
+}
+
+// The picker's matcher: theme keys in display order, tier 0 before tier 1.
+// An empty (or punctuation-only) query lists every theme.
+function matchThemes(query) {
+  const tokens = searchTokens(query || '');
+  if (!tokens.length) return ALL_THEMES.slice();
+  const starts = [], inside = [];
+  for (const key of ALL_THEMES) {
+    const tier = themeSearchTier(key, tokens);
+    if (tier === 0) starts.push(key);
+    else if (tier === 1) inside.push(key);
+  }
+  return starts.concat(inside);
+}
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
@@ -786,6 +907,10 @@ async function init() {
     }
   } catch (e) {
     console.warn('[themes] get-valid-themes failed, using THEME_BANNERS keys:', e);
+  }
+  const orphanAliases = Object.keys(THEME_ALIASES).filter(t => !VALID_THEMES.has(t));
+  if (orphanAliases.length) {
+    console.warn('[themes] THEME_ALIASES keys with no matching theme:', orphanAliases);
   }
 
   applySettings();
@@ -1838,10 +1963,7 @@ $('btn-done-edit').addEventListener('click', exitEditMode);
   const listEl   = $('theme-picker-list');
 
   function buildList(filter) {
-    const q = (filter || '').toLowerCase().trim();
-    const matches = q
-      ? ALL_THEMES.filter(k => (THEME_NAMES[k] || k).toLowerCase().includes(q))
-      : ALL_THEMES;
+    const matches = matchThemes(filter);
 
     listEl.innerHTML = '';
     if (matches.length === 0) {
