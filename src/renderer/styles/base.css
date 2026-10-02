@@ -840,6 +840,10 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 .theme-picker-item:hover,
 .theme-picker-item.active { background: var(--picker-item-hover-bg); color: var(--accent-text); }
 .theme-picker-item.selected { background: var(--picker-item-active-bg); color: var(--accent-text); }
+/* The Enter row (the highlighted row Enter picks) carries a 2 px bar in the text colour:
+   tint alone cannot tell it from the current-skin row. Inset shadow, so nothing moves.
+   Picker behaviour spec 2026-10-02, section 3.8. */
+.theme-picker-item.active { box-shadow: inset 2px 0 0 var(--text); }
 .theme-picker-empty {
   padding: 12px 10px; text-align: center;
   font-family: var(--font); font-size: 12px; letter-spacing: 1px; color: var(--text-dim);

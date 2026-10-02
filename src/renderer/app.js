@@ -838,13 +838,15 @@ function normSearchText(s) {
     .trim();
 }
 
-// A field's words, plus all of them joined when it has more than one
-// (PIP-BOY also gives "pipboy", HALF-LIFE "halflife").
+// A field's words, and all of them joined when it has more than one
+// (PIP-BOY also gives "pipboy", HALF-LIFE "halflife"). The joined word may
+// only START a match (tier 0): inside a word it spans a word boundary and
+// lists junk (picker behaviour spec 2026-10-02, section 6.2).
 function searchWords(s) {
   const n = normSearchText(s);
-  if (!n) return [];
+  if (!n) return { words: [], joined: [] };
   const words = n.split(' ');
-  return words.length > 1 ? [...words, words.join('')] : words;
+  return { words, joined: words.length > 1 ? [words.join('')] : [] };
 }
 
 // Query words; "the" is dropped unless it is all there is.
@@ -855,16 +857,23 @@ function searchTokens(query) {
 }
 
 // Built once: each theme's searchable words (label as the row shows it, key, aliases).
-const THEME_SEARCH_WORDS = new Map(ALL_THEMES.map(key => [key, [
-  ...searchWords(THEME_NAMES[key] || key.toUpperCase()),
-  ...searchWords(key),
-  ...(THEME_ALIASES[key] || []).flatMap(searchWords),
-]]));
+// words  = the real words (tier 1 looks inside these only)
+// starts = the real words plus each field's joined word (tier 0 prefixes)
+const THEME_SEARCH_WORDS = new Map(ALL_THEMES.map(key => {
+  const parts = [
+    searchWords(THEME_NAMES[key] || key.toUpperCase()),
+    searchWords(key),
+    ...(THEME_ALIASES[key] || []).map(searchWords),
+  ];
+  const words = parts.flatMap(p => p.words);
+  return [key, { words, starts: words.concat(parts.flatMap(p => p.joined)) }];
+}));
 
-// 0 = every token starts a word, 1 = every token is inside a word, -1 = no match.
+// 0 = every token starts a word (joined words count), 1 = every token is inside
+// a real word, -1 = no match.
 function themeSearchTier(key, tokens) {
-  const words = THEME_SEARCH_WORDS.get(key) || [];
-  if (tokens.every(t => words.some(w => w.startsWith(t)))) return 0;
+  const { words = [], starts = [] } = THEME_SEARCH_WORDS.get(key) || {};
+  if (tokens.every(t => starts.some(w => w.startsWith(t)))) return 0;
   if (tokens.every(t => words.some(w => w.includes(t)))) return 1;
   return -1;
 }
@@ -1072,7 +1081,8 @@ function startRename(appItem, labelEl) {
   input.addEventListener('blur', commit);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-    if (e.key === 'Escape') { cancelled = true; input.replaceWith(labelEl); }
+    // Esc cancels the rename and is consumed: edit mode stays (one Esc, one layer).
+    if (e.key === 'Escape') { cancelled = true; input.replaceWith(labelEl); e.preventDefault(); e.stopPropagation(); }
   });
 }
 
@@ -1140,7 +1150,7 @@ function applySettings() {
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
   $('theme-stylesheet').href = `styles/themes/${theme}.css`;
-  elThemeSearch.value = '';
+  // The SKIN field is not written here: the picker owns its text (a pick empties it).
   startBannerCycle(theme);
 }
 
@@ -1674,6 +1684,13 @@ function showOverlayAtTop(el) {
   if (sc) sc.scrollTop = 0;
 }
 
+// The one way Settings is hidden (Esc, CLOSE, CHECK FOR UPDATES, the gear toggle).
+// A focused SKIN field gives up focus, so its list resets (its blur closes it).
+function closeSettings() {
+  elSettingsOverlay.classList.add('hidden');
+  if (document.activeElement === elThemeSearch) elThemeSearch.blur();
+}
+
 function openCheatsheet() {
   showOverlayAtTop(document.getElementById('cheatsheet-overlay'));
 }
@@ -1706,15 +1723,24 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  // Escape: close overlays first, then clear filter, then nothing.
-  // (Fullscreen-exit Escape is wired separately below in setupContextMenu.)
+  // Escape: one press undoes exactly one layer, the innermost present, and
+  // nothing else sees it (picker behaviour spec 2026-10-02, Addendum A.2).
+  // Inner layers that consume their own Esc before it gets here: IME
+  // composition (above), hotkey recording, the open skin list, the rename input.
+  // This is the only document-level Esc handler.
   if (e.key === 'Escape') {
     const cs = document.getElementById('cheatsheet-overlay');
     if (!cs.classList.contains('hidden')) { closeCheatsheet(); e.preventDefault(); return; }
-    if (!elSettingsOverlay.classList.contains('hidden')) { elSettingsOverlay.classList.add('hidden'); e.preventDefault(); return; }
+    if (!elSettingsOverlay.classList.contains('hidden')) { closeSettings(); e.preventDefault(); return; }
     if (!elAppsPicker.classList.contains('hidden')) { elAppsPicker.classList.add('hidden'); e.preventDefault(); return; }
     if (_filterText) { clearFilter(); e.preventDefault(); return; }
-    // Fall through to fullscreen / edit-mode handlers
+    if (editMode) { exitEditMode(); e.preventDefault(); return; }
+    if (isFullscreen) {
+      e.preventDefault();
+      window.api.invoke('exit-fullscreen').then(updateFullscreenButton);
+      return;
+    }
+    return; // nothing to undo: Esc does nothing (it never hides the window)
   }
 
   // F11 — toggle fullscreen (UX Review §6E / P4)
@@ -1785,19 +1811,10 @@ function setupContextMenu() {
       enterEditMode();
     }
   });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && editMode) exitEditMode();
-  });
-
-  // Escape exits fullscreen. Scoped to the renderer window (previously a
-  // process-wide globalShortcut, which stole Escape from every other app).
-  document.addEventListener('keydown', async (e) => {
-    if (e.key !== 'Escape') return;
-    if (isFullscreen) {
-      updateFullscreenButton(await window.api.invoke('exit-fullscreen'));
-    }
-  });
+  // Esc for edit mode and fullscreen lives in the document keydown handler's
+  // Escape ladder (one handler, one layer per press). Fullscreen Esc stays
+  // scoped to the renderer window (it was once a process-wide globalShortcut,
+  // which stole Escape from every other app).
 }
 
 // ── Update banner ─────────────────────────────────────────────────────────────
@@ -1924,7 +1941,7 @@ function hideUpdateBanner() {
 // ── Button wiring ─────────────────────────────────────────────────────────────
 $('btn-settings').addEventListener('click', () => {
   if (elSettingsOverlay.classList.contains('hidden')) showOverlayAtTop(elSettingsOverlay);
-  else elSettingsOverlay.classList.add('hidden');
+  else closeSettings();
 });
 
 $('btn-hide').addEventListener('click', () => {
@@ -1945,12 +1962,12 @@ $('btn-fullscreen').addEventListener('click', async () => {
 window.api.on('fullscreen-changed', (fs) => updateFullscreenButton(fs));
 
 $('btn-close-settings').addEventListener('click', () => {
-  elSettingsOverlay.classList.add('hidden');
+  closeSettings();
 });
 
 $('btn-check-update').addEventListener('click', () => {
   window.api.invoke('check-update');
-  elSettingsOverlay.classList.add('hidden');
+  closeSettings();
 });
 
 $('btn-add-edit').addEventListener('click', addAppFromDialog);
@@ -1958,9 +1975,25 @@ $('btn-add-installed').addEventListener('click', openInstalledAppsPicker);
 $('btn-done-edit').addEventListener('click', exitEditMode);
 
 // ── Skin selection (searchable picker) ───────────────────────────────────────
+// Behaviour: Docs/QuickLaunch_SkinPicker_Behaviour_Spec_2026-10-02.md, sections 2 to 3.8.
+// Three states:
+//   IDLE    field empty, not focused, list hidden
+//   OPEN    field focused, list showing the matches for its text, one row
+//           highlighted when there are rows (class `active`: the row Enter picks)
+//   PARKED  field focused and empty, list hidden (after a pick, or Esc in OPEN);
+//           typing, a click, ArrowUp or ArrowDown reopen the list
 (function () {
   const searchEl = elThemeSearch;
   const listEl   = $('theme-picker-list');
+  // The settings body scrolls (theme spec, foundation A1.4): the list is fixed,
+  // so it is placed from the field's position and the body is locked while it
+  // is open (wheeling would otherwise move the field away from the list).
+  const scrollEl = searchEl.closest('.overlay-scroll');
+  let open = false;
+
+  const currentKey = () => settings.theme || 'cyberpunk';
+  const rowEls     = () => [...listEl.querySelectorAll('.theme-picker-item')];
+  const activeRow  = () => listEl.querySelector('.theme-picker-item.active');
 
   function buildList(filter) {
     const matches = matchThemes(filter);
@@ -1973,36 +2006,28 @@ $('btn-done-edit').addEventListener('click', exitEditMode);
       listEl.appendChild(empty);
       return;
     }
-    const current = settings.theme || 'cyberpunk';
+    const current = currentKey();
     matches.forEach(key => {
       const item = document.createElement('div');
       item.className = 'theme-picker-item' + (key === current ? ' selected' : '');
       item.dataset.value = key;
       item.textContent = THEME_NAMES[key] || key.toUpperCase();
-      item.addEventListener('mousedown', async (e) => {
-        e.preventDefault();
-        settings.theme = key;
-        applySettings();
-        await window.api.invoke('save-settings', settings);
-        closePicker();
-      });
       listEl.appendChild(item);
     });
   }
 
-  // The settings body scrolls (theme spec, foundation A1.4): the list is fixed,
-  // so it is placed from the input's position now and the body is locked while
-  // it is open (wheeling would otherwise move the input away from the list).
-  const scrollEl = searchEl.closest('.overlay-scroll');
+  // Highlight one row (or none) and keep it fully inside the list's visible area.
+  function setActive(item, block) {
+    const prev = activeRow();
+    if (prev) prev.classList.remove('active');
+    if (!item) return;
+    item.classList.add('active');
+    item.scrollIntoView({ block: block || 'nearest' });
+  }
 
-  function openPicker() {
-    buildList(searchEl.value);
-    // The focus event fires before Chromium scrolls a focused control into view,
-    // so bring the input fully into the scroller first, then measure it.
-    searchEl.scrollIntoView({ block: 'nearest' });
-    if (scrollEl) scrollEl.classList.add('picker-open');
-    listEl.classList.remove('hidden');
-    // Below the input by default; upward when there is under 150 px below and more room above.
+  // Below the field by default; above it when there is under 150 px below and
+  // more room above. Called on open and on window resize while open.
+  function place() {
     const rect = searchEl.getBoundingClientRect();
     const below = innerHeight - rect.bottom - 10;
     const above = rect.top - 10;
@@ -2015,39 +2040,98 @@ $('btn-done-edit').addEventListener('click', exitEditMode);
       listEl.style.bottom = 'auto';
       listEl.style.maxHeight = Math.max(80, below) + 'px';
     }
-    const sel = listEl.querySelector('.theme-picker-item.selected');
-    if (sel) sel.scrollIntoView({ block: 'nearest' });
   }
 
+  // Rebuild for the field text. Filtered (at least one search token): row 1 is
+  // highlighted. Not filtered (empty, spaces, punctuation): the current skin is
+  // highlighted and centred. NO MATCHES: nothing is highlighted.
+  function refresh() {
+    buildList(searchEl.value);
+    listEl.scrollTop = 0;
+    if (searchTokens(searchEl.value).length) setActive(listEl.querySelector('.theme-picker-item'));
+    else setActive(listEl.querySelector('.theme-picker-item.selected'), 'center');
+  }
+
+  function openPicker() {
+    // The focus event fires before Chromium scrolls a focused control into view,
+    // so bring the field fully into the scroller first, then measure it.
+    searchEl.scrollIntoView({ block: 'nearest' });
+    if (scrollEl) scrollEl.classList.add('picker-open');
+    listEl.classList.remove('hidden');
+    place();
+    open = true;
+    refresh();
+  }
+
+  // Closed means: list hidden, body unlocked, field empty. Focus is not touched.
   function closePicker() {
+    open = false;
     listEl.classList.add('hidden');
     if (scrollEl) scrollEl.classList.remove('picker-open');
     searchEl.value = '';
   }
 
-  function moveActive(dir) {
-    const items = [...listEl.querySelectorAll('.theme-picker-item')];
-    if (!items.length) return;
-    const cur = listEl.querySelector('.theme-picker-item.active');
-    let idx = items.indexOf(cur) + dir;
-    idx = Math.max(0, Math.min(items.length - 1, idx));
-    items.forEach(i => i.classList.remove('active'));
-    items[idx].classList.add('active');
-    items[idx].scrollIntoView({ block: 'nearest' });
+  // Close first, then apply and save: a second Enter or click lands on a closed
+  // list (one pick, one save). The current skin closes the list and saves nothing.
+  function pick(key) {
+    closePicker();
+    if (key === currentKey()) return;
+    settings.theme = key;
+    applySettings();
+    window.api.invoke('save-settings', settings)
+      .catch(err => console.error('Failed to save skin:', err));
   }
 
-  searchEl.addEventListener('focus', () => openPicker());
-  searchEl.addEventListener('input', () => buildList(searchEl.value));
-  searchEl.addEventListener('blur',  () => setTimeout(closePicker, 150));
+  // Clamped, no wrap. With nothing highlighted either arrow lands on row 1.
+  function moveActive(dir) {
+    const items = rowEls();
+    if (!items.length) return;
+    const idx = items.indexOf(activeRow()) + dir;
+    setActive(items[Math.max(0, Math.min(items.length - 1, idx))]);
+  }
+
+  searchEl.addEventListener('focus', () => { if (!open) openPicker(); });
+  searchEl.addEventListener('click', () => { if (!open) openPicker(); });
+  searchEl.addEventListener('input', () => { if (open) refresh(); else openPicker(); });
+  // Blur closes at once: no timer (a press in the list never blurs the field,
+  // see below). When the blur comes from the window losing focus (hotkey hide,
+  // Alt+Tab) the field also gives up focus, so re-activating the window never
+  // pops the list open by itself.
+  searchEl.addEventListener('blur', () => {
+    closePicker();
+    if (!document.hasFocus()) searchEl.blur();
+  });
+
+  // Any press in the list keeps focus in the field: a row press picks (primary
+  // button only, on press), a scrollbar press scrolls, NO MATCHES does nothing.
+  listEl.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    if (e.button !== 0 || !open) return;
+    const item = e.target.closest('.theme-picker-item');
+    if (item) pick(item.dataset.value);
+  });
+
+  window.addEventListener('resize', () => { if (open) place(); });
+
   searchEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape')    { closePicker(); searchEl.blur(); return; }
-    if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1);  return; }
-    if (e.key === 'ArrowUp')   { e.preventDefault(); moveActive(-1); return; }
+    if (e.isComposing || e.keyCode === 229) return;   // the key belongs to the IME
+    if (e.key === 'Escape') {
+      if (!open) return;                              // nothing to undo here: Esc goes on (Settings)
+      e.preventDefault();
+      e.stopPropagation();                            // consumed: one Esc, one layer
+      closePicker();
+      return;
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) openPicker();                        // from PARKED the key only opens the list
+      else moveActive(e.key === 'ArrowDown' ? 1 : -1);
+      return;
+    }
     if (e.key === 'Enter') {
       e.preventDefault();
-      const active = listEl.querySelector('.theme-picker-item.active')
-                  || listEl.querySelector('.theme-picker-item');
-      if (active) active.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      const row = open ? activeRow() : null;          // never acts on a hidden list
+      if (row) pick(row.dataset.value);
     }
   });
 })();
