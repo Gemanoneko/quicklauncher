@@ -847,3 +847,247 @@ Yes. The Menu key (`ContextMenu`) and Shift+F10 do exactly the same thing:
 **Switch to B only if** a fallback region is ever seen taking the foreground when Sergei did not just click it. B then ships with items 2 and 3 unchanged (`win.focus()` on pointer-down must still pass the click through and draw the same active border).
 
 **Sergei:** no click check is needed to adopt A; the observer run is the gate. One optional 30-second step goes into his M2 try-it: start with `--ql-no-desktop-layer`, click a region, type a letter (the filter chip shows it), then Ctrl+Arrow in edit mode. If the letter does not appear, tell Jane; that reopens this block.
+
+---
+
+## Addendum — M3 rulings (Judy, 2026-10-03)
+
+Status: final, uncommitted. Sergei handed Judy the visual and copy calls on Ender's 11 open points (TechPlan section 8, "For Judy"). One ruling has a consequence for what Delete region does (B4, marked **Flag**); everything else is look, wording and state. The addendum **replaces** the spec above where they differ: 2.1 (item broken), 3.4 (Delete failed; "failed tiles marked broken"), 5.2 ("NOT A SHORTCUT", "bounces back"), 5.4 (Failure), 9.1 and 9.3.
+Inputs: TechPlan sections 3 and 8; `region.js`, `app.js` (`createAppTile`), `manager.html` / `manager.js`, `region.css`, `manager.css`, `base.css`, `moves/rules.js`, `moves/mover.js`, the box code in `controller.js`, `scripts/nsis/installer.nsh` and the diff of `scripts/tryit-regions.mjs` (worktree `wip/regions`, uncommitted M3). No app was launched.
+Method, two scratch passes (nothing in the repo written):
+1. **Contrast.** The gate's own maths (`scripts/check-theme-contrast.js`: WCAG relative luminance, colours flattened on black, `--panel-bg` composited over the flattened `--bg`) over all 101 theme files in the worktree. Light theme: `mirrors-edge` (lightest of the three, `--bg` luminance 0.71; the others are `portal` and `silent-hill`). Dark theme: `cyberpunk`. The worst case of 101 is named for every pair.
+2. **Geometry.** Mock tile and Manager pages built from the real `base.css`, theme and `manager.css`, rendered at 1x, 1.5x and 2x through `scripts/qa/headless-browser.mjs` (15 runs, 0 browsers left after each) and read as rects.
+Sizes are DIP. Numbering: the brief's "deviation 4" is TechPlan 8's deviation 8 (broken = missing); its "deviation 6" is the Try-it row of the files table (with deviation 11). The plan's own deviations 4 and 6 are covered in B9 and B12.
+
+| # | Point | Ruling | Why |
+|---|---|---|---|
+| B1 | Failure boxes | Say what failed, **where it is now**, and the reason. One failure: its name in quotes. Two or more: the count and up to 3 names | The old text never said where the shortcut was |
+| B2 | Move all back, Manager | Second line gives the number of regions: `They leave 3 regions.` (one region: its name) | "all regions" overstates; the spec's single name is wrong for the Manager |
+| B3 | Singular | Its own sentence for one: `It`, `shortcut`, `1 other shortcut is removed ... The app stays installed.`, `None moved ...` at 0 | Grammar, and "0 moved" reads as an error |
+| B4 | Broken tile | Pip `--text` with a "!", **top-left**, always shown; box says `QuickLauncher Shortcuts folder`; Keep is the default. In edit mode a broken tile gets ✕ `Remove tile`, not ↩. **Flag:** a missing-file tile never blocks Delete region or Move all back | `--accent-m` fails 3:1 in 30 themes; the top-right corner belongs to the edit badge; ↩ on a missing file can only fail |
+| B5 | Manager section | Layout as built; sentences in `--text`; every button 24 px high; a standing line and disabled buttons when moving is unavailable; tooltips that say why | `--text-dim` fails 4.5:1 in 13 themes; the buttons render 21 px |
+| B6 | README, uninstaller | Texts below | The old README never said "do not delete or rename" |
+| B7 | NOT A SHORTCUT | No check during the drag. After the drop, a region notice: `NOT A SHORTCUT` / `{n} FILES ARE NOT SHORTCUTS`. No box | Silence after the slot looks like a failed drop; a box is too loud for a harmless mis-drop |
+| B8 | Delete row | `Remove the focused tile; a moved shortcut goes back to the desktop (edit mode)` | "Remove" elsewhere means the file is untouched |
+| B9 | Placeholder reason | `The file is online only. Keep it on this device, then try again.` plus three more reasons the catch-all described wrongly | The disk refused nothing |
+| B10 | Filtered region | An accepted file drop clears the filter | The tile would land hidden |
+| B11 | Deviation 8 | Confirmed: broken means the file is missing, nothing else | One state, one meaning |
+
+### B1. Failure boxes
+
+The box type is warning, title `QuickLauncher`, one button `OK`. Rules for every failure box (this one, the drop box of 5.2, and the reasons of B9):
+
+- **Names:** the first 3 in order, `, ` between them; more reads `Steam, Notes, Mail and 2 more`. One failure: the name in curly quotes in the sentence, no count, no brackets.
+- **Reason:** the box's second line. One distinct reason: that line. Several: one line per listed name, `{name}: {reason}`.
+- **Where it is now:** always the last sentence of the first line. Exception: when every reason is `The file is missing.`, leave that sentence out (it would be false).
+
+| Case | First line | Second line |
+|---|---|---|
+| ↩, Delete, tile menu, Move all back: 1 | `Couldn't move “Steam” back to the desktop. It is still in QuickLauncher.` | reason |
+| the same: 2 or more | `Couldn't move 2 shortcuts back to the desktop (Steam, Notes). They are still in QuickLauncher.` | reason(s) |
+| Delete region, region kept: 1 | `Couldn't move “Steam” back to the desktop. The region was kept.` | reason; then, if any went back, `5 others are back on the desktop.` (`1 other is back on the desktop.`) |
+| the same: 2 or more | `Couldn't move 2 shortcuts back to the desktop (Steam, Notes). The region was kept.` | the same |
+| Manager, file without a tile, MOVE TO DESKTOP | `Couldn't move “Steam” to the desktop. It is still in the QuickLauncher Shortcuts folder.` | reason |
+| Drop or + FILE: 1 | `Couldn't move “Steam” off the desktop. It is still on the desktop.` | reason |
+| the same: 2 or more | `Couldn't move 2 shortcuts off the desktop (Steam, Notes). They are still on the desktop.` | reason(s) |
+
+Why. Ender's `Couldn't move back 2 shortcuts (Steam, Notes).` says what failed and not where the shortcut is, and in Move all back with 30 files it would list 30 names. "Where it is now" is the one thing the user must know to trust that nothing was lost. In the delete case the region's tiles change under the user while the region stays, so the box also says how many did go back.
+
+### B2. Move all back
+
+Message and buttons as built except:
+
+- **First line:** `Move {n} shortcuts back to the desktop?` (`Move 1 shortcut back to the desktop?`). `n` counts only shortcuts whose file exists (B4).
+- **Second line, region menu, or Manager when every moved shortcut is in one region:** `They leave “Games”. Names already on the desktop get a number.` (one shortcut: `It leaves “Games”. ...`).
+- **Second line, Manager, moved shortcuts in k regions (k = 2 or more):** `They leave {k} regions. Names already on the desktop get a number.`
+- Buttons `Move back`, `Cancel`; default and Esc = Cancel (as built).
+
+Why: the spec's line names one region, which is wrong for the Manager. "all regions" would overstate when some hold none; the number is true and short.
+
+### B3. Singular
+
+| Where | One | Many |
+|---|---|---|
+| Delete confirm, line 1 | `1 shortcut moves back to the desktop.` | `{n} shortcuts move back to the desktop.` |
+| Delete confirm, line 2, with moved ones | `1 other shortcut is removed from QuickLauncher. The app stays installed.` | `{n} other shortcuts are removed from QuickLauncher. The apps stay installed.` |
+| Delete confirm, line 2, none moved | `1 shortcut is removed from QuickLauncher. The app stays installed.` | `{n} shortcuts are removed from QuickLauncher. The apps stay installed.` |
+| Move all back | B2 | B2 |
+| Failure boxes | B1 | B1 |
+| Manager count | `1 moved off the desktop.` | `{n} moved off the desktop.`; at 0: `None moved off the desktop.` |
+| Manager files without a tile | `1 file without a tile.` | `{n} files without a tile.` |
+
+In two-sentence texts the second sentence's pronoun follows the count: `It` for one, `They` for many. Ender's `model.js` already has everything in this table except "The app stays installed." The section title carries the noun in the count line, so "1 moved" needs no "shortcut".
+
+### B4. Broken tile
+
+A tile is broken only when its file is gone from the store folder (B11).
+
+**Look**
+- **Icon:** 60% opacity (as built).
+- **Pip:** 12 x 12 px, inline SVG, `top: 2px; left: 2px` inside the tile (3 px from its outer edge), `pointer-events: none`, `aria-hidden="true"`. Circle `r = 6` filled `var(--text)`; the "!" in `var(--bg)`: a bar 2 x 4.4 at (5, 2.4) and a dot 2 x 2 at (5, 7.6), both `rx = 1`. Shown in view **and** edit mode: delete the rule that hides it in edit mode.
+- **Why `--text`.** `--accent-m` on `--bg` is under 3:1 in 30 of 101 themes (lowest `twin-peaks` 1.32; 58 under 4.5). Rendered: a grey dot in `mirrors-edge`, a brown one in `lovecraft`; neither reads as a warning. `--text` is 5.76:1 or better against `--bg` and 5.48:1 against `--panel-bg` in all 101. The "!" makes it a warning without relying on colour (WCAG 1.4.1), in the same `--bg` / `--text` pair reversed.
+- **Why top-left.** The edit badge sits at the top-right (24 x 24 at -2, -2) and covers a pip placed there: spec 2.1 and 5.4 collided, my miss. The top-left is free in both modes, so the state stays visible while the user is in edit mode deciding what to do with it. At the narrowest tile (96 wide at every icon size) the pip spans x 3 to 15 and the icon starts at x 16: it is 1 px clear and never over the icon.
+- **Name and tooltip.** Tile `aria-label` = `{name}, missing`. View mode: the tile and its label get `title` = `{name} is missing. Click to remove the tile or keep it.` Edit mode: unchanged (`Click to rename`).
+
+**View mode, click, Enter or Space:** native box, warning icon.
+- `“Steam” is missing from the QuickLauncher Shortcuts folder.`
+- Buttons `Remove tile`, `Keep`. **Default Keep, Esc and the close box = Keep** (as built: confirmed).
+- The old text said "the moved-shortcuts folder", a name that appears nowhere. The folder is `QuickLauncher Shortcuts`, and OPEN FOLDER opens it.
+- Why Keep: removing the tile is the only action that forgets where the file came from. A file that comes back (an antivirus restoring it, the user) makes the tile work again, so waiting costs nothing.
+
+**Edit mode on a broken tile** (new; as built it would show ↩ and fail with a false reason):
+- Badge: ✕ in today's `.btn-remove` look, tooltip and `aria-label` `Remove tile`. A click removes the tile at once, like the box's `Remove tile` (edit-mode ✕ never asks: today's rule).
+- Delete key: the same. Tile menu: `Remove tile` in place of `Move back to desktop`.
+- There is no file to move, so ↩ could only fail.
+
+**Flag (B4b): a missing-file tile never blocks anything.** As built, Delete region treats a missing tile as a desktop file to restore, fails with `The disk refused the move.`, and keeps the region until the tile is removed by hand. Move all back counts it and fails on it the same way. Rulings:
+- **Delete region:** a broken tile counts as a reference: it is in line 2 of the confirm (`... removed from QuickLauncher`), goes with the region, and never keeps it. Spec 3.4's "a region that still owns unrestored desktop files cannot disappear" holds, since a missing file is nothing to restore. No file is deleted; only the tile record.
+- **Move all back** (region menu and Manager): skips broken tiles. `n` and the Manager's count leave them out. "Move all shortcuts back to desktop..." is enabled only when at least one moved shortcut has its file.
+
+### B5. Manager, Moved shortcuts
+
+Layout as built, top to bottom: `// MOVED SHORTCUTS` with the count on its baseline (they wrap under each other when narrow); the OneDrive line; a standing state line (new, below); the buttons `OPEN FOLDER`, `MOVE ALL BACK…`; the files-without-a-tile count and its rows. Rendered at 560 and 440 wide: no row overflows, long names ellipsize.
+
+- **Sentence colour:** every sentence (count, OneDrive, unavailable, files without a tile) is `--text`, 12 px, letter-spacing 1 px. Not `--text-dim` (as built): it is under 4.5:1 in 13 of 101 themes (lowest `lovecraft` 2.52; rendered, near unreadable), and the OneDrive line and the files-without-a-tile count are the two things in this section the user must read. Not `--accent-m`: these are not errors, and it is under 4.5:1 in 58 themes.
+- **Button height:** every button in the section `min-height: 24px`. They render 21 px tall (measured); the other new Manager controls already carry 24 (`.mgr-tab`, `.mgr-link`). Row gap 4, button gap 8 stay.
+- **Standing line when moving is unavailable (read-only store, no Win32):** `Moving is unavailable.` in the OneDrive line's place. `MOVE ALL BACK…`, `ADD BACK`, `MOVE TO DESKTOP` are then disabled (the `.mgr-disabled` look) with tooltip `Moving is unavailable.` `OPEN FOLDER` is never disabled.
+- **Disabled at 0:** `MOVE ALL BACK…` with tooltip `No shortcuts to move back.` (a disabled control says why, as 9.1 does for Delete and the theme picker). Not "the same tooltip" as when it is live.
+- **Rows:** name = the shortcut's name without extension (as built); its `title` = the file name with extension (`Steam.lnk` and `Steam.url` can both be here). Labels `ADD BACK` and `MOVE TO DESKTOP` unchanged.
+- **Tooltips:** `ADD BACK` → `Add this shortcut to “{name of the first region}”`; `MOVE TO DESKTOP` → `Move this shortcut to the desktop`. This replaces "the first region", a term nowhere in the UI, and "file". `OPEN FOLDER` and `MOVE ALL BACK…` as 9.1.
+
+### B6. README and uninstaller
+
+**`README.txt`** in `QuickLauncher Shortcuts` (CRLF, plain ASCII, written once and never overwritten, as built):
+
+```
+These shortcuts came off your desktop. QuickLauncher moved them here when
+you added them to a region, and its tiles open them from here.
+
+Do not delete, rename or move them: their tiles would stop working.
+
+To put them back on the desktop, right-click the QuickLauncher tray icon,
+choose Regions, then press MOVE ALL BACK under Moved shortcuts.
+Uninstalling QuickLauncher puts them back too.
+
+Without QuickLauncher you can drag them out of this folder yourself.
+```
+
+The old text named the Manager without saying how to open it, never warned that deleting or renaming breaks a tile (the one thing a person who finds this folder must know), and said nothing for someone who no longer has the app.
+
+**Uninstaller box** (`MB_OK|MB_ICONINFORMATION`, `/SD IDOK` unchanged). In the script:
+`"Some shortcuts could not go back to the desktop.$\r$\nThey are in:$\r$\n$R7$\r$\n$\r$\nDrag them out when you want them back. Nothing was deleted."`
+Shown as:
+
+```
+Some shortcuts could not go back to the desktop.
+They are in:
+C:\Users\...\QuickLauncher Shortcuts
+
+Drag them out when you want them back. Nothing was deleted.
+```
+
+The path sits on its own line (Ctrl+C copies a message box's text). It says what to do next and answers the question everyone has at that moment; "Nothing was deleted" is true by the never-delete rule.
+
+### B7. In place of NOT A SHORTCUT
+
+- **During the drag:** no type check (a page cannot read it). Every file drag shows the valid outline and slot; only FULL rejects (as built).
+- **After the drop,** if any dropped file was ignored (not `.lnk`, `.url` or `.exe`: a folder, a document, a picture), the region shows a notice in the same slot, for the same time and with the same look as a launch error (today's `showUpdateBanner` path):
+  - one ignored: `NOT A SHORTCUT`
+  - two or more: `{n} FILES ARE NOT SHORTCUTS`
+- A mixed drop adds the accepted ones as usual; the notice counts only the ignored. No message box. Announced like the other notices.
+- Why not a box: 7.5 keeps boxes for failures that leave the user's files somewhere unexpected; here no file was touched. Why not silence: a slot that opens and then nothing happens looks like a failed drop.
+- Spec 5.2's "bounces back" is moot: an OS drag that does nothing leaves the file where it was. M5: Fan and Ring show the notice in the hub's name line, as launch errors do (7.5).
+- **Ender: keep `dropEffect = 'copy'`, never `'move'`.** A drop answered with Move tells the drag source, here Explorer's desktop, to delete what it handed over: including an `.exe` that is added by reference. The cursor therefore reads "Copy" while a desktop shortcut moves; the tile arriving and the icon leaving are the confirmation.
+
+### B8. Cheat-sheet Delete row
+
+`DELETE` / `Remove the focused tile; a moved shortcut goes back to the desktop (edit mode)`
+
+"Remove" everywhere else in the app means the file is untouched (5.4); on a moved tile it is not. Measured on a mock at the 440 minimum: 3 lines in the 218 px description column (the longest row today is 2). Not shortened: a trimmed `(edit mode)` orphaned on its own line read worse, and the list scrolls.
+
+### B9. Reasons
+
+Cloud-only placeholder: `The file is online only. Keep it on this device, then try again.` (code -2). Ender's catch-all, "The disk refused the move.", is false here (the disk refused nothing) and gives no way out. The line is provider-neutral (OneDrive, Dropbox and others set the same attribute), and "keep it on this device" is OneDrive's own menu wording.
+
+The full table; the three spec reasons stay, four are added because the catch-all described these cases wrongly:
+
+| When | Reason line |
+|---|---|
+| Win32 5 on the Public Desktop | `Needs administrator rights.` (spec) |
+| Win32 5 elsewhere (a read or ACL refusal; plan deviation 6) | `Windows denied access to the file.` |
+| 32, 33 | `The file is in use.` (spec) |
+| 17: Desktop and store folder on different drives | `The desktop is on a different drive.` |
+| cloud-only placeholder | `The file is online only. Keep it on this device, then try again.` |
+| 2, 3: gone before or during the move | `The file is missing.` |
+| anything else (-1, -3, other codes) | `The disk refused the move.` (spec) |
+
+### B10. A file dropped into a filtered region
+
+- On an **accepted** file drop (not FULL, at least one path), the region clears its type-to-filter (`clearFilter()`) at the moment it sends the paths. The new tile then shows when it arrives, in the slot where it was dropped: the slot is in the DOM at its real index, so clearing reveals the hidden tiles around it.
+- A rejected or cancelled drop leaves the filter alone. Hovering never clears it.
+- **+ FILE** (same path through the move): the same, when the chosen file is added.
+- Silent: the filter chip going away is the feedback.
+- Fan and Ring (M5): chips only dim, so nothing hides; decided there.
+- Scope: file drops only. M2b's m-2 (the same case for a tile dragged from another region) is not ruled here; the same rule would keep the two alike.
+
+### B11. Deviation 8: confirmed
+
+Broken means the file is missing from the store folder, and nothing else. A move back that fails with the file still there leaves a normal tile that launches, and one box (B1): marking a working tile broken would lie, and the box text for broken says "missing". The box is the record; the retry is one more ↩ (the badge stays). Spec 3.4 and 5.4's "marked broken" on a failed move are replaced. The consequences for a missing file are in B4.
+
+### B12. Found in the pass, not among the 11
+
+1. **↩ badge look.** As built it wears the ✕ look: white on `--remove-btn-bg` (under 3:1 in 6 of 101 themes: `persona-5` 1.64, `portal` 1.71, `ff8` 2.71, `metal-gear` 2.75, `ff7` 2.93, `fatal-frame` 2.97), and it turns the danger colour on hover, while ↩ is the safe action. Rule: class `.btn-move-back` carrying `.btn-remove`'s geometry (position, 24 x 24, radius, padding, z-index; top -2, right -2) and none of its colours; the cloned node drops the `btn-remove` class. `background: var(--panel-bg)`; `border: 1px solid var(--accent-text)`; `color: var(--text)`; glyph 14 px (11 px reads as ← or ↵; rendered). Hover: `background: var(--btn-hover-bg); border-color: var(--accent-c); box-shadow: var(--glow-c); color: var(--text)` (the global `button:hover` sets `#fff`, unreadable on a light theme). Focus: `outline: 2px solid var(--accent-text); outline-offset: -2px` (inside the disc, because the tile's `overflow: hidden` would clip an outer ring; `--accent-c` is under 3:1 in 13 themes). Tooltip and `aria-label` `Move back to desktop` (as built). The existing ✕ badge is clipped 2 px at the top and right by the tile; not touched.
+2. **Try-it on a fake desktop (TechPlan 8, Try-it row and deviation 11).** UX effect: a shortcut dragged from Sergei's **real** desktop in the try-it is classified as a reference, so it gets a tile and **stays on the desktop**. It would look as if the move is broken. The try-it also has no M3 step. Ender adds one, and the script writes two sample files, `Try A.url` and `Try B.url` (plain text: `[InternetShortcut]` and a `URL=` line), into the fake Desktop. Printed text:
+   ```
+   Desktop files move in (M3). This run uses a fake desktop: your real desktop is never touched.
+    a. In Explorer open <profile>\desk\Desktop. It holds Try A and Try B.
+    b. Drag both onto a region. They leave the folder and appear as tiles.
+    c. Right-click the region, Edit shortcuts. Click ↩ on one: it is back in the folder.
+    d. Open the Manager, Moved shortcuts. OPEN FOLDER shows <profile>\desk\QuickLauncher Shortcuts.
+    e. Region menu, Move all shortcuts back to desktop...: the other one goes back.
+    Note: a shortcut dragged from your real desktop is added as a normal tile and stays on the desktop in this run.
+   ```
+   A drag of real desktop icons is first provable on the real desktop (TechPlan 8, "not provable"): the first real drop should be a throwaway shortcut.
+3. **Deviation 4** (restore-all also moves files without a tile to the Desktop): no UX issue; the uninstall gives back every file, and the box in B6 covers any that stay.
+4. **Duplicate drop is silent** (as today): a file that already is a tile in that region adds nothing and says nothing. Not ruled. Offer: `ALREADY IN THIS REGION` in the B7 notice.
+5. **OneDrive** (5.5.5 string unchanged): if Sergei's Desktop is OneDrive-synced, OneDrive sees a moved shortcut as deleted from the Desktop, so his other PCs may lose it; the Manager line is the only warning, and only if he opens the Manager. Not verified here. Question for Jane: is his Desktop OneDrive-redirected?
+
+### Contrast, measured
+
+Method as above (gate maths; dark `cyberpunk`, light `mirrors-edge`; "worst" is the lowest of 101).
+
+| Pair | Used for | Floor | `cyberpunk` | `mirrors-edge` | Worst of 101 |
+|---|---|---|---|---|---|
+| `--text` on `--bg` | Manager sentences; pip fill and its "!" | 4.5 | 17.00 | 6.74 | `mordor` 5.76 |
+| `--text` on `--panel-bg` | ↩ glyph | 4.5 | 16.98 | 6.10 | `silent-hill` 5.48 |
+| `--accent-text` on `--bg` | ↩ border | 3 | 14.60 | 3.46 | `warhammer-tyranids` 3.02 |
+| `--accent-text` on `--panel-bg` | ↩ border, the other surface | 3 | n/a | n/a | `warhammer-tyranids` 2.98, `silent-hill` 2.99, `resident-evil` 3.00 (the border does not identify the control; the glyph does) |
+| rejected: `--accent-m` on `--bg` | pip as built | 3 | 5.71 | 4.10 | `twin-peaks` 1.32; 30 under 3 |
+| rejected: `--text-dim` on `--bg` | sentences as built | 4.5 | 6.99 | 4.76 | `lovecraft` 2.52; 13 under 4.5 |
+| rejected: white on `--remove-btn-bg` | ↩ as built | 3 | 19.09 | 4.20 | `persona-5` 1.64; 6 under 3 |
+
+Native boxes, the README and the NSIS box use the OS theme and need no token.
+
+### Nothing covers anything (rects, S = 64)
+
+- **Pip** (12 x 12 at x 3 to 15, y 3 to 15 of the tile) vs the icon (x 16 to 80, y 7 to 71 at W = 96): no intersection, 1 px clear at the narrowest tile and more when wider (a 100 wide tile: 3 px). Vs the edit badge (top-right, x W-23 to W+1, measured on the mock): none for every W of 96 or more. Vs the label (y 76 and below): none. The pip is `pointer-events: none`, so a click goes to the tile.
+- **↩ badge:** same rect as today's ✕; it overlaps the icon's top-right corner as ✕ does, and the icon is not interactive.
+- **Manager section:** normal flow, no absolute positioning; at 440 wide the orphan row is name (shrinks, ellipsis) then two buttons (76 and 126 wide), no overlap.
+- **File-drop states:** the outline, slot and hint rules are M2's (`#drop-hint` hidden during the preview); the notice uses the existing banner slot.
+
+### Tooltips (every new control)
+
+`↩` Move back to desktop (as built). `✕` on a broken tile: Remove tile. The broken tile: B4. `OPEN FOLDER`, `MOVE ALL BACK…`: 9.1, and `No shortcuts to move back.` / `Moving is unavailable.` while disabled. `ADD BACK`, `MOVE TO DESKTOP`: B5. The pip, the notice and the section title are not controls.
+
+### Futaba measures (each seen to fail on a deliberate break first)
+
+1. A broken tile in `twin-peaks`, in view and in edit mode: the pip exists, its rect is x 3 to 15 / y 3 to 15 of the tile, it intersects neither the icon nor the badge, its fill resolves to `--text` and its contrast against `--bg` is 3:1 or more.
+2. Click, Enter and Space on a broken tile: the box text is `“Name” is missing from the QuickLauncher Shortcuts folder.`, buttons `Remove tile`, `Keep`, default and cancel answer = Keep.
+3. Edit mode, broken tile: the badge text is `✕`, its title is `Remove tile`; a click removes the tile with no box. A moved tile with its file keeps `↩`.
+4. A region with 1 missing-file tile and 1 reference: Delete region shows `2 shortcuts are removed ...` and deletes with no failure box. A region with 2 moved shortcuts and 1 missing: Move all back says `Move 2 shortcuts back ...`.
+5. Each failure box of B1 from an injected failure: the text equals the table (1 failure and 2 or more; with 4 names to see `and 1 more`); with two different reasons the second line has one `{name}: {reason}` line per listed name.
+6. The seven reasons of B9: each code returns its line (fault injection for 5, 32, 17, 2; the real attribute for the placeholder).
+7. Drop a `.txt` and a folder together with one `.lnk`: one tile, notice `2 FILES ARE NOT SHORTCUTS`; drop a `.txt` alone: `NOT A SHORTCUT`, no box, nothing moved.
+8. Type a filter that hides every tile, then drop a shortcut: the filter is empty afterwards and the new tile is visible; a rejected drop leaves the filter.
+9. Manager at 440 x 420: every button in the section is 24 px high or more; with moving unavailable the three buttons are disabled with their tooltip; at 0 moved `MOVE ALL BACK…` is disabled with `No shortcuts to move back.`; the sentences resolve to `--text`.
+10. The README and uninstaller texts equal B6 byte for byte (the NSIS string compiled with `makensis`).
