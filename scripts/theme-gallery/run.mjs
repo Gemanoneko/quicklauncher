@@ -46,8 +46,9 @@
 //   --processes=<n>       Electron processes the roster is split over (default 4)
 //   --concurrency=<n>     offscreen windows per process (default 6)
 //   --out=<dir>           where hover-readings.json goes (default <work>/hover; work default scratch/theme-gallery/.work-hover)
-//   --neuter-control=pc1,pc2,pc3  make a positive control pass on purpose, to see it void the run (exit 2)
-//                         (PC1 flat hover fill, PC2 light theme without its opt-out, PC3 smooth gradient fill)
+//   --neuter-control=pc1,pc2,pc3,pc4  make a positive control pass on purpose, to see it void the run (exit 2)
+//                         (PC1 flat hover fill, PC2 light theme without its opt-out, PC3 smooth gradient fill,
+//                         PC4 hard patch exactly the label colour, judged only through the coverage capture)
 //   --ink-free-all        take the two extra captures for every reading, not only where they can matter (122 s
 //                         against 52 s on 2026-10-03); audits the trigger: verdicts must equal a normal run's.
 //                         A reading the trigger skipped can read lower here: at most 3.0 % on 2026-10-03
@@ -93,6 +94,9 @@ const num = (k, d) => { const v = Number(opt(k, d)); if (!Number.isFinite(v) || 
 // The hover gate's numbers are defined at one geometry (520x760 CSS px at 1x, software raster),
 // so those options are fixed in that mode; its hard limit is 180 s for the whole run.
 const HOVER_LIMIT_SEC = 180;
+// The built-in positive controls (hover.cjs defines them). Each must run and fail, or the run is void (exit 2):
+// a control that is defined but missing from this list would only be printed, never enforced.
+const HOVER_CONTROLS = ['PC1', 'PC2', 'PC3', 'PC4'];
 const cfgBase = hoverCheck ? {
   scale: 1, width: 520, height: 760, freezeMs: 0, concurrency: Math.round(num('concurrency', 6)),
   timeoutSec: HOVER_LIMIT_SEC - 5, gpu: false, selfTest: false,
@@ -116,7 +120,7 @@ if (hoverCheck) {
   if (flag('gpu')) refuse.push('--gpu is not available in --hover-check mode (software raster only)');
   if (rebaseline && only) refuse.push('--rebaseline needs the whole roster; drop --only');
   if (rebaseline && ref) refuse.push('--rebaseline reads the live tree; drop --ref');
-  for (const c of cfgBase.hover.neuter) if (!['pc1', 'pc2', 'pc3'].includes(c)) refuse.push(`--neuter-control: unknown control ${c} (pc1, pc2, pc3)`);
+  for (const c of cfgBase.hover.neuter) if (!HOVER_CONTROLS.map((id) => id.toLowerCase()).includes(c)) refuse.push(`--neuter-control: unknown control ${c} (${HOVER_CONTROLS.map((id) => id.toLowerCase()).join(', ')})`);
 } else {
   if (rebaseline) refuse.push('--rebaseline belongs to --hover-check');
   if (flag('ink-free-all')) refuse.push('--ink-free-all belongs to --hover-check');
@@ -480,7 +484,7 @@ if (hoverCheck) {
   const measured = results.reduce((n, r) => n + (r.rows || []).filter((x) => !x.error && typeof x.ratio === 'number').length, 0);
   if (measured !== expected * 40) fails.push(`${measured} pair(s) measured, expected ${expected} theme(s) x 40 = ${expected * 40}`);
   const pcs = hx ? [...hx.pcs].sort((a, b) => a.id.localeCompare(b.id)) : [];
-  for (const id of ['PC1', 'PC2', 'PC3']) {
+  for (const id of HOVER_CONTROLS) {
     const pc = pcs.find((p) => p.id === id);
     if (!pc) fails.push(`positive control ${id} did not run`);
     else if (!pc.failed) fails.push(`positive control ${id} (${pc.what}) did not fail: ${pc.pair} read ${pc.ratio2 ?? '?'}:1${pc.needSrc ? ` from the ${pc.src || '?'} candidate` : ''}, must be under ${pc.under}:1${pc.needSrc ? ` from the ${pc.needSrc} candidate` : ''}${pc.problems.length ? ` [${pc.problems.join('; ')}]` : ''}`);

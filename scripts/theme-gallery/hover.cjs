@@ -44,8 +44,10 @@
 //     on the element or label) that lies wholly inside the range rect, such as a small radial
 //     blob, because the ring around it stays one colour; --ink-free-all sees it.
 //   - Ratio: the WCAG function of scripts/check-theme-contrast.js (shared, not copied).
-//   - Three positive controls run first, on fixture copies of a theme's text set through the
-//     DevTools protocol (nothing is written to disk); run.mjs voids the run if any passes.
+//   - Four positive controls run first, on fixture copies of a theme's text set through the
+//     DevTools protocol (nothing is written to disk); run.mjs voids the run if any passes or is
+//     missing: PC1 flat hover fill, PC2 light theme without its opt-out, PC3 smooth gradient,
+//     PC4 hard patch exactly the label colour (fails only through the coverage capture).
 const fs = require('fs');
 const path = require('path');
 const { BrowserWindow } = require('electron');
@@ -427,6 +429,15 @@ async function runHover(o) {
     pcJobs.push({ kind: 'pc', id: 'PC3', theme: 'cyberpunk', pair: 'edit-add-file/hover', under: 2, needSrc: 'grad', noPaintTrigger: true, neutered: neuter.has('pc3'),
       what: `fixture hover fill ${grad} under a white label, ${hc.inkFreeAll ? 'ink-free capture forced (--ink-free-all: the trigger is not exercised)' : 'found by the ring trigger only'}`,
       fixture: `/* check:hover PC3 fixture */\n#btn-add-edit:hover { background: ${grad} !important; color: #FFFFFF !important; }\n` });
+    // A hard-edged patch of exactly the label colour under the label's right part (Futaba's A-F1 case,
+    // her T-F1 control). Over it the glyphs vanish, so the ink-on capture equals the ink-free one there:
+    // only the coverage capture marks those glyph pixels, and the control fails (1:1) only while that
+    // mask works. Same trigger rules as PC3; it must fail on the gradient candidate.
+    const hardEnd = neuter.has('pc4') ? '#333333' : '#FFFFFF';
+    const hard = `linear-gradient(90deg, #000000 0%, #000000 55%, ${hardEnd} 55%, ${hardEnd} 100%)`;
+    pcJobs.push({ kind: 'pc', id: 'PC4', theme: 'cyberpunk', pair: 'edit-add-file/hover', under: 2, needSrc: 'grad', noPaintTrigger: true, neutered: neuter.has('pc4'),
+      what: `fixture hover fill ${hard} (a hard patch exactly the label colour) under a white label, ${hc.inkFreeAll ? 'ink-free capture forced (--ink-free-all: the trigger is not exercised)' : 'found by the ring trigger only'}`,
+      fixture: `/* check:hover PC4 fixture */\n#btn-add-edit:hover { background: ${hard} !important; color: #FFFFFF !important; }\n` });
   }
 
   function makeWindow() {
