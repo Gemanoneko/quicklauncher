@@ -193,3 +193,150 @@ My own faults, found and removed before any number here depended on them: (1) a 
 ## 11. Scratch (copy what you need; it has been wiped before)
 
 `C:\Users\AnGeLZzZ\AppData\Local\Temp\claude\C--Antigravity-Projects-Studio-Illuminati\ab778959-0638-4d60-8887-346c422e496e\scratchpad\futaba-pc4\`: `pin\` (the five pinned files) and `pin-sha256.txt`; clones `head\`, `build\`, `mut\` and `snap\`; `deepcmp.cjs` (every-key comparison of two readings files); `mutate.cjs` and `mutrun.sh` (modes A, B, C, E, E2, F); `gaterun.sh`; `hmutate.cjs` and `hmut\` (harness mutations HM1 to HM3); `ownof-test.cjs` (extracts `ownOf` from the pinned harness); `sc\` (scenarios: orphan1, orphan2, hang, throw, busy); `dummyspawn.cjs` and `hf1\` (dummy apps and every harness run's output); `old-harness\`; `tempwatch2.cjs`, `cscwatch.ps1`, `analyze-watch.cjs` and `watch\` (the shared-temp and compiler evidence); `counts.cjs`; `out\` and `logs\` (every run's readings and console output). Stray, mine, not deleted: `C:\c\` (section 10).
+
+---
+
+# F-1 follow-up (regression QA of Ender's fix), 2026-10-04
+
+Futaba. Asked by Jane: regression-QA of Ender's fix for F-1 (a control defined only in `hover.cjs` was printed but not enforced). Red-team again: break the new "ran must equal `HOVER_CONTROLS`, each once" check with every shape of mismatch I could build, and check the neuter paths, the readings and the spec text. Nothing in the tool repo or the studio repo was edited, staged, committed or pushed; the only thing I wrote there is this appended section (uncommitted). The regions worktree (`C:/Antigravity Projects/QuickLaunch-regions-spike`) was not touched. Runs span 19:18 to 19:52 JST, with a re-check at 23:13 after a pause.
+
+## F1.1 Verdict
+
+**Verdict:** GO
+
+GO for Sully to commit the three files (`scripts/theme-gallery/run.mjs`, `scripts/theme-gallery/hover.cjs`, `Docs/QuickLaunch_HoverFix57_Spec_2026-10-02.md`). Blockers: none. Majors: none. **F-1 is closed** for every shape of mismatch where a control has a string id, and N5 (the spec's "now two") is closed. One new Minor, **F-2**, in a shape the fix does not reach (a control with no usable id); it predates the fix, fails loudly, and does not block. All six of Ender's claims reproduced.
+
+Pattern alerts: 1 open (F1.7), 1 closed.
+
+## F1.2 Receipt (the pin)
+
+| Item | Value |
+|---|---|
+| Tool / version | QuickLauncher **1.94.3** (folder `WIP/QuickLaunch`) |
+| Branch / HEAD | `wip/theme-fidelity` / **`454f66f`** (`454f66f38aeeb827c41bd62add19ad617d7f1785`); unchanged at the end |
+| Dirty set, tool repo | exactly the 3 files below, at the start and at the end; nothing untracked, no stash |
+| Entry-check receipt (identical script, run from the pinned clone `build`) | `Entry-check receipt: quicklauncher v1.94.3 @ 454f66f (dirty: Y) — pre-qa n/a, post-build n/a, check-electron n/a, check pass, test:smoke n/a` |
+
+SHA-256 of the pin, taken first from the live files into `scratchpad/futaba-f1/pin/` (kept as `pin-sha256.txt`):
+
+```
+696bda314550840bacdd272dd18b2d43ccf879d4cb626af4a11d0c3b38d1a6b9  tool/scripts/theme-gallery/run.mjs
+231861083efe6588631e7e4ba3a702ca9f2819eccae16be8f0389f8a27279793  tool/scripts/theme-gallery/hover.cjs
+b99b7804f7794afe86e35b069239d29266ff793aceac53105b070c518b06987b  tool/Docs/QuickLaunch_HoverFix57_Spec_2026-10-02.md
+```
+
+**End check (19:52): all 3 live files hash-identical to the pin** (`sha256sum -c` against the pin file, 3 of 3 OK, and `cmp` of each live file against its pinned copy). Tool repo HEAD still `454f66f`, same 3 modified files. My mutation clone `mut` ended hash-equal to the pin (restored after every run, `cmp` each time). The session paused after that check; on resuming I repeated it at 23:13 before appending this section: pin file 3 of 3 OK, live files identical to the pin, HEAD and dirty set unchanged, `mut` still pinned, `electron.exe` 0, Sergei's 4 QuickLauncher PIDs still there.
+
+**What I tested.** Three scratch clones of the tool repo (`git clone --no-hardlinks`, detached at `454f66f`): `head` (unmodified old tooling, the comparison), `build` (HEAD plus the three pinned files, byte-verified) and `mut` (same as `build`, mutations only, restored from the pin and compared after every run). `node_modules/electron` is a real byte copy (not a junction or symlink) in all three; `electron.exe` hashes equal to the live one (`217c7abc77aa...`). My link walker (junctions count as links) found **0 links** in `head` (2,067 entries), `build` (2,073), `mut` (2,073), the output folder (170) and the logs (136). I did not run `npm run build` or `npm run release`.
+
+Setup note: `head` is a plain checkout, so its two tool files have CRLF endings; the pinned files are LF. With the CRs stripped, `head` equals the `HEAD` blobs byte for byte, and the `--help` text of `head` and `build` differs in exactly the two lines Ender changed (the `HOVER_CONTROLS` comment), nothing else.
+
+## F1.3 Ender's claims, one by one
+
+| Claim | Result | How |
+|---|---|---|
+| Unlisted PC5, firing or not, gives exit 2 | **yes, both** | full roster. Firing: exit 2, PC5 prints `fired`, one line `PC5 ran but is not in HOVER_CONTROLS (run.mjs), so nothing would enforce it`. Not firing: exit 2, that line plus `PC5 ... did not fail`. The report JSON says `verdict VOID` with that failure |
+| Duplicate PC1 gives exit 2 | **yes** | full roster: `positive control PC1 ran 2 times`, exit 2 |
+| Renamed PC4 gives exit 2 | **yes** | full roster, PC4 to PC4b: `PC4 did not run` and `PC4b ran but is not in HOVER_CONTROLS`, exit 2 |
+| The neuter paths are unchanged | **yes** | 19 invocations, each run on `head` and on `build`: exit codes equal in 19 of 19, normalised output identical in 19 of 19 (table F1.5) |
+| 4,040 readings identical apart from `grabs` | **yes** | F1.4: 4,040 of 4,040 in all three comparisons |
+| `npm run check` passes | **yes** | the entry-check script reports `check pass` (contrast, then hover, exit 0 at 454f66f plus the pin); 3 more clean full runs exit 0 |
+
+Also unchanged: wall time (the gate's own timer 44.8 s on `build`, 46.0 s on `head`, 46.0 s on a second `build`), 36 processes started and 0 left, sockets 0, registry unchanged.
+
+## F1.4 The 4,040 readings
+
+Method: `deepcmp.cjs` joins two `hover-readings.json` files on theme and pair (101 x 40) and compares every key of every reading, flattened, at full precision.
+
+| Comparison | Pairs | Identical on every key | Identical apart from `grabs` | Other differences |
+|---|---|---|---|---|
+| `head` run against `build` run 1 | 4,040 | 3,997 | **4,040** | none; `grabs` differs in 43 |
+| `head` run against `build` run 2 | 4,040 | 4,001 | **4,040** | none; `grabs` differs in 39 |
+| `build` run 1 against `build` run 2 | 4,040 | 4,008 | **4,040** | none; `grabs` differs in 32 |
+
+Also identical in all three: the four control records at every key (PC1 1.65, PC2 2.32, PC3 1.08, PC4 1.00), `verdict` PASS, `failures` empty, 0 errors, 0 grandfathered, and the ink-free counters (582 read again; image layer 119, clipped ring 0, near the floor 60, ring over 2 % worse 403). The console output of `head` and `build` is identical after timings and paths are normalised. `--ink-free-all` on `build`: exit 0, PC3 and PC4 still fire, **0 verdict differences** against the normal run, 679 of 4,040 readings lower by the unrounded `ratio` (669 by the rounded `ratio2`), none higher, largest drop 3.015 % (indiana-jones `edit-add-file/hover`, 17.49 to 16.96): the figures the usage text and the Brief state. 112 s wall.
+
+## F1.5 The neuter paths, head against build
+
+Each row ran the same arguments on `head` and `build` (`--only cyberpunk` unless noted) and compared the exit code and the normalised output.
+
+| Arguments | Exit (head / build) | Output |
+|---|---|---|
+| `--neuter-control=pc1`, `pc2`, `pc3`, `pc4` (four runs) | 2 / 2 each | identical; each names only its own control |
+| `pc4,pc1` | 2 / 2 | identical; PC1 then PC4 |
+| `pc1,pc2,pc3,pc4` | 2 / 2 | identical; all four |
+| `PC4` (upper case) | 2 / 2 | identical |
+| `pc5`, `PC5`, `pc4,pc9` | 2 / 2 | identical; `REFUSED: unknown control ... (pc1, pc2, pc3, pc4)`, nothing started |
+| empty value (`--neuter-control=`) | 0 / 0 | identical; nothing neutered |
+| `pc4,pc4`; `pc4,`; `pc4, pc1` (one argument); `--neuter-control pc4` (space form) | 2 / 2 each | identical |
+| `--ink-free-all` with `pc4`; with `pc3` | 2 / 2 each | identical |
+| `--processes=1` with `pc4`; `--only cyberpunk,tron --processes=2` with `pc3` | 2 / 2 each | identical |
+| Full roster on `build` only: `pc4`; and `pc1,pc2,pc3,pc4` | 2; 2 | PC4 only; all four, over 4 processes |
+
+Two of the 19 invocations (`PC4` and `PC5`) shared log names with their lower-case twins on this case-insensitive disk, so those two pairs of logs were overwritten; their result lines (identical, exit 2 / 2) were printed at run time and are what I rely on for them.
+
+## F1.6 Shapes of mismatch I built myself
+
+Every mutation was applied to the pinned `hover.cjs` or `run.mjs` in `mut` (each anchor had to match exactly once), run, and restored from the pin with a `cmp`.
+
+| Shape | Scale | Exit | What the run said |
+|---|---|---|---|
+| Controls run on **every** process instead of process 1 | full | **2** | `PC1`, `PC2`, `PC3` and `PC4` each `ran 4 times` |
+| Controls run on **no** process | full | **2** | all four `did not run` |
+| Controls run on the last process, not the first | full | 0 | passes: the check does not depend on which process runs them |
+| PC4 removed from both `run.mjs` and `hover.cjs` (a consistent edit) | full | 0 | passes with three controls: a deliberate removal is allowed |
+| Unlisted PC5 firing, with `--rebaseline` | full | **2** | `--rebaseline skipped: the run is void`; the baseline file hash is unchanged |
+| Unlisted PC5 firing under `npm run check` | full | **2** | contrast passes (101 checked, 0 errors), hover is void, npm passes the 2 through |
+| A **second** PC1 that cannot fire | `--only` | **2** | `ran 2 times` **and** `did not fail` (the old `find()` would have judged only the first copy) |
+| A second PC4 that fires | `--only` | **2** | `PC4 ran 2 times` |
+| PC4 id `pc4`; `PC4 ` (trailing space); empty id | `--only` | **2** each | `PC4 did not run` plus the odd id reported as not in the list |
+| `HOVER_CONTROLS` gets PC5 but `hover.cjs` defines none | `--only` | **2** | `PC5 did not run` |
+| `HOVER_CONTROLS` loses PC4 | `--only` | **2** | `PC4 ran but is not in HOVER_CONTROLS` |
+| `HOVER_CONTROLS` all lower case; empty; `'PC4 '` with a space | `--only` | **2** each | four `did not run` and four unlisted; four unlisted; PC4 `did not run` and unlisted |
+| PC4's page cannot be measured (theme `nosuchtheme`) | `--only` | **2** | both attempts logged, `PC4 DID NOT FIRE ... ?:1`, `did not fail` |
+| Mutation A (the judge ignores the coverage capture), the original T-F1 | `--only` | **2** | PC4 `DID NOT FIRE`, 21:1 from the box candidate |
+| `HOVER_CONTROLS` lists PC4 twice | `--only` | **0** | accepted silently (note N-a) |
+| `pc.failed` forced to true for every control | `--only` | **0** | all four print `fired` (note N-b) |
+| **A control with no `id` field** (an `ID:` typo) | `--only` x6, full x3 | **1** in 5 of 6 and in 2 of 3, otherwise 2 | `TypeError: Cannot read properties of undefined (reading 'localeCompare')` (**F-2**) |
+| **A control with a numeric id** (`id: 4`) | `--only` x1, full x3 | **1** in 4 of 4 | `TypeError: a.id.localeCompare is not a function` (**F-2**) |
+
+## F1.7 Findings, notes, spec check, pattern alerts
+
+| # | Severity | Finding | Status |
+|---|---|---|---|
+| F-1 | (was Minor) | a control defined only in `hover.cjs` was printed but not enforced | **closed**: unlisted (firing or not), missing, duplicated, renamed, list-only, process-duplicated and not-firing shapes all exit 2 |
+| N5 (last pass) | (note) | the spec said "now two" controls | **closed**, see below |
+| **F-2** | **Minor** | a control whose `id` is missing or not a string crashes the verdict with a stack trace and **exit 1**, not a VOID with exit 2. It is order-dependent: `pcs` is sorted with `a.id.localeCompare(b.id)`, and whether the comparator receives the bad element as `a` depends on which control finished first, so 5 of 6 `--only` runs and 2 of 3 full runs crashed for a missing id (4 of 4 for a numeric id) and the rest voided correctly. Exit 1 means "a new failing pair" to anyone reading the gate's contract, and no `hover-readings.json` is written. The unmodified `head` tooling does the same (3 of 4), so this is not a regression. Reachable only by a typo in a control definition, and it fails loudly | open. Direction: before the sort, void a run holding a non-string id (one line in `fails`), and sort on `String(p.id)` |
+
+Notes, not findings:
+
+- **N-a** A repeated entry in `HOVER_CONTROLS` (for example `'PC4'` twice) is accepted silently, exit 0. "Each exactly once" is enforced on the run side only. Nothing is left unenforced by it.
+- **N-b** `run.mjs` trusts the `failed` flag that `hover.cjs` computes for each control. A control forced to `failed = true` fires every time (exit 0). Not part of F-1 and not new; a cross-check `failed === (ratio < under, no problems)` in `run.mjs` would close it.
+- **N-c** Hand-kept mirrors of the control list remain outside the code check: the `run.mjs` header lines 42 and 43 still say "a positive control that does not fail" (missing, duplicate and unlisted are not named), lines 49 to 51 hard-code `pc1,pc2,pc3,pc4` and describe each control, spec section 5.6 lists "a positive control does not fail" as the cause (it is marked "unchanged from 2026-10-01", so it is history, not wrong), and Brief row 27 states "four". None is wrong today.
+- **N-d** `run.mjs --help` prints the two new comment lines, which say "this list" about a constant the usage text never shows (the N6 mechanism: every column-0 `//` line prints).
+- **N-e** The studio root's dirty set moved during my pass: `Team/Docs/ProcessRules.md` is now modified (it was not at 19:18). Not mine; I did not open it.
+
+**Spec section 5.4 checked against the code.** Accurate. The heading's claims (any one passing, missing, run twice, or not in `HOVER_CONTROLS` voids the run, exit 2) each reproduced (F1.3, F1.6). "Two at first, four since 2026-10-04": PC4 first appears in commit `201fa7e` dated 2026-10-04 (`git log -S"id: 'PC4'"`). PC3 bullet: commit `bc23337`, dated 2026-10-03, is the first commit defining it (`git log -S"id: 'PC3'"`); the ramp, the pair `edit-add-file/hover`, "under 2:1", "from the gradient candidate" and "measured 1.08" match the code and my runs (1.08). PC4 bullet: "same pair and rules as PC3" matches (same pair, `under: 2`, `needSrc: 'grad'`, `noPaintTrigger`); "measured 1.00" matches (1:1); "without it 21:1" reproduced under mutation A (21:1, box candidate). The Brief heading "Gradient fills in the hover gate" exists in the Decision Log (row 63). The PC1 and PC2 bullets are unchanged by the diff and still match (1.65, 2.32). The hunk touches only the heading and two added bullets. `hover.cjs`: with its full-line `//` comments stripped, the file is identical to `HEAD`, so the change is comments only, and the new header sentence is true (tested).
+
+Pattern alerts: 1 open, 1 closed
+
+1. Closed: **a positive control printed but not enforced** (T-F1, then F-1, two builds in a row). The structural gap is gone and the mutations that reproduced it last pass now exit 2. Disposition **fix, verified**.
+2. Open: **prose and usage mirrors of the control list drift each time a control is added** (the spec stopped matching at PC3 and was fixed only now; N-c lists what is still hand-kept). Recommended disposition: **accept**, since it is docs only and a new control is rare, with one added sentence in the `hover.cjs` header naming those places next to "a new control's id goes there too". Jane to confirm; not blocking.
+
+## F1.8 Counts, with method
+
+- **Gate runs: 87** hover-gate executions, counted from the 83 logs in `scratchpad/futaba-f1/logs/` (82 gate logs plus the entry-check's own `npm run check`) plus 4 logs overwritten by the case collision. **23 full-roster** (22 logs plus the entry-check's): exit 0 in 7, exit 2 in 11, exit 1 (the F-2 crash) in 5. **64 `--only` runs**: 38 head/build comparison runs (19 invocations x 2) and 26 mutation or crash probes (exit 2 in 15, exit 0 in 2, exit 1 in 9, of which 3 were on `head`).
+- **Crashes with a stack trace: 14**, counted by `grep -l TypeError` over the logs (5 full, 6 `--only` on the pin, 3 on `head`); all are the `localeCompare` shape (F-2).
+- **Isolation: 64 runs printed an isolation line and all 64 said 0 left, sockets 0, registry unchanged** (17 x 36 processes started, 44 x 4, 1 x 6, 2 x 8). The 19 logs without that line are 14 crashes (the processes had already been ended before the verdict code ran), 4 refusal logs (nothing is started), and the entry-check log. End census: `electron.exe` 0.
+- **Processes I started:** only the gate's own Electron processes (each run ends its own). No dummies, no harness runs. Sergei's QuickLauncher: 4 PIDs (30760, 23324, 31752, 41564) present at the start and at the end, never touched.
+- **Headless browsers:** none.
+
+## F1.9 Not tested, and my own probe faults
+
+Not tested: real OS input (no away window stated); the packaged build; the lane-2 smoke harness (not part of this change); a run interrupted by the 180 s limit with only some controls run (by reading, the `did not run` lines cover it; not tested); `npm run build` and `npm run release`.
+
+My own faults, found before any number here depended on them: (1) my first static check used a `$'\r'` inside a `for` loop and broke the shell parse; I redid it with `tr -cd '\r'`. (2) A `node -e` read passed an MSYS-style `/c/Users/...` path to Node, which resolved it as `C:\c\Users\...` and failed with ENOENT; it only read, and the stray `C:\c\` tree from the previous pass is unchanged (156 entries before and after). I re-ran it with a Windows path. (3) Two log pairs collided on a case-insensitive disk (`PC4`/`pc4`, `PC5`/`pc5`), see F1.5. (4) One read-only process query (a `Get-CimInstance` filter for command lines naming my scratch folder) went through `powershell.exe -NoProfile -Command` from Bash, not through the PowerShell tool; it listed only my own shells and the query itself. (5) `head` is a CRLF checkout and `build` an LF pin, which I only noticed from the `--help` diff; it changes no reading. (6) A first attempt to append this section failed on a shell parse error and wrote nothing; I wrote it through a file instead.
+
+## F1.10 Scratch (copy what you need; it has been wiped before)
+
+`C:\Users\AnGeLZzZ\AppData\Local\Temp\claude\C--Antigravity-Projects-Studio-Illuminati\ab778959-0638-4d60-8887-346c422e496e\scratchpad\futaba-f1\`: `pin\` and `pin-sha256.txt`; clones `head\`, `build\`, `mut\`; `mutate.cjs` (every mutation above, by name), `g.sh` (run the gate in a clone, restore and `cmp` the pin), `nt.sh` (head against build for one argument set), `deepcmp.cjs`, `links.cjs`; `section.md` (this section); `out\` and `logs\` (every run's readings and console output).
