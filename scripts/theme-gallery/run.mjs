@@ -94,8 +94,8 @@ const num = (k, d) => { const v = Number(opt(k, d)); if (!Number.isFinite(v) || 
 // The hover gate's numbers are defined at one geometry (520x760 CSS px at 1x, software raster),
 // so those options are fixed in that mode; its hard limit is 180 s for the whole run.
 const HOVER_LIMIT_SEC = 180;
-// The built-in positive controls (hover.cjs defines them). Each must run and fail, or the run is void (exit 2):
-// a control that is defined but missing from this list would only be printed, never enforced.
+// The built-in positive controls (hover.cjs defines them). The controls that ran must be exactly this list,
+// each once, and each must fail, or the run is void (exit 2); a control added to hover.cjs only voids the run.
 const HOVER_CONTROLS = ['PC1', 'PC2', 'PC3', 'PC4'];
 const cfgBase = hoverCheck ? {
   scale: 1, width: 520, height: 760, freezeMs: 0, concurrency: Math.round(num('concurrency', 6)),
@@ -484,11 +484,14 @@ if (hoverCheck) {
   const measured = results.reduce((n, r) => n + (r.rows || []).filter((x) => !x.error && typeof x.ratio === 'number').length, 0);
   if (measured !== expected * 40) fails.push(`${measured} pair(s) measured, expected ${expected} theme(s) x 40 = ${expected * 40}`);
   const pcs = hx ? [...hx.pcs].sort((a, b) => a.id.localeCompare(b.id)) : [];
-  for (const id of HOVER_CONTROLS) {
-    const pc = pcs.find((p) => p.id === id);
-    if (!pc) fails.push(`positive control ${id} did not run`);
-    else if (!pc.failed) fails.push(`positive control ${id} (${pc.what}) did not fail: ${pc.pair} read ${pc.ratio2 ?? '?'}:1${pc.needSrc ? ` from the ${pc.src || '?'} candidate` : ''}, must be under ${pc.under}:1${pc.needSrc ? ` from the ${pc.needSrc} candidate` : ''}${pc.problems.length ? ` [${pc.problems.join('; ')}]` : ''}`);
+  // Every control printed below is enforced: the ids that ran must equal HOVER_CONTROLS, each once.
+  for (const id of HOVER_CONTROLS) if (!pcs.some((p) => p.id === id)) fails.push(`positive control ${id} did not run`);
+  for (const id of new Set(pcs.map((p) => p.id))) {
+    const n = pcs.filter((p) => p.id === id).length;
+    if (!HOVER_CONTROLS.includes(id)) fails.push(`positive control ${id} ran but is not in HOVER_CONTROLS (run.mjs), so nothing would enforce it`);
+    else if (n > 1) fails.push(`positive control ${id} ran ${n} times`);
   }
+  for (const pc of pcs) if (!pc.failed) fails.push(`positive control ${pc.id} (${pc.what}) did not fail: ${pc.pair} read ${pc.ratio2 ?? '?'}:1${pc.needSrc ? ` from the ${pc.src || '?'} candidate` : ''}, must be under ${pc.under}:1${pc.needSrc ? ` from the ${pc.needSrc} candidate` : ''}${pc.problems.length ? ` [${pc.problems.join('; ')}]` : ''}`);
 
   // Baseline: a failing pair not listed for its theme is an error; listed = grandfathered;
   // a listed pair that passes is a note. --rebaseline only ever deletes entries.

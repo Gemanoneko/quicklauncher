@@ -45,8 +45,9 @@
 //     blob, because the ring around it stays one colour; --ink-free-all sees it.
 //   - Ratio: the WCAG function of scripts/check-theme-contrast.js (shared, not copied).
 //   - Four positive controls run first, on fixture copies of a theme's text set through the
-//     DevTools protocol (nothing is written to disk); run.mjs voids the run if any passes or is
-//     missing: PC1 flat hover fill, PC2 light theme without its opt-out, PC3 smooth gradient,
+//     DevTools protocol (nothing is written to disk); run.mjs voids the run if any passes, is
+//     missing, runs twice, or is not in its HOVER_CONTROLS list (a new control's id goes there too):
+//     PC1 flat hover fill, PC2 light theme without its opt-out, PC3 smooth gradient,
 //     PC4 hard patch exactly the label colour (fails only through the coverage capture).
 const fs = require('fs');
 const path = require('path');

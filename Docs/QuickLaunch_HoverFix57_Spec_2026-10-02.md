@@ -222,10 +222,12 @@ One page per theme (the real `index.html`, `base.css`, the theme, the real `app.
    - Reading = the lowest ratio over (a) and (b). Why: fixed sample points read the ring on circular buttons; a single most-frequent colour picked a dark scanline stripe; the CSS fill alone missed an inset glow. See section 1.
 4. Backdrop forced opaque black; transitions and animations off; `#app-entrance` hidden; ratio from the shared function. Unchanged.
 
-### 5.4 Built-in positive controls (**A3**: now two; either one passing voids the run, exit 2)
+### 5.4 Built-in positive controls (**A3**: two at first, four since 2026-10-04; any one passing, missing, run twice, or not in `run.mjs` `HOVER_CONTROLS` voids the run, exit 2)
 
 - **PC1:** a fixture theme with `--btn-hover-bg:#E3C68E` and a white hover label must read under 2:1 on `edit-add-file/hover`.
 - **PC2 (new):** the real `2001` theme with its `--hover-label-floor: 0` line stripped must read **under 4.5:1 on `edit-done/hover`** (measured 2.32). It proves the gate sees a light theme that forgets to opt out of the band.
+- **PC3 (added by Ender, commit `bc23337`, 2026-10-03):** a smooth ramp to white under a white label must read under 2:1 on `edit-add-file/hover`, from the gradient candidate (measured 1.08). Details: the Brief's Decision Log, "Gradient fills in the hover gate".
+- **PC4 (added by Ender, commit `201fa7e`, 2026-10-04):** a hard patch exactly the label colour, same pair and rules as PC3; only the coverage capture can fail it (measured 1.00; without it 21:1).
 
 ### 5.5 Baseline and ratchet (**A4**)
 
