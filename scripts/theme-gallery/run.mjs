@@ -36,7 +36,9 @@
 //   40 readings per theme (hover and pressed on 17 controls, tile names, skin rows, installed-picker rows),
 //   measured in offscreen 520x760 windows at 1x (hover.cjs). Where a gradient can matter (image layer, a ring
 //   around the text that reads over 2 % worse, a reading within 10 % of its floor) the text box is captured again
-//   with the label's ink off and the fill is also judged at its worst point. Exit 0 pass, 1 a failing pair not in
+//   with the label's ink off and with its glyphs in a coverage colour, and the fill is also judged at its worst
+//   point under the glyphs (14.4 % of readings on 2026-10-03; the run took 52 s, against 45 s without the
+//   coverage capture, on the same machine). Exit 0 pass, 1 a failing pair not in
 //   scripts/themes-hover-baseline.json, 2 harness failure (pairs measured not themes x 40, a positive control
 //   that does not fail, a guard counter, a process left, a registry change, the 180 s hard limit).
 //   --only a,b            measure only these themes (baseline still applies to them)
@@ -46,9 +48,10 @@
 //   --out=<dir>           where hover-readings.json goes (default <work>/hover; work default scratch/theme-gallery/.work-hover)
 //   --neuter-control=pc1,pc2,pc3  make a positive control pass on purpose, to see it void the run (exit 2)
 //                         (PC1 flat hover fill, PC2 light theme without its opt-out, PC3 smooth gradient fill)
-//   --ink-free-all        take the ink-free capture for every reading, not only where it can matter (about
-//                         twice as slow; audits the trigger: verdicts must equal a normal run's, and a reading
-//                         the trigger skipped may read up to 2 % lower here)
+//   --ink-free-all        take the two extra captures for every reading, not only where they can matter (122 s
+//                         against 52 s on 2026-10-03); audits the trigger: verdicts must equal a normal run's.
+//                         A reading the trigger skipped can read lower here: at most 3.0 % on 2026-10-03
+//                         (679 of 3,462 skipped readings lower, 0 verdicts changed)
 //
 // Isolation: QuickLaunch's main process is never loaded; no window is shown or focused; no
 // tray, hotkey, audio or network; login-item APIs are counting no-ops. This script READS the
@@ -533,7 +536,11 @@ if (hoverCheck) {
   const dEv = (res && res.extra && res.extra.displayEvents) || [];
   if (dEv.length) console.log(`  displays    ${dEv.length} display change event(s) during the run (every page re-checks its window size, every capture must settle)`);
   const prof = (hx && hx.profile) || {};
-  console.log(`  ink-free    ${prof.inkFree || 0} of ${measured + pcs.length} readings captured again with the label's ink off${hx && hx.inkFreeAll ? ' (--ink-free-all)' : ` (image layer ${prof.ink_paint || 0}, clipped ring ${prof.ink_edge || 0}, near the floor ${prof.ink_near || 0}, ring over 2 % worse ${prof.ink_ring || 0})`}; ${results.reduce((n, r) => n + (r.rows || []).filter((x) => x.src === 'grad').length, 0)} read from a gradient's worst point`);
+  // Readings decided by the worst point: a gradient when it reads more than 2 % below the flat fill
+  // (hover.cjs sets grad.gradient), otherwise a flat fill the worst point lowered by grain or a border.
+  const fromGrad = results.flatMap((r) => (r.rows || []).filter((x) => x.src === 'grad'));
+  const gradCount = fromGrad.filter((x) => x.grad && x.grad.gradient).length;
+  console.log(`  ink-free    ${prof.inkFree || 0} of ${measured + pcs.length} readings captured again with the label's ink off, and again with its glyphs in a contrast colour${hx && hx.inkFreeAll ? ' (--ink-free-all)' : ` (image layer ${prof.ink_paint || 0}, clipped ring ${prof.ink_edge || 0}, near the floor ${prof.ink_near || 0}, ring over 2 % worse ${prof.ink_ring || 0})`}; ${gradCount} read from a gradient's worst point (more than 2 % below the flat fill; ${fromGrad.length - gradCount} more within 2 % of it are flat fills)`);
   console.log(`  isolation   sockets ${sockets.length} (${samples.length} netstat sample(s)) | registry ${regChanges.length ? 'CHANGED' : 'unchanged'} | processes ${seenPids.size} started, ${left.length} left, exit ${result.code}${timedOut ? ' after timeout' : ''} | ${(wall / 1000).toFixed(1)} s`);
   const report = {
     tool: 'scripts/theme-gallery --hover-check', generated: new Date().toISOString(), quicklaunch: { version, ...source }, electron: electronVersion,

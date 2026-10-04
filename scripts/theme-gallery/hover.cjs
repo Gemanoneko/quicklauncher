@@ -22,21 +22,27 @@
 //     smooth gradient only by its most frequent colour, which can be its best end. So the fill
 //     also gets (c) its worst point behind the label: the text box is captured a second time with
 //     the label's ink switched off (text fill, stroke, shadow and decoration transparent, through
-//     a user-origin style on the label element; its `color`, so currentColor borders, is kept);
-//     at every pixel the label's ink paints (where the two captures differ) the fill is the median
-//     by luminance of its 7x7 neighbourhood in that ink-free capture, and the lowest-contrast one
-//     counts as a fill candidate when it is worse than (a) and (b). Anything covering under half
+//     a user-origin style on the label element; its `color`, so currentColor borders, is kept),
+//     and a third time with its glyphs painted in a coverage colour (a corner of the RGB cube far
+//     from the label colour and absent from the ink-free capture; added 2026-10-03, Futaba's
+//     gradient QA A-F1). The label's ink pixels are where the ink-on or the coverage capture
+//     differs from the ink-free one; the coverage capture is what finds a glyph over a fill
+//     byte-identical to the label colour (a hard-edged patch, or a ramp steeper than 1 px), where
+//     the label vanishes and the ink-on capture shows no change. At every ink pixel the fill is the
+//     median by luminance of its 7x7 neighbourhood in the ink-free capture, and the lowest-contrast
+//     one counts as a fill candidate when it is worse than (a) and (b). Anything covering under half
 //     of that window (a line, a dashed underline, fine grain, a neighbour's letter) does not count;
 //     a gradient keeps its value there.
-//     The ink-free capture is taken when (c) can matter: the element, the label or their
+//     The two extra captures are taken when (c) can matter: the element, the label or their
 //     ::before/::after paint a background-image, mask-image or border-image; the ring of the text
 //     box outside the range rect is clipped away on a side; the flat reading is within 10 % of the
 //     floor; or the ring's own worst point (the same median, over ring pixels of the normal
 //     capture, where there is no glyph) reads more than 2 % worse than the flat reading. A linear
 //     or conic gradient shows its worst colour in that ring, because the colours inside a
-//     rectangle are the colours on its edge. --ink-free-all takes it for every reading, to audit
-//     the trigger. Not seen: a radial gradient on an ancestor whose worst point lies wholly
-//     inside the range rect (the ring stays one colour).
+//     rectangle are the colours on its edge. --ink-free-all takes them for every reading, to audit
+//     the trigger. Not seen in a normal run: a fill feature painted by an ancestor (no image layer
+//     on the element or label) that lies wholly inside the range rect, such as a small radial
+//     blob, because the ring around it stays one colour; --ink-free-all sees it.
 //   - Ratio: the WCAG function of scripts/check-theme-contrast.js (shared, not copied).
 //   - Three positive controls run first, on fixture copies of a theme's text set through the
 //     DevTools protocol (nothing is written to disk); run.mjs voids the run if any passes.
@@ -171,13 +177,14 @@ const INSTALL_READER = `(() => {
       hasImg: cb.backgroundImage !== 'none', paint: [...layers(box), ...(txt === box ? [] : layers(txt))],
       text: (txt.textContent || '').trim().slice(0, 24) };
   };
-  // The label's ink on or off (INK_OFF below); returns whether the attribute is now as asked.
-  window.__qlhInk = (sel, sub, off) => {
+  // The label's ink as painted (mode null), off ('off') or in a coverage colour ('cov0'..'cov7'),
+  // through INK_OFF below; returns whether the attribute is now as asked.
+  window.__qlhInk = (sel, sub, mode) => {
     const box = document.querySelector(sel);
     const txt = box && (sub ? box.querySelector(sub) : box);
     if (!txt) return false;
-    if (off) txt.setAttribute('data-qlh-ink', 'off'); else txt.removeAttribute('data-qlh-ink');
-    return (txt.getAttribute('data-qlh-ink') === 'off') === !!off;
+    if (mode) txt.setAttribute('data-qlh-ink', mode); else txt.removeAttribute('data-qlh-ink');
+    return txt.getAttribute('data-qlh-ink') === (mode || null);
   };
   return true;
 })()`;
@@ -186,8 +193,14 @@ const NO_MOTION = '*, *::before, *::after { transition: none !important; animati
 // The label's ink, switched off for the ink-free capture: text fill, stroke, shadow and decoration
 // of the label element, its descendants and their ::before/::after (user origin, so it outranks a
 // theme's !important). `color` is left alone, so currentColor borders and backgrounds stay.
-const INK_SEL = ['', ' *'].flatMap((d) => ['', '::before', '::after', '::marker'].map((p) => `[data-qlh-ink="off"]${d}${p}`)).join(', ');
-const INK_OFF = `${INK_SEL} { -webkit-text-fill-color: transparent !important; -webkit-text-stroke-color: transparent !important; text-shadow: none !important; text-decoration-color: transparent !important; text-emphasis-color: transparent !important; }`;
+const INK_SEL = (v) => ['', ' *'].flatMap((d) => ['', '::before', '::after', '::marker'].map((p) => `[data-qlh-ink="${v}"]${d}${p}`)).join(', ');
+const NO_EXTRA_INK = '-webkit-text-stroke-color: transparent !important; text-shadow: none !important; text-decoration-color: transparent !important; text-emphasis-color: transparent !important;';
+// The coverage capture (A-F1): the same rule, but the glyphs painted in a coverage colour instead of
+// transparent, so the glyph shapes show even where the label colour equals the fill. The colour is a
+// corner of the RGB cube (coverageColour below).
+const COV_RGB = Array.from({ length: 8 }, (_, k) => [k & 4 ? 255 : 0, k & 2 ? 255 : 0, k & 1 ? 255 : 0]);
+const INK_OFF = [`${INK_SEL('off')} { -webkit-text-fill-color: transparent !important; ${NO_EXTRA_INK} }`,
+  ...COV_RGB.map((c, k) => `${INK_SEL(`cov${k}`)} { -webkit-text-fill-color: rgb(${c.join(', ')}) !important; ${NO_EXTRA_INK} }`)].join('\n');
 const hex = (rgb) => '#' + rgb.slice(0, 3).map((v) => v.toString(16).padStart(2, '0')).join('').toUpperCase();
 
 /** The label's text box: its range rect padded 3 px sideways and 2 px up and down, clipped to the element's border box (whole CSS px at 1x). */
@@ -208,9 +221,11 @@ function textBox(m, t, vw, vh) {
 /** sRGB of pixel i of a BGRA capture (the window is opaque black; composited anyway, as everywhere here). */
 const px = (bmp, i) => { const a = bmp[i + 3] / 255; return [Math.round(bmp[i + 2] * a), Math.round(bmp[i + 1] * a), Math.round(bmp[i] * a)]; };
 
-// The ink-free capture is skipped when the ring shows nothing more than 2 % worse than (a)/(b) and the
-// reading is at least 10 % above its floor: a skipped reading can then be off by under 2 %, never by enough
-// to change its verdict (on the 2026-10-02 roster, measured against --ink-free-all: worst skip 3.0 %).
+// The ink-free and coverage captures are skipped when the ring shows nothing more than 2 % worse than (a)/(b)
+// and the reading is at least 10 % above its floor. The ring is a trigger, not a bound: a point inside the
+// range rect can be worse than any in the ring, so a skipped reading can read lower under --ink-free-all.
+// Measured on the 2026-10-03 roster (101 themes, normal run against --ink-free-all): at most 3.0 % lower
+// (indiana-jones edit-add-file/hover, 17.49 to 16.96), well inside the 10 % margin, so 0 verdicts changed.
 const RING_TOL = 0.02, NEAR_FLOOR = 1.10;
 
 /**
@@ -270,19 +285,56 @@ function windowMedian(K, w, h, x, y, keep, buf) {
   return K.col[buf[k]];
 }
 
+/** Whether pixel i (byte offset) differs between two BGRA captures. */
+const differs = (a, b, i) => a.bmp[i] !== b.bmp[i] || a.bmp[i + 1] !== b.bmp[i + 1] || a.bmp[i + 2] !== b.bmp[i + 2] || a.bmp[i + 3] !== b.bmp[i + 3];
+const COV_NEAR = 48; // a pixel within this channel-difference sum of a corner colour counts as that colour
+const nearCorner = (rgb, c) => Math.abs(rgb[0] - c[0]) + Math.abs(rgb[1] - c[1]) + Math.abs(rgb[2] - c[2]) < COV_NEAR;
+
 /**
- * The worst point of the ink-free fill behind the label: at every pixel the label's ink paints
- * (where the ink-on and ink-free captures differ; the range rect if they never do), the fill is the
- * median by luminance of its 7x7 neighbourhood in the ink-free capture (clipped to the text box).
- * Anything covering less than half of that window (a line, a dashed underline, a speck, fine grain,
- * a neighbour's letter) does not count; a gradient keeps its value at that point. Returns the
- * lowest-contrast one against the label, and how many ink pixels were judged.
+ * The coverage colour, as an index into COV_RGB: any corner but the one nearest the label, so it is at
+ * least 128 from the label in one channel and a glyph over a fill equal to the label colour changes
+ * the pixel; of those, one the ink-free capture does not contain (so the coverage capture shows every
+ * glyph), then the one farthest from the label.
  */
-function worstPoint(free, on, L, inner) {
+function coverageColour(free, L) {
+  const nearest = (L.r >= 128 ? 4 : 0) | (L.g >= 128 ? 2 : 0) | (L.b >= 128 ? 1 : 0);
+  const seen = new Array(8).fill(0);
+  for (let i = 0; i < free.w * free.h * 4; i += 4) {
+    const rgb = px(free.bmp, i);
+    for (let k = 0; k < 8; k++) if (nearCorner(rgb, COV_RGB[k])) { seen[k]++; break; }
+  }
+  const dist = (k) => Math.abs(L.r - COV_RGB[k][0]) + Math.abs(L.g - COV_RGB[k][1]) + Math.abs(L.b - COV_RGB[k][2]);
+  return [0, 1, 2, 3, 4, 5, 6, 7].filter((k) => k !== nearest).sort((a, b) => seen[a] - seen[b] || dist(b) - dist(a))[0];
+}
+
+/** True when the label's ink shows (ink-on differs from ink-free where the fill is not the coverage colour) but the coverage capture shows nothing. */
+function coverageMissing(free, on, cov, k) {
+  let inkShows = false;
+  for (let i = 0; i < free.w * free.h * 4; i += 4) {
+    if (differs(free, cov, i)) return false;
+    if (!inkShows && differs(free, on, i) && !nearCorner(px(free.bmp, i), COV_RGB[k])) inkShows = true;
+  }
+  return inkShows;
+}
+
+/**
+ * The worst point of the ink-free fill behind the label: at every pixel the label's ink paints, the
+ * fill is the median by luminance of its 7x7 neighbourhood in the ink-free capture (clipped to the
+ * text box). Ink pixels: where the ink-on capture differs from the ink-free one (the label's own
+ * colour, shadow and decoration), plus where the coverage capture does (the glyphs in a contrast
+ * colour), so a glyph over a fill byte-identical to the label colour is still judged (A-F1); the
+ * range rect if neither ever differs. Anything covering less than half of that window (a line, a
+ * dashed underline, a speck, fine grain, a neighbour's letter) does not count; a gradient keeps its
+ * value at that point. Returns the lowest-contrast one against the label, how many ink pixels were
+ * judged, and how many of those only the coverage capture found.
+ */
+function worstPoint(free, on, cov, L, inner) {
   const { w, h } = free;
   const pts = [];
+  let covOnlyPx = 0;
   for (let p = 0, i = 0; p < w * h; p++, i += 4) {
-    if (free.bmp[i] !== on.bmp[i] || free.bmp[i + 1] !== on.bmp[i + 1] || free.bmp[i + 2] !== on.bmp[i + 2] || free.bmp[i + 3] !== on.bmp[i + 3]) pts.push(p);
+    if (differs(free, on, i)) pts.push(p);
+    else if (differs(free, cov, i)) { pts.push(p); covOnlyPx++; }
   }
   const inkPx = pts.length;
   if (!inkPx) { const [x0, y0, x1, y1] = inner; for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) pts.push(y * w + x); }
@@ -295,7 +347,7 @@ function worstPoint(free, on, L, inner) {
     if (ratio === undefined) { const bg = { r: k >> 16, g: (k >> 8) & 255, b: k & 255, a: 1 }; ratio = contrast(composite(L, bg), bg); ratios.set(k, ratio); }
     if (!worst || ratio < worst.ratio) worst = { rgb: [k >> 16, (k >> 8) & 255, k & 255], ratio, at: [x, y] };
   }
-  return { ...worst, inkPx };
+  return { ...worst, inkPx, covOnlyPx };
 }
 
 /** The same median, taken on the ink-on capture over the ring only (no glyphs there), at every ring pixel: the worst. */
@@ -509,11 +561,13 @@ async function runHover(o) {
             if (tb.error) throw new Error(tb.error);
             const on = await settle(win, tb.box, 'capture');
             const flat = readFill(on.img, m, r);
-            let grabs = on.grabs, free = null;
+            let grabs = on.grabs, free = null, cov = null, covK = null;
             const ink = inkFreeReason(on.img, job.noPaintTrigger ? { ...m, paint: [] } : m, tb.inner, flat.ratio, r.floor, hc.inkFreeAll);
             if (ink) {
-              // The same text box with the label's ink off (forced states stay; nothing else changes).
-              if (!(await js(win, `__qlhInk(${JSON.stringify(r.sel)}, ${JSON.stringify(r.sub || null)}, true)`))) throw new Error('could not switch the label ink off');
+              // The same text box with the label's ink off, then with its glyphs in a contrast colour
+              // (forced states stay; nothing else changes).
+              const inkMode = (mode) => js(win, `__qlhInk(${JSON.stringify(r.sel)}, ${JSON.stringify(r.sub || null)}, ${JSON.stringify(mode)})`);
+              if (!(await inkMode('off'))) throw new Error('could not switch the label ink off');
               try {
                 // Identical captures with the ink on and off mean the frame was still the old one (settle
                 // again, once) or the ink-off style did not paint, which is only plausible when the label is
@@ -523,18 +577,30 @@ async function runHover(o) {
                   grabs += off.grabs;
                   free = off.img;
                 }
+                // Coverage capture: identical to the ink-free one means the old frame again (settle once
+                // more) or no glyph is painted at all (checked below).
+                covK = coverageColour(free, labelOf(m));
+                if (!(await inkMode(`cov${covK}`))) throw new Error('could not switch the label to its coverage colour');
+                for (let k = 0; k < 2 && (!cov || cov.bmp.equals(free.bmp)); k++) {
+                  const c = await settle(win, tb.box, 'coverage capture');
+                  grabs += c.grabs;
+                  cov = c.img;
+                }
               } finally {
-                await js(win, `__qlhInk(${JSON.stringify(r.sel)}, ${JSON.stringify(r.sub || null)}, false)`);
+                await inkMode(null);
               }
               PROF.inkFree = (PROF.inkFree || 0) + 1;
               PROF[`ink_${ink}`] = (PROF[`ink_${ink}`] || 0) + 1;
             }
             // (c) the gradient's worst point; it counts only when strictly worse, so a flat fill reads as before.
-            const grad = free ? worstPoint(free, on.img, labelOf(m), tb.inner) : null;
+            const grad = free ? worstPoint(free, on.img, cov, labelOf(m), tb.inner) : null;
             const a = grad && grad.ratio < flat.ratio ? { ...flat, ratio: grad.ratio, rgb: grad.rgb, fill: hex(grad.rgb), src: 'grad' } : { ...flat };
             a.flatRatio = flat.ratio;
-            a.grad = grad ? { fill: hex(grad.rgb), ratio: +grad.ratio.toFixed(3), at: grad.at, inkPx: grad.inkPx } : null;
+            // `gradient`: the worst point reads more than RING_TOL (2 %) below the flat reading, i.e. the fill
+            // really varies under the label; within 2 % it is a flat fill (grain, a subtle border), counted so in the summary.
+            a.grad = grad ? { fill: hex(grad.rgb), ratio: +grad.ratio.toFixed(3), at: grad.at, inkPx: grad.inkPx, covOnlyPx: grad.covOnlyPx, gradient: grad.ratio < flat.ratio * (1 - RING_TOL) } : null;
             if (free && free.bmp.equals(on.img.bmp) && a.flatRatio > 1.1) throw new Error(`the ink-free capture equals the ink-on capture (label ${hex(m.rgba)} reads ${a.flatRatio.toFixed(2)}:1, so its ink is visible)`);
+            if (cov && coverageMissing(free, on.img, cov, covK)) throw new Error(`the coverage capture (glyphs in ${hex(COV_RGB[covK])}) equals the ink-free capture, but the label's ink (${hex(m.rgba)}) changes the pixels: the coverage colour did not paint`);
             Object.assign(row, { label: hex(m.rgba), alpha: m.rgba[3], color: m.color, fill: a.fill, src: a.src, ratio: a.ratio, ratio2: +a.ratio.toFixed(2), fail: a.ratio < r.floor, textBox: tb.box, text: m.text, grabs,
               ink: ink || null, ...(a.grad ? { grad: a.grad, flat2: +a.flatRatio.toFixed(2) } : {}) });
           } catch (e) {
