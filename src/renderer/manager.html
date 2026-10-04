@@ -45,6 +45,22 @@
           </div>
         </div>
         <div id="region-list" role="list"></div>
+
+        <!-- Moved shortcuts (spec 8.1, 5.5) -->
+        <div id="mgr-moved" class="mgr-moved">
+          <div class="mgr-moved-head">
+            <div class="overlay-title mgr-title">// MOVED SHORTCUTS</div>
+            <span id="moved-count" class="mgr-moved-text"></span>
+          </div>
+          <div id="moved-onedrive" class="mgr-moved-text mgr-moved-line hidden"></div>
+          <div id="moved-unavailable" class="mgr-moved-text mgr-moved-line hidden"></div>
+          <div class="mgr-moved-actions">
+            <button id="btn-open-store" type="button" title="Open the folder with moved shortcuts" aria-label="Open the folder with moved shortcuts">OPEN FOLDER</button>
+            <button id="btn-move-all-back" type="button" title="Move every moved shortcut back to the desktop" aria-label="Move every moved shortcut back to the desktop">MOVE ALL BACK…</button>
+          </div>
+          <div id="orphan-count" class="mgr-moved-text mgr-moved-line hidden"></div>
+          <div id="orphan-list" role="list"></div>
+        </div>
       </section>
 
       <!-- SETTINGS view (spec 8.2): today's rows minus SKIN -->

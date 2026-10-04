@@ -363,6 +363,63 @@
 
   $('chk-match-all').addEventListener('change', (e) => api.invoke('manager:set-match-all', e.target.checked));
 
+  // ── Moved shortcuts (spec 8.1, 5.4, 5.5) ───────────────────────────────────
+  function renderMoved() {
+    const m = state && state.moved;
+    if (!m) return;
+    const tips = m.tips || {};
+    $('moved-count').textContent = m.countText;
+    const od = $('moved-onedrive');
+    od.textContent = m.oneDrive || '';
+    od.classList.toggle('hidden', !m.oneDrive);
+    // Moving unavailable (read-only store, no Win32): a standing line, and every
+    // button that would move a file is disabled and says why (addendum B5).
+    const un = $('moved-unavailable');
+    un.textContent = m.unavailableText || '';
+    un.classList.toggle('hidden', !m.unavailableText);
+    const disable = (b, off, offTip, onTip) => {
+      b.setAttribute('aria-disabled', String(off));
+      b.classList.toggle('mgr-disabled', off);
+      const tip = off ? offTip : onTip;
+      b.title = tip;
+      b.setAttribute('aria-label', tip);
+    };
+    const back = $('btn-move-all-back');
+    if (!m.available) disable(back, true, tips.unavailable, tips.moveAllBack);
+    else disable(back, !m.count, tips.noneToMoveBack, tips.moveAllBack);
+    const oc = $('orphan-count');
+    oc.textContent = m.orphanText || '';
+    oc.classList.toggle('hidden', !m.orphanText);
+    const list = $('orphan-list');
+    list.innerHTML = '';
+    for (const o of m.orphans || []) {
+      const row = document.createElement('div');
+      row.className = 'mgr-orphan';
+      row.setAttribute('role', 'listitem');
+      const nm = document.createElement('span');
+      nm.className = 'mgr-orphan-name';
+      nm.textContent = o.name;
+      nm.title = o.fileName || o.name; // with its extension: Steam.lnk and Steam.url can both be here (B5)
+      const add = document.createElement('button');
+      add.type = 'button';
+      add.textContent = 'ADD BACK';
+      disable(add, !m.available, tips.unavailable, tips.addBack);
+      add.addEventListener('click', () => { if (add.getAttribute('aria-disabled') !== 'true') api.invoke('manager:orphan', 'add', o.file); });
+      const desk = document.createElement('button');
+      desk.type = 'button';
+      desk.textContent = 'MOVE TO DESKTOP';
+      disable(desk, !m.available, tips.unavailable, tips.moveToDesktop);
+      desk.addEventListener('click', () => { if (desk.getAttribute('aria-disabled') !== 'true') api.invoke('manager:orphan', 'desktop', o.file); });
+      row.append(nm, add, desk);
+      list.appendChild(row);
+    }
+  }
+  $('btn-open-store').addEventListener('click', () => api.invoke('manager:open-store'));
+  $('btn-move-all-back').addEventListener('click', () => {
+    if ($('btn-move-all-back').getAttribute('aria-disabled') === 'true') return;
+    api.invoke('manager:move-all-back');
+  });
+
   // ── SETTINGS view ──────────────────────────────────────────────────────────
   const elSlider = $('slider-icon-size');
   const elSize = $('icon-size-val');
@@ -479,7 +536,7 @@
       ['ESC', 'Clear the filter, then leave edit mode'],
       ['F6 / SHIFT+F6', 'Next / previous region'],
       ['F2', 'Rename the focused tile (edit mode) or region name'],
-      ['DELETE', 'Remove the focused tile (edit mode)'],
+      ['DELETE', 'Remove the focused tile; a moved shortcut goes back to the desktop (edit mode)'],
       ['CTRL+ARROWS', 'Move the focused tile; Up and Down move a row (edit mode)'],
       ['MENU / SHIFT+F10', 'Tile menu (edit mode); region menu (name focused)'],
       ['ALT+ARROWS', 'Nudge the region 8 px (name focused); with SHIFT 32 px'],
@@ -599,6 +656,7 @@
         if (se) settings = se;
         applyTheme(state.theme);
         renderRegions();
+        renderMoved();
         renderSettings();
       } while (again);
     })();

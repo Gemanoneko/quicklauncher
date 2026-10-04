@@ -24,6 +24,10 @@ const INVOKE_CHANNELS = new Set([
   'manager:set-shared-theme',
   'manager:add-installed',
   'manager:add-file',
+  // Moved shortcuts: open the store folder, move all back, a file without a tile.
+  'manager:open-store',
+  'manager:move-all-back',
+  'manager:orphan',
   'manager:close',
   // Self-test operations; refused by the main process unless it runs with --ql-test-hooks.
   'manager:test',

@@ -68,6 +68,39 @@ body.region.tile-drop-rejected #app::before { border-width: 2px; border-color: v
 /* The slot shows where the tile lands, so the empty-region hint steps aside. */
 body.region.tile-drop-preview #drop-hint { display: none; }
 
+/* A moved tile whose file is gone from the store folder (spec 2.1 "item
+   broken"; addendum B4): icon at 60% and a 12 px "!" pip at the top-left, in
+   view and edit mode (the edit badge owns the top-right). The disc is --text
+   and the mark --bg, so it reads in every theme without relying on colour. */
+#app-grid .app-tile.tile-broken .tile-icon { opacity: .6; }
+.tile-broken-pip {
+  position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
+  pointer-events: none; z-index: 5; line-height: 0;
+}
+.tile-broken-pip svg { display: block; width: 12px; height: 12px; }
+.tile-broken-pip circle { fill: var(--text); }
+.tile-broken-pip rect { fill: var(--bg); }
+
+/* ↩ on a moved tile (addendum B12.1): the ✕ badge's geometry, none of its
+   colours; ↩ is the safe action, so no danger colour, not even on hover. */
+.btn-move-back {
+  position: absolute; top: -2px; right: -2px;
+  width: 24px; height: 24px; border-radius: 50%; padding: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; line-height: 1; letter-spacing: 0;
+  background: var(--panel-bg);
+  border: 1px solid var(--accent-text);
+  color: var(--text);
+}
+.btn-move-back:hover {
+  background: var(--btn-hover-bg);
+  border-color: var(--accent-c);
+  box-shadow: var(--glow-c);
+  color: var(--text);
+}
+/* Inside the disc: the tile's overflow: hidden would clip a ring outside it. */
+.btn-move-back:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px; }
+
 /* Screen-reader status line for Ctrl+Arrow moves (addendum A5): 1 x 1, clipped. */
 .ql-sr-status {
   position: fixed; left: 0; top: 0; width: 1px; height: 1px;

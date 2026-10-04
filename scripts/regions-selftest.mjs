@@ -1,9 +1,16 @@
 #!/usr/bin/env node
 /**
- * regions-selftest.mjs: M1 + M2 + M2b self-test of the packaged regions build.
+ * regions-selftest.mjs: M1 + M2 + M2b + M3 self-test of the packaged regions build.
  *
  *   npm run selftest:regions -- [--guard <quicklaunch-safe-launch.mjs>] [--exe <QuickLauncher.exe>]
- *                               [--seed <data file to copy>] [--port 9341] [--timeout 240]
+ *                               [--seed <data file to copy>] [--port 9341] [--timeout 300]
+ *                               [--root <folder in %TEMP%>]
+ *
+ * M3 (the file move) runs only against a fake desktop: --ql-test-desktop=<root>\<stamp>-desk
+ * (Desktop, Public Desktop, QuickLauncher Shortcuts), next to the profile under --root
+ * (default %TEMP%\ql-regions-selftest; refused outside %TEMP%). The real Desktop and
+ * Public Desktop are listed (names, sizes, times; read-only) before the launch and
+ * after the quit, and must be identical.
  *
  * Launches the build ONLY through the studio's QA launch guard
  * (scripts/qa/quicklaunch-safe-launch.mjs) on a fresh profile in %TEMP%, with
@@ -25,11 +32,12 @@
  * listed in m2Checks and m2bChecks, and a foreground event for this build in
  * the observer's log. Exit 0 when every check passes.
  */
-import { spawn } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { spawn, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { appendFileSync, copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -44,7 +52,7 @@ const opt = (name, def) => {
   return i >= 0 && argv[i + 1] ? argv[i + 1] : def;
 };
 const PORT = Number(opt('port', '9341'));
-const TIMEOUT = Number(opt('timeout', '240'));
+const TIMEOUT = Number(opt('timeout', '300'));
 const EXE = resolve(opt('exe', join(REPO, 'dist', 'win-unpacked', 'QuickLauncher.exe')));
 const SEED = opt('seed', null);
 // --probe: prove the error and hit-area checks can FAIL (an uncaught error and
@@ -77,7 +85,14 @@ function check(name, ok, evidence) {
 
 // ── seed ────────────────────────────────────────────────────────────────────
 const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
-const PROFILE = join(tmpdir(), 'ql-regions-selftest', stamp);
+const ROOT_DIR = resolve(opt('root', join(tmpdir(), 'ql-regions-selftest')));
+{
+  mkdirSync(ROOT_DIR, { recursive: true });
+  const real = realpathSync.native(ROOT_DIR).toLowerCase();
+  const temps = [tmpdir(), process.env.TEMP, process.env.TMP].filter(Boolean).map((p) => realpathSync.native(p).toLowerCase());
+  if (!temps.some((t) => real.startsWith(t + sep))) { console.error(`selftest: --root must be inside the temp folder; got ${ROOT_DIR}`); process.exit(1); }
+}
+const PROFILE = join(ROOT_DIR, stamp);
 mkdirSync(PROFILE, { recursive: true });
 const DATA = join(PROFILE, 'quicklauncher-data.json');
 let seed;
@@ -93,12 +108,109 @@ if (SEED) {
   };
 }
 seed.settings = { ...(seed.settings || {}), startWithWindows: false, globalHotkey: null, randomTheme: false };
+// A copied data file may hold moved shortcuts whose files are in the REAL store folder: the copy keeps them as references.
+seed.apps = (seed.apps || []).map((a) => { if (!a || a.kind !== 'moved') return a; const { kind, origin, ...rest } = a; return rest; });
 delete seed.regions;
 delete seed.regionsVersion;
 const seedText = `${JSON.stringify(seed, null, 2)}\n`;
 writeFileSync(DATA, seedText);
 const N = seed.apps.length;
 console.log(`profile ${PROFILE}  (${N} shortcut(s), ${SEED ? 'copied seed' : 'synthetic seed'})`);
+
+// ── M3: Win32 helpers for the test side (koffi; locks, attributes, moves of test files) ──
+const koffi = require(join(REPO, 'node_modules', 'koffi'));
+const k32 = koffi.load('kernel32.dll');
+const W = {
+  CreateFileW: k32.func('intptr __stdcall CreateFileW(str16 name, uint32 access, uint32 share, intptr sa, uint32 disp, uint32 flags, intptr tmpl)'),
+  CloseHandle: k32.func('int __stdcall CloseHandle(intptr h)'),
+  SetFileAttributesW: k32.func('int __stdcall SetFileAttributesW(str16 name, uint32 attrs)'),
+  GetFileAttributesW: k32.func('uint32 __stdcall GetFileAttributesW(str16 name)'),
+  MoveFileExW: k32.func('int __stdcall MoveFileExW(str16 src, str16 dst, uint32 flags)'),
+};
+/** Hold a test file open: share-read lets it be read but not moved (ERROR_SHARING_VIOLATION). Returns the release. */
+function holdOpen(p) {
+  const h = W.CreateFileW(p, 0x80000000, 1, 0, 3, 0x80, 0);
+  if (!h || h === -1) throw new Error(`could not hold ${p}`);
+  return () => W.CloseHandle(h);
+}
+/** A Public Desktop file as Windows ships it: readable, not deletable by the user. Returns the reset. */
+function readOnlyAcl(f) {
+  const user = process.env.USERNAME;
+  const ic = (args) => spawnSync('icacls', args, { encoding: 'utf8', windowsHide: true }).status;
+  if (ic([f, '/inheritance:r', '/grant:r', `${user}:(RX)`]) !== 0 || ic([dirname(f), '/inheritance:r', '/grant:r', `${user}:(RX,W)`]) !== 0) throw new Error('icacls failed');
+  return () => { ic([dirname(f), '/reset']); ic([f, '/reset']); };
+}
+/** Move a test file within the test tree (the test plays a person moving it), never replacing. */
+const testMove = (a, b) => { mkdirSync(dirname(b), { recursive: true }); if (!W.MoveFileExW(a, b, 0x8)) throw new Error(`test move ${a} -> ${b} failed`); };
+const sha = (p) => createHash('sha256').update(readFileSync(p)).digest('hex');
+function listTree(dir) {
+  const out = [];
+  const walk = (d) => { for (const n of readdirSync(d)) { const p = join(d, n); const st = lstatSync(p); if (st.isDirectory()) walk(p); else out.push({ rel: relative(dir, p), size: st.size, sha: sha(p) }); } };
+  if (existsSync(dir)) walk(dir);
+  return out;
+}
+
+// The REAL Desktop and Public Desktop, read-only: SHGetKnownFolderPath, then names,
+// kinds, sizes and times (lstat; no file is opened). Compared before the launch and after the quit.
+const shell32 = koffi.load('shell32.dll');
+const ole32 = koffi.load('ole32.dll');
+const SHGetKnownFolderPath = shell32.func('int32 __stdcall SHGetKnownFolderPath(void *rfid, uint32 flags, intptr token, _Out_ void **path)');
+const CoTaskMemFree = ole32.func('void __stdcall CoTaskMemFree(void *pv)');
+function knownFolder(id) {
+  const h = id.replace(/[{}-]/g, '');
+  const g = Buffer.alloc(16);
+  g.writeUInt32LE(parseInt(h.slice(0, 8), 16), 0); g.writeUInt16LE(parseInt(h.slice(8, 12), 16), 4); g.writeUInt16LE(parseInt(h.slice(12, 16), 16), 6);
+  for (let i = 0; i < 8; i++) g[8 + i] = parseInt(h.slice(16 + i * 2, 18 + i * 2), 16);
+  const out = [null];
+  if (SHGetKnownFolderPath(g, 0, 0, out) !== 0) return null;
+  try { return koffi.decode(out[0], 'char16_t', -1); } finally { CoTaskMemFree(out[0]); }
+}
+const REAL_FOLDERS = { Desktop: knownFolder('{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}'), PublicDesktop: knownFolder('{C4AA340D-F20F-4863-AFEF-F87EF2E6BA25}') };
+function listRealFolders(folders = REAL_FOLDERS) {
+  const out = {};
+  for (const [k, d] of Object.entries(folders)) {
+    out[k] = d && existsSync(d) ? readdirSync(d).sort().map((n) => { const st = lstatSync(join(d, n)); return `${n}|${st.isDirectory() ? 'd' : 'f'}|${st.size}|${st.mtimeMs}`; }) : null;
+  }
+  return out;
+}
+const realBefore = listRealFolders();
+
+// ── M3: the fake desktop (Desktop, Public Desktop; the app makes QuickLauncher Shortcuts) ──
+const DESK = join(ROOT_DIR, `${stamp}-desk`);
+const FIX = { dirs: { desktop: join(DESK, 'Desktop'), publicDesktop: join(DESK, 'Public Desktop'), store: join(DESK, 'QuickLauncher Shortcuts'), staging: join(DESK, 'Staging'), aside: join(DESK, 'Aside'), elsewhere: join(DESK, 'Elsewhere') } };
+for (const k of ['desktop', 'publicDesktop', 'staging', 'aside', 'elsewhere']) mkdirSync(FIX.dirs[k], { recursive: true });
+mkdirSync(join(FIX.dirs.desktop, 'Sub'), { recursive: true });
+{
+  const D = FIX.dirs;
+  const lnks = {
+    alpha: join(D.desktop, 'Alpha.lnk'), beta: join(D.desktop, 'Beta.lnk'), delta: join(D.desktop, 'Delta.lnk'), epsilon: join(D.desktop, 'Epsilon.lnk'),
+    far: join(D.desktop, 'Far.lnk'), cloud: join(D.desktop, 'Cloud.lnk'), changed: join(D.desktop, 'Changed.lnk'), racer: join(D.desktop, 'Racer.lnk'),
+    inner: join(D.desktop, 'Sub', 'Inner.lnk'), pub: join(D.publicDesktop, 'Pub.lnk'), admin: join(D.publicDesktop, 'Admin.lnk'),
+    other: join(D.elsewhere, 'Other.lnk'), alpha2: join(D.staging, 'Alpha.lnk'), late: join(D.staging, 'Late.lnk'), stray: join(D.staging, 'Stray.lnk'),
+    spare: join(D.staging, 'Spare.lnk'), // --probe only: takes the "(2)" name first
+    // Addendum M3 rulings: broken tiles (zeta, eta, theta, kappa), two regions in Move all back (lambda), the notice and the filter (mu, nu).
+    zeta: join(D.desktop, 'Zeta.lnk'), eta: join(D.desktop, 'Eta.lnk'), theta: join(D.desktop, 'Theta.lnk'), kappa: join(D.desktop, 'Kappa.lnk'),
+    lambda: join(D.desktop, 'Lambda.lnk'), mu: join(D.desktop, 'Mu.lnk'), nu: join(D.desktop, 'Nu.lnk'),
+  };
+  // Real shortcuts to Notepad (never launched: test hooks record launches), each with its own description so every file has its own bytes.
+  const ps = spawnSync(join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe'), ['-NoProfile', '-NonInteractive', '-Command',
+    "$w = New-Object -ComObject WScript.Shell; foreach ($p in ($env:QL_LNKS -split '\\|')) { $s = $w.CreateShortcut($p); $s.TargetPath = \"$env:SystemRoot\\System32\\notepad.exe\"; $s.Description = $p; $s.Save() }"],
+  { env: { ...process.env, QL_LNKS: Object.values(lnks).join('|') }, encoding: 'utf8', windowsHide: true, timeout: 60000 });
+  const missing = Object.values(lnks).filter((p) => !existsSync(p));
+  if (missing.length) { console.error(`selftest: could not make test shortcuts (${ps.status} ${ps.stderr}): ${missing.join(', ')}`); process.exit(1); }
+  const url = (p, u) => { writeFileSync(p, `[InternetShortcut]\r\nURL=${u}\r\n`); return p; };
+  Object.assign(FIX, lnks, {
+    gamma: url(join(D.desktop, 'Gamma.url'), 'https://example.invalid/gamma'),
+    stray2: url(join(D.staging, 'Stray2.url'), 'https://example.invalid/stray2'),
+    tool: join(D.desktop, 'Tool.exe'), notes: join(D.desktop, 'notes.txt'),
+  });
+  writeFileSync(FIX.tool, 'not a real program: test hooks never launch anything');
+  writeFileSync(FIX.notes, 'not a shortcut');
+}
+const deskBefore = listTree(DESK);
+const fakeBefore = listRealFolders({ Desktop: FIX.dirs.desktop, PublicDesktop: FIX.dirs.publicDesktop }); // --probe's control
+const REAL_STORE_EXISTED = existsSync(join(process.env.USERPROFILE || '', 'QuickLauncher Shortcuts'));
+console.log(`test desktop ${DESK}  (${deskBefore.length} files)`);
 
 // ── foreground observer (out of process, read-only), started before the launch ──
 const { readEvents, foregroundVerdict } = require('./fg-verdict.cjs');
@@ -112,8 +224,12 @@ for (let i = 0; i < 50; i++) {
 
 // ── launch through the guard ────────────────────────────────────────────────
 const guardOut = [];
+// OneDrive: the fake desktop is made to look synced (the Manager's note must show);
+// --probe leaves the real variable, so the note must not show and its check fails.
+const appEnv = PROBE ? { ...process.env } : { ...process.env, OneDrive: DESK };
 const guard = spawn(process.execPath, [GUARD, '--exe', EXE, '--profile', PROFILE, '--timeout', String(TIMEOUT),
-  '--', `--remote-debugging-port=${PORT}`, '--ql-test-hooks', '--ql-no-update-check', '--enable-logging', ...(FALLBACK ? ['--ql-no-desktop-layer'] : [])], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+  '--', `--remote-debugging-port=${PORT}`, '--ql-test-hooks', '--ql-no-update-check', '--enable-logging', `--ql-test-desktop=${DESK}`,
+  ...(FALLBACK ? ['--ql-no-desktop-layer'] : [])], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, env: appEnv });
 guard.stdout.on('data', (d) => guardOut.push(String(d)));
 guard.stderr.on('data', (d) => guardOut.push(String(d)));
 const guardDone = new Promise((r) => guard.on('exit', (code) => r(code)));
@@ -140,16 +256,17 @@ async function session(t) {
   // A page that goes away (window closed, app ended) fails its calls instead of hanging.
   const failAll = (why) => { for (const w of waiting.values()) w.rej(new Error(why)); waiting.clear(); pages.delete(t.id); };
   ws.onclose = () => failAll(`page closed: ${t.url}`);
-  const send = (method, params = {}) => new Promise((res, rej) => {
+  const send = (method, params = {}, timeoutMs = 15000) => new Promise((res, rej) => {
     const id = ++seq;
-    const timer = setTimeout(() => { waiting.delete(id); rej(new Error(`CDP ${method} timed out on ${t.url}`)); }, 15000);
+    const timer = setTimeout(() => { waiting.delete(id); rej(new Error(`CDP ${method} timed out on ${t.url}`)); }, timeoutMs);
     waiting.set(id, { res: (v) => { clearTimeout(timer); res(v); }, rej: (e) => { clearTimeout(timer); rej(e); } });
     try { ws.send(JSON.stringify({ id, method, params })); } catch (e) { clearTimeout(timer); waiting.delete(id); rej(e); }
   });
   const s = {
     t,
-    async eval(expr) {
-      const r = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true });
+    // A drop builds each tile's icon in the main process: allow it a longer wait.
+    async eval(expr, timeoutMs = 15000) {
+      const r = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true }, timeoutMs);
       if (r.result && r.result.exceptionDetails) throw new Error(`${t.url}: ${JSON.stringify(r.result.exceptionDetails).slice(0, 300)}`);
       return r.result && r.result.result ? r.result.result.value : undefined;
     },
@@ -452,9 +569,16 @@ async function run() {
   await m2Checks({ mgr, sessions, ids, r1id, r2id, r3id, wa, inner });
   // ── M2b: Judy's six rulings, activation, the drop to fallback ─────────────
   await m2bChecks({ mgr, sessions, ids, wa, inner });
+  // ── M3: desktop files move in (fake desktop only) ───────────────────────────
+  await m3Checks({ mgr, sessions, ids });
+  if (SHOTS) {
+    await sessions[ids[1]].shot(join(SHOTS, 'm3-region-broken.png')).catch(() => {});
+    await mgr.shot(join(SHOTS, 'm3-manager-moved.png')).catch(() => {});
+  }
 
   // Delete an empty region (no confirm box for an empty region)
   const lastId = ids[ids.length - 1];
+  const before = (await mgr.eval(`window.api.invoke('manager:state')`)).regions.length;
   const del = await mgr.eval(`window.api.invoke('manager:delete-region', ${JSON.stringify(lastId)})`);
   const tDel = Date.now();
   let gone = false;
@@ -463,19 +587,20 @@ async function run() {
     if (!gone) await sleep(200);
   }
   const stAfter = await mgr.eval(`window.api.invoke('manager:state')`);
-  check('delete: an empty region goes at once, its window too', del.ok && stAfter.regions.length === 7 && gone, { del, regions: stAfter.regions.length, windowGone: gone, ms: Date.now() - tDel });
+  const live = stAfter.regions.length;
+  check('delete: an empty region goes at once, its window too', del.ok && live === before - 1 && gone, { del, regions: `${before} -> ${live}`, windowGone: gone, ms: Date.now() - tDel });
   // Exactly one page per region: no window was ever built twice for a region.
   const perRegion = {};
   for (const t of await regionPages()) { const id = regionId(t); perRegion[id] = (perRegion[id] || 0) + 1; }
   const doubles = Object.values(perRegion).filter((v) => v > 1).length;
-  check('pages: exactly one page per live region', doubles === 0 && Object.keys(perRegion).length === 7, perRegion);
+  check('pages: exactly one page per live region', doubles === 0 && Object.keys(perRegion).length === live, perRegion);
 
-  // Idle cost with 7 regions (pointer outside, nothing focused)
+  // Idle cost with the regions left (pointer outside, nothing focused)
   await sleep(12000);
   const m1 = await mgr.eval(`window.api.invoke('manager:test', 'metrics')`);
   console.log(`metrics  1 region at boot: ${JSON.stringify(m0)}`);
   console.log(`metrics  ${m1.regions} regions idle: ${JSON.stringify(m1)}`);
-  check('idle: 7 regions measured (memory and CPU recorded)', m1.regions === 7 && m1.workingSetMB > 0, { MB: m1.workingSetMB, cpu: m1.cpuPercent, procs: m1.processes });
+  check(`idle: ${live} regions measured (memory and CPU recorded)`, m1.regions === live && m1.workingSetMB > 0, { MB: m1.workingSetMB, cpu: m1.cpuPercent, procs: m1.processes });
 
   // Quit through the same path as the tray's Quit
   await mgr.eval(`window.api.invoke('manager:test', 'quit')`).catch(() => {});
@@ -1048,6 +1173,516 @@ async function m2bChecks({ mgr, sessions, ids, wa, inner }) {
   }
 }
 
+// ── M3 checks (tech plan § 3; UX spec 2.1, 2.8, 3.4, 5.2, 5.4, 5.5, 8.1, 9, 14.4, 14.5) ──
+// Only against the fake desktop under --root. A drop is the page's own channel
+// (region:drop-files) with the paths a real drop hands it (an OS drag is real
+// input). Held-open files, the read-only ACL, the OFFLINE attribute and a file
+// taken aside are real, on test files; cross-volume is injected at the move
+// (there is no second volume inside %TEMP%). Boxes and Open folder are recorded
+// by the test hooks, never shown. --probe gives every check here one wrong
+// input (or a broken reading), and each of them must then fail.
+async function m3Checks({ mgr, sessions, ids }) {
+  const T = (op, arg = {}) => mgr.eval(`window.api.invoke('manager:test', ${JSON.stringify(op)}, ${JSON.stringify(arg)})`);
+  const D = FIX.dirs;
+  const rA = ids[5]; // empty after M2b: takes the first drop, then is deleted with its moved files
+  const rB = ids[1]; // Games
+  const page = (id) => sessions[id];
+  const drop = (id, paths, index = null) => page(id).eval(`window.api.invoke('region:drop-files', ${JSON.stringify(index === null ? { paths } : { paths, index })})`, 90000);
+  const boxes = async () => (await T('boxes')).boxes;
+  const items = (id) => readData().apps.filter((a) => a.regionId === id);
+  const ex = (p) => existsSync(p);
+  const inStore = (n) => join(D.store, n);
+  const same = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
+  const realDesk = realpathSync.native(D.desktop);
+  const realPub = realpathSync.native(D.publicDesktop);
+  const history = () => { try { return readFileSync(join(PROFILE, 'moves-log.jsonl'), 'utf8').split(/\r?\n/).filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
+  const waitPaused = async () => { for (let i = 0; i < 150; i++) { const s = await T('moves-state'); if (s.paused) return s.paused; await sleep(100); } return null; };
+  const tilesOf = (id) => page(id).eval(`[...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')].map((t) => ({ id: t.dataset.id, name: (t.querySelector('.tile-label') || {}).textContent || '', kind: t.dataset.kind || 'ref', broken: t.classList.contains('tile-broken') }))`);
+  const findTile = (name) => `[...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')].find((x) => (x.querySelector('.tile-label') || {}).textContent === ${JSON.stringify(name)})`;
+  const tileClick = (id, name, sel = null) => page(id).eval(`(() => { const t = ${findTile(name)}; if (!t) return false; const el = ${sel ? `t.querySelector(${JSON.stringify(sel)})` : 't'}; if (!el) return false; el.click(); return true; })()`);
+  for (const id of [rA, rB]) await page(id).eval(SIM_SOURCE);
+  const shaOf = {};
+  for (const k of ['alpha', 'beta', 'gamma', 'pub', 'racer', 'alpha2', 'changed', 'stray']) shaOf[k] = sha(FIX[k]);
+
+  // 0. Test mode is on and points at the fake folders.
+  if (PROBE) await T('moves-off');
+  const st = await T('moves-state');
+  if (PROBE) await T('moves-on');
+  check('M3 test mode: the move uses the fake Desktop, Public Desktop and store folder under the test root; moving is available; nothing pending',
+    !!st.ok && st.testMode && st.canMove && st.folders.desktop === D.desktop && st.folders.publicDesktop === D.publicDesktop && st.folders.store === D.store && st.pending.length === 0,
+    { testMode: st.testMode, canMove: st.canMove, store: st.folders && st.folders.store, pending: st.pending && st.pending.length });
+
+  // 1. Empty Grid copy (spec 2.8; tech plan 5, point 1).
+  const HINT = `[...document.querySelectorAll('#drop-hint .drop-hint-inner > div')]`;
+  if (PROBE) await page(rA).eval(`${HINT}[1].textContent = 'DROP .EXE OR .LNK HERE', true`);
+  const hint = await page(rA).eval(`({ lines: ${HINT}.map((d) => d.textContent), display: getComputedStyle(document.getElementById('drop-hint')).display })`);
+  if (PROBE) await page(rA).eval(`${HINT}[1].textContent = 'DROP SHORTCUTS HERE', true`);
+  check('empty Grid: DROP SHORTCUTS HERE / Drag them off the desktop, or right-click to add.',
+    hint.display !== 'none' && hint.lines[1] === 'DROP SHORTCUTS HERE' && hint.lines[2] === 'Drag them off the desktop, or right-click to add.', hint);
+
+  // 2. A drop of desktop files: shortcuts move in order at the slot; the rest are references or bounce; history and README.
+  const b0 = (await boxes()).length;
+  const r1 = await drop(rA, [FIX.alpha, FIX.beta, FIX.gamma, FIX.pub, FIX.tool, FIX.inner, FIX.other, FIX.notes], 0);
+  await sleep(300);
+  const itA = items(rA);
+  if (PROBE) await page(rA).eval(`(() => { const t = document.querySelector('#app-grid .app-tile[data-kind="moved"]'); if (t) t.dataset.kind = 'ref'; return true; })()`);
+  const tA = await tilesOf(rA);
+  const wantOrigins = [join(realDesk, 'Alpha.lnk'), join(realDesk, 'Beta.lnk'), join(realDesk, 'Gamma.url'), join(realPub, 'Pub.lnk')];
+  const hist2 = history();
+  const dones = hist2.filter((l) => l.op === 'add' && l.state === 'done');
+  check('drop: 4 desktop shortcuts (Desktop and Public Desktop, .lnk and .url) move into the store folder as moved tiles at the slot; the .exe, the nested and the other-folder files stay as references; the .txt bounces; no box; history and README',
+    r1.moved === 4 && r1.refs === 3 && r1.ignored === 1 && r1.failed === 0
+    && [FIX.alpha, FIX.beta, FIX.gamma, FIX.pub].every((p) => !ex(p)) && ['Alpha.lnk', 'Beta.lnk', 'Gamma.url', 'Pub.lnk'].every((n) => ex(inStore(n)))
+    && sha(inStore('Alpha.lnk')) === shaOf.alpha && sha(inStore('Pub.lnk')) === shaOf.pub
+    && [FIX.tool, FIX.inner, FIX.other, FIX.notes].every(ex)
+    && JSON.stringify(itA.map((a) => [a.name, a.kind || 'ref'])) === JSON.stringify([['Alpha', 'moved'], ['Beta', 'moved'], ['Gamma', 'moved'], ['Pub', 'moved'], ['Tool', 'ref'], ['Inner', 'ref'], ['Other', 'ref']])
+    && itA.slice(0, 4).every((a, i) => same(a.origin, wantOrigins[i]) && same(dirname(a.path), D.store))
+    && JSON.stringify(tA.map((x) => [x.name, x.kind])) === JSON.stringify(itA.map((a) => [a.name, a.kind || 'ref']))
+    && (await boxes()).length === b0
+    && dones.length === 4 && dones.every((d) => hist2.some((l) => l.id === d.id && l.state === 'intent')) && (await T('moves-state')).pending.length === 0
+    && ex(inStore('README.txt')),
+    { r1, items: itA.map((a) => `${a.name}:${a.kind || 'ref'}`), tiles: tA.map((x) => `${x.name}:${x.kind}`), done: dones.length });
+
+  // 3. Badges in edit mode (spec 5.4, 9.1): ↩ on moved tiles, ✕ on references; 24 x 24; none enters a neighbour's tile.
+  await page(rA).eval('enterEditMode(), true');
+  if (PROBE) await page(rA).eval(`(() => { const b = document.querySelector('.btn-move-back'); if (b) b.textContent = '✕'; return true; })()`);
+  const badges = await page(rA).eval(`(() => {
+    const ts = [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')];
+    const R = (e) => { const r = e.getBoundingClientRect(); return [r.left, r.top, r.right, r.bottom]; };
+    const hit = (a, b) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
+    const enters = [];
+    const tok = (v) => { const e = document.createElement('div'); e.style.color = 'var(' + v + ')'; document.body.appendChild(e); const c = getComputedStyle(e).color; e.remove(); return c; };
+    const bgTok = (v) => { const e = document.createElement('div'); e.style.backgroundColor = 'var(' + v + ')'; document.body.appendChild(e); const c = getComputedStyle(e).backgroundColor; e.remove(); return c; };
+    const want = { panel: bgTok('--panel-bg'), accentText: tok('--accent-text'), text: tok('--text') };
+    const list = ts.map((t, i) => { const b = t.querySelector('.btn-remove, .btn-move-back'); if (!b) return null; ts.forEach((u, j) => { if (j !== i && hit(R(b), R(u))) enters.push(i + 'x' + j); });
+      const r = b.getBoundingClientRect(); const tr = t.getBoundingClientRect(); const cs = getComputedStyle(b);
+      return { kind: t.dataset.kind || 'ref', cls: b.className, text: b.textContent, title: b.title, aria: b.getAttribute('aria-label'), w: Math.round(r.width), h: Math.round(r.height),
+        top: Math.round(r.top - tr.top), right: Math.round(tr.right - r.right), bg: cs.backgroundColor, border: cs.borderTopColor, borderW: cs.borderTopWidth, color: cs.color, font: cs.fontSize }; });
+    return { list, enters, want };
+  })()`);
+  const bm = badges.list.filter((b) => b && b.kind === 'moved');
+  const br = badges.list.filter((b) => b && b.kind === 'ref');
+  const W3 = badges.want;
+  check('edit mode: moved tiles carry ↩ "Move back to desktop" in its own look (class btn-move-back only; --panel-bg disc, --accent-text border, --text glyph at 14 px; exactly the place, size and border width of the ✕ badge), references ✕ "Remove"; 24 x 24; no badge enters a neighbour',
+    badges.list.length === 7 && bm.length === 4 && br.length === 3
+    && bm.every((b) => b.cls === 'btn-move-back' && b.text === '↩' && b.title === 'Move back to desktop' && b.aria === 'Move back to desktop'
+      && b.bg === W3.panel && b.border === W3.accentText && b.color === W3.text && b.font === '14px'
+      && !!br[0] && b.top === br[0].top && b.right === br[0].right && b.w === br[0].w && b.h === br[0].h && b.borderW === br[0].borderW)
+    && br.every((b) => b.cls === 'btn-remove' && b.text === '✕' && b.title === 'Remove' && b.aria === 'Remove') && badges.list.every((b) => b && b.w >= 24 && b.h >= 24) && badges.enters.length === 0,
+    { moved: bm[0], ref: br[0], want: W3, enters: badges.enters });
+
+  // 4. One file held open in a drop of two (spec 14.4): 1 tile, the held file stays, exactly one box naming it.
+  const nB0 = items(rB).length;
+  const b4 = (await boxes()).length;
+  const releaseD = PROBE ? null : holdOpen(FIX.delta);
+  let r4;
+  try { r4 = await drop(rB, [FIX.delta, FIX.epsilon]); } finally { if (releaseD) releaseD(); }
+  const bx4 = (await boxes()).slice(b4);
+  check('a drop of 2 with one held open: 1 tile, the held file is still on the desktop, one box: "Couldn\'t move “Delta” off the desktop. It is still on the desktop." / "The file is in use."',
+    r4.moved === 1 && r4.failed === 1 && ex(FIX.delta) && !ex(FIX.epsilon) && items(rB).length === nB0 + 1 && bx4.length === 1
+    && bx4[0].message === "Couldn't move “Delta” off the desktop. It is still on the desktop." && bx4[0].detail === 'The file is in use.', { r4, boxes: bx4 });
+
+  // 5. A Public Desktop shortcut the user may read but not delete (a real ACL, reset afterwards).
+  const b5 = (await boxes()).length;
+  const undoAcl = PROBE ? () => {} : readOnlyAcl(FIX.admin);
+  let r5;
+  try { r5 = await drop(rB, [FIX.admin]); } finally { undoAcl(); }
+  const bx5 = (await boxes()).slice(b5);
+  check('Public Desktop, access denied (real read-only ACL): the box names it with "Needs administrator rights."; the file stays',
+    r5.failed === 1 && ex(FIX.admin) && bx5.length === 1 && bx5[0].message === "Couldn't move “Admin” off the desktop. It is still on the desktop." && bx5[0].detail === 'Needs administrator rights.', { r5, boxes: bx5 });
+
+  // 6. Cross-volume: ERROR_NOT_SAME_DEVICE at the move (injected; MoveFileExW has no COPY_ALLOWED).
+  if (!PROBE) await T('move-hook', { fault: { op: 'add', code: 17, count: 1 } });
+  const b6 = (await boxes()).length;
+  const r6 = await drop(rB, [FIX.far]);
+  await T('move-hook', {});
+  const bx6 = (await boxes()).slice(b6);
+  const ab6 = history().filter((l) => l.op === 'add' && l.state === 'aborted' && l.code === 17 && l.injected);
+  check('cross-volume (ERROR_NOT_SAME_DEVICE at the move): refused with "The desktop is on a different drive."; the file stays; the intent is aborted with code 17',
+    r6.failed === 1 && ex(FIX.far) && bx6.length === 1 && bx6[0].detail === 'The desktop is on a different drive.' && bx6[0].message === "Couldn't move “Far” off the desktop. It is still on the desktop." && ab6.length === 1, { r6, boxes: bx6 });
+
+  // 7. A cloud-only placeholder (a real FILE_ATTRIBUTE_OFFLINE): refused, not hydrated; the attribute stays.
+  if (!PROBE) W.SetFileAttributesW(FIX.cloud, 0x1000 | 0x20);
+  const b7 = (await boxes()).length;
+  const r7 = await drop(rB, [FIX.cloud]);
+  const attrs7 = W.GetFileAttributesW(FIX.cloud);
+  W.SetFileAttributesW(FIX.cloud, 0x20);
+  const bx7 = (await boxes()).slice(b7);
+  check('cloud-only placeholder (FILE_ATTRIBUTE_OFFLINE): refused, the attribute is still set, the file stays; one box: "The file is online only. Keep it on this device, then try again."',
+    r7.failed === 1 && ex(FIX.cloud) && (attrs7 & 0x1000) !== 0 && bx7.length === 1 && bx7[0].message === "Couldn't move “Cloud” off the desktop. It is still on the desktop."
+    && bx7[0].detail === 'The file is online only. Keep it on this device, then try again.', { r7, attrs: `0x${(attrs7 >>> 0).toString(16)}`, boxes: bx7 });
+
+  // 8. A name already in the store folder: the new file gets "(2)"; the old one is untouched.
+  if (PROBE) testMove(FIX.spare, inStore('Alpha (2).lnk'));
+  testMove(FIX.alpha2, join(D.desktop, 'Alpha.lnk'));
+  const old8 = sha(inStore('Alpha.lnk'));
+  const r8 = await drop(rB, [join(D.desktop, 'Alpha.lnk')]);
+  check('a name already in the store folder: the new Alpha.lnk lands as "Alpha (2).lnk"; the one already there is byte-identical',
+    r8.moved === 1 && ex(inStore('Alpha (2).lnk')) && sha(inStore('Alpha (2).lnk')) === shaOf.alpha2 && sha(inStore('Alpha.lnk')) === old8 && !ex(join(D.desktop, 'Alpha.lnk')), r8);
+
+  // 9. A race on the name: a file appears at the target after the intent, before the move.
+  await T('move-hook', { pauseAt: 'add:intent' });
+  const p9 = drop(rB, [FIX.racer]);
+  const paused9 = await waitPaused();
+  if (paused9 && !PROBE) writeFileSync(paused9.dst, 'INTRUDER');
+  await T('move-continue');
+  const r9 = await p9;
+  check('a file appears at the target between the intent and the move: the move takes "Racer (2).lnk"; the file that appeared is untouched',
+    !!paused9 && same(paused9.dst, inStore('Racer.lnk')) && r9.moved === 1 && ex(inStore('Racer.lnk')) && readFileSync(inStore('Racer.lnk'), 'utf8') === 'INTRUDER'
+    && ex(inStore('Racer (2).lnk')) && sha(inStore('Racer (2).lnk')) === shaOf.racer, { paused: paused9, r9 });
+
+  // 10. Verify: the target differs from what was hashed, so it goes back to the desktop and the add is aborted.
+  const len10 = readFileSync(FIX.changed).length;
+  await T('move-hook', { pauseAt: 'add:moved' });
+  const b10 = (await boxes()).length;
+  const p10 = drop(rB, [FIX.changed]);
+  const paused10 = await waitPaused();
+  if (paused10 && !PROBE) appendFileSync(paused10.dst, 'X');
+  await T('move-continue');
+  const r10 = await p10;
+  const bx10 = (await boxes()).slice(b10);
+  check('verify: a target changed after the move is moved back to the desktop (its bytes kept), the add aborted, one box',
+    r10.failed === 1 && ex(FIX.changed) && readFileSync(FIX.changed).length === len10 + 1 && !ex(inStore('Changed.lnk')) && bx10.length === 1 && bx10[0].message === "Couldn't move “Changed” off the desktop. It is still on the desktop." && bx10[0].detail === 'The disk refused the move.'
+    && history().some((l) => l.op === 'add' && l.state === 'aborted' && l.rolledBack), { r10, boxes: bx10 });
+
+  // 11. ↩ on a moved tile (rA, edit mode): back to the folder it came from; the tile goes.
+  if (PROBE) await tileClick(rA, 'Tool', '.btn-remove'); else await tileClick(rA, 'Alpha', '.btn-move-back');
+  await sleep(900);
+  check('↩ (badge): Alpha goes back to the desktop folder it came from, byte-identical; its tile and item go',
+    ex(FIX.alpha) && sha(FIX.alpha) === shaOf.alpha && !ex(inStore('Alpha.lnk')) && !items(rA).some((a) => a.name === 'Alpha') && !(await tilesOf(rA)).some((x) => x.name === 'Alpha'));
+
+  // 12. Delete on a focused moved tile (rB, edit mode): the badge action; the name is taken on the desktop now, so "(2)".
+  await page(rB).eval('enterEditMode(), true');
+  const refB = (await tilesOf(rB)).find((x) => x.kind === 'ref');
+  const focused = await page(rB).eval(`(() => { const t = ${findTile(PROBE && refB ? refB.name : 'Alpha')}; if (!t) return false; t.focus(); return document.activeElement === t; })()`);
+  await page(rB).eval(`__qlSim.key('Delete'), true`);
+  await sleep(900);
+  check('Delete on a focused moved tile: its file goes back to the desktop as "Alpha (2).lnk" (Alpha.lnk is there); the first Alpha is untouched',
+    focused && ex(join(D.desktop, 'Alpha (2).lnk')) && sha(join(D.desktop, 'Alpha (2).lnk')) === shaOf.alpha2 && sha(FIX.alpha) === shaOf.alpha && !items(rB).some((a) => a.kind === 'moved' && a.name === 'Alpha'));
+  await page(rB).eval('exitEditMode(), true');
+
+  // 13. Tile menu (edit mode, Menu key) on a moved tile: "Move back to desktop".
+  await sleep(900); // past the Menu key's contextmenu skip from the M2 checks
+  await page(rA).eval(`(() => { const t = ${findTile('Beta')}; if (t) t.focus(); return true; })()`);
+  const m13 = (await T('menus')).menus.length;
+  await page(rA).eval(`__qlSim.key('ContextMenu'), true`);
+  await sleep(250);
+  const menu13 = (await T('menus')).menus.slice(m13)[0];
+  const labels13 = menu13 ? menu13.items.map((i) => i.label) : [];
+  await T('menu-click', { path: [PROBE ? 0 : labels13.indexOf('Move back to desktop')] });
+  await sleep(900);
+  if (PROBE) await page(rA).eval(`(() => { const i = document.querySelector('.rename-input'); if (i) i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); return true; })()`);
+  check('tile menu on a moved tile reads Rename / Move to / Move back to desktop; the last moves Beta back to the desktop',
+    JSON.stringify(labels13) === JSON.stringify(['Rename', 'Move to', 'Move back to desktop']) && ex(FIX.beta) && sha(FIX.beta) === shaOf.beta && !items(rA).some((a) => a.name === 'Beta'), { labels: labels13 });
+  await page(rA).eval('exitEditMode(), true');
+
+  // 14. Broken tiles (spec 2.1; addendum B4, B11): the files are taken out of the store folder (moved aside, never
+  // deleted). Epsilon: view mode (click, Enter, Space show the box; Keep by default; Remove tile). Zeta: edit-mode ✕.
+  // Eta: the tile menu's Remove tile. Theta: Delete. None of the edit-mode routes asks.
+  await drop(rB, [FIX.zeta, FIX.eta, FIX.theta]);
+  for (const n of ['Epsilon', 'Zeta', 'Eta', 'Theta']) {
+    const it = items(rB).find((a) => a.name === n);
+    if (it && !(PROBE && n === 'Epsilon')) testMove(it.path, join(D.aside, basename(it.path)));
+  }
+  await T('rescan');
+  await sleep(600);
+  const PIP = (name) => page(rB).eval(`(() => { const t = ${findTile(name)}; if (!t) return null; const img = t.querySelector('.tile-icon'); const pip = t.querySelector('.tile-broken-pip');
+    const circle = pip && pip.querySelector('circle'); const mark = pip && pip.querySelector('rect'); const label = t.querySelector('.tile-label');
+    const tr = t.getBoundingClientRect(); const pr = pip && pip.getBoundingClientRect(); const ir = img.getBoundingClientRect(); const b = t.querySelector('.btn-remove, .btn-move-back'); const brr = b && b.getBoundingClientRect();
+    const tok = (v) => { const e = document.createElement('div'); e.style.color = 'var(' + v + ')'; document.body.appendChild(e); const c = getComputedStyle(e).color; e.remove(); return c; };
+    const hit = (a, c) => !!(a && c && a.left < c.right && c.left < a.right && a.top < c.bottom && c.top < a.bottom);
+    return { broken: t.classList.contains('tile-broken'), opacity: getComputedStyle(img).opacity, aria: t.getAttribute('aria-label'), title: t.title, labelTitle: label ? label.title : null,
+      pip: pr ? { x0: Math.round(pr.left - tr.left), y0: Math.round(pr.top - tr.top), x1: Math.round(pr.right - tr.left), y1: Math.round(pr.bottom - tr.top), shown: getComputedStyle(pip).display !== 'none' && pr.width > 0 } : null,
+      fill: circle ? getComputedStyle(circle).fill : null, markFill: mark ? getComputedStyle(mark).fill : null, text: tok('--text'), bg: tok('--bg'),
+      overIcon: hit(pr, ir), overBadge: hit(pr, brr), badge: b ? { text: b.textContent, title: b.title, aria: b.getAttribute('aria-label'), cls: b.className } : null }; })()`);
+  const pipOk = (v) => !!v && v.broken && v.opacity === '0.6' && !!v.pip && v.pip.shown && v.pip.x0 === 3 && v.pip.y0 === 3 && v.pip.x1 === 15 && v.pip.y1 === 15
+    && v.fill === v.text && v.markFill === v.bg && !v.overIcon && !v.overBadge && contrast(v.fill, v.bg) >= 3;
+  const view14 = await PIP('Epsilon');
+  const l14 = (await T('launches')).launches.length;
+  const b14 = (await boxes()).length;
+  await page(rB).eval(`(() => { const t = ${findTile('Epsilon')}; if (t) t.focus(); return true; })()`);
+  await page(rB).eval(`__qlSim.key('Enter'), true`);
+  await sleep(400);
+  await page(rB).eval(`(() => { const t = ${findTile('Epsilon')}; if (t) t.focus(); return true; })()`);
+  await page(rB).eval(`__qlSim.key(' '), true`);
+  await sleep(400);
+  await tileClick(rB, 'Epsilon');
+  await sleep(500);
+  const eps = items(rB).find((a) => a.name === 'Epsilon');
+  const keptAfterKeep = !!eps;
+  if ((await boxes()).length > b14) { await T('box-answers', { answers: [0] }); await tileClick(rB, 'Epsilon'); await sleep(800); }
+  const bx14 = (await boxes()).slice(b14);
+  check('broken tile, view mode: icon 0.6; the "!" pip at x 3-15 / y 3-15 of the tile, --text disc and --bg mark, 3:1 or more, clear of the icon; aria "Epsilon, missing" and the tooltip; click, Enter and Space each show "“Epsilon” is missing from the QuickLauncher Shortcuts folder." [Remove tile] [Keep] with Keep by default, launching nothing; Remove tile removes it',
+    pipOk(view14) && view14.aria === 'Epsilon, missing' && view14.title === 'Epsilon is missing. Click to remove the tile or keep it.' && view14.labelTitle === view14.title
+    && bx14.length === 4 && bx14.slice(0, 3).every((b) => b.message === '“Epsilon” is missing from the QuickLauncher Shortcuts folder.' && JSON.stringify(b.buttons) === JSON.stringify(['Remove tile', 'Keep']) && b.cancelId === 1 && b.defaultId === 1 && b.answer === 1)
+    && keptAfterKeep && !items(rB).some((a) => a.name === 'Epsilon') && (await T('launches')).launches.length === l14 && ex(join(D.aside, 'Epsilon.lnk')),
+    { tile: view14, contrast: view14 && contrast(view14.fill, view14.bg), boxes: bx14.map((b) => b.message) });
+
+  await page(rB).eval('enterEditMode(), true');
+  const edit14 = await PIP('Zeta');
+  const b14e = (await boxes()).length;
+  await tileClick(rB, 'Zeta', '.btn-remove');
+  await sleep(700);
+  await page(rB).eval(`(() => { const t = ${findTile('Eta')}; if (t) t.focus(); return true; })()`);
+  const m14 = (await T('menus')).menus.length;
+  await page(rB).eval(`__qlSim.key('ContextMenu'), true`);
+  await sleep(250);
+  const menu14 = (await T('menus')).menus.slice(m14)[0];
+  const labels14 = menu14 ? menu14.items.map((i) => i.label) : [];
+  await T('menu-click', { path: [labels14.indexOf('Remove tile')] });
+  await sleep(700);
+  await sleep(900); // past the Menu key's contextmenu skip
+  await page(rB).eval(`(() => { const t = ${findTile('Theta')}; if (t) t.focus(); return true; })()`);
+  await page(rB).eval(`__qlSim.key('Delete'), true`);
+  await sleep(700);
+  const racerBadge = await page(rB).eval(`(() => { const t = [...document.querySelectorAll('#app-grid .app-tile[data-kind="moved"]')].find((x) => !x.classList.contains('tile-broken')); const b = t && t.querySelector('.btn-move-back'); return b ? b.textContent : null; })()`);
+  await page(rB).eval('exitEditMode(), true');
+  check('broken tile, edit mode: the pip stays (same place); its badge is ✕ "Remove tile" (tooltip, aria-label) and removes the tile at once; the tile menu reads Rename / Move to / Remove tile; Delete removes too; no box; a moved tile with its file keeps ↩; the files are never deleted',
+    pipOk(edit14) && !!edit14.badge && edit14.badge.text === '✕' && edit14.badge.title === 'Remove tile' && edit14.badge.aria === 'Remove tile' && edit14.badge.cls === 'btn-remove' && edit14.labelTitle === 'Click to rename' && edit14.title === ''
+    && JSON.stringify(labels14) === JSON.stringify(['Rename', 'Move to', 'Remove tile'])
+    && !['Zeta', 'Eta', 'Theta'].some((n) => items(rB).some((a) => a.name === n)) && (await boxes()).length === b14e && racerBadge === '↩'
+    && ['Zeta.lnk', 'Eta.lnk', 'Theta.lnk'].every((n) => ex(join(D.aside, n))), { tile: edit14, labels: labels14, racerBadge });
+
+  // 15. Files without a tile (spec 5.5.3; addendum B5): listed in the Manager; Add back, Move to desktop.
+  if (!PROBE) { testMove(FIX.stray, inStore('Stray.lnk')); testMove(FIX.stray2, inStore('Stray2.url')); }
+  await T('rescan');
+  await sleep(800);
+  const ORPH = `(() => ({ count: document.getElementById('orphan-count').textContent, shown: !document.getElementById('orphan-count').classList.contains('hidden'),
+    rows: [...document.querySelectorAll('#orphan-list .mgr-orphan')].map((r) => ({ name: r.querySelector('.mgr-orphan-name').textContent, title: r.querySelector('.mgr-orphan-name').title,
+      buttons: [...r.querySelectorAll('button')].map((b) => [b.textContent, b.title, b.getAttribute('aria-label'), b.getAttribute('aria-disabled')]) })) }))()`;
+  const od = await mgr.eval(ORPH);
+  const rowBtn = (name, i) => mgr.eval(`(() => { const r = [...document.querySelectorAll('#orphan-list .mgr-orphan')].find((x) => x.querySelector('.mgr-orphan-name').textContent === ${JSON.stringify(name)}); if (!r) return false; r.querySelectorAll('button')[${i}].click(); return true; })()`);
+  // The rows are rebuilt after each action: Stray2 (the .url) leaves to the desktop first, then Stray is added back.
+  const s2 = await rowBtn('Stray2', 1);
+  await sleep(900);
+  const s1 = await rowBtn('Stray', 0);
+  await sleep(2000);
+  const prim = items(ids[0]).find((a) => a.name === 'Stray');
+  const odAfter = await mgr.eval(ORPH);
+  const wantButtons = JSON.stringify([['ADD BACK', 'Add this shortcut to “QUICK.LAUNCH”', 'Add this shortcut to “QUICK.LAUNCH”', 'false'], ['MOVE TO DESKTOP', 'Move this shortcut to the desktop', 'Move this shortcut to the desktop', 'false']]);
+  // The file the race test (9) wrote into the store folder has no tile either: it is listed too.
+  const race = ex(inStore('Racer.lnk')) && readFileSync(inStore('Racer.lnk'), 'utf8') === 'INTRUDER' ? ['Racer'] : [];
+  const want15 = [...race, 'Stray', 'Stray2'];
+  const wantTitles = [...race.map(() => 'Racer.lnk'), 'Stray.lnk', 'Stray2.url'];
+  check('files without a tile: "{n} files without a tile."; per file its name (tooltip: the file name with extension), ADD BACK "Add this shortcut to “QUICK.LAUNCH”", MOVE TO DESKTOP "Move this shortcut to the desktop"; Move to desktop puts Stray2.url on the desktop; Add back gives Stray a moved tile in the first region; then only the race file is left',
+    od.shown && od.count === `${want15.length} files without a tile.` && JSON.stringify(od.rows.map((r) => r.name)) === JSON.stringify(want15) && JSON.stringify(od.rows.map((r) => r.title)) === JSON.stringify(wantTitles)
+    && od.rows.every((r) => JSON.stringify(r.buttons) === wantButtons)
+    && s1 && s2 && ex(join(D.desktop, 'Stray2.url')) && !ex(inStore('Stray2.url')) && !!prim && prim.kind === 'moved' && same(prim.path, inStore('Stray.lnk'))
+    && JSON.stringify(odAfter.rows.map((r) => r.name)) === JSON.stringify(race) && odAfter.count === (race.length ? '1 file without a tile.' : ''), { before: od, after: odAfter });
+
+  // 16. The Manager's Moved shortcuts section (spec 8.1, 9.1; addendum B5, B8).
+  await sleep(300);
+  const ms = await mgr.eval(`(() => { const q = (id) => document.getElementById(id);
+    const R = (e) => { const r = e.getBoundingClientRect(); return [r.left, r.top, r.right, r.bottom]; };
+    const els = [...document.querySelectorAll('#mgr-moved button, #mgr-moved .mgr-title, #moved-count')]; const hit = [];
+    for (let i = 0; i < els.length; i++) for (let j = i + 1; j < els.length; j++) { const a = R(els[i]), b = R(els[j]); if (a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3]) hit.push(i + 'x' + j); }
+    const e = document.createElement('div'); e.style.color = 'var(--text)'; document.body.appendChild(e); const text = getComputedStyle(e).color; e.remove();
+    return { title: document.querySelector('#mgr-moved .mgr-title').textContent, count: q('moved-count').textContent, od: q('moved-onedrive').textContent, odShown: !q('moved-onedrive').classList.contains('hidden'),
+      unShown: !q('moved-unavailable').classList.contains('hidden'),
+      colours: [q('moved-count'), q('moved-onedrive'), q('orphan-count')].map((x) => getComputedStyle(x).color), text,
+      heights: [...document.querySelectorAll('#mgr-moved button')].map((b) => Math.round(b.getBoundingClientRect().height)),
+      open: [q('btn-open-store').textContent, q('btn-open-store').title], back: [q('btn-move-all-back').textContent, q('btn-move-all-back').title, q('btn-move-all-back').getAttribute('aria-disabled')], hit }; })()`);
+  const st16 = await T('moves-state');
+  const movedNow = readData().apps.filter((a) => a.kind === 'moved' && !st16.missing.includes(a.id)).length;
+  await mgr.eval(`document.getElementById('btn-open-store').click(), true`);
+  await sleep(400);
+  const opened = (await T('opened')).opened;
+  await mgr.eval(`document.getElementById('btn-open-cheatsheet').click(), true`);
+  await sleep(200);
+  const cheat = await mgr.eval(`[...document.querySelectorAll('#cheat-list .cheat-row')].map((r) => [r.querySelector('.cheat-key').textContent, r.querySelector('.cheat-desc').textContent]).find((x) => x[0] === 'DELETE') || null`);
+  await mgr.eval(`document.getElementById('btn-close-cheatsheet').click(), true`);
+  check('Manager: "{n} moved off the desktop." (files present), the OneDrive note, every sentence in --text, every button 24 px or more, OPEN FOLDER and MOVE ALL BACK… with their tooltips, nothing overlapping; Open folder recorded, no window; the cheat-sheet Delete row as ruled',
+    ms.count === `${movedNow} moved off the desktop.` && ms.odShown && ms.od === 'Your desktop is synced by OneDrive. Moved shortcuts stop syncing.' && !ms.unShown
+    && ms.colours.every((c) => c === ms.text) && ms.heights.length >= 2 && ms.heights.every((h) => h >= 24)
+    && ms.open[0] === 'OPEN FOLDER' && ms.open[1] === 'Open the folder with moved shortcuts' && ms.back[0] === 'MOVE ALL BACK…' && ms.back[1] === 'Move every moved shortcut back to the desktop' && ms.back[2] === 'false'
+    && ms.hit.length === 0 && opened.length === 1 && same(opened[0], D.store)
+    && !!cheat && cheat[1] === 'Remove the focused tile; a moved shortcut goes back to the desktop (edit mode)', { ms, movedNow, opened, cheat });
+
+  // 17. Delete a region with moved files (spec 3.4, 14.5; addendum B1, B4b): one held open keeps the region and the box
+  // says how many went back; then Gamma's file goes missing, so it counts as a reference: the region goes with no failure box.
+  const st17 = await mgr.eval(`window.api.invoke('manager:state')`);
+  const nameA = (st17.regions.find((r) => r.id === rA) || {}).name;
+  const itA17 = items(rA);
+  const movedA = itA17.filter((a) => a.kind === 'moved');
+  const refsA = itA17.length - movedA.length;
+  const gammaItem = movedA.find((a) => a.name === 'Gamma');
+  const confirmText = (moved, refs) => [
+    moved ? `${moved} ${moved === 1 ? 'shortcut moves' : 'shortcuts move'} back to the desktop.` : null,
+    refs ? `${refs} ${moved ? 'other ' : ''}${refs === 1 ? 'shortcut is' : 'shortcuts are'} removed from QuickLauncher. ${refs === 1 ? 'The app stays' : 'The apps stay'} installed.` : null,
+  ].filter(Boolean).join('\n');
+  const b17 = (await boxes()).length;
+  await T('box-answers', { answers: [0] });
+  const releaseG = PROBE || !gammaItem ? null : holdOpen(gammaItem.path);
+  let d1;
+  try { d1 = await mgr.eval(`window.api.invoke('manager:delete-region', ${JSON.stringify(rA)})`, 90000); } finally { if (releaseG) releaseG(); }
+  const bx17 = (await boxes()).slice(b17);
+  const keptA = (await mgr.eval(`window.api.invoke('manager:state')`)).regions.some((r) => r.id === rA);
+  const mid17 = { pubBack: ex(FIX.pub) && sha(FIX.pub) === shaOf.pub, gammaInStore: !!gammaItem && ex(gammaItem.path), names: items(rA).map((a) => a.name) };
+  let d2 = null;
+  let bx17b = [];
+  if (keptA && gammaItem) {
+    testMove(gammaItem.path, join(D.aside, basename(gammaItem.path)));
+    const b17b = (await boxes()).length;
+    await T('box-answers', { answers: [0] });
+    d2 = await mgr.eval(`window.api.invoke('manager:delete-region', ${JSON.stringify(rA)})`, 90000);
+    bx17b = (await boxes()).slice(b17b);
+  }
+  let goneA = false;
+  for (let i = 0; i < 25 && !goneA; i++) { goneA = !(await regionPages()).some((t) => regionId(t) === rA); if (!goneA) await sleep(200); }
+  await sleep(500); // the region's removal is saved through the store's 100 ms debounce
+  check('delete a region with moved files: "Delete “…”?" with both counts (Cancel by default); with Gamma held open Pub goes back, the region is kept: "Couldn\'t move “Gamma” back to the desktop. The region was kept." / "The file is in use." / "1 other is back on the desktop."; with Gamma\'s file missing it is a reference: the confirm counts it there, the region goes, no failure box, the file untouched',
+    bx17.length >= 2 && bx17[0].message === `Delete “${nameA}”?` && bx17[0].detail === confirmText(movedA.length, refsA) && JSON.stringify(bx17[0].buttons) === JSON.stringify(['Delete region', 'Cancel']) && bx17[0].cancelId === 1
+    && !!d1 && d1.kept === true && bx17[1].message === "Couldn't move “Gamma” back to the desktop. The region was kept." && bx17[1].detail === 'The file is in use.\n1 other is back on the desktop.'
+    && keptA && mid17.pubBack && mid17.gammaInStore && !!d2 && d2.ok && bx17b.length === 1 && bx17b[0].detail === confirmText(0, refsA + 1) && goneA
+    && ex(join(D.aside, basename(gammaItem.path))) && sha(join(D.aside, basename(gammaItem.path))) === shaOf.gamma
+    && !readData().apps.some((a) => a.regionId === rA) && [FIX.tool, FIX.inner, FIX.other].every(ex),
+    { d1, d2, boxes: [...bx17, ...bx17b].map((b) => `${b.message} | ${b.detail}`), mid: mid17, goneA });
+
+  // 18. Region menu "Move all shortcuts back to desktop…" (Games; addendum B2, B4b): a tile whose file is missing (Kappa) is skipped.
+  await drop(rB, [FIX.kappa]);
+  const kap = items(rB).find((a) => a.name === 'Kappa');
+  if (kap) testMove(kap.path, join(D.aside, basename(kap.path)));
+  await T('rescan');
+  await sleep(500);
+  const miss18 = (await T('moves-state')).missing;
+  const movedB = items(rB).filter((a) => a.kind === 'moved' && !miss18.includes(a.id));
+  const refsB = items(rB).filter((a) => a.kind !== 'moved').length;
+  const mm = (await T('menus')).menus.length;
+  await page(rB).eval(`window.api.invoke('region:menu', { x: 10, y: 10 }), true`);
+  await sleep(250);
+  const menu18 = (await T('menus')).menus.slice(mm)[0];
+  const i18 = menu18 ? menu18.items.findIndex((i) => i.label === 'Move all shortcuts back to desktop…') : -1;
+  const enabled18 = i18 >= 0 && menu18.items[i18].enabled;
+  const delIdx = menu18 ? menu18.items.findIndex((i) => i.label === 'Delete region…') : -1;
+  const b18 = (await boxes()).length;
+  await T('menu-click', { path: [i18] }); // the default answer: Cancel
+  await sleep(500);
+  const afterCancel = items(rB).filter((a) => a.kind === 'moved' && !miss18.includes(a.id)).length;
+  if (!PROBE) { await T('box-answers', { answers: [0] }); await T('menu-click', { path: [i18] }); await sleep(2000); }
+  const bx18 = (await boxes()).slice(b18);
+  await page(rB).eval(`window.api.invoke('region:menu', { x: 10, y: 10 }), true`);
+  await sleep(250);
+  const menu18b = (await T('menus')).menus.slice(-1)[0];
+  const disabledAfter = menu18b.items.find((i) => i.label === 'Move all shortcuts back to desktop…').enabled === false;
+  const n18 = movedB.length;
+  const leave18 = `${n18 === 1 ? 'It leaves' : 'They leave'} “Games”. Names already on the desktop get a number.`;
+  check('region menu "Move all shortcuts back to desktop…" above "Delete region…": "Move {n} … back to the desktop?" counting only shortcuts whose file is there; "It leaves / They leave “Games”. …"; Cancel changes nothing; Move back moves them; the missing-file tile stays and is never a failure; then the item is disabled',
+    n18 >= 1 && !!kap && miss18.includes(kap.id) && enabled18 && delIdx === i18 + 1 && bx18.length === 2 && bx18[0].message === `Move ${n18} ${n18 === 1 ? 'shortcut' : 'shortcuts'} back to the desktop?`
+    && bx18[0].detail === leave18 && bx18[1].message === bx18[0].message && afterCancel === n18 && items(rB).filter((a) => a.kind === 'moved' && a.name !== 'Kappa').length === 0
+    && items(rB).some((a) => a.name === 'Kappa') && items(rB).filter((a) => a.kind !== 'moved').length === refsB && movedB.every((a) => ex(a.origin)) && disabledAfter,
+    { n: n18, boxes: bx18.map((b) => `${b.message} | ${b.detail}`), afterCancel });
+
+  // 19. The Manager's MOVE ALL BACK… (every region; addendum B2, B3, B5): Stray (region 1) and Lambda (Games) are in 2 regions.
+  await drop(rB, [FIX.lambda]);
+  await sleep(300);
+  const miss19 = (await T('moves-state')).missing;
+  const movedAll = readData().apps.filter((a) => a.kind === 'moved' && !miss19.includes(a.id));
+  const k19 = new Set(movedAll.map((a) => a.regionId)).size;
+  const b19 = (await boxes()).length;
+  await T('box-answers', { answers: [PROBE ? 1 : 0] });
+  await mgr.eval(`document.getElementById('btn-move-all-back').click(), true`);
+  await sleep(2500);
+  const bx19 = (await boxes()).slice(b19);
+  const ms19 = await mgr.eval(`({ count: document.getElementById('moved-count').textContent, disabled: document.getElementById('btn-move-all-back').getAttribute('aria-disabled'), tip: document.getElementById('btn-move-all-back').title })`);
+  check('Manager MOVE ALL BACK…: "Move 2 shortcuts back to the desktop?" / "They leave 2 regions. Names already on the desktop get a number."; Move back moves both; the missing-file tile is left out; then "None moved off the desktop." and the button is disabled with "No shortcuts to move back."',
+    movedAll.length === 2 && k19 === 2 && bx19.length === 1 && bx19[0].message === 'Move 2 shortcuts back to the desktop?'
+    && bx19[0].detail === 'They leave 2 regions. Names already on the desktop get a number.' && readData().apps.filter((a) => a.kind === 'moved' && a.name !== 'Kappa').length === 0
+    && ex(join(D.desktop, 'Stray.lnk')) && ex(FIX.lambda) && items(rB).some((a) => a.name === 'Kappa')
+    && ms19.count === 'None moved off the desktop.' && ms19.disabled === 'true' && ms19.tip === 'No shortcuts to move back.', { n: movedAll.length, regions: k19, boxes: bx19.map((b) => `${b.message} | ${b.detail}`), manager: ms19 });
+
+  // 20. Moving unavailable (spec 5.5.7; addendum B5; the test hook turns it off): the Manager's standing line and disabled
+  // buttons; a drop of a desktop file shows the spec box and changes nothing.
+  if (!PROBE) await T('moves-off');
+  await sleep(500);
+  const un20 = await mgr.eval(`(() => { const q = (id) => document.getElementById(id); const btn = (b) => [b.getAttribute('aria-disabled'), b.title];
+    return { line: q('moved-unavailable').textContent, shown: !q('moved-unavailable').classList.contains('hidden'), back: btn(q('btn-move-all-back')), open: btn(q('btn-open-store')),
+      rows: [...document.querySelectorAll('#orphan-list .mgr-orphan button')].map(btn) }; })()`);
+  testMove(FIX.late, join(D.desktop, 'Late.lnk'));
+  const b20 = (await boxes()).length;
+  const r20 = await drop(rB, [join(D.desktop, 'Late.lnk')]);
+  await T('moves-on');
+  const bx20 = (await boxes()).slice(b20);
+  check('moving unavailable: the Manager shows "Moving is unavailable."; MOVE ALL BACK…, ADD BACK and MOVE TO DESKTOP are disabled with that tooltip, OPEN FOLDER is not; a dropped desktop shortcut gives one box "Moving is unavailable. Nothing was changed." and nothing changes',
+    un20.shown && un20.line === 'Moving is unavailable.' && un20.back[0] === 'true' && un20.back[1] === 'Moving is unavailable.' && un20.open[0] !== 'true'
+    && un20.rows.length >= 2 && un20.rows.every(([d, tip]) => d === 'true' && tip === 'Moving is unavailable.')
+    && r20.refused === 'unavailable' && bx20.length === 1 && bx20[0].message === 'Moving is unavailable. Nothing was changed.' && ex(join(D.desktop, 'Late.lnk')) && !items(rB).some((a) => a.name === 'Late'),
+    { manager: un20, r20, boxes: bx20 });
+
+  // 22. A drop through the page's own drop code (addendum B10, B7): an accepted drop clears the type-to-filter, so the new
+  // tile shows; files that are not shortcuts give the region notice, never a box; a FULL drop leaves the filter.
+  // (--probe sends the same paths past the page, straight to the main process: no clear, no notice.)
+  const g22 = await page(rB).eval(`(() => { const r = document.getElementById('app-grid').getBoundingClientRect(); return { x: Math.round(r.left + 30), y: Math.round(r.top + 30) }; })()`);
+  await page(rB).eval(`setFilter('zzzz'), true`);
+  const visibleBefore = await page(rB).eval(`document.querySelectorAll('#app-grid .app-tile:not(.drop-slot):not(.filter-hidden)').length`);
+  const b22 = (await boxes()).length;
+  const pageDrop = (paths) => page(rB).eval(`window.__qlFileDrop(${JSON.stringify(paths)}, ${g22.x}, ${g22.y})`, 90000);
+  const r22 = PROBE ? await drop(rB, [FIX.mu, FIX.notes, D.elsewhere]) : await pageDrop([FIX.mu, FIX.notes, D.elsewhere]);
+  await sleep(500);
+  const NOTICE = `({ filter: _filterText, chip: !document.getElementById('filter-chip').classList.contains('hidden'), shown: !document.getElementById('update-banner').classList.contains('hidden'), text: document.getElementById('update-text').textContent })`;
+  const s22 = await page(rB).eval(NOTICE);
+  const muVisible = await page(rB).eval(`(() => { const t = ${findTile('Mu')}; return t ? !t.classList.contains('filter-hidden') : null; })()`);
+  const r22b = PROBE ? await drop(rB, [FIX.notes]) : await pageDrop([FIX.notes]);
+  await sleep(400);
+  const s22b = await page(rB).eval(NOTICE);
+  const nB22 = items(rB).length;
+  await T('set-cap', { regionId: rB, cap: nB22 });
+  await page(rB).eval(`setFilter('zzzz'), true`);
+  const r22c = await page(rB).eval(`window.__qlFileDrop ? window.__qlFileDrop(${JSON.stringify([FIX.nu])}, ${g22.x}, ${g22.y}) : null`, 90000);
+  const filterAfterFull = await page(rB).eval('_filterText');
+  await T('set-cap', { regionId: rB, cap: null });
+  await page(rB).eval('clearFilter(), true');
+  const bx22 = (await boxes()).slice(b22);
+  check('a drop through the page with a filter that hides every tile: the filter clears and the new tile shows in its slot (B10); a FULL drop leaves the filter and moves nothing',
+    visibleBefore === 0 && !!r22 && r22.moved === 1 && s22.filter === '' && !s22.chip && muVisible === true && r22c === null && filterAfterFull === 'zzzz' && ex(FIX.nu),
+    { visibleBefore, r22, s22, muVisible, fullDrop: r22c, filterAfterFull });
+  check('files that are not shortcuts (a .txt, a folder): the region notice "2 FILES ARE NOT SHORTCUTS", then "NOT A SHORTCUT" for one alone; no box; nothing moved for them (B7)',
+    !!r22 && r22.ignored === 2 && s22.shown && s22.text === '2 FILES ARE NOT SHORTCUTS' && !!r22b && r22b.moved === 0 && r22b.ignored === 1 && s22b.shown && s22b.text === 'NOT A SHORTCUT'
+    && bx22.length === 0 && ex(FIX.notes) && existsSync(D.elsewhere), { r22, notice: s22.text, r22b, notice2: s22b.text, boxes: bx22.length });
+
+  // 23. The drop effect a file drag is answered with is 'copy', never 'move' (B7: a Move answer tells Explorer to delete
+  // the originals). A file DataTransfer goes through the page's own dragover listener. (--probe adds a later listener
+  // that answers 'move', as broken page code would.)
+  // (Chromium ignores dropEffect writes on a DataTransfer that is not from a real drag, so the event
+  // carries a plain object shaped like a file drag's DataTransfer: the listener's answer is readable.)
+  const de = await page(rB).eval(`(() => {
+    ${PROBE ? "window.addEventListener('dragover', (e) => { if (e.dataTransfer) e.dataTransfer.dropEffect = 'move'; }, true);" : ''}
+    const grid = document.getElementById('app-grid'); const r = grid.getBoundingClientRect();
+    const fake = (type) => { const ev = new Event(type, { bubbles: true, cancelable: true });
+      const dt = { types: ['Files'], items: [{ kind: 'file', type: '' }], files: [], dropEffect: 'none', effectAllowed: 'all' };
+      Object.defineProperty(ev, 'dataTransfer', { value: dt }); Object.defineProperty(ev, 'clientX', { value: r.left + 20 }); Object.defineProperty(ev, 'clientY', { value: r.top + 20 });
+      return { ev, dt }; };
+    const a = fake('dragenter'); grid.dispatchEvent(a.ev);
+    const o = fake('dragover'); grid.dispatchEvent(o.ev);
+    const l = fake('dragleave'); grid.dispatchEvent(l.ev);
+    return { enter: a.dt.dropEffect, effect: o.dt.dropEffect, prevented: o.ev.defaultPrevented, types: o.dt.types }; })()`);
+  await sleep(800);
+  check('a file drag over a region is answered with dropEffect "copy" (never "move"), on dragenter and dragover', de.effect === 'copy' && de.enter === 'copy' && de.prevented && de.types.includes('Files'), de);
+
+  // 21. Nothing was deleted (spec 14.4): every file the test tree held before the run is still in it, by content.
+  const after = listTree(DESK);
+  const have = new Set(after.map((f) => f.sha));
+  const before = PROBE ? [...deskBefore, { rel: 'probe-only.lnk', sha: '0'.repeat(64) }] : deskBefore;
+  const changedNow = ex(FIX.changed) ? sha(FIX.changed) : null; // (--probe: it moved into the store folder unchanged)
+  const lost = before.filter((f) => !have.has(f.sha) && !(f.sha === shaOf.changed && changedNow !== shaOf.changed));
+  const added = after.length - deskBefore.length;
+  const wantAdded = 1 + (paused9 && !PROBE ? 1 : 0); // README.txt, and the file the race test wrote
+  check(`nothing deleted: all ${deskBefore.length} files the test tree held before are still there by content (Changed.lnk carries the byte the test added); only README.txt${wantAdded > 1 ? ' and the race file' : ''} are new`,
+    lost.length === 0 && added === wantAdded, { before: deskBefore.length, after: after.length, lost: lost.map((f) => f.rel) });
+}
+
+// WCAG contrast of two computed colours (alpha flattened on black, as the contrast gate does).
+function contrast(a, b) {
+  const lum = (c) => {
+    const m = String(c).match(/[\d.]+/g);
+    if (!m) return 0;
+    const [r, g, bl, al = 1] = m.map(Number);
+    const ch = [r, g, bl].map((v) => { const s = (v * Number(al)) / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; });
+    return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2];
+  };
+  const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+}
+
 // A desktop point at least 40 px from every region panel (shared by the M2 and M2b checks).
 function emptyDesktopPoint(d, inner) {
   const panels = d.regions.map((r) => r.shown);
@@ -1086,6 +1721,19 @@ const needShows = FALLBACK ? 8 : 1;
 check('focus: the observer saw top-level windows of this build (it is watching our process)', fv.ourShows >= needShows, { ourShows: fv.ourShows, need: needShows });
 check('guard: clean run (exited, nothing left, startup keys and real data untouched)', code === 0 && /ended by exited/.test(out) && /remaining 0/.test(out.replace(/remaining\s+/, 'remaining ')),
   (out.match(/CITE:.*$/m) || ['no CITE line'])[0]);
+// The REAL Desktop and Public Desktop, before the launch and after the quit (names, kinds, sizes, times).
+const realAfter = listRealFolders();
+const realSame = JSON.stringify(realBefore) === JSON.stringify(realAfter);
+check('real Desktop and Public Desktop: identical before the launch and after the quit (read-only listing)',
+  realSame && !!realBefore.Desktop && !!realBefore.PublicDesktop,
+  { folders: REAL_FOLDERS, entries: { Desktop: realAfter.Desktop && realAfter.Desktop.length, PublicDesktop: realAfter.PublicDesktop && realAfter.PublicDesktop.length } });
+if (PROBE) {
+  // Positive control of that comparison: the same listing of the fake desktop, which this run changed.
+  const fake = { Desktop: FIX.dirs.desktop, PublicDesktop: FIX.dirs.publicDesktop };
+  check('probe: the desktop listing comparison sees the fake desktop the run changed', JSON.stringify(fakeBefore) === JSON.stringify(listRealFolders(fake)), 'expected to fail');
+}
+check('real store folder: %USERPROFILE%\\QuickLauncher Shortcuts was not created', !existsSync(join(process.env.USERPROFILE || '', 'QuickLauncher Shortcuts')) || REAL_STORE_EXISTED,
+  { existedBefore: REAL_STORE_EXISTED });
 // Renderer errors: Chromium logs console messages with --enable-logging.
 let appLog = '';
 try { appLog = readFileSync(join(PROFILE, 'ql-safe-launch.log'), 'utf8'); } catch { /* none */ }

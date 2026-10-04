@@ -1,31 +1,58 @@
 const { app, globalShortcut, ipcMain, BaseWindow } = require('electron');
+const path = require('path');
+
+// --ql-restore-all (the uninstaller runs it and waits): move every moved
+// desktop shortcut back, then exit. No window, tray, hotkey or startup entry.
+// Exit codes: 0 nothing left in the store folder, 2 something is left,
+// 3 QuickLauncher is already running (nothing done), 4 moving is unavailable,
+// 64 a refused --ql-test-desktop.
+const RESTORE_ALL = process.argv.includes('--ql-restore-all');
 
 // Single instance lock
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   app.quit();
-  process.exit(0);
+  process.exit(RESTORE_ALL ? 3 : 0);
 }
 
 const Store = require('./store');
 const { setupTray, refreshTrayMenu } = require('./tray');
 const { setupUpdater } = require('./updater');
-const { setupIPC, VALID_THEMES } = require('./ipc');
+const { setupIPC, VALID_THEMES, buildAppEntry } = require('./ipc');
 const { RegionController } = require('./regions/controller');
 const { Manager } = require('./manager');
+const win32Moves = require('./moves/win32');
+const { resolveMoveSetup } = require('./moves/setup');
 
 // Runtime flags (never build modes):
 //   --ql-no-desktop-layer  regions are ordinary tool windows just above the desktop
 //   --ql-no-update-check   no update check 5 s after start (local test builds; updater.js)
 //   --ql-test-hooks        self-test: the Manager opens hidden and is never shown
 //                          or focused; region bounds and metrics are logged;
-//                          the manager:test channel answers
+//                          the manager:test channel answers; message boxes
+//                          are recorded, never shown. Without --ql-test-desktop
+//                          moving is unavailable (no real desktop file moves).
+//   --ql-test-desktop=<dir>  the file move uses <dir>\Desktop, <dir>\Public Desktop
+//                          and <dir>\QuickLauncher Shortcuts; refused (exit 64)
+//                          unless they and the profile lie inside %TEMP%.
 const KILL_SWITCH = process.argv.includes('--ql-no-desktop-layer');
 const TEST_HOOKS = process.argv.includes('--ql-test-hooks');
 
-const store = new Store();
 const logRegions = (o) => { try { console.log(`[regions] ${JSON.stringify(o)}`); } catch { /* noop */ } };
-const ctl = new RegionController({ store, validThemes: VALID_THEMES, killSwitch: KILL_SWITCH, testHooks: TEST_HOOKS, log: logRegions });
+
+// The move's folders, checked before anything else runs (tech plan § 3).
+const moveSetup = resolveMoveSetup({ argv: process.argv, env: process.env, userData: app.getPath('userData'), win32: win32Moves, testHooks: TEST_HOOKS });
+if (moveSetup.refused) {
+  console.error(`[moves] --ql-test-desktop refused: ${moveSetup.refused.join('; ')}`);
+  process.exit(64);
+}
+logRegions({ event: 'moves-setup', available: moveSetup.available, reason: moveSetup.reason, testMode: !!moveSetup.testMode, folders: moveSetup.testMode ? moveSetup.folders : undefined });
+
+const store = new Store();
+const ctl = new RegionController({
+  store, validThemes: VALID_THEMES, killSwitch: KILL_SWITCH, testHooks: TEST_HOOKS, log: logRegions,
+  moveSetup, win32: win32Moves, buildEntry: (p) => buildAppEntry(p),
+});
 const mgr = new Manager({ store, testHooks: TEST_HOOKS, log: logRegions });
 ctl.manager = mgr;
 let sentinel = null;
@@ -44,6 +71,7 @@ store.on('save-error', () => {
 store.on('renderer-sync', () => ctl.onStoreRendererSync());
 // Settings the main process applied at boot from the read-only copy.
 store.on('reconciled', () => {
+  if (RESTORE_ALL) return; // no hotkey, no windows in restore mode
   // A read-only save error still waiting for the renderer no longer applies.
   ctl.saveErrorPending = false;
   const accel = (store.get('settings') || {}).globalHotkey;
@@ -64,7 +92,36 @@ function quitApp(reason) {
   app.exit(0);
 }
 
+// --ql-restore-all: the store and the mover only.
+async function restoreAll() {
+  const { Mover } = require('./moves/mover');
+  const regions = () => store.get('regions') || [];
+  const mover = new Mover({
+    folders: moveSetup.folders || {}, journalDir: path.dirname(store.dataPath), win32: win32Moves, confineTo: moveSetup.confineTo || null,
+    available: moveSetup.available, reason: moveSetup.reason, log: logRegions,
+    data: {
+      apps: () => store.get('apps') || [],
+      commit: (apps) => { store.set('apps', apps); return store.flush(); },
+      regionExists: (id) => regions().some((r) => r && r.id === id),
+      primaryId: () => (regions()[0] ? regions()[0].id : null),
+      writable: () => !store.isReadOnly(),
+      capOf: () => Infinity,
+    },
+  });
+  await mover.init();
+  const out = await mover.restoreAll();
+  logRegions({ event: 'restore-all', moved: out.moved, orphansMoved: out.orphansMoved, failed: out.failures.length, remaining: out.remaining, unavailable: out.unavailable || null });
+  if (out.unavailable) return 4;
+  return out.remaining.length ? 2 : 0;
+}
+
 app.whenReady().then(() => {
+  if (RESTORE_ALL) {
+    restoreAll()
+      .then((code) => { try { store.flush(); } catch { /* noop */ } app.exit(code); })
+      .catch((e) => { logRegions({ event: 'restore-all-error', error: String(e && e.message) }); app.exit(1); });
+    return;
+  }
   // Migration, random theme on startup and the region windows.
   ctl.init();
 

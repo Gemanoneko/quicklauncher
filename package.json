@@ -49,7 +49,8 @@
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": false,
       "createStartMenuShortcut": true,
-      "runAfterFinish": true
+      "runAfterFinish": true,
+      "include": "scripts/nsis/installer.nsh"
     },
     "publish": {
       "provider": "github",

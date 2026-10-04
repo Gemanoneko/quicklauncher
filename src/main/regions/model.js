@@ -302,14 +302,15 @@ function pickOtherTheme(themes, current, rand = Math.random) {
   return pool[Math.floor(rand() * pool.length) % pool.length];
 }
 
-/** The confirm text for deleting a region (spec 3.4; no moved files before M3). */
+/** The confirm text for deleting a region (spec 3.4). */
 function deleteConfirmText(region, items) {
   const moved = items.filter((a) => a.kind === 'moved').length;
   const refs = items.length - moved;
   const lines = [];
-  if (moved) lines.push(`${moved} shortcut${moved === 1 ? '' : 's'} move back to the desktop.`);
+  if (moved) lines.push(`${moved} ${moved === 1 ? 'shortcut moves' : 'shortcuts move'} back to the desktop.`);
   if (refs) {
-    lines.push(`${refs} ${moved ? 'other ' : ''}shortcut${refs === 1 ? '' : 's'} ${refs === 1 ? 'is' : 'are'} removed from QuickLauncher. The apps stay installed.`);
+    // Addendum B3: one reference has its own sentence ("The app stays installed.").
+    lines.push(`${refs} ${moved ? 'other ' : ''}shortcut${refs === 1 ? '' : 's'} ${refs === 1 ? 'is' : 'are'} removed from QuickLauncher. ${refs === 1 ? 'The app stays' : 'The apps stay'} installed.`);
   }
   return { message: `Delete “${region.name}”?`, detail: lines.join('\n'), needsConfirm: items.length > 0 };
 }

@@ -2,10 +2,12 @@
    the grid itself is app.js, unchanged; this file adds what makes the page a
    region. It uses app.js globals at call time: apps, renderGrid,
    enterEditMode, exitEditMode, clearFilter, startRename, removeApp,
-   addAppFromDialog, createAppTile, saveApps, cancelReorder, computeColumnCount; and
-   tile-order.js (window.QL_TILE_ORDER), loaded before it.
+   addAppFromDialog, createAppTile, saveApps, cancelReorder, computeColumnCount,
+   suppressNextClick, editMode, showUpdateBanner; and tile-order.js (window.QL_TILE_ORDER), loaded before it.
+   app.js calls back into window.qlTileDragOut (M2) and window.qlDecorateTile (M3).
    global api, apps, renderGrid, enterEditMode, exitEditMode, clearFilter,
-   startRename, removeApp, addAppFromDialog, createAppTile, saveApps, cancelReorder, computeColumnCount */
+   startRename, removeApp, addAppFromDialog, createAppTile, saveApps, cancelReorder, computeColumnCount,
+   suppressNextClick, editMode, showUpdateBanner */
 (function () {
   'use strict';
   const api = window.api;
@@ -589,6 +591,148 @@
     else if (m.phase === 'drop' && Number.isFinite(m.x) && Number.isFinite(m.y)) dropHere(m);
   });
 
+  // ── M3: files dragged in from the desktop or Explorer (spec 5.2, 2.1) ────
+  // The same drop-target states as a tile from another region: the outline
+  // and the dashed slot at the nearest place (the OS draws the dragged icons,
+  // so no copy of a tile). A drop that would overfill a capped region shows
+  // FULL and is refused before anything moves. On release the paths go to the
+  // main process, which moves desktop shortcuts and adds the tiles; the slot
+  // stays until they arrive. These capture listeners replace app.js's file drop.
+  const FILES = 0; // the preview id of a file drag (tile drags count from 1)
+  const isFileDrag = (e) => !!(e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files'));
+  let fileDepth = 0;
+  let fileIdle = null;
+  function endFilePreview(opts) {
+    clearTimeout(fileIdle);
+    fileIdle = null;
+    fileDepth = 0;
+    if (drop && drop.dragId === FILES) endDropPreview(opts);
+  }
+  function fileOver(e) {
+    const n = e.dataTransfer.items ? [...e.dataTransfer.items].filter((i) => i.kind === 'file').length : 1;
+    const cap = Number.isFinite(info.cap) ? info.cap : null;
+    const rejected = cap !== null && (apps || []).length + Math.max(1, n) > cap ? `FULL (${cap} max)` : null;
+    dropOver({ dragId: FILES, x: e.clientX, y: e.clientY, rejected });
+    // Always 'copy', never 'move': a drop answered with Move tells the drag source
+    // (Explorer's desktop) to delete what it handed over (addendum B7).
+    e.dataTransfer.dropEffect = rejected ? 'none' : 'copy';
+    // A drag that ends somewhere else sends this page nothing more.
+    clearTimeout(fileIdle);
+    fileIdle = setTimeout(() => endFilePreview({ animate: true }), 700);
+  }
+  function fileDrop(e) {
+    const paths = [...((e.dataTransfer && e.dataTransfer.files) || [])]
+      .map((f) => { try { return api.getPathForFile(f); } catch { return ''; } })
+      .filter(Boolean);
+    return acceptDrop(paths, e.clientX, e.clientY);
+  }
+  // The drop itself, from the paths on: the slot under the point, then the main process.
+  function acceptDrop(paths, x, y) {
+    if (!drop || drop.dragId !== FILES) {
+      const cap = Number.isFinite(info.cap) ? info.cap : null;
+      const full = cap !== null && (apps || []).length + Math.max(1, paths.length) > cap ? `FULL (${cap} max)` : null;
+      dropOver({ dragId: FILES, x, y, rejected: full });
+    }
+    clearTimeout(fileIdle);
+    fileIdle = null;
+    fileDepth = 0;
+    if (drop.rejected || !paths.length) { endDropPreview(); return Promise.resolve(null); }
+    const index = slotIndexAt(x, y).index;
+    const slot = drop.slot && drop.slot.isConnected ? drop.slot : null;
+    drop.slot = null;
+    endDropPreview({ keepHintHidden: !!slot });
+    dropKeptSlot();
+    if (slot) kept = { dragId: FILES, slot, timer: setTimeout(dropKeptSlot, 30000) };
+    // An accepted drop clears the type-to-filter, so the new tile never lands hidden
+    // (addendum B10). The slot is at its real index, so the tiles around it show.
+    clearFilter();
+    return api.invoke('region:drop-files', { paths, index }).then((r) => {
+      dropKeptSlot();
+      // Files that are not shortcuts: a notice in the launch-error slot, never a box (addendum B7).
+      if (r && r.notice) showUpdateBanner(r.notice, [], 8000);
+      return r;
+    }, () => { dropKeptSlot(); return null; });
+  }
+  // --ql-test-hooks only: the self-test drives a drop from its paths (a page cannot
+  // make the File objects an OS drop carries). Same code from the slot on.
+  function testSeam() {
+    if (info.testHooks && !window.__qlFileDrop) window.__qlFileDrop = (paths, x, y) => acceptDrop(Array.isArray(paths) ? paths : [], x, y);
+  }
+  window.addEventListener('dragenter', (e) => { if (!isFileDrag(e)) return; stop(e); fileDepth++; fileOver(e); }, true);
+  window.addEventListener('dragover', (e) => { if (!isFileDrag(e)) return; stop(e); fileOver(e); }, true);
+  window.addEventListener('dragleave', (e) => {
+    if (!isFileDrag(e)) return;
+    e.stopPropagation();
+    fileDepth = Math.max(0, fileDepth - 1);
+    if (fileDepth === 0) endFilePreview({ animate: true });
+  }, true);
+  window.addEventListener('drop', (e) => { if (!isFileDrag(e)) return; stop(e); fileDrop(e); }, true);
+
+  // ── M3: moved and broken tiles (spec 5.4, 2.1, 9.1; addendum B4, B12.1) ──
+  // app.js calls this for every tile it builds. A moved tile's badge is ↩ in
+  // its own look and moves its file back; a reference keeps ✕ Remove. A broken
+  // tile (its file is gone from the store folder) shows the icon at 60% and a
+  // "!" pip at its top-left in both modes; in view mode a click, Enter or Space
+  // shows the "missing" box instead of launching; in edit mode its badge is
+  // ✕ Remove tile, which removes the tile record at once.
+  function moveBack(id) {
+    return api.invoke('region:move-back', { itemIds: [id] }).catch(() => null);
+  }
+  function removeBroken(id) {
+    return api.invoke('region:remove-broken', { itemId: id }).catch(() => null);
+  }
+  // A 12 x 12 "!" disc: --text fill, the mark in --bg (region.css colours it).
+  const PIP_SVG = '<svg viewBox="0 0 12 12" width="12" height="12" focusable="false"><circle cx="6" cy="6" r="6"/><rect x="5" y="2.4" width="2" height="4.4" rx="1"/><rect x="5" y="7.6" width="2" height="2" rx="1"/></svg>';
+  window.qlDecorateTile = (tile, item) => {
+    if (!tile || !item) return;
+    const badge = tile.querySelector('.btn-remove');
+    const relabel = (b, text, tip, onClick) => {
+      const n = b.cloneNode(false); // no listeners: app.js's one would only remove the tile
+      n.textContent = text;
+      n.title = tip;
+      n.setAttribute('aria-label', tip);
+      n.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
+      b.replaceWith(n);
+      return n;
+    };
+    if (item.kind === 'moved') {
+      tile.dataset.kind = 'moved';
+      if (badge && item.broken) relabel(badge, '✕', 'Remove tile', () => removeBroken(item.id));
+      else if (badge) {
+        // ↩ is the safe action: its own look, none of ✕'s danger colours (addendum B12.1).
+        const b = relabel(badge, '↩', 'Move back to desktop', () => moveBack(item.id));
+        b.className = 'btn-move-back';
+      }
+    } else if (badge) {
+      badge.setAttribute('aria-label', 'Remove');
+    }
+    if (item.broken) {
+      tile.classList.add('tile-broken');
+      tile.dataset.broken = '1';
+      tile.setAttribute('aria-label', `${item.name}, missing`);
+      if (!editMode) {
+        const tip = `${item.name} is missing. Click to remove the tile or keep it.`;
+        tile.title = tip;
+        const label = tile.querySelector('.tile-label');
+        if (label) label.title = tip;
+      }
+      const pip = document.createElement('span');
+      pip.className = 'tile-broken-pip';
+      pip.setAttribute('aria-hidden', 'true');
+      pip.innerHTML = PIP_SVG; // our own static markup
+      tile.appendChild(pip);
+      // Capture on the tile runs before app.js's launch listener on it.
+      const activate = (e) => {
+        if (isEditing() || suppressNextClick) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        api.invoke('region:broken-click', { itemId: item.id }).catch(() => {});
+      };
+      tile.addEventListener('click', activate, true);
+      tile.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') activate(e); }, true);
+    }
+  };
+
   // Each Ctrl+Arrow move is announced in a visually hidden status line (A5).
   const srStatus = document.createElement('div');
   srStatus.className = 'ql-sr-status';
@@ -613,11 +757,15 @@
     await saveApps();
   }
 
-  // Delete (edit mode): the badge action; focus stays on the tile now in that place.
+  // Delete (edit mode): the badge action (↩ on a moved tile, ✕ on a reference);
+  // focus stays on the tile now in that place.
   async function removeFocusedTile(tile) {
     const visible = [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot):not(.filter-hidden)')];
     const at = visible.indexOf(tile);
-    await removeApp(tile.dataset.id);
+    const item = (apps || []).find((a) => a.id === tile.dataset.id);
+    if (item && item.kind === 'moved' && item.broken) await removeBroken(item.id);
+    else if (item && item.kind === 'moved') await moveBack(item.id);
+    else await removeApp(tile.dataset.id);
     const after = [...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot):not(.filter-hidden)')];
     if (after.length) after[Math.max(0, Math.min(at, after.length - 1))].focus();
   }
@@ -686,7 +834,7 @@
   }, true);
 
   // ── From the main process ─────────────────────────────────────────────────
-  api.on('region:state', (s) => { if (s && typeof s === 'object') { info = { ...info, ...s }; applyState(); } });
+  api.on('region:state', (s) => { if (s && typeof s === 'object') { info = { ...info, ...s }; applyState(); testSeam(); } });
   api.on('region:command', (c) => {
     const cmd = c && c.cmd;
     if (cmd === 'edit') enterEditMode();
@@ -694,6 +842,7 @@
     else if (cmd === 'rename-region') startRegionRename();
     else if (cmd === 'rename-tile') renameTile(c.itemId);
     else if (cmd === 'remove-tile') removeApp(c.itemId);
+    else if (cmd === 'clear-filter') clearFilter();
     // A display change, sleep or hide-all stopped a drag in flight.
     else if (cmd === 'cancel-drag') cancelRegionDrag();
     else if (cmd === 'cancel-tile-drag') { endDropPreview(); if (typeof cancelReorder === 'function') cancelReorder(); }
@@ -713,6 +862,6 @@
   });
 
   api.invoke('region:info').then((s) => {
-    if (s && typeof s === 'object') { info = { ...info, ...s }; applyState(); }
+    if (s && typeof s === 'object') { info = { ...info, ...s }; applyState(); testSeam(); }
   }).catch(() => {});
 })();

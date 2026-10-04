@@ -144,9 +144,14 @@ test('deleteConfirmText: spec 3.4 lines, empty region needs no box', () => {
   assert.equal(t.message, 'Delete “Games”?');
   assert.equal(t.detail, '3 shortcuts are removed from QuickLauncher. The apps stay installed.');
   const one = M.deleteConfirmText(reg, [{}]);
-  assert.equal(one.detail, '1 shortcut is removed from QuickLauncher. The apps stay installed.');
+  assert.equal(one.detail, '1 shortcut is removed from QuickLauncher. The app stays installed.', 'addendum B3');
   const mixed = M.deleteConfirmText(reg, [{ kind: 'moved' }, { kind: 'moved' }, {}]);
-  assert.equal(mixed.detail, '2 shortcuts move back to the desktop.\n1 other shortcut is removed from QuickLauncher. The apps stay installed.');
+  assert.equal(mixed.detail, '2 shortcuts move back to the desktop.\n1 other shortcut is removed from QuickLauncher. The app stays installed.', 'addendum B3');
+  assert.equal(M.deleteConfirmText(reg, [{ kind: 'moved' }, {}, {}]).detail, '1 shortcut moves back to the desktop.\n2 other shortcuts are removed from QuickLauncher. The apps stay installed.');
+  // M3: one moved shortcut, nothing else.
+  const oneMoved = M.deleteConfirmText(reg, [{ kind: 'moved' }]);
+  assert.equal(oneMoved.detail, '1 shortcut moves back to the desktop.');
+  assert.equal(oneMoved.needsConfirm, true);
 });
 
 // ── M2: between regions ────────────────────────────────────────────────────

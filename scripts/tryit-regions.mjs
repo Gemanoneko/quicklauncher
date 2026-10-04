@@ -43,7 +43,19 @@ let seed = null;
 try { seed = JSON.parse(readFileSync(real, 'utf8')); } catch { seed = null; }
 if (!seed || !Array.isArray(seed.apps)) seed = { apps: [], settings: {} };
 seed.settings = { ...(seed.settings || {}), startWithWindows: false, globalHotkey: HOTKEY };
+// Moved shortcuts in the copy would point into the real store folder: the copy keeps them as plain references.
+seed.apps = seed.apps.map((a) => { if (!a || a.kind !== 'moved') return a; const { kind, origin, ...rest } = a; return rest; });
 writeFileSync(join(profile, 'quicklauncher-data.json'), `${JSON.stringify(seed, null, 2)}\n`);
+// M3: the file move works only on a fake desktop inside this temp profile, so a
+// try-it run can never move a file off the real Desktop or Public Desktop.
+const desk = join(profile, 'desk');
+for (const d of ['Desktop', 'Public Desktop']) mkdirSync(join(desk, d), { recursive: true });
+// Two sample shortcuts on the fake desktop for the M3 step (UX spec addendum B12.2).
+for (const [name, url] of [['Try A', 'https://example.com/a'], ['Try B', 'https://example.com/b']]) {
+  writeFileSync(join(desk, 'Desktop', `${name}.url`), `[InternetShortcut]
+URL=${url}
+`);
+}
 
 if (FALLBACK) {
   console.log(`
@@ -106,10 +118,18 @@ Display and sleep (the home-layout rule)
     taskbar moved to another edge and back.
  7. Start > Power > Sleep. Wake the PC: the regions are where they were.
 
+Desktop files move in (M3). This run uses a fake desktop: your real desktop is never touched.
+ a. In Explorer open ${join(desk, 'Desktop')}. It holds Try A and Try B.
+ b. Drag both onto a region. They leave the folder and appear as tiles.
+ c. Right-click the region, Edit shortcuts. Click ↩ on one: it is back in the folder.
+ d. Open the Manager, Moved shortcuts. OPEN FOLDER shows ${join(desk, 'QuickLauncher Shortcuts')}.
+ e. Region menu, Move all shortcuts back to desktop...: the other one goes back.
+ Note: a shortcut dragged from your real desktop is added as a normal tile and stays on the desktop in this run.
+
  8. Tray > Quit QuickLauncher.
 `);
 
-const guard = spawn(process.execPath, [GUARD, '--exe', EXE, '--profile', profile, '--timeout', String(TIMEOUT), '--', '--ql-no-update-check', ...(FALLBACK ? ['--ql-no-desktop-layer'] : [])],
+const guard = spawn(process.execPath, [GUARD, '--exe', EXE, '--profile', profile, '--timeout', String(TIMEOUT), '--', '--ql-no-update-check', `--ql-test-desktop=${desk}`, ...(FALLBACK ? ['--ql-no-desktop-layer'] : [])],
   { stdio: ['ignore', 'pipe', 'inherit'] });
 let out = '';
 guard.stdout.on('data', (d) => { out += String(d); });

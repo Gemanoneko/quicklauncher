@@ -94,6 +94,23 @@ body.manager #view-settings .mgr-title { margin-bottom: 16px; }
   box-shadow: var(--glow-c);
 }
 
+/* Moved shortcuts (spec 8.1): count, OneDrive note, actions, files without a tile. */
+.mgr-moved { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.mgr-moved-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 8px; }
+.mgr-moved-head .mgr-title { flex: 0 0 auto; }
+/* Every sentence in --text (addendum B5: --text-dim is under 4.5:1 in 13 themes). */
+.mgr-moved-text { font-size: 12px; letter-spacing: 1px; color: var(--text); }
+/* Every button in the section is 24 px high or more (B5). */
+#mgr-moved button { min-height: 24px; }
+.mgr-moved-line { margin-bottom: 8px; }
+.mgr-moved-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+#orphan-list { display: flex; flex-direction: column; gap: 4px; }
+.mgr-orphan {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center; gap: 8px; padding: 2px 6px;
+}
+.mgr-orphan-name { font-size: 12px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .mgr-link {
   border: none; padding: 0; min-height: 24px;
   background: transparent; color: var(--accent-text);

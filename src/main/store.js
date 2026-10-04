@@ -414,11 +414,20 @@ class Store extends EventEmitter {
 
   // Write any pending change now, synchronously. Call before app.exit() /
   // quitAndInstall() so the last change isn't dropped with the debounce timer.
+  // Returns true when the data on disk is current (the file move commits
+  // through this and only marks its journal entry done on true).
   flush() {
     clearTimeout(this._saveTimer);
     this._saveTimer = null;
     // Quit / logoff: a read-only re-check may wait out a short hold (~0.3 s).
     if (this._dirty) this._flush(2);
+    return !this._dirty;
+  }
+
+  // The data file exists but cannot be read: nothing may be written. The file
+  // move refuses to start while this is true ("Moving is unavailable").
+  isReadOnly() {
+    return this._readOnly;
   }
 
   _flush(retries = 0) {

@@ -43,6 +43,12 @@ const INVOKE_CHANNELS = new Set([
   // target names the slot it dropped into.
   'region:tile-drag',
   'region:tile-drop',
+  // Files dropped from the desktop or Explorer (the main process moves desktop
+  // shortcuts), ↩ on a moved tile, a click on a broken tile.
+  'region:drop-files',
+  'region:move-back',
+  'region:broken-click',
+  'region:remove-broken',
 ]);
 
 const ON_CHANNELS = new Set([

@@ -5,7 +5,7 @@
 // hidden flag, placement while dragging, and the fan-out of the store's
 // read-only merge to several renderers. See the tech plan § 1.
 
-const { BrowserWindow, Menu, dialog, screen, powerMonitor, app } = require('electron');
+const { BrowserWindow, Menu, dialog, screen, powerMonitor, app, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const { randomUUID } = require('crypto');
@@ -13,6 +13,8 @@ const { EventEmitter } = require('events');
 const M = require('./model');
 const P = require('./placement');
 const { RegionHost } = require('../desktop/region-host');
+const MR = require('../moves/rules');
+const { Mover } = require('../moves/mover');
 
 const INDEX_HTML = path.join(__dirname, '../../renderer/index.html');
 const PRELOAD = path.join(__dirname, '../preload.js');
@@ -26,13 +28,27 @@ const sameRect = (a, b) => !!a && !!b && a.x === b.x && a.y === b.y && a.width =
 const menuLabel = (s) => String(s).replace(/&/g, '&&'); // Windows menus read & as a mnemonic
 
 class RegionController extends EventEmitter {
-  constructor({ store, validThemes, killSwitch = false, testHooks = false, log = () => {} }) {
+  constructor({ store, validThemes, killSwitch = false, testHooks = false, log = () => {},
+    moveSetup = null, win32 = null, buildEntry = null, env = process.env }) {
     super();
     this.store = store;
     this.validThemes = validThemes;
     this.killSwitch = killSwitch;
     this.testHooks = testHooks;
     this.log = log;
+    // M3, the safe file move (tech plan § 3): set up in init(); null until then.
+    this.moveSetup = moveSetup;
+    this.win32 = win32;
+    this.buildEntry = buildEntry;
+    this.env = env;
+    this.mover = null;
+    // --ql-test-hooks only: message boxes are recorded and answered from a
+    // queue (default: the cancel button), never shown; "Open folder" is
+    // recorded, never run; move steps can pause, crash or fail on purpose.
+    this.boxLog = [];
+    this._boxAnswers = [];
+    this.openedLog = [];
+    this._mh = { pauseAt: null, crashAt: null, fault: null, paused: null, resume: null };
     this.rt = new Map();      // region id -> runtime
     this.byWc = new Map();    // webContents id -> region id
     this.activeId = null;
@@ -118,6 +134,295 @@ class RegionController extends EventEmitter {
     if (this.testHooks) {
       this._metricsTimer = setInterval(() => this.log({ event: 'metrics', ...this.metrics() }), 10000);
     }
+    this._initMoves();
+  }
+
+  // ── M3: the safe file move (tech plan § 3) ────────────────────────────────
+  // The mover owns every file operation; the controller is its data adapter
+  // (items in the store, committed to disk at once) and shows its boxes.
+  _initMoves() {
+    const s = this.moveSetup || { available: false, reason: 'not set up', folders: {} };
+    const win32 = this.win32 || require('../moves/win32');
+    const data = {
+      apps: () => this.apps(),
+      // Set and write now: a journal entry is marked done only once this is on disk.
+      commit: (apps) => {
+        this.store.set('apps', apps);
+        const onDisk = typeof this.store.flush === 'function' ? this.store.flush() : true;
+        this._managerChanged();
+        return onDisk !== false;
+      },
+      regionExists: (id) => !!this.region(id),
+      primaryId: () => this.primaryId(),
+      writable: () => !(typeof this.store.isReadOnly === 'function' && this.store.isReadOnly()),
+      capOf: (id) => { const r = this.region(id); return r ? this._capOf(r) : Infinity; },
+    };
+    this.mover = new Mover({
+      folders: s.folders || {}, journalDir: path.dirname(this.store.dataPath), data, win32, confineTo: s.confineTo || null,
+      available: !!s.available, reason: s.reason,
+      buildEntry: this.buildEntry || undefined,
+      log: (o) => this.log(o),
+      hooks: this.testHooks ? this._moveHooks() : null,
+    });
+    // After a commit is on disk and its journal entry is done: only now the page gets the tile.
+    this.mover.on('changed', ({ regionIds }) => {
+      for (const id of regionIds || []) this._pushItems(id);
+      this._managerChanged();
+    });
+    this.mover.init()
+      .then(() => { for (const r of this.regions()) this._pushItems(r.id); this._managerChanged(); })
+      .catch((e) => this.log({ event: 'moves-init-error', error: String(e && e.message) }));
+  }
+
+  _moveHooks() {
+    return {
+      step: async (name, ctx) => {
+        const h = this._mh;
+        if (h.crashAt === name) {
+          // A crash at this step: nothing after it runs (no journal update, no
+          // flush of a pending debounce). The windows leave Explorer's tree first.
+          this.log({ event: 'test-crash', step: name });
+          try { this.releaseAll(); } catch { /* noop */ }
+          app.exit(70);
+          await new Promise(() => {});
+        }
+        if (h.pauseAt === name) {
+          h.pauseAt = null;
+          h.paused = { step: name, src: ctx && ctx.src, dst: ctx && ctx.dst };
+          await new Promise((r) => { h.resume = r; });
+          h.paused = null;
+          h.resume = null;
+        }
+      },
+      fault: (op) => {
+        const f = this._mh.fault;
+        if (!f || f.count <= 0 || (f.op && f.op !== op)) return null;
+        f.count -= 1;
+        return f.code;
+      },
+    };
+  }
+
+  /** A native message box, or (test hooks) a recorded one answered from the queue. */
+  async _box(opts, parent = null) {
+    const o = { title: 'QuickLauncher', noLink: true, ...opts };
+    if (this.testHooks) {
+      const answer = this._boxAnswers.length ? this._boxAnswers.shift() : (Number.isInteger(o.cancelId) ? o.cancelId : 0);
+      this.boxLog.push({ message: o.message, detail: o.detail || '', buttons: o.buttons || [], defaultId: o.defaultId, cancelId: o.cancelId, answer, at: Date.now() });
+      if (this.boxLog.length > 100) this.boxLog.shift();
+      return { response: answer };
+    }
+    return parent ? dialog.showMessageBox(parent, o) : dialog.showMessageBox(o);
+  }
+
+  _movedItems(regionId = null, { withFile = false } = {}) {
+    return this.apps().filter((a) => a && a.kind === 'moved' && (!regionId || a.regionId === regionId) && !(withFile && this._isBroken(a)));
+  }
+
+  /** A moved item whose file is gone from the store folder (spec 2.1; addendum B11: nothing else is broken). */
+  _isBroken(item) {
+    return !!(item && item.kind === 'moved' && this.mover && this.mover.missing.has(item.id));
+  }
+
+  /**
+   * Files dropped on a region, or chosen with + FILE (spec 5.2): desktop
+   * shortcuts move, the rest are references. One box per drop for the files
+   * that did not move.
+   */
+  async dropFiles(regionId, paths, index = Infinity, { parent = null } = {}) {
+    if (!this.mover || !this.region(regionId)) return { ok: false };
+    const res = await this.mover.addPaths(regionId, paths, index);
+    this._pushItems(regionId); // also replaces a slot the page kept for the drop
+    if (res.refused === 'unavailable') {
+      await this._box({ type: 'warning', message: MR.STRINGS.unavailable, buttons: ['OK'] }, parent);
+    } else if (res.failures.length) {
+      const t = MR.moveFailedBox(res.failures);
+      await this._box({ type: 'warning', message: t.message, detail: t.detail, buttons: ['OK'] }, parent);
+    }
+    // Files that are not shortcuts (a folder, a document) were ignored: the region says so in its
+    // notice slot, never a box (addendum B7). A refused drop (full, region gone) says nothing.
+    const ignored = res.ignored.filter((x) => typeof x === 'string' && x).length;
+    const notice = ignored && res.refused !== 'full' && res.refused !== 'region' ? MR.notShortcutNotice(ignored) : null;
+    this.log({ event: 'drop-files', region: regionId.slice(0, 8), refused: res.refused, moved: res.added.length, refs: res.refs.length, failed: res.failures.length, ignored: res.ignored.length });
+    return { ok: !res.refused, refused: res.refused, moved: res.added.length, refs: res.refs.length, failed: res.failures.length, ignored: res.ignored.length, notice };
+  }
+
+  /** ↩, Delete on a moved tile, tile menu "Move back to desktop", Move all back (spec 5.4). */
+  async moveBackItems(itemIds, { parent = null, regionKept = false, quiet = false } = {}) {
+    if (!this.mover) return { moved: [], failures: [] };
+    const before = new Map(this.apps().filter((a) => a && itemIds.includes(a.id)).map((a) => [a.id, a.regionId]));
+    const res = await this.mover.moveBack(itemIds);
+    for (const id of new Set(before.values())) this._pushItems(id);
+    this._managerChanged();
+    if (res.failures.length && !quiet) {
+      const t = MR.moveBackFailedBox(res.failures, { regionKept });
+      await this._box({ type: 'warning', message: t.message, detail: t.detail, buttons: ['OK'] }, parent);
+    }
+    return res;
+  }
+
+  /** From a page: only that region's own moved items. */
+  moveBackFromPage(regionId, itemIds) {
+    const mine = new Set(this._movedItems(regionId).map((a) => a.id));
+    const ids = (itemIds || []).filter((id) => mine.has(id));
+    if (!ids.length) return Promise.resolve({ moved: [], failures: [] });
+    return this.moveBackItems(ids).then((r) => ({ moved: r.moved.length, failed: r.failures.length }));
+  }
+
+  /** Region menu "Move all shortcuts back to desktop…" (one region) or the Manager's (every region). */
+  async moveAllBack(regionId = null, { parent = null } = {}) {
+    const region = regionId ? this.region(regionId) : null;
+    if (regionId && !region) return { ok: false };
+    await this.refreshMoves(); // a tile whose file is gone is skipped, never counted (addendum B4b)
+    const moved = this._movedItems(regionId, { withFile: true });
+    if (!moved.length) return { ok: false, none: true };
+    const inRegions = [...new Set(moved.map((a) => a.regionId))];
+    const only = region || (inRegions.length === 1 ? this.region(inRegions[0]) : null);
+    const t = MR.moveAllConfirm(moved.length, { regionName: only ? only.name : null, regionCount: inRegions.length });
+    const r = await this._box({ type: 'question', message: t.message, detail: t.detail, buttons: t.buttons, defaultId: 1, cancelId: 1 }, parent);
+    if (r.response !== 0) return { ok: false, cancelled: true };
+    const res = await this.moveBackItems(moved.map((a) => a.id), { parent });
+    return { ok: true, moved: res.moved.length, failed: res.failures.length };
+  }
+
+  /** A click on a broken tile (spec 2.1): "Remove tile" or "Keep". */
+  async brokenClick(regionId, itemId) {
+    const item = this.apps().find((a) => a && a.id === itemId && a.regionId === regionId && a.kind === 'moved');
+    if (!item || !this.mover) return { ok: false };
+    await this.refreshMoves();
+    if (!this.mover.missing.has(itemId)) return { ok: true, broken: false }; // the file is back
+    const t = MR.brokenBox(item.name);
+    const r = await this._box({ type: 'warning', message: t.message, buttons: t.buttons, defaultId: 1, cancelId: 1 });
+    if (r.response !== 0) return { ok: true, kept: true };
+    const res = await this.mover.removeMissing(itemId);
+    this._pushItems(regionId);
+    return { ok: !!res.ok, removed: !!res.ok };
+  }
+
+  /**
+   * From a page: a broken tile's ✕ (edit mode), its Delete key or its tile menu
+   * "Remove tile" (addendum B4). The tile record goes at once, no box. If the
+   * file is back, nothing is removed and the page gets the tile unbroken.
+   */
+  async removeBrokenFromPage(regionId, itemId) {
+    const item = this.apps().find((a) => a && a.id === itemId && a.regionId === regionId && a.kind === 'moved');
+    if (!item || !this.mover) return { ok: false };
+    const res = await this.mover.removeMissing(itemId);
+    if (!res.ok) await this.refreshMoves();
+    this._pushItems(regionId);
+    return { ok: !!res.ok, removed: !!res.ok };
+  }
+
+  /** A launch found a moved item's file missing: show it broken from now on. */
+  noteMissing(itemId) {
+    const item = this.apps().find((a) => a && a.id === itemId && a.kind === 'moved');
+    if (!item || !this.mover || this.mover.missing.has(itemId)) return;
+    this.mover.missing.add(itemId);
+    this._pushItems(item.regionId);
+    this._managerChanged();
+  }
+
+  /** Re-check broken tiles and files without a tile; pages and the Manager hear of any change. */
+  async refreshMoves() {
+    if (!this.mover) return null;
+    const oldMissing = new Set(this.mover.missing);
+    const oldOrphans = this.mover.orphans.map((o) => o.file).join('|');
+    const r = await this.mover.scan();
+    const changed = new Set();
+    for (const id of new Set([...oldMissing, ...this.mover.missing])) {
+      if (oldMissing.has(id) !== this.mover.missing.has(id)) {
+        const it = this.apps().find((a) => a && a.id === id);
+        if (it) changed.add(it.regionId);
+      }
+    }
+    for (const id of changed) this._pushItems(id);
+    if (changed.size || oldOrphans !== this.mover.orphans.map((o) => o.file).join('|')) this._managerChanged();
+    return r;
+  }
+
+  /** Manager "Open folder": the store folder (made, with its README, if it is not there yet). */
+  async openStoreFolder() {
+    if (!this.mover || !this.mover.folders.store) return { ok: false };
+    await this.mover._run(() => this.mover._ensureStore());
+    const dir = this.mover.folders.store;
+    if (this.testHooks) { this.openedLog.push(dir); return { ok: true, recorded: true }; }
+    const err = await shell.openPath(dir);
+    return { ok: !err };
+  }
+
+  /** Manager, a file without a tile: "Add back" (first region) or "Move to desktop". */
+  async orphanAction(action, file, { parent = null } = {}) {
+    if (!this.mover || typeof file !== 'string') return { ok: false };
+    // Both buttons are disabled while moving is unavailable (addendum B5).
+    if (!this.mover.canMove()) return { ok: false, unavailable: true };
+    if (action === 'add') {
+      const r = await this.mover.adoptOrphan(file);
+      this._managerChanged();
+      return { ok: !!r.ok };
+    }
+    if (action === 'desktop') {
+      const r = await this.mover.orphanToDesktop(file);
+      this._managerChanged();
+      if (!r.ok && r.failure) {
+        const t = MR.orphanFailedBox(r.failure);
+        await this._box({ type: 'warning', message: t.message, detail: t.detail, buttons: ['OK'] }, parent);
+      }
+      return { ok: !!r.ok };
+    }
+    return { ok: false };
+  }
+
+  movesManagerState() {
+    const m = this.mover;
+    const moved = this._movedItems(null, { withFile: true }); // a tile whose file is gone is not counted (B4b)
+    const desktop = m ? (m.real.desktop || m.folders.desktop) : null;
+    const orphans = m ? m.orphans.map((o) => ({ file: o.file, name: o.name, fileName: path.basename(o.file) })) : [];
+    const available = !!(m && m.canMove());
+    const first = this.regions()[0];
+    return {
+      available,
+      reason: m ? m.unavailableReason() : 'not set up',
+      unavailableText: available ? null : MR.STRINGS.unavailableLine,
+      count: moved.length,
+      countText: MR.movedCountText(moved.length),
+      oneDrive: desktop && MR.underOneDrive(desktop, this.env) ? MR.STRINGS.oneDrive : null,
+      orphans,
+      orphanText: orphans.length ? MR.orphanCountText(orphans.length) : null,
+      store: m ? m.folders.store : null,
+      tips: {
+        moveAllBack: 'Move every moved shortcut back to the desktop',
+        noneToMoveBack: MR.STRINGS.noneToMoveBack,
+        unavailable: MR.STRINGS.unavailableLine,
+        addBack: MR.addBackTip(first ? first.name : ''),
+        moveToDesktop: MR.STRINGS.moveToDesktopTip,
+      },
+    };
+  }
+
+  movesTestState() {
+    const m = this.mover;
+    if (!m) return { ok: false };
+    return {
+      ok: true, ready: !!m.initDone, available: m.available, canMove: m.canMove(), reason: m.unavailableReason(),
+      testMode: !!(this.moveSetup && this.moveSetup.testMode), folders: m.folders, real: m.real,
+      pending: m.journal.pending(), missing: [...m.missing], orphans: m.orphans.slice(),
+      paused: this._mh.paused, manager: this.movesManagerState(),
+    };
+  }
+
+  setMoveHook({ pauseAt = null, crashAt = null, fault = null } = {}) {
+    this._mh.pauseAt = typeof pauseAt === 'string' ? pauseAt : null;
+    this._mh.crashAt = typeof crashAt === 'string' ? crashAt : null;
+    this._mh.fault = fault && Number.isInteger(fault.code)
+      ? { code: fault.code, op: typeof fault.op === 'string' ? fault.op : null, count: Number.isInteger(fault.count) ? fault.count : 1 } : null;
+    return { ok: true };
+  }
+
+  moveContinue() {
+    const h = this._mh;
+    if (!h.resume) return { ok: false };
+    h.resume();
+    return { ok: true };
   }
 
   // One-time copy of the single-grid data file, before the first migrated save.
@@ -330,7 +635,14 @@ class RegionController extends EventEmitter {
   itemsForRenderer(id) {
     const rt = this.rt.get(id);
     if (rt) rt.syncedSeq = this.latestSeq; // a page that fetches now holds the current state
-    return M.itemsOf(this.apps(), id);
+    return this._itemsOut(id);
+  }
+
+  // A region's items for its page. A moved item whose file is gone carries
+  // `broken: true` (spec 2.1); the flag is never stored.
+  _itemsOut(id) {
+    const missing = this.mover ? this.mover.missing : null;
+    return M.itemsOf(this.apps(), id).map((a) => (missing && a.kind === 'moved' && missing.has(a.id) ? { ...a, broken: true } : a));
   }
 
   settingsFor(id) {
@@ -351,6 +663,9 @@ class RegionController extends EventEmitter {
       primary: this.primaryId() === id, active: this.activeId === id,
       matchAll: !!s.matchAll, regionCount: this.regions().length,
       mode: rt ? rt.host.mode : 'pending', hidden: this.hidden,
+      // Items it can hold (null = no cap): a file drag that would overfill it shows FULL.
+      cap: Number.isFinite(this._capOf(region)) ? this._capOf(region) : null,
+      testHooks: !!this.testHooks,
     };
   }
 
@@ -365,7 +680,7 @@ class RegionController extends EventEmitter {
   }
   _pushItems(id) {
     const rt = this.rt.get(id);
-    if (rt && rt.wc && !rt.wc.isDestroyed()) rt.wc.send('region:items-changed', M.itemsOf(this.apps(), id));
+    if (rt && rt.wc && !rt.wc.isDestroyed()) rt.wc.send('region:items-changed', this._itemsOut(id));
   }
   _managerChanged() { if (this.manager) this.manager.changed(); }
 
@@ -417,8 +732,27 @@ class RegionController extends EventEmitter {
     const rt = this.rt.get(id);
     const all = this.apps();
     const byId = new Map(all.map((a) => [a && a.id, a]));
+    const storeDir = this.mover && this.mover.folders.store;
     // Keep fields the page does not know about (kind, origin) from the stored item.
-    const items = sanitized.map((s) => ({ ...(byId.get(s.id) || {}), ...s, regionId: id }));
+    // A moved item belongs to the main process: a page may rename and reorder
+    // it, never change its path, take it from another region, or make one.
+    const items = [];
+    for (const s of sanitized) {
+      const stored = byId.get(s.id);
+      if (stored && stored.kind === 'moved') {
+        if (stored.regionId === id) items.push({ ...stored, name: s.name || stored.name, regionId: id });
+        continue;
+      }
+      if (!stored && storeDir && MR.isInside(storeDir, s.path)) continue;
+      items.push({ ...(stored || {}), ...s, regionId: id });
+    }
+    // A moved item leaves its region only by moving back (or Move to): one the
+    // page left out goes back to its place, and the page is told.
+    const kept = new Set(items.map((a) => a.id));
+    let restored = 0;
+    M.itemsOf(all, id).forEach((a, i) => {
+      if (a.kind === 'moved' && !kept.has(a.id)) { items.splice(Math.min(i, items.length), 0, a); restored++; }
+    });
     const view = this.store.rendererView('apps');
     if (view !== undefined && rt && rt.syncedSeq < this.latestSeq) {
       // This page still shows the pre-merge copy: merge its change against that copy.
@@ -426,6 +760,10 @@ class RegionController extends EventEmitter {
       this._repairItems();
     } else {
       this.store.set('apps', M.replaceRegionItems(all, id, items));
+    }
+    if (restored) {
+      this.log({ event: 'save-guard', region: id.slice(0, 8), note: `${restored} moved item(s) a page left out were kept` });
+      this._pushItems(id);
     }
     this._managerChanged();
   }
@@ -524,19 +862,41 @@ class RegionController extends EventEmitter {
     const region = regs.find((r) => r.id === id);
     if (!region) return { ok: false, error: 'Region not found.' };
     if (regs.length <= 1) return { ok: false, error: M.STRINGS.lastRegion };
-    const items = M.itemsOf(this.apps(), id);
+    await this.refreshMoves();
+    // A tile whose file is gone is a reference here: it is in line 2 of the confirm and
+    // goes with the region; only its record is removed, no file (addendum B4b).
+    const items = M.itemsOf(this.apps(), id).map((a) => (this._isBroken(a) ? { ...a, kind: undefined } : a));
     const text = M.deleteConfirmText(region, items);
     if (confirm && text.needsConfirm) {
       const opts = {
         type: 'warning', title: 'QuickLauncher', message: text.message, detail: text.detail,
         buttons: ['Delete region', 'Cancel'], defaultId: 1, cancelId: 1, noLink: true,
       };
-      const r = parent ? await dialog.showMessageBox(parent, opts) : await dialog.showMessageBox(opts);
+      const r = await this._box(opts, parent);
       if (r.response !== 0) return { ok: false, cancelled: true };
+    }
+    if (!this.regions().some((r) => r.id === id)) return { ok: false, error: 'Region not found.' };
+    // Every moved desktop file goes back first (spec 3.4). If any cannot, the
+    // region stays with those tiles: a region that still owns desktop files
+    // never disappears.
+    const movedIds = this._movedItems(id, { withFile: true }).map((a) => a.id);
+    if (movedIds.length) {
+      const res = await this.moveBackItems(movedIds, { parent, regionKept: false, quiet: true });
+      // A file found missing during the move is a broken tile now: it never keeps the region.
+      const failures = res.failures.filter((f) => f.reason !== MR.STRINGS.reasonMissing);
+      if (failures.length) {
+        const t = MR.moveBackFailedBox(failures, { regionKept: true, othersBack: res.moved.length });
+        await this._box({ type: 'warning', message: t.message, detail: t.detail, buttons: ['OK'] }, parent);
+        this.log({ event: 'region-kept', region: id.slice(0, 8), failed: failures.length });
+        return { ok: false, kept: true, failed: failures.length, moved: res.moved.length };
+      }
     }
     const now = this.regions();
     if (now.length <= 1 || !now.some((r) => r.id === id)) return { ok: false, error: M.STRINGS.lastRegion };
-    // M1 has no moved desktop files: every item is a reference and goes with the region (Q4).
+    // A desktop file dropped on it meanwhile: it is not removed with the references.
+    if (this._movedItems(id, { withFile: true }).length) return { ok: false, kept: true, failed: 0 };
+    for (const a of this._movedItems(id)) this.mover.missing.delete(a.id); // broken tiles go as records
+    // What is left are references: they go with the region (Q4).
     this.store.set('apps', this.apps().filter((a) => !(a && a.regionId === id)));
     this._setRegions(now.filter((r) => r.id !== id));
     const rt = this.rt.get(id);
@@ -887,6 +1247,8 @@ class RegionController extends EventEmitter {
       { label: 'Random theme', click: () => this.randomTheme(id) },
       { label: 'Match all regions', type: 'checkbox', checked: !!s.matchAll, click: (item) => this.setMatchAll(item.checked, id) },
       { type: 'separator' },
+      // Disabled when the region has no moved shortcuts (spec 9.2).
+      { label: 'Move all shortcuts back to desktop…', enabled: this._movedItems(id, { withFile: true }).length > 0, click: () => { this.moveAllBack(id).catch(() => {}); } },
       { label: 'Delete region…', enabled: many, click: () => { this.deleteRegion(id).catch(() => {}); } },
       { type: 'separator' },
       { label: 'Settings…', click: () => this.manager && this.manager.open('settings') },
@@ -910,7 +1272,13 @@ class RegionController extends EventEmitter {
           submenu: others.map((r) => ({ label: menuLabel(r.name), enabled: this._dropDecision(r.id, id).ok, click: () => this.moveItemToRegion(itemId, r.id) })),
         }
         : { label: 'Move to', enabled: false },
-      { label: 'Remove', click: () => this._command(id, 'remove-tile', { itemId }) },
+      // A moved tile's file goes back to the desktop; a reference is removed (spec 9.2).
+      // A broken one has no file to move: "Remove tile" removes its record (addendum B4).
+      item.kind === 'moved' && this._isBroken(item)
+        ? { label: 'Remove tile', click: () => { this.removeBrokenFromPage(id, itemId).catch(() => {}); } }
+        : item.kind === 'moved'
+          ? { label: 'Move back to desktop', click: () => { this.moveBackItems([itemId]).catch(() => {}); } }
+          : { label: 'Remove', click: () => this._command(id, 'remove-tile', { itemId }) },
     ];
     this._popup('tile', rt, tpl, x, y, { itemId });
   }
@@ -980,6 +1348,7 @@ class RegionController extends EventEmitter {
   setTestCap(id, cap) {
     if (cap === null || cap === undefined) this._testCaps.delete(id);
     else this._testCaps.set(id, Math.max(0, Math.floor(cap)));
+    this._notifyState(id); // the page knows its cap (a file drag that would overfill it shows FULL)
     return { ok: true };
   }
 
@@ -1001,6 +1370,7 @@ class RegionController extends EventEmitter {
       icons: M.ICONS,
       layouts: [...M.BUILT_LAYOUTS],
       strings: { cap: M.STRINGS.cap, lastRegion: M.STRINGS.lastRegion },
+      moved: this.movesManagerState(),
     };
   }
 

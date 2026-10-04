@@ -974,6 +974,8 @@ function createAppTile(appItem) {
     });
   }
 
+  // Regions: moved tiles get ↩, broken tiles their state (region.js).
+  if (window.qlDecorateTile) window.qlDecorateTile(tile, appItem);
   return tile;
 }
 
@@ -1244,7 +1246,7 @@ function setupTileReorder() {
     const tile = e.target.closest('.app-tile');
     if (!tile) return;
     // Let remove button and rename label handle their own clicks
-    if (e.target.closest('.btn-remove') || e.target.closest('.renameable') || e.target.closest('.rename-input')) return;
+    if (e.target.closest('.btn-remove, .btn-move-back') || e.target.closest('.renameable') || e.target.closest('.rename-input')) return;
 
     e.preventDefault(); // prevent text selection
 

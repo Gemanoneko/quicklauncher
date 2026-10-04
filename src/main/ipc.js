@@ -224,7 +224,8 @@ function entryFromAppId({ name, appId, iconDataUrl }) {
 
 const DIALOG_OPTS = {
   title: 'Add Application',
-  filters: [{ name: 'Applications & Shortcuts', extensions: ['exe', 'lnk'] }],
+  // .url: Steam and web shortcuts (regions Q5).
+  filters: [{ name: 'Applications & Shortcuts', extensions: ['exe', 'lnk', 'url'] }],
   properties: ['openFile'],
 };
 
@@ -321,6 +322,8 @@ function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null
 
     // Display name for error reporting (renderer surfaces this verbatim)
     const displayName = matchedApp ? matchedApp.name : filePath;
+    // A moved shortcut whose file is gone shows the broken state from now on (spec 2.1).
+    const noteMissing = () => { if (matchedApp && matchedApp.kind === 'moved') ctl.noteMissing(matchedApp.id); };
 
     // Helper: report a launch failure back to the renderer, where it's surfaced
     // via the update-banner channel. Plain-language reason, lightweight overlay.
@@ -349,6 +352,7 @@ function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null
     // messages are inconsistent across Windows versions and AV interactions.
     try {
       if (!fs.existsSync(filePath)) {
+        noteMissing();
         reportFailure('TARGET MISSING');
         return;
       }
@@ -605,19 +609,28 @@ $apps | ConvertTo-Json -Depth 2
     // A region is a desktop child: a dialog owned by it would be owned by the
     // desktop window (and disable it while open). Regions get an unowned
     // dialog (spec U4 fallback, used from the start).
-    if (!regionOf(e) && !fromManager(e)) return null;
+    const regionId = regionOf(e);
+    if (!regionId && !fromManager(e)) return null;
     const parent = fromManager(e) ? mgr.window : null;
     const { canceled, filePaths } = parent
       ? await dialog.showOpenDialog(parent, DIALOG_OPTS)
       : await dialog.showOpenDialog(DIALOG_OPTS);
     if (canceled || !filePaths.length) return null;
+    // + FILE in a region (spec 5.2): a desktop shortcut moves like a drop. The
+    // main process adds the tile and sends the page its items, so the page adds nothing.
+    if (regionId) {
+      const r = await ctl.dropFiles(regionId, [filePaths[0]], Infinity);
+      // The new tile must not land hidden by a type-to-filter (addendum B10).
+      if (r && (r.moved || r.refs)) ctl._command(regionId, 'clear-filter');
+      return null;
+    }
     return buildAppEntry(filePaths[0]);
   });
 
   ipcMain.handle('add-app-from-path', async (_, filePath) => {
     if (typeof filePath !== 'string') return null;
     const ext = path.extname(filePath).toLowerCase();
-    if (ext !== '.exe' && ext !== '.lnk') return null;
+    if (ext !== '.exe' && ext !== '.lnk' && ext !== '.url') return null;
     try {
       if (!fs.existsSync(filePath)) return null;
     } catch { return null; }
@@ -672,6 +685,15 @@ $apps | ConvertTo-Json -Depth 2
   onRegion('region:tile-drop', (id, a) => ctl.tileDropFrom(id, {
     dragId: num(a.dragId), index: Number.isInteger(a.index) && a.index >= 0 ? a.index : Infinity,
   }));
+  // M3: files dropped from the desktop or Explorer (paths from the page's drop),
+  // ↩ on moved tiles, and a click on a broken tile.
+  const strList = (v, max) => (Array.isArray(v) ? v.filter((s) => typeof s === 'string' && s && s.length < 1024).slice(0, max) : []);
+  onRegion('region:drop-files', (id, a) => ctl.dropFiles(id, strList(a.paths, 64),
+    Number.isInteger(a.index) && a.index >= 0 ? a.index : Infinity));
+  onRegion('region:move-back', (id, a) => ctl.moveBackFromPage(id, strList(a.itemIds, 256)));
+  onRegion('region:broken-click', (id, a) => (typeof a.itemId === 'string' ? ctl.brokenClick(id, a.itemId) : { ok: false }));
+  // A broken tile's ✕, Delete or tile menu "Remove tile" (addendum B4).
+  onRegion('region:remove-broken', (id, a) => (typeof a.itemId === 'string' ? ctl.removeBrokenFromPage(id, a.itemId) : { ok: false }));
   onRegion('region:rename', (id, a) => ctl.rename(id, typeof a.name === 'string' ? a.name : ''));
   onRegion('region:cycle', (id, a) => { ctl.cycle(id, num(a.dir) < 0 ? -1 : 1); });
   onRegion('region:open-manager', (id, a) => {
@@ -681,7 +703,16 @@ $apps | ConvertTo-Json -Depth 2
 
   // ── Manager ───────────────────────────────────────────────────────────────
   const onManager = (channel, fn) => ipcMain.handle(channel, (e, ...args) => (fromManager(e) ? fn(...args) : null));
-  onManager('manager:state', () => ({ ...ctl.managerState(), version: electronApp.getVersion() }));
+  onManager('manager:state', () => {
+    // Broken tiles and files without a tile are re-checked in the background;
+    // a change sends manager:changed, which reads the state again.
+    ctl.refreshMoves().catch(() => {});
+    return { ...ctl.managerState(), version: electronApp.getVersion() };
+  });
+  // M3, Moved shortcuts (spec 8.1, 5.4, 5.5).
+  onManager('manager:open-store', () => ctl.openStoreFolder());
+  onManager('manager:move-all-back', () => ctl.moveAllBack(null, { parent: mgr.window }));
+  onManager('manager:orphan', (action, file) => ctl.orphanAction(String(action || ''), typeof file === 'string' ? file : '', { parent: mgr.window }));
   onManager('manager:create-region', (layout) => ctl.createRegion(typeof layout === 'string' ? layout : 'grid'));
   onManager('manager:update-region', (id, patch) => {
     if (typeof id !== 'string' || !patch || typeof patch !== 'object') return { ok: false };
@@ -703,7 +734,8 @@ $apps | ConvertTo-Json -Depth 2
     const parent = mgr.window;
     const { canceled, filePaths } = parent ? await dialog.showOpenDialog(parent, DIALOG_OPTS) : await dialog.showOpenDialog(DIALOG_OPTS);
     if (canceled || !filePaths.length) return { ok: false, cancelled: true };
-    return ctl.addItems(regionId, [await buildAppEntry(filePaths[0])]);
+    // A desktop shortcut chosen here moves too (spec 5.2: any route).
+    return ctl.dropFiles(regionId, [filePaths[0]], Infinity, { parent });
   });
   onManager('manager:close', () => { mgr.close(); });
 
@@ -731,6 +763,17 @@ $apps | ConvertTo-Json -Depth 2
       case 'toggle-all': ctl.toggleAll(); return { ok: true, hidden: ctl.isHidden() };
       case 'place': return ctl.place(String(a.regionId || ''), String(a.where || ''));
       case 'random-theme': return ctl.randomTheme(String(a.regionId || ''));
+      // M3: the move's state, steps that pause / crash / fail on purpose,
+      // message boxes recorded (and answered from a queue), Open folder recorded.
+      case 'moves-state': return ctl.movesTestState();
+      case 'move-hook': return ctl.setMoveHook(a);
+      case 'move-continue': return ctl.moveContinue();
+      case 'moves-off': if (ctl.mover) ctl.mover.offForTest = true; ctl._managerChanged(); return { ok: !!ctl.mover };
+      case 'moves-on': if (ctl.mover) ctl.mover.offForTest = false; ctl._managerChanged(); return { ok: !!ctl.mover };
+      case 'rescan': return ctl.refreshMoves().then((r) => ({ ok: true, ...r }));
+      case 'boxes': return { ok: true, boxes: ctl.boxLog.slice() };
+      case 'box-answers': ctl._boxAnswers.push(...(Array.isArray(a.answers) ? a.answers.filter(Number.isInteger) : [])); return { ok: true, queued: ctl._boxAnswers.length };
+      case 'opened': return { ok: true, opened: ctl.openedLog.slice() };
       case 'quit': setTimeout(() => { if (quit) quit('self-test'); }, 50); return { ok: true };
       default: return { ok: false, error: `unknown op ${op}` };
     }
@@ -850,6 +893,15 @@ if ($b) { Write-Output $b }`;
   });
 }
 
+// The IconFile= line of an Internet Shortcut (.url, INI text), or null.
+async function urlIconFile(filePath) {
+  try {
+    const text = await fs.promises.readFile(filePath, 'utf8');
+    const m = /^\s*IconFile\s*=\s*(.+?)\s*$/im.exec(text);
+    return m ? m[1] : null;
+  } catch { return null; }
+}
+
 async function buildAppEntry(filePath) {
   const name = path.basename(filePath, path.extname(filePath));
   const id = randomUUID();
@@ -860,7 +912,13 @@ async function buildAppEntry(filePath) {
   // Track directory targets separately so we can fetch a shell thumbnail.
   let iconSourcePath = filePath;
   let folderTarget = null;
-  if (path.extname(filePath).toLowerCase() === '.lnk') {
+  if (path.extname(filePath).toLowerCase() === '.url') {
+    // A Steam or web shortcut (regions Q5): its own IconFile= when it has one,
+    // else the shell's icon for the .url below.
+    const icon = await urlIconFile(filePath);
+    const r = icon ? resolveIconPath(icon) : null;
+    if (r) iconSourcePath = r;
+  } else if (path.extname(filePath).toLowerCase() === '.lnk') {
     const info = await resolveShortcutLink(filePath);
     if (info) {
       if (info.icon) {
@@ -935,4 +993,4 @@ async function buildAppEntry(filePath) {
   return { id, name, path: filePath, iconDataUrl };
 }
 
-module.exports = { setupIPC, VALID_THEMES };
+module.exports = { setupIPC, VALID_THEMES, buildAppEntry };
