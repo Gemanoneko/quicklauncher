@@ -1333,3 +1333,48 @@ Replaces C7's measure 7.
 3. No step contains "check", "verify", "confirm", "must" or "should". Break: add "Confirm that" to a step.
 4. Each step names what to open or click or press or drag and what to look at (the words "Look at" appear once in each). Break: delete one "Look at".
 5. The fallback run prints no step and no question.
+
+## Addendum — M3 fix pass, C2 follow-up (Judy, 2026-10-05)
+
+Status: final, uncommitted. Answers Ender's three C2 questions and his note on the update layer's timer (TechPlan 8.2, "For Judy" and deviation 29), after a read of deviations 18 to 31. It **replaces** three sentences of the fix-pass addendum: C2's rule line (D2), C5's tray-dot bullet (D4) and the last sentence of the C4 Futaba measure (D5). Inputs: TechPlan 8.2 as written; `mover.js` (`addPaths`, the unavailable test), `banner-layers.js` and `updater.js` (the `dismiss-update` call sites). Read only: nothing was launched (Futaba has the desktop).
+
+| # | Question | Ruling |
+|---|---|---|
+| D1 | C2 at the cap, during the drag | Keep `FULL` on the hover, as built. Never accept the drag and refuse after the drop |
+| D2 | C2 scope | Not plain references. The rule covers files a tile owns: moved shortcuts and store-folder shortcuts. Deviation 21 stands |
+| D3 | A store file with no tile, moving unavailable | Confirmed: the whole drop is refused with `Moving is unavailable. Nothing was changed.` |
+| D4 | The update layer's own timer calling `dismiss-update` | Leave it; the dot is already off at those two events |
+| D5 | Deviations 18 to 31 | Agreed, with one correction to a measure of mine: never launch a `.url` |
+
+### D1. At the cap, during the drag
+
+**Keep `FULL (n max)` on the hover.** A page cannot know during an OS drag which file is coming, so a region at its cap shows FULL and Windows refuses the drop, even for a file that would only convert or reorder a tile already in the region.
+
+- **Why.** The hover is true of the region and speaks before the hand lets go. The other way (accept, then refuse after the drop) is the pattern B7 exists to prevent: a slot opens, the person lets go, and nothing happens; the FULL would arrive after the gesture, when it can no longer change it.
+- **The cost is small.** It touches only a file whose tile is already in a region at its cap. The tile itself can be dragged within the region (5.3) or sent with Move to; no drop is needed.
+- **When it can happen.** Only in a layout with a cap (Fan 10, Ring 12, M5). Grid has none, so nothing in M3 shows it. M5 revisits it only if Sergei meets it. Not a flag.
+
+### D2. Scope of C2: plain references are free
+
+C2's first line, "a shortcut file belongs to one tile", was wider than its reason. **Replaced by:** *a file that a tile owns belongs to one tile*, that is, a shortcut the drop moves off a desktop, or a shortcut that sits in the store folder.
+
+- **Plain references stay as today:** an `.exe`, a Start-menu `.lnk`, any shortcut outside the two desktops and the store folder. One tile per region at most; a second region gets its own; a repeat drop in the same region adds nothing and says nothing (B12.4). Deviation 21 is right.
+- **Why this line.** One tile was ruled to prevent a dead twin after the first ↩ (m-1, m-3). That can happen only where a tile owns the file. A reference owns nothing: removing one tile leaves the other working, and the same app in two regions (a game in Games and in Daily) is a use, not a mistake.
+
+### D3. A store file with no tile, while moving is unavailable
+
+**Confirmed (deviation 23).** A drop that would adopt a store file is refused the way a drop that would move a desktop file is, and the way ADD BACK is disabled (B5): one state, one answer by every route.
+
+- The box is spec 5.5.7's text: `Moving is unavailable. Nothing was changed.` (warning, `OK`).
+- The **whole drop** is refused (`addPaths` tests every file that moves or adopts), so a plain reference dropped with it does not become a tile, and "Nothing was changed" stays true.
+- This differs from C1 on purpose. In C1 the cause shows only at the move, so the references in the drop still become tiles. Here the state is known before anything happens.
+
+### D4. The update layer's timer and the tray dot
+
+**Leave it.** `SYSTEM IS UP TO DATE` (3 s) and the update error (6 s) are the only update messages with a timer, and at both events the main process has already cleared the dot (`updater.js`: `update-not-available` and `error` each call `setTrayUpdateAvailable(false)`). The call at the timer's end changes nothing; `UPDATE AVAILABLE` and `UPDATE READY` have no timer. **C5's tray-dot bullet is replaced by:** `dismiss-update` is called by the ✕ of an update message and by an update message's own timer, and never when a notice ends, by time or by its ✕. Futaba's C5 measure is unchanged.
+
+### D5. Deviations 18 to 31
+
+- **Agreed without change:** 18, 19, 20, 22, 24, 25, 26, 28, 29 and 31 (not a UX matter). 24 is the right extension of C2's "no tile yet": an old reference tile on a store file is treated as the same case. 28 matches C4 (long paths were not required). 21, 23 and 27 are D2, D3 and D1.
+- **30 (`dune`).** Ender's measure in the app (0 of 101 under the title, with the real icon) supersedes my note from a static copy. Nothing to hide.
+- **Corrected: Pending real input, item 12** ("launch the 259-character moved `.url`"). A `.url` opens the default browser, which is Sergei's signed-in profile; ProcessRules § Our tooling must not intrude forbids launching a browser through the shell's default association. The source is my C4 measure 4 ("its moved shortcut launches"), which did not say with what. **Replaced by:** the boundary-length shortcut that is launched is a `.lnk` whose target is Notepad or Calculator (made with WScript), launched in an away window because the app's window takes the focus; a `.url` is used only for the refusal side and is never launched. Item 12 of Futaba's list changes the same way.
