@@ -1091,3 +1091,157 @@ Native boxes, the README and the NSIS box use the OS theme and need no token.
 8. Type a filter that hides every tile, then drop a shortcut: the filter is empty afterwards and the new tile is visible; a rejected drop leaves the filter.
 9. Manager at 440 x 420: every button in the section is 24 px high or more; with moving unavailable the three buttons are disabled with their tooltip; at 0 moved `MOVE ALL BACK…` is disabled with `No shortcuts to move back.`; the sentences resolve to `--text`.
 10. The README and uninstaller texts equal B6 byte for byte (the NSIS string compiled with `makensis`).
+
+## Addendum — M3 fix pass (Judy, 2026-10-04)
+
+Status: final, uncommitted. Sergei approved the M3 fix pass on 2026-10-04 and handed the visual and copy calls to Judy. One ruling is a behaviour a person will notice (C2: a dropped file that already has a tile moves that tile); it follows from 5.5.2, and I made it as delegated. The addendum **extends** B1 and B9 (new reasons) and **replaces** two earlier texts, because the items forced it: **B7's look** (C5: measured now, it fails) and **B12.2's try-it text** (C7).
+Inputs: Futaba's report `QuickLaunch_QA_RegionsM3_2026-10-04.md` (M-1, m-1 to m-5, m-8, the pattern alerts; branch `wip/regions` at `3467e5c`); `controller.js` (`dropFiles`, `openStoreFolder`), `mover.js` (`_ensureStore`, `addPaths`, `_scan`, `adoptOrphan`), `rules.js`, `app.js` (`showUpdateBanner`), `updater.js`, `base.css`, `manager.css`, `scripts/tryit-regions.mjs`. No app was launched.
+Method, two scratch passes (nothing in the repo written; files in the scratchpad `judy-m3fix\`):
+1. **Contrast.** The gate's own maths (`scripts/check-theme-contrast.js`: WCAG relative luminance, colours flattened on black, `--update-bg` composited over the flattened `--bg`, the text over that) over all 101 themes. Dark theme `cyberpunk`, light theme `mirrors-edge`, and the worst of 101 for every pair.
+2. **Geometry.** A static copy of the Manager header (markup of `manager.html`) and of a region header (markup of `index.html`), with the real `base.css`, theme, and `manager.css` / `region.css`, rendered for each of the 101 themes through `scripts/qa/headless-browser.mjs` (the Manager at 560 and 440 wide, the region at its default 424; each run closed its browser). A tagline's painted run is from its `left` to the smaller of `left + text width` and its box's right edge, the text width measured with the pseudo-element's own font and letter-spacing. The rule was then injected and the 101 measured again. Sizes are DIP.
+
+| # | Point | Ruling | Why |
+|---|---|---|---|
+| C1 | M-1: the store folder cannot be made or written | The B1 drop box with three new reasons. Nothing is remembered: the next drop tries again. OPEN FOLDER gets the same box and reasons | The file is safe but the person is told nothing; the slot opens and closes |
+| C2 | m-1, m-3: the same file again | One file, one tile: the tile that already has the file takes the drop and lands in the dropped slot. No second tile, no message | A twin is a dead tile after the first ↩; the user asked for "this shortcut, here" |
+| C3 | m-2: the same name, a different file | Never merged. A name a moved tile owns is never reused; the new file takes the next number | The broken tile keeps its own file's promise and origin (B4) |
+| C4 | m-4: a very long name | Reason `The name is too long for the QuickLauncher Shortcuts folder. Shorten it, then try again.` | `The file is missing.` is false |
+| C5 | m-5: a notice over an update offer | Two layers in the one slot. A notice takes the slot for its time; the offer comes back after it, buttons included. The notice is `--text` | A mis-drop must not cost the offer; B7's colour fails 4.5:1 in 48 themes |
+| C6 | m-8: a tagline under the tabs | Not drawn in the Manager (`display: none`). Controls win over theme art | 101 of 101 themes overlap the tabs, at 560 and at 440; there is no room beside them |
+| C7 | The try-it, M3 step | Feel only: where the fake desktop is, what to drag, one question | ProcessRules § Sergei is not QA |
+
+### C1. M-1: the store folder cannot be made or written
+
+**Box, not notice.** 7.5: move failures and refusals are boxes; B7's notice is for a drop where nothing failed. It is the **Drop or + FILE row of B1**, unchanged in shape: warning, title `QuickLauncher`, one button `OK`. Ender turns a failure of the store step into a per-file failure with a reason (the file never moved and nothing was journalled), so B1's name rules, "and 1 more" and "where it is now" apply as they are.
+
+| Files that failed | First line | Second line |
+|---|---|---|
+| 1 | `Couldn't move “Steam” off the desktop. It is still on the desktop.` | the reason |
+| 2 or more | `Couldn't move 2 shortcuts off the desktop (Steam, Notes). They are still on the desktop.` | the reason |
+
+**Reasons, added to B9** (the other seven stay):
+
+| When | Reason line |
+|---|---|
+| Something that is not a folder is at `QuickLauncher Shortcuts` (`EEXIST`, `ENOTDIR`) | `A file named “QuickLauncher Shortcuts” is in your user folder. Rename or move it, then try again.` |
+| The store step is denied (`EPERM`, `EACCES`) | `Access to the QuickLauncher Shortcuts folder was denied. Check its permissions and your security software.` |
+| `ENOSPC`, at any step before the move | `The disk is full.` |
+| Any other error before the move | `The disk refused the move.` (the B9 catch-all) |
+
+- **The folder reasons belong to the store step only.** A failed journal write (the profile folder, not the store) never says "QuickLauncher Shortcuts folder": it gets `The disk is full.` or the catch-all by its code. A reason that names the wrong folder is the one wrong thing here.
+- **Mixed drop.** An `.exe` or a non-desktop `.lnk` in the same drop still becomes a tile (it needs no store); the box names only the shortcuts that were to move.
+- **No state.** No standing line in the Manager, no retry button: the person fixes the cause and drops again, and every drop tries the folder afresh.
+- **Why these three.** The first is the repro, and a person can fix it at once; the second names the two things that block a write in a profile folder (permissions, security software); a full disk is the third real cause and one fact. "Rename or move it" because the file may be theirs.
+- **OPEN FOLDER, same cause.** Found reading `controller.js`: `openStoreFolder` makes the folder with the same unguarded call, so the Manager button does nothing and says nothing (Futaba did not run it). It gets a box, warning, `OK`: `Couldn't open the QuickLauncher Shortcuts folder.` plus the reason line when the error is one of the first three above; any other error shows the first line alone. With a file in the way it must not open that file: nothing is passed to the shell.
+
+### C2. m-1 and m-3: the same file again
+
+**Rule: a shortcut file belongs to one tile.** When the file dropped (or chosen with + FILE) is the very file a tile already points at, that tile takes the drop. No second tile is made.
+
+- **What the user sees.** The tile is where they dropped it: the dashed slot closes on it, in the region they dropped on. It has left the region it was in, the way "Move to" does (5.3). It keeps its own name and icon (a renamed tile keeps its name). No box, no notice: success is silent and the tile arriving is the confirmation (as B7).
+- **m-1.** A reference tile points at a Desktop shortcut and that shortcut is dropped: the file moves and the same tile becomes a moved tile (↩ in edit mode). It is not left behind.
+- **m-3.** A file is dragged from the store folder (OPEN FOLDER, then Explorer) onto a region while a moved tile owns it: that tile goes to the dropped slot. No file moves. Onto its own region this is a reorder.
+- **Failure.** If the move fails (B1 box), the tile stays exactly where it was and keeps working: the file is still on the desktop.
+- **Count.** A tile that is already in the dropped region adds nothing to its count, so such a drop is never FULL.
+- **Several tiles on one file** (the same desktop shortcut referenced twice): the one in the dropped region takes it, otherwise the first in region order. The others stay as plain reference tiles, and a click says `TARGET MISSING`, as for any file deleted in Explorer. This needs the same shortcut in two tiles; Sergei's data has none (all 5 are `shell:AppsFolder`). Accepted, not hidden.
+- **No tile yet** (the same gesture, not in Futaba's list): a shortcut already in the store folder never becomes a reference tile. With no tile it gets a moved tile, as ADD BACK makes, in the dropped region at the dropped slot, and its row leaves "files without a tile". Ender: confirm what the code does today; as `classify` reads, it makes a reference tile and the row stays.
+- **Why not refuse or note.** A refusal leaves the desktop icon where it was when the user asked to take it off; a note makes them do by hand what the drop already said. Why one tile: a second tile on a store file is a dead tile after the first ↩ (m-3), and 5.5.2 already says a tile exists only when its file is where the tile says.
+
+### C3. m-2: the same name, a different file
+
+**Not merged.** A name that a moved tile owns, whether its file is there or missing, is never reused for another file. The new file takes the next number in the store folder (`Steam (2).lnk`), as any name collision does today.
+
+- **What the user sees.** The broken `Steam` (B4 pip) beside a working `Steam`. No notice: the pip is the notice. The broken tile keeps its own file's promise (B4: if the file comes back, the tile works again) and its own origin; ↩ on each returns its own file to its own desktop (the Desktop one and the Public one never swap).
+- **Why not give the new file to the broken tile.** It swaps a file under a tile whose origin may be the other desktop, and it ends B4's "waiting costs nothing" the first time a name repeats.
+- **The tile name** stays what the file's name gives (`Steam`), as for `Dup` and `Dup (2)` today; the pip and the tooltip (B4) tell the two apart.
+
+### C4. m-4: a very long name
+
+- **Reason, added to B9:** `The name is too long for the QuickLauncher Shortcuts folder. Shorten it, then try again.` The box's first line keeps "It is still on the desktop." (the reason is not "missing"). Why the long form: the desktop accepted that name, so "too long" alone would read as false; the sentence says whose limit it is and what to do.
+- **Condition, Ender's mechanism:** the length of the destination path (the store folder, a backslash and the name, with any ` (2)`) is 260 characters or more, checked **before** the move. `The file is missing.` stays for Win32 2 and 3 when the path is short; the reason never rests on code 3 alone.
+- **One outcome is not allowed:** a move that succeeds and leaves a tile whose file Windows cannot open. If Ender makes long paths work, nothing is shown, and that is better, provided Futaba launches the moved shortcut and it opens.
+
+### C5. m-5: a notice and an update offer
+
+The banner slot (38 px, one row) has two layers, and one is drawn at a time.
+
+- **Update layer:** the updater's messages (checking, available with DOWNLOAD, downloading n%, ready with INSTALL NOW, up to date, error), as today.
+- **Notice layer:** every other message: the drop notices of B7, launch errors, `SAVE ERROR`. Eight seconds (as built) and a ✕ of its own.
+
+| On screen | A notice arrives | The notice ends (8 s or its ✕) |
+|---|---|---|
+| nothing | the notice | the slot hides |
+| an update message | the notice takes the slot; the update message is kept, not drawn | the update message comes back as it is then: its text, its buttons, its percentage |
+| another notice | replaces it; 8 s restarts | as above |
+
+- **Update events during a notice** change the update layer behind it and show when the notice ends; none replaces a notice early. An update message with a timer (`SYSTEM IS UP TO DATE`, the error) starts its timer when it is drawn.
+- **The tray dot.** A notice ending, by time or by its ✕, never calls `dismiss-update`. Only the ✕ of an update message does, as today. (Today an 8 s notice that replaced an offer also cleared the dot.)
+- **Look of the notice (replaces B7's "the same look as a launch error").** Text and ✕ in `--text`, on the banner's own background. Measured below: `--update-color` fails 4.5:1 in 48 of 101 themes and 3:1 in 24, so the notice B7 chose to be seen was unreadable in a quarter of the themes. Launch errors and `SAVE ERROR` share the layer, so they get a readable colour too: a fix, not a change of behaviour. The update layer keeps its look (offered below).
+- **Tooltip.** The ✕ of both layers: `Dismiss` (title and `aria-label`; it had none).
+- **Nothing covers anything.** The hidden layer is not drawn (no rect), and the slot's height and the page do not move. Considered and rejected: a second row (the window height would change) and "the offer wins" (a mis-drop would then say nothing, which B7 exists to prevent).
+
+### C6. m-8: a theme's tagline under the Manager's tabs
+
+**Rule: controls win over theme art.** In the Manager the header tagline (`#header::after`, every theme's flavour text) is not drawn:
+
+```css
+body.manager #header::after { display: none; }   /* manager.css */
+```
+
+- **Measured, as built.** All 101 themes, not only `mirrors-edge`: the tagline starts at x 200 to 205; REGIONS starts at x 134 to 196 and SETTINGS ends at x 289 to 354, so the painted text runs under REGIONS and SETTINGS in **101 of 101** themes, at 560 wide and at 440 wide. It clears the title and the ✕ in all of them.
+- **Why not make room beside the tabs.** Between SETTINGS and ✕ there are 165 to 229 px at 560 and 45 to 109 px at 440; the tagline needs 121 to 451. At the 440 minimum a fitted tagline would be three to six letters and an ellipsis.
+- **After the rule.** 0 of 101 themes have a painted tagline in the Manager, at 560 and at 440. No theme sets `!important` or `display` on the rule (checked), so the one selector wins in all. The region windows keep their taglines; nothing there changes in this pass.
+- The tagline is decoration, so no contrast floor applies to it; it is hidden, so none is measured.
+
+### C7. The try-it, M3 step (replaces B12.2's printed text)
+
+ProcessRules § Sergei is not QA: Sergei answers "is it useful, does it feel right"; Futaba verifies. The old steps a to e asked Sergei to confirm that files left a folder, that ↩ put one back, that OPEN FOLDER showed a path and that MOVE ALL BACK worked: each is a check. They are Futaba's (her section 8, items 1, 4, 5 and 10). The printed block in `scripts/tryit-regions.mjs` becomes the text below (the path is `${join(desk, 'Desktop')}`; the sample files `Try A.url` and `Try B.url` stay; step 8 stays):
+
+```
+Desktop files move in (M3). This run has a fake desktop, so your real one is never touched.
+ a. In Explorer open <profile>\desk\Desktop. It holds Try A and Try B.
+ b. Drag them onto a region. In edit mode (right-click the region), ↩ takes one back.
+ c. Tray > Regions: look at Moved shortcuts.
+ Is it useful, and does it feel right? A word is enough.
+ A shortcut dragged from your real desktop stays on the desktop in this run.
+```
+
+- Every line is an action to try or the one question; none says what must happen. The last line stays because without it a real-desktop drag looks like a broken move (B12.2).
+- Steps 1 to 7 and a to f of the same script have the same shape (they ask him to verify). Not touched here: they are not M3.
+
+### Contrast, measured
+
+Method as above ("worst" is the lowest of 101).
+
+| Pair | Used for | Floor | `cyberpunk` | `mirrors-edge` | Worst of 101 |
+|---|---|---|---|---|---|
+| `--text` on the banner background | the notice text and its ✕ (C5) | 4.5 text, 3 for the ✕ | 15.60 | 6.61 | `mordor` 5.62 |
+| rejected: `--update-color` on the banner background | the notice as B7 ruled it | 4.5 | 16.84 | 4.03 | `nonary-games` 1.21; 48 under 4.5, 24 under 3 |
+| rejected: `--text-dim` on the banner background | the notice's ✕ | 3 | 6.42 | 4.69 | `lovecraft` 2.49; 3 under 3, 37 under 4.5 |
+
+The native boxes of C1 to C4 use the OS theme and need no token. The C6 tagline is hidden.
+
+### Nothing covers anything
+
+- **Banner slot (C5):** one layer drawn at a time, in the existing 38 px row; the hidden layer has no rect. The ✕ is the existing 24 x 24 button.
+- **Manager header (C6):** after the rule the header holds the title, the tabs and the ✕ only; with no tagline nothing runs under them. Measured: 0 of 101 themes at 560 and at 440.
+- **Tiles (C2, C3):** no new element. A tile that takes a drop lands in the slot the drop opened, and two tiles never share a file, so no ↩ can strand another tile.
+
+### Tooltips (every new control)
+
+None is new. The banner ✕ gets `Dismiss` (C5). OPEN FOLDER is unchanged (9.1).
+
+### Found in the pass, not ruled (offers)
+
+1. **Region windows have the m-8 defect in 101 of 101 themes** (since M1, my header spec). In a static copy at 424 wide the tagline's painted text runs 12 to 16 px under the first header button (⚄), because its right edge (`right: 135px` in `base.css`) predates the fourth button. With a filter chip showing it also runs under the chip (101 of 101); in `dune` it starts 6 px under the title. A fix measured on the copy, `body.region #header::after { right: 160px }` and `body.region #header:has(#filter-chip:not(.hidden))::after { display: none }`, takes the ⚄ and chip overlaps to 0 of 101 (the gap to ⚄ is 9 px at the least); `dune` still needs its tagline hidden. The M2b `PROTOCOL ACTIVE` string under `// EDIT MODE` is the same family and is not covered. Offered, not applied: it changes the look of every region window.
+2. **The update offer is hard to read.** `--update-color` on the banner fails 4.5:1 in 48 of 101 themes and 3:1 in 24 (`nonary-games` 1.21, `mirrors-edge` 4.03); the message, DOWNLOAD and INSTALL NOW share it. Legacy themes, so the gate only warns. One rule would fix it (`--text` for the update layer too), at the price of the yellow update look in the 53 themes that pass. Offered, not applied.
+
+### Futaba measures (each seen to fail on a deliberate break first)
+
+1. **C1.** A file named `QuickLauncher Shortcuts` where the store goes, then drop one desktop `.lnk`: one box, text equal to C1 with the first reason; the `.lnk` is still on the desktop, no tile, journal empty; remove the file, drop again, no restart: it moves. The same with a denied ACL (second reason), an injected `ENOSPC` (`The disk is full.`), another injected error (the catch-all) and a journal write that fails (never the folder wording). A drop of one `.lnk` and one `.exe`: the `.exe` tile appears, the box names the `.lnk` only. OPEN FOLDER with the file in the way: the box of C1, and the recorded open list stays empty.
+2. **C2.** A reference tile on `Refd.lnk` and the file dropped on the same region, then on another: one tile each time, moved (↩ in edit mode), at the dropped slot, none left in the old region; no box or notice; a move that fails (injected 32) leaves the reference tile where it was and working. A store file with a moved tile, dropped on a second region: one tile, in the second; ↩ returns the file to its own origin. A store file with no tile: one moved tile, and "files without a tile" drops by one. A tile already in the dropped region is not FULL at the cap.
+3. **C3.** Moved `Steam.lnk`, its file removed (broken), a new `Steam.lnk` dropped: two tiles, the first still broken; the store holds `Steam (2).lnk`; ↩ on the second returns it to its own origin; put the first file back by hand and its pip goes. With one from the Public Desktop and one from the Desktop, each returns to its own.
+4. **C4.** The longest name that moves and the shortest that is refused, one character apart: the refusal's box has the C4 reason, "It is still on the desktop." and an untouched file. If the longer name moves, its moved shortcut launches.
+5. **C5.** An update offer with DOWNLOAD on screen in `cyberpunk` and `mirrors-edge`; drop a `.txt`: `NOT A SHORTCUT` replaces it and its text resolves to `--text`; after 8 s the offer is back with a DOWNLOAD that works, and the tray indicator is still on (`dismiss-update` not called). The notice's ✕: the same. The offer's own ✕: still clears the dot. A progress event during a notice shows after it. The ✕ title is `Dismiss`. The notice text contrast is 4.5:1 or more in all 101 themes.
+6. **C6.** The Manager at 560 and at 440, all 101 themes: `#header::after` has no painted run (computed `display: none`), and no tab rect meets any painted text. Region windows still show their taglines.
+7. **C7.** The printed M3 block equals the text in C7 (with the real path) and holds exactly one question.
