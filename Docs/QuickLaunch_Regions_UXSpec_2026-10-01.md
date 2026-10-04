@@ -1245,3 +1245,91 @@ None is new. The banner ✕ gets `Dismiss` (C5). OPEN FOLDER is unchanged (9.1).
 5. **C5.** An update offer with DOWNLOAD on screen in `cyberpunk` and `mirrors-edge`; drop a `.txt`: `NOT A SHORTCUT` replaces it and its text resolves to `--text`; after 8 s the offer is back with a DOWNLOAD that works, and the tray indicator is still on (`dismiss-update` not called). The notice's ✕: the same. The offer's own ✕: still clears the dot. A progress event during a notice shows after it. The ✕ title is `Dismiss`. The notice text contrast is 4.5:1 or more in all 101 themes.
 6. **C6.** The Manager at 560 and at 440, all 101 themes: `#header::after` has no painted run (computed `display: none`), and no tab rect meets any painted text. Region windows still show their taglines.
 7. **C7.** The printed M3 block equals the text in C7 (with the real path) and holds exactly one question.
+
+## Addendum — try-it rewrite (Judy, 2026-10-04)
+
+Status: final, uncommitted. Sergei approved (2026-10-04) rewriting the whole try-it to feel-only, with one standing rule: **whenever he is asked to check anything, it is numbered step-by-step actions: what to open, what to click or drag, what to look at.** This addendum **replaces** C7's printed block (its steps a to c) and its last bullet (steps 1 to 7 and a to f "not touched"): every step of `scripts/tryit-regions.mjs` is rewritten below, the M3 step included. Inputs: the script at `6a1394e` (read only; Ender is editing it), Futaba's real-input lists (M2b report section 8, items 1 to 9; M3 report section 8, items 1 to 10), ProcessRules § Sergei is not QA, spec 7.1 and 9.2 for the menu labels. No app was launched; nothing was measured.
+
+### The format (every step)
+
+- A step is **one numbered paragraph**: what to open, what to click, press or drag, what to look at, then **one question** about usefulness or feel as its last sentence. Numbers run 1 to 8 with no letters.
+- No "check", "verify", "confirm", "must" or "should", and no sentence that says what has to happen. The question never asks whether something worked; it asks whether it is clear, easy, natural, handy or right.
+- "Start" and "Finish" are not steps: they check nothing, so they carry no question.
+- Eight steps replace the old 18 items: the checks went to Futaba (table below), so nothing is left to do twice.
+
+### The printed text (Ender pastes this; `${...}` are the script's own values)
+
+Replaces the whole `else console.log(` block (from `QuickLaunch regions, try-it 2` to `8. Tray > Quit QuickLauncher.`):
+
+```
+QuickLaunch regions, try-it (${seed.apps.length} of your shortcuts, copied; your real data and your real desktop are not touched)
+
+Start: if your normal QuickLauncher is showing, press Ctrl+Space to hide it. The test copy has its own tray icon and the hotkey ${HOTKEY}. Each step ends in one question; a word is enough. The run closes by itself after 5 minutes; run this again for the steps you did not reach.
+
+Between regions
+ 1. Right-click the test QuickLauncher's tray icon, choose New region, then Grid. Drag a tile from QUICK.LAUNCH onto the new region and hold it there for two seconds, then move along the new region, out of it and back in. Look at the new region and at the pointer as you move. Is it clear where the tile will land?
+ 2. Let go over the new region. Then drag one tile out onto the empty desktop and let go, and drag one tile to another place inside its own region. Look at where each tile ends up. Does dragging tiles around feel easy?
+
+Keys in edit mode
+ 3. Right-click inside a region, not on its header, to start edit mode. Click an empty spot in it, press Right arrow until a tile has a ring around it, then press Ctrl+Right and Ctrl+Left. Look at the tile. Do the keys feel natural for rearranging?
+ 4. With the ring still on a tile, press Shift+F10 (or the Menu key). Look at the menu, choose Move to, then another region. Is that a handy way to send a tile to another region?
+
+Desktop files move in (M3)
+ 5. Open File Explorer at ${join(desk, 'Desktop')}. It holds Try A and Try B, on a fake desktop. Drag both onto a region. Look at the region and at the Explorer window. Is dropping desktop shortcuts onto a region the way you want to add them?
+ 6. Right-click that region, choose Edit shortcuts, and click ↩ on one of the two new tiles. Look at the region and at the Explorer window. Is ↩ a clear way to put a shortcut back?
+ 7. Right-click the tray icon and choose Regions... Find Moved shortcuts and click OPEN FOLDER. Look at the folder that opens and at the section. Does the section tell you what you need to find your moved shortcuts?
+ 8. Right-click a region, choose Move all shortcuts back to desktop..., then click Move back. Look at the Explorer window. Is that a good way to undo it all?
+
+A shortcut dragged from your real desktop is added as a normal tile and stays on the desktop in this run.
+
+Finish: right-click the test QuickLauncher's tray icon and choose Quit QuickLauncher.
+```
+
+### The fallback run (`--fallback`)
+
+Its three steps check behaviour (focus, a swallowed click, a key moving a tile), so they are Futaba's. The flag stays for her. Replaces the `if (FALLBACK) { console.log(` block:
+
+```
+QuickLaunch regions, fallback run (${seed.apps.length} of your shortcuts, copied)
+
+The regions open as ordinary windows just above the desktop (fallback mode). This run is for Futaba's checks; there is nothing for you to try here.
+
+Finish: right-click the test QuickLauncher's tray icon and choose Quit QuickLauncher.
+```
+
+The script's header comment ("Judy's optional 30-second fallback check") can say "Futaba's fallback run"; code comments are outside the copy standard. The summary lines the script prints after the run (regions created, drags, re-layouts) are not asks and stay.
+
+### Where each old check went (Futaba's away-window lists)
+
+"M2b" is `QuickLaunch_QA_RegionsM2b_2026-10-01.md`, section 8; "M3" is `QuickLaunch_QA_RegionsM3_2026-10-04.md`, section 8. Real input stays "pending, next away window"; Sergei is never the one who runs it.
+
+| Old step | The check that moves | Futaba's list |
+|---|---|---|
+| 1 | New region, hold a tile over it: the 2 px border, the dashed slot, the copy under the pointer, the slot following, the tile landing on release | M2b 1 |
+| 2 | Release on empty desktop or in the gap between two regions: nothing moves, nothing launches | M2b 1 |
+| 3 | A drag inside one region reorders, as before | M2b 1 |
+| 4 | Click an empty spot, Right arrow puts the ring on a tile | **new:** real OS keys on tiles |
+| 5 | Ctrl+Right / Ctrl+Left one place; Ctrl+Down / Ctrl+Up one row, none past the last or first row; Delete removes the tile and the ring moves to the next; Shift+F10 outside edit mode starts edit mode with the focus kept | **new:** real OS keys on tiles |
+| 5 | Menu key or Shift+F10: one tile menu per press; Move to sends the tile to another region | M2b 2 |
+| a | The slot is the theme's bright text accent and exactly a tile's height: no row below jumps, also in edit mode | M2b 1 (the pixels of the drag states) |
+| b | Over an empty region the drop hint hides; away, it returns | M2b 1 |
+| c | The copy under the pointer looks like the tile picked up | M2b 1 |
+| d | The gap closes smoothly after a drag away; reordering inside one region stays instant | M2b 1 |
+| e | A drop shows no flicker of the gap closing | M2b 1 |
+| f | Fallback: a real click activates a region and is not swallowed, a typed letter filters, Right arrow then Ctrl+Right moves a tile, no region takes the focus by itself | M2b 3, 4, 5 |
+| 6 | A smaller resolution, a scale change or a taskbar moved to another edge: the regions fit without overlapping and return to where they were | M2b 9 (the taskbar-edge move is added to it) |
+| 7 | Sleep and wake: the regions are where they were | M2b 9 |
+| M3 a to e | A real Explorer drag of desktop icons onto a region, ↩, OPEN FOLDER, Move all back | M3 1, 4, 5, 10 |
+| 8 (Quit) | The tray's real Quit click | M2b 6, M3 6 |
+
+Two rows have no owner today. **The new item** (real OS keys on tiles) is on neither list; Futaba adds it. **M2b 9** (display, scale, sleep) is forbidden even inside an away window until Sergei says otherwise, so steps 6 and 7 are not run by anyone for now; they were the only planned checks of the home-layout rule on real hardware.
+
+### Futaba measures (each seen to fail on a deliberate break first)
+
+Replaces C7's measure 7.
+
+1. The printed text of the script equals the block above, with the real values in place of `${...}`.
+2. Every numbered step holds exactly one question mark, and it ends the step. Break: add a step that ends in a statement, then one with two questions.
+3. No step contains "check", "verify", "confirm", "must" or "should". Break: add "Confirm that" to a step.
+4. Each step names what to open or click or press or drag and what to look at (the words "Look at" appear once in each). Break: delete one "Look at".
+5. The fallback run prints no step and no question.
