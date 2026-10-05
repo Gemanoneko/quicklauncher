@@ -48,7 +48,7 @@ class RegionController extends EventEmitter {
     this.boxLog = [];
     this._boxAnswers = [];
     this.openedLog = [];
-    this._mh = { pauseAt: null, crashAt: null, fault: null, paused: null, resume: null };
+    this._mh = { pauseAt: null, crashAt: null, fault: null, stepFault: null, paused: null, resume: null };
     this.rt = new Map();      // region id -> runtime
     this.byWc = new Map();    // webContents id -> region id
     this.activeId = null;
@@ -153,6 +153,7 @@ class RegionController extends EventEmitter {
         return onDisk !== false;
       },
       regionExists: (id) => !!this.region(id),
+      regionIds: () => this.regions().map((r) => r.id), // region order: which of several tiles on one file takes a drop (C2)
       primaryId: () => this.primaryId(),
       writable: () => !(typeof this.store.isReadOnly === 'function' && this.store.isReadOnly()),
       capOf: (id) => { const r = this.region(id); return r ? this._capOf(r) : Infinity; },
@@ -200,6 +201,13 @@ class RegionController extends EventEmitter {
         f.count -= 1;
         return f.code;
       },
+      // A Node error at a step before the move: 'store' (the store folder) or 'journal' (fix-pass C1).
+      stepFault: (at) => {
+        const f = this._mh.stepFault;
+        if (!f || f.count <= 0 || (f.at && f.at !== at)) return null;
+        f.count -= 1;
+        return f.code;
+      },
     };
   }
 
@@ -231,7 +239,17 @@ class RegionController extends EventEmitter {
    */
   async dropFiles(regionId, paths, index = Infinity, { parent = null } = {}) {
     if (!this.mover || !this.region(regionId)) return { ok: false };
-    const res = await this.mover.addPaths(regionId, paths, index);
+    let res;
+    try {
+      res = await this.mover.addPaths(regionId, paths, index);
+    } catch (e) {
+      // Not expected (the steps before a move are guarded): a drop still never ends unanswered (C1).
+      // The box names the dropped shortcuts that are still where they were.
+      this.log({ event: 'drop-files-error', region: regionId.slice(0, 8), error: String(e && (e.code || e.message)) });
+      const failures = (Array.isArray(paths) ? paths : []).filter((p) => typeof p === 'string' && MR.isShortcut(p) && fs.existsSync(p))
+        .map((p) => ({ name: MR.displayName(p), file: p, code: -1, reason: MR.reasonFor(-1) }));
+      res = { refused: null, added: [], refs: [], taken: [], failures, ignored: [] };
+    }
     this._pushItems(regionId); // also replaces a slot the page kept for the drop
     if (res.refused === 'unavailable') {
       await this._box({ type: 'warning', message: MR.STRINGS.unavailable, buttons: ['OK'] }, parent);
@@ -243,8 +261,9 @@ class RegionController extends EventEmitter {
     // notice slot, never a box (addendum B7). A refused drop (full, region gone) says nothing.
     const ignored = res.ignored.filter((x) => typeof x === 'string' && x).length;
     const notice = ignored && res.refused !== 'full' && res.refused !== 'region' ? MR.notShortcutNotice(ignored) : null;
-    this.log({ event: 'drop-files', region: regionId.slice(0, 8), refused: res.refused, moved: res.added.length, refs: res.refs.length, failed: res.failures.length, ignored: res.ignored.length });
-    return { ok: !res.refused, refused: res.refused, moved: res.added.length, refs: res.refs.length, failed: res.failures.length, ignored: res.ignored.length, notice };
+    const taken = (res.taken || []).length;
+    this.log({ event: 'drop-files', region: regionId.slice(0, 8), refused: res.refused, moved: res.added.length, refs: res.refs.length, taken, failed: res.failures.length, ignored: res.ignored.length });
+    return { ok: !res.refused, refused: res.refused, moved: res.added.length, refs: res.refs.length, taken, failed: res.failures.length, ignored: res.ignored.length, notice };
   }
 
   /** ↩, Delete on a moved tile, tile menu "Move back to desktop", Move all back (spec 5.4). */
@@ -340,14 +359,29 @@ class RegionController extends EventEmitter {
     return r;
   }
 
-  /** Manager "Open folder": the store folder (made, with its README, if it is not there yet). */
-  async openStoreFolder() {
+  /**
+   * Manager "Open folder": the store folder (made, with its README, if it is not there yet).
+   * If it cannot be made or opened, a box says so and nothing is passed to the shell (C1):
+   * with a file in the way, that file is never opened.
+   */
+  async openStoreFolder({ parent = null } = {}) {
     if (!this.mover || !this.mover.folders.store) return { ok: false };
-    await this.mover._run(() => this.mover._ensureStore());
     const dir = this.mover.folders.store;
+    const failed = async (code, why) => {
+      this.log({ event: 'open-store', result: 'failed', why });
+      const t = MR.openFolderFailedBox(code);
+      await this._box({ type: 'warning', message: t.message, detail: t.detail, buttons: ['OK'] }, parent);
+      return { ok: false, error: why };
+    };
+    try {
+      await this.mover._run(() => { this.mover._stepFault('store'); return this.mover._ensureStore(); });
+    } catch (e) {
+      return failed(MR.storeErrorCode(e && e.code), String(e && e.code));
+    }
     if (this.testHooks) { this.openedLog.push(dir); return { ok: true, recorded: true }; }
     const err = await shell.openPath(dir);
-    return { ok: !err };
+    if (err) return failed(-1, err);
+    return { ok: true };
   }
 
   /** Manager, a file without a tile: "Add back" (first region) or "Move to desktop". */
@@ -410,11 +444,13 @@ class RegionController extends EventEmitter {
     };
   }
 
-  setMoveHook({ pauseAt = null, crashAt = null, fault = null } = {}) {
+  setMoveHook({ pauseAt = null, crashAt = null, fault = null, stepFault = null } = {}) {
     this._mh.pauseAt = typeof pauseAt === 'string' ? pauseAt : null;
     this._mh.crashAt = typeof crashAt === 'string' ? crashAt : null;
     this._mh.fault = fault && Number.isInteger(fault.code)
       ? { code: fault.code, op: typeof fault.op === 'string' ? fault.op : null, count: Number.isInteger(fault.count) ? fault.count : 1 } : null;
+    this._mh.stepFault = stepFault && typeof stepFault.code === 'string' && /^E[A-Z]+$/.test(stepFault.code)
+      ? { code: stepFault.code, at: typeof stepFault.at === 'string' ? stepFault.at : null, count: Number.isInteger(stepFault.count) ? stepFault.count : 1 } : null;
     return { ok: true };
   }
 

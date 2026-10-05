@@ -29,7 +29,7 @@ Keeps it in the tray. Pops it open with `Ctrl+Space` (or via the tray) when he w
 | Regions unit tests (pure modules, plain Node) | `npm run test:regions` |
 | Regions self-test (packaged build through the QA launch guard, driven over CDP, no OS input; M3 runs on a fake desktop under `--root`) | `npm run selftest:regions -- --guard <studio>/scripts/qa/quicklaunch-safe-launch.mjs [--root <folder in %TEMP%>] [--seed <data copy>] [--fallback] [--probe] [--shots <dir>]` |
 | Regions M3 across launches: crash after each move step then reconcile, `--ql-restore-all`, the test-mode refusal (fake desktop only) | `node scripts/regions-m3-crash.mjs --guard <studio>/scripts/qa/quicklaunch-safe-launch.mjs --part crash-add\|crash-back\|restore\|refusal [--root <folder in %TEMP%>] [--probe]` |
-| Regions try-it for Sergei (copy of his data, temp profile, QA launch guard) | `node scripts/tryit-regions.mjs` |
+| Regions try-it for Sergei (copy of his data, temp profile, QA launch guard; feel-only steps). `--fallback` is Futaba's fallback run; `--print` prints the text only (nothing made or launched) | `node scripts/tryit-regions.mjs [--fallback] [--print]` |
 | Release (canonical) | `npm run release` — see ProcessRules § Release paths are per tool |
 | Fresh install on a new machine | `npm ci` |
 

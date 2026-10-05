@@ -103,3 +103,38 @@ test('B7: every drop effect in the page code is copy (or none), never move; the 
 });
 
 module.exports = { dropEffectProblems };
+
+// ── fix pass (UX spec "Addendum — M3 fix pass"): the rules as written in the page code.
+// The self-test measures them in the running build (computed styles, the DOM).
+const cssRule = (css, selector) => {
+  const s = css.replace(/\r\n/g, '\n').replace(/\/\*[\s\S]*?\*\//g, '');
+  const m = s.match(new RegExp(`(^|\\n|,)\\s*${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(,[^{]*)?\\{([^}]*)\\}`));
+  return m ? m[3].replace(/\s+/g, ' ').trim() : null;
+};
+
+test('the CSS rule reader finds a rule and misses an absent one (positive control)', () => {
+  assert.equal(cssRule('a { x: 1; }\nbody.manager #header::after { display: none; }', 'body.manager #header::after'), 'display: none;');
+  assert.equal(cssRule('body.manager #header { display: none; }', 'body.manager #header::after'), null);
+});
+
+test('C5: the banner has two layers: banner-layers.js loads before app.js; notices go through showNotice; the notice is --text; both ✕ say Dismiss', () => {
+  const html = read('src/renderer/index.html');
+  assert.ok(html.indexOf('<script src="banner-layers.js"></script>') >= 0 && html.indexOf('banner-layers.js') < html.indexOf('<script src="app.js">'));
+  const app = read('src/renderer/app.js');
+  assert.ok(!/showUpdateBanner|hideUpdateBanner/.test(app), 'the shared banner is gone');
+  assert.ok(/showNotice\('SAVE ERROR — SETTINGS MAY NOT PERSIST'\)/.test(app) && /showNotice\(`COULD NOT LAUNCH/.test(app));
+  assert.ok(/dismissBtn\.title = 'Dismiss';/.test(app) && /dismissBtn\.setAttribute\('aria-label', 'Dismiss'\);/.test(app));
+  assert.ok(/if \(r && r\.notice\) showNotice\(r\.notice\);/.test(read('src/renderer/region.js')));
+  assert.equal(cssRule(read('src/renderer/styles/base.css'), '#update-banner.notice'), 'color: var(--text);');
+  assert.equal(cssRule(read('src/renderer/styles/base.css'), '#update-banner.notice .update-dismiss'), 'color: var(--text);');
+});
+
+test('C6: the Manager does not draw the theme tagline', () => {
+  assert.equal(cssRule(read('src/renderer/styles/manager.css'), 'body.manager #header::after'), 'display: none;');
+});
+
+test('region tagline (offer 1, approved): ends 160 px from the right; not drawn while the filter chip shows', () => {
+  const css = read('src/renderer/styles/region.css');
+  assert.equal(cssRule(css, 'body.region #header::after'), 'right: 160px;');
+  assert.equal(cssRule(css, 'body.region #header:has(#filter-chip:not(.hidden))::after'), 'display: none;');
+});

@@ -18,6 +18,12 @@ const STRINGS = Object.freeze({
   reasonOnlineOnly: 'The file is online only. Keep it on this device, then try again.',
   reasonMissing: 'The file is missing.',
   reasonDisk: 'The disk refused the move.',
+  // The store step and the steps before the move (fix-pass addendum C1, C4).
+  reasonStoreBlocked: 'A file named “QuickLauncher Shortcuts” is in your user folder. Rename or move it, then try again.',
+  reasonStoreDenied: 'Access to the QuickLauncher Shortcuts folder was denied. Check its permissions and your security software.',
+  reasonDiskFull: 'The disk is full.',
+  reasonTooLong: 'The name is too long for the QuickLauncher Shortcuts folder. Shorten it, then try again.',
+  openFolderFailed: "Couldn't open the QuickLauncher Shortcuts folder.",
   unavailable: 'Moving is unavailable. Nothing was changed.',
   unavailableLine: 'Moving is unavailable.', // the Manager's standing line and its disabled buttons (B5)
   noneToMoveBack: 'No shortcuts to move back.', // MOVE ALL BACK… disabled at 0 (B5)
@@ -30,8 +36,15 @@ const STRINGS = Object.freeze({
   emptySub: 'Drag them off the desktop, or right-click to add.',
 });
 
-// Win32 codes (winerror.h) the mapping looks at, and the mover's own placeholder code.
-const E = { FILE_NOT_FOUND: 2, PATH_NOT_FOUND: 3, ACCESS_DENIED: 5, NOT_SAME_DEVICE: 17, SHARING_VIOLATION: 32, LOCK_VIOLATION: 33, PLACEHOLDER: -2 };
+// Win32 codes (winerror.h) the mapping looks at, and the mover's own codes (negative):
+// a placeholder, a name too long for the store folder (C4), and the store step or a
+// step before the move failing in Node (C1).
+const E = {
+  FILE_NOT_FOUND: 2, PATH_NOT_FOUND: 3, ACCESS_DENIED: 5, NOT_SAME_DEVICE: 17, SHARING_VIOLATION: 32, LOCK_VIOLATION: 33,
+  PLACEHOLDER: -2, TOO_LONG: -5, STORE_BLOCKED: -6, STORE_DENIED: -7, DISK_FULL: -8,
+};
+// MAX_PATH: a store path this long or longer is refused before the move (C4).
+const MAX_STORE_PATH = 260;
 
 const extOf = (p) => path.extname(String(p || '')).toLowerCase();
 const isAccepted = (p) => ACCEPTED_EXTS.has(extOf(p));
@@ -70,12 +83,37 @@ function classify(real, folders) {
 
 /** The reason line for a failed move (tech plan § 3 "Errors mapped"; addendum B9). */
 function reasonFor(code, { publicDesktop = false } = {}) {
+  if (code === E.STORE_BLOCKED) return STRINGS.reasonStoreBlocked;
+  if (code === E.STORE_DENIED) return STRINGS.reasonStoreDenied;
+  if (code === E.DISK_FULL) return STRINGS.reasonDiskFull;
+  if (code === E.TOO_LONG) return STRINGS.reasonTooLong;
   if (code === E.ACCESS_DENIED) return publicDesktop ? STRINGS.reasonAdmin : STRINGS.reasonDenied;
   if (code === E.SHARING_VIOLATION || code === E.LOCK_VIOLATION) return STRINGS.reasonInUse;
   if (code === E.NOT_SAME_DEVICE) return STRINGS.reasonOtherDrive;
   if (code === E.PLACEHOLDER) return STRINGS.reasonOnlineOnly;
   if (code === E.FILE_NOT_FOUND || code === E.PATH_NOT_FOUND) return STRINGS.reasonMissing;
   return STRINGS.reasonDisk;
+}
+
+/**
+ * A Node error code from the store step (making the store folder) as the
+ * mover's code (C1): something that is not a folder in the way, a denied
+ * folder, a full disk; anything else is the catch-all (-1). Only the store
+ * step may use the two folder codes.
+ */
+function storeErrorCode(nodeCode) {
+  if (nodeCode === 'EEXIST' || nodeCode === 'ENOTDIR') return E.STORE_BLOCKED;
+  if (nodeCode === 'EPERM' || nodeCode === 'EACCES') return E.STORE_DENIED;
+  return stepErrorCode(nodeCode);
+}
+/** Any other step before the move (the journal in the profile folder): a full disk, else the catch-all (C1). */
+function stepErrorCode(nodeCode) {
+  return nodeCode === 'ENOSPC' ? E.DISK_FULL : -1;
+}
+/** The OPEN FOLDER box (C1): its reason line only for the three store-step reasons, else none. */
+function openFolderFailedBox(code) {
+  const known = code === E.STORE_BLOCKED || code === E.STORE_DENIED || code === E.DISK_FULL;
+  return { message: STRINGS.openFolderFailed, detail: known ? reasonFor(code) : '' };
 }
 
 /** A cloud-only placeholder: refused, never hydrated (tech plan § 3 "OneDrive"). */
@@ -213,8 +251,9 @@ const notShortcutNotice = (n) => (n === 1 ? 'NOT A SHORTCUT' : `${n} FILES ARE N
 const addBackTip = (regionName) => `Add this shortcut to ${quoted(regionName)}`;
 
 module.exports = {
-  MOVE_EXTS, ACCEPTED_EXTS, STRINGS,
+  MOVE_EXTS, ACCEPTED_EXTS, STRINGS, E, MAX_STORE_PATH,
   extOf, isAccepted, isShortcut, samePath, isInside, classify, reasonFor, isPlaceholder,
+  storeErrorCode, stepErrorCode, openFolderFailedBox,
   candidateName, displayName, oneDriveRoots, underOneDrive, testModeCheck,
   moveFailedBox, moveBackFailedBox, orphanFailedBox, moveAllConfirm, brokenBox,
   movedCountText, orphanCountText, notShortcutNotice, addBackTip, nameList,

@@ -3,11 +3,11 @@
    region. It uses app.js globals at call time: apps, renderGrid,
    enterEditMode, exitEditMode, clearFilter, startRename, removeApp,
    addAppFromDialog, createAppTile, saveApps, cancelReorder, computeColumnCount,
-   suppressNextClick, editMode, showUpdateBanner; and tile-order.js (window.QL_TILE_ORDER), loaded before it.
+   suppressNextClick, editMode, showNotice; and tile-order.js (window.QL_TILE_ORDER), loaded before it.
    app.js calls back into window.qlTileDragOut (M2) and window.qlDecorateTile (M3).
    global api, apps, renderGrid, enterEditMode, exitEditMode, clearFilter,
    startRename, removeApp, addAppFromDialog, createAppTile, saveApps, cancelReorder, computeColumnCount,
-   suppressNextClick, editMode, showUpdateBanner */
+   suppressNextClick, editMode, showNotice */
 (function () {
   'use strict';
   const api = window.api;
@@ -648,8 +648,9 @@
     clearFilter();
     return api.invoke('region:drop-files', { paths, index }).then((r) => {
       dropKeptSlot();
-      // Files that are not shortcuts: a notice in the launch-error slot, never a box (addendum B7).
-      if (r && r.notice) showUpdateBanner(r.notice, [], 8000);
+      // Files that are not shortcuts: a notice, never a box (addendum B7). It takes the banner
+      // slot for 8 s; an update offer there comes back after it (fix-pass addendum C5).
+      if (r && r.notice) showNotice(r.notice);
       return r;
     }, () => { dropKeptSlot(); return null; });
   }

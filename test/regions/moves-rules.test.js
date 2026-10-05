@@ -174,3 +174,42 @@ test('resolveMoveSetup: --ql-test-desktop inside %TEMP% is test mode with the th
   assert.equal(noKoffi.available, false, 'without koffi moving is unavailable');
   assert.equal(argValue(['--ql-test-desktop="C:\\a b"'], 'ql-test-desktop'), 'C:\\a b');
 });
+
+// ── fix pass (UX spec "Addendum — M3 fix pass", C1 and C4) ─────────────────
+test('C1, C4: the four new reasons are the ruled strings; the folder reasons come only from the store step', () => {
+  const S = R.STRINGS;
+  assert.equal(S.reasonStoreBlocked, 'A file named “QuickLauncher Shortcuts” is in your user folder. Rename or move it, then try again.');
+  assert.equal(S.reasonStoreDenied, 'Access to the QuickLauncher Shortcuts folder was denied. Check its permissions and your security software.');
+  assert.equal(S.reasonDiskFull, 'The disk is full.');
+  assert.equal(S.reasonTooLong, 'The name is too long for the QuickLauncher Shortcuts folder. Shorten it, then try again.');
+  assert.equal(S.openFolderFailed, "Couldn't open the QuickLauncher Shortcuts folder.");
+  // The store step: something not a folder in the way, denied, full, anything else.
+  const store = (c) => R.reasonFor(R.storeErrorCode(c));
+  assert.equal(store('EEXIST'), S.reasonStoreBlocked);
+  assert.equal(store('ENOTDIR'), S.reasonStoreBlocked);
+  assert.equal(store('EPERM'), S.reasonStoreDenied);
+  assert.equal(store('EACCES'), S.reasonStoreDenied);
+  assert.equal(store('ENOSPC'), S.reasonDiskFull);
+  assert.equal(store('EIO'), S.reasonDisk);
+  assert.equal(store(undefined), S.reasonDisk);
+  // Any other step before the move (the journal): never a folder reason.
+  for (const c of ['EEXIST', 'ENOTDIR', 'EPERM', 'EACCES', 'EIO', 'EBUSY', undefined]) assert.equal(R.reasonFor(R.stepErrorCode(c)), S.reasonDisk, String(c));
+  assert.equal(R.reasonFor(R.stepErrorCode('ENOSPC')), S.reasonDiskFull);
+  // The long name keeps "where it is now" (it is not "missing"); code 3 alone is still "missing".
+  assert.equal(R.reasonFor(R.E.TOO_LONG), S.reasonTooLong);
+  assert.equal(R.reasonFor(3), S.reasonMissing);
+  const box = R.moveFailedBox([{ name: 'WWW', reason: S.reasonTooLong }]);
+  assert.deepEqual(box, { message: "Couldn't move “WWW” off the desktop. It is still on the desktop.", detail: S.reasonTooLong });
+  const box2 = R.moveFailedBox([{ name: 'Steam', reason: S.reasonStoreBlocked }, { name: 'Notes', reason: S.reasonStoreBlocked }]);
+  assert.deepEqual(box2, { message: "Couldn't move 2 shortcuts off the desktop (Steam, Notes). They are still on the desktop.", detail: S.reasonStoreBlocked });
+  assert.equal(R.MAX_STORE_PATH, 260);
+});
+
+test('C1: the OPEN FOLDER box: the first line, plus the reason only for the three store reasons', () => {
+  const S = R.STRINGS;
+  assert.deepEqual(R.openFolderFailedBox(R.storeErrorCode('EEXIST')), { message: S.openFolderFailed, detail: S.reasonStoreBlocked });
+  assert.deepEqual(R.openFolderFailedBox(R.storeErrorCode('EPERM')), { message: S.openFolderFailed, detail: S.reasonStoreDenied });
+  assert.deepEqual(R.openFolderFailedBox(R.storeErrorCode('ENOSPC')), { message: S.openFolderFailed, detail: S.reasonDiskFull });
+  assert.deepEqual(R.openFolderFailedBox(R.storeErrorCode('EIO')), { message: S.openFolderFailed, detail: '' });
+  assert.deepEqual(R.openFolderFailedBox(-1), { message: S.openFolderFailed, detail: '' });
+});

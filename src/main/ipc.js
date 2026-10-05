@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
 const { randomUUID } = require('crypto');
-const { checkForUpdates } = require('./updater');
+const { checkForUpdates, dismissals: updateDismissals } = require('./updater');
 const { refreshTrayMenu } = require('./tray');
 const { trimIcon } = require('./icon-trim');
 const { encodeIcons } = require('./icon-worker');
@@ -621,7 +621,7 @@ $apps | ConvertTo-Json -Depth 2
     if (regionId) {
       const r = await ctl.dropFiles(regionId, [filePaths[0]], Infinity);
       // The new tile must not land hidden by a type-to-filter (addendum B10).
-      if (r && (r.moved || r.refs)) ctl._command(regionId, 'clear-filter');
+      if (r && (r.moved || r.refs || r.taken)) ctl._command(regionId, 'clear-filter');
       return null;
     }
     return buildAppEntry(filePaths[0]);
@@ -710,7 +710,7 @@ $apps | ConvertTo-Json -Depth 2
     return { ...ctl.managerState(), version: electronApp.getVersion() };
   });
   // M3, Moved shortcuts (spec 8.1, 5.4, 5.5).
-  onManager('manager:open-store', () => ctl.openStoreFolder());
+  onManager('manager:open-store', () => ctl.openStoreFolder({ parent: mgr.window }));
   onManager('manager:move-all-back', () => ctl.moveAllBack(null, { parent: mgr.window }));
   onManager('manager:orphan', (action, file) => ctl.orphanAction(String(action || ''), typeof file === 'string' ? file : '', { parent: mgr.window }));
   onManager('manager:create-region', (layout) => ctl.createRegion(typeof layout === 'string' ? layout : 'grid'));
@@ -740,6 +740,8 @@ $apps | ConvertTo-Json -Depth 2
   onManager('manager:close', () => { mgr.close(); });
 
   // Self-test operations. Refused unless the app runs with --ql-test-hooks.
+  const UPDATE_TEST_CHANNELS = new Set(['update-checking', 'update-available', 'update-progress', 'update-ready',
+    'update-not-available', 'update-error', 'store-save-error', 'launch-error']);
   onManager('manager:test', (op, arg) => {
     if (!testHooks) return { ok: false, error: 'test hooks are off' };
     const a = arg && typeof arg === 'object' ? arg : {};
@@ -774,6 +776,15 @@ $apps | ConvertTo-Json -Depth 2
       case 'boxes': return { ok: true, boxes: ctl.boxLog.slice() };
       case 'box-answers': ctl._boxAnswers.push(...(Array.isArray(a.answers) ? a.answers.filter(Number.isInteger) : [])); return { ok: true, queued: ctl._boxAnswers.length };
       case 'opened': return { ok: true, opened: ctl.openedLog.slice() };
+      // The banner's two layers (fix-pass addendum C5): an updater or notice message sent to
+      // the primary region's page as the updater sends it, and the tray-dot clears counted.
+      case 'update-event': {
+        const ch = String(a.channel || '');
+        if (!UPDATE_TEST_CHANNELS.has(ch)) return { ok: false, error: 'not an update channel' };
+        if ('arg' in a) ctl.sendToPrimary(ch, a.arg); else ctl.sendToPrimary(ch);
+        return { ok: true };
+      }
+      case 'update-dismissals': return { ok: true, count: updateDismissals() };
       case 'quit': setTimeout(() => { if (quit) quit('self-test'); }, 50); return { ok: true };
       default: return { ok: false, error: `unknown op ${op}` };
     }

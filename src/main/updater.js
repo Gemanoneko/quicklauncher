@@ -16,6 +16,9 @@ function setTrayUpdateAvailable(flag) {
 // Returns the webContents that shows update banners: the primary region's
 // page, which changes when the primary region is deleted or rebuilt.
 let _target = () => null;
+// How many times the tray dot was cleared from a banner ✕ (read by the self-test through
+// --ql-test-hooks: a notice ending must never count here; fix-pass addendum C5).
+let dismissals = 0;
 
 // Guard: only send if the page is still alive
 function send(channel, ...args) {
@@ -75,6 +78,7 @@ function setupUpdater(getTarget) {
   // stale "update available" dot from sitting in the tray after the
   // user has explicitly waved the notification away.
   ipcMain.handle('dismiss-update', () => {
+    dismissals += 1;
     setTrayUpdateAvailable(false);
   });
 
@@ -102,4 +106,4 @@ function checkForUpdates() {
   });
 }
 
-module.exports = { setupUpdater, checkForUpdates };
+module.exports = { setupUpdater, checkForUpdates, dismissals: () => dismissals };

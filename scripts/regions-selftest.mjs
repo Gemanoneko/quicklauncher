@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * regions-selftest.mjs: M1 + M2 + M2b + M3 self-test of the packaged regions build.
+ * regions-selftest.mjs: M1 + M2 + M2b + M3 (and its fix pass) self-test of the packaged regions build.
  *
  *   npm run selftest:regions -- [--guard <quicklaunch-safe-launch.mjs>] [--exe <QuickLauncher.exe>]
  *                               [--seed <data file to copy>] [--port 9341] [--timeout 300]
@@ -571,6 +571,8 @@ async function run() {
   await m2bChecks({ mgr, sessions, ids, wa, inner });
   // ── M3: desktop files move in (fake desktop only) ───────────────────────────
   await m3Checks({ mgr, sessions, ids });
+  // ── M3 fix pass (fake desktop only) and the region tagline ─────────────────
+  await fixChecks({ mgr, sessions, ids });
   if (SHOTS) {
     await sessions[ids[1]].shot(join(SHOTS, 'm3-region-broken.png')).catch(() => {});
     await mgr.shot(join(SHOTS, 'm3-manager-moved.png')).catch(() => {});
@@ -1668,6 +1670,344 @@ async function m3Checks({ mgr, sessions, ids }) {
   const wantAdded = 1 + (paused9 && !PROBE ? 1 : 0); // README.txt, and the file the race test wrote
   check(`nothing deleted: all ${deskBefore.length} files the test tree held before are still there by content (Changed.lnk carries the byte the test added); only README.txt${wantAdded > 1 ? ' and the race file' : ''} are new`,
     lost.length === 0 && added === wantAdded, { before: deskBefore.length, after: after.length, lost: lost.map((f) => f.rel) });
+}
+
+// ── M3 fix pass (UX spec "Addendum — M3 fix pass", C1 to C6 and Futaba's measures 1 to 6;
+// the region-window tagline, offer 1 of that addendum, approved 2026-10-04). Fake desktop
+// only. Each check runs in its own try: a build without the fix fails the check (the
+// broken-code control is this script run with --exe of the build before the fix) and the
+// run goes on. --probe gives each check one wrong input or a broken reading.
+async function fixChecks({ mgr, sessions, ids }) {
+  const T = (op, arg = {}) => mgr.eval(`window.api.invoke('manager:test', ${JSON.stringify(op)}, ${JSON.stringify(arg)})`);
+  const D = FIX.dirs;
+  const rP = ids[0]; // the primary region: the updater's messages go to its page
+  const rG = ids[1]; // Games
+  const page = (id) => sessions[id];
+  const drop = (id, paths, index = null) => page(id).eval(`window.api.invoke('region:drop-files', ${JSON.stringify(index === null ? { paths } : { paths, index })})`, 90000);
+  const boxes = async () => (await T('boxes')).boxes;
+  const items = (id) => readData().apps.filter((a) => a.regionId === id);
+  const ex = (p) => existsSync(p);
+  const inStore = (n) => join(D.store, n);
+  const url = (p, u) => { writeFileSync(p, `[InternetShortcut]\r\nURL=${u}\r\n`); return p; };
+  const ic = (args) => spawnSync('icacls', args, { encoding: 'utf8', windowsHide: true }).status;
+  const user = process.env.USERNAME;
+  const guarded = async (name, fn) => { try { await fn(name); } catch (e) { check(name, false, `threw: ${String(e && e.message).slice(0, 300)}`); } };
+  const S = {
+    blocked: 'A file named “QuickLauncher Shortcuts” is in your user folder. Rename or move it, then try again.',
+    denied: 'Access to the QuickLauncher Shortcuts folder was denied. Check its permissions and your security software.',
+    full: 'The disk is full.', disk: 'The disk refused the move.',
+    tooLong: 'The name is too long for the QuickLauncher Shortcuts folder. Shorten it, then try again.',
+    open: "Couldn't open the QuickLauncher Shortcuts folder.",
+  };
+  const one = (name) => `Couldn't move “${name}” off the desktop. It is still on the desktop.`;
+
+  // Every theme, first (they only read the pages): the theme stylesheet is swapped as the app swaps it (the
+  // link's href), and the test side polls for the new sheet (the app never fired the link's load event).
+  const THEMES = readdirSync(join(REPO, 'src', 'renderer', 'styles', 'themes')).filter((f) => f.endsWith('.css')).map((f) => f.slice(0, -4)).sort();
+  const setTheme = async (s, theme) => {
+    const want = `styles/themes/${theme}.css`;
+    const isIn = `(() => { const l = document.getElementById('theme-stylesheet'); return !!(l.sheet && l.sheet.href && l.sheet.href.endsWith('/' + ${JSON.stringify(want)})); })()`;
+    if (await s.eval(isIn)) return true;
+    await s.eval(`(() => { document.getElementById('theme-stylesheet').setAttribute('href', ${JSON.stringify(want)}); return true; })()`);
+    for (let i = 0; i < 200; i++) { if (await s.eval(isIn)) return true; await sleep(10); }
+    return false;
+  };
+  // The tagline's painted run (as Judy measured it: from its left to the smaller of left + text width and its box's right edge,
+  // the text measured in the pseudo-element's own font and letter-spacing), and every other element of the header.
+  const HEADER_PROBE = `(() => {
+    const hdr = document.getElementById('header'); const cs = getComputedStyle(hdr, '::after'); const hb = hdr.getBoundingClientRect();
+    const R = (el) => { if (!el || el.classList.contains('hidden') || getComputedStyle(el).display === 'none') return null; const b = el.getBoundingClientRect(); const f = (v) => Math.round(v * 100) / 100; return { l: f(b.left), t: f(b.top), r: f(b.right), b: f(b.bottom) }; };
+    const raw = cs.content;
+    const painted = cs.display !== 'none' && raw && raw !== 'none' && raw !== 'normal' && raw !== '""';
+    let run = null;
+    if (painted) {
+      const txt = raw.replace(/^"|"$/g, '').replace(/\\\\(["'])/g, '$1').replace(/\\\\A ?/g, ' ');
+      const s = document.createElement('span'); s.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:' + cs.font + ';letter-spacing:' + cs.letterSpacing + ';text-transform:' + cs.textTransform; s.textContent = txt; document.body.appendChild(s);
+      const w = s.getBoundingClientRect().width; s.remove();
+      const bl = parseFloat(getComputedStyle(hdr).borderLeftWidth) || 0; const bt = parseFloat(getComputedStyle(hdr).borderTopWidth) || 0;
+      const br = parseFloat(getComputedStyle(hdr).borderRightWidth) || 0; const num = (v) => parseFloat(v);
+      const L = Number.isFinite(num(cs.left)) ? hb.left + bl + num(cs.left) : hb.right - br - num(cs.right) - num(cs.width); const Rr = L + num(cs.width);
+      const T = Number.isFinite(num(cs.top)) ? hb.top + bt + num(cs.top) : hb.top; const B = Number.isFinite(num(cs.height)) ? T + num(cs.height) : hb.bottom;
+      const al = cs.textAlign; let l = L; let r = Math.min(L + w, Rr);
+      if (al === 'right' || al === 'end') { r = Rr; l = Math.max(L, Rr - w); } else if (al === 'center') { l = Math.max(L, L + (Rr - L - w) / 2); r = Math.min(Rr, l + w); }
+      run = { l, r, t: T, b: B, align: al };
+    }
+    const els = { title: R(document.getElementById('title-area')), name: R(document.getElementById('title')), icon: R(document.getElementById('region-icon')), chip: R(document.getElementById('filter-chip')),
+      controls: R(document.getElementById('header-controls')), header: R(hdr) };
+    const btns = [...document.querySelectorAll('#header-controls button')].map((b) => ({ id: b.id, ...R(b) }));
+    const hx = (a, c) => !!a && !!c && a.l < c.r && c.l < a.r; const h2 = (a, c) => hx(a, c) && a.t < c.b && c.t < a.b;
+    return { width: Math.round(hb.width), display: cs.display, painted: !!run, run, els, btns,
+      underFirstBtn: { x: hx(run, btns[0]), xy: h2(run, btns[0]) }, underAnyBtn: { x: btns.some((b) => hx(run, b)), xy: btns.some((b) => h2(run, b)) },
+      underChip: { x: hx(run, els.chip), xy: h2(run, els.chip) }, underTitle: { x: hx(run, els.title), xy: h2(run, els.title) } };
+  })()`;
+
+  // A probe rule goes in through the CSSOM (the pages' CSP refuses an inline <style>).
+  const addRule = (s, rule) => s.eval(`(() => { const sh = [...document.styleSheets].pop(); return sh.insertRule(${JSON.stringify(rule)}, sh.cssRules.length); })()`);
+  const dropRule = (s, at) => s.eval(`(() => { const sh = [...document.styleSheets].pop(); sh.deleteRule(${Number(at)}); return true; })()`);
+
+  // The region page is a visible desktop child: its theme can be swapped here. The last region
+  // (empty, a Grid at its default size since M1) is measured, then put back on its own theme.
+  await guarded('region tagline (offer 1, approved): in a Grid region, in every theme, the tagline\'s painted text runs under no header button, and none while the filter chip shows', async (name) => {
+    const P = await pageFor(ids[ids.length - 1]); // its current page (a region dropped to fallback is rebuilt)
+    const own = await P.eval(`document.getElementById('theme-stylesheet').getAttribute('href')`);
+    const rows = [];
+    const probeAt = PROBE ? await addRule(P, 'body.region #header::after { right: 135px !important; display: block !important; }') : null;
+    try {
+      for (const th of THEMES) {
+        const loaded = await setTheme(P, th);
+        for (const chip of [false, true]) {
+          await P.eval(chip ? `setFilter('ste'), true` : `clearFilter(), true`);
+          rows.push({ theme: th, chip, loaded, ...(await P.eval(HEADER_PROBE)) });
+        }
+      }
+    } finally {
+      await P.eval(`clearFilter(), true`).catch(() => {});
+      if (probeAt !== null) await dropRule(P, probeAt).catch(() => {});
+      await P.eval(`(() => { document.getElementById('theme-stylesheet').setAttribute('href', ${JSON.stringify(own)}); return true; })()`).catch(() => {});
+    }
+    writeFileSync(join(PROFILE, 'header-geometry.json'), JSON.stringify(rows, null, 1));
+    const nochip = rows.filter((r) => !r.chip);
+    const withChip = rows.filter((r) => r.chip);
+    const n = (list, k, axis = 'xy') => list.filter((r) => r[k][axis]).length;
+    const ev = {
+      width: rows[0] && rows[0].width, themes: nochip.length, loaded: rows.filter((r) => r.loaded).length / 2,
+      underFirstButton: n(nochip, 'underFirstBtn'), underAnyButton: n(nochip, 'underAnyBtn'), underChip: n(withChip, 'underChip'), drawnWithChip: withChip.filter((r) => r.painted).length,
+      underTitle: nochip.filter((r) => r.underTitle.xy).map((r) => r.theme), file: join(PROFILE, 'header-geometry.json'),
+    };
+    console.log(`header geometry: ${ev.file}`);
+    check(name, nochip.length === THEMES.length && THEMES.length >= 101 && rows.every((r) => r.loaded) && ev.underAnyButton === 0 && ev.underChip === 0 && ev.drawnWithChip === 0 && n(withChip, 'underAnyBtn') === 0, ev);
+  });
+
+  // The Manager (hidden under --ql-test-hooks) at its own width, every theme, then back to its own theme.
+  await guarded('fix C6 (m-8): the Manager draws no theme tagline, in every theme (computed display of #header::after is none)', async (name) => {
+    const own = await mgr.eval(`document.getElementById('theme-stylesheet').getAttribute('href')`);
+    const probeAt = PROBE ? await addRule(mgr, 'body.manager #header::after { display: block !important; }') : null;
+    const rows = [];
+    try {
+      for (const th of THEMES) {
+        const loaded = await setTheme(mgr, th);
+        rows.push({ theme: th, loaded, ...(await mgr.eval(`(() => { const cs = getComputedStyle(document.getElementById('header'), '::after'); return { display: cs.display, content: cs.content, width: Math.round(document.getElementById('header').getBoundingClientRect().width) }; })()`)) });
+      }
+    } finally {
+      if (probeAt !== null) await dropRule(mgr, probeAt).catch(() => {});
+      await mgr.eval(`(() => { document.getElementById('theme-stylesheet').setAttribute('href', ${JSON.stringify(own)}); return true; })()`).catch(() => {});
+    }
+    writeFileSync(join(PROFILE, 'manager-tagline.json'), JSON.stringify(rows, null, 1));
+    const drawn = rows.filter((r) => r.display !== 'none');
+    check(name, rows.length === THEMES.length && THEMES.length >= 101 && rows.every((r) => r.loaded) && drawn.length === 0,
+      { themes: rows.length, loaded: rows.filter((r) => r.loaded).length, width: rows[0] && rows[0].width, drawn: drawn.length, sample: drawn.slice(0, 3).map((r) => r.theme) });
+  });
+  // The data file holds a page's save once its debounce has run.
+  const waitData = async (pred, ms = 5000) => { const until = Date.now() + ms; while (Date.now() < until) { try { if (pred(readData())) return true; } catch { /* mid-write */ } await sleep(100); } return false; };
+
+  // F1. C1, Futaba's repro 1 (M-1): a FILE named "QuickLauncher Shortcuts" where the store folder goes.
+  await guarded('fix C1 (M-1): a FILE where the store folder goes: the drop answers with one B1 box and the ruled reason, the .exe still becomes a tile, OPEN FOLDER says "Couldn\'t open…" with the same reason and opens nothing; with the file gone the next drop moves (no restart)', async (name) => {
+    const omega = url(join(D.desktop, 'Omega.url'), 'https://example.invalid/omega');
+    const tool = join(D.desktop, 'Tool2.exe');
+    writeFileSync(tool, 'not a real program: test hooks never launch anything');
+    const held = join(D.aside, 'fix-store-held');
+    testMove(D.store, held); // the store folder is put aside, files and all, and comes back below
+    let r; let o; let bx = []; let opened0; let opened1; let fileStayed;
+    try {
+      writeFileSync(D.store, 'a file where the store folder goes');
+      const b0 = (await boxes()).length;
+      opened0 = (await T('opened')).opened.length;
+      r = await drop(rG, [omega, tool], 0);
+      fileStayed = ex(omega);
+      o = await mgr.eval(`window.api.invoke('manager:open-store')`);
+      bx = PROBE ? [] : (await boxes()).slice(b0);
+      opened1 = (await T('opened')).opened.length;
+    } finally {
+      if (ex(D.store) && lstatSync(D.store).isFile()) testMove(D.store, join(D.aside, 'fix-in-the-way'));
+      if (!ex(D.store)) testMove(held, D.store);
+    }
+    const r2 = await drop(rG, [omega], 0);
+    check(name, r && r.failed === 1 && r.refs === 1 && r.moved === 0 && fileStayed && o && o.ok === false && opened1 === opened0
+      && bx.length === 2 && bx[0].message === one('Omega') && bx[0].detail === S.blocked && bx[0].buttons.join() === 'OK'
+      && bx[1].message === S.open && bx[1].detail === S.blocked
+      && r2.moved === 1 && !ex(omega) && ex(inStore('Omega.url')),
+    { r, open: o, boxes: bx.map((b) => [b.message, b.detail]), opened: [opened0, opened1], r2 });
+  });
+
+  // F2. C1, Futaba's repro 2: a denied ACL (W,AD,WD) on the (fake) store folder, removed afterwards.
+  await guarded('fix C1 (M-1): a denied ACL on the store folder: the drop and OPEN FOLDER both name the denied folder; the file stays', async (name) => {
+    const psi = url(join(D.desktop, 'Psi.url'), 'https://example.invalid/psi');
+    const b0 = (await boxes()).length;
+    let r; let o;
+    if (!PROBE && ic([D.store, '/deny', `${user}:(W,AD,WD)`]) !== 0) throw new Error('icacls deny failed');
+    try {
+      r = await drop(rG, [psi]);
+      o = await mgr.eval(`window.api.invoke('manager:open-store')`);
+    } finally { ic([D.store, '/remove:d', user]); }
+    const bx = (await boxes()).slice(b0);
+    check(name, r.failed === 1 && ex(psi) && o.ok === false && bx.length === 2 && bx[0].message === one('Psi') && bx[0].detail === S.denied
+      && bx[1].message === S.open && bx[1].detail === S.denied, { r, open: o, boxes: bx.map((b) => [b.message, b.detail]) });
+  });
+
+  // F3. C1, injected at the steps before the move: a full disk, another error, a journal that cannot be written.
+  await guarded('fix C1: injected ENOSPC at the store step reads "The disk is full."; EIO there is the catch-all; a journal write that fails (EPERM) never names the store folder; the file stays each time', async (name) => {
+    const chi = url(join(D.desktop, 'Chi.url'), 'https://example.invalid/chi');
+    const got = [];
+    for (const [at, code] of [['store', 'ENOSPC'], ['store', 'EIO'], ['journal', 'EPERM'], ['journal', 'ENOSPC']]) {
+      if (!PROBE) await T('move-hook', { stepFault: { at, code } });
+      const b0 = (await boxes()).length;
+      const r = await drop(rG, [chi]);
+      await T('move-hook', {});
+      const bx = (await boxes()).slice(b0);
+      got.push({ at, code, failed: r.failed, there: ex(chi), detail: bx.length === 1 ? bx[0].detail : `${bx.length} boxes` });
+    }
+    const want = [S.full, S.disk, S.disk, S.full];
+    check(name, got.every((g, i) => g.failed === 1 && g.there && g.detail === want[i]) && (await T('moves-state')).pending.length === 0, got);
+  });
+
+  // F4. C2: one file, one tile.
+  await guarded('fix C2 (m-1): a reference tile on a desktop shortcut, the file dropped on another region: the file moves, the SAME tile becomes moved and lands at the dropped slot, none left behind; no box, no notice', async (name) => {
+    const refd = url(join(D.desktop, 'Refd.url'), 'https://example.invalid/refd');
+    // A reference tile on a desktop shortcut, as an older build made them: the page's own save.
+    await page(rP).eval(`(async () => { apps.push({ id: 'fix-refd', name: 'My Refd', path: ${JSON.stringify(refd)}, iconDataUrl: '' }); await saveApps(); renderGrid(); return true; })()`);
+    if (!(await waitData((d) => d.apps.some((a) => a.id === 'fix-refd')))) throw new Error('the page save did not reach the data file');
+    const b0 = (await boxes()).length;
+    const r = await drop(rG, [refd], 0);
+    await sleep(300);
+    const g = items(rG);
+    const inP = (PROBE ? items(rG) : items(rP)).filter((a) => a.id === 'fix-refd').length;
+    const domG = await page(rG).eval(`[...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')].map((t) => [t.dataset.id, t.dataset.kind || 'ref'])`);
+    const domP = await page(rP).eval(`[...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')].map((t) => t.dataset.id)`);
+    check(name, r.moved === 1 && r.refs === 0 && r.failed === 0 && !r.notice && (await boxes()).length === b0
+      && g[0] && g[0].id === 'fix-refd' && g[0].kind === 'moved' && g[0].name === 'My Refd' && inP === 0 && !ex(refd) && ex(inStore('Refd.url'))
+      && domG[0] && domG[0][0] === 'fix-refd' && domG[0][1] === 'moved' && !domP.includes('fix-refd'),
+    { r, first: g[0] && [g[0].id, g[0].kind, g[0].name], inPrimary: inP, domG: domG.slice(0, 2) });
+  });
+
+  await guarded('fix C2: a move that fails (injected 32) leaves the reference tile where it was, unchanged', async (name) => {
+    const fail = url(join(D.desktop, 'Held2.url'), 'https://example.invalid/held2');
+    await page(rP).eval(`(async () => { apps.push({ id: 'fix-held', name: 'Held2', path: ${JSON.stringify(fail)}, iconDataUrl: '' }); await saveApps(); renderGrid(); return true; })()`);
+    if (!(await waitData((d) => d.apps.some((a) => a.id === 'fix-held')))) throw new Error('the page save did not reach the data file');
+    const before = JSON.stringify(items(rP));
+    if (!PROBE) await T('move-hook', { fault: { op: 'add', code: 32, count: 1 } });
+    const r = await drop(rG, [fail], 0);
+    await T('move-hook', {});
+    await sleep(200);
+    check(name, r.failed === 1 && ex(fail) && JSON.stringify(items(rP)) === before && !items(rG).some((a) => a.id === 'fix-held'), { r });
+  });
+
+  await guarded('fix C2 (m-3): the store file of a moved tile dropped on another region: that tile goes there, no file moves; ↩ later returns it to its own origin', async (name) => {
+    const sf = inStore('Refd.url');
+    const h = sha(sf);
+    const r = await drop(PROBE ? rG : rP, [sf], 0);
+    await sleep(200);
+    const p = items(rP);
+    check(name, r.taken === 1 && r.moved === 0 && r.refs === 0 && p[0] && p[0].id === 'fix-refd' && !items(rG).some((a) => a.id === 'fix-refd')
+      && ex(sf) && sha(sf) === h && !ex(join(D.desktop, 'Refd.url')),
+    { r, first: p[0] && p[0].id });
+  });
+
+  await guarded('fix C2: a store file with no tile, dropped: one moved tile at the slot; "files without a tile" drops by one; no file moves', async (name) => {
+    const stray = url(inStore('Stray3.url'), 'https://example.invalid/stray3');
+    if (!PROBE) await T('rescan'); // (--probe: the list is read before the rescan sees the file)
+    const before = (await T('moves-state')).manager.orphans.map((o) => o.name);
+    const r = await drop(rG, [stray], 0);
+    await sleep(200);
+    const after = (await T('moves-state')).manager.orphans.map((o) => o.name);
+    const g = items(rG);
+    check(name, before.includes('Stray3') && !after.includes('Stray3') && after.length === before.length - 1
+      && r.taken === 1 && g[0] && g[0].name === 'Stray3' && g[0].kind === 'moved' && ex(stray),
+    { r, before: before.length, after: after.length });
+  });
+
+  await guarded('fix C2: a tile already in the dropped region adds nothing to its count: at the cap, its file dropped there is not FULL', async (name) => {
+    const n = items(rP).length;
+    await T('set-cap', { regionId: rP, cap: PROBE ? n - 1 : n });
+    let r;
+    try { r = await drop(rP, [inStore('Refd.url')], 2); } finally { await T('set-cap', { regionId: rP, cap: null }); } // slot 2 counts the tile itself (now first): it lands second
+    check(name, r.refused === null && r.taken === 1 && items(rP).length === n && items(rP)[1] && items(rP)[1].id === 'fix-refd', { r, n });
+  });
+
+  // F5. C3: a name a moved tile owns, its file missing, is never reused.
+  await guarded('fix C3 (m-2): a broken moved tile keeps its name: a new file of the same name lands as "(2)", two tiles, the first still broken; its file put back, the pip goes', async (name) => {
+    const d1 = url(join(D.desktop, 'Dup3.url'), 'https://example.invalid/first');
+    const r1 = await drop(rG, [d1]);
+    const t1 = r1.moved === 1 ? items(rG).find((a) => a.name === 'Dup3' && a.kind === 'moved') : null;
+    if (!PROBE) testMove(inStore('Dup3.url'), join(D.aside, 'Dup3.url')); // a person takes the file out of the store folder
+    await T('rescan');
+    const d2 = url(join(D.desktop, 'Dup3.url'), 'https://example.invalid/second');
+    const r2 = await drop(rG, [d2]);
+    await sleep(200);
+    const st = await T('moves-state');
+    const dom = await page(rG).eval(`[...document.querySelectorAll('#app-grid .app-tile:not(.drop-slot)')].filter((t) => (t.querySelector('.tile-label') || {}).textContent === 'Dup3').map((t) => t.classList.contains('tile-broken'))`);
+    const broken = !!t1 && st.missing.includes(t1.id);
+    if (!PROBE) testMove(join(D.aside, 'Dup3.url'), inStore('Dup3.url'));
+    await T('rescan');
+    const st2 = await T('moves-state');
+    check(name, !!t1 && r2.moved === 1 && ex(inStore('Dup3 (2).url')) && broken && dom.length === 2 && dom.filter(Boolean).length === 1
+      && !st2.missing.includes(t1.id) && readFileSync(inStore('Dup3 (2).url'), 'utf8').includes('second'),
+    { r2, broken, dom, after: st2.missing.length });
+  });
+
+  // F6. C4: the store path's length, checked before the move.
+  await guarded('fix C4 (m-4): a store path of 260 characters is refused before the move with the ruled reason and "It is still on the desktop."; one character less moves', async (name) => {
+    const nameFor = (len, ch) => `${ch.repeat(len - D.store.length - 1 - 4)}.url`;
+    const ok = url(join(D.desktop, nameFor(259, 'L')), 'https://example.invalid/long-ok');
+    const no = url(join(D.desktop, nameFor(PROBE ? 259 : 260, 'M')), 'https://example.invalid/long-no');
+    const h = sha(no);
+    const b0 = (await boxes()).length;
+    const r = await drop(rG, [ok, no]);
+    const bx = (await boxes()).slice(b0);
+    check(name, r.moved === 1 && r.failed === 1 && !ex(ok) && ex(inStore(basename(ok))) && ex(no) && sha(no) === h
+      && bx.length === 1 && bx[0].detail === S.tooLong && bx[0].message.endsWith('It is still on the desktop.'),
+    { r, storeLen: D.store.length, boxes: bx.map((b) => [b.message.slice(0, 40), b.detail]) });
+  });
+
+  // F7. C5: the banner's two layers in the primary region's page (the updater's target).
+  await guarded('fix C5 (m-5): a notice over an update offer takes the slot in --text with a "Dismiss" ✕; after 8 s the offer is back with a working DOWNLOAD; a progress event shows after the notice; the tray dot is cleared only by the offer\'s own ✕', async (name) => {
+    const P = page(rP);
+    const view = () => P.eval(`(() => { const b = document.getElementById('update-banner'); const t = document.getElementById('update-text');
+      const tok = (v) => { const e = document.createElement('div'); e.style.color = 'var(' + v + ')'; document.body.appendChild(e); const c = getComputedStyle(e).color; e.remove(); return c; };
+      const btns = [...document.querySelectorAll('#update-actions button')];
+      const x = btns.find((x) => x.classList.contains('update-dismiss'));
+      return { shown: !b.classList.contains('hidden'), notice: b.classList.contains('notice'), text: t.textContent, color: getComputedStyle(t).color, text_: tok('--text'),
+        buttons: btns.map((x) => [x.textContent, x.disabled]), xTitle: x ? x.title : null, xAria: x ? x.getAttribute('aria-label') : null, xColor: x ? getComputedStyle(x).color : null }; })()`);
+    const dismissals = async () => (await T('update-dismissals')).count;
+    const ev = (channel, arg) => T('update-event', arg === undefined ? { channel } : { channel, arg });
+    const steps = {};
+    const g = await P.eval(`(() => { const r = document.getElementById('app-grid').getBoundingClientRect(); return { x: Math.round(r.left + 30), y: Math.round(r.top + 30) }; })()`);
+    const pageDrop = (paths) => P.eval(`window.__qlFileDrop(${JSON.stringify(paths)}, ${g.x}, ${g.y})`, 90000);
+    await ev('update-available', { version: '9.9.9' });
+    await sleep(150);
+    steps.offer = await view();
+    const d0 = await dismissals();
+    await pageDrop([FIX.notes]);
+    await sleep(150);
+    steps.notice = await view();
+    await sleep(8400);
+    steps.back = await view();
+    if (PROBE) await P.eval(`window.api.invoke('dismiss-update')`);
+    steps.dAfterTime = await dismissals();
+    await pageDrop([FIX.notes]);
+    await sleep(150);
+    await ev('update-progress', 42);
+    await sleep(150);
+    steps.during = await view();
+    await P.eval(`(() => { const x = document.querySelector('#update-actions .update-dismiss'); if (x) x.click(); return true; })()`);
+    await sleep(150);
+    steps.afterX = await view();
+    steps.dAfterX = await dismissals();
+    await P.eval(`(() => { const x = document.querySelector('#update-actions .update-dismiss'); if (x) x.click(); return true; })()`);
+    await sleep(150);
+    steps.closed = await view();
+    steps.dClosed = await dismissals();
+    const s = steps;
+    check(name, s.offer.shown && !s.offer.notice && s.offer.text === 'UPDATE AVAILABLE — v9.9.9' && JSON.stringify(s.offer.buttons) === JSON.stringify([['DOWNLOAD', false], ['✕', false]])
+      && s.offer.xTitle === 'Dismiss' && s.offer.xAria === 'Dismiss'
+      && s.notice.shown && s.notice.notice && s.notice.text === 'NOT A SHORTCUT' && s.notice.color === s.notice.text_ && s.notice.xColor === s.notice.text_
+      && s.notice.xTitle === 'Dismiss' && s.notice.xAria === 'Dismiss' && JSON.stringify(s.notice.buttons) === JSON.stringify([['✕', false]])
+      && s.back.shown && !s.back.notice && s.back.text === 'UPDATE AVAILABLE — v9.9.9' && JSON.stringify(s.back.buttons) === JSON.stringify([['DOWNLOAD', false], ['✕', false]])
+      && s.dAfterTime === d0 && s.during.notice && s.during.text === 'NOT A SHORTCUT'
+      && s.afterX.shown && !s.afterX.notice && s.afterX.text === 'DOWNLOADING... 42%' && s.dAfterX === d0
+      && !s.closed.shown && s.dClosed === d0 + 1,
+    { offer: s.offer.text, notice: [s.notice.text, s.notice.color, s.notice.text_, s.notice.xTitle], back: [s.back.text, JSON.stringify(s.back.buttons)], during: s.during.text, afterX: s.afterX.text, dismissals: [d0, s.dAfterTime, s.dAfterX, s.dClosed] });
+  });
+
 }
 
 // WCAG contrast of two computed colours (alpha flattened on black, as the contrast gate does).

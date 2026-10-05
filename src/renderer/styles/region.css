@@ -12,6 +12,12 @@ body.region #filter-chip { cursor: pointer; }
 
 /* Title: [region icon 20][name]; the version line is in the Manager's Settings. */
 body.region #header-version { display: none; }
+
+/* The theme's tagline (#header::after) ends clear of the first header button,
+   and is not drawn while the filter chip shows (UX spec, fix-pass addendum,
+   offer 1, approved 2026-10-04): base.css's right: 135px predates the fourth button. */
+body.region #header::after { right: 160px; }
+body.region #header:has(#filter-chip:not(.hidden))::after { display: none; }
 body.region #title-area {
   flex-direction: row; align-items: center; gap: 6px;
   min-width: 0; flex: 0 1 auto; outline: none;

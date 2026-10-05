@@ -470,3 +470,129 @@ test('B1: a file without a tile that cannot go to the desktop names where it sti
     assert.ok(fs.existsSync(stray));
   } finally { t.done(); }
 });
+
+// ── fix pass (UX spec "Addendum — M3 fix pass") ────────────────────────────
+test('C1 (M-1): a FILE where the store folder goes: the drop answers with the B1 box and the ruled reason; the .exe still becomes a tile; the next drop, once the file is gone, moves', async () => {
+  const t = await make();
+  try {
+    fs.writeFileSync(t.dirs.store, 'a file in the way');
+    const a = t.file('desktop', 'Steam.lnk');
+    const b = t.file('desktop', 'Notes.lnk');
+    const exe = t.file('desktop', 'Tool.exe');
+    const r = await t.ctl.dropFiles('r2', [a, b, exe], 0);
+    assert.deepEqual({ moved: r.moved, refs: r.refs, failed: r.failed }, { moved: 0, refs: 1, failed: 2 });
+    assert.equal(t.ctl.boxLog.length, 1);
+    assert.deepEqual([t.ctl.boxLog[0].message, t.ctl.boxLog[0].detail, t.ctl.boxLog[0].buttons],
+      ["Couldn't move 2 shortcuts off the desktop (Steam, Notes). They are still on the desktop.",
+        'A file named “QuickLauncher Shortcuts” is in your user folder. Rename or move it, then try again.', ['OK']]);
+    assert.ok(t.pushed('r2').slice(-1)[0].some((x) => x.name === 'Tool'), 'the .exe tile arrived');
+    assert.ok(fs.existsSync(a) && fs.existsSync(b));
+    fs.renameSync(t.dirs.store, path.join(t.dirs.profile, 'moved-aside'));
+    const r2 = await t.ctl.dropFiles('r2', [a], 0);
+    assert.deepEqual({ moved: r2.moved, failed: r2.failed }, { moved: 1, failed: 0 });
+    assert.equal(t.ctl.boxLog.length, 1, 'no second box');
+  } finally { t.done(); }
+});
+
+test('C1: OPEN FOLDER when the store folder cannot be made: the box and its reason (only the three), nothing passed to the shell; once it can, it opens', async () => {
+  const t = await make();
+  try {
+    fs.writeFileSync(t.dirs.store, 'a file in the way');
+    const o = await t.ctl.openStoreFolder();
+    assert.equal(o.ok, false);
+    assert.deepEqual(t.ctl.boxLog.map((b) => [b.message, b.detail, b.buttons]), [["Couldn't open the QuickLauncher Shortcuts folder.",
+      'A file named “QuickLauncher Shortcuts” is in your user folder. Rename or move it, then try again.', ['OK']]]);
+    assert.deepEqual(t.ctl.openedLog, []);
+    assert.deepEqual(opened, [], 'the file in the way is never opened');
+    fs.renameSync(t.dirs.store, path.join(t.dirs.profile, 'moved-aside'));
+    for (const [code, detail] of [['EPERM', 'Access to the QuickLauncher Shortcuts folder was denied. Check its permissions and your security software.'], ['ENOSPC', 'The disk is full.'], ['EIO', '']]) {
+      t.ctl.setMoveHook({ stepFault: { at: 'store', code } });
+      const n = t.ctl.boxLog.length;
+      assert.equal((await t.ctl.openStoreFolder()).ok, false, code);
+      assert.deepEqual(t.ctl.boxLog.slice(n).map((b) => [b.message, b.detail]), [["Couldn't open the QuickLauncher Shortcuts folder.", detail]], code);
+    }
+    assert.deepEqual(t.ctl.openedLog, []);
+    t.ctl.setMoveHook({});
+    assert.deepEqual(await t.ctl.openStoreFolder(), { ok: true, recorded: true });
+    assert.deepEqual(t.ctl.openedLog, [t.dirs.store]);
+  } finally { t.done(); }
+});
+
+test('C1: the injected store and journal faults (test hooks) give their reasons; a journal fault never names the store folder', async () => {
+  const t = await make();
+  try {
+    const a = t.file('desktop', 'Steam.lnk');
+    const cases = [['store', 'ENOSPC', 'The disk is full.'], ['store', 'EIO', 'The disk refused the move.'], ['journal', 'EPERM', 'The disk refused the move.'], ['journal', 'ENOSPC', 'The disk is full.']];
+    for (const [at, code, detail] of cases) {
+      t.ctl.setMoveHook({ stepFault: { at, code } });
+      const n = t.ctl.boxLog.length;
+      const r = await t.ctl.dropFiles('r1', [a], Infinity);
+      assert.equal(r.failed, 1, `${at} ${code}`);
+      assert.deepEqual(t.ctl.boxLog.slice(n).map((b) => [b.message, b.detail]), [["Couldn't move “Steam” off the desktop. It is still on the desktop.", detail]], `${at} ${code}`);
+    }
+    t.ctl.setMoveHook({});
+    assert.equal((await t.ctl.dropFiles('r1', [a], Infinity)).moved, 1);
+  } finally { t.done(); }
+});
+
+test('C1: a drop is never left unanswered: if the mover throws, one box names the dropped shortcuts that are still there', async () => {
+  const t = await make();
+  try {
+    const a = t.file('desktop', 'Steam.lnk');
+    const real = t.ctl.mover.addPaths;
+    t.ctl.mover.addPaths = () => Promise.reject(Object.assign(new Error('boom'), { code: 'EBOOM' }));
+    let r;
+    try { r = await t.ctl.dropFiles('r1', [a, t.file('desktop', 'notes.txt')], Infinity); } finally { t.ctl.mover.addPaths = real; }
+    assert.equal(r.failed, 1);
+    assert.deepEqual(t.ctl.boxLog.map((b) => [b.message, b.detail]), [["Couldn't move “Steam” off the desktop. It is still on the desktop.", 'The disk refused the move.']]);
+  } finally { t.done(); }
+});
+
+test('C2: a reference tile on a desktop shortcut dropped on another region: both pages get their items (it left one, arrived in the other as moved); no box, no notice', async () => {
+  const t = await make();
+  try {
+    const f = t.file('desktop', 'Refd.lnk');
+    t.data.apps.push({ id: 'refd', name: 'Refd', path: f, iconDataUrl: 'data:,r', regionId: 'r1' });
+    const r = await t.ctl.dropFiles('r2', [f], 0);
+    assert.deepEqual({ moved: r.moved, refs: r.refs, taken: r.taken, failed: r.failed, notice: r.notice }, { moved: 1, refs: 0, taken: 0, failed: 0, notice: null });
+    assert.ok(!t.pushed('r1').slice(-1)[0].some((x) => x.id === 'refd'), 'gone from its old region');
+    assert.deepEqual(t.pushed('r2').slice(-1)[0].filter((x) => x.id === 'refd').map((x) => [x.name, x.kind]), [['Refd', 'moved']]);
+    assert.equal(t.ctl.boxLog.length, 0);
+    // The store file dropped back on r1: the same tile goes there; no file moves.
+    const stored = t.data.apps.find((x) => x.id === 'refd').path;
+    const r2 = await t.ctl.dropFiles('r1', [stored], 0);
+    assert.deepEqual({ moved: r2.moved, refs: r2.refs, taken: r2.taken }, { moved: 0, refs: 0, taken: 1 });
+    assert.deepEqual(t.data.apps.filter((x) => x.id === 'refd').map((x) => x.regionId), ['r1']);
+    assert.ok(t.pushed('r1').slice(-1)[0].some((x) => x.id === 'refd') && !t.pushed('r2').slice(-1)[0].some((x) => x.id === 'refd'));
+    assert.ok(fs.existsSync(stored));
+  } finally { t.done(); }
+});
+
+test('C2: the data adapter gives the mover the region order', async () => {
+  const t = await make();
+  try {
+    assert.deepEqual(t.ctl.mover.data.regionIds(), ['r1', 'r2']);
+    t.data.regions = [t.data.regions[1], t.data.regions[0]];
+    assert.deepEqual(t.ctl.mover.data.regionIds(), ['r2', 'r1']);
+  } finally { t.done(); }
+});
+
+test('D3: moving unavailable: a dropped store file with no tile gets one box, exactly "Moving is unavailable. Nothing was changed.", and nothing changes', async () => {
+  const t = await make();
+  try {
+    const a = t.file('desktop', 'Lost.lnk');
+    await t.ctl.dropFiles('r1', [a], Infinity);
+    const stored = t.data.apps.find((x) => x.name === 'Lost').path;
+    t.data.apps = t.data.apps.filter((x) => x.name !== 'Lost');
+    await t.ctl.refreshMoves();
+    const before = JSON.stringify(t.data.apps);
+    t.ctl.mover.offForTest = true;
+    const n = t.ctl.boxLog.length;
+    const r = await t.ctl.dropFiles('r2', [stored, t.file('desktop', 'Tool.exe')], 0);
+    t.ctl.mover.offForTest = false;
+    assert.deepEqual({ ok: r.ok, refused: r.refused, taken: r.taken, refs: r.refs }, { ok: false, refused: 'unavailable', taken: 0, refs: 0 });
+    assert.deepEqual(t.ctl.boxLog.slice(n).map((b) => [b.message, b.detail, b.buttons]), [['Moving is unavailable. Nothing was changed.', '', ['OK']]]);
+    assert.equal(JSON.stringify(t.data.apps), before);
+    assert.deepEqual(t.ctl.managerState().moved.orphans.map((o) => o.name), ['Lost']);
+  } finally { t.done(); }
+});

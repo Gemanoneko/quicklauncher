@@ -1,4 +1,4 @@
-/* global api */
+/* global api, QL_BANNER */
 const APP_VERSION = window.api.version;
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -10,7 +10,6 @@ let reorderState = null;      // active drag-to-reorder operation
 let suppressNextClick = false; // prevent launch-on-click after a drag
 let bannerInterval = null;
 let bannerFadeTimer = null;   // inner fade setTimeout — cleared on theme change
-let autoDismissTimer = null;  // update banner auto-dismiss timer
 let refreshingIcons = false;  // guard against concurrent refreshMissingIcons calls
 
 // ── DOM refs (cached once at script start; index.html loads app.js at end of body) ──
@@ -1665,33 +1664,35 @@ function setupContextMenu() {
 // setupUpdateListeners is called exactly once (from init()), so tracking the
 // unsubscribe callbacks served no purpose — inline the subscriptions.
 function setupUpdateListeners() {
+  // The updater's messages are the banner's update layer (fix-pass addendum C5).
   window.api.on('update-checking', () => {
-    showUpdateBanner('CHECKING FOR UPDATES...', []);
+    qlBanner.setUpdate('CHECKING FOR UPDATES...', []);
   });
   window.api.on('update-available', (info) => {
-    showUpdateBanner(
+    qlBanner.setUpdate(
       `UPDATE AVAILABLE — v${info.version}`,
       [{ label: 'DOWNLOAD', action: 'download' }]
     );
   });
   window.api.on('update-progress', (pct) => {
-    elUpdateText.textContent = `DOWNLOADING... ${pct}%`;
+    qlBanner.updateProgress(pct);
   });
   window.api.on('update-ready', () => {
-    showUpdateBanner(
+    qlBanner.setUpdate(
       'UPDATE READY — WILL INSTALL AND RESTART',
       [{ label: 'INSTALL NOW', action: 'install' }]
     );
   });
   window.api.on('update-not-available', () => {
-    showUpdateBanner('SYSTEM IS UP TO DATE', [], 3000);
+    qlBanner.setUpdate('SYSTEM IS UP TO DATE', [], 3000);
   });
   window.api.on('update-error', (msg) => {
-    showUpdateBanner(`UPDATE ERROR: ${msg}`, [], 6000);
+    qlBanner.setUpdate(`UPDATE ERROR: ${msg}`, [], 6000);
     console.warn('Update error:', msg);
   });
+  // Every other message is a notice: 8 s, its own ✕; the update message comes back after it.
   window.api.on('store-save-error', () => {
-    showUpdateBanner('SAVE ERROR — SETTINGS MAY NOT PERSIST', [], 8000);
+    showNotice('SAVE ERROR — SETTINGS MAY NOT PERSIST');
     console.error('Store save failed');
   });
   // The data file became readable mid-session and main merged it with this
@@ -1710,7 +1711,7 @@ function setupUpdateListeners() {
   // and recover from errors). Truncate long names so the banner stays one line.
   window.api.on('launch-error', ({ name, reason }) => {
     const safeName = String(name || '').slice(0, 60);
-    showUpdateBanner(`COULD NOT LAUNCH "${safeName}" — ${reason}`, [], 8000);
+    showNotice(`COULD NOT LAUNCH "${safeName}" — ${reason}`);
     console.warn('Launch error:', reason, name);
   });
 
@@ -1722,25 +1723,31 @@ function setupUpdateListeners() {
   });
 }
 
-function showUpdateBanner(text, actions, autoDismissMs = 0) {
-  // Clear any previous auto-dismiss so a new banner can't be dismissed by a stale timer
-  clearTimeout(autoDismissTimer);
-  autoDismissTimer = null;
-
+// The banner slot draws one of its two layers (fix-pass addendum C5; banner-layers.js).
+// The notice layer's text and ✕ are in --text (base.css, #update-banner.notice); the
+// update layer keeps its look. The layer not drawn is not in the DOM at all.
+function drawBanner(view) {
   const banner = $('update-banner');
   const actionsEl = $('update-actions');
-
-  elUpdateText.textContent = text;
+  if (!view) {
+    banner.classList.add('hidden');
+    banner.classList.remove('notice');
+    elUpdateText.textContent = '';
+    actionsEl.innerHTML = '';
+    return;
+  }
+  elUpdateText.textContent = view.text;
+  banner.classList.toggle('notice', view.layer === 'notice');
   actionsEl.innerHTML = '';
 
-  actions.forEach(({ label, action }) => {
+  view.actions.forEach(({ label, action, disabled }) => {
     const btn = document.createElement('button');
     btn.className = 'update-btn';
     btn.textContent = label;
+    btn.disabled = !!disabled;
     btn.addEventListener('click', async () => {
       if (action === 'download') {
-        btn.textContent = 'DOWNLOADING...';
-        btn.disabled = true;
+        qlBanner.markAction('download', { label: 'DOWNLOADING...', disabled: true });
         await window.api.invoke('download-update');
       } else if (action === 'install') {
         await window.api.invoke('install-update');
@@ -1752,27 +1759,25 @@ function showUpdateBanner(text, actions, autoDismissMs = 0) {
   const dismissBtn = document.createElement('button');
   dismissBtn.className = 'update-btn update-dismiss';
   dismissBtn.textContent = '✕';
-  dismissBtn.addEventListener('click', () => {
-    hideUpdateBanner();
-  });
+  dismissBtn.title = 'Dismiss';
+  dismissBtn.setAttribute('aria-label', 'Dismiss');
+  dismissBtn.addEventListener('click', () => qlBanner.close(view.layer));
   actionsEl.appendChild(dismissBtn);
 
   banner.classList.remove('hidden');
-
-  if (autoDismissMs > 0) {
-    autoDismissTimer = setTimeout(hideUpdateBanner, autoDismissMs);
-  }
 }
 
-function hideUpdateBanner() {
-  clearTimeout(autoDismissTimer);
-  autoDismissTimer = null;
-  $('update-banner').classList.add('hidden');
-  // Per UX Review §7: clear the tray icon's update-available indicator
-  // when the user dismisses the banner. The main process owns the tray
-  // state — fire-and-forget invoke, ignoring rejections (only failure
-  // mode is "main process gone", at which point we don't care).
-  try { window.api.invoke('dismiss-update'); } catch { /* noop */ }
+const qlBanner = QL_BANNER.createBanner({
+  draw: drawBanner,
+  // Per UX Review §7: the update message's ✕ clears the tray icon's update-available
+  // indicator. The main process owns the tray state; fire-and-forget, ignoring
+  // rejections (only failure mode is "main process gone"). A notice never calls it (C5).
+  dismissUpdate: () => { try { window.api.invoke('dismiss-update').catch(() => {}); } catch { /* noop */ } },
+});
+
+/** A notice in the banner slot (a drop's notice, a launch error, SAVE ERROR): 8 s, its own ✕. */
+function showNotice(text) {
+  qlBanner.showNotice(text);
 }
 
 // ── Button wiring ─────────────────────────────────────────────────────────────
@@ -2005,7 +2010,7 @@ $('btn-random-theme').addEventListener('click', async () => {
 window.addEventListener('beforeunload', () => {
   clearInterval(bannerInterval);
   clearTimeout(bannerFadeTimer);
-  clearTimeout(autoDismissTimer);
+  qlBanner.destroy();
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────

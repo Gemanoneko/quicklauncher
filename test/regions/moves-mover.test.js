@@ -39,7 +39,7 @@ const exists = (p) => fs.existsSync(p);
 class Crash extends Error {}
 
 let seq = 0;
-function setup({ apps = [], regions = ['r1', 'r2'], writable = true, caps = {}, steps = {}, fault = null, win = win32 } = {}) {
+function setup({ apps = [], regions = ['r1', 'r2'], writable = true, caps = {}, steps = {}, fault = null, win = win32, fsFault = null } = {}) {
   const root = path.join(ROOT, `t${++seq}`);
   const dirs = {
     root, desktop: path.join(root, 'Desktop'), publicDesktop: path.join(root, 'Public Desktop'),
@@ -50,10 +50,18 @@ function setup({ apps = [], regions = ['r1', 'r2'], writable = true, caps = {}, 
   const events = [];
   const reads = [];
   const fsp = { ...fs.promises, readFile: (p, ...a) => { reads.push(String(p)); return fs.promises.readFile(p, ...a); } };
+  // fsFault(method, path) -> a Node error code to throw instead of the call (fix pass, C1).
+  if (fsFault) {
+    for (const k of ['mkdir', 'open', 'writeFile', 'rename']) {
+      const real = fsp[k];
+      fsp[k] = (p, ...a) => { const code = fsFault(k, String(p)); if (code) { const e = new Error(`${code}: injected ${k} '${p}'`); e.code = code; return Promise.reject(e); } return real(p, ...a); };
+    }
+  }
   const data = {
     apps: () => state.apps,
     commit: (a) => { state.apps = a; events.push('commit'); return state.commitOk; },
     regionExists: (id) => state.regions.includes(id),
+    regionIds: () => state.regions.slice(),
     primaryId: () => state.regions[0] || null,
     writable: () => state.writable,
     capOf: (id) => (id in state.caps ? state.caps[id] : Infinity),
@@ -495,4 +503,384 @@ test('an unreadable journal is set aside (never deleted) and the move still star
   assert.equal(fs.readFileSync(path.join(t.dirs.profile, aside[0]), 'utf8'), '{ not json');
   const a = t.file('desktop', 'Ok.lnk');
   assert.equal((await m.addPaths('r1', [a], Infinity)).added.length, 1);
+});
+
+// ── fix pass (UX spec "Addendum — M3 fix pass") ────────────────────────────
+const S = R.STRINGS;
+const addIntents = (t) => t.log().filter((l) => l.op === 'add' && l.state === 'intent');
+
+test('C1 (M-1, repro 1): a FILE named "QuickLauncher Shortcuts" in the way: the shortcut fails with the ruled reason, stays, nothing journalled; the .exe still becomes a tile; once the file is gone the next drop moves, no restart', async () => {
+  const t = setup();
+  fs.writeFileSync(t.dirs.store, 'a file where the store folder goes');
+  const a = t.file('desktop', 'Steam.lnk');
+  const exe = t.file('desktop', 'Tool.exe');
+  const m = t.make();
+  await m.init();
+  const r = await m.addPaths('r1', [a, exe], Infinity);
+  assert.equal(r.refused, null);
+  assert.deepEqual(r.failures.map((f) => [f.name, f.reason]), [['Steam', S.reasonStoreBlocked]]);
+  assert.deepEqual(r.refs.map((x) => x.name), ['Tool'], 'the .exe needs no store folder');
+  assert.ok(exists(a) && fs.statSync(t.dirs.store).isFile(), 'the shortcut stays; the file in the way is untouched');
+  assert.deepEqual(addIntents(t), [], 'nothing journalled');
+  assert.deepEqual(m.journal.pending(), []);
+  // The person moves the file away (the test plays them; nothing is deleted) and drops again.
+  fs.mkdirSync(path.join(t.dirs.root, 'Aside'));
+  fs.renameSync(t.dirs.store, path.join(t.dirs.root, 'Aside', 'QuickLauncher Shortcuts'));
+  const r2 = await m.addPaths('r1', [a], Infinity);
+  assert.deepEqual([r2.added.length, r2.failures.length], [1, 0]);
+  assert.ok(!exists(a) && exists(path.join(t.dirs.store, 'Steam.lnk')));
+});
+
+test('C1 (M-1, repro 2): a denied ACL on a scratch store folder: in the shipped runtime (Electron 32, Node 20) the store step is denied and says so; the file stays', async () => {
+  const t = setup();
+  fs.mkdirSync(t.dirs.store);
+  const a = t.file('desktop', 'Steam.lnk');
+  const m = t.make();
+  await m.init();
+  const user = process.env.USERNAME;
+  assert.equal(icacls([t.dirs.store, '/deny', `${user}:(W,AD,WD)`]), 0);
+  let r;
+  try { r = await m.addPaths('r1', [a], Infinity); } finally { assert.equal(icacls([t.dirs.store, '/remove:d', user]), 0); }
+  // Node 20's recursive mkdir fails on the denied folder (EPERM); a newer Node's
+  // passes it, and the move itself is then refused (Win32 5).
+  const want = process.versions.electron ? [-7, S.reasonStoreDenied] : [5, S.reasonDenied];
+  assert.deepEqual(r.failures.map((f) => [f.code, f.reason]), [want], `runtime ${process.version}`);
+  assert.ok(exists(a));
+  assert.deepEqual(m.journal.pending(), []);
+  assert.deepEqual(fs.readdirSync(t.dirs.store).filter((n) => n !== 'README.txt'), [], 'nothing reached the store folder');
+});
+
+test('C1: a store folder that cannot be made in a denied profile folder (both runtimes): the folder reason', async () => {
+  const t = setup();
+  const a = t.file('desktop', 'Steam.lnk');
+  const m = t.make();
+  await m.init();
+  const user = process.env.USERNAME;
+  assert.equal(icacls([t.dirs.root, '/deny', `${user}:(AD)`]), 0); // this folder only: no new subfolder in it
+  let r;
+  try { r = await m.addPaths('r1', [a], Infinity); } finally { assert.equal(icacls([t.dirs.root, '/remove:d', user]), 0); }
+  assert.deepEqual(r.failures.map((f) => [f.code, f.reason]), [[-7, S.reasonStoreDenied]]);
+  assert.ok(exists(a) && !exists(t.dirs.store));
+  assert.deepEqual(addIntents(t), []);
+});
+
+test('C1: a full disk at the store step says so; any other store error is the catch-all; a journal that cannot be written never names the store folder', async () => {
+  let fault = null;
+  const t = setup({ fsFault: (k, p) => (fault && fault(k, p)) || null });
+  const a = t.file('desktop', 'Steam.lnk');
+  const m = t.make();
+  await m.init();
+  const isStore = (k, p) => k === 'mkdir' && R.samePath(p, t.dirs.store);
+  const isJournal = (k, p) => k === 'open' && /moves-journal\.json\.tmp$/i.test(p);
+  const cases = [
+    ['store ENOSPC', (k, p) => (isStore(k, p) ? 'ENOSPC' : null), S.reasonDiskFull],
+    ['store EIO', (k, p) => (isStore(k, p) ? 'EIO' : null), S.reasonDisk],
+    ['journal ENOSPC', (k, p) => (isJournal(k, p) ? 'ENOSPC' : null), S.reasonDiskFull],
+    ['journal EIO', (k, p) => (isJournal(k, p) ? 'EIO' : null), S.reasonDisk],
+    ['journal EPERM', (k, p) => (isJournal(k, p) ? 'EPERM' : null), S.reasonDisk],
+    ['journal EEXIST', (k, p) => (isJournal(k, p) ? 'EEXIST' : null), S.reasonDisk],
+  ];
+  for (const [label, f, reason] of cases) {
+    fault = f;
+    const r = await m.addPaths('r1', [a], Infinity);
+    assert.deepEqual(r.failures.map((x) => x.reason), [reason], label);
+    assert.ok(exists(a), `${label}: the file stays`);
+    assert.deepEqual(m.journal.pending(), [], `${label}: no intent is left pending`);
+  }
+  assert.deepEqual(addIntents(t), [], 'no intent ever reached the history');
+  fault = null;
+  const r = await m.addPaths('r1', [a], Infinity);
+  assert.equal(r.added.length, 1, 'the next drop tries again and moves');
+});
+
+test('C2 (m-1): a reference tile on a desktop shortcut takes the drop: the file moves and the same tile becomes moved, keeping its name and icon, at the dropped slot; on another region it leaves its old one', async () => {
+  const t = setup();
+  const f = t.file('desktop', 'Refd.lnk');
+  t.state.apps = [
+    { id: 'x1', name: 'X1', path: 'C:\\x1.exe', regionId: 'r1' },
+    { id: 'ref', name: 'My Refd', path: f, iconDataUrl: 'data:,old', regionId: 'r1' },
+    { id: 'y1', name: 'Y1', path: 'C:\\y1.exe', regionId: 'r2' },
+  ];
+  const m = t.make();
+  await m.init();
+  const r = await m.addPaths('r1', [f], 0);
+  assert.deepEqual([r.added.length, r.refs.length, r.failures.length], [1, 0, 0]);
+  const it = t.state.apps.find((a) => a.id === 'ref');
+  assert.deepEqual([it.kind, it.name, it.iconDataUrl, it.regionId], ['moved', 'My Refd', 'data:,old', 'r1']);
+  assert.ok(R.samePath(it.path, path.join(t.dirs.store, 'Refd.lnk')) && !exists(f));
+  assert.deepEqual(t.state.apps.map((a) => a.id), ['ref', 'x1', 'y1'], 'one tile, at the slot');
+  assert.equal(t.log().find((l) => l.op === 'add' && l.state === 'intent').convert, true);
+  assert.deepEqual(t.journal(), []);
+  // The same with a second reference tile, dropped on the other region.
+  const g = t.file('desktop', 'Other.lnk');
+  t.state.apps.push({ id: 'ref2', name: 'Other', path: g, iconDataUrl: 'data:,o', regionId: 'r1' });
+  const r2 = await m.addPaths('r2', [g], 0);
+  assert.equal(r2.added.length, 1);
+  assert.deepEqual(t.state.apps.filter((a) => a.regionId === 'r2').map((a) => [a.id, a.kind || 'ref']), [['ref2', 'moved'], ['y1', 'ref']]);
+  assert.ok(!t.state.apps.some((a) => a.regionId === 'r1' && a.id === 'ref2'), 'none left in the old region');
+  assert.equal(t.state.apps.length, 4);
+});
+
+test('C2: if the move fails, the reference tile stays exactly where it was and keeps working', async () => {
+  const t = setup({ fault: (op) => (op === 'add' ? 32 : null) });
+  const f = t.file('desktop', 'Refd.lnk');
+  t.state.apps = [{ id: 'x1', name: 'X1', path: 'C:\\x1.exe', regionId: 'r1' }, { id: 'ref', name: 'Refd', path: f, regionId: 'r1' }];
+  const before = JSON.stringify(t.state.apps);
+  const m = t.make();
+  await m.init();
+  const r = await m.addPaths('r2', [f], 0);
+  assert.deepEqual(r.failures.map((x) => [x.name, x.reason]), [['Refd', S.reasonInUse]]);
+  assert.equal(JSON.stringify(t.state.apps), before);
+  assert.ok(exists(f));
+});
+
+test('C2 (m-3): a store file a moved tile owns, dropped on another region: that tile goes there, no file moves; onto its own region it is a reorder; ↩ still returns it to its own origin', async () => {
+  const t = setup();
+  const a = t.file('desktop', 'Twice.lnk', 'T');
+  const m = t.make();
+  await m.init();
+  t.state.apps = [{ id: 'y1', name: 'Y1', path: 'C:\\y1.exe', regionId: 'r2' }];
+  const [moved] = (await m.addPaths('r1', [a], Infinity)).added;
+  const sf = moved.path;
+  const h = sha(sf);
+  const r = await m.addPaths('r2', [sf], 0);
+  assert.deepEqual([r.taken.length, r.added.length, r.refs.length, r.failures.length], [1, 0, 0, 0]);
+  assert.deepEqual(t.state.apps.map((x) => [x.id, x.regionId]), [[moved.id, 'r2'], ['y1', 'r2']]);
+  assert.ok(exists(sf) && sha(sf) === h && !exists(a), 'no file moved');
+  // Onto its own region: a reorder (the slot index counts the tile itself).
+  await m.addPaths('r2', [sf], 2);
+  assert.deepEqual(t.state.apps.map((x) => x.id), ['y1', moved.id]);
+  const back = await m.moveBack([moved.id]);
+  assert.equal(back.moved.length, 1);
+  assert.equal(fs.readFileSync(a, 'utf8'), 'T', 'back at its own origin');
+  assert.deepEqual(t.state.apps.map((x) => x.id), ['y1']);
+});
+
+test('C2: a store file with no tile gets a moved tile at the dropped slot (origin from the history) and leaves "files without a tile"; no file moves', async () => {
+  const t = setup();
+  const a = t.file('desktop', 'Lost.lnk', 'L');
+  const m = t.make();
+  await m.init();
+  const [item] = (await m.addPaths('r1', [a], Infinity)).added;
+  t.state.apps = [{ id: 'y1', name: 'Y1', path: 'C:\\y1.exe', regionId: 'r2' }];
+  await m.scan();
+  assert.deepEqual(m.orphans.map((o) => o.name), ['Lost']);
+  const r = await m.addPaths('r2', [item.path], 0);
+  assert.deepEqual([r.taken.length, r.refs.length], [1, 0]);
+  const it = t.state.apps[0];
+  assert.deepEqual([it.regionId, it.kind, it.name], ['r2', 'moved', 'Lost']);
+  assert.ok(R.samePath(it.origin, item.origin) && R.samePath(it.path, item.path));
+  assert.deepEqual(m.orphans, []);
+  await m.scan();
+  assert.deepEqual(m.orphans, [], 'still owned after a rescan');
+  assert.ok(exists(item.path) && !exists(a));
+});
+
+test('C2: a tile already in the dropped region adds nothing to the count (never FULL); a new file at the cap is still FULL', async () => {
+  const t = setup({ caps: { r1: 2 } });
+  const f = t.file('desktop', 'Refd.lnk');
+  const n = t.file('desktop', 'New.lnk');
+  t.state.apps = [{ id: 'x1', name: 'X1', path: 'C:\\x1.exe', regionId: 'r1' }, { id: 'ref', name: 'Refd', path: f, regionId: 'r1' }];
+  const m = t.make();
+  await m.init();
+  const r = await m.addPaths('r1', [f], 0);
+  assert.equal(r.refused, null);
+  assert.deepEqual(t.state.apps.map((a) => [a.id, a.kind || 'ref']), [['ref', 'moved'], ['x1', 'ref']]);
+  const r2 = await m.addPaths('r1', [n], 0);
+  assert.equal(r2.refused, 'full');
+  assert.ok(exists(n));
+});
+
+test('C2: several tiles on one file: the one in the dropped region takes it, else the first in region order; the others stay references', async () => {
+  const t = setup({ regions: ['r1', 'r2', 'r3'] });
+  const f = t.file('desktop', 'Dup.lnk');
+  t.state.apps = [{ id: 'in2', name: 'Dup', path: f, regionId: 'r2' }, { id: 'in1', name: 'Dup', path: f, regionId: 'r1' }];
+  const m = t.make();
+  await m.init();
+  await m.addPaths('r2', [f], 0);
+  assert.deepEqual(t.state.apps.map((a) => [a.id, a.regionId, a.kind || 'ref']).sort(), [['in1', 'r1', 'ref'], ['in2', 'r2', 'moved']]);
+  // Region order, not list order: on a region with none, r1's tile is the one (the flat list has r2's first).
+  const g = t.file('desktop', 'Dup2.lnk');
+  t.state.apps = [{ id: 'b2', name: 'Dup2', path: g, regionId: 'r2' }, { id: 'b1', name: 'Dup2', path: g, regionId: 'r1' }];
+  await m.addPaths('r3', [g], 0);
+  assert.deepEqual(t.state.apps.map((a) => [a.id, a.regionId, a.kind || 'ref']).sort(), [['b1', 'r3', 'moved'], ['b2', 'r2', 'ref']]);
+});
+
+test('C2: the slot index: a tile from before the slot in its own region lands at the slot; the next file of the drop goes right after it', async () => {
+  const t = setup();
+  const a = t.file('desktop', 'T.lnk');
+  const m = t.make();
+  await m.init();
+  const [tt] = (await m.addPaths('r1', [a], Infinity)).added;
+  t.state.apps = [{ id: 'A', path: 'C:\\a.exe', regionId: 'r1' }, tt, { id: 'B', path: 'C:\\b.exe', regionId: 'r1' }, { id: 'C', path: 'C:\\c.exe', regionId: 'r1' }];
+  await m.addPaths('r1', [tt.path], 3); // the slot between B and C, as the page counts it (T included)
+  assert.deepEqual(t.state.apps.map((x) => x.id), ['A', 'B', tt.id, 'C']);
+  const x = t.file('desktop', 'X.lnk');
+  const r = await m.addPaths('r1', [tt.path, x], 1);
+  const xid = r.added[0].id;
+  assert.deepEqual(t.state.apps.map((i) => i.id), ['A', tt.id, xid, 'B', 'C']);
+});
+
+test('C2: a reference to a file outside the desktops and the store folder is unchanged: one per region, another region gets its own', async () => {
+  const t = setup();
+  const exe = t.file('desktop', 'Tool.exe');
+  const other = t.file(path.join(t.dirs.root, 'Elsewhere'), 'Other.lnk');
+  t.state.apps = [{ id: 'e1', name: 'Tool', path: exe, regionId: 'r1' }, { id: 'o1', name: 'Other', path: other, regionId: 'r1' }];
+  const m = t.make();
+  await m.init();
+  const r = await m.addPaths('r2', [exe, other], 0);
+  assert.equal(r.refs.length, 2);
+  assert.deepEqual(t.state.apps.map((a) => a.regionId).sort(), ['r1', 'r1', 'r2', 'r2']);
+  const r1 = await m.addPaths('r1', [exe], 0);
+  assert.equal(r1.refs.length, 0, 'already a tile here: nothing added (as before)');
+});
+
+async function crashConvert(step) {
+  const t = setup({ steps: { [step]: async () => { throw new Crash(step); } } });
+  const f = t.file('desktop', 'Refd.lnk', 'R');
+  t.state.apps = [{ id: 'ref', name: 'My Refd', path: f, iconDataUrl: 'data:,old', regionId: 'r1' }];
+  const m = t.make();
+  await m.init();
+  await assert.rejects(m.addPaths('r2', [f], 0), Crash);
+  const m2 = t.make();
+  const report = await m2.init();
+  return { t, f, report };
+}
+
+test('C2: a crash after the move of a conversion: the reconcile makes the reference tile the moved tile (one tile, its name, the dropped region)', async () => {
+  const { t, f, report } = await crashConvert('add:moved');
+  assert.deepEqual(report.resolved.map((x) => [x.op, x.outcome, x.note]), [['add', 'done', 'finished the conversion']]);
+  assert.equal(t.state.apps.length, 1);
+  const it = t.state.apps[0];
+  assert.deepEqual([it.id, it.name, it.kind, it.regionId, it.iconDataUrl], ['ref', 'My Refd', 'moved', 'r2', 'data:,old']);
+  assert.ok(R.samePath(it.path, path.join(t.dirs.store, 'Refd.lnk')) && !exists(f));
+  assert.deepEqual(t.journal(), []);
+});
+
+test('C2: a crash after the intent of a conversion: aborted, the reference tile is untouched', async () => {
+  const { t, f, report } = await crashConvert('add:intent');
+  assert.deepEqual(report.resolved.map((x) => [x.op, x.outcome]), [['add', 'aborted']]);
+  assert.deepEqual(t.state.apps.map((a) => [a.id, a.kind || 'ref', a.regionId]), [['ref', 'ref', 'r1']]);
+  assert.ok(exists(f));
+});
+
+test('C3 (m-2): a name a moved tile owns is never reused, its file there or missing: the new file takes the next number; each ↩ returns its own file to its own desktop', async () => {
+  const t = setup();
+  const pubSteam = t.file('publicDesktop', 'Steam.lnk', 'PUBLIC');
+  const m = t.make();
+  await m.init();
+  const [t1] = (await m.addPaths('r1', [pubSteam], Infinity)).added;
+  // Its file is taken out of the store folder (the test plays a person; nothing is deleted).
+  const aside = path.join(t.dirs.root, 'Aside');
+  fs.mkdirSync(aside);
+  fs.renameSync(t1.path, path.join(aside, 'Steam.lnk'));
+  await m.scan();
+  assert.deepEqual([...m.missing], [t1.id]);
+  const deskSteam = t.file('desktop', 'Steam.lnk', 'DESKTOP');
+  const [t2] = (await m.addPaths('r1', [deskSteam], Infinity)).added;
+  assert.ok(R.samePath(t2.path, path.join(t.dirs.store, 'Steam (2).lnk')), t2.path);
+  assert.equal(t2.name, 'Steam');
+  assert.ok(!exists(path.join(t.dirs.store, 'Steam.lnk')), 'the owned name stays free for its own file');
+  assert.deepEqual([...m.missing], [t1.id], 'the first is still broken');
+  // Its file comes back: the pip goes.
+  fs.renameSync(path.join(aside, 'Steam.lnk'), t1.path);
+  await m.scan();
+  assert.deepEqual([...m.missing], []);
+  const back = await m.moveBack([t1.id, t2.id]);
+  assert.equal(back.moved.length, 2);
+  assert.equal(fs.readFileSync(pubSteam, 'utf8'), 'PUBLIC');
+  assert.equal(fs.readFileSync(deskSteam, 'utf8'), 'DESKTOP');
+});
+
+test('C3: a race on the name skips an owned name too', async () => {
+  const t = setup({ steps: { 'add:intent': async (ctx) => { if (/Race\.lnk$/i.test(ctx.dst)) fs.writeFileSync(ctx.dst, 'INTRUDER'); } } });
+  fs.mkdirSync(t.dirs.store);
+  t.state.apps = [{ id: 'own2', name: 'Race', path: path.join(t.dirs.store, 'Race (2).lnk'), regionId: 'r1', kind: 'moved', origin: path.join(t.dirs.desktop, 'Race.lnk') }];
+  const a = t.file('desktop', 'Race.lnk', 'NEW');
+  const m = t.make();
+  await m.init();
+  const r = await m.addPaths('r1', [a], Infinity);
+  assert.equal(r.added.length, 1);
+  assert.ok(R.samePath(r.added[0].path, path.join(t.dirs.store, 'Race (3).lnk')), r.added[0].path);
+  assert.equal(fs.readFileSync(path.join(t.dirs.store, 'Race.lnk'), 'utf8'), 'INTRUDER');
+});
+
+test('C4 (m-4): a store path of 260 characters or more is refused before the move with the ruled reason; 259 moves; a "(2)" counts', async () => {
+  const t = setup();
+  const m = t.make();
+  await m.init();
+  const nameFor = (len, ch) => `${ch.repeat(len - t.dirs.store.length - 1 - 4)}.url`;
+  const ok = t.file('desktop', nameFor(259, 'A'), '[InternetShortcut]\r\nURL=https://example.invalid/a\r\n');
+  const no = t.file('desktop', nameFor(260, 'B'), '[InternetShortcut]\r\nURL=https://example.invalid/b\r\n');
+  const hNo = sha(no);
+  const r = await m.addPaths('r1', [ok, no], Infinity);
+  assert.equal(r.added.length, 1);
+  assert.equal(r.added[0].path.length, 259);
+  assert.ok(exists(r.added[0].path) && !exists(ok));
+  assert.deepEqual(r.failures.map((f) => [f.code, f.reason]), [[-5, S.reasonTooLong]]);
+  assert.ok(exists(no) && sha(no) === hNo, 'untouched');
+  assert.equal(R.moveFailedBox(r.failures).message.endsWith('It is still on the desktop.'), true);
+  assert.equal(addIntents(t).length, 1, 'only the one that moved was journalled');
+  // 257 is short enough, but the name is taken in the store folder: "(2)" makes 261.
+  const c = t.file('desktop', nameFor(257, 'C'), 'C');
+  fs.writeFileSync(path.join(t.dirs.store, path.basename(c)), 'TAKEN');
+  const r2 = await m.addPaths('r1', [c], Infinity);
+  assert.deepEqual(r2.failures.map((f) => f.reason), [S.reasonTooLong]);
+  assert.ok(exists(c));
+});
+
+test('C1: the journal itself: an intent that could not be written is not pending, and nothing reached the history', async () => {
+  const { Journal } = require('../../src/main/moves/journal');
+  const dir = path.join(ROOT, `j${++seq}`);
+  fs.mkdirSync(dir, { recursive: true });
+  let fail = 'ENOSPC';
+  const fsp = { ...fs.promises, open: (p, ...a) => (fail && /moves-journal\.json\.tmp$/i.test(String(p)) ? Promise.reject(Object.assign(new Error(`${fail}: injected`), { code: fail })) : fs.promises.open(p, ...a)) };
+  const j = new Journal(dir, { fsp });
+  await j.load();
+  await assert.rejects(j.intent({ id: 'a1', op: 'add', src: 'x', dst: 'y' }), (e) => e.code === 'ENOSPC');
+  assert.deepEqual(j.pending(), [], 'not pending in memory');
+  assert.ok(!fs.existsSync(path.join(dir, 'moves-log.jsonl')), 'nothing in the history');
+  assert.ok(!fs.existsSync(path.join(dir, 'moves-journal.json')), 'nothing on disk');
+  fail = null;
+  await j.intent({ id: 'a2', op: 'add', src: 'x', dst: 'y' });
+  assert.deepEqual(j.pending().map((e) => e.id), ['a2'], 'the next intent is written');
+});
+
+// ── C2 follow-up (UX spec "Addendum — M3 fix pass, C2 follow-up", D3) ─────
+test('D3: moving unavailable: a drop with a store file that has no tile is refused whole; the reference dropped with it is not added, the row stays', async () => {
+  const t = setup();
+  const a = t.file('desktop', 'Lost.lnk', 'L');
+  const exe = t.file('desktop', 'Tool.exe');
+  const m = t.make();
+  await m.init();
+  const [item] = (await m.addPaths('r1', [a], Infinity)).added;
+  t.state.apps = [];
+  await m.scan();
+  m.offForTest = true;
+  const r = await m.addPaths('r2', [item.path, exe], 0);
+  assert.equal(r.refused, 'unavailable');
+  assert.deepEqual([r.taken.length, r.refs.length, r.added.length], [0, 0, 0]);
+  assert.deepEqual(t.state.apps, [], 'nothing was changed');
+  assert.deepEqual(m.orphans.map((o) => o.name), ['Lost']);
+  m.offForTest = false;
+  const r2 = await m.addPaths('r2', [item.path, exe], 0);
+  assert.deepEqual([r2.refused, r2.taken.length, r2.refs.length], [null, 1, 1], 'available again: adopted, and the reference added');
+});
+
+test('D3: moving unavailable: an older build\'s reference tile on a store file is not turned into its moved tile; a moved tile still moves (no file moves)', async () => {
+  const t = setup();
+  const a = t.file('desktop', 'Old.lnk', 'O');
+  const b = t.file('desktop', 'Kept.lnk', 'K');
+  const m = t.make();
+  await m.init();
+  const [oldItem, keptItem] = (await m.addPaths('r1', [a, b], Infinity)).added;
+  // Old.lnk: only a reference tile on the store file (as m-3 made them); Kept.lnk: its moved tile.
+  t.state.apps = [{ id: 'legacy', name: 'Old', path: oldItem.path, regionId: 'r1' }, keptItem];
+  m.offForTest = true;
+  const r = await m.addPaths('r2', [oldItem.path], 0);
+  assert.equal(r.refused, 'unavailable');
+  assert.deepEqual(t.state.apps.find((x) => x.id === 'legacy'), { id: 'legacy', name: 'Old', path: oldItem.path, regionId: 'r1' });
+  const r2 = await m.addPaths('r2', [keptItem.path], 0);
+  assert.deepEqual([r2.refused, r2.taken.length], [null, 1], 'a moved tile taking its own file needs no move (as Move to)');
+  assert.equal(t.state.apps.find((x) => x.id === keptItem.id).regionId, 'r2');
 });

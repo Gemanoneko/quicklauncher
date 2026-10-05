@@ -589,6 +589,11 @@ button:active { background: var(--btn-active-bg); }
   box-shadow: var(--update-btn-hover-glow);
   color: #fff;
 }
+/* The notice layer (a drop's notice, a launch error, SAVE ERROR): text and ✕ in
+   --text on the banner's own background (fix-pass addendum C5). The update
+   layer keeps the --update-color look above. */
+#update-banner.notice,
+#update-banner.notice .update-dismiss { color: var(--text); }
 /* update-dismiss: raised to 24×24 (UX Review §2 / I7) */
 .update-dismiss {
   border-color: transparent;

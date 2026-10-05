@@ -79,8 +79,14 @@ class Journal {
   async intent(entry) {
     const e = { ...entry, state: 'intent', startedAt: new Date().toISOString() };
     this.entries.push(e);
-    await this._write();
-    await this._append({ ...e });
+    try {
+      await this._write();
+    } catch (err) {
+      // Not on disk: the caller must not move, so the intent is not pending either (fix-pass C1).
+      this.entries = this.entries.filter((x) => x !== e);
+      throw err;
+    }
+    await this._append({ ...e }); // on a throw here the intent is on disk; the caller aborts it
     return e;
   }
 

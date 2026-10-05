@@ -2,6 +2,9 @@
 
 body.manager #app { height: 100vh; }
 body.manager #title-area { flex-direction: row; align-items: center; }
+/* Controls win over theme art: the theme's tagline is not drawn in the Manager,
+   where it ran under the tabs in every theme (fix-pass addendum C6). */
+body.manager #header::after { display: none; }
 
 /* Tabs sit in the header, after the title. */
 #mgr-tabs { display: flex; gap: 6px; margin: 0 auto 0 16px; -webkit-app-region: no-drag; }
