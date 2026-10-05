@@ -18,6 +18,17 @@ test('a resize and a move are saved after the debounce', (t) => {
   assert.deepEqual(store.settings().windowPosition, { x: 250, y: 240 });
 });
 
+test('a resize saves the position with the size: after an oversized open, the saved position is the window\'s (m-2)', (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const { store, win } = open({ windowSize: { width: 5120, height: 1440 }, windowPosition: { x: 3000, y: 900 } });
+  const [x, y] = win.getPosition();
+  win.setBounds({ x, y, width: 700, height: 500 }); // edge-drag resize from the bottom-right: no move
+  t.mock.timers.tick(1000);
+  assert.deepEqual(store.settings().windowSize, { width: 700, height: 500 });
+  assert.deepEqual(store.settings().windowPosition, { x, y });
+  assert.notDeepEqual(store.settings().windowPosition, { x: 3000, y: 900 });
+});
+
 test('a pending save on a destroyed window does not throw', (t) => {
   t.mock.timers.enable({ apis: ['setTimeout'] });
   const { store, win } = open(SAVED);

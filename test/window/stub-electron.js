@@ -46,9 +46,15 @@ const electronStub = {
       return { ...d, workAreaSize: { width: d.workArea.width, height: d.workArea.height } };
     },
     getAllDisplays: () => displays,
-    // Electron: the display that most closely intersects the rectangle.
-    getDisplayMatching: (rect) =>
-      displays.reduce((best, d) => (overlap(rect, d.bounds) > overlap(rect, best.bounds) ? d : best), displays[0]),
+    // Electron: the display that most closely intersects the rectangle. Like
+    // Electron 32 (measured 2026-10-05), a coordinate that is not a number throws
+    // "Error processing argument at index 0, conversion failure".
+    getDisplayMatching: (rect) => {
+      for (const k of ['x', 'y', 'width', 'height']) {
+        if (typeof rect[k] !== 'number' || !Number.isFinite(rect[k])) throw new Error('Error processing argument at index 0, conversion failure');
+      }
+      return displays.reduce((best, d) => (overlap(rect, d.bounds) > overlap(rect, best.bounds) ? d : best), displays[0]);
+    },
   },
 };
 

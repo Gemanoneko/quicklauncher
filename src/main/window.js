@@ -12,41 +12,52 @@ function visiblePosition(pos, size) {
   }) ? pos : null;
 }
 
-// A saved windowSize larger than the work area of the display the window
-// opens on is cut down to that work area, and the position is moved just far
-// enough for the whole window to sit inside it (taskbar respected). Data files
-// written while F11 fullscreen saved the display size hold such a value
-// (F-1, QA 2026-10-05). A size that fits is left alone, and so is its position.
-// The store is not rewritten here; the next move or resize saves real bounds.
-function fitToWorkArea(size, pos, wa) {
-  const width = Math.min(size.width, wa.width);
-  const height = Math.min(size.height, wa.height);
-  if (width === size.width && height === size.height) return { size, pos };
-  const x = Math.min(Math.max(pos.x, wa.x), wa.x + wa.width - width);
-  const y = Math.min(Math.max(pos.y, wa.y), wa.y + wa.height - height);
-  return { size: { width, height }, pos: { x, y } };
+const DEFAULT_SIZE = { width: 424, height: 300 };
+
+const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+
+// The store never validates windowSize / windowPosition. window.js only ever
+// writes integers from getSize()/getPosition(), so anything else (null,
+// strings, fractions, 0 or negative sizes, Infinity, missing keys) is treated
+// as if nothing were saved. Electron ignores non-integer or string bounds, and
+// screen.getDisplayMatching() throws on a null coordinate, which crashed
+// startup (QA 2026-10-05, m-3).
+function savedSize(v) {
+  return isPlainObject(v) && Number.isInteger(v.width) && Number.isInteger(v.height)
+    && v.width > 0 && v.height > 0 ? { width: v.width, height: v.height } : null;
+}
+function savedPosition(v) {
+  return isPlainObject(v) && Number.isInteger(v.x) && Number.isInteger(v.y) ? { x: v.x, y: v.y } : null;
+}
+
+// Size and position the window opens with. A saved size that fits the work
+// area of the display it opens on keeps its size and saved position (the
+// position is used while at least 100x50 px of the window is on a display).
+// A saved size wider or taller than that work area opens as a fresh install
+// does: the default size at the default position (Sergei ruling 2026-10-05,
+// option b). Files written while F11 fullscreen existed hold the display size
+// (F-1). The store is not rewritten here; the next move or resize saves the
+// real bounds.
+function initialBounds(settings) {
+  const primary = screen.getPrimaryDisplay();
+  const { width: sw, height: sh } = primary.workAreaSize;
+  // Fresh-install position: bottom-right of the primary work area, 20 px in.
+  const defaultPos = (size) => ({ x: sw - size.width - 20, y: sh - size.height - 20 });
+
+  const size = savedSize(settings.windowSize) || DEFAULT_SIZE;
+  const savedPos = savedPosition(settings.windowPosition);
+  const visiblePos = savedPos && visiblePosition(savedPos, size);
+  // The display the window opens on: the one it overlaps most when its saved
+  // position is used, the primary display when the default position is used.
+  const wa = (visiblePos ? screen.getDisplayMatching({ ...visiblePos, ...size }) : primary).workArea;
+  if (size.width > wa.width || size.height > wa.height) {
+    return { size: DEFAULT_SIZE, pos: defaultPos(DEFAULT_SIZE) };
+  }
+  return { size, pos: visiblePos || defaultPos(size) };
 }
 
 function createWindow(store) {
-  const settings = store.get('settings');
-  const { width: sw, height: sh } = screen.getPrimaryDisplay().workAreaSize;
-
-  const defaultWidth = 424;
-  const defaultHeight = 300;
-
-  const savedSize = settings.windowSize || { width: defaultWidth, height: defaultHeight };
-  const savedPos = settings.windowPosition;
-  const visiblePos = savedPos && visiblePosition(savedPos, savedSize);
-  const openPos = visiblePos || {
-    x: sw - savedSize.width - 20,
-    y: sh - savedSize.height - 20
-  };
-  // The display the window opens on: the one it overlaps most when its saved
-  // position is used, the primary display when the default position is used.
-  const display = visiblePos
-    ? screen.getDisplayMatching({ ...visiblePos, ...savedSize })
-    : screen.getPrimaryDisplay();
-  const { size, pos } = fitToWorkArea(savedSize, openPos, display.workArea);
+  const { size, pos } = initialBounds(store.get('settings'));
 
   const win = new BrowserWindow({
     width: size.width,
@@ -100,15 +111,19 @@ function createWindow(store) {
     }, 400);
   });
 
-  // Debounce size saves — same reason
+  // Debounce size saves — same reason. The position is saved with the size:
+  // a window that opened at the default position (oversized or off-screen
+  // saved bounds) and is then resized without being moved would otherwise
+  // keep the old saved position, and open there next time (QA 2026-10-05, m-2).
   let resizeTimer = null;
   win.on('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       if (win.isDestroyed()) return;
       const [width, height] = win.getSize();
+      const [x, y] = win.getPosition();
       const s = store.get('settings');
-      store.set('settings', { ...s, windowSize: { width, height } });
+      store.set('settings', { ...s, windowSize: { width, height }, windowPosition: { x, y } });
     }, 400);
   });
 
