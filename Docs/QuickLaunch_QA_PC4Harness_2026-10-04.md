@@ -340,3 +340,146 @@ My own faults, found before any number here depended on them: (1) my first stati
 ## F1.10 Scratch (copy what you need; it has been wiped before)
 
 `C:\Users\AnGeLZzZ\AppData\Local\Temp\claude\C--Antigravity-Projects-Studio-Illuminati\ab778959-0638-4d60-8887-346c422e496e\scratchpad\futaba-f1\`: `pin\` and `pin-sha256.txt`; clones `head\`, `build\`, `mut\`; `mutate.cjs` (every mutation above, by name), `g.sh` (run the gate in a clone, restore and `cmp` the pin), `nt.sh` (head against build for one argument set), `deepcmp.cjs`, `links.cjs`; `section.md` (this section); `out\` and `logs\` (every run's readings and console output).
+
+---
+
+# F-2 follow-up (regression QA of Ender's fix), 2026-10-05
+
+Futaba. Asked by Jane: regression-QA of Ender's fix for F-2 (a positive control whose `id` is missing or not a string crashed the verdict with exit 1). Red-team again: break the "a control without a string id voids the run" check in every finish order I could force, break the new "a repeated `HOVER_CONTROLS` entry is refused before start" check on every path, and test Ender's untested worry (a non-string entry in the `HOVER_CONTROLS` list itself, plus `--neuter-control`). Nothing in the tool repo or the studio repo was edited, staged, committed or pushed; the only thing I wrote there is this appended section (uncommitted). The regions worktree (`C:/Antigravity Projects/QuickLaunch-regions-spike`) was not touched (I only read its `git status` at the end). Everything ran headless and offscreen: no real input, no window shown or focused (guard counters in F2.7). Runs span 23:43 JST on 2026-10-04 to 00:17 on 2026-10-05, with a re-check at 04:12 after Jane's message asking me to resume (another Futaba holds the desktop for real-input checks until 08:01; I stayed headless and spared her processes, F2.8).
+
+## F2.1 Verdict
+
+**Verdict:** GO
+
+GO for Sully to commit the two files (`scripts/theme-gallery/run.mjs`, `scripts/theme-gallery/hover.cjs`). Blockers: none. Majors: none. **F-2 is closed**: a control with a missing, numeric, null (or any other non-string) id voids the run with exit 2, named by what it is, theme and pair, in every finish order I could force. The duplicate-entry refusal works on every hover path and starts nothing. All of Ender's claims reproduced. One new Minor, **F-3**, which is Ender's own worry confirmed: a non-string entry in the `HOVER_CONTROLS` list plus `--neuter-control` still ends in a stack trace and exit 1. It predates the fix, needs a hand edit of the constant, fails loudly before anything starts, and does not block.
+
+Pattern alerts: 1 open (F2.6), 1 closed.
+
+## F2.2 Receipt (the pin)
+
+| Item | Value |
+|---|---|
+| Tool / version | QuickLauncher **1.94.3** (folder `WIP/QuickLaunch`) |
+| Branch / HEAD | `wip/theme-fidelity` / **`6cbdeb5`** (`6cbdeb5007d4da84d40d73bbacb96349d2ecc899`); unchanged at the end |
+| Dirty set, tool repo | exactly the 2 files below, at the start and at the end; nothing untracked, no stash |
+| Entry-check receipt (identical script, run from the pinned clone `build`) | `Entry-check receipt: quicklauncher v1.94.3 @ 6cbdeb5 (dirty: Y) — pre-qa n/a, post-build n/a, check-electron n/a, check pass, test:smoke n/a` |
+
+SHA-256 of the pin, taken first (23:43) from the live files into `scratchpad/futaba-f2/pin/`, then compared to Ender's `ender-f2/pin-sha256.txt`: **identical**.
+
+```
+fd35a1cbd2fd6f3a4a1ec43c10594dd26dc7746e4462a9b80d516ef65b9c1cc3 *run.mjs
+a9bdc670cd878814ffe8c06893023c8dc8d2e79f1bcc923703bc536b0a1dea3a *hover.cjs
+```
+
+**End check (00:17, repeated at 04:12): both live files hash-identical to the pin and to Ender's pin.** HEAD `6cbdeb5`, same two modified files, 0 stash entries. My mutation clone `mut` ended `cmp`-equal to the pin (restored and compared after every one of its runs: 0 RESTORE-FAILED); `build` equal to the pin; `head` clean (0 dirty files).
+
+**What I tested.** Three scratch clones of the tool repo (`git clone --no-hardlinks`, detached at `6cbdeb5`): `head` (unmodified tooling, the comparison and the positive control for every crash), `build` (HEAD plus the two pinned files) and `mut` (same as `build`, mutations only). `node_modules/electron` is a real byte copy (no junction, no symlink) in all three; `electron.exe` hashes equal to the live one (`217c7abc77aa...`). My link walker (junctions count) found **0 links** in `head` (2,159 entries), `build` (2,167), `mut` (2,091), the output folder (261) and the logs (309). I did not run `npm run build` or `npm run release`.
+
+Setup note: `head` is a CRLF checkout; with the CRs stripped it equals the `HEAD` blobs byte for byte, and its difference to the pin is exactly Ender's change: 4 hunks, 10 insertions, 2 deletions (the duplicate refusal, the `String(...)` sort, the non-string-id failure line, the `typeof` filter, and three header comment lines in `hover.cjs`).
+
+## F2.3 Ender's claims, one by one
+
+| Claim | Result | How |
+|---|---|---|
+| Missing, numeric and null ids are always exit 2, in every finish order | **yes** | 62 real runs on the pin, all exit 2, 0 stack traces, 62 readings files all `VOID`; 16 of them with a forced finish order (below); and every order of 28 control lists offline (below) |
+| A duplicate list entry is refused on every path | **yes** | 15 refusal runs plus 2 npm runs, all exit 2, nothing started (below) |
+| PC1 to PC4 are normal | **yes** | 1.65, 2.32, 1.08, 1.00, all four `fired`, in all 3 full runs and the entry check |
+| 4,040 readings identical apart from `grabs` | **yes** | F2.4 |
+| `npm run check` passes | **yes** | the entry-check script reports `check pass` (contrast, then hover, exit 0 at `6cbdeb5` plus the pin) |
+| `--help` unchanged | **yes** | `head` and `build` print 85 lines and 7,685 bytes, byte-identical after the CR strip, and both equal Ender's captured `help-head.txt` and `help-build.txt`; the diff adds 0 column-0 `//` lines to `run.mjs`, and the `hover.cjs` header lines never reach `--help` |
+
+Also confirmed: `hover.cjs` is a comment-only change (with every full-line `//` comment stripped, `head` and `build` hash equal, `d5505e04...`); `--self-test` (another mode of the same file) exits 0 on both `head` and `build` (14 s and 15 s, the same result lines); wall time of the gate's own timer 51.9 s on `head`, 48.9 s and 50.3 s on `build`; 36 processes started and 0 left in each full run.
+
+**Finish orders (claim 1).** The order is forced by a delay inserted in `hover.cjs` just before a control is reported, and each run's own log prints the order it finished in, which I read back (it matched the intended order in all 16):
+
+| Bad id on | Kinds | Finish positions forced | Runs | Pinned result | Pre-fix `head`, same mutation |
+|---|---|---|---|---|---|
+| PC2 | missing (`ID:` typo), `4`, `null` | first, second, third, last | 12 | exit 2 in 12 | **crash, exit 1, no readings file in 9**; exit 2 in the 3 where the bad control finished first |
+| PC4 | missing | first, last | 2 | exit 2 in 2 | last: exit 1 (crash) |
+| PC1 | `4` | first, last | 2 | exit 2 in 2 | first: exit 2 |
+
+Pre-fix, the crash happens in every order except "bad control finished first": 4 of 4 such runs exit 2, 10 of 10 others exit 1 (the F-2 order dependence, reproduced, so the mutation does reach the code). The pinned runs voided in all 16, each with a line such as `positive control with no id (real 2001 theme with its --hover-label-floor: 0 line stripped; 2001 edit-done/hover): HOVER_CONTROLS (run.mjs) cannot match it ...` plus `positive control PC2 did not run`.
+
+**Every order, offline.** I extracted the real verdict lines from `run.mjs` by text (from `const pcs = hx ?` to the `did not fail` line, not retyped) and ran them over every permutation of 28 control lists, each through a JSON round trip as the real readings take: a bad id on PC2 (4 controls) and a second bad id (5 controls) for 13 kinds (missing, `4`, `0`, `null`, `NaN`, `true`, `false`, `{}`, `[]`, `['PC4']`, `''`, the string `'undefined'`, the string `'4'`), a 7-control list holding missing, `4` and `null` together (5,040 orders), and the all-good list as the negative control. **Pinned: 6,936 orders, 0 throws, 1 distinct verdict per list (the order never changes the verdict), and the all-good list passes in all 24 orders. Pre-fix `head`: 6,420 of the same 6,936 orders threw** (`reading 'localeCompare'` of undefined or null, `a.id.localeCompare is not a function`).
+
+**Other shapes of the same run (all on the pin, `--only cyberpunk` unless noted):** every bad-id kind in the natural order, 3 runs each for 11 kinds (33 runs, all exit 2; the empty string is a string, so it voids with "did not run" plus "not in HOVER_CONTROLS" instead); 6 full-roster runs (4 processes, the `hx.flatMap` merge path; missing, `4`, `null`, 2 each), all exit 2; a bad id with `--ink-free-all`, with `--only cyberpunk,tron --processes=2`, with `--neuter-control=pc2` (missing id) and `=pc4` (id `4`): all exit 2, the neutered ones carrying both the bad-id line and the "did not fail" line; a bad id on a full roster with `--rebaseline`: `--rebaseline skipped: the run is void`, baseline file hash unchanged (`e3566b3a...` before and after); two bad ids at once (2 runs): both named, plus both "did not run". Every one of these wrote a `hover-readings.json` with verdict `VOID` (62 of 62).
+
+**Duplicate entry (claim 2).** `HOVER_CONTROLS` edited in `mut`; each refused run exits 2 in 0 or 1 s, creates no output folder, prints no isolation line (so no process started), and prints `HOVER_CONTROLS (run.mjs) lists PC4 2 times; each control id goes in it once`:
+
+| Shape | Paths | Result |
+|---|---|---|
+| `PC4` twice at the end; `PC1` twice at the start; `PC1` twice with a gap; `PC1` three times; `PC1` and `PC4` twice (both named); `5` twice | full roster (1), `--only` (6) | exit 2, refused, 7 of 7 |
+| `PC4` twice | `--rebaseline`; `--rebaseline --only` (also lists "needs the whole roster", both lines); `--ref=HEAD`; `--neuter-control=pc4`; `--ink-free-all`; `--processes=1`; `--only a,b --processes=2`; `--concurrency=2` | exit 2, refused, 8 of 8 |
+| `PC4` twice | `npm run check:hover -- --only cyberpunk`; `npm run check` | exit 2 on both (contrast runs first: 101 themes checked, 0 errors, then REFUSED) |
+| `--help` with the duplicate list | | still prints (exit 0, 85 lines), as before |
+
+Positive control: the pre-fix tooling accepts the same duplicate silently (exit 0). Variants the exact-match check does not see: `'pc4'` or `'PC4 '` (trailing space) as a fifth entry are not refused up front but void the run after a normal run (exit 2, `positive control pc4 did not run`); two `NaN` entries are not refused (`NaN !== NaN`) and void the same way (exit 2, "NaN did not run" twice). Loud in every case, note N-2.
+
+## F2.4 The 4,040 readings
+
+Method: `deepcmp.cjs` joins two `hover-readings.json` files on theme and pair (101 x 40) and compares every key of every reading, flattened, at full precision.
+
+| Comparison | Pairs | Identical on every key | Identical apart from `grabs` | Other differences |
+|---|---|---|---|---|
+| `head` run against `build` run 1 | 4,040 | 4,007 | **4,040** | none; `grabs` differs in 33 |
+| `head` run against `build` run 2 | 4,040 | 4,004 | **4,040** | none; `grabs` differs in 36 |
+| `build` run 1 against `build` run 2 | 4,040 | 4,005 | **4,040** | none; `grabs` differs in 35 |
+| my `build` run 1 against Ender's `n-build-full1` | 4,040 | 4,006 | **4,040** | none; `grabs` differs in 34 |
+| my `head` run against Ender's `n-head-full` | 4,040 | 3,993 | **4,040** | none; `grabs` differs in 47 |
+
+In all three of my full runs: verdict `PASS`, 0 failures, 0 errors, 0 grandfathered, 101 themes, 4,040 rows, 0 row errors, the four control records identical at every key (PC1 1.65, PC2 2.32, PC3 1.08, PC4 1.00), 36 processes started and 0 left, sockets 0, registry unchanged.
+
+## F2.5 Ender's worry: a non-string entry in `HOVER_CONTROLS` itself
+
+Confirmed. The refusal block builds `HOVER_CONTROLS.map((id) => id.toLowerCase())` whenever `--neuter-control` is given, and a non-string entry makes that throw. The line is not part of the diff, so this is not a regression: the pre-fix `head` does the same (2 of 2 tried: `5` and `null`, both exit 1). Each entry added as a fifth element of the list, `--only cyberpunk`:
+
+| Entry | With `--neuter-control=pc4` | Without it |
+|---|---|---|
+| `5`, `null`, `undefined`, `true`, `{}`, `[]`, `NaN` (7 shapes) | **exit 1**, `TypeError: ... toLowerCase ...`, before anything starts, no readings file (7 of 7) | exit 2 after a normal run (`positive control 5 did not run`, and so on), readings file written (7 of 7) |
+| `Symbol()` | **exit 1** (same `TypeError`) | **exit 1**, `TypeError: Cannot convert a Symbol value to a string` when the "did not run" line is built, after the run, no readings file |
+| `'PC5'` (a string, as a real control would be) | exit 2 (`PC5 did not run`, plus the neutered PC4 not firing) | exit 2 (`PC5 did not run`) |
+
+A repeated `Symbol.for('x')` entry crashes inside the new refusal message itself (exit 1, a template literal on a symbol); a repeated `5` is refused correctly. All contrived: the list is a constant in `run.mjs`.
+
+## F2.6 Findings, notes, pattern alerts
+
+| # | Severity | Finding | Status |
+|---|---|---|---|
+| F-2 | (was Minor) | a control with a missing or non-string id crashed the verdict (exit 1, no readings file), depending on finish order | **closed**: exit 2 in all 62 pinned runs and in all 6,936 orders offline; the pre-fix crash reproduced in 10 of 14 forced runs and 6,420 of 6,936 orders |
+| **F-3** | **Minor** | a non-string entry in `HOVER_CONTROLS` plus `--neuter-control` ends in `TypeError: ... toLowerCase` and **exit 1**, not a refusal with exit 2 (8 of 8 shapes). Without `--neuter-control`, a `Symbol` entry crashes the same way at the end of a full run. Reachable only by hand-editing the constant and passing the flag, fails loudly, before anything starts. Predates the fix (same line on `head`) | open. Direction: `String(id).toLowerCase()` in that line, or refuse a non-string or empty entry in the new duplicate loop (one more `refuse.push`) |
+
+Notes, not findings:
+
+- **N-1** For a control with no usable id, the printed control line reads `control     undefined fired: ...` (or `null fired`, `4 fired`); only the VOID lines name what it is. Cosmetic.
+- **N-2** Case or whitespace variants (`'pc4'`, `'PC4 '`) and repeated `NaN` are not refused before start; they run a full gate and void with exit 2. Loud, and each costs one run.
+- **N-3** A `null` element in the controls array itself (not just a null id) still throws (`Cannot read properties of null (reading 'id')`, injected by hand, exit 1). Not reachable from `hover.cjs`, which builds every control from an object literal.
+- **N-4** The new `hover.cjs` header sentence is true: each place it names exists and holds a copy of the control list (the paragraph, the `run.mjs` header exit-2 and `--neuter-control` lines that `--help` prints, spec section 5.4, and the `check:hover` row of `QuickLaunch_Brief.md`, which says "four"). It is not exhaustive: spec section 5.6 (exit-2 causes, "a positive control does not fail", marked "unchanged from 2026-10-01") and the spec's summary row 5 ("a second built-in positive control") are older mirrors it does not name, and the `run.mjs` header cause list does not name the two new causes (non-string id, repeated list entry). Nothing is wrong today.
+- **N-5** The old note N-a (a repeated `HOVER_CONTROLS` entry accepted silently) is **closed** by this change. The old note N-b (`run.mjs` trusts the `failed` flag each control computes) is untouched and still open.
+- **N-6** The studio root's dirty set moved during my pass: `Team/Docs/Session_2026-10-03_Recap.md` is now modified (it was not at the start). Not mine; I did not open it.
+
+Pattern alerts: 1 open, 1 closed
+
+1. Open (new): **a typo or non-string value in the harness's own definition tables ends in an uncaught `TypeError` (exit 1) instead of a VOID (exit 2).** F-2 (a control id in the sort), F-3 (a list entry in `toLowerCase`) and N-3 (a null control) are three sites of one class, found in two passes; each fix covers one site. Recommended disposition: **fix** F-3 with one line on the next touch of `run.mjs`, and **accept** N-3 (unreachable). Jane to confirm; not blocking.
+2. Closed: **the prose and usage copies of the control list drift each time a control is added** (F-1's open alert). Ender added the one sentence I recommended, and it is true (N-4). Disposition **accept, documented**.
+
+## F2.7 Counts, with method
+
+- **Gate runs: 121**, counted from the 121 logs in `scratchpad/futaba-f2/logs/` (excluding the two self-test logs, the entry-check and npm logs, and the help captures). Groups: pin 103 (bad id natural order 33, forced orders 12 + 4, full roster 6, option combinations 5, duplicate refusals 14 + 2 variants + 3 non-string-duplicate probes, non-string list entries 18, two-bad-ids and injected-null 3, baseline `--only` 1, clean full runs 2) and `head` 18 (forced orders 12 + 2, list probes 1 + 2, clean full run 1). By exit code: **exit 0 in 5** (the baseline `--only`, 3 clean full runs, 1 pre-fix duplicate-accepted), **exit 1 in 23**, **exit 2 in 93**. Of the 121, 18 ran on `head` (12 exit 1, 4 exit 2, 2 exit 0) and 103 on the pin (3 exit 0, 11 exit 1, 89 exit 2). Tallies come from my one-line summaries per group (`_g1`, `_g2`, `_g2b`, `_g3`, `_h2`, `_g6`) and were cross-checked against the log counts below.
+- **Crashes with a stack trace: 23**, counted by `grep -l TypeError` over the logs (12 `head`, 11 pin: the 10 F-3 shapes of F2.5 and the injected null element).
+- **Refusals: 17** logs begin with `REFUSED` (15 gate runs plus the two npm runs).
+- **Isolation: 83 runs printed an isolation line, and all 83 said 0 left, sockets 0, registry unchanged.** The other 38 are the 23 crashes (the print comes after the verdict code) and 15 refusals (nothing is started). **Guard counters: all 83 of those runs show login-item 0, global-shortcut 0, show 0, focus 0, dialogs 0, blocked requests 0, media 0**; the only non-zero guard lines are the 2 `--self-test` runs (login-item 1, blocked requests 1), which are that mode's own deliberate controls.
+- **Offline orders: 6,936** (28 lists), pinned 0 throws, `head` 6,420.
+- **Processes I started:** only the gate's own Electron processes (each run ends its own); `electron.exe` 0 at the end. No dummies, no harness runs, no headless browsers.
+- **Sergei's QuickLauncher:** 4 PIDs (30760, 23324, 31752, 41564, started 2026-10-03 23:12) present at the start, at 00:15 and at 04:12 with the same creation times, never touched.
+
+## F2.8 Not tested, and my own probe faults
+
+Not tested: real OS input (not mine to take: another Futaba holds the desktop until 08:01); the packaged build; the lane-2 smoke harness (not part of this change); a run stopped by the 180 s limit with only some controls run; `npm run build` and `npm run release`; the "controls run on every process" shape with a bad id (covered offline only, as duplicates in the 5-control lists); forced finish orders inside a full 4-process roster (the full runs were natural order; the forced orders were all single-process `--only` runs, and the merge path was run, not order-forced).
+
+Other sessions: at 00:14 on 2026-10-05, four more `QuickLauncher.exe` processes appeared that are neither Sergei's four nor mine. Their parent is `node scripts/qa/quicklaunch-safe-launch.mjs` with a profile under `ql-away2` and an exe under `futaba-away2`, so they belong to the other Futaba's real-input lane. I only read their command lines and did not touch them; by 04:12 they were gone and Sergei's four were intact.
+
+My own faults, found before any number here depended on them: (1) I ran `python3` in a heredoc to patch a helper; it is the Windows Store stub and hung for about two minutes. I stopped that task, confirmed no stray `python3` process remained, and rewrote `g.sh` and `r.sh` through heredocs. It touched nothing in the tool or studio repos. (2) The "finish order" column in my 6 full runs and 2 other multi-process runs is stale (read from the previous single-process run's `electron.log`); I use finish orders only from the 16 single-process forced runs. (3) The first batch of 33 runs printed `head: write error: Permission denied`: my own `| head -1` closing a pipe, harmless (every line still said `restored-ok`); I switched to `sed -n 1p`. (4) My mutation arguments are word-split by the shell, so a space in a list entry needs `\x20`. (5) My first VOID-report recount filtered directories as files (a node `EISDIR`), and its second regex missed controls whose description contains parentheses; the third count is the one above: 59 of the 62 bad-id reports carry a bad-id line naming theme and pair, and the other 3 are the empty-string id (a string, voided by "did not run"). (6) Jane's message asked me to resume from the start; I did not re-run the matrix, because all evidence was already collected against the pin and the pin was unchanged. I re-verified the pin (live against mine against Ender's), the clones, the guard counters and the process list from scratch at 04:12 instead.
+
+## F2.9 Scratch (copy what you need; it has been wiped before)
+
+`C:\Users\AnGeLZzZ\AppData\Local\Temp\claude\C--Antigravity-Projects-Studio-Illuminati\ab778959-0638-4d60-8887-346c422e496e\scratchpad\futaba-f2\`: `pin\` and `pin-sha256.txt`; clones `head\`, `build\`, `mut\`; `mutate.cjs` (every mutation above, by name: `id=`, `delays=`, `list=`, `nullpc=`), `g.sh` (one gate run in a clone, restoring and comparing the pin), `r.sh` and `rr.sh` (one-line summaries), `perm.cjs` and `sample.cjs` (the offline every-order test of the real verdict lines), `deepcmp.cjs`, `links.cjs`; `ql-pids-before.txt` and `ql-pids-after.txt` (the latter taken while the other Futaba's four were up); `out\` and `logs\` (every run's readings, console output, electron log and finish order; the `_*-summary.txt` files are the group tallies).
