@@ -275,7 +275,10 @@ html, body {
    - header art / tags: the theme sets left:auto, right:136.67px and an explicit width (84px).
      136.67 is the old 172 less the removed Fullscreen button (29.33 px wide) and its 6 px
      gap: the art keeps the gap to the buttons it had before. An explicit width wins over
-     the rule below, so art is unaffected by it. */
+     the rule below, so art is unaffected by it.
+     Three themes also paint a left-anchored header surface the art is composed against:
+     persona-3 (seam), persona-5 (plate and saw), siren (seam and divider). They carry the
+     same 35.33 px as the art. If the art offset moves again, they move by the same amount. */
 #header::after {
   right: 160px;
   width: clamp(0px, calc((100% - 480px) * 1000), calc(100% - 360px));

@@ -85,12 +85,12 @@
 .btn-remove:hover { background: #CC2929; }
 #app::after { top: var(--header-h); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='g' x='0' y='0' width='200' height='200' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.80 0 0 0 0 0.75 0 0 0 0 0.66 0.115 0 0 0 -0.031'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E") 0 0 / 200px 200px repeat; }
 
-/* header: two channels, a hard seam at x 210 (warm left, cold right) */
+/* header: two channels, a hard seam at x 245.33 (warm left, cold right) */
 #header {
-  background: linear-gradient(90deg, #2C1F14 0 210px, #132435 210px 100%);
+  background: linear-gradient(90deg, #2C1F14 0 245.33px, #132435 245.33px 100%);
   border-bottom-color: #CC2929; box-shadow: inset 0 -2px 0 #CC2929;
 }
-#header::before { left: 209px; top: 0; bottom: 3px; width: 2px; background: #D8CCB8; box-shadow: none; }
+#header::before { left: 244.67px; top: 0; bottom: 3px; width: 2px; background: #D8CCB8; box-shadow: none; }
 #header:has(#filter-chip:not(.hidden))::before { display: none; }
 #header::after {
   content: '屍人'; position: absolute; top: 10px; right: 136.67px; left: auto; width: 84px; height: 20px;

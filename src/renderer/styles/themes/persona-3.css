@@ -84,7 +84,7 @@
 #app::after { background: none; }
 
 #header {
-  background: linear-gradient(100deg, #0F3FA0 0 236px, #0A1A5A 236px 100%);
+  background: linear-gradient(100deg, #0F3FA0 0 270.79px, #0A1A5A 270.79px 100%);
   border-bottom-color: #1BB4F2; box-shadow: inset 0 -2px 0 #1BB4F2;
 }
 #header::before { background: #8CE3FF; box-shadow: none; }
