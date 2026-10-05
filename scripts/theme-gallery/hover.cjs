@@ -49,6 +49,9 @@
 //     missing, runs twice, or is not in its HOVER_CONTROLS list (a new control's id goes there too):
 //     PC1 flat hover fill, PC2 light theme without its opt-out, PC3 smooth gradient,
 //     PC4 hard patch exactly the label colour (fails only through the coverage capture).
+//     A new control also changes the prose copies of this list, which no check reads: this paragraph,
+//     the run.mjs header (printed by --help: the exit-2 causes and the --neuter-control lines), spec
+//     section 5.4 and the check:hover row of Docs/QuickLaunch_Brief.md.
 const fs = require('fs');
 const path = require('path');
 const { BrowserWindow } = require('electron');

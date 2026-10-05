@@ -120,6 +120,8 @@ if (hoverCheck) {
   if (flag('gpu')) refuse.push('--gpu is not available in --hover-check mode (software raster only)');
   if (rebaseline && only) refuse.push('--rebaseline needs the whole roster; drop --only');
   if (rebaseline && ref) refuse.push('--rebaseline reads the live tree; drop --ref');
+  // HOVER_CONTROLS holds each id once: a repeated entry would be accepted silently by the run-side check.
+  for (const id of new Set(HOVER_CONTROLS)) { const n = HOVER_CONTROLS.filter((x) => x === id).length; if (n > 1) refuse.push(`HOVER_CONTROLS (run.mjs) lists ${id} ${n} times; each control id goes in it once`); }
   for (const c of cfgBase.hover.neuter) if (!HOVER_CONTROLS.map((id) => id.toLowerCase()).includes(c)) refuse.push(`--neuter-control: unknown control ${c} (${HOVER_CONTROLS.map((id) => id.toLowerCase()).join(', ')})`);
 } else {
   if (rebaseline) refuse.push('--rebaseline belongs to --hover-check');
@@ -483,10 +485,13 @@ if (hoverCheck) {
   for (const r of bad) fails.push(`${r.theme}: ${r.problems.slice(0, 2).join('; ')}${r.problems.length > 2 ? ` (+${r.problems.length - 2} more)` : ''}`);
   const measured = results.reduce((n, r) => n + (r.rows || []).filter((x) => !x.error && typeof x.ratio === 'number').length, 0);
   if (measured !== expected * 40) fails.push(`${measured} pair(s) measured, expected ${expected} theme(s) x 40 = ${expected * 40}`);
-  const pcs = hx ? [...hx.pcs].sort((a, b) => a.id.localeCompare(b.id)) : [];
+  // Sorted on String(id), so a control whose id is missing or not a string cannot throw here (Futaba F-2).
+  const pcs = hx ? [...hx.pcs].sort((a, b) => String(a.id).localeCompare(String(b.id))) : [];
+  // An id is what HOVER_CONTROLS is matched on: a control without a string id voids the run, named by what it is.
+  for (const pc of pcs) if (typeof pc.id !== 'string') fails.push(`positive control with ${pc.id === undefined ? 'no id' : `the non-string id ${JSON.stringify(pc.id)}`} (${pc.what ?? '?'}; ${pc.theme ?? '?'} ${pc.pair ?? '?'}): HOVER_CONTROLS (run.mjs) cannot match it, so nothing would enforce it; its id in hover.cjs must be a string`);
   // Every control printed below is enforced: the ids that ran must equal HOVER_CONTROLS, each once.
   for (const id of HOVER_CONTROLS) if (!pcs.some((p) => p.id === id)) fails.push(`positive control ${id} did not run`);
-  for (const id of new Set(pcs.map((p) => p.id))) {
+  for (const id of new Set(pcs.map((p) => p.id).filter((id) => typeof id === 'string'))) {
     const n = pcs.filter((p) => p.id === id).length;
     if (!HOVER_CONTROLS.includes(id)) fails.push(`positive control ${id} ran but is not in HOVER_CONTROLS (run.mjs), so nothing would enforce it`);
     else if (n > 1) fails.push(`positive control ${id} ran ${n} times`);
