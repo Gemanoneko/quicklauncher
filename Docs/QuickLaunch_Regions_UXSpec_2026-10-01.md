@@ -1392,3 +1392,227 @@ This **replaces** the two lines that said the opposite:
 Both now read "Win+D leaves them up, not minimised," citing this ruling.
 
 **Attached-mode behaviour is unchanged and was never in question.** Section 0's "at a glance" table (Win+D does not hide it) and section 7.2 ("Win+D leaves regions visible, spike result 6/6") already said this, and Futaba measured attached regions passing Win+D before this ruling. No other spec rule conflicts with fallback regions staying up — nothing here required a region to yield specifically to Show Desktop.
+
+---
+
+## Addendum — M4 rulings (Judy, 2026-10-05)
+
+Status: final, uncommitted. Sergei handed Judy the 18 open points of TechPlan 9 (Ender's M4 report, deviations 32 to 51). Seventeen are settled here; one (14) is for Sergei, with a recommendation. Eight rulings change what was built and nine keep it; six more items turned up that Ender did not ask about (F1 to F6). The addendum **replaces** the spec above where they differ: 2.3 and 2.4 (the stop; the Row name and notice), 2.8 and 9.3 (empty cell, edit label), 3.2 (rename in a Row), 5.6 (Row `EDIT`), 6.1 (margin contract, Row end padding) and 7.5 (notice colour and time).
+Inputs: TechPlan 9; `layouts.js`, `region.css`, `region.js`, `app.js`, `base.css`, `banner-layers.js`, `index.html`; the six gallery folders (`column`, `column-edit`, `row`, `column-empty`, `row-empty`, `column-empty-edit`; 101 themes each) and the 101 theme files (read-only; worktree `wip/regions` at `12706f8` plus uncommitted M4). No app was launched.
+Method, three scratch passes (nothing in the repo written; files in the scratchpad `judy-m4\`):
+1. **Looked.** Every contact sheet, then mosaics of all 101 leading cells and headers (view and edit), the nine themes with their own header border, and capped lists.
+2. **Measured, with a scratch copy of Ender's gallery tool.** Same guards (offscreen, stubbed dialogs, `uncaughtException` logs and exits, registry and process checks). It adds what the gallery does not draw: the filter chip (`calc`, `spreadsheet`), each notice string, the update offer, the rename field, cluster hover, the names `Region 8` and a 24-character one, icon size 32, a Column held at 820 and a Row cut at 644 with 14 tiles. Each state records every control's rect, `scrollWidth` against `clientWidth`, the lines a text needs against the lines it shows, resolved colours and the scroll range of the field and of the tile list. 101 of 101 themes in every run. Candidate CSS went in as a constructed stylesheet; the final text (below) was run as one set at the end: 0 overlapping rects, 0 controls outside the window, 0 scroll range on the tile list with 6 and 5 tiles, in every state.
+3. **Contrast.** The gate's own maths (WCAG luminance, colours flattened on black, a translucent colour composited over the surface it sits on) over all 101 themes. Every figure below is the lowest of 101 unless stated.
+
+Ender's "0 overlaps" was true for the controls his gallery looks at. Its overlap test does not include the rename field, the Row notice or the banner text, which is where F1 and the notice defects sit. Add `.region-rename-input`, `#lead-notice` and `#update-text` to its selector list.
+
+| # | Point | Ruling | Why |
+|---|---|---|---|
+| 1 | Growth with no room | **Keep.** The region stops at the neighbour or the edge and scrolls; it never moves | 4.1.5: other regions never move, and the user's place stays theirs. The stop now shows a peek (2) |
+| 2 | The 90% stop | **Change.** 90% stays the ceiling; the window is trimmed so the next tile shows 24 to S DIP | 30% of work-area sizes leave under 24 DIP, and the scroll thumb is invisible (Q18) |
+| 3 | Column edit-bar label | **Keep** cluster only. 9.3 amended | The bar, every tile's ✕ and the underlined names already say "editing" |
+| 4 | Edit-bar tag in Column | **Keep** hidden | 180 px cannot hold it |
+| 5 | Column header with a filter | **Change.** The name is not drawn while the chip shows; the chip takes the room | As built the typed text reads `C…` in 101 of 101 |
+| 6 | Row filter chip | **Keep** (84 x 26, name line, hidden in edit mode) | `CALC` fits in 101 of 101 |
+| 7 | Row name | **Change.** Two lines, in a 54 px icon-and-name block | `Region 8` is cut in 94 of 101 as built |
+| 8 | Row notices | **Change.** `--text` kept; **8 s**, not 5; wraps up to 3 lines | Clipped in 101 of 101 as built, and Grid and Column show the same notice for 8 s |
+| 9 | Row rename | **Keep.** Menu Rename or F2 (the name is not drawn in edit mode) | The field fits; 0 overlaps |
+| 10 | Column notice slot | **Change.** Notices wrap to 2 lines; the update layer shows its buttons, not its message | 101 of 101 messages clipped to `UP…` or worse |
+| 11 | Empty cell | **Change.** Text in `--text`, sub-line 11 px, a Row's sub-line always 2 lines. **Count: 18 of 101 wrap in a Row, 0 in a Column** | `--text-dim` text is under 4.5:1 in 13 themes (1.31 worst) |
+| 12 | A layout switch saves | **Keep.** Yes. Not a product call | Otherwise the saved layout and the saved rect disagree after a restart |
+| 13 | + NEW REGION ▾ | **Keep** | The pattern is Windows' own; `aria-haspopup="menu"` is built |
+| 14 | Fan and Ring in the menu | **For Sergei.** Recommendation: leave them out until M5 | See below |
+| 15 | Display changes | **Keep** | The fixed side never changes; the peek rule (2) applies after a shrink too |
+| 16 | Row header borders | **Keep** the plain right border and the kept shadow | Looked at all nine: none reads as broken |
+| 17 | Cluster glyph | **Keep** 13 px and the border. **Change** the hover glyph to `--text` | `#fff` fails 4.5:1 on 3 light themes (1.63 worst); `--text` is 5.18 or more in all 101 |
+| 18 | Theme art scrolls the list | **Not a theme matter.** The shell fixes it: the tile list scrolls, the field clips | Cause is the shell's scroller; 2 themes rotate their art, so no per-theme patch holds |
+
+### Exact changes
+
+**`region.css`.** Add after the M4 block. Where a selector below already exists above it, delete the old declaration. Existing rules that go: `body.region.layout-column #grid-container { scrollbar-gutter: stable; }`; in `body.region.layout-row #grid-container`, the `overflow`, `padding` and scrollbar lines; in `body.region.layout-row #app-grid`, `width: max-content`; in `body.region.layout-row #title-area`, `height: 44px` and `gap: 6px`; in `body.region.layout-row #title`, `line-height: 18px`; the whole `body.region.layout-row.lead-notice-on #lead-notice` rule.
+
+```css
+/* Q18: the tile list scrolls, the field only clips; theme art can never scroll a Column or a Row. */
+body.region.layout-column #grid-container,
+body.region.layout-row #grid-container { overflow: hidden; padding: 0; scrollbar-gutter: auto; }
+body.region.layout-column #app-grid {
+  height: 100%; box-sizing: border-box; padding: 16px;
+  overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable;
+}
+body.region.layout-row #app-grid {
+  width: 100%; height: 100%; box-sizing: border-box; padding: 16px 12px 16px 16px;
+  overflow-x: auto; overflow-y: hidden;
+}
+body.region.layout-column #app-grid::-webkit-scrollbar { width: 4px; }
+body.region.layout-row #app-grid::-webkit-scrollbar { height: 4px; }
+body.region.layout-column #app-grid::-webkit-scrollbar-track,
+body.region.layout-row #app-grid::-webkit-scrollbar-track { background: transparent; }
+body.region.layout-column #app-grid::-webkit-scrollbar-thumb,
+body.region.layout-row #app-grid::-webkit-scrollbar-thumb { background: var(--accent-text); border-radius: 2px; }
+
+/* Q5: while the filter chip shows, a Column's name is not drawn; the chip takes the room. */
+body.region.layout-column #header:has(#filter-chip:not(.hidden)) #title { display: none; }
+body.region.layout-column #filter-chip { flex: 1 1 auto; max-width: none; }
+body.region.layout-column #filter-chip-text { flex: 1 1 auto; min-width: 0; }
+body.region.layout-column #header:has(#filter-chip:not(.hidden)) #title-area { flex: none; }
+
+/* Q7: the Row's icon + name block is 54 px in every state; the name wraps to 2 lines. */
+body.region.layout-row #title-area { height: 54px; gap: 4px; }
+body.region.layout-row #title {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  white-space: normal; overflow: hidden; text-overflow: clip; overflow-wrap: anywhere;
+  font-size: 12px; line-height: 15px; max-height: 30px; max-width: 84px; text-align: center; margin: auto 0;
+}
+body.region.layout-row #edit-bar { top: calc(50% - 43px); height: 54px; justify-content: center; }
+body.region.layout-row #edit-bar .edit-label-short { color: var(--text); text-shadow: none; }   /* F2 */
+body.region.layout-row #header::before { max-width: 4px; }       /* F3 */
+body.region.layout-column #header::before { max-width: 12px; }   /* F3 */
+
+/* Q8: a Row notice wraps in the icon + name block (up to 3 lines). */
+body.region.layout-row.lead-notice-on #region-icon { display: none; }
+body.region.layout-row.lead-notice-on #title-area { justify-content: center; }
+body.region.layout-row.lead-notice-on #lead-notice {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+  width: 84px; max-width: 84px; white-space: normal; overflow: hidden; overflow-wrap: anywhere;
+  text-align: center; font-size: 11px; line-height: 15px; letter-spacing: 0.5px; color: var(--text);
+}
+
+/* Q10: a Column notice wraps to 2 lines in the 38 px slot; the update layer shows its buttons only. */
+body.region.layout-column #update-banner.notice #update-text {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  white-space: normal; overflow: hidden; text-overflow: clip; overflow-wrap: anywhere; line-height: 12px;
+}
+body.region.layout-column #update-banner:not(.notice) { justify-content: center; }
+body.region.layout-column #update-banner:not(.notice) #update-text {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* F1: a Column's rename field ends before the menu button. */
+body.region.layout-column #title-area { flex: 1 1 auto; }
+body.region.layout-column .region-rename-input { flex: 1 1 auto; width: 0; min-width: 0; }
+
+/* Q11: the empty cell's text is --text; the sub-line is no larger than the title; in a Row it is always 2 lines. */
+#app-grid .empty-cell, #app-grid .empty-cell .empty-title { color: var(--text); }
+#app-grid .empty-cell .hint-sub { color: var(--text); font-size: 11px; letter-spacing: 0.5px; }
+body.region.layout-row #app-grid .empty-cell .hint-sub .nowrap { display: block; }
+
+/* Q17: hover keeps the glyph readable on light themes (the global button:hover is #fff). */
+body.region #header-controls button:hover,
+body.region #filter-chip-clear:hover,
+.edit-cluster button:hover { color: var(--text); }
+```
+
+**`region.js` and `app.js`.**
+- The tile list is the scroller now. In `region.js`, lines 103, 104 and 158 to 163 use `$('app-grid')` where they use `elGridBox` (`scrollTop = 0`, `scrollLeft = 0`, the wheel handler's `scrollLeft += d`). `scrollIntoView` in `app.js` needs nothing. Ender's self-test checks that read scroll on `#grid-container` read `#app-grid`.
+- `ROW_NOTICE_MS = 8000`. One notice, one time: Grid and Column already show it for 8 s (C5).
+- `showLeadNotice`: `elLeadNotice.title = on ? elUpdateText.textContent : ''` (a clamped notice gets its full text as the tooltip).
+- `drawBanner`: `banner.title = view.layer === 'update' ? view.text : ''` (the Column's update message is not drawn, so its text is the tooltip).
+
+**`layouts.js`, `boxAt` (the peek rule, Q1 and Q2).** `boxAt` gets `S` and the extras (`edit`, `notice`) as a seventh argument. After `L` is settled, when `L < wanted` (the list scrolls, whatever stopped it: the 90% cap, a neighbour, the edge):
+
+```js
+const lead  = layout === 'column' ? HEADER + (edit ? BAR : 0) + (notice ? BAR : 0) : LEAD;
+const pitch = S + 40;                                  // a cell of S + 32 and the 8 px gap
+const phase = (((L - lead - PAD) % pitch) + pitch) % pitch;   // how far the cut is into a tile
+if (phase < 24 || phase > S) {                         // under 24 DIP of the next tile, or into its label
+  const land = Math.max(24, S - 24);                   // 40 at S = 64: the cut falls inside the icon
+  const cut = phase < 24 ? phase + pitch - land : phase - land;
+  if (L - cut >= oneCell) L -= cut;                    // never below one cell
+}
+```
+
+Never longer than before; at most 87 DIP shorter (swept: S = 32, 64, 96, 128 and every length from 400 to 2400, 0 violations). Test vectors, S = 64, no extras: Column 820 stays 820; 864 gives 824; 655 gives 616; 936 stays 936. Row 2304 gives 2232; 1229 gives 1192; 3071 and 1728 stay. With the edit bar showing, a Column at 820 gives 758. A capped Column can therefore change height (by up to 87 DIP) when edit mode starts; accepted, since the list is capped anyway.
+
+**Copy.** 9.3: the `Edit label` row reads `// EDIT MODE` (Grid) / `EDIT` (Row, Fan, Ring) / none (Column: the bar is the cue). `Empty (Column, Row)` unchanged in words. 2.4's "5 s" and 7.5's "5 s, `--accent-m`" read "8 s, `--text`, up to 3 lines". 3.2: in a Row, rename is the region menu's Rename or F2 (the name is not drawn in edit mode, so there is nothing to click).
+
+### Per-question notes (where a ruling needs its evidence)
+
+**1 and 2. The stop, and the peek.** Moving a region when it grows would move what the user placed; 4.1.5 already says other regions never move. So it stops and scrolls. What was missing is a reason to look for more. Run over work-area heights 600 to 1440 and widths 1280 to 5120 at S = 64: the cut leaves under 24 DIP of the next tile in 29.6% (Column) and 31.2% (Row); at 2560 wide it is 8 DIP, and a Row cut between two tiles shows nothing at all (seen in the 14-tile Row at 644). The as-built thumb is `--border`: under 3:1 in 101 of 101 themes (`resident-evil` 1.07). With neither cue, a full-looking window hides tiles. Sergei's own screen (3413 x 912) is unchanged by the rule (peeks of 47 and 36 DIP). The thumb becomes `--accent-text` (in the Q18 CSS): 3.02:1 or better in all 101.
+
+**3 and 4.** Column's bar shows the cluster; every tile shows ✕; names underline: three cues. A label would need about 36 DIP beside the 80 DIP cluster in a 180 px bar, and a wide font would crowd it. The Grid's theme tag stays Grid's.
+
+**5. Column filter.** As built, `calc` gives a chip of 53 to 59 DIP whose text is clipped in 101 of 101 (`C…`) beside a name of 28 to 35 DIP (`Ga…`). What the user typed matters more than a name they chose earlier, and the icon and the active border already say which region it is. After: chip text is not clipped in 101 of 101 (about 49 DIP of room for `CALC`), chip 93 to 94 DIP wide, ✕ 24 x 24. An 11-letter filter still clips at about 6 letters (`SPREAD…`), in Column and Row; accepted. The handle keeps its `aria-label`, so the name is still announced.
+
+**6.** Keep. The chip hidden in edit mode means a filter can be on while it is not drawn; Esc clears the filter first (7.4), so the cost is one extra Esc. Not worth 90 DIP of cell height at S = 32.
+
+**7. Row name.** The theme's title style at 12 px is up to 5 px letter-spaced, so the default `Region 8` needs 67 to 103 DIP in an 84 DIP line: cut in 94 of 101. Two lines hold it: shown in full in 101 of 101 (two lines in 94 themes, one in 7). A 24-character name clamps to two lines with an ellipsis in all 101; the Manager has the full name. The block is 54 px in every state, so the icon never moves between view, filter, notice and edit; the group is 86 DIP tall (54 + 8 + 24). At S = 32 (a 96 px cell) it fits with 5 DIP above and below (6 themes, every state, 0 overlaps).
+
+**8. Row notices.** As built: `TARGET MISSING` needs 91 DIP, `TARGET UNREADABLE` 117, `3 FILES ARE NOT SHORTCUTS` 156, in 84; clipped in 101 of 101, and centred text is cut on both sides (`ARGET MI…` in `lcars`). After: the notice replaces the icon and the name (the block that is 54 px high): 2, 2 and 3 lines, and the lines it needs equal the lines it shows in 101 of 101. `SAVE ERROR — SETTINGS MAY NOT PERSIST` fills three lines and clamps in 38 of 101 (the tooltip has the rest; it is a store failure, rare). 5 s was the hub's number from the first spec; C5 set the banner layer to 8 s, and a message that takes 2 to 3 lines to read needs the longer time.
+
+**9. Row rename.** Field 84 x 19 at x 5.7 to 89.7, 0 of 101 overlap the ⋯ button; at S = 32 too.
+
+**10. Column notice slot.** As built, single-line: `TARGET UNREADABLE` clips in 38 of 101, `3 FILES ARE NOT SHORTCUTS` and `SAVE ERROR …` in 101. Two lines of 12 px fit the 38 px slot: the first two need 1 to 2 lines and show them, clipped in 0 of 101 (`SAVE ERROR …` needs 3 and clamps at 2 in all 101, with its tooltip). The update layer cannot carry its message at 180 px: `UPDATE AVAILABLE — v1.95.0` needs about 171 DIP and `UPDATE READY — WILL INSTALL AND RESTART` about 267, against 22 to 51 left beside DOWNLOAD and ✕, so it read `UPDA…` in 101 of 101. Now the slot shows `[DOWNLOAD] ✕` or `[INSTALL NOW] ✕`, centred (DOWNLOAD 34.2 to 115.8, ✕ 121.8 to 145.8); the text stays in the DOM for screen readers and as the slot's tooltip. The percentage of a running download is not shown in a Column (the button reads `DOWNLOADING...`); accepted.
+
+**11. Empty cell, and the count.** Method: the real Column (180 x 168, no items) and Row (228 x 128, no items) pages, all 101 themes, offscreen Electron at 1.5x; `.hint-sub` height divided by its 15 px line gives its line count. **Column: 0 of 101 wrap. Row: 18 of 101 wrap to two lines, none to three; `DROP HERE` wraps in none; no cell overflows.** The 18: alien, blair-witch, cyberpunk, dead-space, deus-ex, doom-classic, firefly, ghost-shell, half-life, matrix, nonary-games, pip-boy, scp, stalker, star-wars-separatist, terminator, tron, x-files. At 11 px the same 18 still wrap (measured), so a Row's sub-line is made two lines on purpose: `or` over `right-click` in all 101; no cell overflows. Colour: `DROP HERE` (`--text-dim`) is under 4.5:1 in 13 themes (`lovecraft` 2.52) and the sub-line (`--hint-sub-color`) in 12 (`event-horizon` 1.31, `blair-witch` 1.72); it is the only instruction an empty region gives. Now `--text`: 5.76:1 or better in all 101. The ⊕ (under 3:1 in 100 themes) and the dashed border (101) stay on the Grid hint's tokens: decoration, and the border takes `--accent-text` when it is the landing slot (A1). The sub-line was 12 px under an 11 px title; it is 11 px with 0.5 px spacing now.
+
+**12.** A layout switch is the user changing the region's geometry, which 4.4 says is the one thing that is saved. Without it the saved layout and the saved rect disagree after a restart (a Column at a Grid's rect). The refusal box: info, title `QuickLauncher`, one button `OK`, text `No room for this layout. Move the region first.` (9.3), over the Manager when the switch came from there; the select shows the layout kept.
+
+**13.** The ▾ is the Windows dropdown-button cue and the native menu matches the region menu. `aria-haspopup="menu"` is in `manager.html`. The tooltip stays `Create a region`.
+
+**14. For Sergei.** Should the region menu's Layout list Fan and Ring (greyed) before M5? **Recommendation: no, as built.** A greyed item is for a state the user can change (`Ring (max 12)` greys until they remove shortcuts); these two have no remedy until a build that has them. The tray's New region and the Manager's + NEW REGION already list three layouts, so a greyed pair in one menu would be the odd one. He may prefer to show what is coming; if so, `Fan (M5)` and `Ring (M5)`, disabled, in all four places.
+
+**15.** Column and Row shorten and scroll on a smaller work area, never below one cell (168 high; 228 wide), the fixed side untouched; the home layout (4.4) brings them back. The peek rule runs in the same `boxAt`, so the shortened window peeks too.
+
+**16.** The nine (deus-ex, dune, ghost-shell, half-life, mass-effect, matrix, terminator, warhammer, x-files), looked at in a full Row: the 1 px right border and the kept shadow read as the same theme. The 3 px top border of `half-life`, the 2 px top border of `x-files` and the 2 px gold bottom border of `warhammer` are not carried; that is the "different look" a vertical cell implies, not a defect.
+
+**17. Cluster.** 13 px reads in every theme's font (⊞ renders in all 101); the glyph is under 4.5:1 in 0 of 101 (`doom-classic` 5.57). The hover is the defect: the global `button:hover` sets `#fff`, which on a light theme sits on a light hover surface: `mirrors-edge` 1.63, `portal` 1.65, `silent-hill` 2.19. The header ⋯ and the filter ✕ share the rule and fail on the same three (1.61, 1.66, 2.15). With `--text`: 5.18 or better in all 101. Same fix as B12.1's ↩.
+
+**18. Theme art that scrolls the list.** Not a theme matter: the shell makes the art part of its scroller. Measured as built (the tile list fits, so nothing should scroll): Column with 6 tiles, `alien` and `ghost-shell` scroll 206 DIP (their art boxes are 160% at -30%; they are the only two themes that give the art box a size of their own, every other one takes the base `inset: 0`); Column with 1 or 2 tiles, `alien` and `ghost-shell` 38 to 70, `half-life` 53 (its 200 px ▲ glyph is taller than the field); Row, `alien` and `ghost-shell` scroll 164 sideways, `dead-space` 5 and `lcars` 1 (the theme's own `#app` border, 5 px on the left in `dead-space` and 1 px all round in `lcars`, takes 4.7 and 1.3 DIP of the Row's width, so the fixed 548 DIP tile line overflows by that much and a thumb shows); a 3-tile Grid, `alien` and `ghost-shell` 61. `alien` (5 s) and `ghost-shell` (25 s) also turn their art through 360 degrees in a loop, so even a box that fits changes the scroll range as it turns; patching the two themes would not hold. The fix is above: the field clips, the tile list is the scroller. Measured with that CSS: the tile list's range is 0 in 101 of 101 themes in 1010 Column and 808 Row states; the first tile's rect is unchanged (Column x 16 to 160, Row x 112); with 14 tiles a Column at 820 scrolls 700 DIP and a Row at 644 scrolls 930. Only the art changes: it now fills the 4 DIP the Column's gutter used to take off it (a shift of at most 2 DIP). The Grid has the same defect today; offered below.
+
+### Found in the pass, not among the 18
+
+- **F1. A Column's rename field runs under the ⋯ button, in 101 of 101 themes.** The field is 120 DIP wide (x 38 to 158.3) and the button starts at x 138.3: 20 DIP covered, and the dots show through the field. Rule: the Column CSS above; the field ends at x 132.3, the button starts at 138.3. Futaba's "no element covers another" (section 10) was not met in this state.
+- **F2. The Row's `EDIT` label is under 4.5:1 in 51 of 101 themes and under 3:1 in 24** (`--accent-m`, 10 px, on the header surface; `mordor` 1.82, `portal` 1.92). It is the Row's only text cue for the mode. `--text`, no glow: 5.62 or better in all 101. The Grid's `// EDIT MODE` takes the same token; not changed here (offered).
+- **F3. Three themes' accent bar covers header content.** `lcars` draws a 16 px bar down the left edge, `mass-effect` 10, `warhammer` 6. In a Row (content from x 6) the bar covers the first button of the cluster and the left of the chip and the notice (`ARGET MI…`); in a Column header, and by the same CSS in the Grid's, it covers 4 DIP of the region icon in `lcars`. The Row's bar is capped at 4 px, the Column's at 12 (the icon starts at 12). The bar is still the theme's signature, only narrower.
+- **F4. The scroll thumb cannot be seen.** `--border` is under 3:1 in 101 of 101 themes; in a Column or Row, where scrolling is the only way to the rest of the list, it is `--accent-text` (in the Q18 CSS).
+- **F5. For Jane: with a Row as the only layout, the update offer has no home.** A Row draws no banner (7.5); the Manager has CHECK FOR UPDATES and no DOWNLOAD or INSTALL NOW (`manager.js` has no update handler); the tray has the dot and Check for Updates. A Row primary with no Grid or Column beside it cannot download. Not a layout question; it needs a DOWNLOAD route (a tray item, or the Settings page) before a Row can be primary.
+- **F6. The 4 px right gutter of a Row** (spec's `W - 20`, built as the field's right padding) belongs to a vertical scrollbar a Row does not have. It is the scroll-end padding now: 12 (the Q18 CSS). The window formula and the first tile's place do not change. 6.1's margin contract reads: Column x 16 to W - 20; Row, tiles from x 112, 12 DIP of padding after the last tile.
+
+### Contrast, measured
+
+| Pair | Used for | Floor | As built, worst of 101 | Ruled, worst of 101 |
+|---|---|---|---|---|
+| `--accent-m` on the header surface, 10 px | Row `EDIT` | 4.5 | `mordor` 1.82; 51 under 4.5, 24 under 3 | `--text`: `mordor` 5.62 |
+| `#fff` on `--btn-hover-bg` | cluster, ⋯, ✕ on hover | 4.5 | `mirrors-edge` 1.63, `portal` 1.65, `silent-hill` 2.19 | `--text`: `doom-classic` 5.18 (cluster), `mordor` 5.20 (header) |
+| `--text` on the header surface, 11 px | Row notice | 4.5 | n/a | `mordor` 5.62 |
+| `--text-dim` on `--bg`, 11 px | `DROP HERE` | 4.5 | `lovecraft` 2.52; 13 under | `--text`: 5.76 |
+| `--hint-sub-color` on `--bg`, 12 px | `or right-click` | 4.5 | `event-horizon` 1.31; 12 under | `--text`: 5.76 |
+| `--border` on `--bg` | scroll thumb | 3 | `resident-evil` 1.07; 101 under | `--accent-text`: 3.02 |
+| the glyph, normal | cluster | 4.5 | `doom-classic` 5.57 | unchanged |
+
+### Nothing covers anything (rects, S = 64 unless stated; 2001, same in all 101)
+
+- **Row cell** (96 x 128), view: icon y 21 to 41; name x 6 to 89.3, y 45 to 75; ⋯ x 35.7 to 59.7, y 83 to 107.
+- Filter: icon y 21 to 41; chip x 5.7 to 89.7, y 49 to 75, its ✕ x 65 to 89, y 50 to 74; ⋯ as above.
+- Notice: text x 5.7 to 89.7, y 33 to 63 (2 lines; 3 lines y 25.5 to 70.5); ⋯ as above.
+- Edit: `EDIT` x 34 to 62, y 26 to 38; cluster x 8 to 32, 36 to 60, 64 to 88, y 46 to 70; ⋯ as above (13 DIP clear).
+- Rename: field x 5.7 to 89.7, y 45 to 64.3; ⋯ as above.
+- **S = 32** (96 high): view icon y 5 to 25, name y 29 to 59, ⋯ y 67 to 91; edit `EDIT` y 10 to 22, cluster y 30 to 54; chip y 33 to 59; notice y 17 to 47; rename y 29 to 48.3. No pair intersects.
+- **Column header** (180 wide): filter: icon x 12 to 32; chip x 38 to 132.3, y 5 to 34.3; ✕ x 101.7 to 125.7 (24 x 24); ⋯ x 138.3 to 168, y 7.7 to 31.7. Rename: field x 38 to 132.3, y 10 to 29.3.
+- **Column slot** (y 688 to 726): notice text x 12 to 138, ✕ x 144 to 168; update layer DOWNLOAD x 34.2 to 115.8, ✕ x 121.8 to 145.8, y 695.3 to 719.3.
+- The Column's hidden update message is a 1 x 1 clipped box, absolutely positioned: it covers nothing and takes no click.
+
+### Tooltips (every new or changed control)
+
+No new control. New `title`s: the Row's clamped notice (its full text) and the Column slot (the update message). The cluster, ⋯ and ✕ keep theirs.
+
+### Futaba measures (each seen to fail on a deliberate break first)
+
+1. **Scroll.** 101 themes, Column with 6 tiles and Row with 5, in view, edit and with a notice: `#app-grid` `scrollHeight - clientHeight` (Column) and `scrollWidth - clientWidth` (Row) are 1 or less; `#grid-container` is `overflow: hidden`. With 14 tiles at 180 x 820 and 644 x 128 the list scrolls and `alien` and `ghost-shell` are not different. Break: remove the Q18 rule; `alien` scrolls 206.
+2. **Peek.** The `boxAt` vectors above, and the peek of the next tile (the cut's phase) is 24 to S for 20 work-area sizes between 600 and 1440 high and 1280 and 5120 wide, at S = 32, 64 and 128.
+3. **Filter in a Column.** `calc` typed: `#title` computed `display: none`, the chip text not clipped, the chip's right edge at or before the ⋯ button's left minus 6, in 101 themes.
+4. **Row name.** `Region 8` fully visible (`#title` `scrollHeight` at most `clientHeight`, at most 2 lines) in 101 themes at S = 64 and in 6 at S = 32; `#title-area` is 54 px high in view, edit and notice.
+5. **Notices.** The three Row strings are not clipped in any theme and disappear after 8 s, not 5; the Column's two longest strings take at most 2 lines, the slot stays 38 px high, DOWNLOAD and ✕ are inside 180.
+6. **Rename.** A Column's field right edge is at most the ⋯ left minus 6 in 101 themes; a Row's field does not meet ⋯.
+7. **Empty cell.** `.empty-cell` and `.hint-sub` resolve to `--text`; the sub-line is 1 line in a Column and 2 in a Row in 101 themes; no overflow.
+8. **Hover.** Cluster, ⋯ and chip ✕ hovered in `mirrors-edge`, `portal`, `silent-hill`: the glyph resolves to `--text`, 4.5:1 or better.
+9. **EDIT label.** Resolves to `--text` in a Row.
+10. **Bars.** `#header::before` computed width is 4 px (Row) and 12 px (Column) in `lcars`, and unchanged in the Grid.
+11. **Hit-test selector.** The overlap test includes `.region-rename-input`, `#lead-notice`, `#update-text`; no pair intersects in any state of section 10.
+
+### Offered, not applied
+
+1. **The Grid has the same art scroll** (a 3-tile Grid: `alien` and `ghost-shell` scroll 61 DIP today, and the thumb is invisible). The same two rules with `layout-grid` would fix it; it changes the shipped Grid, so it is Sergei's through Jane.
+2. **The Grid's `// EDIT MODE` label** takes `--accent-m` like the Row's `EDIT` did (not measured on the Grid's bar, which is a different surface).
+3. **`lcars` covers 4 DIP of the Grid header's region icon.** `body.region.layout-grid #header::before { max-width: 12px; }`.
+4. **A tooltip for a clipped name** (`Region …` in `akira`, `dune`, `scp` at 180 wide): set `title` to the name when `scrollWidth` exceeds `clientWidth`, view mode only.
