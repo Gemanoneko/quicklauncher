@@ -109,3 +109,90 @@ New compare run, output `scratch/hdr-compare2/` style scratchpad dirs (not Ender
 - `hdr-compare2/` — compare, `--batch=extra-sample` (PASS)
 
 All under the session scratchpad, same machine, same window/scale/raster settings as Ender's original run (424x300 @1.5x, software raster) so the two are visually comparable apples-to-apples.
+
+---
+
+## Addendum (2026-10-05, after Ender applied 138): the art offset is 136.67, not 138
+
+Judy. Material read: `art-compare/` (40 sheets + `batch-header-art-138.png`), `gap3-tol0.txt`, `gap3-tol16-summary.txt`, `gap-measure3.js`. Ender's method is sound: each capture is diffed against a bare-header reference (art hidden, three buttons `visibility:hidden`), so patterned headers measure too, and the control checks pass 40/40 (cluster edge identical with and without the art edit, art edge identical between HEAD and the removal-only render). This addendum supersedes the value in §2 and the 34px figure in §1; nothing else in the doc changes.
+
+### A1. Rulings
+
+| # | Question | Ruling |
+|---|---|---|
+| 1 | The `right:` value | **136.67px** (not 138, 137 or 136) |
+| 2 | Scope | **All 40 themes**, one value, one commit |
+| 3 | `base.css` 270-275 | **Comment must be rewritten** (text in A5); the `right: 160px` constant it describes **stays** |
+| 4 | `base.css` 282 and `max-width: 423px` | **Breakpoint stays 423px; the comment on 282 is rewritten** (text in A6) |
+
+### A2. What I got wrong in the first pass
+
+§1 took the removed width as `min-width: 28px` plus the 6px gap, 34px, and measured 35 on the persona-4 sheet. My own scan read 37 and 90 image px: a difference of 53 image px, which is **35.33 CSS px**, not 35 and not 34. I wrote it off as anti-aliasing. It was not noise. A 2 image px miss on a 1.5x capture is a real offset, and I should have chased it before putting a number in front of Ender. The cause: the Fullscreen glyph made that button wider than the 28px floor (about 29.33 CSS px), so the cluster's left edge moved 29.33 + 6 = 35.33 CSS px. `gap3-tol0.txt` confirms it on every theme: `removed 53` image px on 40/40, `artMove 51` (my 34px) on 40/40, residual `+2` image px (+1.33 CSS) on 40/40, gap equal to HEAD on 0/40. Section 2 said the fix "restores the gap". It did not. This one does.
+
+### A3. The value
+
+The art must move exactly as far as the cluster edge moved: 53 image px at 1.5x, 35.33 CSS px. 172 - 35.33 = **136.67**. At 1.5x that is 205 image px against HEAD's 258, a move of 53, residual 0. Write `136.67px`: two decimals leave 0.003 CSS px (0.005 image px) of error, which snaps to nothing.
+
+Why not the integers:
+
+- **138 (+1.33 CSS, +2 image px).** Already measured as wrong on 40/40. The error is below what an eye catches on a 24 to 62 CSS px gap, but it is a known error with a free exact fix, and a zero-tolerance check ("gap equal to HEAD, 40/40") is worth more to Futaba than a tolerance she has to argue about.
+- **137 (+0.33 CSS).** 205.5 image px. A half-pixel offset is neither exact nor integer at Sergei's scale; the box snaps to 205 or 206 and which one is the renderer's business. Rejected.
+- **136 (-0.67 CSS, -1 image px).** Integer and closer than 138, but still not equal to HEAD, and it errs the other way (art pushed 1 image px toward the buttons).
+- **136.67.** Exact at 1.5x. At other display scales it snaps to the nearest device pixel, which no integer does better than within 0.5 device px.
+
+The value no longer depends on any glyph: the Fullscreen button is gone, so 35.33 is now a fixed historical constant, not a live measurement. The three remaining buttons are unchanged from HEAD, so the cluster edge is the same quantity in HEAD and live.
+
+Visual check, not just numbers: I stacked HEAD against live for cyberpunk (widest gap, 62 CSS px), nonary-games, siren, ff9, persona-4 and warhammer-tyranids. With the art at 138 it stays grouped with the controls at about HEAD's gap in all six. The side effect is that the gap between the title and the art grows by the same 35.33 CSS px. That is the right trade: the header gained exactly one button's width of free space, and it can go between the title and the art (art stays attached to its controls, as in HEAD) or between the art and the controls (the defect). I rule the first. No theme's art comes near the title: the widest title I measured (Star Wars Republic) ends about 136 CSS px from the window's left edge, and the art's left edge is now at 202 CSS px (424 - 222; 203 at 136.67).
+
+The `tol16` summary shows one theme at `artMove 48` and delta 5. At tol 0 that theme reads 51 and 2, like the rest. A faint art edge sits under the 16-level threshold; it is a measurement artefact, not a layout difference. Tol 0 is the authority. I did not chase which theme.
+
+**Edit, exact:** in each of the 40 files, on the single `#header::after` header-art line, `right: 138px;` becomes `right: 136.67px;`. Checked on the live tree: each of the 40 files contains exactly one `right: 138px`, on the `position: absolute; top: 1x px; right: 138px; left: auto;` line (shire's `top` is 19px, the rest 10px), none outside it, and no theme file still carries 172.
+
+### A4. Scope: all 40, not five
+
+All 40. §2's table named the five themes in the review batch plus Matrix because those were the sheets I had; the scope sentence is §4, "recommend Ender apply it across the full list in one pass", and Ender read it correctly. The case is now measured, not inferred: the removal moved the cluster by 53 image px on 40/40 and the art edge by 51 on 40/40, so every theme's gap widened by the same 2 image px. The offset has no per-theme term, because button sizing lives once in `base.css`. A five-theme fix would leave 35 themes with a visibly wider gap, and 40 files share one line of CSS. Unchanged: the 60 legacy-text themes (Matrix included) have no art box and no defect; `stranger-things` has no `#header::after` at all.
+
+Not in this change, still recommended: one shared custom property for the art offset in `base.css`. 40 files carrying a derived decimal is the cost of not doing it. It is a larger diff than this fix, so it waits.
+
+### A5. `base.css` lines 270-275
+
+Rewrite, because two numbers in it are false now (148 is 112.67; 172 is 136.67). The constant `right: 160px` on line 277 **does not change**: it is the right edge of the legacy-text box, and it now leaves 47 CSS px clear of the buttons rather than 12. Nothing collides and nothing orphans (the text is left-anchored and truncates with an ellipsis; at the default 424 window the box is 0 wide anyway, per the 480px gate on line 278). Tightening it to 124.67 with a 444.67 gate would re-flow 60 themes for a gain nobody asked for. Leave it, and say so in the comment.
+
+Replace lines 270-275 with:
+
+```css
+/* #header::after, two kinds of user:
+   - legacy flavour text: left: 200px (set by the theme), no width. It gets the box between
+     left:200px and right:160px, and is 0 wide below a 480 px window, where that box would be
+     under 120 px. The buttons start 112.67 px from the right edge, so right:160px keeps 47 px
+     clear. It kept 12 with four buttons; the slack is left as it is.
+   - header art / tags: the theme sets left:auto, right:136.67px and an explicit width (84px).
+     136.67 is the old 172 less the removed Fullscreen button (29.33 px wide) and its 6 px
+     gap: the art keeps the gap to the buttons it had before. An explicit width wins over
+     the rule below, so art is unaffected by it. */
+```
+
+### A6. `base.css` line 282 and the 423px breakpoint
+
+**The breakpoint does not change.** `max-width: 423px` hides the art below the default 424px window, and that behaviour is the invariant: at every window width, art is shown in exactly the cases it was shown at HEAD.
+
+The comment's reason is what broke. "Below the default width it would meet the title" was a collision threshold at 172. At 136.67 it is no longer true: at 423px the art's left edge is about 203 CSS px from the window's left edge against about 136 for the widest title, so there is room. The breakpoint is now a policy ("art only at the default width or wider"), and the comment must say that instead of naming a collision that cannot happen.
+
+Replace line 282 with:
+
+```css
+/* Art is anchored 136.67 px from the right and is 84 px wide. It is hidden below the default
+   424 px window, the same widths as before the Fullscreen button was removed. At 423 px it
+   would clear the title by about 66 px (widest title: Star Wars Republic), so this is a rule
+   about window width, not a collision. */
+```
+
+Possible later gain, not scheduled: the 35.33 px the art moved also moves the point where it would meet the title, about 35 px lower (to about 389px), so art could stay visible in 389 to 423px windows. That needs the title width of every one of the 40 measured at that width; I measured one. A window narrower than the default is rare. Not worth a global rule change today.
+
+### A7. Acceptance, for Ender
+
+1. Apply A3, A5 and A6 together. CSS only; no JS, no layout rule.
+2. Re-render HEAD / removal-only / live and rerun `gap-measure3.js` at **tol 0**. Pass: `gap equal to HEAD: 40/40`, `delta {"0":40}`, `artMove {"53":40}`, checks `ok 40/40`.
+3. If any theme reads anything other than delta 0, STOP and report the theme and the delta. Do not tune it per theme and do not move to 137 to make a number come out; a non-zero result means my model of the box is wrong and I need to look at that sheet.
+4. Rerun the same gates that ran for 138. If a gate is keyed to theme-file content (the contrast-baseline hashes `HoverFix57 §2.3` describes), it moves a second time for the same files; re-baseline as for 138. No new decision.
+5. The cheat-sheet check from §7 is still open: the gallery has no overlay state, and nothing in this addendum changes that.
