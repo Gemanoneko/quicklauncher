@@ -661,7 +661,7 @@ The spike proved: window on the desktop layer, under windows, survives Win+D and
 | U7 | Sleep and resume; a resolution change while running. | Section 4.4 handles the positions. |
 | U8 | Moving from the Public Desktop and from a OneDrive-redirected Desktop. | Section 5.2: failure with a reason, the file stays. |
 
-Fallback window mode (`--ql-no-desktop-layer`, from the spike): same UX, but the regions are ordinary tool windows just above the desktop, so Win+D minimises them.
+Fallback window mode (`--ql-no-desktop-layer`, from the spike): same UX; the regions are ordinary tool windows just above the desktop. Win+D leaves them up, not minimised — a tool window (`skipTaskbar`, `WS_EX_TOOLWINDOW`) is not minimisable, so there is nothing for Show Desktop to do to it (Sergei 2026-10-05).
 
 ---
 
@@ -841,7 +841,7 @@ Yes. The Menu key (`ContextMenu`) and Shift+F10 do exactly the same thing:
 1. **Gate = the out-of-process foreground observer, not the 500 ms sampler.** No region window takes the foreground at create, rebuild, delete, quit, or the drop to fallback after 10 s. The check must be seen to fail on the stock code first (it did in launches 1 and 2). The desktop-child to top-level path (drop to fallback, quit from the desktop layer) is Ender's risk 2: A is not done until the observer shows it clean there too.
 2. **The first click does its normal job and also activates.** A tile click launches, a header press starts a move, ⋯ opens the menu, a right-click enters edit mode. No click-to-focus step, and the first click is never swallowed (keep Chromium's `MA_ACTIVATE`).
 3. **On activation** the region becomes the active region (7.3): border `--border-h`, no glow. No tile focus ring and no filter chip appear on activation (the ring is keyboard-only, `:focus-visible`). The first arrow key then focuses tile 1 and shows the ring (today's `moveTileFocus`); the first Tab goes to the handle's ⋯ (7.4); a typed letter filters this region.
-4. A click raising the region above windows it overlaps, and Win+D minimising it, stay as section 11 says. The hotkey still shows with `SWP_NOACTIVATE` and moves no focus.
+4. A click raising the region above windows it overlaps stays as section 11 says. Win+D leaves it up, not minimised (Sergei 2026-10-05; section 11). The hotkey still shows with `SWP_NOACTIVATE` and moves no focus.
 5. No new control, string or tooltip.
 
 **Switch to B only if** a fallback region is ever seen taking the foreground when Sergei did not just click it. B then ships with items 2 and 3 unchanged (`win.focus()` on pointer-down must still pass the click through and draw the same active border).
@@ -1378,3 +1378,17 @@ C2's first line, "a shortcut file belongs to one tile", was wider than its reaso
 - **Agreed without change:** 18, 19, 20, 22, 24, 25, 26, 28, 29 and 31 (not a UX matter). 24 is the right extension of C2's "no tile yet": an old reference tile on a store file is treated as the same case. 28 matches C4 (long paths were not required). 21, 23 and 27 are D2, D3 and D1.
 - **30 (`dune`).** Ender's measure in the app (0 of 101 under the title, with the real icon) supersedes my note from a static copy. Nothing to hide.
 - **Corrected: Pending real input, item 12** ("launch the 259-character moved `.url`"). A `.url` opens the default browser, which is Sergei's signed-in profile; ProcessRules § Our tooling must not intrude forbids launching a browser through the shell's default association. The source is my C4 measure 4 ("its moved shortcut launches"), which did not say with what. **Replaced by:** the boundary-length shortcut that is launched is a `.lnk` whose target is Notepad or Calculator (made with WScript), launched in an away window because the app's window takes the focus; a `.url` is used only for the refusal side and is never launched. Item 12 of Futaba's list changes the same way.
+
+---
+
+## Addendum — Win+D ruling, fallback mode (Judy, 2026-10-05)
+
+Status: final, uncommitted. Sergei ruled (2026-10-05) on Win+D (Show Desktop) for fallback regions, option (a): **fallback regions stay up on Win+D.** The spec changes; the app does not — fallback regions are already ordinary tool windows (`skipTaskbar`, `WS_EX_TOOLWINDOW`), which Windows does not minimise on Show Desktop, so there is nothing to build. Raised by Futaba's away-window report, which marked the old line FAIL vs spec against section 11's claim that Win+D minimises them.
+
+This **replaces** the two lines that said the opposite:
+- Section 11's fallback-mode sentence (the one naming `--ql-no-desktop-layer`).
+- Item 4 of "Fallback focus — recommendation" (Judy, 2026-10-01).
+
+Both now read "Win+D leaves them up, not minimised," citing this ruling.
+
+**Attached-mode behaviour is unchanged and was never in question.** Section 0's "at a glance" table (Win+D does not hide it) and section 7.2 ("Win+D leaves regions visible, spike result 6/6") already said this, and Futaba measured attached regions passing Win+D before this ruling. No other spec rule conflicts with fallback regions staying up — nothing here required a region to yield specifically to Show Desktop.
