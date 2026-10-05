@@ -101,7 +101,7 @@
 #header::before { background: #3AB4E8; box-shadow: none; }
 #header::after {
   content: '';
-  position: absolute; top: 10px; right: 172px; left: auto;
+  position: absolute; top: 10px; right: 136.67px; left: auto;
   width: 84px; height: 20px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cpolygon points='12,2.5 21.5,18 2.5,18' fill='none' stroke='rgb(232,160,32)' stroke-width='1.6' stroke-linejoin='round'/%3E%3Crect x='11.1' y='7.5' width='1.8' height='5.5' fill='rgb(232,160,32)'/%3E%3Ccircle cx='12' cy='15.4' r='1' fill='rgb(232,160,32)'/%3E%3Cpolygon points='30,3 36,3 30,17 24,17' fill='rgb(232,160,32)'/%3E%3Cpolygon points='44,3 50,3 44,17 38,17' fill='rgb(232,160,32)'/%3E%3Crect x='56' y='8' width='10' height='4' fill='rgb(232,160,32)'/%3E%3Crect x='68' y='8' width='10' height='4' fill='rgb(232,160,32)'/%3E%3Crect x='80' y='8' width='3.5' height='4' fill='rgb(232,160,32)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
   pointer-events: none;

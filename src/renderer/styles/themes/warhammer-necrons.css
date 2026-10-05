@@ -91,7 +91,7 @@
 #header { border-bottom-color: #2BD660; box-shadow: inset 0 -2px 0 #145A2E; }
 #header::before { background: #2BD660; box-shadow: none; }
 #header::after {
-  content: ''; position: absolute; top: 10px; right: 172px; left: auto;
+  content: ''; position: absolute; top: 10px; right: 136.67px; left: auto;
   width: 84px; height: 20px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cpath d='M3 18 L16 9.6 L29 18 Z' fill='rgb(30,44,38)' stroke='rgb(112,118,108)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M55 18 L68 9.6 L81 18 Z' fill='rgb(30,44,38)' stroke='rgb(112,118,108)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M24 18 L42 2 L60 18 Z' fill='rgb(30,44,38)' stroke='rgb(183,185,176)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M42 2 L45.2 4.9 H38.8 Z' fill='rgb(176,144,72)'/%3E%3Cpath d='M42 5 V18 M42 8 L34.4 18 M42 8 L49.6 18 M16 11.4 V18 M68 11.4 V18' stroke='rgb(43,214,96)' stroke-width='0.9' fill='none'/%3E%3Ccircle cx='42' cy='11.6' r='1.1' fill='rgb(43,214,96)'/%3E%3Crect x='0' y='18' width='84' height='1.1' fill='rgb(43,214,96)'/%3E%3Crect x='0' y='19.1' width='84' height='0.9' fill='rgb(18,110,52)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
   pointer-events: none;

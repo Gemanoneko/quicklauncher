@@ -170,7 +170,6 @@ ipcMain.handle('qlg:invoke', (e, channel, args) => {
     case 'apply-global-hotkey': hit('globalShortcut', `IPC apply-global-hotkey from renderer (${theme})`); return { ok: false, reason: 'INVALID' };
     case 'get-global-hotkey-status': return { ok: true, accelerator: null };
     case 'get-installed-apps': return cfg.hover ? require('./hover.cjs').INSTALLED_ROWS.map((r) => ({ ...r })) : [];
-    case 'toggle-fullscreen': case 'exit-fullscreen': return false;
     default: return null; // save-*, launch-app, add-app-*, window and update channels: counted no-ops
   }
 });

@@ -7,7 +7,6 @@ const { checkForUpdates } = require('./updater');
 const { refreshTrayMenu } = require('./tray');
 const { trimIcon } = require('./icon-trim');
 const { encodeIcons } = require('./icon-worker');
-const { toggleFullscreen, exitFullscreen } = require('./fullscreen');
 
 // Derive valid theme identifiers from the CSS files on disk.
 // This automatically stays in sync when themes are added or removed.
@@ -609,14 +608,6 @@ $apps | ConvertTo-Json -Depth 2
 
   ipcMain.handle('show-window', () => win.show());
   ipcMain.handle('hide-window', () => win.hide());
-
-  // Fullscreen state lives in fullscreen.js: win.isFullScreen() is always
-  // false for this frameless transparent window on Windows (F-1).
-  ipcMain.handle('toggle-fullscreen', () => toggleFullscreen(win));
-
-  // Renderer-scoped Escape handling: leaves fullscreen if the window is in
-  // it; returns the state after the call (false).
-  ipcMain.handle('exit-fullscreen', () => exitFullscreen(win));
 }
 
 // Remove a solid background color from a thumbnail image using BFS flood-fill from

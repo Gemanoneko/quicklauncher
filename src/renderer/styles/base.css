@@ -269,17 +269,23 @@ html, body {
 
 /* #header::after, two kinds of user:
    - legacy flavour text: left: 200px (set by the theme), no width. It gets the box between
-     left:200px and right:160px (the buttons start 148 px from the right edge; keep 12 px
-     clear), and is 0 wide below a 480 px window, where that box would be under 120 px.
-   - header art / tags: the theme sets left:auto, right:172px and an explicit width (84px).
-     An explicit width wins over the rule below, so art is unaffected by it. */
+     left:200px and right:160px, and is 0 wide below a 480 px window, where that box would be
+     under 120 px. The buttons start 112.67 px from the right edge, so right:160px keeps 47 px
+     clear. It kept 12 with four buttons; the slack is left as it is.
+   - header art / tags: the theme sets left:auto, right:136.67px and an explicit width (84px).
+     136.67 is the old 172 less the removed Fullscreen button (29.33 px wide) and its 6 px
+     gap: the art keeps the gap to the buttons it had before. An explicit width wins over
+     the rule below, so art is unaffected by it. */
 #header::after {
   right: 160px;
   width: clamp(0px, calc((100% - 480px) * 1000), calc(100% - 360px));
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Art is anchored 172 px from the right; below the default width it would meet the title. */
+/* Art is anchored 136.67 px from the right and is 84 px wide. It is hidden below the default
+   424 px window, the same widths as before the Fullscreen button was removed. At 423 px it
+   would clear the title by about 66 px (widest title: Star Wars Republic), so this is a rule
+   about window width, not a collision. */
 @media (max-width: 423px) { #header::after { display: none; } }
 /* The filter chip sits where header text or art is. */
 #header:has(#filter-chip:not(.hidden))::after { display: none; }

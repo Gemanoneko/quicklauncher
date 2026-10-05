@@ -110,7 +110,7 @@
       sitting on the header's bottom rule (nothing paints below the header) ── */
 #header::after {
   content: '';
-  position: absolute; top: 10px; right: 172px; left: auto;
+  position: absolute; top: 10px; right: 136.67px; left: auto;
   width: 84px; height: 29px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 29'%3E%3Crect x='2' y='5' width='32' height='3' fill='rgb(252,238,10)'/%3E%3Crect x='10' y='11' width='36' height='2' fill='rgb(2,215,242)'/%3E%3Crect x='4' y='16' width='16' height='2' fill='rgb(252,238,10)'/%3E%3Crect x='0' y='26' width='12' height='3' fill='rgb(252,238,10)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 29px;
   pointer-events: none;

@@ -92,7 +92,7 @@
 #header { background: linear-gradient(180deg, #3A4529 0, #2E3721 100%); border-bottom-color: #5AA3E0; box-shadow: inset 0 -2px 0 #5AA3E0; }
 #header::before { background: #E8721C; box-shadow: none; }
 #header::after {
-  content: ''; position: absolute; top: 10px; right: 172px; left: auto;
+  content: ''; position: absolute; top: 10px; right: 136.67px; left: auto;
   width: 84px; height: 20px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Crect x='2' y='3.5' width='7.38' height='5' fill='rgb(242,230,200)'/%3E%3Crect x='10.88' y='3.5' width='7.38' height='5' fill='rgb(242,230,200)'/%3E%3Crect x='19.75' y='3.5' width='7.38' height='5' fill='rgb(242,230,200)'/%3E%3Crect x='28.63' y='3.5' width='7.38' height='5' fill='rgb(242,230,200)'/%3E%3Crect x='2' y='11.5' width='6.33' height='5' fill='rgb(201,185,138)'/%3E%3Crect x='9.83' y='11.5' width='6.33' height='5' fill='rgb(201,185,138)'/%3E%3Crect x='17.67' y='11.5' width='6.33' height='5' fill='rgb(201,185,138)'/%3E%3Ccircle cx='30' cy='14' r='1.2' fill='rgb(139,125,88)'/%3E%3Ccircle cx='34' cy='14' r='1.2' fill='rgb(139,125,88)'/%3E%3Ccircle cx='68' cy='10' r='6.2' fill='none' stroke='rgb(90,163,224)' stroke-width='1'/%3E%3Ccircle cx='68' cy='10' r='1.1' fill='rgb(90,163,224)'/%3E%3Cpath d='M68 1.4 V4.6 M68 15.4 V18.6 M59.4 10 H62.6 M73.4 10 H76.6' stroke='rgb(90,163,224)' stroke-width='1'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
   pointer-events: none;

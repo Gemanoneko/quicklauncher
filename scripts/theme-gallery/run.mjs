@@ -33,13 +33,13 @@
 //
 // Hover legibility gate (npm run check:hover; definition: Docs/QuickLaunch_HoverFix57_Spec_2026-10-02.md section 5)
 //   npm run check:hover [-- --only a,b] [--rebaseline] [--ref=<git ref>]
-//   40 readings per theme (hover and pressed on 17 controls, tile names, skin rows, installed-picker rows),
+//   38 readings per theme (hover and pressed on 16 controls, tile names, skin rows, installed-picker rows),
 //   measured in offscreen 520x760 windows at 1x (hover.cjs). Where a gradient can matter (image layer, a ring
 //   around the text that reads over 2 % worse, a reading within 10 % of its floor) the text box is captured again
 //   with the label's ink off and with its glyphs in a coverage colour, and the fill is also judged at its worst
 //   point under the glyphs (14.4 % of readings on 2026-10-03; the run took 52 s, against 45 s without the
 //   coverage capture, on the same machine). Exit 0 pass, 1 a failing pair not in
-//   scripts/themes-hover-baseline.json, 2 harness failure (pairs measured not themes x 40, a positive control
+//   scripts/themes-hover-baseline.json, 2 harness failure (pairs measured not themes x 38, a positive control
 //   that does not fail, a guard counter, a process left, a registry change, the 180 s hard limit).
 //   --only a,b            measure only these themes (baseline still applies to them)
 //   --rebaseline          delete baseline entries that pass now (it never adds one; whole roster only)
@@ -97,6 +97,10 @@ const HOVER_LIMIT_SEC = 180;
 // The built-in positive controls (hover.cjs defines them). The controls that ran must be exactly this list,
 // each once, and each must fail, or the run is void (exit 2); a control added to hover.cjs only voids the run.
 const HOVER_CONTROLS = ['PC1', 'PC2', 'PC3', 'PC4'];
+// Readings per theme. hover.cjs defines them (TARGETS); this number is kept apart from that list on purpose,
+// so a target added to or dropped from hover.cjs voids the run until it is changed here too.
+// 38 since 2026-10-05: the header Fullscreen button was removed (Sergei ruling), and its hover/pressed pair with it.
+const HOVER_READINGS = 38;
 const cfgBase = hoverCheck ? {
   scale: 1, width: 520, height: 760, freezeMs: 0, concurrency: Math.round(num('concurrency', 6)),
   timeoutSec: HOVER_LIMIT_SEC - 5, gpu: false, selfTest: false,
@@ -325,7 +329,7 @@ const checkpointTotal = shards.reduce((n, s) => n + s.checkpoints.length, 0);
 
 const electronExe = require('electron'); // path to this repo's electron.exe
 const electronVersion = JSON.parse(fs.readFileSync(path.join(REPO, 'node_modules', 'electron', 'package.json'), 'utf8')).version;
-if (hoverCheck) console.log(`[hover] QuickLaunch hover legibility gate: v${version}, ${sourceLabel}; ${themeTotal} theme(s) x 40 readings; Electron ${electronVersion}; ${shardCount} process(es) x ${cfgBase.concurrency} window(s)`);
+if (hoverCheck) console.log(`[hover] QuickLaunch hover legibility gate: v${version}, ${sourceLabel}; ${themeTotal} theme(s) x ${HOVER_READINGS} readings; Electron ${electronVersion}; ${shardCount} process(es) x ${cfgBase.concurrency} window(s)`);
 else {
   console.log(compare ? `QuickLaunch theme gallery COMPARE: ${sourceLabel}; ${themeTotal} theme(s); Electron ${electronVersion}`
     : `QuickLaunch theme gallery${selfTest ? ' SELF-TEST' : ''}: v${version}, ${sourceLabel}; Electron ${electronVersion}`);
@@ -481,10 +485,10 @@ if (hoverCheck) {
   if (sockets.length) fails.push(`${sockets.length} socket(s) owned by our processes: ${sockets.slice(0, 5).join(' | ')}`);
   if (hx && hx.preflight) fails.unshift(hx.preflight); // the cause, ahead of the counts it voids
   if (!hx) fails.push('no hover readings in the result');
-  else if (hx.perTheme !== 40) fails.push(`the gate defines ${hx.perTheme} readings per theme, not 40`);
+  else if (hx.perTheme !== HOVER_READINGS) fails.push(`the gate defines ${hx.perTheme} readings per theme, not ${HOVER_READINGS}`);
   for (const r of bad) fails.push(`${r.theme}: ${r.problems.slice(0, 2).join('; ')}${r.problems.length > 2 ? ` (+${r.problems.length - 2} more)` : ''}`);
   const measured = results.reduce((n, r) => n + (r.rows || []).filter((x) => !x.error && typeof x.ratio === 'number').length, 0);
-  if (measured !== expected * 40) fails.push(`${measured} pair(s) measured, expected ${expected} theme(s) x 40 = ${expected * 40}`);
+  if (measured !== expected * HOVER_READINGS) fails.push(`${measured} pair(s) measured, expected ${expected} theme(s) x ${HOVER_READINGS} = ${expected * HOVER_READINGS}`);
   // Sorted on String(id), so a control whose id is missing or not a string cannot throw here (Futaba F-2).
   const pcs = hx ? [...hx.pcs].sort((a, b) => String(a.id).localeCompare(String(b.id))) : [];
   // An id is what HOVER_CONTROLS is matched on: a control without a string id voids the run, named by what it is.

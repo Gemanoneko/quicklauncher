@@ -109,7 +109,7 @@
 #header { border-bottom-color: #6B4A2B; }
 #header::after {
   content: '';
-  position: absolute; top: 19px; right: 172px; left: auto;
+  position: absolute; top: 19px; right: 136.67px; left: auto;
   width: 84px; height: 20px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cdefs%3E%3CclipPath id='c'%3E%3Ccircle cx='42' cy='14' r='6'/%3E%3C/clipPath%3E%3C/defs%3E%3Cpath d='M2 20 Q42 -6 82 20 Z' fill='rgb(53,80,31)'/%3E%3Ccircle cx='42' cy='14' r='6' fill='rgb(62,107,43)' stroke='rgb(107,74,43)' stroke-width='1.8'/%3E%3Cg clip-path='url(%23c)'%3E%3Cpath d='M39.5 8 V20 M44.5 8 V20' fill='none' stroke='rgb(46,82,32)' stroke-width='0.8'/%3E%3C/g%3E%3Ccircle cx='42' cy='14' r='1.5' fill='rgb(212,162,76)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
   pointer-events: none;

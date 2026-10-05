@@ -190,11 +190,11 @@ Everything in 2026-10-01 § 2 stands except the four amendments marked **(A1)** 
 
 ### 5.1 Pairs measured
 
-One page per theme (the real `index.html`, `base.css`, the theme, the real `app.js` with the gallery's stub preload). **40 readings per theme, 4,040 over the roster.** Pair id = `<id>/<state>`; that string is the baseline key. "Pressed" = hover plus active, because the pointer is still over the control.
+One page per theme (the real `index.html`, `base.css`, the theme, the real `app.js` with the gallery's stub preload). **38 readings per theme, 3,838 over the roster** (40 and 4,040 until 2026-10-05, when the header Fullscreen button and its `hdr-full` pair were removed on Sergei's ruling). Pair id = `<id>/<state>`; that string is the baseline key. "Pressed" = hover plus active, because the pointer is still over the control.
 
 | id | Element | States | Floor |
 |---|---|---|---|
-| `hdr-random`, `hdr-settings`, `hdr-hide`, `hdr-full` | `#btn-random-theme`, `#btn-settings`, `#btn-hide`, `#btn-fullscreen` | hover, pressed | 3:1 (symbol) |
+| `hdr-random`, `hdr-settings`, `hdr-hide` | `#btn-random-theme`, `#btn-settings`, `#btn-hide` | hover, pressed | 3:1 (symbol) |
 | `chip-clear` | `#filter-chip-clear` (chip showing) | hover, pressed | 3:1 |
 | `edit-add-file`, `edit-add-installed`, `edit-done` | `#btn-add-edit`, `#btn-add-installed`, `#btn-done-edit` (edit mode) | hover, pressed | 4.5:1 |
 | `update-action`, `update-dismiss` | `.update-btn:not(.update-dismiss)`, `.update-dismiss` (banner showing) | hover, pressed | 4.5:1, 3:1 |
@@ -206,7 +206,7 @@ One page per theme (the real `index.html`, `base.css`, the theme, the real `app.
 | `cheat-close` | `#btn-close-cheatsheet` | hover, pressed | 4.5:1 |
 | `picker-browse`, `picker-close`, `picker-row-hover` | `#btn-browse-picker`, `#btn-close-picker`, `.picker-item` name (installed picker open) | hover, pressed; hover | 4.5:1 |
 
-17 buttons x 2 states + 6 single-state readings = 40.
+16 buttons x 2 states + 6 single-state readings = 38.
 
 ### 5.2 Threshold
 
@@ -243,7 +243,7 @@ File `scripts/themes-hover-baseline.json`, shape `{ "<theme>": ["edit-done/hover
 
 ### 5.6 Output, exit codes, guards, wiring (unchanged from 2026-10-01 § 2.5 and 2.6)
 
-Per-theme failing lines in the linter's style, last line `[hover] 101 theme(s), 4040 pair(s) measured, 0 errors, N grandfathered.`. Exit 0 pass, 1 new failure, **2 harness failure** (also: pairs measured is not exactly themes x 40, or a positive control does not fail, or any guard counter is non-zero, or a 180 s timeout). Flags `--only a,b` and `--rebaseline`. Runs as a new mode of the theme-gallery Electron harness with every existing guard (windows `show:false` and `focusable:false`, audio muted, focus, dialog, login-item and global-shortcut calls counted as no-ops, registry hashed before and after, ends only the process it started). `check:hover` script, `check` = `check:contrast` and `check:hover`, `prebuild` runs `check`. Budget under 60 s.
+Per-theme failing lines in the linter's style, last line `[hover] 101 theme(s), 3838 pair(s) measured, 0 errors, N grandfathered.`. Exit 0 pass, 1 new failure, **2 harness failure** (also: pairs measured is not exactly themes x 38, or a positive control does not fail, or any guard counter is non-zero, or a 180 s timeout). Flags `--only a,b` and `--rebaseline`. Runs as a new mode of the theme-gallery Electron harness with every existing guard (windows `show:false` and `focusable:false`, audio muted, focus, dialog, login-item and global-shortcut calls counted as no-ops, registry hashed before and after, ends only the process it started). `check:hover` script, `check` = `check:contrast` and `check:hover`, `prebuild` runs `check`. Budget under 60 s.
 
 ## 6. Build order and acceptance
 

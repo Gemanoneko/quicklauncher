@@ -91,7 +91,7 @@
 #header::before { background: #E60012; box-shadow: none; }
 #header::after {
   content: 'ネオ東京';
-  position: absolute; top: 10px; right: 172px; left: auto;
+  position: absolute; top: 10px; right: 136.67px; left: auto;
   width: 84px; height: 20px; padding-left: 34px;
   font: 700 11px/20px 'Yu Gothic', 'MS Gothic', sans-serif; letter-spacing: 0.5px; white-space: nowrap;
   color: #FF4D57;

@@ -93,7 +93,7 @@
 #header::before { left: 209px; top: 0; bottom: 3px; width: 2px; background: #D8CCB8; box-shadow: none; }
 #header:has(#filter-chip:not(.hidden))::before { display: none; }
 #header::after {
-  content: '屍人'; position: absolute; top: 10px; right: 172px; left: auto; width: 84px; height: 20px;
+  content: '屍人'; position: absolute; top: 10px; right: 136.67px; left: auto; width: 84px; height: 20px;
   font: 700 14px/20px 'Yu Gothic', 'MS Gothic', sans-serif; letter-spacing: 8px; text-indent: 8px; text-align: center; white-space: nowrap;
   color: #DCCFB8;
   pointer-events: none;

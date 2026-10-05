@@ -7,7 +7,7 @@
 //   - One page per theme: the real index.html + base.css + theme + app.js, the gallery's stub
 //     preload and mock data, in an offscreen 520x760 window at 1x on an opaque black backdrop,
 //     transitions and animations off, #app-entrance hidden.
-//   - 40 readings per theme (TARGETS below). States are forced with CSS.forcePseudoState
+//   - 38 readings per theme (TARGETS below). States are forced with CSS.forcePseudoState
 //     (hover; hover + active = "pressed"); no mouse or key input is sent. DOM.getDocument is
 //     called once per page (a second call drops forced states).
 //   - Label = the computed `color`, resolved through a 1x1 canvas (so oklch()/color-mix()
@@ -66,7 +66,6 @@ const TARGETS = [
   { sc: 'main', id: 'hdr-random', sel: '#btn-random-theme', kind: 'glyph', states: ['hover', 'pressed'] },
   { sc: 'main', id: 'hdr-settings', sel: '#btn-settings', kind: 'glyph', states: ['hover', 'pressed'] },
   { sc: 'main', id: 'hdr-hide', sel: '#btn-hide', kind: 'glyph', states: ['hover', 'pressed'] },
-  { sc: 'main', id: 'hdr-full', sel: '#btn-fullscreen', kind: 'glyph', states: ['hover', 'pressed'] },
   { sc: 'main', id: 'chip-clear', sel: '#filter-chip-clear', kind: 'glyph', states: ['hover', 'pressed'] },
   { sc: 'main', id: 'edit-add-file', sel: '#btn-add-edit', kind: 'label', states: ['hover', 'pressed'] },
   { sc: 'main', id: 'edit-add-installed', sel: '#btn-add-installed', kind: 'label', states: ['hover', 'pressed'] },
@@ -89,7 +88,7 @@ const TARGETS = [
 ];
 const READINGS = TARGETS.flatMap((t) => t.states.map((st) => ({ ...t, st, pair: `${t.id}/${st}`, floor: FLOOR[t.kind] })));
 const SCENES = ['main', 'settings', 'skin', 'cheat', 'picker'];
-const PER_THEME = READINGS.length; // 40: 17 buttons x 2 states + 6 single-state readings
+const PER_THEME = READINGS.length; // 38: 16 buttons x 2 states + 6 single-state readings
 
 // Rows the installed-apps picker shows (get-installed-apps is answered with these in this mode).
 const INSTALLED_ROWS = ['Calculator', 'Paint', 'Visual Studio Code'].map((name, i) => ({ name, appId: `QLHover.Mock${i + 1}`, iconDataUrl: null }));

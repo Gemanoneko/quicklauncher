@@ -96,7 +96,7 @@
 /* Header art (HZ, x 168 to 252): a small TV showing static (drawn once, static) */
 #header::after {
   content: '';
-  position: absolute; top: 10px; right: 172px; left: auto;
+  position: absolute; top: 10px; right: 136.67px; left: auto;
   width: 84px; height: 20px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cdefs%3E%3Cfilter id='n' filterUnits='userSpaceOnUse' x='0' y='0' width='84' height='20' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.3' numOctaves='1' seed='7'/%3E%3CfeColorMatrix type='matrix' values='1.8 0 0 0 -0.45 1.8 0 0 0 -0.45 1.8 0 0 0 -0.45 0 0 0 0 1'/%3E%3C/filter%3E%3CclipPath id='s'%3E%3Crect x='3' y='3' width='64' height='14' rx='2.5'/%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='84' height='20' rx='4' fill='rgb(26,26,26)'/%3E%3Cg clip-path='url(%23s)'%3E%3Crect x='3' y='3' width='64' height='14' filter='url(%23n)'/%3E%3Crect x='3' y='10.2' width='64' height='1.6' fill='rgb(232,228,208)' opacity='0.5'/%3E%3C/g%3E%3Ccircle cx='76' cy='6.8' r='2.4' fill='rgb(245,214,10)'/%3E%3Ccircle cx='76' cy='13.2' r='2.4' fill='rgb(245,214,10)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
   pointer-events: none;

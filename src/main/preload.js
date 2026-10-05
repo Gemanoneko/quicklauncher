@@ -20,8 +20,6 @@ const INVOKE_CHANNELS = new Set([
   'check-update',
   'show-window',
   'hide-window',
-  'toggle-fullscreen',
-  'exit-fullscreen',
   'download-update',
   'install-update',
   'dismiss-update',
@@ -42,7 +40,6 @@ const ON_CHANNELS = new Set([
   'update-error',
   'store-save-error',
   'store-reloaded',
-  'fullscreen-changed',
   'launch-error',
   // Tray-driven events (UX Review §7 / I5): the tray menu can open the
   // Settings overlay and toggle persisted settings. The renderer listens

@@ -93,7 +93,7 @@
 /* Header art (HZ, x 168 to 252): perspective pair converging on a black slab */
 #header::after {
   content: '';
-  position: absolute; top: 10px; right: 172px; left: auto;
+  position: absolute; top: 10px; right: 136.67px; left: auto;
   width: 84px; height: 20px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cpath d='M2 2 L66 10 M2 18 L66 10' fill='none' stroke='rgb(138,138,144)' stroke-width='1' stroke-linecap='round'/%3E%3Crect x='66' y='1' width='8' height='18' fill='rgb(17,17,20)'/%3E%3Cpolygon points='74,1 76,2.5 76,17.5 74,19' fill='rgb(58,58,64)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
   pointer-events: none;

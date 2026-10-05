@@ -89,7 +89,7 @@
 }
 #header::before { background: #D92323; box-shadow: none; }
 #header::after {
-  content: ''; position: absolute; top: 10px; right: 172px; left: auto; width: 84px; height: 20px;
+  content: ''; position: absolute; top: 10px; right: 136.67px; left: auto; width: 84px; height: 20px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cpolygon points='2,17 18,2 26,2 10,17' fill='rgb(217,35,35)'/%3E%3Cpolygon points='24,18 44,3 50,3 32,18' fill='rgb(245,245,245)'/%3E%3Cpolygon points='40,17 60,6 70,6 54,17' fill='rgb(217,35,35)'/%3E%3Cpolygon points='58,18 76,1 82,1 66,18' fill='rgb(245,245,245)'/%3E%3Cpolygon points='68,13 84,4 84,9 74,15' fill='rgb(217,35,35)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px; pointer-events: none;
 }
 #header:has(#filter-chip:not(.hidden))::after { display: none; }

@@ -1740,19 +1740,7 @@ document.addEventListener('keydown', (e) => {
     if (!elAppsPicker.classList.contains('hidden')) { elAppsPicker.classList.add('hidden'); e.preventDefault(); return; }
     if (_filterText) { clearFilter(); e.preventDefault(); return; }
     if (editMode) { exitEditMode(); e.preventDefault(); return; }
-    if (isFullscreen) {
-      e.preventDefault();
-      window.api.invoke('exit-fullscreen').then(updateFullscreenButton);
-      return;
-    }
     return; // nothing to undo: Esc does nothing (it never hides the window)
-  }
-
-  // F11 — toggle fullscreen (UX Review §6E / P4)
-  if (!editingText && e.key === 'F11') {
-    e.preventDefault();
-    (async () => updateFullscreenButton(await window.api.invoke('toggle-fullscreen')))();
-    return;
   }
 
   // Beyond here, only react when no overlay is open and we're not in a text
@@ -1816,10 +1804,8 @@ function setupContextMenu() {
       enterEditMode();
     }
   });
-  // Esc for edit mode and fullscreen lives in the document keydown handler's
-  // Escape ladder (one handler, one layer per press). Fullscreen Esc stays
-  // scoped to the renderer window (it was once a process-wide globalShortcut,
-  // which stole Escape from every other app).
+  // Esc for edit mode lives in the document keydown handler's Escape ladder
+  // (one handler, one layer per press).
 }
 
 // ── Update banner ─────────────────────────────────────────────────────────────
@@ -1952,19 +1938,6 @@ $('btn-settings').addEventListener('click', () => {
 $('btn-hide').addEventListener('click', () => {
   window.api.invoke('hide-window');
 });
-
-let isFullscreen = false;
-
-function updateFullscreenButton(fs) {
-  isFullscreen = fs;
-  $('btn-fullscreen').title = fs ? 'Exit fullscreen' : 'Fullscreen';
-}
-
-$('btn-fullscreen').addEventListener('click', async () => {
-  updateFullscreenButton(await window.api.invoke('toggle-fullscreen'));
-});
-
-window.api.on('fullscreen-changed', (fs) => updateFullscreenButton(fs));
 
 $('btn-close-settings').addEventListener('click', () => {
   closeSettings();

@@ -94,7 +94,7 @@
 #header { background: #171A1E; border-bottom-color: #7C8289; box-shadow: inset 0 -2px 0 #7C8289; }
 #header::before { background: #C9CED3; box-shadow: none; }
 #header::after {
-  content: ''; position: absolute; top: 10px; right: 172px; left: auto;
+  content: ''; position: absolute; top: 10px; right: 136.67px; left: auto;
   width: 84px; height: 20px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Crect x='2' y='2.5' width='26' height='3' fill='rgb(124,130,137)'/%3E%3Crect x='30' y='2.5' width='14' height='3' fill='rgb(124,130,137)'/%3E%3Crect x='46' y='2.5' width='30' height='3' fill='rgb(124,130,137)'/%3E%3Crect x='78' y='2.5' width='4' height='3' fill='rgb(124,130,137)'/%3E%3Crect x='2' y='8.5' width='12' height='3' fill='rgb(169,175,181)'/%3E%3Crect x='16' y='8.5' width='34' height='3' fill='rgb(169,175,181)'/%3E%3Crect x='52' y='8.5' width='20' height='3' fill='rgb(169,175,181)'/%3E%3Crect x='74' y='8.5' width='8' height='3' fill='rgb(208,22,29)'/%3E%3Crect x='2' y='14.5' width='40' height='3' fill='rgb(91,97,104)'/%3E%3Crect x='44' y='14.5' width='10' height='3' fill='rgb(91,97,104)'/%3E%3Crect x='56' y='14.5' width='26' height='3' fill='rgb(91,97,104)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
   pointer-events: none;
