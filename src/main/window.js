@@ -1,5 +1,6 @@
 const { BrowserWindow, screen, app } = require('electron');
 const path = require('path');
+const { isFullscreen } = require('./fullscreen');
 
 // Returns the saved position if at least 100×50px of the window overlaps any
 // active display workArea; otherwise returns null so we fall back to the default.
@@ -58,10 +59,14 @@ function createWindow(store) {
 
   // Debounce position saves — fired on every pixel during drag without this
   let moveTimer = null;
+  // Fullscreen is checked through fullscreen.js (win.isFullScreen() is always
+  // false for this window on Windows), and again when the timer fires: a move
+  // or resize just before F11 must not save the fullscreen bounds (F-1).
   win.on('moved', () => {
-    if (win.isFullScreen()) return;
+    if (isFullscreen(win)) return;
     clearTimeout(moveTimer);
     moveTimer = setTimeout(() => {
+      if (win.isDestroyed() || isFullscreen(win)) return;
       const [x, y] = win.getPosition();
       const s = store.get('settings');
       store.set('settings', { ...s, windowPosition: { x, y } });
@@ -71,9 +76,10 @@ function createWindow(store) {
   // Debounce size saves — same reason
   let resizeTimer = null;
   win.on('resize', () => {
-    if (win.isFullScreen()) return;
+    if (isFullscreen(win)) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
+      if (win.isDestroyed() || isFullscreen(win)) return;
       const [width, height] = win.getSize();
       const s = store.get('settings');
       store.set('settings', { ...s, windowSize: { width, height } });

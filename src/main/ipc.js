@@ -7,6 +7,7 @@ const { checkForUpdates } = require('./updater');
 const { refreshTrayMenu } = require('./tray');
 const { trimIcon } = require('./icon-trim');
 const { encodeIcons } = require('./icon-worker');
+const { toggleFullscreen, exitFullscreen } = require('./fullscreen');
 
 // Derive valid theme identifiers from the CSS files on disk.
 // This automatically stays in sync when themes are added or removed.
@@ -609,36 +610,13 @@ $apps | ConvertTo-Json -Depth 2
   ipcMain.handle('show-window', () => win.show());
   ipcMain.handle('hide-window', () => win.hide());
 
-  let preFullscreenBounds = null;
+  // Fullscreen state lives in fullscreen.js: win.isFullScreen() is always
+  // false for this frameless transparent window on Windows (F-1).
+  ipcMain.handle('toggle-fullscreen', () => toggleFullscreen(win));
 
-  function exitFullscreen() {
-    win.setFullScreen(false);
-    if (preFullscreenBounds) {
-      win.setBounds(preFullscreenBounds);
-      preFullscreenBounds = null;
-    }
-    win.webContents.send('fullscreen-changed', false);
-  }
-
-  ipcMain.handle('toggle-fullscreen', () => {
-    if (win.isFullScreen()) {
-      exitFullscreen();
-      return false;
-    } else {
-      preFullscreenBounds = win.getBounds();
-      win.setFullScreen(true);
-      return true;
-    }
-  });
-
-  // Renderer-scoped Escape handling (see 'exit-fullscreen' handler below).
-  ipcMain.handle('exit-fullscreen', () => {
-    if (win.isFullScreen()) {
-      exitFullscreen();
-      return false;
-    }
-    return win.isFullScreen();
-  });
+  // Renderer-scoped Escape handling: leaves fullscreen if the window is in
+  // it; returns the state after the call (false).
+  ipcMain.handle('exit-fullscreen', () => exitFullscreen(win));
 }
 
 // Remove a solid background color from a thumbnail image using BFS flood-fill from
