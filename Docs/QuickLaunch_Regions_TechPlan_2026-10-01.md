@@ -526,7 +526,7 @@ Builds the UX spec's "Addendum — M3 fix pass" C1 to C6 (`6a1394e`), the region
 | Unit | 172/172 on Node 26.10 and on Electron's Node 20.18.1 |
 | The new tests on `HEAD`'s source | all 3 fail; the whole new set: 33 of 166 fail on Node, 34 on Electron's Node |
 | Mutation runner | 88/89 caught, unmutated copy 172/172: the unavailable-check mutant re-anchored, and 2 new D3 mutants (an adoption, or an older reference tile's conversion, not refused while moving is unavailable), both caught. The survivor is §8.1's equivalent m40. |
-| Self-test, attached | Not re-run in this round: Futaba's real-input window on the desktop runs until 08:01, and the self-test's region windows are desktop children drawn on the visible desktop, in front of the desktop icons. The last attached run (114/114) was on the tree before D3; D3 touches only the unavailable refusal, which the unit tests above cover. |
+| Self-test, attached | Measured 2026-10-05: attached 114/114, fallback 113/113, probe 53/115; crash script 5/5, 5/5, 4/4, 3/3 (four parts). |
 
 **For Judy: answered.** The three questions (C2 at the cap on the hover, C2's scope, a store file with no tile while moving is unavailable) and deviations 18 to 31 were ruled in the UX spec's "Addendum — M3 fix pass, C2 follow-up" (Judy, 2026-10-05, `5522c0c`): D1 keep FULL on the hover (deviation 27), D2 the rule covers files a tile owns (deviation 21), D3 the whole drop refused with `Moving is unavailable. Nothing was changed.` (deviation 23), D4 the update timer stays (deviation 29), D5 deviations agreed and pending item 12 corrected.
 
@@ -545,3 +545,54 @@ Builds the UX spec's "Addendum — M3 fix pass" C1 to C6 (`6a1394e`), the region
 12. **New (C4 measure 4, corrected by D5):** **never launch a `.url`**: it opens the default browser, which is Sergei's signed-in profile. The launch test uses a boundary-length `.lnk` whose target is Notepad or Calculator (made with WScript), moved and then launched in an away window (the launched app takes the focus). A `.url` is used only for the refusal side and is never launched.
 13. **New:** the banner's two layers on screen with a real update offer from a real feed (the self-test drives them through `update-event`), and the notice's 8 s as seen.
 (The old item 10, the try-it's M3 steps a to e, is gone: the try-it now asks only feel questions.)
+
+### 8.3 F-2 fix: fallback regions blank and inert (Ender, 2026-10-05)
+
+Futaba's away window (QA report 2026-10-05, F-2, on `3467e5c`): with `--ql-no-desktop-layer` the regions were top-level, visible to `IsWindowVisible` and took the foreground on a click, but the screen showed only the wallpaper, `PrintWindow(PW_RENDERFULLCONTENT)` returned a blank bitmap, real mouse and keys reached no DOM event, and `WindowFromPoint` returned the region, so the empty rectangle swallowed desktop clicks. Attached mode worked. Sergei approved the fix on 2026-10-05.
+
+**Root cause (measured).** A fallback region was made visible only through Win32: `detachToTopLevel`'s `SetWindowPos(SWP_SHOWWINDOW)`, and on Show all `showTopLevelAtBottom` (fallback) or `ShowWindow(SW_SHOWNA)` (attached). Electron's `show` / `showInactive` was never called on it, so Chromium still treated the widget as hidden. Its compositor made no frames, and native mouse messages never reached the page. Windows, though, hit-tested the visible HWND. Attached mode worked only because `_attachOnce` calls `win.showInactive()`. Measured on the packaged `HEAD` build (`323f537`) by a scratch probe through the QA guard, region 1 in fallback:
+
+| | `HEAD` | Same build, `win.showInactive()` after the Win32 show |
+|---|---|---|
+| `PrintWindow(PW_RENDERFULLCONTENT)` of the 654 x 468 window | 1 colour, every pixel `0xFF000000` | 2047 colours, 94% non-black |
+| `requestAnimationFrame` callbacks in 500 ms | 2 | 62 |
+| `document.visibilityState` | `visible` (the page does not know) | `visible` |
+| A posted `WM_MOUSEMOVE` (2 moves) | no DOM event | `mouseover`, `pointermove` and `mousemove`, all `isTrusted` |
+| `--disable-features=CalculateNativeWinOcclusion` (self-test runs below) | still 1 colour and no event, in all 8 regions | (as above) |
+
+The same gap had a second, latent face in **attached** mode. `_attachOnce` skips `showInactive` for a hidden region, so a region whose window was rebuilt or created while all regions were hidden (an Explorer restart under Ctrl+Space) got 0 trusted moves after Show all (probe and self-test on `HEAD`).
+
+**Fix (`src/main/desktop/region-host.js`, no behaviour change).** `RegionHost._showToChromium()` calls `win.showInactive()` (unless the region is hidden) right after every Win32 show: the fallback show in `_goFallback`, and Show all (`setHidden(false)`) in both modes. The window is then already visible in its slot. An instrumented scratch copy read the z-order and the foreground right before and right after each call. The count of windows above the region was 699 → 699 and 703 → 703, and the foreground never changed. No foreground change went to the build in any run below. Nothing else changed: z-slot, styles, activation, Option A and the Win+D behaviour are as before.
+
+**Gate that sees the window (`scripts/regions-selftest.mjs`, `f2Checks`, after the rebuild check).** The old fallback checks read only the page and `describe`, so they passed on a blank window. Three checks were added:
+- **F-2 pixels (fallback only):** every region window's own content, read through `PrintWindow(PW_RENDERFULLCONTENT)` from the test process (per-monitor DPI aware, physical px), has 16+ colours and 10%+ non-black pixels. A never-painted window is one flat colour. Not in attached mode: a desktop child gives `PrintWindow` what lies behind it, so `HEAD`'s inert attached region also showed thousands of colours.
+- **F-2 input (both modes):** two `WM_MOUSEMOVE` are posted (`PostMessageW`) to every region window at a spot with no control or tooltip, and the page must log a trusted `pointermove`. This is not OS input: no cursor move, no activation, nothing reaches another window.
+- **F-2 rebuilt while hidden (both modes):** Hide all; region 1's window is closed (the rebuild path); Show all. The region must be visible, paint (fallback) and take the posted move.
+
+**Test-side change:** the `--fallback` run now launches with `--disable-features=CalculateNativeWinOcclusion`. The fixed fallback regions are real shown windows under Sergei's own, and Chromium's occlusion tracking pauses and throttles whichever his windows cover. The first fixed `--fallback` run, without the flag, aborted at the M2b reflow check: a CDP `Runtime.evaluate` timed out on the drag source's page, whose sim waits only on `setTimeout`. Its region 1 capture also showed a flat 6-colour frame. A separate 8-region probe with occlusion on, at another moment, saw all 8 `visible` and painting. So occlusion is the likely cause, not a proven one. The product keeps occlusion tracking. The flag does not hide F-2: `HEAD` stays blank with it.
+
+**Measured (2026-10-05; `electron-builder --win --dir --publish never` of this tree, no npm hook; its `app.asar` `src/` is identical to the worktree `src/` (`asar extract` + `diff -r`); `HEAD`'s build is a scratch copy of the earlier `dist/win-unpacked`, whose `src/` is identical to `HEAD`'s; every launch through `scripts/qa/quicklaunch-safe-launch.mjs` on a profile in the session scratchpad with no hotkey; Sergei's installed QuickLauncher (4 processes) ran throughout and was left alone)**
+
+| Run | Result |
+|---|---|
+| Unit (node:test TAP counts) | 179/179 on Node 26.10 and on Electron's Node 20.18.1: 172 + 7 new (`test/regions/region-host.test.js`: the real `RegionHost` with `desktop-layer.js` and the window as recording fakes; order of Win32 show and `showInactive` per path; a hidden region never shown). |
+| The new unit tests on `HEAD`'s `src/` | 4 of 7 fail: the fallback show, Show all in fallback, Show all in attached after a hidden attach, and the drop from attached to fallback. The 3 guards pass: hidden at start, Hide all, and an attached region shown at start. |
+| Unit positive control (scratch copies) | 3/3 mutants caught, one per new call site (2, 1 and 1 tests fail). |
+| Self-test, attached, this tree | 116/116 (114 + F-2 input, F-2 rebuilt while hidden). The run before it was 115/116: Sergei saved a new file to his real Desktop during the run (`WhatsApp Image … .jpeg`, created 09:55:23; nothing removed or changed), and the listing check saw it. |
+| Self-test, `--fallback`, this tree | 116/116 (113 + the 3 F-2 checks): 8 windows painted (264 to 3220 colours, 87% to 95% lit), 8 × 2 trusted moves, the rebuilt region 2069 colours and 2 moves. |
+| Self-test, `--probe`, this tree | 55/117: 62 expected failures, as many as in §8.2's 53/115 (the count was compared, not the list); the 2 F-2 checks run attached and pass. The probe injects no F-2 fault: the runs on `HEAD`'s build below are those checks' negative control. |
+| **The new self-test on `HEAD`'s build** | `--fallback` **113/116**: exactly the 3 F-2 checks fail (all 8 windows 1 colour, 0% lit; 0 trusted moves in all 8; the rebuilt region likewise); the old 113 pass. Attached **115/116**: F-2 rebuilt while hidden fails (0 trusted moves); the 8 shown regions take the move. |
+| Crash script, this tree | crash-add 5/5, crash-back 5/5, restore 4/4, refusal 3/3. The first crash-back run was 4/5: in `back:committed` the guard printed `ended by exited` without `(code 70)`. Its loop saw the tree gone before Node's `exit` event, so the exit code was read as null. The state left by the crash was right and the rerun was 5/5. That race is in the guard, not the app. |
+| Real Desktop and Public Desktop | Listed at the start and the end of this pass, and in every self-test and crash run. The only change is Sergei's own new file (above). `%USERPROFILE%\QuickLauncher Shortcuts` was never created. |
+| Foreground | The out-of-process observer ran in every run: no foreground change went to the build (the probe's one is its injected event). |
+
+**Question, not changed: Win+D (Futaba: FAIL vs spec).** This is not F-2's cause; it is about z-order, not painting. Fallback regions are created `minimizable: false` and `skipTaskbar: true`, and `detachToTopLevel` sets `WS_EX_TOOLWINDOW`, so Show Desktop leaves them up. §7.3's "Win+D minimises it" (Option A) was written from reading and never measured. It was wrong for these windows. Which bit decides was not measured either: Win+D is OS input and was not sent. Making them minimise would change the window's kind (a taskbar button or an Alt+Tab entry, or extra handling of the shell's show-desktop). That is a behaviour change, so the decision is for Judy and Sergei: amend the spec to "fallback regions stay up on Win+D", or ask for a change.
+
+**Pending real input (Futaba's next away window):**
+1. A real click on a fallback region: it activates, the first click is not swallowed (Chromium answers `MA_ACTIVATE`, §7.2), then a typed letter filters, and Ctrl+Right and F6 work. Keys were not sent: a posted key needs the window activated, which this pass never does.
+2. Real hover and `:hover` under the real cursor. The posted move proves Chromium's own message path into the page, not Windows' hit test with a real cursor.
+3. The regions on screen as Sergei sees them. `PrintWindow` reads DWM's copy of the window, not the composed screen. This also covers a region uncovered after other windows covered it (Chromium's occlusion repaint, off in the self-test).
+4. Click-to-raise, and Win+D after the ruling above.
+5. Attached: a region rebuilt while hidden (Explorer restart under Ctrl+Space), shown by the real hotkey, paints and takes a click.
+
+**Files:** `src/main/desktop/region-host.js`, `test/regions/region-host.test.js` (new), `scripts/regions-selftest.mjs` (Win32 pixel and posted-move helpers, `f2Checks`, the fallback launch flag), and this document (this section, and the C2 follow-up row in §8.2).

@@ -146,9 +146,23 @@ class RegionHost extends EventEmitter {
     return null;
   }
 
+  // F-2: Chromium paints a window and routes its input only after Electron's
+  // own show. A window that only Win32 made visible (SetWindowPos with
+  // SWP_SHOWWINDOW, ShowWindow) is visible to Windows, which hit-tests it
+  // and gives it clicks, but its compositor makes no frames and its page gets
+  // no mouse or key event: blank and inert. So every Win32 show is followed
+  // by this. The window already is visible in its slot, so Electron's
+  // ShowWindow(SW_SHOWNOACTIVATE) neither moves it in the z-order nor
+  // activates it (measured in TechPlan section 8.3).
+  _showToChromium() {
+    if (this.hidden || !this.win || this.win.isDestroyed()) return;
+    this.win.showInactive();
+  }
+
   _goFallback(reason) {
     if (d.available) {
       const r = d.detachToTopLevel(this.hwnd, this.screenRect, { show: !this.hidden });
+      this._showToChromium();
       this.host = 0;
       this.layout = null;
       this.stats.fallbacks++;
@@ -189,9 +203,11 @@ class RegionHost extends EventEmitter {
       if (d.available) d.hide(this.hwnd); else this.win.hide();
       return;
     }
-    if (this.mode === 'attached') d.showNoActivate(this.hwnd);
-    else if (this.mode === 'fallback') {
-      if (d.available) d.showTopLevelAtBottom(this.hwnd); else this.win.showInactive();
+    if (this.mode === 'attached') {
+      d.showNoActivate(this.hwnd);
+      this._showToChromium(); // a region attached while hidden was never shown to Chromium
+    } else if (this.mode === 'fallback') {
+      if (d.available) { d.showTopLevelAtBottom(this.hwnd); this._showToChromium(); } else this.win.showInactive();
     }
     // pending: shown when it attaches
   }

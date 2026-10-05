@@ -175,6 +175,64 @@ function listRealFolders(folders = REAL_FOLDERS) {
 }
 const realBefore = listRealFolders();
 
+// ── F-2: a region window's own pixels and a native message to it (test side, read-only) ──
+// PrintWindow(PW_RENDERFULLCONTENT) asks DWM for the window's own content, wherever it is
+// in the z-order; a window Chromium never painted comes back one flat colour. PostMessageW
+// puts a WM_MOUSEMOVE in the window's own queue: no OS input, no cursor move, no
+// activation; Chromium handles it as it handles the real pointer after Windows' hit test.
+const user32 = koffi.load('user32.dll');
+const gdi32 = koffi.load('gdi32.dll');
+const G = {
+  SetThreadDpiAwarenessContext: user32.func('intptr __stdcall SetThreadDpiAwarenessContext(intptr ctx)'),
+  GetWindowRect: user32.func('int __stdcall GetWindowRect(intptr hwnd, void *rect)'),
+  GetDC: user32.func('intptr __stdcall GetDC(intptr hwnd)'),
+  ReleaseDC: user32.func('int __stdcall ReleaseDC(intptr hwnd, intptr hdc)'),
+  PrintWindow: user32.func('int __stdcall PrintWindow(intptr hwnd, intptr hdc, uint32 flags)'),
+  PostMessageW: user32.func('int __stdcall PostMessageW(intptr hwnd, uint32 msg, uintptr wp, intptr lp)'),
+  CreateCompatibleDC: gdi32.func('intptr __stdcall CreateCompatibleDC(intptr hdc)'),
+  CreateDIBSection: gdi32.func('intptr __stdcall CreateDIBSection(intptr hdc, void *bmi, uint32 usage, _Out_ void **bits, intptr sec, uint32 off)'),
+  SelectObject: gdi32.func('intptr __stdcall SelectObject(intptr hdc, intptr obj)'),
+  DeleteObject: gdi32.func('int __stdcall DeleteObject(intptr obj)'),
+  DeleteDC: gdi32.func('int __stdcall DeleteDC(intptr hdc)'),
+  GetDIBits: gdi32.func('int __stdcall GetDIBits(intptr hdc, intptr bmp, uint32 start, uint32 lines, void *bits, void *bmi, uint32 usage)'),
+};
+/** Physical-pixel calls for this thread (the app's rects are physical px). */
+function perMonitorAware(fn) {
+  const prev = G.SetThreadDpiAwarenessContext(-4); // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+  try { return fn(); } finally { if (prev) G.SetThreadDpiAwarenessContext(prev); }
+}
+/** The window's own pixels: distinct colours (counted to 4096) and the share of non-black pixels. */
+function windowPixels(hwnd) {
+  return perMonitorAware(() => {
+    const rb = Buffer.alloc(16);
+    if (!G.GetWindowRect(hwnd, rb)) return { ok: false, why: 'no window' };
+    const w = rb.readInt32LE(8) - rb.readInt32LE(0);
+    const h = rb.readInt32LE(12) - rb.readInt32LE(4);
+    if (w <= 0 || h <= 0) return { ok: false, why: `empty rect ${w}x${h}` };
+    const bmi = Buffer.alloc(44);
+    bmi.writeUInt32LE(40, 0); bmi.writeInt32LE(w, 4); bmi.writeInt32LE(-h, 8); bmi.writeUInt16LE(1, 12); bmi.writeUInt16LE(32, 14);
+    const screenDc = G.GetDC(0);
+    const mem = G.CreateCompatibleDC(screenDc);
+    const bmp = G.CreateDIBSection(mem, bmi, 0, [null], 0, 0);
+    const old = G.SelectObject(mem, bmp);
+    const printed = G.PrintWindow(hwnd, mem, 2); // PW_RENDERFULLCONTENT
+    const px = Buffer.alloc(w * h * 4);
+    const lines = G.GetDIBits(mem, bmp, 0, h, px, bmi, 0);
+    G.SelectObject(mem, old); G.DeleteObject(bmp); G.DeleteDC(mem); G.ReleaseDC(0, screenDc);
+    const colours = new Set();
+    let lit = 0;
+    for (let i = 0; i < px.length; i += 4) {
+      if (px[i] || px[i + 1] || px[i + 2]) lit++;
+      if (colours.size < 4096) colours.add(px.readUInt32LE(i) & 0xffffff);
+    }
+    const litShare = lit / (w * h);
+    // Painted: a page draws many colours over most of its window; a never-painted window is one flat colour.
+    return { ok: !!printed && lines === h && colours.size >= 16 && litShare >= 0.1, w, h, colours: colours.size, lit: Math.round(litShare * 100) / 100 };
+  });
+}
+/** Post one WM_MOUSEMOVE at client point (x, y) in physical px. */
+const postMouseMove = (hwnd, x, y) => G.PostMessageW(hwnd, 0x0200, 0, ((y & 0xffff) << 16) | (x & 0xffff));
+
 // ── M3: the fake desktop (Desktop, Public Desktop; the app makes QuickLauncher Shortcuts) ──
 const DESK = join(ROOT_DIR, `${stamp}-desk`);
 const FIX = { dirs: { desktop: join(DESK, 'Desktop'), publicDesktop: join(DESK, 'Public Desktop'), store: join(DESK, 'QuickLauncher Shortcuts'), staging: join(DESK, 'Staging'), aside: join(DESK, 'Aside'), elsewhere: join(DESK, 'Elsewhere') } };
@@ -229,7 +287,10 @@ const guardOut = [];
 const appEnv = PROBE ? { ...process.env } : { ...process.env, OneDrive: DESK };
 const guard = spawn(process.execPath, [GUARD, '--exe', EXE, '--profile', PROFILE, '--timeout', String(TIMEOUT),
   '--', `--remote-debugging-port=${PORT}`, '--ql-test-hooks', '--ql-no-update-check', '--enable-logging', `--ql-test-desktop=${DESK}`,
-  ...(FALLBACK ? ['--ql-no-desktop-layer'] : [])], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, env: appEnv });
+  // Fallback regions are real top-level windows under Sergei's own (F-2): Chromium's
+  // occlusion tracking would pause and throttle whichever his windows cover, so the
+  // run would depend on his window layout. Test-side only; the product keeps it.
+  ...(FALLBACK ? ['--ql-no-desktop-layer', '--disable-features=CalculateNativeWinOcclusion'] : [])], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, env: appEnv });
 guard.stdout.on('data', (d) => guardOut.push(String(d)));
 guard.stderr.on('data', (d) => guardOut.push(String(d)));
 const guardDone = new Promise((r) => guard.on('exit', (code) => r(code)));
@@ -489,6 +550,9 @@ async function run() {
   sessions[r1id] = rb; // the old page is gone
   check('rebuild: region 1 comes back with its tiles, name and no entrance fade', rbState.tiles === r1Tiles && rbState.noEntrance && rbState.title === 'QUICK.LAUNCH' && rbState.info.mode === MODE,
     { ms: Date.now() - t0, tiles: rbState.tiles, mode: rbState.info.mode });
+
+  // ── F-2: pixels and native input, seen on the windows themselves ──────────
+  await f2Checks({ mgr, sessions, ids, r1id });
 
   // Controls: tooltips (ProcessRules: a new control is born with its tooltip)
   const tips = await sessions[r2id].eval(`(() => {
@@ -2008,6 +2072,87 @@ async function fixChecks({ mgr, sessions, ids }) {
     { offer: s.offer.text, notice: [s.notice.text, s.notice.color, s.notice.text_, s.notice.xTitle], back: [s.back.text, JSON.stringify(s.back.buttons)], during: s.during.text, afterX: s.afterX.text, dismissals: [d0, s.dAfterTime, s.dAfterX, s.dClosed] });
   });
 
+}
+
+// F-2 (Futaba, away window 2026-10-05): fallback regions were blank and inert on real
+// hardware while every headless check passed, because no check looked at the window
+// itself. These do: the window's own pixels (fallback; an attached region is a desktop
+// child, which PrintWindow does not capture on its own) and a native mouse message to
+// the window reaching the page (both modes). Then the same for a region whose window is
+// rebuilt while all regions are hidden, as after an Explorer restart under Ctrl+Space.
+async function f2Checks({ mgr, sessions, ids, r1id }) {
+  const describe = () => mgr.eval(`window.api.invoke('manager:test', 'describe')`);
+  // A spot in the page with no tooltip and no control under it, in physical px.
+  const quietPoint = (s) => s.eval(`(() => {
+    const dpr = devicePixelRatio;
+    for (let y = 3; y < innerHeight - 3; y += 5) for (let x = 3; x < innerWidth - 3; x += 5) {
+      const e = document.elementFromPoint(x, y);
+      if (e && !e.closest('[title], button, input, a, .app-tile, #resize-grip')) return { x: Math.round(x * dpr), y: Math.round(y * dpr), el: e.id || e.tagName };
+    }
+    return null;
+  })()`);
+  const nativeMove = async (s, hwnd) => {
+    const p = await quietPoint(s);
+    if (!p) return { ok: false, why: 'no quiet point' };
+    await s.eval(`window.__qlF2 = []; window.__qlF2On = window.__qlF2On || (window.addEventListener('pointermove', (e) => window.__qlF2.push(e.isTrusted), true), true); true`);
+    postMouseMove(hwnd, p.x, p.y);
+    await sleep(120);
+    postMouseMove(hwnd, p.x + 2, p.y + 1); // Chromium drops a move to the same point
+    await sleep(450);
+    const got = (await s.eval('window.__qlF2')) || [];
+    return { ok: got.some(Boolean), trusted: got.filter(Boolean).length, at: p, vis: await s.eval('document.visibilityState') };
+  };
+  const hwndOf = (r) => parseInt(String(r.host.win.hwnd || '0'), 16);
+
+  const d = await describe();
+  if (FALLBACK) {
+    const px = d.regions.map((r) => ({ id: r.id.slice(0, 8), ...windowPixels(hwndOf(r)) }));
+    check('F-2 pixels: every fallback region window shows its page (PrintWindow PW_RENDERFULLCONTENT: 16+ colours, 10%+ lit)',
+      px.length === 8 && px.every((p) => p.ok), px.map((p) => `${p.id} ${p.colours}c ${p.lit}${p.ok ? '' : ` FAIL${p.why ? ` ${p.why}` : ''}`}`));
+  }
+  const moves = [];
+  for (const r of d.regions) moves.push({ id: r.id.slice(0, 8), ...(await nativeMove(sessions[r.id], hwndOf(r))) });
+  check('F-2 input: a native mouse message to every region window reaches its page (posted WM_MOUSEMOVE, trusted pointermove)',
+    moves.length === 8 && moves.every((m) => m.ok), moves.map((m) => `${m.id} ${m.trusted} ${m.vis}${m.ok ? '' : ` FAIL${m.why ? ` ${m.why}` : ''}`}`));
+
+  // Rebuilt while hidden: the new window is never shown until Show all.
+  await mgr.eval(`window.api.invoke('manager:test', 'toggle-all')`);
+  await sleep(300);
+  const oldTarget = sessions[r1id].t.id;
+  await sessions[r1id].eval(`setTimeout(() => window.close(), 10), true`).catch(() => {});
+  pages.delete(oldTarget);
+  let fresh = null;
+  for (let i = 0; i < 60 && !fresh; i++) {
+    fresh = (await regionPages()).find((t) => regionId(t) === r1id && t.id !== oldTarget) || null;
+    if (!fresh) await sleep(250);
+  }
+  let shownOk = false;
+  let rbPx = { ok: !FALLBACK };
+  let rbMove = { ok: false, why: 'no rebuilt page' };
+  if (fresh) {
+    const s = await session(fresh);
+    for (let i = 0; i < 40; i++) {
+      if (await s.eval(`!!document.body && document.body.classList.contains('region') && typeof apps !== 'undefined' && document.title.length > 0`).catch(() => false)) break;
+      await sleep(150);
+    }
+    sessions[r1id] = s;
+    for (let i = 0; i < 40; i++) {
+      const rr = (await describe()).regions.find((r) => r.id === r1id);
+      if (rr && rr.host.mode === MODE && rr.host.win.alive) break;
+      await sleep(200);
+    }
+    await mgr.eval(`window.api.invoke('manager:test', 'toggle-all')`);
+    await sleep(1200);
+    const after = await describe();
+    const rr = after.regions.find((r) => r.id === r1id);
+    shownOk = !after.hidden && !!rr && rr.host.win.visible;
+    if (FALLBACK) rbPx = windowPixels(hwndOf(rr));
+    rbMove = await nativeMove(s, hwndOf(rr));
+  } else {
+    await mgr.eval(`window.api.invoke('manager:test', 'toggle-all')`);
+  }
+  check('F-2 rebuilt while hidden: after Show all the region is visible, paints (fallback) and a native mouse message reaches its page',
+    shownOk && rbPx.ok && rbMove.ok, { visible: shownOk, pixels: FALLBACK ? `${rbPx.colours}c ${rbPx.lit}` : 'n/a (desktop child)', trustedMoves: rbMove.trusted, why: rbMove.why });
 }
 
 // WCAG contrast of two computed colours (alpha flattened on black, as the contrast gate does).
