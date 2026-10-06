@@ -21,6 +21,15 @@
 //   --timeout=<s>       hard limit for the Electron run (default 540)
 //   --self-test         prove every guard can fire (renders one theme; writes to <work>/self-test)
 //
+// Region mode (regions M4; npm run gallery:regions runs the standard sets): the region page
+// (index.html with region.js, region:info answered from the mock) instead of the main grid.
+//   --layout=column|row  turns region mode on; without it the tool is the main-grid gallery above
+//   --items=<n>          mock tiles in the region (default 6 Column, 5 Row; 0 = the empty cell)
+//   --states=a,b         view, hover, edit, filter, rename, notice, update (Column) (default view,hover,edit)
+//   --name=<text>        the region's name (default Games)
+// Each state is captured at the size the app gives it (layouts.js: a Column grows 38 for the
+// edit bar and the notice slot); <theme>-<state>.png; layout measures in theme-metadata.
+//
 // Isolation: QuickLaunch's main process is never loaded; no window is shown or focused; no
 // tray, hotkey, audio or network; login-item APIs are counting no-ops. This script READS the
 // HKCU Run and StartupApproved\Run keys before and after and fails on any difference (it never
@@ -48,10 +57,32 @@ const OUT = path.resolve(selfTest ? path.join(WORK, 'self-test') : opt('out', pa
 const ref = opt('ref', null);
 const only = opt('only', '') ? opt('only').split(',').map((s) => s.trim()).filter(Boolean) : (selfTest ? ['cyberpunk', 'dune'] : null);
 const num = (k, d) => { const v = Number(opt(k, d)); if (!Number.isFinite(v) || v <= 0) { console.error(`bad --${k}`); process.exit(2); } return v; };
+// Region mode: sizes per state from the app's own formulas (src/main/regions/layouts.js, live tree).
+const layoutOpt = opt('layout', null);
+let region = null;
+if (layoutOpt !== null) {
+  if (!['column', 'row'].includes(layoutOpt)) { console.error('--layout must be column or row'); process.exit(2); }
+  if (selfTest) { console.error('--self-test proves the main-grid gallery; run it without --layout'); process.exit(2); }
+  const L = require(path.join(REPO, 'src', 'main', 'regions', 'layouts.js'));
+  const items = Math.round(Number(opt('items', layoutOpt === 'row' ? '5' : '6')));
+  if (!Number.isFinite(items) || items < 0 || items > 14) { console.error('--items must be 0 to 14'); process.exit(2); }
+  const states = opt('states', 'view,hover,edit').split(',').map((x) => x.trim()).filter(Boolean);
+  const known = ['view', 'hover', 'edit', 'filter', 'rename', 'notice', 'update'];
+  const bad = states.filter((x) => !known.includes(x));
+  if (bad.length || !states.length) { console.error(`--states: unknown ${bad.join(', ') || '(none)'}; known ${known.join(', ')}`); process.exit(2); }
+  const S = 64; // mock-data.cjs settings
+  const sizes = {};
+  for (const st of states) {
+    const extras = layoutOpt === 'column' ? { edit: st === 'edit' || st === 'rename', notice: st === 'notice' || st === 'update' } : {};
+    sizes[st] = L.contentSize(layoutOpt, items, S, extras);
+  }
+  region = { layout: layoutOpt, items, states, sizes, name: opt('name', 'Games') };
+}
 const cfgBase = {
-  scale: num('scale', 1.5), width: Math.round(num('width', 424)), height: Math.round(num('height', 300)),
+  scale: num('scale', 1.5), width: region ? region.sizes[region.states[0]].width : Math.round(num('width', 424)), height: region ? Math.max(...region.states.map((st) => region.sizes[st].height)) : Math.round(num('height', 300)),
   freezeMs: Math.round(num('freeze-ms', 2500)), concurrency: Math.round(num('concurrency', 3)),
   timeoutSec: Math.round(num('timeout', 540)), gpu: flag('gpu'), selfTest,
+  ...(region ? { layout: region.layout, items: region.items, states: region.states, sizes: region.sizes, name: region.name } : {}),
 };
 
 // ── refusals ─────────────────────────────────────────────────────────────────
@@ -187,7 +218,7 @@ fs.writeFileSync(cfgFile, JSON.stringify({ ...cfgBase, root, out: OUT, work: WOR
 
 const electronExe = require('electron'); // path to this repo's electron.exe
 const electronVersion = JSON.parse(fs.readFileSync(path.join(REPO, 'node_modules', 'electron', 'package.json'), 'utf8')).version;
-console.log(`QuickLaunch theme gallery${selfTest ? ' SELF-TEST' : ''}: v${version}, ${sourceLabel}; Electron ${electronVersion}`);
+console.log(`QuickLaunch theme gallery${selfTest ? ' SELF-TEST' : ''}${region ? ` (region ${region.layout}, ${region.items} tiles, ${region.states.join(', ')})` : ''}: v${version}, ${sourceLabel}; Electron ${electronVersion}`);
 console.log(`  out  ${OUT}\n  work ${WORK}`);
 
 const regBefore = snapshotRegistry();
@@ -268,7 +299,8 @@ if (bad.length) fails.push(`${bad.length} theme(s) with problems`);
 // A stale frame from another theme would show up as two themes with the same grid picture.
 function findDupes(list) {
   const byGrid = new Map();
-  for (const r of list) if (r.states && r.states.grid) byGrid.set(r.states.grid.pixelSha256, [...(byGrid.get(r.states.grid.pixelSha256) || []), r.theme]);
+  const k = region ? region.states[0] : 'grid';
+  for (const r of list) if (r.states && r.states[k]) byGrid.set(r.states[k].pixelSha256, [...(byGrid.get(r.states[k].pixelSha256) || []), r.theme]);
   return [...byGrid.values()].filter((v) => v.length > 1);
 }
 const dupes = findDupes(results);
@@ -314,8 +346,10 @@ const manifest = {
   quicklaunch: { version, ...source }, electron: electronVersion,
   render: { window: [cfgBase.width, cfgBase.height], scale: cfgBase.scale, raster: cfgBase.gpu ? 'gpu' : 'software', colorProfile: 'srgb', transparentWindow: true,
     frame: `looping animations paused at currentTime ${cfgBase.freezeMs} ms; one-shot animations (entrance, hover flourishes) and transitions finished; banner rotation stopped on quote #1`,
-    states: { grid: 'main grid, nothing hovered', settings: 'Settings overlay open (btn-settings click)', hover: 'synthetic mouse move over tile #2 (Calculator), settled' },
-    tiles: '14 mock tiles (scripts/theme-gallery/mock-data.cjs), store-default settings',
+    states: region
+      ? Object.fromEntries(region.states.map((st) => [st, `${region.layout} ${region.sizes[st].width}x${region.sizes[st].height}: ${{ view: 'nothing hovered', hover: 'synthetic mouse move over tile #2', edit: 'edit mode', filter: '"calc" typed', rename: 'F2 on the handle', notice: 'the notice "TARGET UNREADABLE"', update: 'an update offer with DOWNLOAD' }[st]}`]))
+      : { grid: 'main grid, nothing hovered', settings: 'Settings overlay open (btn-settings click)', hover: 'synthetic mouse move over tile #2 (Calculator), settled' },
+    tiles: region ? `${region.items} of the 14 mock tiles in a ${region.layout} region named "${region.name}" (scripts/theme-gallery/mock-data.cjs), store-default settings` : '14 mock tiles (scripts/theme-gallery/mock-data.cjs), store-default settings',
     displays: res ? res.extra.displays : null, displayEvents: res ? res.extra.displayEvents : null },
   isolation: {
     counters, stubs: res ? res.stubs : null, ipcCalls: res ? res.ipc.calls : null, unexpectedIpc: unexpected.length,

@@ -25,6 +25,7 @@ Keeps it in the tray. Pops it open with `Ctrl+Space` (or via the tray) when he w
 | Run in dev | `npm start` (plain `electron .` — no dev server) |
 | Theme contrast gate | `npm run check:contrast` (also runs as `prebuild`) |
 | Theme screenshot gallery (dev tooling; never launches the app) | `npm run gallery:themes -- --out=<dir> [--ref=<commit>] [--only=a,b]` · guard proof: `npm run gallery:themes -- --self-test` · options: `-- --help` |
+| Region gallery: every theme in Column and Row, in each region state (dev tooling; never launches the app; sets column, row, row-region8, column-empty, row-empty; measures summed in `summary.json`) | `npm run gallery:regions -- [--out=<dir>] [--only=a,b] [--sets=column,row]` · one set: `npm run gallery:themes -- --layout=column\|row [--items=<n>] [--states=view,hover,edit,filter,rename,notice,update] [--name=<text>]` · options: `node scripts/theme-gallery/regions.mjs --help` |
 | Local installer, never publishes (packaged QA) | `npm run pack` |
 | Regions unit tests (pure modules, plain Node) | `npm run test:regions` |
 | Regions self-test (packaged build through the QA launch guard, driven over CDP, no OS input; M3 runs on a fake desktop under `--root`) | `npm run selftest:regions -- --guard <studio>/scripts/qa/quicklaunch-safe-launch.mjs [--root <folder in %TEMP%>] [--seed <data copy>] [--fallback] [--probe] [--shots <dir>]` |

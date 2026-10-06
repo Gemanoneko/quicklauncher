@@ -9,6 +9,7 @@
     "clean:dist": "node scripts/clean-dist.js",
     "check:contrast": "node scripts/check-theme-contrast.js",
     "gallery:themes": "node scripts/theme-gallery/run.mjs",
+    "gallery:regions": "node scripts/theme-gallery/regions.mjs",
     "test:regions": "node --test test/",
     "selftest:regions": "node scripts/regions-selftest.mjs",
     "tryit:regions": "node scripts/tryit-regions.mjs",

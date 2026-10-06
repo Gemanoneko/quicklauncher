@@ -20,6 +20,12 @@
 // Determinism (two full runs gave 303/303 pixel-identical captures): software raster, sRGB,
 // no partial raster, device emulation for viewport + DPR, every animation born paused and set
 // to one currentTime, and a capture is accepted only when two consecutive grabs match.
+// Installed first, before anything that can throw (the config read included), so an error is
+// logged and the process exits; Electron's own handler would show a dialog on Sergei's screen.
+// The full handler below (writes the result file) takes over once it is installed.
+let fullHandler = false;
+process.on('uncaughtException', (e) => { if (fullHandler) return; console.error('[gallery] FATAL (early) ' + (e && e.stack)); process.exit(2); });
+process.on('unhandledRejection', (e) => { if (fullHandler) return; console.error('[gallery] FATAL (early, rejection) ' + (e && e.stack)); process.exit(2); });
 const electron = require('electron');
 const { app, BrowserWindow, session, ipcMain, globalShortcut, dialog } = electron;
 const path = require('path');
@@ -36,7 +42,9 @@ const ROOT = path.resolve(cfg.root);
 const RENDERER = path.join(ROOT, 'src', 'renderer');
 const OUT = path.resolve(cfg.out);
 const PROFILE = path.join(path.resolve(cfg.work), 'electron-profile');
-const STATES = ['grid', 'settings', 'hover'];
+// Region mode (--layout=column|row): the region page, its states and per-state sizes (run.mjs).
+const REGION = cfg.layout ? { layout: cfg.layout, items: cfg.items, name: cfg.name || 'Games', sizes: cfg.sizes } : null;
+const STATES = REGION ? cfg.states : ['grid', 'settings', 'hover'];
 
 const logLines = [];
 function log(...a) { const s = a.join(' '); logLines.push(s); console.log('[gallery] ' + s); }
@@ -121,6 +129,7 @@ function finish(code, why) {
 }
 process.on('uncaughtException', (e) => { log('FATAL ' + (e && e.stack)); finish(2, 'uncaughtException: ' + (e && e.message)); });
 process.on('unhandledRejection', (e) => { log('FATAL(rejection) ' + (e && e.stack)); finish(2, 'unhandledRejection: ' + (e && e.message)); });
+fullHandler = true;
 setTimeout(() => finish(4, `WATCHDOG after ${cfg.timeoutSec}s`), cfg.timeoutSec * 1000).unref();
 
 // ── the renderer contract, read from the real preload ────────────────────────
@@ -145,7 +154,7 @@ const THEMES = cfg.only && cfg.only.length ? cfg.only : THEMES_ALL;
 for (const t of THEMES) if (!THEMES_ALL.includes(t)) { console.error('unknown theme: ' + t); process.exit(2); }
 
 // ── mock IPC (the only thing the renderer can reach) ─────────────────────────
-const EXPECTED_IPC = new Set(['get-apps', 'get-settings', 'get-valid-themes', 'renderer-ready']);
+const EXPECTED_IPC = new Set(['get-apps', 'get-settings', 'get-valid-themes', 'renderer-ready', ...(REGION ? ['region:info', 'region:extras'] : [])]);
 const ipcCalls = {};
 const unexpectedIpc = [];
 const themeOfWc = new Map();
@@ -155,7 +164,10 @@ ipcMain.handle('qlg:invoke', (e, channel, args) => {
   const theme = themeOfWc.get(e.sender.id) || '?';
   if (!EXPECTED_IPC.has(channel)) unexpectedIpc.push({ theme, channel });
   switch (channel) {
-    case 'get-apps': return mock.apps();
+    case 'get-apps': return REGION ? mock.apps().slice(0, REGION.items) : mock.apps();
+    case 'region:info': if (!REGION) return null;
+      return { id: 'gallery', name: REGION.name, icon: 'games', layout: REGION.layout, primary: true, active: false, matchAll: false, regionCount: 1, mode: 'attached', hidden: false, cap: null, testHooks: false };
+    case 'region:extras': return REGION ? { ok: true } : null;
     case 'get-settings': return mock.settings(theme);
     case 'get-valid-themes': return THEMES_ALL;
     case 'renderer-ready': case 'store-reload-ack': return null;
@@ -310,15 +322,20 @@ function rectDiff(a, b, w, rect) {
 // Offscreen capture once returned a stale 1x frame (425x300, zoomed into the top-left) when
 // the display went to sleep mid-run. Every capture must be exactly width*scale x height*scale;
 // a wrong-size frame is discarded and re-captured after a fresh paint.
+// The captured view size: cfg.width x cfg.height (legacy mode, every window), or per render
+// window and state in region mode (several windows render in parallel, each its own size).
 const EXPECT_W = Math.round(cfg.width * cfg.scale), EXPECT_H = Math.round(cfg.height * cfg.scale);
+const viewOf = (win) => (win && win.__qlView) || { width: cfg.width, height: cfg.height };
+const expectOf = (win) => { const v = viewOf(win); return { w: Math.round(v.width * cfg.scale), h: Math.round(v.height * cfg.scale) }; };
+function setView(win, size) { win.__qlView = { width: size.width, height: size.height }; }
 async function grab(win, attempt) {
   win.webContents.invalidate();
   await js(win, FRAMES);
   await sleep(60 + attempt * 150);
-  const img = await win.webContents.capturePage({ x: 0, y: 0, width: cfg.width, height: cfg.height });
+  const img = await win.webContents.capturePage({ x: 0, y: 0, width: viewOf(win).width, height: viewOf(win).height });
   const sf = Math.max(...img.getScaleFactors());
   const size = img.getSize(sf);
-  return { img, sf, size, ok: size.width === EXPECT_W && size.height === EXPECT_H };
+  return { img, sf, size, ok: size.width === expectOf(win).w && size.height === expectOf(win).h };
 }
 // A frame is accepted once two consecutive grabs are pixel-identical (the raster has settled).
 async function capture(win, file) {
@@ -338,8 +355,8 @@ async function capture(win, file) {
   const png = img.toPNG({ scaleFactor: sf });
   const bmp = img.toBitmap({ scaleFactor: sf });
   if (file) fs.writeFileSync(file, png);
-  return { size: [size.width, size.height], sizeOk: size.width === EXPECT_W && size.height === EXPECT_H, discardedFrames: wrong, stable, grabs,
-    pxPerCssPx: +(size.width / cfg.width).toFixed(3), bytes: png.length, pngSha256: sha(png).slice(0, 16), pixelSha256: sha(bmp).slice(0, 16), stats: pixelStats(bmp, size.width, size.height), bmp };
+  return { size: [size.width, size.height], sizeOk: size.width === expectOf(win).w && size.height === expectOf(win).h, discardedFrames: wrong, stable, grabs,
+    pxPerCssPx: +(size.width / viewOf(win).width).toFixed(3), bytes: png.length, pngSha256: sha(png).slice(0, 16), pixelSha256: sha(bmp).slice(0, 16), stats: pixelStats(bmp, size.width, size.height), bmp };
 }
 
 async function platformFonts(win, selectors) {
@@ -404,11 +421,11 @@ function makeRenderWindow() {
 function emulate(win) {
   win.webContents.enableDeviceEmulation({
     screenPosition: 'desktop', screenSize: { width: 5120, height: 1440 }, viewPosition: { x: 0, y: 0 },
-    deviceScaleFactor: cfg.scale, viewSize: { width: cfg.width, height: cfg.height }, scale: 1,
+    deviceScaleFactor: cfg.scale, viewSize: { width: viewOf(win).width, height: viewOf(win).height }, scale: 1,
   });
 }
-const viewportProblem = (p) => (p.viewport[0] !== cfg.width || p.viewport[1] !== cfg.height || Math.abs(p.dpr - cfg.scale) > 1e-6
-  ? `viewport ${p.viewport.join('x')} at ${p.dpr}x, expected ${cfg.width}x${cfg.height} at ${cfg.scale}x` : null);
+const viewportProblem = (p, win = null) => (p.viewport[0] !== viewOf(win).width || p.viewport[1] !== viewOf(win).height || Math.abs(p.dpr - cfg.scale) > 1e-6
+  ? `viewport ${p.viewport.join('x')} at ${p.dpr}x, expected ${viewOf(win).width}x${viewOf(win).height} at ${cfg.scale}x` : null);
 
 async function renderTheme(win, theme, outDir) {
   const wc = win.webContents;
@@ -489,6 +506,175 @@ async function renderTheme(win, theme, outDir) {
   return r;
 }
 
+// ── region mode (--layout=column|row): the region page in Column or Row ──────
+// The page is the real index.html with region.js; region:info is answered from the mock
+// (layout, name). States: view, hover, edit, filter (`calc` typed), rename (F2 on the
+// handle), notice (a launch error's words), update (an update offer; Column only).
+// Each state is captured at its own size (a Column grows 38 for the edit bar and the slot).
+const REGION_NOTICE = 'TARGET UNREADABLE';
+const REGION_UPDATE = 'UPDATE AVAILABLE — v1.95.0';
+async function regionState(win, st, enter) {
+  const wc = win.webContents;
+  if (st === 'edit') { await js(win, `enterEditMode(), true`); await waitFor(win, `!document.getElementById('edit-bar').classList.contains('hidden')`, 3000, 'edit mode'); }
+  if (st === 'filter') { await js(win, `setFilter('calc'), true`); await waitFor(win, `!document.getElementById('filter-chip').classList.contains('hidden')`, 3000, 'filter chip'); }
+  if (st === 'rename') {
+    await js(win, `(() => { const t = document.getElementById('title-area'); t.focus(); t.dispatchEvent(new KeyboardEvent('keydown', { key: 'F2', bubbles: true, cancelable: true })); return true; })()`);
+    await waitFor(win, `!!document.querySelector('.region-rename-input')`, 3000, 'rename field');
+  }
+  if (st === 'notice') { await js(win, `showNotice(${JSON.stringify(REGION_NOTICE)}), true`); await waitFor(win, `document.getElementById('update-banner').classList.contains('notice')`, 3000, 'notice'); }
+  if (st === 'update') { await js(win, `qlBanner.setUpdate(${JSON.stringify(REGION_UPDATE)}, [{ label: 'DOWNLOAD', action: 'download' }]), true`); await waitFor(win, `!document.getElementById('update-banner').classList.contains('hidden')`, 3000, 'update offer'); }
+  if (st === 'hover') {
+    const i = Math.min(mock.HOVER_TILE_INDEX, REGION.items - 1);
+    const rect = await js(win, `(() => { const b = document.querySelectorAll('#app-grid .app-tile')[${i}].getBoundingClientRect(); return { x: b.left, y: b.top, w: b.width, h: b.height }; })()`);
+    const cx = Math.round(rect.x + rect.w / 2), cy = Math.round(rect.y + rect.h / 2);
+    wc.sendInputEvent({ type: 'mouseEnter', x: cx, y: cy });
+    wc.sendInputEvent({ type: 'mouseMove', x: cx, y: cy });
+    await waitFor(win, `document.querySelectorAll('#app-grid .app-tile')[${i}].matches(':hover')`, 3000, 'tile hover');
+    enter.rect = rect;
+  }
+  await sleep(st === 'view' ? 0 : 250);
+}
+async function regionLeave(win, st) {
+  const wc = win.webContents;
+  if (st === 'hover') { wc.sendInputEvent({ type: 'mouseMove', x: -50, y: -50 }); wc.sendInputEvent({ type: 'mouseLeave', x: -50, y: -50 }); }
+  if (st === 'edit') await js(win, `exitEditMode(), true`);
+  if (st === 'filter') await js(win, `clearFilter(), true`);
+  if (st === 'rename') await js(win, `(() => { const i = document.querySelector('.region-rename-input'); if (i) i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })); exitEditMode(); return true; })()`);
+  if (st === 'notice') await js(win, `qlBanner.endNotice(), true`);
+  // 'update' is left as it is: the page is loaded fresh for the next theme (closing it would call the updater).
+}
+// A glyph under the real (offscreen, synthetic) pointer: its colour against --text (M4 rulings Q17).
+async function hoverGlyph(win, sel) {
+  const wc = win.webContents;
+  const r = await js(win, `(() => { const e = document.querySelector(${JSON.stringify(sel)}); if (!e || e.offsetParent === null) return null; const b = e.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 }; })()`);
+  if (!r) return null;
+  wc.sendInputEvent({ type: 'mouseEnter', x: Math.round(r.x), y: Math.round(r.y) });
+  wc.sendInputEvent({ type: 'mouseMove', x: Math.round(r.x), y: Math.round(r.y) });
+  await sleep(250);
+  const out = await js(win, `(() => { const e = document.querySelector(${JSON.stringify(sel)}); const p = document.createElement('div'); p.style.color = 'var(--text)'; document.body.appendChild(p); const t = getComputedStyle(p).color; p.remove(); return { hovered: e.matches(':hover'), color: getComputedStyle(e).color, text: t }; })()`);
+  wc.sendInputEvent({ type: 'mouseMove', x: -50, y: -50 });
+  wc.sendInputEvent({ type: 'mouseLeave', x: -50, y: -50 });
+  await sleep(150);
+  return out;
+}
+async function renderRegionTheme(win, theme, outDir) {
+  const wc = win.webContents;
+  themeOfWc.set(wc.id, theme);
+  extra.consoleByTheme[theme] = [];
+  const t0 = Date.now();
+  setView(win, REGION.sizes[STATES[0]]);
+  await win.loadFile(INDEX, { query: { region: 'gallery', rebuilt: '0', layout: REGION.layout } });
+  emulate(win);
+  await wc.insertCSS('*, *::before, *::after { animation-play-state: paused !important; }', { cssOrigin: 'user' });
+  await waitFor(win, `(() => { const l = document.getElementById('theme-stylesheet'); if (!l || !l.sheet || !l.sheet.href || !l.sheet.href.endsWith('/styles/themes/${theme}.css')) return false; try { if (!l.sheet.cssRules.length) return false; } catch { return false; } if (!document.body.classList.contains('layout-${REGION.layout}')) return false; if (document.title !== ${JSON.stringify(REGION.name)}) return false; const n = document.querySelectorAll('#app-grid .app-tile').length; return n === ${REGION.items} && (${REGION.items} > 0 || !!document.querySelector('#app-grid .empty-cell')) && document.getElementById('header-version').textContent.length > 0; })()`, 10000, `theme ${theme} applied`);
+  await js(win, `(async () => { await document.fonts.ready; await Promise.all([...document.images].map((i) => i.decode().catch(() => null))); return true; })()`);
+  await js(win, `(() => { try { clearInterval(bannerInterval); clearTimeout(bannerFadeTimer); bannerInterval = null; document.getElementById('theme-banner-text').style.opacity = '1'; return true; } catch (e) { return String(e); } })()`);
+  await js(win, FRAMES);
+  await sleep(150);
+
+  const r = { theme, family: familyOf(theme), ok: true, problems: [], states: {}, freeze: {}, layoutCheck: {} };
+  r.page = await js(win, PAGE_STATE(theme));
+  r.name = r.page.name || theme.toUpperCase();
+  if (r.page.hovered) r.problems.push(`${r.page.hovered} element(s) hovered before the first capture`);
+  if (r.page.visibility !== 'visible') r.problems.push(`page visibility ${r.page.visibility}`);
+  if (viewportProblem(r.page, win)) r.problems.push(viewportProblem(r.page, win));
+  r.meta = await js(win, CSSOM_META);
+  Object.assign(r.meta, staticMeta(fs.readFileSync(path.join(RENDERER, 'styles', 'themes', theme + '.css'), 'utf8')));
+  const caps = {};
+  for (const st of STATES) {
+    if (st === 'hover' && !REGION.items) continue;
+    if (st === 'update' && REGION.layout !== 'column') continue;
+    setView(win, REGION.sizes[st]);
+    emulate(win);
+    await js(win, FRAMES);
+    const enter = {};
+    await regionState(win, st, enter);
+    r.layoutCheck[st] = await js(win, REGION_CHECK);
+    r.freeze[st] = await freeze(win);
+    caps[st] = await capture(win, outDir && path.join(outDir, `${theme}-${st}.png`));
+    if (st === 'view') r.layoutCheck.view.menuHover = await hoverGlyph(win, '#btn-region-menu');
+    if (st === 'edit') r.layoutCheck.edit.clusterHover = await hoverGlyph(win, '#btn-cluster-done');
+    if (st === 'hover' && caps[STATES[0]] && STATES[0] !== 'hover') {
+      const s = caps.hover.size[0] / viewOf(win).width;
+      const rect = enter.rect;
+      const dev = { x: Math.max(0, Math.floor(rect.x * s)), y: Math.max(0, Math.floor(rect.y * s)), w: Math.floor(rect.w * s), h: Math.floor(rect.h * s) };
+      dev.w = Math.min(dev.w, caps.hover.size[0] - dev.x); dev.h = Math.min(dev.h, caps.hover.size[1] - dev.y);
+      const same = caps[STATES[0]].size[0] === caps.hover.size[0] && caps[STATES[0]].size[1] === caps.hover.size[1];
+      r.hoverTile = { rectCss: rect, diffVsView: same ? rectDiff(caps[STATES[0]].bmp, caps.hover.bmp, caps.hover.size[0], dev) : null };
+      if (r.hoverTile.diffVsView !== null && !(r.hoverTile.diffVsView > 0.5)) r.problems.push(`hover changed the tile by only ${r.hoverTile.diffVsView}`);
+    }
+    const c = caps[st];
+    const expectW = expectOf(win).w, expectH = expectOf(win).h;
+    const { bmp, ...keep } = c; void bmp;
+    r.states[st] = { file: outDir ? `${theme}-${st}.png` : null, css: [viewOf(win).width, viewOf(win).height], ...keep };
+    if (!c.sizeOk) r.problems.push(`${st} capture is ${c.size.join('x')}, expected ${expectW}x${expectH}`);
+    else if (!c.stable) r.problems.push(`${st} frame never settled (${c.grabs} grabs)`);
+    if (c.stats.blank) r.problems.push(`${st} capture looks blank (${JSON.stringify(c.stats)})`);
+    await regionLeave(win, st);
+  }
+  r.fonts = await platformFonts(win, { title: '#title', tileLabel: '#app-grid .app-tile .tile-label' });
+  r.consoleErrors = extra.consoleByTheme[theme].filter((m) => m.level === 'error');
+  if (r.consoleErrors.length) r.problems.push(`${r.consoleErrors.length} renderer error(s): ${r.consoleErrors[0].message}`);
+  r.consoleWarnings = extra.consoleByTheme[theme].filter((m) => m.level === 'warning').length;
+  r.ms = Date.now() - t0;
+  r.ok = r.problems.length === 0;
+  return r;
+}
+
+// Measures for the region report (not pass/fail): interactive rects that intersect (the rename
+// field, the Row notice and the banner text included, M4 rulings measure 11), controls outside
+// the window, the tile list's scroll range, clipped texts, the header tag, colours.
+const REGION_CHECK = `(() => {
+  const vis = (e) => e && e.offsetParent !== null && getComputedStyle(e).visibility !== 'hidden' && getComputedStyle(e).display !== 'none';
+  const rr = (e) => { const b = e.getBoundingClientRect(); return [b.left, b.top, b.right, b.bottom].map((v) => Math.round(v * 10) / 10); };
+  const sel = '#title-area, #header-controls button, #filter-chip, #filter-chip-clear, .app-tile, .app-tile .btn-remove, #edit-bar button, #edit-bar .edit-label-short, #update-banner button, .region-rename-input, #lead-notice, #update-text';
+  const els = [...document.querySelectorAll(sel)].filter(vis).filter((e) => { const b = e.getBoundingClientRect(); return b.width > 1 || b.height > 1; });
+  const R = els.map((e) => ({ e, n: e.id || e.className, r: rr(e) }));
+  const hit = [];
+  for (let i = 0; i < R.length; i++) for (let j = i + 1; j < R.length; j++) {
+    const a = R[i], b = R[j];
+    if (a.e.contains(b.e) || b.e.contains(a.e)) continue;
+    if (a.e.closest('.app-tile') && a.e.closest('.app-tile') === b.e.closest('.app-tile')) continue;
+    if (a.r[0] < b.r[2] && b.r[0] < a.r[2] && a.r[1] < b.r[3] && b.r[1] < a.r[3]) hit.push(a.n + ' x ' + b.n);
+  }
+  const outside = els.filter((e) => { const b = e.getBoundingClientRect(); return b.left < -0.5 || b.top < -0.5 || b.right > innerWidth + 0.5 || b.bottom > innerHeight + 0.5; }).map((e) => e.id || e.className);
+  const g = document.getElementById('app-grid'), field = document.getElementById('grid-container');
+  const clip = (e) => !!e && vis(e) && (e.scrollWidth > e.clientWidth + 0.5 || e.scrollHeight > e.clientHeight + 0.5);
+  // A line-clamped text (the Row name, a notice) is cut when it needs more lines than it shows;
+  // its scrollWidth can exceed clientWidth by its own trailing letter-spacing, which is not a cut.
+  const lineH = (e) => parseFloat(getComputedStyle(e).lineHeight) || 15;
+  // Cut: a wrapping text needs more lines than it shows (its scrollWidth can exceed clientWidth by
+  // its trailing letter-spacing, which is not a cut); a one-line (nowrap) text is wider than its
+  // box, which is where Chromium draws the ellipsis.
+  const clipLines = (e) => {
+    if (!e || !vis(e)) return false;
+    if (getComputedStyle(e).whiteSpace === 'nowrap') return e.scrollWidth > e.clientWidth + 0.5;
+    return Math.round(e.scrollHeight / lineH(e)) > Math.round(e.clientHeight / lineH(e));
+  };
+  const textColor = (() => { const p = document.createElement('div'); p.style.color = 'var(--text)'; document.body.appendChild(p); const c = getComputedStyle(p).color; p.remove(); return c; })();
+  const title = document.getElementById('title'), lead = document.getElementById('lead-notice'), ut = document.getElementById('update-text');
+  const cell = document.querySelector('#app-grid .empty-cell'), sub = cell && cell.querySelector('.hint-sub');
+  const label = document.querySelector('#edit-bar .edit-label-short');
+  const chipText = document.getElementById('filter-chip-text'), chip = document.getElementById('filter-chip'), menu = document.getElementById('btn-region-menu');
+  const rename = document.querySelector('.region-rename-input');
+  const tag = getComputedStyle(document.getElementById('header'), '::after');
+  return {
+    hit, outside,
+    listRange: [g.scrollWidth - g.clientWidth, g.scrollHeight - g.clientHeight], fieldRange: [field.scrollWidth - field.clientWidth, field.scrollHeight - field.clientHeight],
+    fieldOverflow: getComputedStyle(field).overflowX + '/' + getComputedStyle(field).overflowY,
+    titleCut: vis(title) ? clipLines(title) : null, titleLines: vis(title) ? Math.round(title.clientHeight / parseFloat(getComputedStyle(title).lineHeight || '15')) : null,
+    noticeCut: vis(lead) ? clipLines(lead) : vis(ut) && ut.getBoundingClientRect().width > 1 ? clipLines(ut) : null,
+    noticeLines: vis(lead) ? Math.round(lead.clientHeight / 15) : vis(ut) && ut.getBoundingClientRect().width > 1 ? Math.round(ut.clientHeight / 12) : null,
+    chip: vis(chip) ? { textCut: clip(chipText), gapToMenu: Math.round((menu.getBoundingClientRect().left - chip.getBoundingClientRect().right) * 10) / 10, meetsMenu: (() => { const a = chip.getBoundingClientRect(), b = menu.getBoundingClientRect(); return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; })() } : null,
+    rename: rename ? { gapToMenu: Math.round((menu.getBoundingClientRect().left - rename.getBoundingClientRect().right) * 10) / 10, meetsMenu: (() => { const a = rename.getBoundingClientRect(), b = menu.getBoundingClientRect(); return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; })() } : null,
+    emptyCell: cell ? { overflow: clip(cell) || [...cell.children].some((c) => c.getBoundingClientRect().right > cell.getBoundingClientRect().right + 0.5), textIsText: getComputedStyle(cell.querySelector('.empty-title')).color === textColor && getComputedStyle(sub).color === textColor, subLines: Math.round(sub.getBoundingClientRect().height / 15) } : null,
+    editLabel: label && vis(label) ? { isText: getComputedStyle(label).color === textColor, shadow: getComputedStyle(label).textShadow } : null,
+    updateTip: document.getElementById('update-banner').title || null,
+    headerTag: tag.display !== 'none' && tag.content !== 'none' && tag.content !== 'normal',
+    accentBar: parseFloat(getComputedStyle(document.getElementById('header'), '::before').width) || 0,
+  };
+})()`;
+
 // ── contact sheets (drawn on a canvas in an offscreen data: page) ────────────
 async function makeSheetPage() {
   const win = new BrowserWindow({ width: 200, height: 120, show: false, focusable: false, skipTaskbar: true, frame: false,
@@ -519,10 +705,10 @@ async function drawSheet(win, file, layout, images) {
 
 const SHEET_BG = '#2b2d31', CELL_BG = '#3a3d42', INK = '#e8e8e8', DIM = '#a9adb3';
 const localDate = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
-const sheetFooter = () => `Captured ${localDate()} |${cfg.sourceLabel} | window ${cfg.width}x${cfg.height} at ${cfg.scale}x | loops frozen at ${cfg.freezeMs} ms, one-shots finished | transparent areas shown on ${CELL_BG}`;
+const sheetFooter = () => `Captured ${localDate()} |${cfg.sourceLabel} | ${REGION ? `region ${REGION.layout}, ${REGION.items} tiles, ${STATES.map((st) => `${st} ${REGION.sizes[st].width}x${REGION.sizes[st].height}`).join(', ')}` : `window ${cfg.width}x${cfg.height}`} at ${cfg.scale}x | loops frozen at ${cfg.freezeMs} ms, one-shots finished | transparent areas shown on ${CELL_BG}`;
 
 async function familySheet(win, title, list, file) {
-  const cw = cfg.width, ch = cfg.height, pad = 14, lab = 22, head = 44, colHead = 20, foot = 26;
+  const cw = cfg.width, ch = REGION ? Math.max(...STATES.map((st) => REGION.sizes[st].height)) : cfg.height, pad = 14, lab = 22, head = 44, colHead = 20, foot = 26;
   const w = pad + STATES.length * (cw + pad);
   const h = head + colHead + list.length * (lab + ch + pad) + foot;
   const ops = [{ t: 'text', s: title, x: pad, y: 12, f: 'bold 20px Segoe UI', c: INK }];
@@ -533,10 +719,12 @@ async function familySheet(win, title, list, file) {
     ops.push({ t: 'text', s: `${r.name}   (${r.theme})`, x: pad, y: y + 3, f: '14px Segoe UI', c: INK, max: w - 2 * pad });
     STATES.forEach((s, j) => {
       const x = pad + j * (cw + pad);
-      ops.push({ t: 'rect', x, y: y + lab, w: cw, h: ch, c: CELL_BG });
+      const sh = REGION ? REGION.sizes[s].height : ch;
+      ops.push({ t: 'rect', x, y: y + lab, w: cw, h: sh, c: CELL_BG });
       const k = `${r.theme}-${s}`;
+      if (REGION && !(r.states && r.states[s])) return; // a state this theme has no capture for (hover with no tiles)
       images.push([k, path.join(OUT, `${k}.png`)]);
-      ops.push({ t: 'img', k, x, y: y + lab, w: cw, h: ch });
+      ops.push({ t: 'img', k, x, y: y + lab, w: cw, h: sh });
     });
   });
   ops.push({ t: 'text', s: sheetFooter(), x: pad, y: h - foot + 6, f: '11px Segoe UI', c: DIM, max: w - 2 * pad });
@@ -547,13 +735,13 @@ async function overviewSheet(win, list, file) {
   const cols = 10, cw = Math.round(cfg.width / 2), ch = Math.round(cfg.height / 2), pad = 10, lab = 18, head = 40, foot = 24;
   const rows = Math.ceil(list.length / cols);
   const w = pad + cols * (cw + pad), h = head + rows * (lab + ch + pad) + foot;
-  const ops = [{ t: 'text', s: `QuickLaunch themes: main grid, all ${list.length}`, x: pad, y: 10, f: 'bold 20px Segoe UI', c: INK }];
+  const ops = [{ t: 'text', s: REGION ? `QuickLaunch themes: ${REGION.layout} (${REGION.items} tiles), ${STATES[0]}, all ${list.length}` : `QuickLaunch themes: main grid, all ${list.length}`, x: pad, y: 10, f: 'bold 20px Segoe UI', c: INK }];
   const images = [];
   list.forEach((r, i) => {
     const x = pad + (i % cols) * (cw + pad), y = head + Math.floor(i / cols) * (lab + ch + pad);
     ops.push({ t: 'text', s: r.theme, x, y: y + 2, f: '12px Segoe UI', c: INK, max: cw });
     ops.push({ t: 'rect', x, y: y + lab, w: cw, h: ch, c: CELL_BG });
-    images.push([r.theme, path.join(OUT, `${r.theme}-grid.png`)]);
+    images.push([r.theme, path.join(OUT, `${r.theme}-${STATES[0]}.png`)]);
     ops.push({ t: 'img', k: r.theme, x, y: y + lab, w: cw, h: ch });
   });
   ops.push({ t: 'text', s: sheetFooter(), x: pad, y: h - foot + 6, f: '11px Segoe UI', c: DIM, max: w - 2 * pad });
@@ -566,7 +754,7 @@ async function buildSheets(ok) {
   fs.mkdirSync(dir, { recursive: true });
   const win = await makeSheetPage();
   try {
-    if (ok.length) await overviewSheet(win, ok, path.join(dir, '00-overview-grid.png'));
+    if (ok.length) await overviewSheet(win, ok, path.join(dir, REGION ? `00-overview-${REGION.layout}-${STATES[0]}.png` : '00-overview-grid.png'));
     let n = 1;
     for (const [key, title] of FAMILIES) {
       const list = ok.filter((r) => r.family === key);
@@ -596,7 +784,8 @@ function writeMetadata(list) {
     uniqueImages: r.meta.uniqueImages, imageDataChars: r.meta.imageChars,
     beforeRules: r.meta.beforeRules, afterRules: r.meta.afterRules, pseudoRules: r.meta.pseudoRules,
     keyframes: r.meta.keyframes.length, gradients: r.meta.gradients,
-    loopingAnimationsAtCapture: r.freeze.grid.loops,
+    loopingAnimationsAtCapture: r.freeze[STATES[0]].loops,
+    ...(REGION ? { layoutCheck: JSON.stringify(r.layoutCheck || {}) } : {}),
     fontStackDeclared: r.meta.fontStack, fontsRendered: fontSummary(r.fonts),
   }));
   fs.writeFileSync(path.join(OUT, 'theme-metadata.json'), JSON.stringify(rows, null, 1));
@@ -675,7 +864,7 @@ app.whenReady().then(async () => {
   ses.setPermissionCheckHandler(() => false);
 
   fs.mkdirSync(OUT, { recursive: true });
-  for (const f of fs.readdirSync(OUT)) if (/^[a-z0-9-]+-(grid|settings|hover)\.png$/.test(f)) fs.unlinkSync(path.join(OUT, f));
+  for (const f of fs.readdirSync(OUT)) if ((REGION ? /^[a-z0-9-]+-(view|hover|edit|filter|rename|notice|update)\.png$/ : /^[a-z0-9-]+-(grid|settings|hover)\.png$/).test(f)) fs.unlinkSync(path.join(OUT, f));
   log(`source ${cfg.sourceLabel}; ${THEMES.length} theme(s); window ${cfg.width}x${cfg.height} at ${cfg.scale}x; ${cfg.gpu ? 'GPU' : 'software'} raster; freeze ${cfg.freezeMs} ms; ${cfg.concurrency} window(s)`);
   writeStatus('starting');
   const statusTimer = setInterval(() => writeStatus('rendering'), 1500);
@@ -688,7 +877,7 @@ app.whenReady().then(async () => {
         const theme = queue.shift();
         let r;
         for (let attempt = 1; attempt <= 2 && !r; attempt++) {
-          try { r = await renderTheme(win, theme, OUT); }
+          try { r = await (REGION ? renderRegionTheme : renderTheme)(win, theme, OUT); }
           catch (e) {
             log(`render ${theme} attempt ${attempt} failed: ${e.message}`);
             if (attempt === 2) r = { theme, family: familyOf(theme), name: theme.toUpperCase(), ok: false, problems: [`render failed: ${e.message}`] };
@@ -745,7 +934,7 @@ app.whenReady().then(async () => {
   const ok = results.filter((r) => r.ok);
   if (!cfg.selfTest) {
     writeStatus('sheets');
-    await buildSheets(results.filter((r) => r.states && r.states.grid));
+    await buildSheets(results.filter((r) => r.states && r.states[STATES[0]]));
     writeMetadata(results.filter((r) => r.meta));
   }
   clearInterval(statusTimer);
