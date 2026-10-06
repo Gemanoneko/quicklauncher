@@ -695,6 +695,8 @@ $apps | ConvertTo-Json -Depth 2
   // A broken tile's ✕, Delete or tile menu "Remove tile" (addendum B4).
   onRegion('region:remove-broken', (id, a) => (typeof a.itemId === 'string' ? ctl.removeBrokenFromPage(id, a.itemId) : { ok: false }));
   onRegion('region:rename', (id, a) => ctl.rename(id, typeof a.name === 'string' ? a.name : ''));
+  // M4: the page's edit bar or notice slot shows or hides (a Column grows by 38 for each).
+  onRegion('region:extras', (id, a) => ctl.setExtras(id, { edit: a.edit === true, notice: a.notice === true }));
   onRegion('region:cycle', (id, a) => { ctl.cycle(id, num(a.dir) < 0 ? -1 : 1); });
   onRegion('region:open-manager', (id, a) => {
     const view = ['regions', 'settings', 'picker', 'cheatsheet'].includes(a.view) ? a.view : 'regions';
@@ -714,11 +716,15 @@ $apps | ConvertTo-Json -Depth 2
   onManager('manager:move-all-back', () => ctl.moveAllBack(null, { parent: mgr.window }));
   onManager('manager:orphan', (action, file) => ctl.orphanAction(String(action || ''), typeof file === 'string' ? file : '', { parent: mgr.window }));
   onManager('manager:create-region', (layout) => ctl.createRegion(typeof layout === 'string' ? layout : 'grid'));
+  // + NEW REGION opens a native menu of the layouts (spec 8.1); a pick answers on 'manager:created'.
+  onManager('manager:new-region-menu', (at) => ctl.popupNewRegionMenu(num(at && at.x), num(at && at.y)));
   onManager('manager:update-region', (id, patch) => {
     if (typeof id !== 'string' || !patch || typeof patch !== 'object') return { ok: false };
     if (typeof patch.name === 'string') return ctl.rename(id, patch.name);
     if (typeof patch.icon === 'string') return ctl.setIcon(id, patch.icon);
     if (typeof patch.theme === 'string') return ctl.setTheme(id, patch.theme);
+    // M4: the row's layout select (spec 3.3); a refusal is a box over the Manager.
+    if (typeof patch.layout === 'string') return ctl.setLayout(id, patch.layout, { parent: mgr.window });
     return { ok: false };
   });
   onManager('manager:delete-region', (id) => (typeof id === 'string' ? ctl.deleteRegion(id, { parent: mgr.window }) : { ok: false }));

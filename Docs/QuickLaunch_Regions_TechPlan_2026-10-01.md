@@ -1,6 +1,6 @@
 # QuickLaunch regions: tech plan v1 (Ender, 2026-10-01)
 
-Status: plan for the regions build. Milestone 1 is built and committed (`300b733`) on `wip/regions`, cut from `wip/regions-spike` (`bfc5887`) in the worktree `C:\Antigravity Projects\QuickLaunch-regions-spike`. Milestones 2 and 2b are committed (`3939f29`, `004d2a0`). Milestone 3 is built with the M3 rulings applied, uncommitted (§8, §8.1).
+Status: plan for the regions build. Milestone 1 is built and committed (`300b733`) on `wip/regions`, cut from `wip/regions-spike` (`bfc5887`) in the worktree `C:\Antigravity Projects\QuickLaunch-regions-spike`. Milestones 2 and 2b are committed (`3939f29`, `004d2a0`). Milestone 3, its fix pass and the F-2 fix are committed (§8 to §8.3). Milestone 4 (Column and Row) is built with Judy's M4 rulings applied, uncommitted (§9, §9.1); the M3 first-render race fix is §8.4.
 Inputs: Judy's `QuickLaunch_Regions_UXSpec_2026-10-01.md` (all defaults accepted by Sergei, Q1 to Q11), `QuickLaunch_Regions_Layouts_2026-10-01.svg`, Makoto's `Team/Research/QuickLaunch_Regions_2026-09-30.md`, the spike note `QuickLaunch_RegionsSpike_2026-09-30.md` and Sergei's spike run log of 2026-10-01 (6/6 PASS).
 
 Sergei's defaults, as built: Ctrl+Space toggles (Q1); Match all off reverts to each region's own theme (Q2); a full Fan or Ring blocks (Q3); deleting a region removes its reference shortcuts and moves its desktop files back (Q4); `.url` accepted (Q5); filter on the active region (Q6); built-in glyphs (Q7); quotes in Grid only (Q8); random theme re-rolls all regions (Q9); icons under a region stay hidden (Q10); an `.exe` is added by reference, never moved (Q11).
@@ -27,7 +27,7 @@ Sergei's defaults, as built: Ctrl+Space toggles (Q1); Match all off reverts to e
 - `src/main/desktop/desktop-layer.js`: the koffi Win32 calls, one module, nothing else in the app calls Win32 directly.
 - `src/main/desktop/region-host.js`: one host per region window. States `pending`, `attached`, `fallback`. Ported from the spike with three changes: (1) it keeps a `hidden` flag, so a rebuild never shows a region the user hid; (2) `setScreenRect()` moves or resizes the window in its parent's client coordinates (attached) or in screen coordinates (fallback); (3) it does not own a timer: one shared 1 s watchdog in the controller ticks every host, primary first.
 - **Watchdog per tick:** host alive, still our parent, DefView still in the host, our window above DefView (re-raise if not). On a loss: hide, re-find, re-attach. If the window died with its parent (Explorer restart), the host rebuilds it and the renderer reloads its state from the main process. After 10 s with no desktop: fallback.
-- **Fallback and kill switch** `--ql-no-desktop-layer`: an ordinary top-level tool window placed just above the desktop, shown with one `SetWindowPos(SWP_SHOWWINDOW)` (spike note 4). Same UX; Win+D minimises it.
+- **Fallback and kill switch** `--ql-no-desktop-layer`: an ordinary top-level tool window placed just above the desktop, shown with one `SetWindowPos(SWP_SHOWWINDOW)` (spike note 4). Same UX; Win+D leaves it up, not minimised (Sergei's ruling, 2026-10-05; see § 8.3).
 - **Keyboard focus:** a click on a region activates the desktop (spike note 2). On pointer-down the renderer tells the main process, which calls `SetFocus` on the region window **only if the desktop is already the foreground window**, so it can never steal focus. Sergei's spike run proved this path with real typing (7 keys reached the page after a click).
 - **Main thread stays short** (spike note 5: our UI thread's input queue is attached to Explorer's desktop thread). Region drag moves are one `SetWindowPos` per animation frame; no sync file work runs on the main thread during a drag.
 - **Quit:** the tray Quit, `will-quit` and session end take every region out of Explorer's tree (`SetParent(0)`, hidden) before the process exits.
@@ -129,7 +129,7 @@ Goal: a `.lnk` or `.url` that sits directly in a Desktop folder moves into a Qui
 | **M1** | **Regions foundation (Grid)** | Use today's grid as region 1 on the desktop layer, under his windows, through Win+D and an Explorer restart. Create more Grid regions (tray or Manager), move them by the header, resize from the rim, rename, set a theme per region or Match all, move tiles between regions with the tile menu, delete a region. Manager for regions and settings. Ctrl+Space hides or shows all. | **U1** real keys (type-to-filter, rename in the handle, F6), **U3** script move and resize, **U4** native menus and boxes for a desktop child, **U6** several regions (memory and CPU measured at 8). | built |
 | M2 | Between regions | Drag a tile from one region to another (target slot plus a copy of the tile under the pointer, main process relays the drag); a drop on empty desktop or a full region cancels; Ctrl+Arrow, Delete, Menu key on tiles. Display changes and sleep/resume follow the home-layout rule. | **U5** (region to region), **U7** | built (§6) |
 | M3 | Desktop files move in | Drop desktop shortcuts on a region: they leave the desktop and come back with ↩, region delete or Move all back. Moved shortcuts section in the Manager. `.url` accepted. | **U5** (desktop icons onto a region), **U8** | L |
-| M4 | Column and Row | Switch a region to Column or Row: size follows content, scrolls past 90%, compact header or leading cell, edit cluster; layout switch keeps the anchor and finds room. Gallery shots of all 101 themes in both. | | M |
+| M4 | Column and Row | Switch a region to Column or Row: size follows content, scrolls past 90%, compact header or leading cell, edit cluster; layout switch keeps the anchor and finds room. Gallery shots of all 101 themes in both. | | built (§9) |
 | M5 | Fan and Ring | Fan (max 10, four directions) and Ring (max 12) from the geometry in spec 2.7 (unit-tested against Judy's table); hub with name, ⋯ and edit cluster; chips dim for the filter; refusals at the cap. Transparent parts click through. | **U2** | L |
 | M6 | Release prep | In-region overlays removed (after theme-fidelity merges); contrast gate adds `--text` on `--panel-bg`; gallery in all layouts reviewed; CPU with 5 regions idle 60 s measured against one region today; packaged build under Bitdefender; Brief Decision Log; Senua review, Futaba full pass, Sully releases. | | M |
 
@@ -282,7 +282,7 @@ From the Electron 32.3.3 and Chromium 128 source (read, not run):
 
 **A. Don't re-parent a window that is already top-level.** In `detachToTopLevel` and `releaseFromShell`, skip `SetParent(hwnd, NULL)` when the window's parent is already the desktop window.
 - Keyboard: the same as today's fallback design. Before a click, keys go to whatever app has focus. After a click on a region, Windows activates it, so the filter, the tile keys (Ctrl+Arrow, Delete), Menu key / Shift+F10 and rename in the header all get keys.
-- Mouse: unchanged. A click also raises the region above any window that overlaps it, as with any window. Win+D minimises it.
+- Mouse: unchanged. A click also raises the region above any window that overlaps it, as with any window. Win+D leaves it up, not minimised (Sergei's ruling, 2026-10-05; this line first said it minimises, which was written from reading and never measured, § 8.3).
 - Proven in launch 3 (both calls guarded): boot, 7 creates, a rebuild, a delete and quit all ran. Result 64/64, **zero** foreground events and zero `WM_ACTIVATE` on any region window. claude.exe had the foreground at the start and at the end.
 - Risk 1: Windows can still hand focus to a fallback window when the window above it closes or minimises. Microsoft documents this for activatable windows. It was not seen in any run and was not provoked, because provoking it needs input.
 - Risk 2: a region that was a desktop child still needs `SetParent(NULL)` when it drops to fallback after 10 s or quits from the desktop layer. Whether that call activates is not measured: the window still has `WS_CHILD` at that moment, and the 500 ms sampler in M1/M2 could not have caught it.
@@ -588,11 +588,131 @@ The same gap had a second, latent face in **attached** mode. `_attachOnce` skips
 
 **Question, not changed: Win+D (Futaba: FAIL vs spec).** This is not F-2's cause; it is about z-order, not painting. Fallback regions are created `minimizable: false` and `skipTaskbar: true`, and `detachToTopLevel` sets `WS_EX_TOOLWINDOW`, so Show Desktop leaves them up. §7.3's "Win+D minimises it" (Option A) was written from reading and never measured. It was wrong for these windows. Which bit decides was not measured either: Win+D is OS input and was not sent. Making them minimise would change the window's kind (a taskbar button or an Alt+Tab entry, or extra handling of the shell's show-desktop). That is a behaviour change, so the decision is for Judy and Sergei: amend the spec to "fallback regions stay up on Win+D", or ask for a change.
 
+**Ruled (Sergei, 2026-10-05): fallback regions stay up on Win+D.** The app does not change; the spec does (UX spec, "Addendum — Win+D ruling, fallback mode", `12706f8`), and so do § 1.2 and § 7.3 option A here. Which window bit makes Show Desktop leave them up is still not measured (Win+D is OS input).
+
 **Pending real input (Futaba's next away window):**
 1. A real click on a fallback region: it activates, the first click is not swallowed (Chromium answers `MA_ACTIVATE`, §7.2), then a typed letter filters, and Ctrl+Right and F6 work. Keys were not sent: a posted key needs the window activated, which this pass never does.
 2. Real hover and `:hover` under the real cursor. The posted move proves Chromium's own message path into the page, not Windows' hit test with a real cursor.
 3. The regions on screen as Sergei sees them. `PrintWindow` reads DWM's copy of the window, not the composed screen. This also covers a region uncovered after other windows covered it (Chromium's occlusion repaint, off in the self-test).
-4. Click-to-raise, and Win+D after the ruling above.
+4. Click-to-raise, and Win+D: fallback regions stay up (ruled 2026-10-05).
 5. Attached: a region rebuilt while hidden (Explorer restart under Ctrl+Space), shown by the real hotkey, paints and takes a click.
 
 **Files:** `src/main/desktop/region-host.js`, `test/regions/region-host.test.js` (new), `scripts/regions-selftest.mjs` (Win32 pixel and posted-move helpers, `f2Checks`, the fallback launch flag), and this document (this section, and the C2 follow-up row in §8.2).
+
+### 8.4 M3: moved tiles drawn plain in a window built fresh (Ender, 2026-10-06; fix approved by Sergei)
+
+app.js's first render can run before `region.js` has defined `qlDecorateTile`: `init` awaits the items while the page is still loading scripts. A region window built fresh (start-up, an Explorer restart) then drew a moved tile as a plain one. In view mode it had no `data-kind="moved"` (and a broken tile no pip). Edit mode re-renders, so ↩ came back there. The empty-cell variant of the same race was fixed in M4 (§ 9). Fix: at the end of `region.js`, once its hooks exist, one more `renderGrid()` if the grid already holds tiles. Self-test check "M3 race" (`raceChecks`): a `.url` written to the fake desktop is dropped into a region and moves in; that region's window is rebuilt as an Explorer restart rebuilds it, and its tile must read as moved, with ↩ in edit mode. Fails on `HEAD`'s build and on the M4 build without the fix (`kind` null), passes with it; `--probe` turns it red.
+
+**Files (B):** `src/renderer/region.js` (the last hunk only: the comment and `if (document.querySelector('#app-grid .app-tile')) renderGrid();`), `scripts/regions-selftest.mjs` (the `raceChecks` function and its call after `m4Checks`), this section.
+
+---
+
+## 9. M4 as built: Column and Row (Ender, 2026-10-05)
+
+**Scope:** the § 4 M4 row. A region switches to Column or Row (region menu Layout, the Manager's layout select), and new Column and Row regions come from the tray's New region and the Manager's + NEW REGION ▾. Size follows content and stops at 90% of the work area, then the list scrolls. Column has the compact header and the edit cluster bar; Row has the leading cell with EDIT and the cluster. A switch keeps the top-left anchor and finds room. Grid remembers its size (`gridSize`, § 2.1). Gallery shots of all 101 themes in both. No data-format change beyond § 2.1: `gridSize` was already in the shape and kept by `model.js` since M1; it is now written. Not in M4: Fan and Ring (M5). The fullscreen code on this branch is untouched (merge-time matter).
+
+**How it works**
+- `src/main/regions/layouts.js` (new, pure): the spec formulas. Column is `max(180, S + 68)` wide and `40 + 32 + n (S + 32) + (n - 1) 8` high (+ 38 edit bar, + 38 notice slot). Row is `S + 64` high and `96 + 16 + n (S + 32) + (n - 1) 8 + 20` wide; n counts from 1, so an empty region keeps one cell. The cap is `floor(0.9 x` the work-area length on the growth axis. `boxAt` keeps the anchor and stops the length at the cap and at the room.
+- `placement.roomAlong` (new, additive): the free length below (Column) or to the right (Row) before the margin or the 12 px gap to a region in the way.
+- Controller: a Column or Row box is its anchor plus the size its items want. It follows the item count (`_pushItems`, page saves, the read-only merge), the icon size (`broadcastSettingsChanged`) and the page's edit bar and notice slot (`region:extras`). It never moves for growth; past the room the list scrolls. Nothing is saved for growth (home rule, § 1.4). Start-up and display changes fit the same wanted boxes through M2's `relayout`. A Column or Row may shorten there to one cell, never narrower. A larger icon size that makes the fixed side cross a neighbour moves the box by the smallest step that fits.
+- `setLayout`: keeps the top-left of the shown rect. Grid comes back at `gridSize` (default 424 x 300); Column and Row at their wanted size, up to 90%. If that box leaves the area or meets a region, it moves by `findFree` in 12 px rings. With no room anywhere: one box `No room for this layout. Move the region first.` and nothing changes. Otherwise layout, rect, work area and (leaving Grid) `gridSize` are saved at once, and the page hears its layout through `region:state`.
+- The page: the layout rides in the window URL (`&layout=`), so the first frame is right. `region.js` switches `body.layout-*`. `region.css` lays out Column (header `[icon][name][⋯]`, no tag or banner, field x 16 to W - 20, rows of S + 32, the 38 px cluster bar, a one-line notice slot) and Row (the 96 px leading cell, the tile line, EDIT and the cluster laid over the cell, the notice in the name line for 5 s, wheel and Shift+wheel scroll sideways). An empty Column or Row draws one dashed cell, which is the landing slot during a drop preview (A2, M4). Column takes Up/Down only and Row Left/Right only, Ctrl+Arrow likewise (A5, M4). `app.js` got one hook (`qlAfterRender` at the end of `renderGrid`).
+
+**Bug found and fixed in this pass:** app.js's first render can come before `region.js` has run: its `init` awaits the items while the page is still loading scripts. An empty Column or Row loaded fresh (start-up, rebuild, a new region) then had no empty cell. The gallery's empty runs found it (0/101); a self-test check then saw it in the app (0 cells after a rebuild, `dist-m4b`). `region.js` now draws the cell once at load if the grid is already empty.
+
+**Files**
+
+| Area | Files |
+|---|---|
+| Main, new | `src/main/regions/layouts.js` |
+| Main, changed | `regions/controller.js` (sizing, refit, `setLayout`, Layout submenu, + NEW REGION menu, `describe` fields), `regions/model.js` (Column and Row built; the refusal string), `regions/placement.js` (`roomAlong`), `ipc.js` (`region:extras`, `manager:new-region-menu`, `layout` in `manager:update-region`), `preload.js`, `manager-preload.js` (`manager:created`), `tray.js` (New region: Grid, Column, Row) |
+| Renderer | `region.js`, `app.js` (one hook), `index.html` (the cluster, the short EDIT label, the Row notice line), `styles/region.css` (Column and Row), `manager.js` (layout select, + NEW REGION menu), `manager.html` (`+ NEW REGION ▾`) |
+| Tests | `test/regions/layouts.test.js`, `test/regions/controller-layouts.test.js` (new); `scripts/regions-selftest.mjs` (M4 section) |
+
+**Test hooks:** none new. `describe` adds `layout`, `gridSize` and `extras`; the + NEW REGION menu is recorded like the region menus (kind `new-region`) under `--ql-test-hooks`.
+
+**Measured (2026-10-05; `electron-builder --win --dir --publish never` into the session scratchpad, no npm hook; its `app.asar` `src/` equals the worktree `src/`, 137 files, compared with CRLF normalised; every launch through `scripts/qa/quicklaunch-safe-launch.mjs` on a scratch profile with no hotkey; Sergei's installed QuickLauncher (4 processes) ran throughout and was left alone)**
+
+| Run | Result |
+|---|---|
+| Unit (node:test) | 208/208 on Node 26.10 and on Electron's Node 20.18.1: 179 + 29 new (`layouts` 7, `controller-layouts` 22). |
+| The new tests on `HEAD`'s `src/` | `layouts.test.js` cannot load (no module): 7 fail. `controller-layouts`: 21 of 22 fail; the display-change round-trip passes (a guard: HEAD already restores saved rects). |
+| Unit positive control (scratch mutation runner, copies of `src/`, `test/`, `scripts/`, `Docs/`) | 35/35 mutants caught; unmutated copy 208/208. The first round left "a display change shrinks a Column below one cell" alive; the cramped-display test was added and catches it. Mutants: the five formula constants and the minimum width, room, keep, the icon-size default, the 12 px gap and the straddle rule in `roomAlong`, the switch (anchor, no search, 24 px search, `gridSize` not saved or not used, rect not saved, no refusal box, page not told), refit (items, page save, icon size, start-up room pass, neighbours ignored, refit saving), extras, create sizes, the Layout submenu (missing, wrong check), the URL layout, + NEW REGION (Manager not told, enabled at the cap), Row not built, Fan offered. |
+| Self-test, attached | 131/131: 116 from § 8.3 + 15 M4 checks. |
+| Self-test, `--fallback` | 132/132 (+ M4 F-2 pixels: the Column and Row windows paint, 1673 and 3806 colours); the observer saw 0 foreground changes to the build. |
+| Self-test, `--probe` | 55/132: the 62 known reds of § 8.3 and all 15 M4 checks, each on its wrong input. |
+| The new self-test on `HEAD`'s build (`dist/win-unpacked`, `src/` equal to `HEAD`'s) | 116/131: exactly the 15 M4 checks fail. |
+| The page-load check on the pre-fix M4 build | 130/131: only that check fails (0 empty cells after a rebuild). |
+| Crash script | crash-add 5/5, crash-back 5/5, restore 4/4, refusal 3/3. |
+| Gallery (scratch region gallery, below) | 101/101 themes in every run; guards clean (no IPC outside the list, no sockets, registry unchanged, 0 processes left). Across 101 themes: 0 overlapping interactive rects, 0 controls outside the window, 0 cut names, 0 empty-cell overflow, 0 header or edit-bar tags drawn, in every state. |
+| Real Desktop and Public Desktop | Identical at the start of this pass, at the resume, and at the end (`SHGetKnownFolderPath`, `readdir` + `lstat`); every self-test and crash run also checks them before and after; `%USERPROFILE%\QuickLauncher Shortcuts` never created. |
+
+**Gallery.** The repo's `scripts/theme-gallery` predates regions: its Settings state clicks a button that now opens the Manager, and it does not know the region channels. The shots came from a scratch copy of it (same isolation guards) that loads the region page with a mocked `region:info` and renders `view`, `hover` and `edit`. Runs: Column 6 tiles (180 x 688, view and hover; edit at 180 x 726), Row 5 tiles (644 x 128, view, hover, edit), empty Column (180 x 168 view; edit at 180 x 206), empty Row (228 x 128, view and edit). Each run has PNGs per theme, contact sheets and a manifest with the measures above. It is not in the repo; landing it is a question for Jane.
+
+**Self-test seen red once each, not M4:** "boot: region 1 is a fallback window / on the desktop layer" read `pending` in 1 of 3 fallback runs and in 1 of 2 runs of `HEAD`'s own build. The check reads the mode once, right after the page appears. A read-once race in the test; the reruns passed.
+
+**Deviations (numbered on from § 8.2; each is the most conservative reading where the spec is silent; the Judy questions name them)**
+32. **Growth with no room** stays at the fixed corner up to the room and the list scrolls (2.3's edit-bar rule applied to items); the region never moves for growth.
+33. **90%** is `floor(0.9 x` the work-area length); the last tile may show in part.
+34. **Column's edit bar** holds the cluster only, no `EDIT` label (2.3, 5.6; 9.3 says `EDIT` for every layout but Grid).
+35. **The theme's edit-bar tag** (`#edit-bar::after`, all 101 themes) is hidden in Column, as the header tag is; Row has no bar.
+36. **Column header with the filter:** the name ellipsizes first, then the chip; ✕ 24 x 24 (9.1).
+37. **Row filter chip:** takes the name's line (84 x 26, in flow) and the handle shrinks to the icon while it shows (spec 10: no shared rects); hidden in edit mode (the filter stays on).
+38. **Row name:** the theme's title style at 12 px (weight, spacing, colour, glow kept), 18 px line.
+39. **Row notices:** the name line for 5 s (2.4, 7.5) in `--text` (C5's contrast ruling), not `--accent-m` (7.5).
+40. **Row rename in edit mode:** the field takes the name's line; EDIT and the cluster step aside while it is open.
+41. **Column notice slot:** one line; the message ellipsizes, its buttons stay.
+42. **Empty cell:** the Grid hint's tokens (1 px dashed `--drop-hint-border`, `--text-dim`, `--drop-icon-color`, `--hint-sub-color`); ⊕ 28 px, `DROP HERE` 11 px / 2 px spacing, `or right-click` 12 px / 1 px, which may wrap after "or" (seen in `star-wars-separatist`); shown in view and edit mode.
+43. **A layout switch saves** rect, work area and `gridSize`. A refusal is an info box (as the tray's no-room box), over the Manager when it came from there.
+44. **+ NEW REGION ▾** is a native menu of Grid, Column, Row under the button; the label gained `▾` (8.1 draws `v`).
+45. **Region menu Layout:** radio items Grid, Column, Row; Fan and Ring are not listed until M5.
+46. **Display change:** Column and Row may shorten to one cell (they scroll), as Grid may shrink; their fixed side is kept.
+47. **Cells are exact `S + 32` boxes** in Column (rows) and Row (columns), so the window formula holds to the pixel; at S = 64 a tile is 96 high there, 95.4 in Grid.
+48. **Row's Tab order** (7.4: ⋯, tiles, cluster): the edit bar stays after the tiles in the page and is laid over the cell.
+49. **Row header borders:** `border-right: 1px var(--border)` replaces the theme's own header border-bottom/top (9 themes style it); their header shadow is kept.
+50. **Cluster glyphs** 13 px; button border and hover as every other button.
+51. **A tile or file dragged over a Column or Row** does not grow the window for the slot; the list scrolls during the preview.
+
+**For Judy:** questions 1 to 18 in the M4 report (deviations 32 to 51, plus the theme art that makes 3 to 5 themes scroll, below).
+
+**Found, not changed**
+- **Theme art scrolls the list:** `alien`, `ghost-shell`, `lcars`, `dead-space` and `half-life` draw tile-field art (`#grid-container::before/::after`) larger than the field (160% boxes at -30%, text blocks), so the field gets a scrollbar in Column (3 themes) and Row (4 to 5) with room to spare. A theme matter; for Judy.
+- **M3 race, same cause as the bug above:** `qlDecorateTile` (↩ on moved tiles, the broken state) can miss app.js's first render the same way; the tile then shows ✕ until the next render. Not seen in a run; for Jane (a one-line `renderGrid()` at the end of `region.js` would cover both).
+
+**Pending real input**
+1. Real wheel and Shift+wheel over a Row; a real touchpad sideways swipe.
+2. Real Tab through a Row in edit mode (⋯, tiles, cluster).
+3. A real OS drag of desktop icons onto an empty Column or Row cell (the cell as the slot).
+4. The cluster's + opening the real file dialog; ⊞ opening the visible Manager picker.
+5. The region menu's Layout submenu and + NEW REGION ▾ as native menus on screen; the refusal box.
+6. A layout switch seen on the desktop (the resize and restyle in one step), on the desktop layer and in fallback.
+7. A real resolution or scale change with Column and Row regions (forbidden unless Sergei says so).
+
+### 9.1 M4 rulings applied (Ender, 2026-10-06)
+
+Builds Judy's "Addendum — M4 rulings" (UX spec, `792212b`) on top of § 9, uncommitted: her CSS and JS verbatim for the eight changed rulings (2, 5, 7, 8, 10, 11, 17, 18) and her four findings (F1 the Column rename field under ⋯, F2 the Row `EDIT` label's contrast, F3 the accent bar, F4 the scroll thumb). Q14 (Fan and Ring greyed in the menu) stays as built, out until M5, pending Sergei. Not acted on: F5 (a Row primary has no route to DOWNLOAD) and offer 1 (the Grid's art scroll); both are with Sergei. Deviations 32 to 51 are settled by the addendum; § 9's list stands as history.
+
+**What changed**
+- `region.css`: the old declarations the addendum names are deleted and her block appended. The tile list (`#app-grid`) is the scroller and the field only clips (Q18). A Column hides its name while the filter chip shows (Q5). The Row name block is 54 px and the name wraps to 2 lines (Q7). A Row notice takes the icon and name block, up to 3 lines (Q8). A Column notice wraps to 2 lines, and the update layer shows only its buttons (Q10). The empty cell's text is `--text` and a Row's sub-line is always 2 lines (Q11). The hover glyph is `--text` (Q17). F1, F2 and F3 as written. The Row filter state keeps its 20 px handle, as the addendum's own filter rects show (icon 21 to 41, chip 49 to 75, ⋯ 83 to 107).
+- `region.js`: the scroller is `#app-grid` (`scrollTop` and `scrollLeft` reset on a switch, the Row wheel). `ROW_NOTICE_MS = 8000`. The Row notice carries its full text as its `title`. `app.js` `drawBanner`: the slot's `title` is the update message (empty for a notice or no message).
+- `layouts.boxAt`: the peek rule (Q1, Q2), verbatim, with `S` and the extras as a seventh argument from the controller. A stopped list is trimmed so the next tile shows 24 to S DIP, never below one cell. The addendum's vectors all hold (Column 820, 824, 616, 936; Row 2232, 1192, 3071, 1728; Column with the edit bar 758). A sweep of S = 32, 64, 96, 128 and every stop from 400 to 2400 (Column with and without the bars, Row): never longer, at most 87 DIP shorter, a 24-to-S peek except where one cell is the floor. Three § 9 controller tests change by design: a Column stopped at 588 by the region below is now 512, one at a room of 488 at start-up 408, and the edit bar with no room gives 342, not 376.
+
+**Measured (2026-10-06; `electron-builder --win --dir --publish never` into the session scratchpad, no npm hook; launches through the QA launch guard on scratch profiles with no hotkey; Sergei's installed QuickLauncher (4 processes) ran throughout and was left alone)**
+
+| Run | Result |
+|---|---|
+| Unit (node:test) | 211/211 on Node 26.10 and on Electron's Node 20.18.1 (§ 9's 208 + 3: the vectors, the sweep, nothing trimmed when it fits and never below one cell). |
+| The new unit tests on the old code | The mutant "peek: no trim" is exactly § 9's `boxAt`: 5 tests fail on it (the vectors, the sweep, the three retargeted controller tests' values). |
+| Mutation runner (scratch copies) | 43/43 caught; unmutated copy 211/211. § 9's 35, plus 8 for the peek: no trim, a 16 DIP sliver, a label-deep cut, landing 16 into the icon, below one cell, the bars ignored in the lead, the Row lead from the field, S and extras not passed by the controller. |
+| Self-test, attached | 138/138: § 9's 131 (one check widened: the hit-area test now includes `.region-rename-input`, `#lead-notice` and `#update-text`, in rename and notice states too), 6 new ruling checks (Q18 scroll, Q5 filter, Q7 `Region 8`, Q10 the slot, F1 rename, Q11/F2/F3 colours and bars), and the M3 race check (§ 8.4). |
+| Self-test, `--fallback` | 139/139 started from the scratchpad. Started from the worktree, 3 of 3 runs on this build gave 138/139: § 8.3's "F-2 pixels" read region 1's window, rebuilt just before the check, as 1 colour. See the finding below. |
+| Self-test, `--probe` | 55/139: the 62 known reds and all 22 new checks (21 M4, 1 race), each on its wrong input. |
+| The new self-test on `HEAD`'s build (`dist/win-unpacked`) | 116/138: exactly the 22 new checks fail; the 116 older ones pass. The F1 check first passed on `HEAD` (both test regions stayed Grids, whose field clears ⋯); it now asserts the layout. |
+| Crash script | crash-add 5/5, crash-back 5/5, restore 4/4, refusal 3/3. |
+| Region gallery (`npm run gallery:regions`, 101 themes, 5 sets, 22 set-states, 2,020 PNGs) | 101/101 in every set. Every measure is 0 in every state: overlaps (rename field, Row notice and banner text included), controls outside the window, the tile list scrolling with 6 or 5 tiles, the field scrolling, the Row name or `Region 8` cut, notices cut, the Column chip's text cut or within 6 DIP of ⋯, the rename field within 6 DIP of ⋯ (Column) or meeting it (Row), the empty cell (overflow, `--text`, 1 line in a Column, 2 in a Row), the Row `EDIT` label (`--text`, no shadow), the header tag, the hover glyph under the pointer (⋯, the cluster's ✓) against `--text`. |
+| Gallery negative control (the pre-rulings `region.css`, 10 themes) | Each measure fires: the Column rename near or under ⋯ 10/10, chip text cut 10/10, Row notice cut 10/10, `Region 8` cut 8/10, Row `EDIT` not `--text` 10/10, empty cell 10/10, hover glyph 10/10, the field scrolling (`alien`, `ghost-shell`, `lcars`). |
+| Real Desktop and Public Desktop | Identical from the start of this pass to its end. |
+
+**Finding, not changed: F-2 pixels on region 1 in fallback.** The check reads every fallback window right after region 1's window is rebuilt. Region 1 always paints far fewer colours than the other seven (78 to 608 when it passes, against about 2,700). In this pass it read as 1 colour (blank) in all 4 runs on this tree started from the worktree (A only: 5 colours; A and B: 1, 1, 1). It painted in 4 of 4 runs from the scratchpad (101 to 262), and in last pass's three worktree runs (87, 608, 185). The F-2 input check passed for region 1 in every one of these runs, the A-only build failed the same way, and the race fix (§ 8.4) only re-renders tiles, so neither change is the cause. Polling up to 3 s did not show a late first frame (the 3 experimental runs never read it blank). The cause is not found. The check is not widened. For Futaba, with the logs: it looks like the capture's timing or environment against a just-rebuilt window, not F-2's never-shown window, but that is not proven.
+
+**Files (A, on top of § 9's):** `src/main/regions/layouts.js`, `src/main/regions/controller.js`, `src/renderer/styles/region.css`, `src/renderer/region.js` (every hunk except § 8.4's), `src/renderer/app.js`, `test/regions/layouts.test.js`, `test/regions/controller-layouts.test.js`, `scripts/regions-selftest.mjs` (every hunk except § 8.4's), this document (§ 9.1).

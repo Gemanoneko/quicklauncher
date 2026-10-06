@@ -49,6 +49,8 @@ const INVOKE_CHANNELS = new Set([
   'region:move-back',
   'region:broken-click',
   'region:remove-broken',
+  // M4: the edit bar or the notice slot shows or hides (a Column's height follows).
+  'region:extras',
 ]);
 
 const ON_CHANNELS = new Set([

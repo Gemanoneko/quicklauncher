@@ -310,6 +310,28 @@ function relayoutOnce(rects, inner, mins) {
 }
 
 /**
+ * Column and Row (M4): the free length from `rect`'s start along `axis`
+ * ('y' = downward, 'x' = rightward) before the area edge or the GAP before a
+ * region that overlaps it on the other axis. A region already too close at the
+ * start (it straddles it) is ignored, as moveConstrained ignores one, so a
+ * region in a bad spot never gets a room of zero. Returns a length in DIP.
+ */
+function roomAlong(rect, axis, inner, others) {
+  const pos = axis === 'x' ? 'x' : 'y';
+  const size = axis === 'x' ? 'width' : 'height';
+  const opos = axis === 'x' ? 'y' : 'x';
+  const osize = axis === 'x' ? 'height' : 'width';
+  const start = rect[pos];
+  let limit = inner[pos] + inner[size];
+  for (const o of others || []) {
+    const overlapOther = rect[opos] < o[opos] + o[osize] + GAP && o[opos] < rect[opos] + rect[osize] + GAP;
+    if (!overlapOther) continue;
+    if (o[pos] >= start) limit = Math.min(limit, o[pos] - GAP);
+  }
+  return Math.max(0, Math.round(limit - start));
+}
+
+/**
  * Which region's visible box holds `point` (spec 5.3 drop target)? `entries`
  * is [{ id, rect }] with PANEL rects, so a Grid's invisible resize rim and the
  * 12 px gap count as empty desktop. Left and top edges are inside, right and
@@ -327,5 +349,5 @@ function regionAt(point, entries) {
 module.exports = {
   GAP, MARGIN, SNAP,
   innerArea, tooClose, inside, fits, clampInto, findFree, placeNew,
-  moveConstrained, snap, dragStep, resizeStep, placeAt, relayout, regionAt,
+  moveConstrained, snap, dragStep, resizeStep, placeAt, relayout, regionAt, roomAlong,
 };

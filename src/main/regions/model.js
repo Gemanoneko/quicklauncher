@@ -10,8 +10,8 @@
 //   settings  gains matchAll, sharedTheme, managerBounds.
 
 const LAYOUTS = ['grid', 'column', 'row', 'fan', 'ring'];
-// Layouts this build can draw. The rest arrive in later milestones.
-const BUILT_LAYOUTS = new Set(['grid']);
+// Layouts this build can draw (M4 adds Column and Row). Fan and Ring arrive in M5.
+const BUILT_LAYOUTS = new Set(['grid', 'column', 'row']);
 
 const ICONS = [
   'apps', 'games', 'tools', 'web', 'media', 'music', 'photos', 'files',
@@ -38,6 +38,7 @@ const STRINGS = Object.freeze({
   cap: `${REGION_CAP} regions is the limit.`,
   noRoom: 'No room for a new region. Move or delete one.',
   lastRegion: 'At least one region is required.',
+  layoutNoRoom: 'No room for this layout. Move the region first.', // spec 3.3, 9.3
 });
 
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);

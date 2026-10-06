@@ -900,6 +900,8 @@ function renderGrid() {
   // Re-apply any active type-to-filter after a rebuild — innerHTML='' wiped
   // the .filter-hidden class. (UX Review §6C / I3.)
   if (_filterText) applyFilter();
+  // Regions: an empty Column or Row draws its one dashed cell (region.js).
+  if (window.qlAfterRender) window.qlAfterRender();
 }
 
 function createAppTile(appItem) {
@@ -1730,6 +1732,7 @@ function drawBanner(view) {
   const banner = $('update-banner');
   const actionsEl = $('update-actions');
   if (!view) {
+    banner.title = '';
     banner.classList.add('hidden');
     banner.classList.remove('notice');
     elUpdateText.textContent = '';
@@ -1737,6 +1740,8 @@ function drawBanner(view) {
     return;
   }
   elUpdateText.textContent = view.text;
+  // A Column draws only the update layer's buttons: its message is the slot's tooltip (M4 rulings Q10).
+  banner.title = view.layer === 'update' ? view.text : '';
   banner.classList.toggle('notice', view.layer === 'notice');
   actionsEl.innerHTML = '';
 

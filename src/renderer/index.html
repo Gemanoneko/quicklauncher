@@ -19,6 +19,8 @@
       <div id="title-area">
         <span id="region-icon" aria-hidden="true"></span>
         <span id="title">QUICK<span class="accent">.</span>LAUNCH</span>
+        <!-- Row: a notice takes the name's line for 5 s (regions spec 2.4, 7.5). -->
+        <span id="lead-notice"></span>
         <span id="header-version"></span>
       </div>
       <div id="filter-chip" class="hidden" title="Type to filter — Esc to clear">
@@ -52,11 +54,18 @@
 
     <!-- Edit mode bottom bar -->
     <div id="edit-bar" class="hidden">
-      <span class="edit-label">// EDIT MODE</span>
+      <span class="edit-label edit-label-long">// EDIT MODE</span>
       <div class="edit-actions">
         <button id="btn-add-edit">+ FILE</button>
         <button id="btn-add-installed">+ INSTALLED</button>
         <button id="btn-done-edit">DONE</button>
+      </div>
+      <!-- Column and Row: the edit cluster (regions spec 5.6, 9.1); Row also shows EDIT. -->
+      <span class="edit-label edit-label-short">EDIT</span>
+      <div class="edit-cluster" role="group" aria-label="Edit">
+        <button id="btn-cluster-add" type="button" title="Add a file or shortcut" aria-label="Add a file or shortcut">+</button>
+        <button id="btn-cluster-installed" type="button" title="Add an installed app" aria-label="Add an installed app">⊞</button>
+        <button id="btn-cluster-done" type="button" title="Finish editing" aria-label="Finish editing">✓</button>
       </div>
     </div>
 

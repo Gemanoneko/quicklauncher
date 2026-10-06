@@ -13,7 +13,12 @@
   const api = window.api;
   const params = new URLSearchParams(location.search);
   const body = document.body;
-  body.classList.add('region', 'layout-grid');
+  // The layout this page draws (spec 2; M4 adds Column and Row). It rides in the
+  // URL so the first frame is already right; region:state changes it on a switch.
+  const LAYOUTS = ['grid', 'column', 'row'];
+  const ROW_NOTICE_MS = 8000; // M4 rulings Q8: a notice replaces the Row's name for 8 s, as in Grid and Column (C5)
+  let layoutNow = LAYOUTS.includes(params.get('layout')) ? params.get('layout') : 'grid';
+  body.classList.add('region', `layout-${layoutNow}`);
   // An Explorer restart rebuilt this window: no entrance fade (spec 1).
   if (params.get('rebuilt') === '1') body.classList.add('no-entrance');
 
@@ -27,7 +32,7 @@
   const btnRandom = $('btn-random-theme');
   const ICONS = window.QL_REGION_ICONS || {};
 
-  let info = { name: '', icon: 'apps', active: false, matchAll: false, layout: 'grid' };
+  let info = { name: '', icon: 'apps', active: false, matchAll: false, layout: layoutNow };
   let renaming = null;
 
   const isEditing = () => !elEditBar.classList.contains('hidden');
@@ -67,6 +72,7 @@
   }
 
   function applyState() {
+    applyLayout(info.layout);
     body.classList.toggle('region-active', !!info.active);
     const rnd = info.matchAll ? 'Random theme for all regions' : 'Random theme for this region';
     btnRandom.title = rnd;
@@ -77,13 +83,94 @@
   new MutationObserver(() => {
     updateTitleAffordance();
     if (!isEditing()) cancelRename();
+    reportExtras();
   }).observe(elEditBar, { attributes: true, attributeFilter: ['class'] });
+
+  // ── M4: Column and Row (spec 2.3, 2.4, 2.8, 5.6, 7.4) ──────────────────────
+  // The tile list is the scroller (M4 rulings Q18): the field only clips, so theme art never scrolls.
+  const elGridBox = $('app-grid');
+  const elUpdate = $('update-banner');
+  const elUpdateText = $('update-text');
+  const elLeadNotice = $('lead-notice');
+
+  function applyLayout(layout) {
+    const l = LAYOUTS.includes(layout) ? layout : 'grid';
+    if (l === layoutNow) return;
+    cancelRename();
+    cancelRegionDrag();
+    body.classList.remove(`layout-${layoutNow}`);
+    body.classList.add(`layout-${l}`);
+    layoutNow = l;
+    elGridBox.scrollTop = 0;
+    elGridBox.scrollLeft = 0;
+    renderGrid(); // the empty cell comes or goes
+    showLeadNotice();
+    reportExtras();
+  }
+
+  // The edit bar and the notice slot make a Column 38 px taller each (spec 2.3):
+  // the main process sizes the window, so it hears when either shows or hides.
+  let sentExtras = { edit: false, notice: false };
+  function reportExtras() {
+    const x = { edit: isEditing(), notice: !elUpdate.classList.contains('hidden') };
+    if (x.edit === sentExtras.edit && x.notice === sentExtras.notice) return;
+    sentExtras = x;
+    api.invoke('region:extras', x).catch(() => {});
+  }
+
+  // Row has no notice slot: a notice (launch error, NOT A SHORTCUT, SAVE ERROR)
+  // replaces the icon and name in the leading cell for 8 s, up to 3 lines (M4 rulings Q8); the update
+  // messages stay in the tray and the Settings page there. The banner keeps
+  // drawing it (fix-pass addendum C5); this line mirrors it. Each draw is a
+  // new notice and restarts the 8 s.
+  let leadTimer = null;
+  function showLeadNotice(redrawn = false) {
+    const on = layoutNow === 'row' && !elUpdate.classList.contains('hidden') && elUpdate.classList.contains('notice');
+    body.classList.toggle('lead-notice-on', on);
+    elLeadNotice.textContent = on ? elUpdateText.textContent : '';
+    elLeadNotice.title = on ? elUpdateText.textContent : ''; // a clamped notice keeps its full text as the tooltip (M4 rulings)
+    if (!on) { clearTimeout(leadTimer); leadTimer = null; return; }
+    if (redrawn || !leadTimer) {
+      clearTimeout(leadTimer);
+      leadTimer = setTimeout(() => { leadTimer = null; if (typeof qlBanner !== 'undefined') qlBanner.endNotice(); }, ROW_NOTICE_MS);
+    }
+  }
+  new MutationObserver(() => { showLeadNotice(true); reportExtras(); })
+    .observe(elUpdate, { attributes: true, attributeFilter: ['class'], childList: true, subtree: true, characterData: true });
+
+  // The cluster (spec 5.6, 9.1): + FILE, + INSTALLED and DONE of the Grid's edit bar.
+  $('btn-cluster-add').addEventListener('click', () => addAppFromDialog());
+  $('btn-cluster-installed').addEventListener('click', () => api.invoke('region:open-manager', { view: 'picker' }));
+  $('btn-cluster-done').addEventListener('click', () => exitEditMode());
+
+  // An empty Column or Row shows one dashed cell (spec 2.8); app.js calls this after each render.
+  window.qlAfterRender = () => {
+    if (layoutNow === 'grid' || (apps || []).length || $('app-grid').querySelector('.empty-cell')) return;
+    const cell = document.createElement('div');
+    cell.className = 'empty-cell';
+    // Our own static markup, never user text.
+    cell.innerHTML = '<div class="drop-icon">⊕</div><div class="empty-title">DROP HERE</div><div class="hint-sub">or <span class="nowrap">right-click</span></div>';
+    $('app-grid').appendChild(cell);
+  };
+  // app.js's first render can come before this script has run (its init awaits the
+  // items while the page is still loading scripts): draw the cell now if it missed it.
+  window.qlAfterRender();
+
+  // Row scrolls sideways with the wheel and Shift+wheel (spec 2.4).
+  elGridBox.addEventListener('wheel', (e) => {
+    if (layoutNow !== 'row' || e.ctrlKey) return;
+    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (!d) return;
+    e.preventDefault();
+    elGridBox.scrollLeft += d;
+  }, { passive: false });
 
   // ── Rename in the handle (spec 3.2; Enter or blur commits, Esc cancels) ────
   function cancelRename() {
     if (!renaming) return;
     const input = renaming;
     renaming = null;
+    body.classList.remove('region-renaming');
     input.replaceWith(elTitle);
     renderTitle();
   }
@@ -100,6 +187,7 @@
     input.setAttribute('aria-label', 'Region name');
     elTitle.replaceWith(input);
     renaming = input;
+    body.classList.add('region-renaming'); // Row: the field takes EDIT and the cluster's place
     input.focus();
     input.select();
     let busy = false;
@@ -476,6 +564,10 @@
   }
 
   function placeSlot(x, y) {
+    // An empty Column or Row: its cell IS the landing slot (addendum A2, M4): no
+    // second slot, its ⊕ and DROP HERE hide, it takes the A1 border.
+    const cell = elGrid.querySelector('.empty-cell');
+    if (cell) { cell.classList.add('as-slot'); drop.slot = cell; drop.slotIndex = 0; return; }
     const { index, all } = slotIndexAt(x, y);
     if (drop.slot && drop.slot.isConnected && index === drop.slotIndex) return;
     reflow(() => {
@@ -492,6 +584,7 @@
     const s = drop.slot;
     drop.slot = null;
     drop.slotIndex = -1;
+    if (s.classList.contains('empty-cell')) { s.classList.remove('as-slot'); return; }
     if (animate && s.isConnected) reflow(() => s.remove()); else s.remove();
   }
 
@@ -502,7 +595,7 @@
   function dropKeptSlot() {
     if (!kept) return;
     clearTimeout(kept.timer);
-    kept.slot.remove();
+    if (kept.slot.classList.contains('empty-cell')) kept.slot.classList.remove('as-slot'); else kept.slot.remove();
     kept = null;
     if (!drop) body.classList.remove('tile-drop-preview');
   }
@@ -802,6 +895,12 @@
     }
     if (handleFocused && e.key === 'F2') { stop(e); startRegionRename(); return; }
     if (handleFocused && menuKey) { stop(e); keyMenuUntil = performance.now() + 800; openRegionMenuAtButton(); return; }
+    // Column moves along Up and Down only, Row along Left and Right (spec 7.4); so does
+    // Ctrl+Arrow (addendum A5, M4). The other two arrows do nothing there.
+    if (ARROWS[e.key] && !e.altKey && !e.metaKey && layoutNow !== 'grid') {
+      const vertical = e.key === 'ArrowUp' || e.key === 'ArrowDown';
+      if ((layoutNow === 'column') !== vertical) { stop(e); return; }
+    }
     const tile = focus && focus.closest ? focus.closest('.app-tile:not(.drop-slot)') : null;
     // Menu key or Shift+F10 on a tile in view mode: as a right-click on a tile,
     // the region enters edit mode; focus stays on that tile, so the next press
@@ -865,4 +964,10 @@
   api.invoke('region:info').then((s) => {
     if (s && typeof s === 'object') { info = { ...info, ...s }; applyState(); testSeam(); }
   }).catch(() => {});
+
+  // app.js's first render can run before this script has defined its hooks (its init
+  // awaits the items while the page is still loading scripts): a window built fresh
+  // (start-up, an Explorer restart) then drew moved and broken tiles as plain ones.
+  // Draw once more now that qlDecorateTile and qlAfterRender exist.
+  if (document.querySelector('#app-grid .app-tile')) renderGrid();
 })();

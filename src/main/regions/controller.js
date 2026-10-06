@@ -12,6 +12,7 @@ const { randomUUID } = require('crypto');
 const { EventEmitter } = require('events');
 const M = require('./model');
 const P = require('./placement');
+const L = require('./layouts');
 const { RegionHost } = require('../desktop/region-host');
 const MR = require('../moves/rules');
 const { Mover } = require('../moves/mover');
@@ -26,6 +27,8 @@ const DROP_REPLY_MS = 2000;     // a target page that does not answer a drop can
 
 const sameRect = (a, b) => !!a && !!b && a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
 const menuLabel = (s) => String(s).replace(/&/g, '&&'); // Windows menus read & as a mnemonic
+const layoutLabel = (l) => l.charAt(0).toUpperCase() + l.slice(1);
+const NO_EXTRAS = Object.freeze({ edit: false, notice: false });
 
 class RegionController extends EventEmitter {
   constructor({ store, validThemes, killSwitch = false, testHooks = false, log = () => {},
@@ -490,7 +493,134 @@ class RegionController extends EventEmitter {
 
   // ── runtimes and windows ───────────────────────────────────────────────────
   _minFor(region) {
-    return region.layout === 'grid' ? { width: M.GRID.minWidth, height: M.GRID.minHeight } : { width: 0, height: 0 };
+    if (region.layout === 'grid') return { width: M.GRID.minWidth, height: M.GRID.minHeight };
+    // Column and Row: a display change may shorten them to one cell (they scroll); the other side is fixed.
+    if (L.isContentSized(region.layout)) return L.minSize(region.layout, this._iconSize());
+    return { width: 0, height: 0 };
+  }
+
+  // ── M4: Column and Row (spec 2.3, 2.4, 3.3; tech plan § 9) ────────────────
+  _iconSize() { return L.iconSizeOf(this.settings()); }
+  _count(id) { return M.itemsOf(this.apps(), id).length; }
+  _extras(id) { const rt = this.rt.get(id); return (rt && rt.extras) || NO_EXTRAS; }
+
+  /**
+   * A Column or Row box at the anchor (top-left) of `at`: the size its items
+   * want (spec 2.3, 2.4), stopped at 90% of the work area and, given the other
+   * regions, at the room it has there. It grows from the fixed corner and never
+   * moves; past what fits, the list scrolls.
+   */
+  _contentRect(region, at, { others = null, keep = 0 } = {}) {
+    const wa = this.workArea();
+    const want = L.contentSize(region.layout, this._count(region.id), this._iconSize(), this._extras(region.id));
+    const anchor = { x: at.x, y: at.y };
+    const room = others
+      ? P.roomAlong({ ...anchor, width: want.width, height: want.height }, L.growAxis(region.layout), P.innerArea(wa), others)
+      : Infinity;
+    return L.boxAt(region.layout, anchor, want, wa, room, keep, { S: this._iconSize(), ...this._extras(region.id) }).rect;
+  }
+
+  /**
+   * The rects every region wants on the current work area, before the fit:
+   * the user's rect (Grid), or its anchor with the size the items want
+   * (Column, Row; the others' boxes are known after the first pass).
+   */
+  _wantedRects() {
+    const regs = this.regions();
+    const base = regs.map((r) => this._homeRect(r));
+    let rects = base.map((h, i) => (L.isContentSized(regs[i].layout) ? this._contentRect(regs[i], h) : h));
+    for (let pass = 0; pass < 2; pass++) {
+      const prev = rects;
+      rects = prev.map((h, i) => (L.isContentSized(regs[i].layout)
+        ? this._contentRect(regs[i], base[i], { others: prev.filter((_, j) => j !== i) }) : h));
+    }
+    return rects;
+  }
+
+  /**
+   * Items, the icon size, the edit bar or a notice changed the size a Column
+   * or Row wants: its box follows at the same anchor (nothing saved: the home
+   * rule, spec 4.4; only a move or a layout switch saves). A box that a
+   * neighbour or the margin now crosses on its fixed side (a larger icon size)
+   * moves by the smallest step that fits, as a layout switch does (spec 3.3).
+   */
+  _refitContent(id) {
+    const rt = this.rt.get(id);
+    const region = this.region(id);
+    if (!rt || !region || !L.isContentSized(region.layout) || rt.drag) return false;
+    const inner = P.innerArea(this.workArea());
+    const others = this._shownRects(id);
+    const keep = L.growAxis(region.layout) === 'x' ? rt.shown.width : rt.shown.height;
+    let rect = this._contentRect(region, rt.shown, { others, keep });
+    if (!P.fits(rect, inner, others)) {
+      const f = P.findFree(rect, inner, others, P.GAP);
+      if (f) rect = f;
+    }
+    if (sameRect(rect, rt.shown)) return false;
+    this._applyShown(rt, rect);
+    if (this.testHooks) this.log({ event: 'refit', region: id.slice(0, 8), rect });
+    return true;
+  }
+
+  _refitAllContent() { for (const r of this.regions()) this._refitContent(r.id); }
+
+  /** From the region page: its edit bar or notice slot shows or hides (Column grows by 38 for each, spec 2.3). */
+  setExtras(id, { edit = false, notice = false } = {}) {
+    const rt = this.rt.get(id);
+    if (!rt) return { ok: false };
+    const next = { edit: !!edit, notice: !!notice };
+    if (rt.extras && rt.extras.edit === next.edit && rt.extras.notice === next.notice) return { ok: true, changed: false, shown: { ...rt.shown } };
+    rt.extras = next;
+    const changed = this._refitContent(id);
+    return { ok: true, changed, shown: { ...rt.shown } };
+  }
+
+  /**
+   * Switch a region's layout (spec 3.3): items, order, theme and name are
+   * kept. The top-left anchor stays; Grid comes back at its remembered size
+   * (`gridSize`, tech plan § 2.1), Column and Row at the size their items want
+   * (up to 90%). A box that leaves the work area or meets another region moves
+   * by the smallest step that fits (12 px rings); with no room anywhere the
+   * switch is refused and nothing changes. The new rect is saved.
+   */
+  async setLayout(id, layout, { parent = null } = {}) {
+    const region = this.region(id);
+    const rt = this.rt.get(id);
+    if (!region || !rt) return { ok: false, error: 'Region not found.' };
+    if (!M.BUILT_LAYOUTS.has(layout)) return { ok: false, error: `${layout} regions are not available yet.` };
+    if (region.layout === layout) return { ok: true, unchanged: true };
+    if (rt.drag || rt.resize) { rt.drag = null; rt.resize = null; this._command(id, 'cancel-drag'); }
+    const wa = this.workArea();
+    const inner = P.innerArea(wa);
+    const others = this._shownRects(id);
+    const anchor = { x: rt.shown.x, y: rt.shown.y };
+    let size;
+    if (layout === 'grid') {
+      const g = region.gridSize || { width: M.GRID.defaultWidth, height: M.GRID.defaultHeight };
+      size = { width: Math.max(M.GRID.minWidth, g.width), height: Math.max(M.GRID.minHeight, g.height) };
+    } else {
+      const want = L.contentSize(layout, this._count(id), this._iconSize(), this._extras(id));
+      size = L.boxAt(layout, anchor, want, wa, Infinity, 0, { S: this._iconSize(), ...this._extras(id) }).rect;
+    }
+    let rect = { ...anchor, width: size.width, height: size.height };
+    if (!P.fits(rect, inner, others)) rect = P.findFree(rect, inner, others, P.GAP);
+    if (!rect) {
+      this.log({ event: 'layout-refused', region: id.slice(0, 8), layout });
+      await this._box({ type: 'info', message: M.STRINGS.layoutNoRoom, buttons: ['OK'] }, parent);
+      return { ok: false, error: M.STRINGS.layoutNoRoom };
+    }
+    const patch = { layout, rect: { ...rect }, home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height } };
+    // Grid remembers its last size (spec 3.3): the user's size, not a display fit.
+    if (region.layout === 'grid') { const h = this._homeRect(region); patch.gridSize = { width: h.width, height: h.height }; }
+    clearTimeout(rt.saveTimer);
+    rt.saveTimer = null;
+    rt.pendingSave = null;
+    this._updateRegion(id, patch);
+    this._applyShown(rt, rect);
+    this._notifyState(id);
+    this._managerChanged();
+    this.log({ event: 'layout', region: id.slice(0, 8), from: region.layout, to: layout, rect });
+    return { ok: true, rect };
   }
 
   // The rect the user last chose for a region: the saved one, or the one a
@@ -503,7 +633,7 @@ class RegionController extends EventEmitter {
   _fitAll() {
     const inner = P.innerArea(this.workArea());
     const regs = this.regions();
-    return P.relayout(regs.map((r) => this._homeRect(r)), inner, regs.map((r) => this._minFor(r))).rects;
+    return P.relayout(this._wantedRects(), inner, regs.map((r) => this._minFor(r))).rects;
   }
 
   _windowRectDip(region, shown) {
@@ -520,7 +650,7 @@ class RegionController extends EventEmitter {
     const rt = {
       id: region.id, shown: { ...(shown || region.rect) }, host: null, win: null, wc: null,
       ready: false, sentTheme: null, syncedSeq: this.latestSeq, windows: 0, drag: null, resize: null, saveTimer: null,
-      pendingSave: null,
+      pendingSave: null, extras: { ...NO_EXTRAS },
     };
     this.rt.set(region.id, rt);
     rt.host = new RegionHost({
@@ -542,6 +672,7 @@ class RegionController extends EventEmitter {
       if (!region) { reject(new Error('region gone')); return; }
       rt.windows++;
       const rebuilt = rt.windows > 1;
+      rt.extras = { ...NO_EXTRAS }; // a new page starts in view mode with no notice
       const b = this._windowRectDip(region, rt.shown);
       const win = new BrowserWindow({
         x: b.x, y: b.y, width: b.width, height: b.height,
@@ -580,7 +711,8 @@ class RegionController extends EventEmitter {
         try { win.destroy(); } catch { /* gone */ }
         reject(new Error(`region page failed to load: ${code} ${desc}`));
       });
-      win.loadFile(INDEX_HTML, { query: { region: rt.id, rebuilt: rebuilt ? '1' : '0' } });
+      // The layout rides in the URL, so the page draws its first frame in it (no Grid flash).
+      win.loadFile(INDEX_HTML, { query: { region: rt.id, rebuilt: rebuilt ? '1' : '0', layout: region.layout } });
       if (rebuilt) this.log({ event: 'rebuild', region: rt.id.slice(0, 8), window: rt.windows });
     });
   }
@@ -717,6 +849,7 @@ class RegionController extends EventEmitter {
   _pushItems(id) {
     const rt = this.rt.get(id);
     if (rt && rt.wc && !rt.wc.isDestroyed()) rt.wc.send('region:items-changed', this._itemsOut(id));
+    this._refitContent(id); // a Column or Row follows its item count
   }
   _managerChanged() { if (this.manager) this.manager.changed(); }
 
@@ -725,6 +858,7 @@ class RegionController extends EventEmitter {
     for (const rt of this.rt.values()) {
       if (rt.wc && !rt.wc.isDestroyed()) rt.wc.send('settings-changed-externally');
     }
+    this._refitAllContent(); // the icon size sets a Column's width and a Row's height
     this._managerChanged();
   }
 
@@ -801,6 +935,7 @@ class RegionController extends EventEmitter {
       this.log({ event: 'save-guard', region: id.slice(0, 8), note: `${restored} moved item(s) a page left out were kept` });
       this._pushItems(id);
     }
+    this._refitContent(id);
     this._managerChanged();
   }
 
@@ -829,6 +964,7 @@ class RegionController extends EventEmitter {
       if (!rt.ready || !rt.wc || rt.wc.isDestroyed()) continue;
       rt.wc.send('store-reloaded', { seq: p.seq, apps: M.itemsOf(this.apps(), rt.id), settings: this.settingsFor(rt.id) });
     }
+    this._refitAllContent();
     this._maybeSynced();
   }
 
@@ -877,7 +1013,9 @@ class RegionController extends EventEmitter {
     const regs = this.regions();
     if (regs.length >= M.REGION_CAP) return { ok: false, error: M.STRINGS.cap };
     const wa = this.workArea();
-    const rect = P.placeNew({ width: M.GRID.defaultWidth, height: M.GRID.defaultHeight }, P.innerArea(wa), this._shownRects());
+    // Grid starts at 424 x 300 (spec 3.1); an empty Column or Row at its one-cell size (spec 2.8).
+    const size = L.isContentSized(layout) ? L.contentSize(layout, 0, this._iconSize()) : { width: M.GRID.defaultWidth, height: M.GRID.defaultHeight };
+    const rect = P.placeNew(size, P.innerArea(wa), this._shownRects());
     if (!rect) return { ok: false, error: M.STRINGS.noRoom };
     const region = {
       id: randomUUID(), name: M.nextDefaultName(regs), icon: 'apps', layout,
@@ -889,7 +1027,7 @@ class RegionController extends EventEmitter {
     this._notifyAllStates();
     this._managerChanged();
     this.emit('regions-changed');
-    this.log({ event: 'region-created', region: region.id.slice(0, 8), rect });
+    this.log({ event: 'region-created', region: region.id.slice(0, 8), layout, rect });
     return { ok: true, id: region.id };
   }
 
@@ -1216,6 +1354,7 @@ class RegionController extends EventEmitter {
     const moved = !sameRect(rt.drag.start, rt.shown);
     rt.drag = null;
     if (moved) this._saveRectSoon(rt);
+    this._refitContent(id); // a Column or Row at its new place: the room there
     return { ok: true, moved };
   }
 
@@ -1278,6 +1417,14 @@ class RegionController extends EventEmitter {
       { label: 'Add installed app…', click: () => this.manager && this.manager.open('picker', { regionId: id }) },
       { type: 'separator' },
       { label: 'Rename', click: () => this._command(id, 'rename-region') },
+      // Spec 9.2: the layouts this build draws; the current one carries the check (Fan, Ring: M5).
+      {
+        label: 'Layout',
+        submenu: [...M.BUILT_LAYOUTS].map((l) => ({
+          label: layoutLabel(l), type: 'radio', checked: region.layout === l,
+          click: () => { this.setLayout(id, l).catch(() => {}); },
+        })),
+      },
       { label: 'Place', submenu: place },
       { label: 'Theme…', click: () => this.manager && this.manager.open('regions', { regionId: id }) },
       { label: 'Random theme', click: () => this.randomTheme(id) },
@@ -1325,15 +1472,43 @@ class RegionController extends EventEmitter {
   _popup(kind, rt, tpl, x, y, extra = {}) {
     if (this.testHooks) {
       const view = (items) => items.filter((i) => i.type !== 'separator').map((i) => ({
-        label: i.label, enabled: i.enabled !== false, ...(i.type === 'checkbox' ? { checked: !!i.checked } : {}),
+        label: i.label, enabled: i.enabled !== false, ...(i.type === 'checkbox' || i.type === 'radio' ? { checked: !!i.checked } : {}),
         ...(i.submenu ? { submenu: view(i.submenu) } : {}),
       }));
       this._lastMenu = tpl.filter((i) => i.type !== 'separator');
-      this.menuLog.push({ kind, region: rt.id, x: Math.round(x), y: Math.round(y), items: view(tpl), ...extra, at: Date.now() });
+      this.menuLog.push({ kind, region: rt ? rt.id : null, x: Math.round(x), y: Math.round(y), items: view(tpl), ...extra, at: Date.now() });
       if (this.menuLog.length > 50) this.menuLog.shift();
       return;
     }
-    Menu.buildFromTemplate(tpl).popup({ window: rt.win, x: Math.round(x), y: Math.round(y) });
+    Menu.buildFromTemplate(tpl).popup({ window: extra.window || rt.win, x: Math.round(x), y: Math.round(y) });
+  }
+
+  /**
+   * The Manager's + NEW REGION menu (spec 8.1, 3.1): the layouts this build
+   * draws, as the tray's New region menu lists them. A pick creates the region
+   * and tells the Manager page, which focuses its name field.
+   */
+  popupNewRegionMenu(x, y) {
+    const win = this.manager && this.manager.window;
+    if (!win) return { ok: false };
+    const atCap = this.regions().length >= M.REGION_CAP;
+    const tpl = [...M.BUILT_LAYOUTS].map((l) => ({
+      label: layoutLabel(l), enabled: !atCap,
+      click: () => {
+        const r = this.createRegion(l);
+        if (win && !win.isDestroyed()) win.webContents.send('manager:created', { ok: !!r.ok, id: r.id || null, error: r.error || null });
+      },
+    }));
+    if (this.testHooks) {
+      // Recorded, never shown (as the region menus): the self-test clicks through menuClick.
+      const view = tpl.map((i) => ({ label: i.label, enabled: i.enabled !== false }));
+      this._lastMenu = tpl;
+      this.menuLog.push({ kind: 'new-region', region: null, x: Math.round(x), y: Math.round(y), items: view, at: Date.now() });
+      if (this.menuLog.length > 50) this.menuLog.shift();
+      return { ok: true, recorded: true };
+    }
+    Menu.buildFromTemplate(tpl).popup({ window: win, x: Math.round(x), y: Math.round(y) });
+    return { ok: true };
   }
 
   menuClick(path) {
@@ -1417,6 +1592,7 @@ class RegionController extends EventEmitter {
       return {
         id: r.id, name: r.name, saved: r.rect, home: r.home, pendingSave: rt ? rt.pendingSave : null,
         shown: rt ? rt.shown : null, ready: rt ? rt.ready : false, dragging: rt ? !!(rt.drag || rt.resize) : false,
+        layout: r.layout, gridSize: r.gridSize || null, extras: rt ? { ...rt.extras } : null,
         windows: rt ? rt.windows : 0, host: rt ? rt.host.describe() : null,
         windowDip: rt ? this._windowRectDip(r, rt.shown) : null,
         screenRect: rt ? this._screenRect(r, rt.shown) : null,

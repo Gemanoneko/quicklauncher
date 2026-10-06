@@ -18,6 +18,7 @@ const INVOKE_CHANNELS = new Set([
   'get-installed-apps',
   'manager:state',
   'manager:create-region',
+  'manager:new-region-menu',
   'manager:update-region',
   'manager:delete-region',
   'manager:set-match-all',
@@ -35,6 +36,7 @@ const INVOKE_CHANNELS = new Set([
 
 const ON_CHANNELS = new Set([
   'manager:changed',
+  'manager:created',
   'manager:show-view',
   'settings-changed-externally',
 ]);

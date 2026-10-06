@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * regions-selftest.mjs: M1 + M2 + M2b + M3 (and its fix pass) self-test of the packaged regions build.
+ * regions-selftest.mjs: M1 + M2 + M2b + M3 (and its fix pass) + M4 (Column, Row) self-test of the packaged regions build.
  *
  *   npm run selftest:regions -- [--guard <quicklaunch-safe-launch.mjs>] [--exe <QuickLauncher.exe>]
  *                               [--seed <data file to copy>] [--port 9341] [--timeout 300]
@@ -637,6 +637,10 @@ async function run() {
   await m3Checks({ mgr, sessions, ids });
   // ── M3 fix pass (fake desktop only) and the region tagline ─────────────────
   await fixChecks({ mgr, sessions, ids });
+  // ── M4: Column and Row ────────────────────────────────────────────────────
+  await m4Checks({ mgr, sessions, ids, inner });
+  // ── M3 first-render race: a rebuilt window decorates its moved tiles ─────
+  await raceChecks({ mgr, sessions, ids });
   if (SHOTS) {
     await sessions[ids[1]].shot(join(SHOTS, 'm3-region-broken.png')).catch(() => {});
     await mgr.shot(join(SHOTS, 'm3-manager-moved.png')).catch(() => {});
@@ -2153,6 +2157,540 @@ async function f2Checks({ mgr, sessions, ids, r1id }) {
   }
   check('F-2 rebuilt while hidden: after Show all the region is visible, paints (fallback) and a native mouse message reaches its page',
     shownOk && rbPx.ok && rbMove.ok, { visible: shownOk, pixels: FALLBACK ? `${rbPx.colours}c ${rbPx.lit}` : 'n/a (desktop child)', trustedMoves: rbMove.trusted, why: rbMove.why });
+}
+
+// ── M4 checks: Column and Row (UX spec 2.3, 2.4, 2.8, 3.3, 5.6, 7.4, 9.1, 9.2, 10;
+// addendum A2 and A5 for M4; tech plan § 9). Everything through the app's own
+// channels and DOM events inside a page (no OS input). --probe gives each check
+// one wrong input or expectation; every M4 check must then fail.
+async function m4Checks({ mgr, sessions, ids, inner }) {
+  const T = (op, arg = {}) => mgr.eval(`window.api.invoke('manager:test', ${JSON.stringify(op)}, ${JSON.stringify(arg)})`);
+  const desc = () => T('describe');
+  const reg = (d, id) => d.regions.find((r) => r.id === id);
+  const page = (id) => sessions[id];
+  const W = (good, bad) => (PROBE ? bad : good); // the probe's wrong input
+  const guarded = async (name, fn) => { try { await fn(name); } catch (e) { check(name, false, `threw: ${String(e && e.message).slice(0, 300)}`); } };
+  const S = Number((readData().settings || {}).iconSize) || 64;
+  const colH = (n) => 72 + Math.max(1, n) * (S + 32) + (Math.max(1, n) - 1) * 8;
+  const rowW = (n) => 132 + Math.max(1, n) * (S + 32) + (Math.max(1, n) - 1) * 8;
+  const count = async (id) => (await mgr.eval(`window.api.invoke('manager:state')`)).regions.find((r) => r.id === id).count;
+  const setLayout = (id, layout) => mgr.eval(`window.api.invoke('manager:update-region', ${JSON.stringify(id)}, { layout: ${JSON.stringify(layout)} })`);
+  const othersOf = (d, id) => d.regions.filter((r) => r.id !== id).map((r) => r.shown);
+  const A = ids[4]; // becomes a Column (ids[5] was deleted in M3)
+  const B = ids[6]; // becomes a Row
+  const E = ids[7]; // empty: the empty Column (spec 2.8)
+  const src = ids[0];
+
+  // Two items at least in A and B (moved from the primary region, given back at the end).
+  const lent = [];
+  for (const id of [A, B]) {
+    while ((await count(id)) < 3) {
+      const it = readData().apps.find((a) => a.regionId === src);
+      if (!it) break;
+      await T('move-item', { itemId: it.id, regionId: id });
+      lent.push(it.id);
+      await sleep(150);
+    }
+  }
+  await sleep(400);
+  const d0 = await desc();
+  const gridBefore = reg(d0, A).saved;
+
+  await guarded('M4 switch: Grid to Column from the Manager keeps the top-left (or the smallest free step), 180 x the formula, page and window agree, saved with gridSize', async (name) => {
+    const n = await count(A);
+    const was = reg(d0, A).shown;
+    const r = await setLayout(A, 'column');
+    await sleep(700);
+    const d = await desc();
+    const a = reg(d, A);
+    const want = { width: 180, height: Math.min(colH(n), Math.floor(0.9 * d.workArea.height)) };
+    const atAnchor = { x: was.x, y: was.y, ...want };
+    const anchorFree = !othersOf(d, A).some((o) => tooClose(atAnchor, o)) && atAnchor.y + atAnchor.height <= inner.y + inner.height;
+    const view = await page(A).eval(`({ cls: [...document.body.classList], vw: [innerWidth, innerHeight] })`);
+    const data = readData().regions.find((x) => x.id === A);
+    const sizeOk = a.shown.width === want.width && a.shown.height === W(want.height, want.height + 1);
+    check(name, r && r.ok && sizeOk && (!anchorFree || (a.shown.x === was.x && a.shown.y === was.y))
+      && !othersOf(d, A).some((o) => tooClose(a.shown, o)) && view.cls.includes('layout-column') && view.vw[0] === a.shown.width && view.vw[1] === a.shown.height
+      && a.host.win.rect && a.host.win.rect.left === a.screenRect.left && a.host.win.rect.width === a.screenRect.right - a.screenRect.left
+      && data.layout === 'column' && JSON.stringify(data.rect) === JSON.stringify(a.shown) && data.gridSize && data.gridSize.width === gridBefore.width && data.gridSize.height === gridBefore.height,
+    { n, shown: a.shown, was, anchorFree, vw: view.vw, gridSize: data.gridSize });
+  });
+
+  await guarded('M4 Column look: header [icon][name][⋯] only, no tag, no banner, tile field x 16 to W - 20, one tile per row of S + 32 (spec 2.3, 6.1)', async (name) => {
+    const m = await page(A).eval(`(() => {
+      const shown = (id) => { const e = document.getElementById(id); return !!e && e.offsetParent !== null && getComputedStyle(e).display !== 'none'; };
+      const t = [...document.querySelectorAll('#app-grid .app-tile')].map((e) => e.getBoundingClientRect());
+      const menu = document.getElementById('btn-region-menu').getBoundingClientRect();
+      return { rnd: shown('btn-random-theme'), set: shown('btn-settings'), hide: shown('btn-hide'), menu: [menu.width, menu.height],
+        tag: getComputedStyle(document.getElementById('header'), '::after').display, banner: shown('theme-banner'), hint: shown('drop-hint'),
+        left: t.length ? t[0].left : null, right: t.length ? t[0].right : null, h: t.length ? t[0].height : null, step: t.length > 1 ? t[1].top - t[0].top : null,
+        W: innerWidth, header: document.getElementById('header').getBoundingClientRect().height,
+        tips: [document.getElementById('btn-region-menu').title, document.getElementById('header').title] };
+    })()`);
+    check(name, !m.rnd && !m.set && !m.hide && m.menu[0] >= 28 && m.menu[1] >= 24 && m.tag === 'none' && !m.banner && !m.hint
+      && m.left === 16 && m.right === m.W - 20 && m.h === S + 32 && m.step === W(S + 40, S + 32) && m.header === 40 && m.tips[0] === 'Region menu' && m.tips[1] === 'Drag to move', m);
+  });
+
+  await guarded('M4 Column follows content: one more item = S + 40 taller at the same top-left; one fewer = back; nothing saved (spec 2.3, 4.4)', async (name) => {
+    const d1 = await desc();
+    const before = reg(d1, A).shown;
+    const savedBefore = JSON.stringify(readData().regions.find((x) => x.id === A).rect);
+    const it = readData().apps.find((a) => a.regionId !== A && a.regionId !== E);
+    const home = it.regionId;
+    await T('move-item', { itemId: it.id, regionId: A });
+    await sleep(500);
+    const grown = reg(await desc(), A).shown;
+    await T('move-item', { itemId: it.id, regionId: home });
+    await sleep(700);
+    const back = reg(await desc(), A).shown;
+    const tilesNow = await page(A).eval(`document.querySelectorAll('#app-grid .app-tile').length`);
+    check(name, grown.x === before.x && grown.y === before.y && grown.height - before.height === W(S + 40, S + 32)
+      && JSON.stringify(back) === JSON.stringify(before) && JSON.stringify(readData().regions.find((x) => x.id === A).rect) === savedBefore && tilesNow === await count(A),
+    { before: before.height, grown: grown.height, back: back.height });
+  });
+
+  await guarded('M4 Column edit mode: the 38 px bar holds the cluster (+ ⊞ ✓, 24 x 24, 4 px apart, centred, spec tooltips); the window grows by 38; ✓ ends it (spec 2.3, 5.6, 9.1)', async (name) => {
+    const before = reg(await desc(), A).shown;
+    await page(A).eval(`enterEditMode(), true`);
+    await sleep(500);
+    const inEdit = reg(await desc(), A);
+    const m = await page(A).eval(`(() => {
+      const bs = [...document.querySelectorAll('#edit-bar .edit-cluster button')].map((b) => { const r = b.getBoundingClientRect(); return { t: b.title, a: b.getAttribute('aria-label'), x: r.left, w: r.width, h: r.height, txt: b.textContent }; });
+      const bar = document.getElementById('edit-bar').getBoundingClientRect();
+      const long = [...document.querySelectorAll('#edit-bar .edit-label-long, #edit-bar .edit-actions')].some((e) => e.offsetParent !== null);
+      return { bs, bar: [bar.left, bar.width, bar.height], long, grid: document.getElementById('grid-container').getBoundingClientRect().bottom, barTop: bar.top };
+    })()`);
+    const tips = m.bs.map((b) => b.t).join('|');
+    const centre = m.bs.length === 3 ? (m.bs[0].x + m.bs[2].x + m.bs[2].w) / 2 : -1;
+    const gaps = m.bs.length === 3 ? [m.bs[1].x - m.bs[0].x - m.bs[0].w, m.bs[2].x - m.bs[1].x - m.bs[1].w] : [];
+    await page(A).eval(`document.getElementById('btn-cluster-done').click(), true`);
+    await sleep(500);
+    const after = reg(await desc(), A);
+    const editing = await page(A).eval(`!document.getElementById('edit-bar').classList.contains('hidden')`);
+    const room = inner.y + inner.height - before.y - before.height;
+    const expectGrow = room >= 38 && !othersOf(await desc(), A).some((o) => tooClose({ ...before, height: before.height + 38 }, o)) ? 38 : 0;
+    check(name, m.bs.length === 3 && tips === W('Add a file or shortcut|Add an installed app|Finish editing', 'Add a file|Add an installed app|Finish editing')
+      && m.bs.every((b) => b.w === 24 && b.h === 24 && b.a === b.t) && m.bs.map((b) => b.txt).join('') === '+⊞✓' && gaps.every((g) => Math.abs(g - 4) < 0.5)
+      && Math.abs(centre - m.bar[0] - m.bar[1] / 2) <= 1 && m.bar[2] === 38 && !m.long && m.grid <= m.barTop + 0.5
+      && inEdit.extras.edit && inEdit.shown.height - before.height === expectGrow && !editing && after.shown.height === before.height,
+    { tips, gaps, centre, bar: m.bar, grow: inEdit.shown.height - before.height, expectGrow, after: after.shown.height });
+  });
+
+  await guarded('M4 Column keys: Up and Down move the focus, Left and Right do nothing; Ctrl+Down moves the tile one place, Ctrl+Right nothing (spec 7.4, A5)', async (name) => {
+    const r = await page(A).eval(`(async () => {
+      ${SIM_SOURCE.replace(/; true$/, ';')}
+      const S = window.__qlSim;
+      S.focusTile(0);
+      const t0 = document.activeElement.dataset.id;
+      const right = S.key(${JSON.stringify(W('ArrowRight', 'ArrowDown'))});
+      const down = S.key('ArrowDown');
+      enterEditMode(); await new Promise((r) => setTimeout(r, 80));
+      S.focusTile(0);
+      const order0 = S.order();
+      S.key('ArrowRight', { ctrlKey: true }); await new Promise((r) => setTimeout(r, 200));
+      const afterRight = S.order();
+      S.focusTile(0);
+      S.key('ArrowDown', { ctrlKey: true }); await new Promise((r) => setTimeout(r, 300));
+      const afterDown = S.order();
+      const f = document.activeElement && document.activeElement.dataset.id;
+      S.key('ArrowUp', { ctrlKey: true }); await new Promise((r) => setTimeout(r, 300));
+      const restored = S.order();
+      exitEditMode();
+      return { t0, right, down, order0, afterRight, afterDown, f, restored };
+    })()`);
+    check(name, r.right === r.t0 && r.down !== r.t0 && JSON.stringify(r.afterRight) === JSON.stringify(r.order0)
+      && r.afterDown[1] === r.order0[0] && r.afterDown[0] === r.order0[1] && r.f === r.order0[0] && JSON.stringify(r.restored) === JSON.stringify(r.order0),
+    { right: r.right === r.t0 ? 'stayed' : 'moved', down: r.down !== r.t0 ? 'moved' : 'stayed', ctrlDown: r.afterDown.slice(0, 2), back: JSON.stringify(r.restored) === JSON.stringify(r.order0) });
+  });
+
+  await guarded('M4 region menu: Layout lists Grid, Column and Row after Rename, the current one checked; picking Row switches B (spec 9.2)', async (name) => {
+    await page(B).eval(`(() => { const b = document.getElementById('btn-region-menu').getBoundingClientRect(); return window.api.invoke('region:menu', { x: b.left, y: b.bottom }); })()`);
+    await sleep(200);
+    const menus = (await T('menus')).menus;
+    const m = menus[menus.length - 1];
+    const li = m.items.findIndex((i) => i.label === 'Layout');
+    const sub = li >= 0 ? m.items[li].submenu.map((i) => `${i.label}${i.checked ? '*' : ''}`).join(',') : '';
+    const click = await T('menu-click', { path: [li, W(2, 1)] });
+    await sleep(800);
+    const d = await desc();
+    check(name, li > 0 && m.items[li - 1].label === 'Rename' && sub === 'Grid*,Column,Row' && click.ok && reg(d, B).layout === 'row',
+      { sub, after: reg(d, B).layout });
+  });
+
+  await guarded('M4 Row look: S + 64 high, 124 + 104n wide (S = 64), leading cell 96 x full height with border-right, name 12 px, ⋯ 24 x 24, tiles from x 112, y 16 (spec 2.4)', async (name) => {
+    const n = await count(B);
+    const d = await desc();
+    const b = reg(d, B);
+    const m = await page(B).eval(`(() => {
+      const h = document.getElementById('header'), cs = getComputedStyle(h), hr = h.getBoundingClientRect();
+      const menu = document.getElementById('btn-region-menu').getBoundingClientRect();
+      const t = document.querySelector('#app-grid .app-tile').getBoundingClientRect();
+      const vis = (id) => { const e = document.getElementById(id); return !!e && e.offsetParent !== null; };
+      return { cell: [hr.left, hr.top, hr.width, hr.height], br: cs.borderRightWidth, bb: cs.borderBottomWidth, title: getComputedStyle(document.getElementById('title')).fontSize,
+        menu: [menu.width, menu.height], tile: [t.left, t.top, t.width], tag: getComputedStyle(h, '::after').display, banner: vis('theme-banner'), vh: innerHeight, vw: innerWidth };
+    })()`);
+    check(name, b.shown.height === S + 64 && b.shown.width === Math.min(rowW(n), Math.floor(0.9 * d.workArea.width)) && m.vh === W(S + 64, S + 60) && m.vw === b.shown.width
+      && m.cell[0] === 0 && m.cell[2] === 96 && m.cell[3] === m.vh && parseFloat(m.br) > 0 && parseFloat(m.bb) === 0 && m.title === '12px'
+      && m.menu[0] === 24 && m.menu[1] === 24 && m.tile[0] === 112 && m.tile[1] === 16 && m.tile[2] === S + 32 && m.tag === 'none' && !m.banner,
+    { n, shown: b.shown, m });
+  });
+
+  await guarded('M4 Row edit mode: EDIT and the cluster in the leading cell, ⋯ stays, no size change, nothing overlaps, Tab goes ⋯, tiles, then the cluster (spec 2.4, 5.6, 7.4, 10)', async (name) => {
+    const before = reg(await desc(), B).shown;
+    await page(B).eval(`enterEditMode(), true`);
+    await sleep(500);
+    const after = reg(await desc(), B).shown;
+    const m = await page(B).eval(`(() => {
+      const vis = (e) => e && e.offsetParent !== null && getComputedStyle(e).visibility !== 'hidden';
+      const els = [...document.querySelectorAll('#title-area, #header-controls button, .app-tile, .app-tile .btn-remove, .app-tile .btn-move-back, #edit-bar .edit-cluster button, #edit-bar .edit-label-short')].filter(vis);
+      const R = els.map((e) => { const r = e.getBoundingClientRect(); return { n: e.id || e.className, r: [r.left, r.top, r.right, r.bottom], tile: e.closest('.app-tile') }; });
+      const hit = [];
+      for (let i = 0; i < R.length; i++) for (let j = i + 1; j < R.length; j++) {
+        if (R[i].tile && R[i].tile === R[j].tile) continue; // a badge sits on its own tile
+        const a = R[i].r, b = R[j].r;
+        if (a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3]) hit.push(R[i].n + ' x ' + R[j].n);
+      }
+      const label = document.querySelector('#edit-bar .edit-label-short');
+      const cl = [...document.querySelectorAll('#edit-bar .edit-cluster button')].map((b) => b.getBoundingClientRect());
+      const focusables = [...document.querySelectorAll('button, [tabindex="0"], input')].filter((e) => vis(e) && !e.disabled && e.tabIndex >= 0);
+      const order = focusables.map((e) => e.id === 'btn-region-menu' ? 'menu' : e.closest('.edit-cluster') ? 'cluster' : e.classList.contains('app-tile') ? 'tile' : null).filter(Boolean);
+      const firstIdx = (k) => order.indexOf(k), lastIdx = (k) => order.lastIndexOf(k);
+      return { hit, label: label && vis(label) ? label.textContent : null, inCell: cl.every((r) => r.left >= 0 && r.right <= 96), n: cl.length,
+        menu: vis(document.getElementById('btn-region-menu')), titleHidden: !vis(document.getElementById('title-area')),
+        tab: firstIdx('menu') < firstIdx('tile') && lastIdx('tile') < firstIdx('cluster'), order: order.join(',') };
+    })()`);
+    await page(B).eval(`exitEditMode(), true`);
+    await sleep(300);
+    check(name, JSON.stringify(after) === JSON.stringify(before) && m.label === W('EDIT', '// EDIT MODE') && m.n === 3 && m.inCell && m.menu && m.titleHidden && m.hit.length === 0 && m.tab,
+      { hit: m.hit, label: m.label, tab: m.order, size: after });
+  });
+
+  await guarded('M4 Row keys and wheel: Left and Right move the focus, Up and Down do nothing; the wheel scrolls sideways (spec 2.4, 7.4)', async (name) => {
+    const r = await page(B).eval(`(async () => {
+      ${SIM_SOURCE.replace(/; true$/, ';')}
+      const S = window.__qlSim;
+      S.focusTile(0);
+      const t0 = document.activeElement.dataset.id;
+      const down = S.key(${JSON.stringify(W('ArrowDown', 'ArrowRight'))});
+      S.focusTile(0);
+      const right = S.key('ArrowRight');
+      const gc = document.getElementById('app-grid'); // the tile list scrolls (M4 rulings Q18)
+      gc.style.width = '120px'; // overflow on purpose, so there is something to scroll
+      await new Promise((r) => requestAnimationFrame(() => r()));
+      gc.scrollLeft = 0;
+      gc.dispatchEvent(new WheelEvent('wheel', { deltaY: 100, bubbles: true, cancelable: true }));
+      const wheel = gc.scrollLeft;
+      gc.style.width = ''; gc.scrollLeft = 0;
+      document.activeElement.blur();
+      return { t0, down, right, wheel };
+    })()`);
+    check(name, r.down === r.t0 && r.right !== r.t0 && r.wheel > 0, { down: r.down === r.t0 ? 'stayed' : 'moved', right: r.right !== r.t0 ? 'moved' : 'stayed', wheel: r.wheel });
+  });
+
+  await guarded('M4 Row notice: a notice replaces the icon and name in the leading cell (in --text, up to 3 lines, unclipped, full text as tooltip) for 8 s; no notice slot shows (spec 2.4, 7.5; M4 rulings Q8)', async (name) => {
+    const m = await page(B).eval(`(async () => {
+      showNotice('TARGET UNREADABLE');
+      await new Promise((r) => setTimeout(r, 300));
+      const ln = document.getElementById('lead-notice');
+      const vis = (id) => document.getElementById(id).offsetParent !== null && getComputedStyle(document.getElementById(id)).display !== 'none';
+      const on = { text: vis('lead-notice') ? ln.textContent : null, tip: ln.title, title: vis('title'), icon: vis('region-icon'),
+        clipped: ln.scrollHeight > ln.clientHeight + 0.5, lines: Math.round(ln.clientHeight / 15),
+        color: getComputedStyle(ln).color, textColor: getComputedStyle(document.body).color, slot: document.getElementById('update-banner').offsetParent !== null,
+        block: document.getElementById('title-area').getBoundingClientRect().height };
+      await new Promise((r) => setTimeout(r, 5500));
+      const at55 = vis('lead-notice');
+      await new Promise((r) => setTimeout(r, ${W(2900, 1000)}));
+      const off = { text: vis('lead-notice'), title: vis('title'), icon: vis('region-icon') };
+      return { on, at55, off };
+    })()`, 25000);
+    check(name, m.on.text === 'TARGET UNREADABLE' && m.on.tip === 'TARGET UNREADABLE' && !m.on.title && !m.on.icon && !m.on.clipped && m.on.lines <= 3
+      && m.on.color === m.on.textColor && !m.on.slot && m.on.block === 54 && m.at55 && !m.off.text && m.off.title && m.off.icon, m);
+  });
+
+  await guarded('M4 empty Column: one dashed cell with ⊕, DROP HERE and "or right-click", 180 x 168; during a drag over it the cell is the slot (A1 border, its text hidden), no second slot (spec 2.8, A2)', async (name) => {
+    for (const it of readData().apps.filter((a) => a.regionId === E)) await T('move-item', { itemId: it.id, regionId: src });
+    await setLayout(E, 'column');
+    await sleep(700);
+    const e = reg(await desc(), E);
+    const m = await page(E).eval(`(async () => {
+      const cell = document.querySelector('#app-grid .empty-cell');
+      const txt = cell ? cell.innerText.replace(/\\s+/g, ' ').trim() : null;
+      const dt = new DataTransfer();
+      dt.items.add(new File(['x'], 'x.lnk'));
+      const r = cell.getBoundingClientRect();
+      const at = { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2, bubbles: true, cancelable: true, dataTransfer: dt };
+      cell.parentElement.dispatchEvent(new DragEvent('dragenter', at));
+      await new Promise((res) => setTimeout(res, 60));
+      const cs = getComputedStyle(cell);
+      const during = { slot: cell.classList.contains('as-slot'), border: cs.borderTopStyle + ' ' + cs.borderTopWidth, color: cs.borderTopColor,
+        accent: (() => { const p = document.createElement('div'); p.style.color = 'var(--accent-text)'; document.body.appendChild(p); const c = getComputedStyle(p).color; p.remove(); return c; })(),
+        textHidden: [...cell.children].every((c) => getComputedStyle(c).visibility === 'hidden'), slots: document.querySelectorAll('#app-grid .drop-slot').length };
+      cell.parentElement.dispatchEvent(new DragEvent('dragleave', at));
+      await new Promise((res) => setTimeout(res, 60));
+      return { txt, during, after: cell.classList.contains('as-slot'), still: !!document.querySelector('#app-grid .empty-cell') };
+    })()`);
+    check(name, e.layout === 'column' && e.shown.width === 180 && e.shown.height === W(colH(0), colH(1) + 1) && m.txt === '⊕ DROP HERE or right-click'
+      && m.during.slot && m.during.border === 'dashed 2px' && m.during.color === m.during.accent && m.during.textHidden && m.during.slots === 0 && !m.after && m.still,
+    { shown: e.shown, txt: m.txt, during: m.during });
+  });
+
+  await guarded('M4 empty Column at page load: a rebuilt window (as after an Explorer restart) draws its empty cell at once (spec 2.8)', async (name) => {
+    const oldTarget = page(E).t.id;
+    await page(E).eval(`setTimeout(() => window.close(), 10), true`).catch(() => {});
+    pages.delete(oldTarget);
+    let fresh = null;
+    for (let i = 0; i < 60 && !fresh; i++) {
+      fresh = (await regionPages()).find((t) => regionId(t) === E && t.id !== oldTarget) || null;
+      if (!fresh) await sleep(250);
+    }
+    if (!fresh) { check(name, false, 'no rebuilt page'); return; }
+    const s = await session(fresh);
+    sessions[E] = s;
+    let m = null;
+    for (let i = 0; i < 40; i++) {
+      m = await s.eval(`({ ready: document.body.classList.contains('region') && document.title.length > 0, cls: document.body.className, cells: document.querySelectorAll('#app-grid .empty-cell').length, tiles: document.querySelectorAll('#app-grid .app-tile').length, rebuilt: new URL(location.href).searchParams.get('rebuilt') })`).catch(() => null);
+      if (m && m.ready) break;
+      await sleep(150);
+    }
+    await sleep(300);
+    m = await s.eval(`({ cls: document.body.className, cells: document.querySelectorAll('#app-grid .empty-cell').length, tiles: document.querySelectorAll('#app-grid .app-tile').length, rebuilt: new URL(location.href).searchParams.get('rebuilt'), layout: new URL(location.href).searchParams.get('layout') })`);
+    check(name, m.rebuilt === '1' && m.layout === 'column' && /layout-column/.test(m.cls) && m.tiles === 0 && m.cells === W(1, 2), m);
+  });
+
+  await guarded('M4 rulings Q18: the field clips and the tile list scrolls; with the list fitting, nothing scrolls (Column and Row, view and edit)', async (name) => {
+    const probe = W('', `document.getElementById('app-grid').style.overflow = 'visible'; document.getElementById('grid-container').style.overflow = 'auto';`);
+    const script = `(async () => {
+      ${probe}
+      const m = (st) => { const g = document.getElementById('app-grid'), c = document.getElementById('grid-container');
+        return { st, field: getComputedStyle(c).overflowX + '/' + getComputedStyle(c).overflowY, rangeY: g.scrollHeight - g.clientHeight, rangeX: g.scrollWidth - g.clientWidth,
+          list: getComputedStyle(g).overflowX + '/' + getComputedStyle(g).overflowY }; };
+      const out = [m('view')];
+      enterEditMode(); await new Promise((r) => setTimeout(r, 400));
+      out.push(m('edit'));
+      exitEditMode(); await new Promise((r) => setTimeout(r, 200));
+      document.getElementById('app-grid').style.overflow = ''; document.getElementById('grid-container').style.overflow = '';
+      return out;
+    })()`;
+    const a = await page(A).eval(script);
+    const b = await page(B).eval(script);
+    const ok = a.every((x) => x.field === 'hidden/hidden' && x.list === 'hidden/auto' && x.rangeY <= 1) && b.every((x) => x.field === 'hidden/hidden' && x.list === 'auto/hidden' && x.rangeX <= 1);
+    check(name, ok, { column: a, row: b });
+  });
+
+  await guarded('M4 rulings Q5: a filter in a Column hides the name; the chip text is not clipped and the chip ends 6 DIP or more before the menu button', async (name) => {
+    const m = await page(A).eval(`(async () => {
+      setFilter(${JSON.stringify(W('calc', 'calculator spreadsheet'))}); await new Promise((r) => setTimeout(r, 80));
+      const t = document.getElementById('filter-chip-text'), c = document.getElementById('filter-chip').getBoundingClientRect(), b = document.getElementById('btn-region-menu').getBoundingClientRect();
+      const out = { title: getComputedStyle(document.getElementById('title')).display, clipped: t.scrollWidth > t.clientWidth + 0.5, chipRight: c.right, menuLeft: b.left };
+      clearFilter();
+      return out;
+    })()`);
+    check(name, m.title === 'none' && !m.clipped && m.chipRight <= m.menuLeft - 6, m);
+  });
+
+  await guarded('M4 rulings Q7: a Row shows the name "Region 8" in full on up to 2 lines; its icon and name block is 54 px in view and edit', async (name) => {
+    const before = await page(B).eval(`document.title`);
+    const ren = await page(B).eval(`window.api.invoke('region:rename', { name: 'Region 8' })`);
+    await sleep(400);
+    const m = await page(B).eval(`(async () => {
+      const t = document.getElementById('title');
+      ${W('', `t.style.webkitLineClamp = '1'; t.style.maxHeight = '15px';`)}
+      const view = { text: t.textContent, cut: t.scrollHeight > t.clientHeight + 0.5, lines: Math.round(t.clientHeight / 15), block: document.getElementById('title-area').getBoundingClientRect().height };
+      enterEditMode(); await new Promise((r) => setTimeout(r, 150));
+      const edit = { block: document.getElementById('title-area').getBoundingClientRect().height };
+      exitEditMode();
+      t.style.webkitLineClamp = ''; t.style.maxHeight = '';
+      return { view, edit };
+    })()`);
+    await page(B).eval(`window.api.invoke('region:rename', { name: ${JSON.stringify(before)} })`);
+    await sleep(300);
+    check(name, ren && ren.ok && m.view.text === 'Region 8' && !m.view.cut && m.view.lines <= 2 && m.view.block === 54 && m.edit.block === 54, m);
+  });
+
+  await guarded('M4 rulings Q10: a Column notice takes at most 2 lines in the 38 px slot; the update layer shows DOWNLOAD and ✕ inside the window, its message hidden and as the tooltip', async (name) => {
+    const m = await page(A).eval(`(async () => {
+      showNotice('3 FILES ARE NOT SHORTCUTS'); await new Promise((r) => setTimeout(r, 200));
+      const u = document.getElementById('update-text'), b = document.getElementById('update-banner');
+      const notice = { lines: Math.round(u.clientHeight / 12), clipped: u.scrollHeight > u.clientHeight + 0.5, slot: b.getBoundingClientRect().height };
+      qlBanner.endNotice(); await new Promise((r) => setTimeout(r, 100));
+      qlBanner.setUpdate('UPDATE AVAILABLE — v1.95.0', [{ label: 'DOWNLOAD', action: 'download' }]); await new Promise((r) => setTimeout(r, 200));
+      ${W('', `u.style.position = 'static'; u.style.width = 'auto'; u.style.height = 'auto'; u.style.clip = 'auto';`)}
+      const btns = [...b.querySelectorAll('button')].map((x) => { const r = x.getBoundingClientRect(); return [x.textContent, r.left, r.right]; });
+      const ur = u.getBoundingClientRect();
+      const update = { tip: b.title, text: [Math.round(ur.width), Math.round(ur.height)], btns, W: innerWidth };
+      u.style.position = ''; u.style.width = ''; u.style.height = ''; u.style.clip = '';
+      return { notice, update };
+    })()`);
+    // The update message is the updater's; the test drew it, so the test takes it away (its ✕ would also clear the tray dot).
+    await page(A).eval(`qlBanner.closeUpdate(), true`).catch(() => {});
+    const u = m.update;
+    check(name, m.notice.lines <= 2 && !m.notice.clipped && Math.round(m.notice.slot) === 38 && u.tip === 'UPDATE AVAILABLE — v1.95.0' && u.text[0] <= 1 && u.text[1] <= 1
+      && u.btns.length === 2 && u.btns[0][0] === 'DOWNLOAD' && u.btns.every((x) => x[1] >= 0 && x[2] <= u.W), m);
+  });
+
+  await guarded('M4 rulings F1: a Column rename field ends 6 DIP or more before the menu button; a Row rename field does not meet it', async (name) => {
+    const field = (id) => page(id).eval(`(async () => {
+      const ta = document.getElementById('title-area'); ta.focus();
+      ta.dispatchEvent(new KeyboardEvent('keydown', { key: 'F2', bubbles: true, cancelable: true }));
+      await new Promise((r) => setTimeout(r, 150));
+      const i = document.querySelector('.region-rename-input'), b = document.getElementById('btn-region-menu').getBoundingClientRect();
+      ${W('', `if (i) i.style.cssText = 'width: 200px; flex: none;';`)}
+      const r = i ? i.getBoundingClientRect() : null;
+      const out = r ? { layout: [...document.body.classList].find((c) => c.startsWith('layout-')), l: r.left, t: r.top, r: r.right, b: r.bottom, ml: b.left, mt: b.top, mr: b.right, mb: b.bottom } : null;
+      if (i) i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+      exitEditMode();
+      return out;
+    })()`);
+    const a = await field(A);
+    const b = await field(B);
+    const meets = (x) => x.l < x.mr && x.ml < x.r && x.t < x.mb && x.mt < x.b;
+    check(name, a && b && a.layout === 'layout-column' && b.layout === 'layout-row' && a.r <= a.ml - 6 && !meets(b), { column: a, row: b });
+  });
+
+  await guarded('M4 rulings Q11, F2, F3: the empty cell text and the Row EDIT label are --text; the empty Column sub-line is 1 line; the header accent bar is capped (Row 4 px, Column 12 px)', async (name) => {
+    const text = `(() => { const p = document.createElement('div'); p.style.color = 'var(--text)'; document.body.appendChild(p); const c = getComputedStyle(p).color; p.remove(); return c; })()`;
+    const e = await page(E).eval(`(() => {
+      const cell = document.querySelector('#app-grid .empty-cell');
+      const sub = cell && cell.querySelector('.hint-sub'), title = cell && cell.querySelector('.empty-title');
+      ${W('', `if (sub) sub.style.color = 'rgb(1, 2, 3)';`)}
+      return { text: ${text}, cell: cell && getComputedStyle(title).color, sub: sub && getComputedStyle(sub).color, subLines: sub ? Math.round(sub.getBoundingClientRect().height / 15) : null,
+        bar: getComputedStyle(document.getElementById('header'), '::before').maxWidth };
+    })()`);
+    const r = await page(B).eval(`(async () => {
+      enterEditMode(); await new Promise((res) => setTimeout(res, 120));
+      const l = document.querySelector('#edit-bar .edit-label-short');
+      const out = { text: ${text}, label: getComputedStyle(l).color, shadow: getComputedStyle(l).textShadow, bar: getComputedStyle(document.getElementById('header'), '::before').maxWidth };
+      exitEditMode();
+      return out;
+    })()`);
+    check(name, e.cell === e.text && e.sub === e.text && e.subLines === 1 && e.bar === '12px' && r.label === r.text && r.shadow === 'none' && r.bar === '4px', { emptyColumn: e, row: r });
+  });
+
+  await guarded('M4 hit areas: nothing overlaps in Column and Row, in view, edit, filter, rename and notice states, the rename field, the Row notice and the banner text included (spec 10; M4 rulings F1, measure 11)', async (name) => {
+    const script = `(async () => {
+      const vis = (e) => e && e.offsetParent !== null && getComputedStyle(e).visibility !== 'hidden';
+      const measure = () => {
+        const els = [...document.querySelectorAll('#title-area, #header-controls button, #filter-chip, #filter-chip-clear, .app-tile, .app-tile .btn-remove, .app-tile .btn-move-back, #edit-bar button, #update-banner button, .region-rename-input, #lead-notice, #update-text')].filter(vis);
+        const R = els.map((e) => { const r = e.getBoundingClientRect(); return { e, n: e.id || e.className, r: [r.left, r.top, r.right, r.bottom] }; });
+        const hit = [];
+        for (let i = 0; i < R.length; i++) for (let j = i + 1; j < R.length; j++) {
+          const a = R[i], b = R[j];
+          if (a.e.contains(b.e) || b.e.contains(a.e)) continue;
+          // The handle holds the name line, the rename field and the notice by design: they take its place.
+          if ([a, b].some((x) => x.e.id === 'title-area') && [a, b].some((x) => x.e.matches('.region-rename-input, #lead-notice'))) continue;
+          if (a.e.closest('.app-tile') && a.e.closest('.app-tile') === b.e.closest('.app-tile')) continue;
+          if (a.r[0] < b.r[2] && b.r[0] < a.r[2] && a.r[1] < b.r[3] && b.r[1] < a.r[3]) hit.push(a.n + ' x ' + b.n);
+        }
+        const small = R.filter((x) => (x.e.matches('#header-controls button, #edit-bar .edit-cluster button, #filter-chip-clear')) && ((x.r[2] - x.r[0]) < 24 || (x.r[3] - x.r[1]) < 24)).map((x) => x.n);
+        return { hit, small };
+      };
+      const out = {};
+      out.view = measure();
+      setFilter('a'); await new Promise((r) => setTimeout(r, 60));
+      out.filter = measure();
+      clearFilter();
+      enterEditMode(); await new Promise((r) => setTimeout(r, 80));
+      out.edit = measure();
+      exitEditMode();
+      const ta = document.getElementById('title-area');
+      ta.focus();
+      ta.dispatchEvent(new KeyboardEvent('keydown', { key: 'F2', bubbles: true, cancelable: true }));
+      await new Promise((r) => setTimeout(r, 120));
+      out.rename = measure();
+      const inp = document.querySelector('.region-rename-input');
+      if (inp) inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+      exitEditMode();
+      showNotice('3 FILES ARE NOT SHORTCUTS'); await new Promise((r) => setTimeout(r, 200));
+      out.notice = measure();
+      qlBanner.endNotice(); await new Promise((r) => setTimeout(r, 100));
+      return out;
+    })()`;
+    if (PROBE) await page(A).eval(`document.getElementById('btn-region-menu').style.marginLeft = '-60px', true`);
+    const a = await page(A).eval(script);
+    const b = await page(B).eval(script);
+    if (PROBE) await page(A).eval(`document.getElementById('btn-region-menu').style.marginLeft = '', true`);
+    const all = [a.view, a.filter, a.edit, a.rename, a.notice, b.view, b.filter, b.edit, b.rename, b.notice];
+    check(name, all.every((x) => x.hit.length === 0 && x.small.length === 0),
+      { column: { view: a.view.hit, filter: a.filter.hit, edit: a.edit.hit, rename: a.rename.hit, notice: a.notice.hit }, row: { view: b.view.hit, filter: b.filter.hit, edit: b.edit.hit, rename: b.rename.hit, notice: b.notice.hit } });
+  });
+
+  await guarded('M4 Manager: the layout select offers Grid, Column and Row; + NEW REGION ▾ opens a menu of the same three (all disabled at the cap of 8)', async (name) => {
+    const m = await mgr.eval(`(async () => {
+      const sel = document.querySelector('.mgr-region .mgr-layout');
+      const opts = [...sel.options].map((o) => o.textContent).join(',');
+      document.getElementById('btn-new-region').click();
+      await new Promise((r) => setTimeout(r, 300));
+      return { opts, label: document.getElementById('btn-new-region').textContent };
+    })()`);
+    const menus = (await T('menus')).menus;
+    const nm = [...menus].reverse().find((x) => x.kind === 'new-region');
+    const st = await mgr.eval(`window.api.invoke('manager:state')`);
+    check(name, m.opts === W('Grid,Column,Row', 'Grid') && m.label === '+ NEW REGION ▾' && nm && nm.items.map((i) => i.label).join(',') === 'Grid,Column,Row'
+      && nm.items.every((i) => i.enabled === (st.regions.length < 8)), { opts: m.opts, menu: nm && nm.items, regions: st.regions.length });
+  });
+
+  if (FALLBACK) {
+    await guarded('M4 F-2 pixels: the Column and the Row fallback windows show their pages (PrintWindow: 16+ colours, 10%+ lit)', async (name) => {
+      const d = await desc();
+      const px = [A, B].map((id) => ({ id: id.slice(0, 8), ...windowPixels(parseInt(String(reg(d, id).host.win.hwnd || '0'), 16)) }));
+      check(name, px.every((p) => p.ok) && !PROBE, px.map((p) => `${p.id} ${p.colours}c ${p.lit}`));
+    });
+  }
+
+  await guarded('M4 Grid remembers its size: Column back to Grid comes back at the saved Grid size, at the same top-left (spec 3.3, tech plan § 2.1)', async (name) => {
+    const was = reg(await desc(), A).shown;
+    const r = await setLayout(A, 'grid');
+    await sleep(700);
+    const a = reg(await desc(), A);
+    const vw = await page(A).eval(`[innerWidth, innerHeight, document.body.classList.contains('layout-grid')]`);
+    const wantW = W(gridBefore.width, gridBefore.width + 12);
+    check(name, r && r.ok && a.shown.width === wantW && a.shown.height === gridBefore.height && (a.shown.x === was.x && a.shown.y === was.y || !othersOf(await desc(), A).some((o) => tooClose(a.shown, o)))
+      && vw[0] === a.shown.width + 12 && vw[2], { gridBefore, shown: a.shown, was, vw });
+  });
+
+  // Give the lent items back (B stays a Row, E an empty Column for the rest of the run).
+  for (const id of lent) { await T('move-item', { itemId: id, regionId: src }); await sleep(100); }
+  await sleep(400);
+}
+
+
+// ── The M3 qlDecorateTile first-render race (Sergei approved the fix, 2026-10-06).
+// app.js's first render can run before region.js defines its hooks: a window built
+// fresh (start-up, an Explorer restart) then showed a moved tile as a plain one
+// (✕, not ↩; no broken pip) until something else re-rendered it.
+async function raceChecks({ mgr, sessions, ids }) {
+  const T = (op, arg = {}) => mgr.eval(`window.api.invoke('manager:test', ${JSON.stringify(op)}, ${JSON.stringify(arg)})`);
+  const name = 'M3 race: a region window built fresh (Explorer restart) shows its moved tile as moved (↩ in edit mode), not as a reference';
+  try {
+    const R = ids[1];
+    const f = join(FIX.dirs.desktop, 'Rebuilt.url');
+    writeFileSync(f, '[InternetShortcut]\r\nURL=https://example.invalid/rebuilt\r\n');
+    const r = await sessions[R].eval(`window.api.invoke('region:drop-files', { paths: ${JSON.stringify([f])} })`, 90000);
+    await sleep(500);
+    const item = readData().apps.find((a) => a.regionId === R && a.kind === 'moved' && /Rebuilt/.test(a.path));
+    if (!r || !r.moved || !item) { check(name, false, { drop: r, item: !!item }); return; }
+    const oldTarget = sessions[R].t.id;
+    await sessions[R].eval(`setTimeout(() => window.close(), 10), true`).catch(() => {});
+    pages.delete(oldTarget);
+    let fresh = null;
+    for (let i = 0; i < 60 && !fresh; i++) {
+      fresh = (await regionPages()).find((t) => regionId(t) === R && t.id !== oldTarget) || null;
+      if (!fresh) await sleep(250);
+    }
+    if (!fresh) { check(name, false, 'no rebuilt page'); return; }
+    const s = await session(fresh);
+    sessions[R] = s;
+    for (let i = 0; i < 40; i++) {
+      if (await s.eval(`!!document.body && document.body.classList.contains('region') && document.querySelectorAll('#app-grid .app-tile').length > 0`).catch(() => false)) break;
+      await sleep(150);
+    }
+    await sleep(400);
+    const view = await s.eval(`(() => { const t = [...document.querySelectorAll('#app-grid .app-tile')].find((x) => x.dataset.id === ${JSON.stringify(item.id)}); return t ? { kind: t.dataset.kind || null } : null; })()`);
+    const edit = await s.eval(`(async () => { enterEditMode(); await new Promise((r) => setTimeout(r, 120)); const t = [...document.querySelectorAll('#app-grid .app-tile')].find((x) => x.dataset.id === ${JSON.stringify(item.id)}); const b = t && t.querySelector('.btn-move-back, .btn-remove'); const out = { badge: b ? b.className : null, text: b ? b.textContent : null }; exitEditMode(); return out; })()`);
+    check(name, view && view.kind === (PROBE ? 'ref' : 'moved') && edit.badge === 'btn-move-back' && edit.text === '↩', { view, edit });
+    await s.eval(`window.api.invoke('region:move-back', { itemIds: [${JSON.stringify(item.id)}] })`, 90000).catch(() => {});
+    await sleep(400);
+  } catch (e) { check(name, false, `threw: ${String(e && e.message).slice(0, 300)}`); }
 }
 
 // WCAG contrast of two computed colours (alpha flattened on black, as the contrast gate does).

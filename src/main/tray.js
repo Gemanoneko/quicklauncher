@@ -111,8 +111,9 @@ function setupTray({ ctl, mgr, electronApp, store, quit }) {
       {
         label: 'New region',
         enabled: !atCap,
-        // Grid only in this build; Column, Row, Fan and Ring arrive later.
-        submenu: [{ label: 'Grid', click: () => { newRegion('grid'); rebuildMenu(); } }],
+        // The layouts this build draws (spec 7.1); Fan and Ring arrive in M5.
+        submenu: [['Grid', 'grid'], ['Column', 'column'], ['Row', 'row']]
+          .map(([label, layout]) => ({ label, click: () => { newRegion(layout); rebuildMenu(); } })),
       },
       { label: 'Settings…', click: () => mgr.open('settings') },
       {

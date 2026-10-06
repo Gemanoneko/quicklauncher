@@ -263,6 +263,12 @@
     layout.className = 'mgr-layout';
     layout.title = 'Layout';
     layout.setAttribute('aria-label', 'Layout');
+    // Spec 3.3: applies at once; a refusal is a box and the select shows the layout kept.
+    layout.addEventListener('change', async () => {
+      const want = layout.value;
+      await api.invoke('manager:update-region', region.id, { layout: want });
+      await refresh();
+    });
 
     const theme = makeThemePicker({
       title: 'Theme of this region',
@@ -348,12 +354,18 @@
     }
   }
 
-  $('btn-new-region').addEventListener('click', async () => {
-    if ($('btn-new-region').getAttribute('aria-disabled') === 'true') return;
-    const r = await api.invoke('manager:create-region', 'grid');
+  // + NEW REGION ▾ (spec 8.1, 3.1): a native menu of the layouts, under the button.
+  $('btn-new-region').addEventListener('click', () => {
+    const b = $('btn-new-region');
+    if (b.getAttribute('aria-disabled') === 'true') return;
+    const r = b.getBoundingClientRect();
+    api.invoke('manager:new-region-menu', { x: r.left, y: r.bottom }).catch(() => {});
+  });
+  // The pick from that menu: the new row's name is focused and selected (spec 3.1).
+  api.on('manager:created', async (r) => {
     const cap = $('mgr-cap');
     if (r && r.ok) {
-      focusNewId = r.id; // spec 3.1: the new row's name is focused and selected
+      focusNewId = r.id;
       await refresh();
     } else if (r && r.error) {
       cap.textContent = r.error;
