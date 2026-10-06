@@ -1616,3 +1616,206 @@ No new control. New `title`s: the Row's clamped notice (its full text) and the C
 2. **The Grid's `// EDIT MODE` label** takes `--accent-m` like the Row's `EDIT` did (not measured on the Grid's bar, which is a different surface).
 3. **`lcars` covers 4 DIP of the Grid header's region icon.** `body.region.layout-grid #header::before { max-width: 12px; }`.
 4. **A tooltip for a clipped name** (`Region …` in `akira`, `dune`, `scp` at 180 wide): set `title` to the name when `scrollWidth` exceeds `clientWidth`, view mode only.
+
+---
+
+## Addendum — F5 update route (Judy, 2026-10-06)
+
+Status: final, uncommitted. Sergei said yes on 2026-10-06 to designing a fix for F5. The route to DOWNLOAD and INSTALL NOW is settled here and needs no product call: it is the "Settings page" that 7.5 already promised, built in the Manager. **One thing around it does need a call, the tray (F5.7); it is for Sergei, with a recommendation, and Ender can build everything else without it.** The addendum **corrects F5** (its trigger was wider than I wrote), **replaces** the second bullet of 7.5 (the update banner) and the last paragraph of 8.2 (Settings view), and **adds** the tooltip rows below to 9.1 and one item to 9.2. It changes no region's look, no theme and no banner rule (one banner detail, For Ender 4, keeps DOWNLOAD from being offered twice).
+Inputs: the M4 addendum (F5, Q10), C5 and D4 (the banner's two layers and the tray dot); spec 7.1, 7.5, 8.2, 9.1, 9.2; `updater.js`, `tray.js`, `index.js`, `ipc.js` (`check-update`, the `update-event` test hook), `manager.html`, `manager.js` (`showView`, the `aria-disabled` pattern), `manager.css`, `manager-preload.js`, `banner-layers.js`, `app.js` (`drawBanner`, `setupUpdateListeners`), `region.js` (`showLeadNotice`), `region.css`, `controller.js` (`popupRegionMenu`, `setLayout`, `primaryWebContents`). Worktree `wip/regions` at `792212b` + uncommitted M4, read only. No app was launched.
+Method, two scratch passes (nothing in the repo written; files in the scratchpad `judy-f5\`; each Electron run offscreen, `uncaughtException` logs and exits, no dialog, no window shown or focused, only `file:` inside two folders and `data:` load, every host unresolvable, one process started and ended by its own handle):
+1. **The Manager.** A static copy of `manager.html`'s markup (the Regions view's list is two stand-in rows) with the real `base.css`, theme and `manager.css`, plus the markup and CSS below, in 101 themes at 560 x 560 and 440 x 420 (the default and the minimum), 12 states each, 2424 in all: Regions view with no offer, an offer, a download at 45%, ready; Settings view with the same four, plus the footer's checking, up to date, a short error and a 164-character error. Each state records the rect of the header controls, the strip, its text and button, the body, the footer, the status line and the footer buttons; the painted text runs; lines against clamp; the hit-test of the centre of every control; the engine's resolved colours, then the gate's maths (WCAG luminance, colours flattened on black, a translucent colour over the surface under it). 0 blocked requests, 0 viewport mismatches.
+2. **The region pages.** The real Column and Row pages (Ender's gallery tool, my scratch copy, same guards and verdict, `CITE ... PASS`, 0 processes left), 101 themes, each updater message put to the page the way `app.js` does: checking, up to date, error, offer, download at 42%, ready. A Column once more with the candidate CSS of Offered 1.
+
+| # | Point | Ruling | Why |
+|---|---|---|---|
+| F5.1 | Where an offer lives when no region can draw it | **The Manager.** A strip under its header, on both tabs: the message and one button, DOWNLOAD, then INSTALL NOW | 7.5 already named the Settings page; the Manager is a normal window in every layout and in fallback mode, and every region's ⋯ menu already leads to it |
+| F5.2 | What the Manager reads | **The updater's state, kept in the main process**, pushed to the Manager and asked for once when it opens | The offer lived in the primary region's page only: it could not reach another window, and it died with the page |
+| F5.3 | The answer to a check | **A status line above the Settings footer's buttons.** No timer | CHECK FOR UPDATES in the Manager showed nothing in the Manager, in any layout |
+| F5.4 | Finding the offer from a region | **One item in every region's ⋯ menu** while an offer waits, above `Settings…` | A Row has no banner and no room for one; ⋯ is its only control |
+| F5.5 | The banner | **Unchanged.** Primary region only, and only if its layout has a slot | A banner that moves to another region jumps whenever a region is made, deleted or switched |
+| F5.6 | The banner's ✕ | **Does not hide the strip.** It means "not now" | The Manager is where a person goes on purpose |
+| F5.7 | The tray | **For Sergei.** Recommendation: B | A tray change is a product call (below) |
+
+### Where an offer can and cannot reach DOWNLOAD (F5, corrected)
+
+F5 said "a Row as the only layout". The cause is wider. The updater sends every message to one page, the primary region's (`updater.js` `send`, fed by `setupUpdater(() => ctl.primaryWebContents())`), and the primary is the first region in creation order. So the trigger is **the primary region being a Row**, whatever sits beside it: a Grid made second gets nothing. The offer also lives only in that page's memory (`qlBanner`), so a rebuilt page or a new primary has none.
+
+| Primary region | What the real page draws (101 themes) | DOWNLOAD and INSTALL NOW reachable | After |
+|---|---|---|---|
+| Grid, alone or with any region beside it | message, DOWNLOAD or INSTALL NOW, ✕ | yes | unchanged; the strip and the menu item as well |
+| Column | `[DOWNLOAD] ✕` or `[INSTALL NOW] ✕` in the slot (Q10): 101 of 101 | **yes. Column is not blocked** | as Grid. Found beside it: Offered 1 |
+| Row, alone or with any region beside it | **nothing.** The banner and every button in it have 0 rects in 101 of 101 themes, and no lead notice is drawn; the tray dot is the only sign | **no** | the strip; the menu item |
+| Fan, Ring (M5) | no slot (7.5) | no | as Row, no extra work |
+| Fallback mode | the same pages and the same rule as attached mode | as its primary's row | as above. The Manager and the region menu are the same window and menu in both modes; nothing here is mode-specific |
+
+A Row-only person's path after this: the dot, or ⋯ on the Row, `Update available — v1.95.0…`; the Manager opens at Settings with the strip at the top; DOWNLOAD; INSTALL NOW. Four clicks from the region, where the banner was two. That is the price of a window that is on top of everything, and an update is a once-a-release event.
+
+### Exact changes
+
+**`manager.html`.** Add the strip between the header and the body, and the status line as the first child of the footer. Nothing else moves.
+
+```html
+    <div id="mgr-update" class="hidden" role="status">
+      <span id="mgr-update-text"></span>
+      <button id="btn-mgr-update" type="button"></button>
+    </div>
+    <div id="mgr-body"> ... </div>
+    <div id="mgr-footer" class="overlay-footer hidden">
+      <span id="update-status" class="mgr-status" role="status"></span>
+      <button id="btn-check-update" title="Check for a newer version">CHECK FOR UPDATES</button>
+      <button id="btn-close-settings" title="Close">CLOSE</button>
+    </div>
+```
+
+**`manager.css`.** Add at the end (the text below is the text measured).
+
+```css
+/* F5: the update strip (under the header, both views) and the check status (Settings footer). */
+#mgr-update {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px;
+  flex-shrink: 0; min-height: 38px; padding: 6px 20px;
+  background: var(--update-bg);
+  border-bottom: 1px solid var(--accent-text);
+  position: relative; z-index: 2;
+}
+#mgr-update-text {
+  flex: 1 1 200px; min-width: 0;
+  font-size: 12px; letter-spacing: 1px; line-height: 15px;
+  color: var(--text); overflow-wrap: anywhere;
+}
+#btn-mgr-update {
+  flex: none; margin-left: auto;
+  min-height: 24px; padding: 3px 12px;
+  border-color: var(--accent-text); color: var(--text);
+}
+#btn-mgr-update:hover { color: var(--text); }
+.mgr-status {
+  flex: 1 1 100%; min-width: 0;
+  font-size: 12px; letter-spacing: 1px; line-height: 15px; color: var(--text);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; overflow-wrap: anywhere;
+}
+.mgr-status:empty { display: none; }
+```
+
+**`manager.js` and the main process: what each state shows.** The strip draws from the updater's `offer` (none, available, downloading, ready). The status line draws from the check events this Manager window has seen. Both are independent of `showView`: the strip shows on REGIONS and on SETTINGS.
+
+| The updater | `offer` | Strip | Status line | CHECK FOR UPDATES | Region menu item |
+|---|---|---|---|---|---|
+| never checked | none | hidden | empty | enabled | none |
+| `update-checking` | unchanged | unchanged | `CHECKING FOR UPDATES...` | disabled | unchanged |
+| `update-available` (v) | available | `UPDATE AVAILABLE — v{v}` + `DOWNLOAD` | cleared | enabled | `Update available — v{v}…` |
+| DOWNLOAD clicked, then `download-progress` (n) | downloading | `DOWNLOADING... {n}%` + `DOWNLOADING...` | cleared | disabled | `Update downloading…` |
+| `update-downloaded` | ready | `UPDATE READY — WILL INSTALL AND RESTART` + `INSTALL NOW` | cleared | disabled | `Update ready to install…` |
+| INSTALL NOW | the app closes and installs, as the banner's does | | | | |
+| `update-not-available` | none | hidden | `SYSTEM IS UP TO DATE` | enabled | none |
+| `update-error`, from a check | unchanged | unchanged | `UPDATE ERROR: {message}` | enabled | unchanged |
+| `update-error`, from the download | available | `DOWNLOAD` again | `UPDATE ERROR: {message}` | enabled | `Update available — v{v}…` |
+
+- **The strip's button while downloading** is `aria-disabled="true"` with the `.mgr-disabled` look (the Manager's own pattern: it stays focusable, the click is ignored), so focus is not lost when DOWNLOAD becomes `DOWNLOADING...`. CHECK FOR UPDATES is disabled the same way in the three states above.
+- **n is drawn in steps of 5** (`0%`, `5%`, ... `100%`): the strip is `role="status"`, and a screen reader should not be read every integer.
+- **The status line has no timer.** It stays until the next check starts or the Manager closes (a reopened Manager has none: a three-week-old `SYSTEM IS UP TO DATE` would be false). Its full text is also its `title`; a long error clamps at two lines and the tooltip keeps the rest.
+- **The words are the banner's.** Same state, same string; the Manager has the width to show all of them.
+- **Closing the Manager never cancels a download.** Nothing in the Manager owns it.
+- **The region menu.** `popupRegionMenu` builds from the `offer` at the moment it opens. The item is the first of the last group, above `Settings…`, in every region's menu (a Grid's included: after its banner ✕ it is the way back). Clicking opens the Manager at Settings. A native menu item needs no tooltip (9.2).
+
+**For Ender (not visible, but the strip is only as true as these).**
+1. `updater.js` keeps the `offer` and pushes every change to the Manager (a new channel in `manager-preload.js`'s `ON_CHANNELS`) as well as to the primary page as today; the Manager asks once when it opens (a new invoke). A check that is running when the Manager opens is part of the answer, so the status line shows `CHECKING FOR UPDATES...`.
+2. `manager-preload.js` allows `download-update`, `install-update` and `check-update` (it has the last already).
+3. **Idempotent in main.** `download-update` does nothing unless the offer is `available`; `install-update` nothing unless it is `ready`; `check-update` nothing while checking or downloading. The Manager disables the button, but the tray and a banner can still ask.
+4. A progress event also marks the banner's DOWNLOAD as `DOWNLOADING...` and disabled (`banner-layers.js` `updateProgress` calls `markAction('download', ...)`), so a download started in the Manager is not offered a second time in a Grid or Column. Nothing else in `app.js`, `region.js` or the CSS of a region changes.
+5. The tray dot's rules are untouched (`updater.js` as today), and so are D4's: the banner ✕ calls `dismiss-update` and nothing else.
+6. The `update-event` test hook drives the same record, so Futaba can run a Row-only case with no feed.
+
+### Per-ruling notes (where a ruling needs its evidence)
+
+**F5.1. Why the Manager, and why a strip on both tabs.** Considered: a row beside VERSION in Settings only. At the 440 x 420 minimum the Settings body already scrolls in 101 of 101 themes (20 to 43 DIP) and VERSION sits near the end of it, so an offer there would be below the fold; on the REGIONS tab, where the tray's `Regions…` opens, it would not exist. A strip is a Fluent InfoBar: under the page title, always in view, not scrolled with the content. 38 px at 560 and 440 (42.7 when READY's text takes two lines at 440), the banner slot's height. Its look: `--text` on `--update-bg`, not `--update-color`, which fails 4.5:1 in 48 of 101 themes (C5). Its edge is `--accent-text`, because `--update-bg` and `--update-border` are too faint to read as a band in 44 of 101 themes (the band under 1.05:1 and its edge under 1.5:1), and a strip that is not seen is no better than the banner that was not drawn. The button is the Manager's own button with an `--accent-text` border and `--text` label, 24 high (B5), no ✕: the strip is a state, not a message.
+
+**F5.2. Why main holds it.** Read in the code: the offer exists only in `qlBanner`, in the primary region's page. A Row primary keeps it and draws nothing; a page that is rebuilt (an Explorer restart) or a primary that is deleted takes it along while the tray dot stays on. Pushes alone would also lose an offer found while the Manager was closed.
+
+**F5.4. The ⋯ item.** The tray dot is the only desktop-wide sign, and a tray icon can sit in the overflow, where its dot cannot be seen. A Row-only person who is looking at the Row has ⋯ and nothing else to ask. At the top of the menu the item would move Edit shortcuts, which people use far more; above `Settings…` it sits next to where it leads.
+
+**F5.5. The banner stays where it is.** Moving it to "the first region that has a slot" was considered and rejected: the banner would jump when a region is created, deleted or switched, `store-save-error` and the Manager's theme already follow the primary, and the strip makes it unnecessary. Also rejected: a lead-cell notice in a Row for 8 s (gone before anyone looks at the desktop, and no route), a dot on the Row's ⋯ (a new element in 101 themes, with a contrast risk, for a cue the menu item gives), and a ✕ on the strip (one more control and one more state; add it if the strip ever annoys).
+
+### For Sergei: the tray (F5.7)
+
+Today the tray's `Check for Updates` is a dead end for a Row primary: it answers nowhere you can see, not even "up to date". It is little better for a Grid primary whose desktop is covered by windows, which is the usual state of a desktop-layer region. Fixing that touches an existing tray item, so it is not mine to decide.
+
+| Option | What changes | Cost |
+|---|---|---|
+| **A. Nothing** (what this addendum builds) | The tray stays as it is. A Row-only person finds the offer from ⋯ or from the tray's `Settings…` | `Check for Updates` stays a dead end for a Row primary |
+| **B. The same item, answered** (recommended) | No item is added. (1) `Check for Updates` opens the Manager at Settings and runs the check there; the strip and the status line are the answer. (2) While an offer waits, its label is the offer: `Update available — v1.95.0…`, `Update downloading…`, `Update ready to install…`; it opens the Manager at Settings and starts no check. The tooltip stays `QuickLauncher — Update available` | `tray.js`: a label rebuilt from the offer (`refreshTrayMenu` exists) and two click handlers. A Grid person who clicks it now gets the Manager as well as the banner |
+| C. A Windows toast when an offer is found | A new global notification surface | Ambient interruption for something the dot already says. Not recommended |
+
+**Recommendation: B.** A is a complete fix of the route; B makes the tray menu tell the truth about a dot that is on. If he says no, A ships as built.
+
+### Contrast, measured
+
+The gate's maths over 101 themes at 560 x 560 (the worst of 101).
+
+| Pair | Used for | Floor | Worst of 101 |
+|---|---|---|---|
+| `--text` on the strip (`--update-bg` over `--bg`) | strip text, button label | 4.5 | `mordor` 5.61 |
+| `--text` on `--btn-hover-bg` over the strip | the hovered button | 4.5 | `mordor` 5.20 |
+| `--text` on the footer (`--panel-bg`) | the status line | 4.5 | `silent-hill` 5.45 |
+| `--accent-text` on the strip | the button's border and the strip's edge | 3 (non-text; the label names the control) | `warhammer-tyranids` 2.85; three under 3: `resident-evil` 2.91, `warhammer-tyranids` 2.85, `wow-horde` 2.93 |
+| rejected: `--accent-c` border | the same | 3 | `twin-peaks` 1.89; 16 under 3 |
+| rejected: `--update-color` text | the banner's look | 4.5 | 48 under 4.5, 24 under 3 (C5) |
+
+### Nothing covers anything (rects, 2424 states; the bands are the same in all 101 themes, widths follow each theme's font as stated)
+
+- **Bands, top to bottom, never overlapping:** header y 0 to 40; strip y 40 to 78 (touching, 0 gap); body from the strip's bottom; footer at the window's bottom.
+- **560 x 560, Settings, an offer** (`cyberpunk`): text x 20 to 446.3, y 51.2 to 66.2; DOWNLOAD x 458.3 to 540, y 46.7 to 70.7 (81.7 x 24); header ✕ x 519 to 548, tabs x 148.6 to 303: no pair meets. Footer y 515.3 to 560; CHECK x 338.3 to 477.4, CLOSE x 485.4 to 540, y 526 to 546.
+- **440 x 420, READY** (`cyberpunk`): strip y 40 to 82.7; text x 20 to 305.1, y 46 to 76 (two lines); INSTALL NOW x 317.1 to 420, y 49 to 73. The text wraps in its own box; the button never drops a line.
+- **Button widths:** DOWNLOAD 81.7 to 99.4, DOWNLOADING... 124 to 135, INSTALL NOW 102.9 to 112.7; all 24 high.
+- **Footer:** 44.6 to 46.7 high with no status; 65.6 to 67.7 with one line; 80.6 to 82.7 with two. The status takes its own row above the buttons at both widths, so the buttons never wrap or move (a status beside the buttons pushed CLOSE under CHECK at 440: the first run). Status x 20 to 540 (560) or 20 to 420 (440), the long error y 350 to 380 over buttons at y 386 to 406: a 6 DIP gap.
+- **Body room at 440 x 420:** 333 to 335 DIP with no strip, 291 to 297 with one, about 20 DIP less again with a status line. Settings scrolls there in 101 of 101 themes, as it did (20 to 43 DIP without a strip, 58 to 85 with an offer); at 560 x 560 it scrolls in none, in every state.
+- **Totals:** 0 intersections among the tabs, ✕, strip text, strip button, status and footer buttons; 0 elements outside the window; 0 band overlaps; 0 failed hit-tests (the centre of each control returns the control); 0 clipped strip texts.
+- **Overlays.** The theme list, the icon popover, the app picker and the cheat-sheet open above the strip by design (z-index 500 and 300): the rule's own exception, a dropdown or a modal.
+- **The detector fails when it should.** The same script on a deliberately broken strip (`flex-wrap: nowrap`, a text that cannot shrink, the button absolutely placed) reports the READY text meeting INSTALL NOW in `lcars` at 440 x 420, in 2 states; on the CSS above it reports 0.
+- **The region pages change in nothing**, so nothing there can newly overlap. Row: the offer has 0 rects, as before.
+
+### Tooltips (every new control, in the same commit as the control)
+
+| Control | Tooltip (also `aria-label`) |
+|---|---|
+| Strip, DOWNLOAD | `Download the update. QuickLauncher keeps running.` |
+| Strip, DOWNLOADING... | `The update is downloading.` |
+| Strip, INSTALL NOW | `Close QuickLauncher, install the update, and start it again.` |
+| CHECK FOR UPDATES, while checking | `Checking for updates.` |
+| CHECK FOR UPDATES, while downloading | `The update is downloading.` |
+| CHECK FOR UPDATES, while ready | `The update is ready to install.` |
+| CHECK FOR UPDATES, otherwise | `Check for a newer version` (as is) |
+| The status line | its own text (`title`) |
+
+The strip's text is not a control and has none. The region menu's item is a label (9.2). 9.1 gains the strip's three rows; CHECK FOR UPDATES keeps its tooltip and gains the three disabled ones. 7.5's second bullet now reads: *Update banner: primary region only, if its layout has a notice slot (Grid, Column). The offer is always in the Manager (the strip, under its header), and while one waits it is in every region's menu. A Row, Fan or Ring primary draws no banner.* 8.2 gains: *The strip shows in both views; the Settings footer carries the status line above CHECK FOR UPDATES.* 9.2 gains the item above `Settings…`.
+
+### Futaba measures (each seen to fail on a deliberate break first)
+
+1. **Row only.** One Row region; inject `update-available` v1.95.0 with the update hook: no banner or lead-notice rect in the Row page (as built, and unchanged). Open the Manager at Settings (hidden test window): `#mgr-update` is shown, text `UPDATE AVAILABLE — v1.95.0`, `#btn-mgr-update` reads `DOWNLOAD`. Click it: `download-update` is called once. Progress 45: `DOWNLOADING... 45%`, the button is `aria-disabled` and a second click calls nothing. `update-downloaded`: `INSTALL NOW`; click: `install-update` once. Break: keep the routing to the primary page only and the strip stays hidden.
+2. **Closed mid-download.** Close the Manager at 45, push 70, reopen: `DOWNLOADING... 70%`. Break: hold the state in the Manager page and it opens empty.
+3. **Row primary with a Grid beside it.** Neither draws the offer; the strip shows; both regions' menus (the menu log) hold `Update available — v1.95.0…` directly above `Settings…`; clicking it opens the Manager at Settings. Delete the Row: the Grid becomes primary and the strip is unchanged.
+4. **Column primary.** The slot shows `[DOWNLOAD] ✕` and the strip shows too. Click DOWNLOAD in the slot: the strip reads `DOWNLOADING...`, and the slot's button becomes `DOWNLOADING...` and disabled. Two `download-update` calls in a row reach `electron-updater` once.
+5. **The banner's ✕.** The strip stays and the menu item stays; `dismiss-update` was counted once; the tray dot is off.
+6. **The status line.** `update-checking`: the line reads `CHECKING FOR UPDATES...` and CHECK FOR UPDATES is `aria-disabled` with `Checking for updates.`; `update-not-available`: `SYSTEM IS UP TO DATE` and the button is enabled; a 164-character error: two lines, the line's `title` equals the full text; after 10 s the line is still there; close and reopen the Manager: it is gone.
+7. **Errors.** An error from a check with no offer: no strip. An error from the download: the strip is back to `DOWNLOAD`. `update-not-available` while an offer waits: strip hidden and the menu item gone.
+8. **Fallback.** Start with `--ql-no-desktop-layer`; repeat 1.
+9. **Nothing to show.** Never checked: no strip, no menu item, an empty status line, CHECK FOR UPDATES enabled (so no check passes for the wrong reason).
+10. **Tooltips.** Each new control's `title` equals its `aria-label` and the table above, in each state.
+11. **Layout.** Run the rect, hit-test and contrast measures above on the real Manager (the scratch script is `judy-f5\mgr\`; Ender may copy it): 560 x 560 and 440 x 420, 101 themes, every state of 1 to 7. No intersections, nothing outside, hit-tests true, button 24 high, contrast at or above the table's floors. Break: give `.mgr-status` `flex: 1 1 200px` (the first run) and CLOSE drops under CHECK at 440.
+
+### Found in the pass, not F5 (offered, not applied)
+
+1. **A Column draws a lone ✕ for a message with no button.** Measured as built: `CHECKING FOR UPDATES...`, `SYSTEM IS UP TO DATE` and `UPDATE ERROR: ...` have no text drawn and leave a ✕ alone in the slot, in 101 of 101 themes. Q10 hid the update layer's message on the ground that its button says it; three of the six messages have no button. The person asked for a check and sees an empty box. A rule that hides the message only when a button carries it, and otherwise draws it as the notice is drawn (two lines, the ✕ at the right): the three messages are drawn in 101 of 101 themes (text x 12 to 138, ✕ x 144 to 168, y 695.3 to 719.3), 0 cut for the short error, DOWNLOAD, DOWNLOADING... and INSTALL NOW unchanged, 0 intersections. The slot's `title` keeps the full text. Offered because it changes a shipped Column.
+
+   ```css
+   body.region.layout-column #update-banner:not(.notice):not(:has(#update-actions .update-btn:not(.update-dismiss))) { justify-content: space-between; }
+   body.region.layout-column #update-banner:not(.notice):not(:has(#update-actions .update-btn:not(.update-dismiss))) #update-text {
+     position: static; width: auto; height: auto; clip: auto; overflow: hidden;
+     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+     white-space: normal; text-overflow: clip; overflow-wrap: anywhere; line-height: 12px;
+   }
+   ```
+2. **A rebuilt or new primary page loses the offer** (an Explorer restart; the primary deleted and the next region promoted). With the state in main (F5.2) the fix is one line: when a primary page whose layout has a slot announces itself, send it the current offer, unless its banner ✕ dismissed it. Not needed for the route; offered.
+3. **The Manager's existing buttons hover to `#fff`**, the M4 Q17 defect: OPEN FOLDER, MOVE ALL BACK…, CHECK FOR UPDATES and CLOSE fail 4.5:1 on `mirrors-edge` (1.67), `portal` (1.78) and `silent-hill` (2.48). `body.manager button:hover { color: var(--text); }` takes the worst to 4.88 across 101. The strip's button has the rule already.
