@@ -335,3 +335,15 @@ body.region.layout-row #app-grid .empty-cell .hint-sub .nowrap { display: block;
 body.region #header-controls button:hover,
 body.region #filter-chip-clear:hover,
 .edit-cluster button:hover { color: var(--text); }
+
+/* Grid art, as Q18: the field clips decoration; only tiles own scrolling. */
+body.region.layout-grid #grid-container { overflow: hidden; padding: 0; scrollbar-gutter: auto; }
+body.region.layout-grid #app-grid {
+  height: 100%; box-sizing: border-box; padding: var(--grid-pad);
+  align-content: start;
+  grid-auto-rows: max-content;
+  overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable;
+}
+body.region.layout-grid #app-grid::-webkit-scrollbar { width: 4px; }
+body.region.layout-grid #app-grid::-webkit-scrollbar-track { background: transparent; }
+body.region.layout-grid #app-grid::-webkit-scrollbar-thumb { background: var(--accent-text); border-radius: 2px; }
