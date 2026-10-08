@@ -29,6 +29,10 @@ body.manager #header::after { display: none; }
   flex-shrink: 0; flex-wrap: wrap; row-gap: 6px;
 }
 
+/* Existing footer actions own their 24px minimum target, including hit edges. */
+body.manager #mgr-footer #btn-check-update,
+body.manager #mgr-footer #btn-close-settings { min-width: 24px; min-height: 24px; }
+
 .mgr-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .mgr-title { margin-bottom: 0; flex: 1; min-width: 0; }
 body.manager #view-settings .mgr-title { margin-bottom: 16px; }
