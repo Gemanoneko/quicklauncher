@@ -25,6 +25,10 @@
       </div>
     </div>
 
+    <div id="mgr-update" class="hidden" role="status">
+      <span id="mgr-update-text"></span>
+      <button id="btn-mgr-update" type="button"></button>
+    </div>
     <div id="mgr-body">
       <!-- REGIONS view (spec 8.1) -->
       <section id="view-regions" role="tabpanel" aria-labelledby="tab-regions">
@@ -119,6 +123,7 @@
     </div>
 
     <div id="mgr-footer" class="overlay-footer hidden">
+      <span id="update-status" class="mgr-status" role="status"></span>
       <button id="btn-check-update" title="Check for a newer version">CHECK FOR UPDATES</button>
       <button id="btn-close-settings" title="Close">CLOSE</button>
     </div>

@@ -465,7 +465,43 @@
     savePatch({ reducedMotion: e.target.checked });
     applyTheme(state ? state.theme : 'cyberpunk');
   });
-  $('btn-check-update').addEventListener('click', () => api.invoke('check-update'));
+  let updateState = { offer: 'none', checking: false, percent: 0 };
+  let updateRevision = 0;
+  function disabled(button, off, title) {
+    button.setAttribute('aria-disabled', String(off));
+    button.classList.toggle('mgr-disabled', off);
+    button.title = title;
+    button.setAttribute('aria-label', title);
+  }
+  function drawUpdate(s, channel, arg) {
+    updateState = s;
+    const offered = s.offer !== 'none';
+    $('mgr-update').classList.toggle('hidden', !offered);
+    const button = $('btn-mgr-update');
+    let text = '', label = '', title = '';
+    if (s.offer === 'available') { text = `UPDATE AVAILABLE — v${s.version}`; label = 'DOWNLOAD'; title = 'Download the update. QuickLauncher keeps running.'; }
+    if (s.offer === 'downloading') { text = `DOWNLOADING... ${Math.floor(s.percent / 5) * 5}%`; label = 'DOWNLOADING...'; title = 'The update is downloading.'; }
+    if (s.offer === 'ready') { text = 'UPDATE READY — WILL INSTALL AND RESTART'; label = 'INSTALL NOW'; title = 'Close QuickLauncher, install the update, and start it again.'; }
+    $('mgr-update-text').textContent = text;
+    button.textContent = label;
+    disabled(button, s.offer === 'downloading', title);
+    const checkOff = s.checking || s.offer === 'downloading' || s.offer === 'ready';
+    disabled($('btn-check-update'), checkOff, s.checking ? 'Checking for updates.' : s.offer === 'downloading' ? 'The update is downloading.' : s.offer === 'ready' ? 'The update is ready to install.' : 'Check for a newer version');
+    const status = $('update-status');
+    if (s.checking) status.textContent = 'CHECKING FOR UPDATES...';
+    else if (channel === 'update-not-available') status.textContent = 'SYSTEM IS UP TO DATE';
+    else if (channel === 'update-error') status.textContent = `UPDATE ERROR: ${arg}`;
+    else if (channel) status.textContent = '';
+    status.title = status.textContent;
+  }
+  api.on('manager:update-state', (msg) => { updateRevision++; drawUpdate(msg.state, msg.channel, msg.arg); });
+  $('btn-check-update').addEventListener('click', () => {
+    if ($('btn-check-update').getAttribute('aria-disabled') !== 'true') api.invoke('check-update');
+  });
+  $('btn-mgr-update').addEventListener('click', () => {
+    if (updateState.offer === 'available') api.invoke('download-update');
+    else if (updateState.offer === 'ready') api.invoke('install-update');
+  });
   $('btn-close-settings').addEventListener('click', () => api.invoke('manager:close'));
   $('btn-mgr-close').addEventListener('click', () => api.invoke('manager:close'));
 
@@ -700,6 +736,9 @@
     $('app-version').textContent = `v${api.version}`;
     showView('regions');
     await refresh();
+    const revision = updateRevision;
+    const initialUpdate = await api.invoke('get-update-state');
+    if (revision === updateRevision && initialUpdate) drawUpdate(initialUpdate);
     updatePause();
     // Listening: the main process delivers the view this window was opened for.
     api.invoke('renderer-ready').catch(() => {});

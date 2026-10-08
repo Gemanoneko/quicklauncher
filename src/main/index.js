@@ -142,7 +142,8 @@ app.whenReady().then(() => {
   // The tray's New region item is disabled at the cap: rebuild it when the count changes.
   ctl.on('regions-changed', () => refreshTrayMenu());
   setupIPC(ctl, store, app, mgr, { testHooks: TEST_HOOKS, quit: quitApp });
-  setupUpdater(() => ctl.primaryWebContents());
+  setupUpdater(() => ctl.primaryWebContents(), () => mgr.window && !mgr.window.isDestroyed() ? mgr.window.webContents : null);
+  ctl.getUpdateState = require('./updater').getUpdateState;
 
   // ── Global show/hide hotkey ────────────────────────────────────────────
   // Sergei's default Ctrl+Space, rebindable. It hides every region if they

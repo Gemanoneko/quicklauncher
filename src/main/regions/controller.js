@@ -1434,6 +1434,11 @@ class RegionController extends EventEmitter {
       { label: 'Move all shortcuts back to desktop…', enabled: this._movedItems(id, { withFile: true }).length > 0, click: () => { this.moveAllBack(id).catch(() => {}); } },
       { label: 'Delete region…', enabled: many, click: () => { this.deleteRegion(id).catch(() => {}); } },
       { type: 'separator' },
+      ...(() => {
+        const u = this.getUpdateState ? this.getUpdateState() : { offer: 'none' };
+        const label = u.offer === 'available' ? `Update available — v${u.version}…` : u.offer === 'downloading' ? 'Update downloading…' : u.offer === 'ready' ? 'Update ready to install…' : null;
+        return label ? [{ label, click: () => this.manager && this.manager.open('settings') }] : [];
+      })(),
       { label: 'Settings…', click: () => this.manager && this.manager.open('settings') },
       { label: 'Hide all regions', click: () => this.hideAll() },
     ];

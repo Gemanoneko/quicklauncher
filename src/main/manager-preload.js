@@ -15,6 +15,9 @@ const INVOKE_CHANNELS = new Set([
   'apply-global-hotkey',
   'get-global-hotkey-status',
   'check-update',
+  'get-update-state',
+  'download-update',
+  'install-update',
   'get-installed-apps',
   'manager:state',
   'manager:create-region',
@@ -36,6 +39,7 @@ const INVOKE_CHANNELS = new Set([
 
 const ON_CHANNELS = new Set([
   'manager:changed',
+  'manager:update-state',
   'manager:created',
   'manager:show-view',
   'settings-changed-externally',

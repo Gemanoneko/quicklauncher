@@ -60,6 +60,7 @@
     function updateProgress(pct) {
       if (!update) return;
       update.text = `DOWNLOADING... ${pct}%`;
+      markAction('download', { label: 'DOWNLOADING...', disabled: true });
       if (!notice) render();
     }
 

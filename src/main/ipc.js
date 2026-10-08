@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
 const { randomUUID } = require('crypto');
-const { checkForUpdates, dismissals: updateDismissals } = require('./updater');
+const { checkForUpdates, dismissals: updateDismissals, publish: publishUpdate } = require('./updater');
 const { refreshTrayMenu } = require('./tray');
 const { trimIcon } = require('./icon-trim');
 const { encodeIcons } = require('./icon-worker');
@@ -787,7 +787,7 @@ $apps | ConvertTo-Json -Depth 2
       case 'update-event': {
         const ch = String(a.channel || '');
         if (!UPDATE_TEST_CHANNELS.has(ch)) return { ok: false, error: 'not an update channel' };
-        if ('arg' in a) ctl.sendToPrimary(ch, a.arg); else ctl.sendToPrimary(ch);
+        publishUpdate(ch, a.arg);
         return { ok: true };
       }
       case 'update-dismissals': return { ok: true, count: updateDismissals() };

@@ -16,6 +16,23 @@ function setTrayUpdateAvailable(flag) {
 // Returns the webContents that shows update banners: the primary region's
 // page, which changes when the primary region is deleted or rebuilt.
 let _target = () => null;
+let _manager = () => null;
+let state = { offer: 'none', version: '', percent: 0, checking: false };
+function getUpdateState() { return { ...state }; }
+function publish(channel, arg) {
+  const downloading = state.offer === 'downloading';
+  switch (channel) {
+    case 'update-checking': state.checking = true; break;
+    case 'update-available': state = { offer: 'available', version: String(arg && arg.version || ''), percent: 0, checking: false }; break;
+    case 'update-progress': state.offer = 'downloading'; state.percent = Math.max(0, Math.min(100, Number(arg) || 0)); state.checking = false; break;
+    case 'update-ready': state.offer = 'ready'; state.checking = false; break;
+    case 'update-not-available': state = { offer: 'none', version: '', percent: 0, checking: false }; break;
+    case 'update-error': if (downloading) state.offer = 'available'; state.checking = false; break;
+  }
+  send(channel, arg);
+  const wc = _manager();
+  if (wc && !wc.isDestroyed()) wc.send('manager:update-state', { state: getUpdateState(), channel, arg });
+}
 // How many times the tray dot was cleared from a banner ✕ (read by the self-test through
 // --ql-test-hooks: a notice ending must never count here; fix-pass addendum C5).
 let dismissals = 0;
@@ -26,18 +43,20 @@ function send(channel, ...args) {
   if (wc && !wc.isDestroyed()) wc.send(channel, ...args);
 }
 
-function setupUpdater(getTarget) {
+function setupUpdater(getTarget, getManager) {
+  _manager = typeof getManager === 'function' ? getManager : () => null;
+  ipcMain.handle('get-update-state', () => getUpdateState());
   _target = typeof getTarget === 'function' ? getTarget : () => null;
 
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
 
   autoUpdater.on('checking-for-update', () => {
-    send('update-checking');
+    publish('update-checking');
   });
 
   autoUpdater.on('update-available', (info) => {
-    send('update-available', { version: info.version });
+    publish('update-available', { version: info.version });
     // UX Review §7: surface update state via the tray icon. Indicator
     // stays on until the user dismisses the banner, the update is
     // installed, or a subsequent check reports up-to-date / errored.
@@ -45,31 +64,33 @@ function setupUpdater(getTarget) {
   });
 
   autoUpdater.on('update-not-available', () => {
-    send('update-not-available');
+    publish('update-not-available');
     setTrayUpdateAvailable(false);
   });
 
   autoUpdater.on('download-progress', (progress) => {
-    send('update-progress', Math.floor(progress.percent));
+    publish('update-progress', Math.floor(progress.percent));
   });
 
   autoUpdater.on('update-downloaded', () => {
-    send('update-ready');
+    publish('update-ready');
     // Keep the tray indicator on through "ready" — the user still
     // needs to act (INSTALL NOW). Cleared when they trigger install
     // (handler below) or dismiss the banner (ipc 'dismiss-update').
   });
 
   autoUpdater.on('error', (err) => {
-    send('update-error', err.message);
+    publish('update-error', err.message);
     setTrayUpdateAvailable(false);
   });
 
   ipcMain.handle('download-update', async () => {
+    if (state.offer !== 'available') return;
+    publish('update-progress', 0);
     try {
       await autoUpdater.downloadUpdate();
     } catch (err) {
-      send('update-error', err.message);
+      publish('update-error', err.message);
     }
   });
 
@@ -84,6 +105,8 @@ function setupUpdater(getTarget) {
 
   // Silent install: no installer UI shown, app restarts automatically
   ipcMain.handle('install-update', () => {
+    if (state.offer !== 'ready') return;
+    state.offer = 'none';
     setTrayUpdateAvailable(false);
     autoUpdater.quitAndInstall(true, true);
   });
@@ -96,14 +119,16 @@ function setupUpdater(getTarget) {
 }
 
 function checkForUpdates() {
+  if (state.checking || state.offer === 'downloading') return;
+  publish('update-checking');
   if (!app.isPackaged) {
     // In dev mode just send "up to date"
-    send('update-not-available');
+    publish('update-not-available');
     return;
   }
   autoUpdater.checkForUpdates().catch((err) => {
-    send('update-error', err.message);
+    publish('update-error', err.message);
   });
 }
 
-module.exports = { setupUpdater, checkForUpdates, dismissals: () => dismissals };
+module.exports = { setupUpdater, checkForUpdates, dismissals: () => dismissals, getUpdateState, publish };
