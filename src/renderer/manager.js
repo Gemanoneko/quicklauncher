@@ -318,6 +318,12 @@
         }
         r.layout.dataset.layouts = state.layouts.join(',');
       }
+      for (const option of r.layout.options) {
+        const cap = region.layoutCaps && region.layoutCaps[option.value];
+        option.disabled = Number.isFinite(cap) && (cap < 1 || region.count > cap);
+        option.textContent = option.value.charAt(0).toUpperCase()+option.value.slice(1)+(Number.isFinite(cap) ? ` (max ${cap})` : '');
+        option.title = option.disabled ? `${region.count} shortcuts. ${option.value.charAt(0).toUpperCase()+option.value.slice(1)} holds ${cap}.` : '';
+      }
       r.layout.value = region.layout;
       r.theme.set(region.theme, {
         disabled: state.matchAll,

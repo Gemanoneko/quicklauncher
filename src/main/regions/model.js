@@ -11,7 +11,7 @@
 
 const LAYOUTS = ['grid', 'column', 'row', 'fan', 'ring'];
 // Layouts this build can draw (M4 adds Column and Row). Fan and Ring arrive in M5.
-const BUILT_LAYOUTS = new Set(['grid', 'column', 'row']);
+const BUILT_LAYOUTS = new Set(['grid', 'column', 'row', 'fan', 'ring']);
 
 const ICONS = [
   'apps', 'games', 'tools', 'web', 'media', 'music', 'photos', 'files',
@@ -186,6 +186,7 @@ function cleanRegion(raw, ctx, taken) {
   const gridSize = isPlainObject(raw.gridSize) && isFiniteNum(raw.gridSize.width) && isFiniteNum(raw.gridSize.height)
     ? { width: Math.round(raw.gridSize.width), height: Math.round(raw.gridSize.height) } : null;
   if (gridSize) out.gridSize = gridSize;
+  if (isPlainObject(raw.radialAnchor) && isFiniteNum(raw.radialAnchor.x) && isFiniteNum(raw.radialAnchor.y)) out.radialAnchor = { x: raw.radialAnchor.x, y: raw.radialAnchor.y };
   if (['up', 'down', 'left', 'right'].includes(raw.fanDirection)) out.fanDirection = raw.fanDirection;
   return out;
 }

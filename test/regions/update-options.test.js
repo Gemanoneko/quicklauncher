@@ -30,8 +30,8 @@ test('tray B labels every state and opens Manager Settings without download/inst
  const image={resize(){return this;},isEmpty:()=>false,toBitmap:()=>Buffer.alloc(1024,255),getSize:()=>({width:16,height:16})};
  class Tray{setToolTip(){}setImage(){}setContextMenu(m){menu=m;}on(){}}
  const module={exports:{}};
- vm.runInNewContext(fs.readFileSync(path.join(root,'src/main/tray.js'),'utf8'),{module,Buffer,console,__dirname:path.join(root,'src/main'),require:n=>n==='electron'?{Tray,Menu:{buildFromTemplate:m=>m},nativeImage:{createFromPath:()=>image,createFromBitmap:()=>image}}:n==='path'?path:n==='./updater'?{getUpdateState:()=>({...state}),checkForUpdates:()=>checks++}:n==='./regions/model'?{REGION_CAP:8}:null});
- module.exports.setupTray({ctl:{regions:()=>[{id:'r'}]},mgr:{open:v=>opened.push(v)},electronApp:{isPackaged:false},store:{get:()=>({})},quit(){}});
+ vm.runInNewContext(fs.readFileSync(path.join(root,'src/main/tray.js'),'utf8'),{module,Buffer,console,__dirname:path.join(root,'src/main'),require:n=>n==='electron'?{Tray,Menu:{buildFromTemplate:m=>m},nativeImage:{createFromPath:()=>image,createFromBitmap:()=>image}}:n==='path'?path:n==='./updater'?{getUpdateState:()=>({...state}),checkForUpdates:()=>checks++}:n==='./regions/model'?{REGION_CAP:8}:n==='../renderer/radial-layout'?require('../../src/renderer/radial-layout'):null});
+ module.exports.setupTray({ctl:{regions:()=>[{id:'r'}],workArea:()=>({width:1920,height:1040})},mgr:{open:v=>opened.push(v)},electronApp:{isPackaged:false},store:{get:()=>({})},quit(){}});
  const cases=[['none',false,'Check for Updates',1],['none',true,'Check for Updates',0],['available',true,'Update available — v1.95.0…',0],['downloading',false,'Update downloading…',0],['ready',false,'Update ready to install…',0]];
  for(const [offer,checking,label,added]of cases){state={offer,checking,version:'1.95.0'};module.exports.refreshTrayMenu();const item=menu.at(-3);assert.equal(item.label,label);const before=checks;item.click();assert.equal(checks-before,added);assert.equal(opened.at(-1),'settings');}
  assert.equal(opened.length,5);

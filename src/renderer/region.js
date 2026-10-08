@@ -15,10 +15,12 @@
   const body = document.body;
   // The layout this page draws (spec 2; M4 adds Column and Row). It rides in the
   // URL so the first frame is already right; region:state changes it on a switch.
-  const LAYOUTS = ['grid', 'column', 'row'];
+  const LAYOUTS = ['grid', 'column', 'row', 'fan', 'ring'];
+  const radial = () => window.QL_RADIAL.isRadial(layoutNow);
   const ROW_NOTICE_MS = 8000; // M4 rulings Q8: a notice replaces the Row's name for 8 s, as in Grid and Column (C5)
   let layoutNow = LAYOUTS.includes(params.get('layout')) ? params.get('layout') : 'grid';
   body.classList.add('region', `layout-${layoutNow}`);
+  body.classList.toggle('layout-radial', radial());
   // An Explorer restart rebuilt this window: no entrance fade (spec 1).
   if (params.get('rebuilt') === '1') body.classList.add('no-entrance');
 
@@ -30,10 +32,15 @@
   const elEditBar = $('edit-bar');
   const btnMenu = $('btn-region-menu');
   const btnRandom = $('btn-random-theme');
+  const elRefusal = document.createElement('span');
+  elRefusal.id = 'radial-refusal';
+  elRefusal.setAttribute('aria-hidden', 'true'); // full text is announced through the existing status route
+  elHeader.appendChild(elRefusal);
   const ICONS = window.QL_REGION_ICONS || {};
 
   let info = { name: '', icon: 'apps', active: false, matchAll: false, layout: layoutNow };
   let renaming = null;
+  let renameWasEditing = false;
 
   const isEditing = () => !elEditBar.classList.contains('hidden');
   const isTextTarget = (t) => !!t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
@@ -78,12 +85,14 @@
     btnRandom.title = rnd;
     btnRandom.setAttribute('aria-label', rnd);
     renderTitle();
+    refreshRadial();
   }
 
   new MutationObserver(() => {
     updateTitleAffordance();
     if (!isEditing()) cancelRename();
     reportExtras();
+    refreshRadial();
   }).observe(elEditBar, { attributes: true, attributeFilter: ['class'] });
 
   // ── M4: Column and Row (spec 2.3, 2.4, 2.8, 5.6, 7.4) ──────────────────────
@@ -97,10 +106,17 @@
     const l = LAYOUTS.includes(layout) ? layout : 'grid';
     if (l === layoutNow) return;
     cancelRename();
+    if (chipRename && chipRename._cancel) chipRename._cancel();
     cancelRegionDrag();
     body.classList.remove(`layout-${layoutNow}`);
     body.classList.add(`layout-${l}`);
     layoutNow = l;
+    body.classList.toggle('layout-radial', radial());
+    if (!radial()) {
+      for (const e of [elHeader, elEditBar, ...elGridBox.children]) e.removeAttribute('style');
+      clearTimeout(radialNoticeTimer); radialNoticeTimer = null; radialNoticeText = ''; queuedRadialNotice = '';
+      clearRadialRefusal();
+    }
     elGridBox.scrollTop = 0;
     elGridBox.scrollLeft = 0;
     renderGrid(); // the empty cell comes or goes
@@ -110,12 +126,20 @@
 
   // The edit bar and the notice slot make a Column 38 px taller each (spec 2.3):
   // the main process sizes the window, so it hears when either shows or hides.
-  let sentExtras = { edit: false, notice: false };
+  let sentExtras = { edit: false, notice: false, preview: false };
   function reportExtras() {
-    const x = { edit: isEditing(), notice: !elUpdate.classList.contains('hidden') };
-    if (x.edit === sentExtras.edit && x.notice === sentExtras.notice) return;
+    const x = { edit: isEditing(), notice: !elUpdate.classList.contains('hidden'), preview: radial() && (apps || []).length > 0 && !!elGridBox.querySelector('.drop-slot') && !body.classList.contains('tile-drop-rejected') };
+    if (x.edit === sentExtras.edit && x.notice === sentExtras.notice && x.preview === sentExtras.preview) return;
     sentExtras = x;
-    api.invoke('region:extras', x).catch(() => {});
+    const previewSlot = x.preview ? elGridBox.querySelector('.drop-slot') : null;
+    const previewDrag = x.preview && drop ? drop.dragId : null;
+    api.invoke('region:extras', x).then(r => {
+      // A later drag/state must never receive an old preview refusal.
+      if (!x.preview || !r || !r.previewRejected || !drop || drop.dragId !== previewDrag || drop.slot !== previewSlot || !previewSlot.isConnected) return;
+      setRejected(r.error || 'No room for this layout. Move the region first.');
+      removeSlot();
+      refreshRadial(); // reports preview:false; main restores its original box/shape
+    }).catch(() => {});
   }
 
   // Row has no notice slot: a notice (launch error, NOT A SHORTCUT, SAVE ERROR)
@@ -145,6 +169,7 @@
 
   // An empty Column or Row shows one dashed cell (spec 2.8); app.js calls this after each render.
   window.qlAfterRender = () => {
+    if (radial()) { refreshRadial(); return; }
     if (layoutNow === 'grid' || (apps || []).length || $('app-grid').querySelector('.empty-cell')) return;
     const cell = document.createElement('div');
     cell.className = 'empty-cell';
@@ -154,7 +179,8 @@
   };
   // app.js's first render can come before this script has run (its init awaits the
   // items while the page is still loading scripts): draw the cell now if it missed it.
-  window.qlAfterRender();
+  // Initial radial render waits until all M5 state is initialized below.
+  if (!radial()) window.qlAfterRender();
 
   // Row scrolls sideways with the wheel and Shift+wheel (spec 2.4).
   elGridBox.addEventListener('wheel', (e) => {
@@ -172,11 +198,14 @@
     renaming = null;
     body.classList.remove('region-renaming');
     input.replaceWith(elTitle);
+    if (radial() && !renameWasEditing && isEditing()) exitEditMode();
     renderTitle();
+    refreshRadial();
   }
 
   function startRegionRename() {
     if (renaming) return;
+    renameWasEditing = isEditing();
     if (!isEditing()) enterEditMode();
     const input = document.createElement('input');
     input.type = 'text';
@@ -187,7 +216,8 @@
     input.setAttribute('aria-label', 'Region name');
     elTitle.replaceWith(input);
     renaming = input;
-    body.classList.add('region-renaming'); // Row: the field takes EDIT and the cluster's place
+    body.classList.add('region-renaming');
+    refreshRadial(); // Row: the field takes EDIT and the cluster's place
     input.focus();
     input.select();
     let busy = false;
@@ -522,6 +552,12 @@
       .filter((t) => !t.el.classList.contains('filter-hidden'))
       .map((t) => ({ index: t.index, rect: rectOf(t.el) }));
     const slot = drop.slot && drop.slot.isConnected ? { index: drop.slotIndex, rect: drop.slot.getBoundingClientRect() } : null;
+    if (radial()) {
+      const g = radialGeometry(all.length + 1);
+      const origin = radialGeometry(all.length).pivot;
+      const nearest = g.chips.map((r, index) => ({ index, distance: Math.hypot(x - (r.x + r.width/2 + origin.x-g.pivot.x), y - (r.y + r.height/2 + origin.y-g.pivot.y)) })).sort((a,b) => a.distance-b.distance)[0];
+      return { index: nearest ? nearest.index : 0, all };
+    }
     return { index: T.insertionIndex(tiles, slot, { x, y }, all.length), all };
   }
 
@@ -575,6 +611,7 @@
       elGrid.insertBefore(drop.slot, all[index] || null);
     });
     drop.slotIndex = index;
+    refreshRadial();
   }
 
   // The slot goes through the same reflow when the pointer leaves, so the gap
@@ -584,8 +621,9 @@
     const s = drop.slot;
     drop.slot = null;
     drop.slotIndex = -1;
-    if (s.classList.contains('empty-cell')) { s.classList.remove('as-slot'); return; }
+    if (s.classList.contains('empty-cell')) { s.classList.remove('as-slot'); refreshRadial(); return; }
     if (animate && s.isConnected) reflow(() => s.remove()); else s.remove();
+    refreshRadial();
   }
 
   // After a drop the slot stays until this page's new items replace it
@@ -624,6 +662,7 @@
 
   function setRejected(text) {
     drop.rejected = text;
+    if (radial()) setRadialRefusal(text, true);
     body.classList.toggle('tile-drop-rejected', !!text);
     body.classList.toggle('tile-drop-valid', !text);
     // Grid shows the refusal in its banner (spec 2.1); colour is never the only cue.
@@ -644,6 +683,8 @@
     body.classList.remove('tile-drop-valid', 'tile-drop-rejected');
     if (!keepHintHidden) body.classList.remove('tile-drop-preview');
     drop = null;
+    if (radialRefusalLive) clearRadialRefusal();
+    refreshRadial();
   }
 
   function dropOver(m) {
@@ -657,6 +698,7 @@
     if (rej !== drop.rejected) setRejected(rej);
     if (rej) removeSlot(); else placeSlot(m.x, m.y);
     placeGhost(m.x, m.y);
+    refreshRadial();
   }
 
   function dropHere(m) {
@@ -676,7 +718,13 @@
 
   api.on('region:tile-drop-preview', (m) => {
     if (!m || typeof m !== 'object' || !Number.isFinite(m.dragId)) return;
-    if (m.phase === 'over' && Number.isFinite(m.x) && Number.isFinite(m.y)) dropOver(m);
+    if (m.phase === 'refused' && typeof m.text === 'string' && m.text) {
+      if (drop && drop.dragId !== m.dragId) return;
+      const alreadyAnnounced = radialRefusalLive && radialRefusal === m.text;
+      endDropPreview(); dropKeptSlot();
+      if (radial()) setRadialRefusal(m.text, false, !alreadyAnnounced); else showNotice(m.text);
+    }
+    else if (m.phase === 'over' && Number.isFinite(m.x) && Number.isFinite(m.y)) dropOver(m);
     else if (m.phase === 'leave') {
       if (drop && drop.dragId === m.dragId) endDropPreview({ animate: !m.instant });
       if (kept && kept.dragId === m.dragId) dropKeptSlot();
@@ -729,7 +777,13 @@
     clearTimeout(fileIdle);
     fileIdle = null;
     fileDepth = 0;
-    if (drop.rejected || !paths.length) { endDropPreview(); return Promise.resolve(null); }
+    if (drop.rejected || !paths.length) {
+      const refusal = paths.length && drop.rejected;
+      const alreadyAnnounced = radialRefusalLive && radialRefusal === refusal;
+      endDropPreview();
+      if (radial() && refusal) setRadialRefusal(refusal, false, !alreadyAnnounced);
+      return Promise.resolve(null);
+    }
     const index = slotIndexAt(x, y).index;
     const slot = drop.slot && drop.slot.isConnected ? drop.slot : null;
     drop.slot = null;
@@ -779,6 +833,7 @@
   const PIP_SVG = '<svg viewBox="0 0 12 12" width="12" height="12" focusable="false"><circle cx="6" cy="6" r="6"/><rect x="5" y="2.4" width="2" height="4.4" rx="1"/><rect x="5" y="7.6" width="2" height="2" rx="1"/></svg>';
   window.qlDecorateTile = (tile, item) => {
     if (!tile || !item) return;
+    if (radial()) tile.title = item.name;
     const badge = tile.querySelector('.btn-remove');
     const relabel = (b, text, tip, onClick) => {
       const n = b.cloneNode(false); // no listeners: app.js's one would only remove the tile
@@ -867,6 +922,7 @@
   function renameTile(id) {
     const item = (apps || []).find((a) => a.id === id);
     if (!item) return;
+    if (radial()) { window.qlRadialRename(item); return; }
     if (!isEditing()) enterEditMode(); // re-renders the grid
     const tile = tileOf(id);
     const label = tile && tile.querySelector('.tile-label');
@@ -897,11 +953,25 @@
     if (handleFocused && menuKey) { stop(e); keyMenuUntil = performance.now() + 800; openRegionMenuAtButton(); return; }
     // Column moves along Up and Down only, Row along Left and Right (spec 7.4); so does
     // Ctrl+Arrow (addendum A5, M4). The other two arrows do nothing there.
-    if (ARROWS[e.key] && !e.altKey && !e.metaKey && layoutNow !== 'grid') {
+    if (ARROWS[e.key] && !e.altKey && !e.metaKey && (layoutNow === 'column' || layoutNow === 'row')) {
       const vertical = e.key === 'ArrowUp' || e.key === 'ArrowDown';
       if ((layoutNow === 'column') !== vertical) { stop(e); return; }
     }
     const tile = focus && focus.closest ? focus.closest('.app-tile:not(.drop-slot)') : null;
+    if (radial() && _filterText && e.key === 'Enter') {
+      stop(e); const first = visibleTiles()[0];
+      if (first) { if (isEditing()) renameTile(first.dataset.id); else first.click(); }
+      return;
+    }
+    if (radial() && ARROWS[e.key] && !e.altKey && !e.metaKey && !(e.ctrlKey && tile && isEditing())) {
+      stop(e);
+      const tiles = visibleTiles(), current = tiles.indexOf(tile);
+      const delta = e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1;
+      let next = current < 0 ? 0 : current + delta;
+      if (layoutNow === 'ring' && tiles.length) next = (next + tiles.length) % tiles.length;
+      if (tiles[next]) tiles[next].focus();
+      return;
+    }
     // Menu key or Shift+F10 on a tile in view mode: as a right-click on a tile,
     // the region enters edit mode; focus stays on that tile, so the next press
     // opens its menu (addendum A4).
@@ -920,7 +990,7 @@
       if (e.ctrlKey && !e.altKey && !e.metaKey && ARROWS[e.key]) {
         stop(e);
         const row = e.key === 'ArrowUp' || e.key === 'ArrowDown';
-        const step = row ? computeColumnCount(visibleTiles()) : 1;
+        const step = row && !radial() ? computeColumnCount(visibleTiles()) : 1;
         moveTileBy(tile.dataset.id, (e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1) * step);
         return;
       }
@@ -933,11 +1003,136 @@
     }
   }, true);
 
+  // M5: shared geometry and one mutually exclusive hub centre.
+  let radialHover = '', radialNoticeText = '', queuedRadialNotice = '', radialNoticeTimer = null;
+  let chipRename = null;
+  let radialRefusal = '', radialRefusalLive = false, radialRefusalTimer = null;
+  const isRefusal = text => /^(FULL \(\d+ max\)|NOT A SHORTCUT|No room(?: for this layout)?\.)/i.test(String(text || ''));
+  function clearRadialRefusal() {
+    clearTimeout(radialRefusalTimer); radialRefusalTimer = null;
+    radialRefusal = ''; radialRefusalLive = false;
+    body.classList.remove('radial-refusal-heading');
+    elRefusal.textContent = ''; elHeader.title = 'Drag to move';
+  }
+  function setRadialRefusal(text, live, announce = true) {
+    text = String(text || '');
+    if (!text) { if (radialRefusalLive) clearRadialRefusal(); return; }
+    if (live && radialRefusal === text && radialRefusalLive) return;
+    clearTimeout(radialRefusalTimer); radialRefusalTimer = null;
+    radialRefusal = text; radialRefusalLive = !!live;
+    if (announce) srStatus.textContent = text;
+    if (!live) radialRefusalTimer = setTimeout(() => { clearRadialRefusal(); refreshRadial(); }, 8000);
+    refreshRadial();
+  }
+  function refusalLines(text) {
+    const full = text.match(/^FULL\s+(\(\d+ max\))/i);
+    return full ? `FULL\n${full[1]}` : /^NOT A SHORTCUT/i.test(text) ? 'NOT A\nSHORTCUT' : 'NO\nROOM';
+  }
+  function radialGeometry(count) {
+    const S = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-size'), 10) || 64;
+    return window.QL_RADIAL.geometry(layoutNow, count, S, info.fanDirection || 'up');
+  }
+  function positionRect(el, rect) {
+    Object.assign(el.style, { left: `${rect.x}px`, top: `${rect.y}px`, width: `${rect.width}px`, height: `${rect.height}px` });
+  }
+  function refreshRadial() {
+    if (!radial()) return;
+    const all = [...elGridBox.querySelectorAll('.app-tile, .empty-cell')];
+    const count = (apps || []).length;
+    const preview = all.some(t => t.classList.contains('drop-slot'));
+    const desired = preview ? count + 1 : count;
+    const g = info.radial && info.radial.layout === layoutNow && info.radial.count === desired ? info.radial : radialGeometry(desired);
+    const flow = g;
+    const shift = { x: g.pivot.x-flow.pivot.x, y: g.pivot.y-flow.pivot.y };
+    positionRect(elHeader, g.hub);
+    positionRect(elEditBar, { x:g.pivot.x-40, y:g.pivot.y-36, width:80, height:46 });
+    if (!count && !elGridBox.querySelector('.empty-cell')) {
+      const cell = document.createElement('div'); cell.className = 'empty-cell';
+      cell.innerHTML = '<div class="drop-icon">⊕</div>'; elGridBox.appendChild(cell);
+      all.push(cell);
+    }
+    all.forEach((tile,i) => { const r = flow.chips[i]; if (r) positionRect(tile, {...r,x:r.x+shift.x,y:r.y+shift.y}); });
+    body.classList.toggle('radial-filter-on', !!_filterText);
+    body.classList.toggle('radial-chip-renaming', !!chipRename);
+    const busy = isEditing() || !!_filterText || !!renaming || !!chipRename;
+    const heading = busy && !!radialRefusal;
+    body.classList.toggle('radial-refusal-heading', heading);
+    if (heading) {
+      const lines = document.createElement('span');
+      lines.textContent = refusalLines(radialRefusal);
+      elRefusal.replaceChildren(lines);
+    } else elRefusal.textContent = '';
+    elHeader.title = radialRefusal || 'Drag to move';
+    if (busy && radialNoticeText) {
+      queuedRadialNotice = radialNoticeText; radialNoticeText = '';
+      clearTimeout(radialNoticeTimer); radialNoticeTimer = null;
+    }
+    if (!busy && queuedRadialNotice) {
+      radialNoticeText = queuedRadialNotice; queuedRadialNotice = '';
+      clearTimeout(radialNoticeTimer);
+      radialNoticeTimer = setTimeout(() => { radialNoticeText = ''; radialNoticeTimer = null; refreshRadial(); }, 8000);
+      srStatus.textContent = radialNoticeText;
+    }
+    if (!renaming && !chipRename) {
+      const focused = document.activeElement && document.activeElement.closest('.app-tile:not(.filter-hidden)');
+      const hovered = (apps || []).find(a => a.id === radialHover);
+      const focusItem = focused && (apps || []).find(a => a.id === focused.dataset.id);
+      const rejection = radialRefusal;
+      const text = rejection || radialNoticeText || (focusItem && focusItem.name) || (hovered && hovered.name) || (!count ? 'Drop shortcuts here' : info.name);
+      elTitle.textContent = text || ''; elTitle.title = isEditing() ? 'Click to rename' : text || '';
+      elTitleArea.setAttribute('aria-label', info.name || 'Drop shortcuts here');
+    }
+    // Enforce the specified alpha floor without changing any theme palette.
+    const panel = getComputedStyle(body).getPropertyValue('--panel-bg').trim();
+    const match = panel.match(/^rgba?\(([^)]+)\)$/);
+    let surface = panel;
+    if (match) { const channels = match[1].split(',').map(x=>x.trim()); if (channels.length === 4) { channels[3] = String(Math.max(.92,Number(channels[3]))); surface = `rgba(${channels.join(',')})`; } }
+    body.style.setProperty('--radial-panel-bg', surface);
+    reportExtras();
+  }
+  window.qlRadialRefresh = refreshRadial;
+  window.qlRadialNotice = text => {
+    if (!radial()) return false;
+    if (isRefusal(text)) { setRadialRefusal(text, false); return true; }
+    queuedRadialNotice = String(text || ''); radialNoticeText = '';
+    clearTimeout(radialNoticeTimer); radialNoticeTimer = null;
+    refreshRadial(); return true;
+  };
+  window.qlRadialRename = item => {
+    if (!radial()) return false;
+    if (chipRename || renaming) return true;
+    const wasEditing = isEditing();
+    if (!wasEditing) enterEditMode();
+    const input = document.createElement('input'); input.type = 'text'; input.className = 'radial-chip-rename';
+    input.value = item.name; input.maxLength = 40; input.title = 'Shortcut name'; input.setAttribute('aria-label','Shortcut name');
+    elHeader.appendChild(input); chipRename = input; refreshRadial(); input.focus(); input.select();
+    let done = false;
+    const finish = async commit => {
+      if (done) return; done = true; chipRename = null; input.remove();
+      if (commit) { item.name = input.value.trim() || item.name; await saveApps(); renderGrid(); }
+      if (!wasEditing && isEditing()) exitEditMode();
+      refreshRadial(); const tile = tileOf(item.id); if (tile) tile.focus();
+    };
+    input._cancel = () => finish(false);
+    input.addEventListener('blur',()=>finish(true));
+    input.addEventListener('keydown',e=>{ e.stopPropagation(); if(e.key==='Enter'){e.preventDefault();finish(true);} if(e.key==='Escape'){e.preventDefault();finish(false);} });
+    return true;
+  };
+  elGridBox.addEventListener('mouseover', e => { const tile=e.target.closest('.app-tile:not(.filter-hidden)'); radialHover=tile ? tile.dataset.id : ''; refreshRadial(); });
+  elGridBox.addEventListener('mouseleave',()=>{radialHover='';refreshRadial();});
+  elGridBox.addEventListener('click', e => { if(!radial() || !isEditing() || suppressNextClick || e.target.closest('button,input')) return; const tile=e.target.closest('.app-tile:not(.filter-hidden)'); if(tile) renameTile(tile.dataset.id); });
+  document.addEventListener('focusin',refreshRadial);
+  document.addEventListener('focusout',()=>queueMicrotask(refreshRadial));
+  new MutationObserver(refreshRadial).observe($('theme-stylesheet'),{attributes:true,attributeFilter:['href']});
+  $('theme-stylesheet').addEventListener('load',refreshRadial);
+  $('filter-chip-clear').setAttribute('aria-label','Clear filter');
+
   // ── From the main process ─────────────────────────────────────────────────
   api.on('region:state', (s) => { if (s && typeof s === 'object') { info = { ...info, ...s }; applyState(); testSeam(); } });
   api.on('region:command', (c) => {
     const cmd = c && c.cmd;
-    if (cmd === 'edit') enterEditMode();
+    if (cmd === 'add-refused' && typeof c.text === 'string' && c.text) showNotice(c.text);
+    else if (cmd === 'edit') enterEditMode();
     else if (cmd === 'add-file') addAppFromDialog();
     else if (cmd === 'rename-region') startRegionRename();
     else if (cmd === 'rename-tile') renameTile(c.itemId);
@@ -956,7 +1151,10 @@
   });
   // Hidden and shown again: back in view mode (spec 7.2).
   api.on('region:reset-view', () => {
+    radialHover = '';
+    if (radialRefusalLive) clearRadialRefusal();
     cancelRename();
+    if (chipRename && chipRename._cancel) chipRename._cancel();
     if (isEditing()) exitEditMode();
     clearFilter();
   });
@@ -969,5 +1167,5 @@
   // awaits the items while the page is still loading scripts): a window built fresh
   // (start-up, an Explorer restart) then drew moved and broken tiles as plain ones.
   // Draw once more now that qlDecorateTile and qlAfterRender exist.
-  if (document.querySelector('#app-grid .app-tile')) renderGrid();
+  if (radial() || document.querySelector('#app-grid .app-tile')) renderGrid();
 })();

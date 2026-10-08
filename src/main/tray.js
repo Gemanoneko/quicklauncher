@@ -2,6 +2,7 @@ const { Tray, Menu, nativeImage } = require('electron');
 const path = require('path');
 const { checkForUpdates, getUpdateState } = require('./updater');
 const { REGION_CAP } = require('./regions/model');
+const Radial = require('../renderer/radial-layout');
 
 let tray = null;
 // Cached icon variants — built once at setupTray() and reused by every
@@ -112,8 +113,8 @@ function setupTray({ ctl, mgr, electronApp, store, quit }) {
         label: 'New region',
         enabled: !atCap,
         // The layouts this build draws (spec 7.1); Fan and Ring arrive in M5.
-        submenu: [['Grid', 'grid'], ['Column', 'column'], ['Row', 'row']]
-          .map(([label, layout]) => ({ label, click: () => { newRegion(layout); rebuildMenu(); } })),
+        submenu: [['Grid', 'grid'], ['Column', 'column'], ['Row', 'row'], ['Fan', 'fan'], ['Ring', 'ring']]
+          .map(([label, layout]) => ({ label: Radial.isRadial(layout) ? `${label} (max ${Radial.capacity(layout, settings.iconSize, ctl.workArea())})` : label, enabled: !Radial.isRadial(layout) || Radial.capacity(layout, settings.iconSize, ctl.workArea()) > 0, click: () => { newRegion(layout); rebuildMenu(); } })),
       },
       { label: 'Settings…', click: () => mgr.open('settings') },
       {

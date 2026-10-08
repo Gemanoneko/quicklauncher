@@ -962,13 +962,16 @@ function createAppTile(appItem) {
 
   if (!editMode) {
     tile.addEventListener('click', () => {
-      if (suppressNextClick) return;
+      if (suppressNextClick || tile.classList.contains("filter-hidden")) return;
       launchApp(appItem.path);
     });
     // Enter/Space launches the focused tile (UX Review §6B). Captured here
     // (not on the grid) so edit-mode tiles don't accidentally launch.
     tile.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
+        if (tile.classList.contains('filter-hidden')) return;
+        // Radial filter Enter belongs to the first match, in item order.
+        if (document.body.classList.contains('layout-radial') && _filterText && e.key === 'Enter') return;
         e.preventDefault();
         launchApp(appItem.path);
       }
@@ -981,6 +984,7 @@ function createAppTile(appItem) {
 }
 
 function startRename(appItem, labelEl) {
+  if (window.qlRadialRename && window.qlRadialRename(appItem)) return;
   const input = document.createElement('input');
   input.type = 'text';
   input.className = 'rename-input';
@@ -1076,6 +1080,7 @@ function applySettings() {
   $('theme-stylesheet').href = `styles/themes/${theme}.css`;
   elThemeSearch.value = '';
   startBannerCycle(theme);
+  if (window.qlRadialRefresh) window.qlRadialRefresh();
 }
 
 // Apply reduced-motion: union of user setting and OS prefers-reduced-motion.
@@ -1316,6 +1321,7 @@ function handleReorderMove(e) {
       // Shift: move the source placeholder to its new slot
       if (overPos > srcPos) overTile.after(reorderState.srcEl);
       else                  overTile.before(reorderState.srcEl);
+      if (window.qlRadialRefresh) window.qlRadialRefresh();
     }
   }
 }
@@ -1499,8 +1505,14 @@ function applyFilter() {
     const nameLower = t.dataset.nameLower || '';
     const match = !q || nameLower.includes(q);
     t.classList.toggle('filter-hidden', !match);
+    if (document.body.classList.contains('layout-radial')) {
+      t.tabIndex = match ? 0 : -1;
+      t.setAttribute('aria-disabled', String(!match));
+      for (const b of t.querySelectorAll('button')) b.tabIndex = match ? 0 : -1;
+    }
   }
   updateFilterChip();
+  if (window.qlRadialRefresh) window.qlRadialRefresh();
 }
 
 function setFilter(text) {
@@ -1782,6 +1794,7 @@ const qlBanner = QL_BANNER.createBanner({
 
 /** A notice in the banner slot (a drop's notice, a launch error, SAVE ERROR): 8 s, its own ✕. */
 function showNotice(text) {
+  if (window.qlRadialNotice && window.qlRadialNotice(text)) return;
   qlBanner.showNotice(text);
 }
 

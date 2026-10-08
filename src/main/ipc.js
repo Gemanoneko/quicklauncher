@@ -265,7 +265,7 @@ function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null
     // The controller replaces only this region's items. Right after a
     // read-only store merged the data file mid-session, a save from a page
     // that still shows the pre-merge copy is merged against that copy.
-    ctl.saveItemsFromRenderer(id, sanitized);
+    return ctl.saveItemsFromRenderer(id, sanitized);
   });
 
   ipcMain.handle('get-settings', (e) => {
@@ -696,7 +696,7 @@ $apps | ConvertTo-Json -Depth 2
   onRegion('region:remove-broken', (id, a) => (typeof a.itemId === 'string' ? ctl.removeBrokenFromPage(id, a.itemId) : { ok: false }));
   onRegion('region:rename', (id, a) => ctl.rename(id, typeof a.name === 'string' ? a.name : ''));
   // M4: the page's edit bar or notice slot shows or hides (a Column grows by 38 for each).
-  onRegion('region:extras', (id, a) => ctl.setExtras(id, { edit: a.edit === true, notice: a.notice === true }));
+  onRegion('region:extras', (id, a) => ctl.setExtras(id, { edit: a.edit === true, notice: a.notice === true, preview: a.preview === true }));
   onRegion('region:cycle', (id, a) => { ctl.cycle(id, num(a.dir) < 0 ? -1 : 1); });
   onRegion('region:open-manager', (id, a) => {
     const view = ['regions', 'settings', 'picker', 'cheatsheet'].includes(a.view) ? a.view : 'regions';

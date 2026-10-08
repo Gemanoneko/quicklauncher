@@ -13,6 +13,7 @@ const { EventEmitter } = require('events');
 const M = require('./model');
 const P = require('./placement');
 const L = require('./layouts');
+const R = require('../../renderer/radial-layout');
 const { RegionHost } = require('../desktop/region-host');
 const MR = require('../moves/rules');
 const { Mover } = require('../moves/mover');
@@ -160,6 +161,7 @@ class RegionController extends EventEmitter {
       primaryId: () => this.primaryId(),
       writable: () => !(typeof this.store.isReadOnly === 'function' && this.store.isReadOnly()),
       capOf: (id) => { const r = this.region(id); return r ? this._capOf(r) : Infinity; },
+      canAccept: (id, count) => { const r = this.region(id); return !r || !R.isRadial(r.layout) || (count <= this._capOf(r) && !!this._findRadialFit(r, count)); },
     };
     this.mover = new Mover({
       folders: s.folders || {}, journalDir: path.dirname(this.store.dataPath), data, win32, confineTo: s.confineTo || null,
@@ -254,7 +256,9 @@ class RegionController extends EventEmitter {
       res = { refused: null, added: [], refs: [], taken: [], failures, ignored: [] };
     }
     this._pushItems(regionId); // also replaces a slot the page kept for the drop
-    if (res.refused === 'unavailable') {
+    if (res.refused === 'no-room') {
+      await this._box({ type: 'info', message: M.STRINGS.layoutNoRoom, buttons: ['OK'] }, parent);
+    } else if (res.refused === 'unavailable') {
       await this._box({ type: 'warning', message: MR.STRINGS.unavailable, buttons: ['OK'] }, parent);
     } else if (res.failures.length) {
       const t = MR.moveFailedBox(res.failures);
@@ -394,6 +398,7 @@ class RegionController extends EventEmitter {
     if (!this.mover.canMove()) return { ok: false, unavailable: true };
     if (action === 'add') {
       const r = await this.mover.adoptOrphan(file);
+      if (!r.ok && (r.reason === 'full' || r.reason === 'no-room')) { const primary = this.regions()[0]; await this._box({type:'info',message:r.reason==='full' ? M.fullText(this._capOf(primary)) : M.STRINGS.layoutNoRoom,buttons:['OK']},parent); }
       this._managerChanged();
       return { ok: !!r.ok };
     }
@@ -496,6 +501,7 @@ class RegionController extends EventEmitter {
     if (region.layout === 'grid') return { width: M.GRID.minWidth, height: M.GRID.minHeight };
     // Column and Row: a display change may shorten them to one cell (they scroll); the other side is fixed.
     if (L.isContentSized(region.layout)) return L.minSize(region.layout, this._iconSize());
+    if (R.isRadial(region.layout)) { const g = this._radialGeometry(region); return { width: g.width, height: g.height }; }
     return { width: 0, height: 0 };
   }
 
@@ -503,6 +509,73 @@ class RegionController extends EventEmitter {
   _iconSize() { return L.iconSizeOf(this.settings()); }
   _count(id) { return M.itemsOf(this.apps(), id).length; }
   _extras(id) { const rt = this.rt.get(id); return (rt && rt.extras) || NO_EXTRAS; }
+
+  _radialGeometry(region, count = this._count(region.id), direction = region.fanDirection || 'up') {
+    if (this._extras(region.id).preview && count > 0) count++;
+    return R.geometry(region.layout, count, this._iconSize(), direction);
+  }
+  _radialAnchor(region, home = false) {
+    const rt = this.rt.get(region.id);
+    if (home && rt && rt.pendingSave && rt.pendingSave.radialAnchor) return { ...rt.pendingSave.radialAnchor };
+    if (home && region.radialAnchor) return { ...region.radialAnchor };
+    if (!home && rt && rt.radialAnchor) return { ...rt.radialAnchor };
+    const at = home ? this._homeRect(region) : rt ? rt.shown : region.rect;
+    const g = rt && rt.radialGeometry || R.geometry(region.layout, this._count(region.id), this._iconSize(), region.fanDirection || 'up');
+    return { x: at.x + g.pivot.x, y: at.y + g.pivot.y };
+  }
+  _findRadialFit(region, count, direction = region.fanDirection || 'up', anchor = this._radialAnchor(region)) {
+    const g = R.geometry(region.layout, count, this._iconSize(), direction);
+    const wa = this.workArea();
+    if (g.width > wa.width - 48 || g.height > wa.height - 48) return null;
+    const want = { x: Math.round(anchor.x - g.pivot.x), y: Math.round(anchor.y - g.pivot.y), width: g.width, height: g.height };
+    const inner = P.innerArea(this.workArea()), others = this._shownRects(region.id);
+    return P.fits(want, inner, others) ? want : P.findFree(want, inner, others, P.GAP);
+  }
+  _refitRadial(region, rt) {
+    const count = this._count(region.id);
+    // Once committed items replace the preview, count them only once before shaping.
+    if (rt.previewBase && count !== rt.previewBase.geometry.count) { rt.previewBase = null; rt.extras = { ...rt.extras, preview:false }; }
+    const preview = this._extras(region.id).preview && count > 0;
+    const g = R.geometry(region.layout, count + (preview ? 1 : 0), this._iconSize(), region.fanDirection || 'up');
+    const anchor = this._radialAnchor(region);
+    const rect = this._findRadialFit(region, count + (preview ? 1 : 0), region.fanDirection || 'up', anchor);
+    if (!rect) { this.log({ event: 'radial-fit-unavailable', region: region.id, count }); return false; }
+    if (preview && !rt.previewBase) rt.previewBase = { shown: { ...rt.shown }, anchor: { ...anchor }, geometry: rt.radialGeometry };
+    if (!preview && rt.previewBase) {
+      const base = rt.previewBase; rt.previewBase = null;
+      if (count === base.geometry.count) { rt.radialAnchor = base.anchor; this._applyShown(rt, base.shown); this._notifyState(region.id); return true; }
+    }
+    rt.radialAnchor = Math.abs(rect.x + g.pivot.x - anchor.x) <= .5 && Math.abs(rect.y + g.pivot.y - anchor.y) <= .5
+      ? anchor : { x: rect.x + g.pivot.x, y: rect.y + g.pivot.y };
+    const changed = !sameRect(rect, rt.shown); this._applyShown(rt, rect); this._notifyState(region.id); return changed;
+  }
+  _applyShape(rt, region) {
+    if (R.isRadial(region.layout)) rt.radialGeometry = this._radialGeometry(region);
+    if (!rt.win || rt.win.isDestroyed()) return;
+    try {
+      if (R.isRadial(region.layout)) {
+        const g = this._radialGeometry(region); rt.radialGeometry = g;
+        if (typeof rt.win.setShape !== 'function') throw new Error('radial window shaping unavailable');
+        rt.win.setShape(R.shapeRects(g)); rt.radialShape = true;
+      } else if (rt.radialShape && typeof rt.win.setShape === 'function') { rt.win.setShape([]); rt.radialShape = false; }
+      if (rt.shapeBlocked) { rt.shapeBlocked = false; rt.host.setHidden(this.hidden); }
+    } catch (error) {
+      // Fail closed rather than let transparent gaps cover the user's desktop.
+      rt.shapeBlocked = true; if (rt.host) rt.host.setHidden(true);
+      this.log({ event: 'radial-shape-error', region: region.id, error: String(error.message || error) });
+    }
+  }
+  setFanDirection(id, direction) {
+    const region = this.region(id), rt = this.rt.get(id);
+    if (!region || !rt || region.layout !== 'fan' || !R.DIRECTIONS.includes(direction)) return { ok: false };
+    const count = this._count(id), cap = R.capacity('fan', this._iconSize(), this.workArea(), direction);
+    const anchor = this._radialAnchor(region), rect = count <= cap ? this._findRadialFit(region, count, direction, anchor) : null;
+    if (!rect) return { ok: false, error: M.STRINGS.layoutNoRoom };
+    const g = R.geometry('fan', count, this._iconSize(), direction), wa = this.workArea();
+    this._updateRegion(id, { fanDirection: direction, rect, radialAnchor: { x: rect.x + g.pivot.x, y: rect.y + g.pivot.y }, home: { ...wa } });
+    rt.radialAnchor = { x: rect.x + g.pivot.x, y: rect.y + g.pivot.y };
+    this._applyShown(rt, rect); this._notifyState(id); this._managerChanged(); return { ok: true, rect };
+  }
 
   /**
    * A Column or Row box at the anchor (top-left) of `at`: the size its items
@@ -528,7 +601,10 @@ class RegionController extends EventEmitter {
   _wantedRects() {
     const regs = this.regions();
     const base = regs.map((r) => this._homeRect(r));
-    let rects = base.map((h, i) => (L.isContentSized(regs[i].layout) ? this._contentRect(regs[i], h) : h));
+    let rects = base.map((h, i) => {
+      if (R.isRadial(regs[i].layout)) { const g = this._radialGeometry(regs[i]), a = this._radialAnchor(regs[i], true); return { x: Math.round(a.x-g.pivot.x), y: Math.round(a.y-g.pivot.y), width:g.width,height:g.height }; }
+      return L.isContentSized(regs[i].layout) ? this._contentRect(regs[i], h) : h;
+    });
     for (let pass = 0; pass < 2; pass++) {
       const prev = rects;
       rects = prev.map((h, i) => (L.isContentSized(regs[i].layout)
@@ -547,7 +623,9 @@ class RegionController extends EventEmitter {
   _refitContent(id) {
     const rt = this.rt.get(id);
     const region = this.region(id);
-    if (!rt || !region || !L.isContentSized(region.layout) || rt.drag) return false;
+    if (!rt || !region || rt.drag) return false;
+    if (R.isRadial(region.layout)) return this._refitRadial(region, rt);
+    if (!L.isContentSized(region.layout)) return false;
     const inner = P.innerArea(this.workArea());
     const others = this._shownRects(id);
     const keep = L.growAxis(region.layout) === 'x' ? rt.shown.width : rt.shown.height;
@@ -565,14 +643,18 @@ class RegionController extends EventEmitter {
   _refitAllContent() { for (const r of this.regions()) this._refitContent(r.id); }
 
   /** From the region page: its edit bar or notice slot shows or hides (Column grows by 38 for each, spec 2.3). */
-  setExtras(id, { edit = false, notice = false } = {}) {
+  setExtras(id, { edit = false, notice = false, preview = false } = {}) {
     const rt = this.rt.get(id);
     if (!rt) return { ok: false };
-    const next = { edit: !!edit, notice: !!notice };
-    if (rt.extras && rt.extras.edit === next.edit && rt.extras.notice === next.notice) return { ok: true, changed: false, shown: { ...rt.shown } };
+    const region = this.region(id), count = this._count(id);
+    const allowPreview = !!preview && region && R.isRadial(region.layout) && count > 0 && count < this._capOf(region) && !!this._findRadialFit(region, count + 1);
+    const refusedPreview = !!preview && region && R.isRadial(region.layout) && count > 0 && !allowPreview;
+    const previewResult = { preview: allowPreview, previewRejected: refusedPreview, ...(refusedPreview ? { error: M.STRINGS.layoutNoRoom } : {}) };
+    const next = { edit: !!edit, notice: !!notice, preview: allowPreview };
+    if (rt.extras && rt.extras.edit === next.edit && rt.extras.notice === next.notice && !!rt.extras.preview === !!next.preview) return { ok: !refusedPreview, changed: false, shown: { ...rt.shown }, ...previewResult };
     rt.extras = next;
     const changed = this._refitContent(id);
-    return { ok: true, changed, shown: { ...rt.shown } };
+    return { ok: !refusedPreview, changed, shown: { ...rt.shown }, ...previewResult };
   }
 
   /**
@@ -594,8 +676,18 @@ class RegionController extends EventEmitter {
     const inner = P.innerArea(wa);
     const others = this._shownRects(id);
     const anchor = { x: rt.shown.x, y: rt.shown.y };
+    let radialAnchor = null;
     let size;
-    if (layout === 'grid') {
+    if (R.isRadial(layout)) {
+      const cap = R.capacity(layout, this._iconSize(), wa, 'up');
+      if (cap < 1) return { ok:false,error:M.STRINGS.layoutNoRoom };
+      if (this._count(id) > cap) return { ok: false, error: `${this._count(id)} shortcuts. ${layoutLabel(layout)} holds ${cap}.` };
+      radialAnchor = R.isRadial(region.layout) ? this._radialAnchor(region) : { x: rt.shown.x + rt.shown.width/2, y: rt.shown.y + rt.shown.height/2 };
+      const g = R.geometry(layout, this._count(id), this._iconSize(), 'up');
+      if (g.width > wa.width - 48 || g.height > wa.height - 48) return { ok:false,error:M.STRINGS.layoutNoRoom };
+      anchor.x = Math.round(radialAnchor.x - g.pivot.x); anchor.y = Math.round(radialAnchor.y - g.pivot.y);
+      size = { width: g.width, height: g.height };
+    } else if (layout === 'grid') {
       const g = region.gridSize || { width: M.GRID.defaultWidth, height: M.GRID.defaultHeight };
       size = { width: Math.max(M.GRID.minWidth, g.width), height: Math.max(M.GRID.minHeight, g.height) };
     } else {
@@ -610,6 +702,8 @@ class RegionController extends EventEmitter {
       return { ok: false, error: M.STRINGS.layoutNoRoom };
     }
     const patch = { layout, rect: { ...rect }, home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height } };
+    if (radialAnchor) { const g = R.geometry(layout, this._count(id), this._iconSize(), 'up'); patch.radialAnchor = { x: rect.x+g.pivot.x,y:rect.y+g.pivot.y }; patch.fanDirection = 'up'; rt.radialAnchor = { ...patch.radialAnchor }; }
+    else rt.radialAnchor = null;
     // Grid remembers its last size (spec 3.3): the user's size, not a display fit.
     if (region.layout === 'grid') { const h = this._homeRect(region); patch.gridSize = { width: h.width, height: h.height }; }
     clearTimeout(rt.saveTimer);
@@ -691,6 +785,7 @@ class RegionController extends EventEmitter {
       rt.win = win;
       rt.wc = win.webContents;
       rt.ready = false;
+      this._applyShape(rt, region);
       win.webContents.on('did-start-navigation', (details) => {
         // A reloaded page must announce itself again before it gets store messages.
         if (details && details.isMainFrame && !details.isSameDocument) rt.ready = false;
@@ -736,6 +831,7 @@ class RegionController extends EventEmitter {
     const region = this.region(rt.id);
     if (!region) return;
     rt.host.setScreenRect(this._screenRect(region, rt.shown));
+    this._applyShape(rt, region);
   }
 
   _shownRects(exceptId) {
@@ -782,7 +878,8 @@ class RegionController extends EventEmitter {
   // them with a fitted rect (spec 4.4: only the user changes the saved layout).
   _saveRectSoon(rt) {
     const wa = this.workArea();
-    rt.pendingSave = { rect: { ...rt.shown }, home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height } };
+    if (R.isRadial(this.region(rt.id).layout)) { const g = this._radialGeometry(this.region(rt.id)); rt.radialAnchor = { x:rt.shown.x+g.pivot.x,y:rt.shown.y+g.pivot.y }; }
+    rt.pendingSave = { ...(rt.radialAnchor ? { radialAnchor: { ...rt.radialAnchor } } : {}), rect: { ...rt.shown }, home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height } };
     clearTimeout(rt.saveTimer);
     rt.saveTimer = setTimeout(() => {
       rt.saveTimer = null;
@@ -794,7 +891,7 @@ class RegionController extends EventEmitter {
     const p = rt.pendingSave;
     rt.pendingSave = null;
     if (!p || !this.region(rt.id)) return;
-    this._updateRegion(rt.id, { rect: p.rect, home: p.home });
+    this._updateRegion(rt.id, { rect: p.rect, home: p.home, ...(p.radialAnchor ? { radialAnchor: p.radialAnchor } : {}) });
     if (this.testHooks) this.log({ event: 'rect-saved', region: rt.id.slice(0, 8), rect: p.rect });
   }
 
@@ -829,6 +926,8 @@ class RegionController extends EventEmitter {
     const s = this.settings();
     return {
       id, name: region.name, icon: region.icon, layout: region.layout,
+      fanDirection: region.fanDirection || 'up',
+      radial: R.isRadial(region.layout) ? this._radialGeometry(region) : null,
       primary: this.primaryId() === id, active: this.activeId === id,
       matchAll: !!s.matchAll, regionCount: this.regions().length,
       mode: rt ? rt.host.mode : 'pending', hidden: this.hidden,
@@ -925,6 +1024,12 @@ class RegionController extends EventEmitter {
     M.itemsOf(all, id).forEach((a, i) => {
       if (a.kind === 'moved' && !kept.has(a.id)) { items.splice(Math.min(i, items.length), 0, a); restored++; }
     });
+    const region = this.region(id);
+    if (R.isRadial(region.layout) && items.length > this._count(id)) {
+      const cap = this._capOf(region);
+      const error = items.length > cap ? M.fullText(cap) : !this._findRadialFit(region, items.length) ? M.STRINGS.layoutNoRoom : null;
+      if (error) { this._pushItems(id); this._command(id,'add-refused',{text:error}); return {ok:false,error}; }
+    }
     const view = this.store.rendererView('apps');
     if (view !== undefined && rt && rt.syncedSeq < this.latestSeq) {
       // This page still shows the pre-merge copy: merge its change against that copy.
@@ -1016,7 +1121,9 @@ class RegionController extends EventEmitter {
     if (regs.length >= M.REGION_CAP) return { ok: false, error: M.STRINGS.cap };
     const wa = this.workArea();
     // Grid starts at 424 x 300 (spec 3.1); an empty Column or Row at its one-cell size (spec 2.8).
-    const size = L.isContentSized(layout) ? L.contentSize(layout, 0, this._iconSize()) : { width: M.GRID.defaultWidth, height: M.GRID.defaultHeight };
+    if (R.isRadial(layout) && R.capacity(layout, this._iconSize(), wa, 'up') < 1) return { ok:false,error:M.STRINGS.noRoom };
+    const size = R.isRadial(layout) ? R.geometry(layout, 0, this._iconSize(), 'up') : L.isContentSized(layout) ? L.contentSize(layout, 0, this._iconSize()) : { width: M.GRID.defaultWidth, height: M.GRID.defaultHeight };
+    if (R.isRadial(layout) && (size.width > wa.width - 48 || size.height > wa.height - 48)) return { ok:false,error:M.STRINGS.noRoom };
     const rect = P.placeNew(size, P.innerArea(wa), this._shownRects());
     if (!rect) return { ok: false, error: M.STRINGS.noRoom };
     const region = {
@@ -1024,6 +1131,7 @@ class RegionController extends EventEmitter {
       theme: M.effectiveTheme(regs[0], this.settings()), rect,
       home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height },
     };
+    if (R.isRadial(layout)) { const g = R.geometry(layout, 0, this._iconSize(), 'up'); region.radialAnchor = { x:rect.x+g.pivot.x,y:rect.y+g.pivot.y }; region.fanDirection = 'up'; }
     this._setRegions([...regs, region]);
     this._spawn(region, rect);
     this._notifyAllStates();
@@ -1146,13 +1254,15 @@ class RegionController extends EventEmitter {
   /** Item cap of a region (spec 2.7). Test hooks can set one to exercise the full path. */
   _capOf(region) {
     if (this.testHooks && this._testCaps.has(region.id)) return this._testCaps.get(region.id);
-    return M.capacityOf(region.layout);
+    return R.isRadial(region.layout) ? R.capacity(region.layout, this._iconSize(), this.workArea(), region.fanDirection || 'up') : M.capacityOf(region.layout);
   }
 
   _dropDecision(targetId, sourceId) {
     const target = targetId ? this.region(targetId) : null;
     if (!target) return M.dropDecision({ target: null });
-    return M.dropDecision({ target, sourceId, count: M.itemsOf(this.apps(), targetId).length, cap: this._capOf(target) });
+    const count = this._count(targetId), decision = M.dropDecision({ target, sourceId, count, cap: this._capOf(target) });
+    if (decision.ok && R.isRadial(target.layout) && !this._findRadialFit(target,count+1)) return { ok:false,reason:'no-room',text:M.STRINGS.layoutNoRoom };
+    return decision;
   }
 
   /** Move a shortcut to another region (tile menu Move to, a tile dropped there). `index` among the target's items; default last. */
@@ -1236,7 +1346,8 @@ class RegionController extends EventEmitter {
     if (!t || t.sourceId !== id || t.dropping) return { ok: false };
     if (phase === 'cancel') { this._cancelTileDrag('released in the source region'); return { ok: true }; }
     const p = this._pageToDesktop(id, x, y);
-    const hitId = p ? P.regionAt(p, this._tileTargets(id)) : null;
+    let hitId = p ? P.regionAt(p, this._tileTargets(id)) : null;
+    if (hitId && R.isRadial(this.region(hitId).layout)) { const rt=this.rt.get(hitId), g=this._radialGeometry(this.region(hitId)); const x=p.x-rt.shown.x,y=p.y-rt.shown.y; const h=g.hub; const chip=g.chips.some(c=>x>=c.x&&x<c.x+c.width&&y>=c.y&&y<c.y+c.height); const hub=(x-g.pivot.x)**2+(y-g.pivot.y)**2<=48**2; if (!chip&&!hub) hitId=null; }
     const dec = this._dropDecision(hitId, id);
     if (phase === 'move') {
       if (t.targetId && t.targetId !== hitId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id });
@@ -1251,7 +1362,7 @@ class RegionController extends EventEmitter {
       return { ok: true, over: hitId, rejected: dec.ok ? null : dec.reason };
     }
     if (phase === 'end') {
-      if (!dec.ok) { this._cancelTileDrag(dec.reason === 'full' ? 'full region' : 'not on a region'); return { ok: true, result: 'cancelled', reason: dec.reason }; }
+      if (!dec.ok) { if (hitId && dec.text) this._sendPreview(hitId, { phase:'refused',dragId:t.id,text:dec.text }); this._cancelTileDrag(dec.reason === 'full' ? 'full region' : 'not on a region'); return { ok: true, result: 'cancelled', reason: dec.reason }; }
       if (t.targetId && t.targetId !== hitId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id });
       t.targetId = hitId;
       t.dropping = hitId;
@@ -1273,7 +1384,7 @@ class RegionController extends EventEmitter {
     clearTimeout(t.replyTimer);
     const res = this.moveItemToRegion(t.itemId, id, Number.isFinite(index) ? index : Infinity);
     // The target keeps its slot until its new items arrive; refused, none come, so it drops it.
-    if (!res.ok) this._sendPreview(id, { phase: 'leave', dragId: t.id, instant: true });
+    if (!res.ok) { if (res.error) this._sendPreview(id, { phase:'refused',dragId:t.id,text:res.error }); this._sendPreview(id, { phase: 'leave', dragId: t.id, instant: true }); }
     this.log({ event: 'tile-drag', result: res.ok ? 'moved' : 'refused', item: String(t.itemId).slice(0, 8), to: id.slice(0, 8), index: res.index });
     if (t.reply) t.reply({ ok: true, result: res.ok ? 'moved' : 'cancelled', reason: res.ok ? null : res.error, index: res.index });
     return res;
@@ -1284,6 +1395,9 @@ class RegionController extends EventEmitter {
     const mine = new Set(M.itemsOf(this.apps(), regionId).map((a) => a.path));
     const fresh = (entries || []).filter((e) => e && e.id && e.path && !mine.has(e.path));
     if (!fresh.length) return { ok: true, added: 0 };
+    const region=this.region(regionId), total=this._count(regionId)+fresh.length;
+    if (total>this._capOf(region)) return {ok:false,added:0,error:M.fullText(this._capOf(region))};
+    if (R.isRadial(region.layout)&&!this._findRadialFit(region,total)) return {ok:false,added:0,error:M.STRINGS.layoutNoRoom};
     const all = this.apps();
     const items = [...M.itemsOf(all, regionId), ...fresh.map((e) => ({ ...e, regionId }))];
     this.store.set('apps', M.replaceRegionItems(all, regionId, items));
@@ -1424,10 +1538,12 @@ class RegionController extends EventEmitter {
       {
         label: 'Layout',
         submenu: [...M.BUILT_LAYOUTS].map((l) => ({
-          label: layoutLabel(l), type: 'radio', checked: region.layout === l,
+          label: R.isRadial(l) ? `${layoutLabel(l)} (max ${R.capacity(l,this._iconSize(),this.workArea(),'up')})` : layoutLabel(l), type: 'radio', checked: region.layout === l,
+          enabled: !R.isRadial(l) || (R.capacity(l,this._iconSize(),this.workArea(),'up') > 0 && this._count(id)<=R.capacity(l,this._iconSize(),this.workArea(),'up')),
           click: () => { this.setLayout(id, l).catch(() => {}); },
         })),
       },
+      ...(region.layout==='fan' ? [{label:'Fan direction',submenu:R.DIRECTIONS.map(direction=>({label:layoutLabel(direction),type:'radio',checked:(region.fanDirection||'up')===direction,click:()=>this.setFanDirection(id,direction)}))}] : []),
       { label: 'Place', submenu: place },
       { label: 'Theme…', click: () => this.manager && this.manager.open('regions', { regionId: id }) },
       { label: 'Random theme', click: () => this.randomTheme(id) },
@@ -1501,7 +1617,7 @@ class RegionController extends EventEmitter {
     if (!win) return { ok: false };
     const atCap = this.regions().length >= M.REGION_CAP;
     const tpl = [...M.BUILT_LAYOUTS].map((l) => ({
-      label: layoutLabel(l), enabled: !atCap,
+      label: R.isRadial(l) ? `${layoutLabel(l)} (max ${R.capacity(l,this._iconSize(),this.workArea(),'up')})` : layoutLabel(l), enabled: !atCap && (!R.isRadial(l) || R.capacity(l,this._iconSize(),this.workArea(),'up') > 0),
       click: () => {
         const r = this.createRegion(l);
         if (win && !win.isDestroyed()) win.webContents.send('manager:created', { ok: !!r.ok, id: r.id || null, error: r.error || null });
@@ -1579,6 +1695,7 @@ class RegionController extends EventEmitter {
       regions: this.regions().map((r, i) => ({
         id: r.id, name: r.name, icon: r.icon, layout: r.layout, theme: r.theme,
         count: M.itemsOf(apps, r.id).length, primary: i === 0,
+        layoutCaps: {fan:R.capacity('fan',this._iconSize(),this.workArea(),'up'),ring:R.capacity('ring',this._iconSize(),this.workArea())},
         mode: this.rt.get(r.id) ? this.rt.get(r.id).host.mode : 'pending',
         shown: this.rt.get(r.id) ? { ...this.rt.get(r.id).shown } : null,
       })),

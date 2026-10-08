@@ -281,6 +281,9 @@ class Mover extends EventEmitter {
       const count = this.data.apps().filter((a) => a && a.regionId === regionId).length;
       const adds = plan.filter((x) => !x.here).length;
       if (count + adds > this.data.capOf(regionId)) { res.refused = 'full'; return res; }
+      // M5: prospective geometry is checked after deduplication and before any
+      // journal, file or store mutation. Numeric capacity stays unchanged.
+      if (adds && this.data.canAccept && !this.data.canAccept(regionId, count + adds)) { res.refused = 'no-room'; return res; }
       // Moving unavailable: a drop that would move a desktop file or adopt a store-folder file is refused
       // whole, so "Nothing was changed" stays true (C2 follow-up D3; as ADD BACK is disabled then, B5).
       if (plan.some((x) => x.action === 'move' || x.action === 'adopt' || x.adopts) && !this.canMove()) { res.refused = 'unavailable'; return res; }
@@ -619,7 +622,11 @@ class Mover extends EventEmitter {
     return this._run(async () => {
       const target = regionId && this.data.regionExists(regionId) ? regionId : this.data.primaryId();
       const o = this.orphans.find((x) => lower(x.file) === lower(file));
-      if (!o || !target || !(await this._exists(o.file))) return { ok: false };
+      if (!o || !target) return { ok: false };
+      // Same optional prospective-box guard as file drops; non-radial adapters return true.
+      const nextCount = this.data.apps().filter(a => a && a.regionId === target).length + 1;
+      if (this.data.canAccept && !this.data.canAccept(target, nextCount)) return { ok:false, reason: nextCount > this.data.capOf(target) ? 'full' : 'no-room' };
+      if (!(await this._exists(o.file))) return { ok: false };
       if (!this.data.writable()) return { ok: false, reason: R.STRINGS.unavailable };
       const attrs = this.win32.attributes(o.file);
       const entry = attrs != null && !R.isPlaceholder(attrs) ? await this.buildEntry(o.file) : { name: o.name, iconDataUrl: '' };

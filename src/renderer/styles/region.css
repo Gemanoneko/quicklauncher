@@ -355,3 +355,144 @@ body.region.layout-column #update-banner:not(.notice):not(:has(#update-actions .
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
   white-space: normal; text-overflow: clip; overflow-wrap: anywhere; line-height: 12px;
 }
+
+/* M5 Fan/Ring: transparent box, theme chips, circular handle; no field art. */
+html:has(body.layout-radial), body.region.layout-radial {
+  background: transparent !important; padding: 0 !important; border: 0 !important;
+}
+body.region.layout-radial #app {
+  position: relative; width: 100%; height: 100%; display: block;
+  background: transparent !important; border: 0 !important; box-shadow: none !important;
+  clip-path: none !important; border-radius: 0 !important; overflow: visible;
+  pointer-events: none;
+}
+body.region.layout-radial #app::before,
+body.region.layout-radial #app::after,
+body.region.layout-radial #app-entrance,
+body.region.layout-radial #particles,
+body.region.layout-radial #theme-banner,
+body.region.layout-radial #update-banner,
+body.region.layout-radial #drop-hint,
+body.region.layout-radial #header::before,
+body.region.layout-radial #header::after,
+body.region.layout-radial #grid-container::before,
+body.region.layout-radial #grid-container::after,
+body.region.layout-radial #app-grid::before,
+body.region.layout-radial #app-grid::after { display: none !important; }
+body.region.layout-radial #grid-container,
+body.region.layout-radial #app-grid {
+  position: absolute; inset: 0; width: 100%; height: 100%; padding: 0;
+  margin: 0; display: block; overflow: visible; background: none !important;
+  border: 0; clip-path: none; pointer-events: none; scrollbar-gutter: auto;
+}
+body.region.layout-radial #header {
+  position: absolute; box-sizing: border-box; padding: 0; display: block;
+  min-height: 0; flex: none; background: var(--radial-panel-bg, var(--panel-bg)) !important;
+  border: 1px solid var(--border); border-radius: 50%; box-shadow: none;
+  clip-path: none !important; overflow: hidden; pointer-events: auto;
+}
+body.region.layout-radial.region-active #header { border-color: var(--border-h); }
+body.region.layout-radial.region-snapped #header { border-color: var(--accent-c); }
+body.region.layout-radial.region-blocked #header { border-color: var(--accent-m); }
+body.region.layout-radial #title-area {
+  position: absolute; left: 7px; top: 7px; width: 80px; height: 54px; display: block; max-width: none;
+}
+body.region.layout-radial #region-icon { position: absolute; left: 30px; top: 0; }
+body.region.layout-radial #title {
+  position: absolute; left: 0; top: 24px; width: 80px; height: 29px;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  white-space: normal; overflow: hidden; overflow-wrap: anywhere;
+  text-align: center; font-size: 12px; line-height: 14.5px;
+  color: var(--text); letter-spacing: var(--tile-label-spacing);
+  text-transform: var(--tile-label-transform); font-weight: var(--tile-label-weight);
+  font-style: var(--tile-label-style); text-shadow: var(--tile-label-shadow);
+}
+body.region.layout-radial #header-controls { position: absolute; left: 35px; top: 65px; margin: 0; }
+body.region.layout-radial #btn-region-menu { width: 24px; min-width: 24px; height: 24px; min-height: 24px; padding: 0; }
+body.region.layout-radial #btn-random-theme,
+body.region.layout-radial #btn-settings,
+body.region.layout-radial #btn-hide { display: none; }
+body.region.layout-radial #edit-bar {
+  position: absolute; padding: 0; gap: 8px; display: flex; flex-direction: column;
+  border: 0; background: none; box-shadow: none; pointer-events: none; z-index: 102;
+}
+body.region.layout-radial #edit-bar::before,
+body.region.layout-radial #edit-bar::after,
+body.region.layout-radial #edit-bar .edit-label-long,
+body.region.layout-radial #edit-bar .edit-actions { display: none !important; }
+body.region.layout-radial #edit-bar .edit-label-short { display: block; height: 14px; line-height: 14px; color: var(--text); text-shadow: none; }
+body.region.layout-radial #edit-bar .edit-cluster { display: flex; pointer-events: auto; }
+body.region.layout-radial.edit-mode #region-icon,
+body.region.layout-radial.edit-mode #title { visibility: hidden; }
+body.region.layout-radial #filter-chip {
+  position: absolute; left: 7px; top: 31px; width: 80px; height: 29px;
+  margin: 0; padding: 0; gap: 0; border: 0; background: none; z-index: 103;
+}
+body.region.layout-radial #filter-chip-text {
+  width: 56px; flex: 1; min-width: 0; font-size: 12px; line-height: 14.5px;
+  color: var(--text); white-space: normal; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+}
+body.region.layout-radial #filter-chip-clear { width: 24px; height: 24px; min-width: 24px; min-height: 24px; padding: 0; }
+body.region.layout-radial.radial-filter-on #title,
+body.region.layout-radial.radial-filter-on #edit-bar,
+body.region.layout-radial.region-renaming #edit-bar,
+body.region.layout-radial.radial-chip-renaming #edit-bar,
+body.region.layout-radial.region-renaming #filter-chip,
+body.region.layout-radial.radial-chip-renaming #filter-chip,
+body.region.layout-radial.radial-chip-renaming #title { display: none !important; }
+body.region.layout-radial .region-rename-input,
+body.region.layout-radial .radial-chip-rename {
+  position: absolute; left: 7px; top: 33px; width: 80px; height: 24px;
+  box-sizing: border-box; z-index: 104; color: var(--text);
+  background: var(--rename-input-bg); border: 1px solid var(--accent-text);
+  font-family: var(--font); font-size: 12px; padding: 1px 4px;
+}
+body.region.layout-radial #app-grid .app-tile,
+body.region.layout-radial #app-grid .empty-cell,
+body.region.layout-radial .drag-ghost {
+  position: absolute; box-sizing: border-box; padding: 5px; margin: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--radial-panel-bg, var(--panel-bg)); border: 1px solid var(--border);
+  border-radius: max(var(--radius), 6px); clip-path: none !important;
+  pointer-events: auto; overflow: hidden; min-width: 0; min-height: 0;
+}
+body.region.layout-radial #app-grid .empty-cell { background: none; border: 2px dashed var(--accent-text); pointer-events: none; }
+body.region.layout-radial #app-grid .tile-label { display: none; }
+body.region.layout-radial #app-grid .filter-hidden {
+  display: flex !important; opacity: .30; pointer-events: none !important;
+}
+body.region.layout-radial #app-grid .filter-hidden * { pointer-events: none !important; }
+body.region.layout-radial #app-grid .btn-remove,
+body.region.layout-radial #app-grid .btn-move-back { top: 0; right: 0; width: 24px; height: 24px; }
+body.region.layout-radial #app-grid .app-tile:focus-visible,
+body.region.layout-radial #title-area:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px; }
+body.region.layout-radial.tile-drop-preview:not(.tile-drop-rejected) #title { visibility: hidden; }
+/* Four corner brackets mark a transparent box; they never become hit surfaces. */
+body.region.layout-radial.tile-drop-valid #app::after,
+body.region.layout-radial.tile-drop-rejected #app::after {
+  content: ''; display: block !important; position: absolute; inset: 0;
+  pointer-events: none; background: none; border: 2px solid var(--accent-c);
+  clip-path: polygon(0 0, 16px 0, 16px 2px, 2px 2px, 2px 16px, 0 16px, 0 0,
+    100% 0, 100% 16px, calc(100% - 2px) 16px, calc(100% - 2px) 2px, calc(100% - 16px) 2px, calc(100% - 16px) 0,
+    100% 100%, calc(100% - 16px) 100%, calc(100% - 16px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 16px), 100% calc(100% - 16px),
+    0 100%, 0 calc(100% - 16px), 2px calc(100% - 16px), 2px calc(100% - 2px), 16px calc(100% - 2px), 16px 100%);
+}
+body.region.layout-radial.tile-drop-rejected #app::after { border-color: var(--accent-m); }
+
+body.region.layout-radial #title-area .region-rename-input { left: 0; top: 26px; }
+
+/* Committed M5 busy-hub correction: refusal replaces only the heading. */
+#radial-refusal { display: none; }
+body.region.layout-radial.radial-refusal-heading #radial-refusal {
+  display: block; position: absolute; left: 19px; top: 9px; width: 56px; height: 22px;
+  pointer-events: none; white-space: pre; text-align: center; overflow: hidden;
+  font-family: "Segoe UI", sans-serif; font-size: 11px; line-height: 11px;
+  letter-spacing: 0; font-style: normal; font-weight: 400; color: var(--text);
+  text-transform: none; text-shadow: none;
+}
+body.region.layout-radial.radial-refusal-heading #region-icon,
+body.region.layout-radial.radial-refusal-heading #edit-bar .edit-label-short { visibility: hidden; }
+
+/* Segoe 11px glyphs (8px ascent/2px parenthesis descent) fit both 11px lines in the exact 22px band. */
+body.region.layout-radial #radial-refusal > span { display: block; position: relative; top: -1px; }

@@ -182,10 +182,10 @@ test('switch refused when nothing fits: the spec string in one box, nothing chan
   } finally { t.done(); }
 });
 
-test('Fan and Ring are not built in this milestone: a switch to them is refused without a box', async () => {
+test('An unknown layout is refused without a box', async () => {
   const t = make();
   try {
-    const r = await t.ctl.setLayout('r1', 'ring');
+    const r = await t.ctl.setLayout('r1', 'spiral');
     assert.equal(r.ok, false);
     assert.equal(t.rec('r1').layout, 'grid');
     assert.equal(t.ctl.boxLog.length, 0);
@@ -369,7 +369,7 @@ test('create: an empty Column is 180 x 168 and an empty Row 228 x 128, placed by
     assert.equal(sr.width, 228); assert.equal(sr.height, 128);
     assert.equal(t.rec(c.id).layout, 'column');
     assert.equal(t.rec(r.id).layout, 'row');
-    assert.equal(t.ctl.createRegion('fan').ok, false, 'Fan is M5');
+    assert.equal(t.ctl.createRegion('spiral').ok, false, 'unknown layout');
   } finally { t.done(); }
 });
 
@@ -381,7 +381,7 @@ test('region menu: Layout lists Grid, Column and Row with the current one checke
     const menu = t.ctl.menuLog[t.ctl.menuLog.length - 1];
     const li = menu.items.findIndex((i) => i.label === 'Layout');
     assert.ok(li > 0, 'Layout in the region menu');
-    assert.deepEqual(menu.items[li].submenu.map((i) => [i.label, i.checked]), [['Grid', true], ['Column', false], ['Row', false]]);
+    assert.deepEqual(menu.items[li].submenu.map((i) => [i.label, i.checked]), [['Grid', true], ['Column', false], ['Row', false], ['Fan (max 10)', false], ['Ring (max 12)', false]]);
     assert.equal(menu.items[li - 1].label, 'Rename', 'after Rename (spec 9.2)');
     assert.equal(menu.items[li + 1].label, 'Place', 'before Place');
     assert.equal(t.ctl.menuClick([li, 2]).ok, true);
@@ -389,7 +389,7 @@ test('region menu: Layout lists Grid, Column and Row with the current one checke
     assert.equal(t.rec('r1').layout, 'row');
     t.ctl.popupRegionMenu('r1', 10, 10);
     const again = t.ctl.menuLog[t.ctl.menuLog.length - 1].items[li].submenu.map((i) => i.checked);
-    assert.deepEqual(again, [false, false, true]);
+    assert.deepEqual(again, [false, false, true, false, false]);
   } finally { t.done(); }
 });
 
@@ -401,12 +401,12 @@ test('Manager + NEW REGION: a menu of Grid, Column and Row; a pick creates that 
     assert.deepEqual(t.ctl.popupNewRegionMenu(10, 20), { ok: true, recorded: true });
     const menu = t.ctl.menuLog[t.ctl.menuLog.length - 1];
     assert.equal(menu.kind, 'new-region');
-    assert.deepEqual(menu.items.map((i) => i.label), ['Grid', 'Column', 'Row']);
+    assert.deepEqual(menu.items.map((i) => i.label), ['Grid', 'Column', 'Row', 'Fan (max 10)', 'Ring (max 12)']);
     assert.equal(t.ctl.menuClick([1]).ok, true);
     const created = got.find((g) => g.ch === 'manager:created');
     assert.ok(created && created.m.ok && created.m.id);
     assert.equal(t.rec(created.m.id).layout, 'column');
-    assert.deepEqual(t.ctl.managerState().layouts, ['grid', 'column', 'row']);
+    assert.deepEqual(t.ctl.managerState().layouts, ['grid', 'column', 'row', 'fan', 'ring']);
   } finally { t.done(); }
 });
 
@@ -416,7 +416,7 @@ test('Manager + NEW REGION at the cap: every layout is listed disabled', () => {
     t.ctl.manager = { window: { isDestroyed: () => false, webContents: { send() {} } }, changed() {}, open() {} };
     for (let i = 0; i < 5; i++) assert.equal(t.ctl.createRegion('grid').ok, true);
     t.ctl.popupNewRegionMenu(0, 0);
-    assert.deepEqual(t.ctl.menuLog[t.ctl.menuLog.length - 1].items.map((i) => i.enabled), [false, false, false]);
+    assert.deepEqual(t.ctl.menuLog[t.ctl.menuLog.length - 1].items.map((i) => i.enabled), [false, false, false, false, false]);
   } finally { t.done(); }
 });
 
