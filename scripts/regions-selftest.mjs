@@ -43,6 +43,7 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '..');
 const require = createRequire(import.meta.url);
+const { paintedFrame, waitForPaintedFrame } = require('./pixel-readiness.cjs');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ── args ────────────────────────────────────────────────────────────────────
@@ -227,7 +228,7 @@ function windowPixels(hwnd) {
     }
     const litShare = lit / (w * h);
     // Painted: a page draws many colours over most of its window; a never-painted window is one flat colour.
-    return { ok: !!printed && lines === h && colours.size >= 16 && litShare >= 0.1, w, h, colours: colours.size, lit: Math.round(litShare * 100) / 100 };
+    return { ok: paintedFrame({ printed, lines, height: h, colours: colours.size, litShare }), w, h, colours: colours.size, lit: Math.round(litShare * 100) / 100 };
   });
 }
 /** Post one WM_MOUSEMOVE at client point (x, y) in physical px. */
@@ -2110,7 +2111,7 @@ async function f2Checks({ mgr, sessions, ids, r1id }) {
 
   const d = await describe();
   if (FALLBACK) {
-    const px = d.regions.map((r) => ({ id: r.id.slice(0, 8), ...windowPixels(hwndOf(r)) }));
+    const px = await Promise.all(d.regions.map(async (r) => ({ id: r.id.slice(0, 8), ...await waitForPaintedFrame(() => windowPixels(hwndOf(r))) })));
     check('F-2 pixels: every fallback region window shows its page (PrintWindow PW_RENDERFULLCONTENT: 16+ colours, 10%+ lit)',
       px.length === 8 && px.every((p) => p.ok), px.map((p) => `${p.id} ${p.colours}c ${p.lit}${p.ok ? '' : ` FAIL${p.why ? ` ${p.why}` : ''}`}`));
   }
@@ -2150,7 +2151,7 @@ async function f2Checks({ mgr, sessions, ids, r1id }) {
     const after = await describe();
     const rr = after.regions.find((r) => r.id === r1id);
     shownOk = !after.hidden && !!rr && rr.host.win.visible;
-    if (FALLBACK) rbPx = windowPixels(hwndOf(rr));
+    if (FALLBACK) rbPx = await waitForPaintedFrame(() => windowPixels(hwndOf(rr)));
     rbMove = await nativeMove(s, hwndOf(rr));
   } else {
     await mgr.eval(`window.api.invoke('manager:test', 'toggle-all')`);
@@ -2632,7 +2633,7 @@ async function m4Checks({ mgr, sessions, ids, inner }) {
   if (FALLBACK) {
     await guarded('M4 F-2 pixels: the Column and the Row fallback windows show their pages (PrintWindow: 16+ colours, 10%+ lit)', async (name) => {
       const d = await desc();
-      const px = [A, B].map((id) => ({ id: id.slice(0, 8), ...windowPixels(parseInt(String(reg(d, id).host.win.hwnd || '0'), 16)) }));
+      const px = await Promise.all([A, B].map(async (id) => ({ id: id.slice(0, 8), ...await waitForPaintedFrame(() => windowPixels(parseInt(String(reg(d, id).host.win.hwnd || '0'), 16))) })));
       check(name, px.every((p) => p.ok) && !PROBE, px.map((p) => `${p.id} ${p.colours}c ${p.lit}`));
     });
   }
