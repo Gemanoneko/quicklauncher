@@ -18,6 +18,9 @@ body.region #header-version { display: none; }
    offer 1, approved 2026-10-04): base.css's right: 135px predates the fourth button. */
 body.region #header::after { right: 160px; }
 body.region #header:has(#filter-chip:not(.hidden))::after { display: none; }
+/* The measured helper owns this visibility only for explicitly opted-in art.
+   Geometry stays authored so a suppressed motif can be measured/restored. */
+#header.ql-header-art-suppressed::after { visibility: hidden !important; }
 body.region #title-area {
   flex-direction: row; align-items: center; gap: 6px;
   min-width: 0; flex: 0 1 auto; outline: none;
