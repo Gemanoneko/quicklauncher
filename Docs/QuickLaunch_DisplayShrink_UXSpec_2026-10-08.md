@@ -1,0 +1,63 @@
+# QuickLaunch — temporary Grid after display shrink
+
+Judy UX addendum, 2026-10-08. EXTEND the committed Regions UX specification §4.4 and M5 tray/options specification. Sergei approved the recommendation: an existing Fan/Ring that cannot fit after an automatic work-area change uses temporary Grid presentation and restores its preferred radial layout when space returns. Implementation follows integration, M6 cleanup and formal QA-tool repair; Sully must commit this spec before Ender implements it.
+
+## Scope and preserved state
+
+Automatic changes to the primary display's effective work area, including resolution, DPI/scale, taskbar occupancy or replacement of the primary display. Preserve the existing primary-display-only policy; this adds no second-monitor placement. Do not change display settings or request sleep.
+
+Separate the saved preferred layout from its current presentation. Preserve preferred Fan/Ring, Fan direction, global icon size, shortcuts and order, file ownership, theme, primary designation, hidden state, saved home work area and preferred geometry. Runtime fallback is not a layout selection and never saves over these values. Existing Grid, Column and Row display-change behavior remains unchanged.
+
+This addendum supersedes the M5 prohibition on automatic layout switching only for this approved temporary display-shrink presentation. The separately approved global icon-size rejection, nominal Fan10/Ring12 limits, actual prospective radial-fit growth guards and all file-operation safeguards remain binding. Temporary Grid grants no additional capacity. It preserves ordinary launching, edit, filter and rename for current items; add/move routes retain their existing checks and refusal surfaces.
+
+## Adaptation and restoration
+
+On settled primary-work-area change, test actual rounded radial geometry at the current accepted icon size, actual stored count and direction, with empty n1 geometry. Retain the committed radial fit reserve of 24px per side. If it fits, use existing smallest-movement clamping and nonoverlap placement; retain radial presentation. Do not derive this decision from numeric effective cap alone.
+
+If radial geometry does not fit, use the existing Grid renderer, theme treatment, scroll behavior, control sizes and resize rim for this region. Size the temporary panel to the available work area using the existing Grid minimum of 180x150 and placement margins/gaps; keep header/menu, edit controls and at least one complete tile reachable at the unchanged icon size. The usable minimum is the larger of the established Grid minimum and the measured content/control minimum at this icon size. Allow ordinary Grid scrolling to reach all existing shortcuts. Do not clip controls or scale down the page to force a fit.
+
+Preserve nonoverlap among panel/window boxes using the existing placement rules. Preserve hidden regions as hidden, while recording runtime fallback state so a later explicit Show uses the safe presentation. Do not raise, activate or open a region or Manager merely because display geometry changed.
+
+When the preferred radial geometry fits again, restore preferred layout/direction and saved home placement using existing home-layout rules, with current-space clamping/nonoverlap if necessary. A runtime Grid resize does not become a preferred radial size. Repeated notifications for the same settled geometry are idempotent. No animation or periodic notice. An explicit user layout choice takes precedence over later automatic restoration.
+
+## Deliberate movement and resize while using temporary Grid
+
+Keep automatic geometry adaptation separate from deliberate user placement. A user drag or keyboard/place movement in temporary Grid saves the user's movement of the preferred radial anchor and updates its home work-area reference under existing deliberate-move rules; it must not save temporary Grid width/height into preferred radial geometry or `gridSize`. Apply the actual movement delta to the corresponding preferred radial anchor, preserving its exact radial dimensions and pivot offset. Ender maps this to the existing canonical anchor representation; the UX contract is that the preferred hub moves by the same delta, with no additional jump from temporary Grid dimensions. On later restoration apply normal clamping and nonoverlap.
+
+The canonical preferred hub is `region.radialAnchor` in desktop DIP; translate it and the corresponding preferred `region.rect` by the deliberate movement delta, retaining its radial width/height. `region.home` remains the work-area snapshot under existing deliberate-move rules. Runtime anchors may differ while automatically fitted; do not save that automatic difference as user movement. The existing save helper writes rect/home/anchor together, so it must not receive a temporary Grid rectangle as a radial save. Pending accepted user placement is included in the baseline before mapping later deltas.
+
+Resizing temporary Grid changes only its runtime viewport for the current work area. This is an explicit exception to ordinary user-resize persistence while the preferred layout remains radial. It does not overwrite preferred radial geometry, remembered ordinary `region.gridSize` or home arrangement. Use the existing resize affordance with title `Resize temporary Grid`; no new handle or control. Automatic work-area changes may refit that runtime viewport. If the user explicitly chooses Grid, this becomes a deliberate permanent layout change: preserve current visible placement and size using the existing Grid conversion/save route, clear fallback state, and stop radial auto-restoration. Other explicit layout choices follow today's validated conversion behavior; rejection preserves preference and fallback.
+
+## Status, copy and accessibility
+
+Use existing noninteractive region notice/status and Manager row description surfaces. At fallback entry show and politely announce once: `Using Grid while the display is smaller.` Full title: `Using Grid while the display is smaller. Your Fan or Ring layout returns when it fits.` The region notice follows the existing completed-notice eight-second lifetime and queue priority, without blocking menu, filtering, rename or edit controls. Do not obscure an existing active refusal or update action; queue the ordinary notice by existing rules.
+
+While fallback remains active, Manager row description persistently states `Fan · using Grid` or `Ring · using Grid`; its title uses the full text above. The existing layout selector reports the saved preferred Fan/Ring and its direction. It must not silently display Grid as a saved selection. Retain existing menu/control tooltips; only the temporary resize title changes. No new button, menu item, modal, banner strip or tray notification.
+
+On automatic restoration announce once through the existing polite status route: `Fan layout restored.` or `Ring layout restored.` Clear persistent fallback description. Do not steal focus, repeat notices after unrelated rebuilds, or erase an update offer/refusal. Explicitly choosing a permanent layout is ordinary layout-change feedback, not automatic restoration feedback.
+
+Text uses existing theme tokens/font/overflow handling and remains at least 4.5:1; all current actionable targets remain at least 24x24 CSS px, with visible focus. Full status/title survives visual elision. Status has no hit area and does not cover another control.
+
+## Active interaction and tiny work areas
+
+Coalesce a burst of display notifications into one settled geometry transition; Ender chooses the bounded technical mechanism. Invalid/outdated measurements must not restore stale geometry or produce repeated saves/notices. Do not delay safe containment indefinitely waiting for user input.
+
+Before a presentation change, invalidate active geometric drag/drop targeting and cancel its insertion preview using existing cancellation semantics: no transfer, file move, item addition or save is committed by the display event or by the later release of an invalidated drag. Retain source items/order and file records exactly. Recompute current geometry from stored data, not preview n+1. An ordinary region movement interrupted by the display event does not count as a completed deliberate placement; restore its accepted baseline before adaptation. Never silently commit partially dragged placement.
+
+Preserve edit mode, filter text and rename draft/target when they can be carried to the existing Grid equivalents. No automatic name commit/cancel. Restore focus only to the corresponding control if this app already held focus; do not activate a window. If an interaction-specific DOM control cannot be transferred intact, Ender must report the mismatch before implementation rather than discard user text. Layout restoration during active rename or geometric drag waits for safe completion/cancel, while the already safe temporary Grid remains usable; filtering/edit mode alone must not block restoration.
+
+If no legal minimum temporary Grid placement is available because the work area is too small or crowded, do not overlap panels, clip controls, shrink icons, mutate home or delete data. Suppress that region's unsafe runtime host without changing its saved hidden preference. Keep it represented in the existing Manager region row with `Not shown · display too small`; full title/status: `This region does not fit on this display. Use Manager to change its layout or hide another region.` Manager is reachable through the existing tray route and is never opened automatically. Re-evaluate after relevant layout/visibility/work-area changes and restore a safe presentation when possible. Existing primary-first deterministic placement order applies; no new region-priority policy. If Manager itself cannot fit its functional minimum, report that unsupported work area without claiming complete usability; never force visible native testing under current machine restrictions.
+
+## Acceptance and boundaries
+
+Independent QA uses committed source or immutable identity-checked pins. Cover empty and every nominal Fan/Ring count, four Fan directions, every selectable icon-size step, exact fit and one-pixel failure, nonmonotonic Fan geometry, hidden/nonprimary regions, primary work-area replacement and taskbar-like reductions in synthetic inputs. Verify preferred-layout/home/settings/file records byte-for-byte after automatic entry/restoration; movement tests permit only the explicitly saved anchor/home fields, runtime resize permits none, permanent layout conversion uses today's save route. Test unchanged global icon-size and growth rejection guards.
+
+Measure temporary Grid controls, one complete tile, scroll reachability for first/last items, real actionable rectangles/hit tests, focus and status across themes and size extremes; deliberately break overflow or hide a control to prove the detector fails. Cover crowded/tiny work areas, deterministic no-overlap, suppressed-versus-user-hidden distinction and recovery through existing Manager state. Verify no focus stealing or automatic window opening.
+
+Test preview invalidation, source preservation, late drop/drag callbacks, rename draft/focus transfer, filter/edit preservation, explicit layout override, drag delta mapping, runtime resize then restore, restart/rebuild behavior without persisted fallback and stale/coalesced geometry responses. Notices announce once, obey existing eight-second/queue rules, do not cover controls and coexist with updater/refusal states. Demonstrate known-bad controls for unwanted home save, unlimited Grid capacity and stale drop commit.
+
+Mock/offscreen acceptance is development evidence only. Native work-area/DPI transitions, shaped-host rebuild/click-through and real interaction require a fresh authorized timed away window, restored settings and all standing machine constraints. No sleep, installed launcher interaction, signed-in browser launches, user data or visible tests are authorized here.
+
+## Evidence
+
+The design follows studio UX references (NN/g visibility, user control/error prevention; WCAG 2.2 target/focus/contrast; familiar Windows adaptation) in `Team/Research/UX_AppBestPractices.md`. Microsoft recommends validating saved positions against the current monitor/work area and supports adaptive replacement of layouts to remain usable in limited space. Temporary Grid is QuickLaunch's approved application-specific policy, not a Windows-mandated layout: [window positioning](https://learn.microsoft.com/en-us/windows/win32/gdi/positioning-objects-on-multiple-display-monitors), [adaptive design](https://learn.microsoft.com/en-us/windows/apps/design/layout/responsive-design).
