@@ -1,230 +1,116 @@
-/* ══ SILENT HILL ══════════════════════════════════════════════════════════════
-   The fog. Not the rust — the FOG. White, suffocating, endless.
-   Shapes emerge from nothing. The radio crackles with static.
-   You can't see more than ten feet ahead. Something is out there.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* silent-hill: committed ThemeFidelity Batch07; original static bounded frame art. */
 :root {
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── LIGHT FOG PARADIGM — the opposite of dark mode ── */
-  --bg:           #C8C0B8;
-  --panel-bg:     rgba(180, 172, 164, 0.97);
-  --overlay-bg:   rgba(170, 162, 155, 0.96);
-  --header-bg:    rgba(100, 90, 80, 0.06);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #3A3530;
-  --text-dim:     rgba(60, 55, 48, 0.83);
-
-  /* Near-monochrome — the only color is a faint rust bleed */
-  --accent-c:     #6A5A4A;   /* fog brown-grey */
-  --accent-m:     #7A3020;   /* distant rust (barely visible) */
-  --accent-y:     #8A7A6A;   /* warm grey */
-
-  --border:       rgba(80, 70, 60, 0.18);
-  --border-h:     rgba(80, 70, 60, 0.38);
-
-  --glow-c:       0 0 6px rgba(80,70,60,.25), 0 0 16px rgba(80,70,60,.08);
-  --glow-m:       0 0 6px rgba(122,48,32,.30), 0 0 16px rgba(122,48,32,.10);
-  --glow-y:       0 0 5px rgba(100,90,75,.25), 0 0 14px rgba(100,90,75,.08);
-
-  --pulse-glow:   inset 0 0 22px rgba(80,70,60,.04);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(80,70,60,.08);
-
-  --title-anim:   sh-fog-title 12s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(60, 55, 48, 0.06);
-  --tile-hover-border: rgba(80, 70, 60, 0.25);
-  --tile-hover-shadow: 0 0 12px rgba(80, 70, 60, 0.10);
-  --tile-active-bg:    rgba(60, 55, 48, 0.12);
-  --tile-icon-glow:    drop-shadow(0 0 4px rgba(60,55,48,.20)) drop-shadow(0 0 10px rgba(60,55,48,.08));
-  --tile-icon-fx:      grayscale(0.65) contrast(0.9) brightness(0.85);
-  --tile-icon-shape:   none;
-  --tile-label-spacing:   0.5px;
+  --bg: #C8C0B8;
+  --panel-bg: #C8C0B8;
+  --overlay-bg: #C8C0B8;
+  --header-bg: #D0C8A8;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #3A3530;
+  --text-dim: #463E35;
+  --accent-c: #493C31;
+  --accent-text: #493C31;
+  --accent-m: #493C31;
+  --accent-y: #493C31;
+  --border: #5F5144;
+  --border-h: #493C31;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #493C31;
+  --title-anim: none;
+  --tile-hover-bg: #BCB4AC;
+  --tile-hover-border: #493C31;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #B4ACA4;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 8s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 3s ease-out forwards;
-
-  --btn-hover-bg:   rgba(60, 55, 48, 0.08);
-  --btn-active-bg:  rgba(60, 55, 48, 0.15);
-  --btn-hover-text: #332E2A;
+  --tile-label-weight: 400;
+  --tile-label-style: italic;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #BCB4AC;
+  --btn-active-bg: #B4ACA4;
+  --btn-hover-text: #3A3530;
   --hover-label-floor: 0;
-  --hover-label-ceiling: 0.32;
-
-  --drop-hint-border: rgba(80, 70, 60, 0.20);
-  --drop-icon-color:  rgba(80, 70, 60, 0.25);
-  --hint-sub-color:   rgba(80, 70, 60, 0.95);
-
-  --rename-dashed:    rgba(80, 70, 60, 0.30);
-  --rename-input-bg:  rgba(60, 55, 48, 0.06);
-
-  --edit-bar-bg:          rgba(122, 48, 32, 0.06);
-  --edit-bar-border:      rgba(122, 48, 32, 0.25);
-  --edit-label-color:     #7A3020;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #7A3020;
-  --btn-done-border:      rgba(122, 48, 32, 0.30);
-  --btn-done-hover-bg:    rgba(122, 48, 32, 0.08);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(80, 70, 60, 0.30);
-
-  --update-bg:             rgba(100, 90, 75, 0.06);
-  --update-border:         rgba(100, 90, 75, 0.25);
-  --update-color:          var(--accent-y);
-  --update-btn-border:     rgba(100, 90, 75, 0.22);
-  --update-btn-hover-bg:   rgba(100, 90, 75, 0.08);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #6A5A4A;
-  --btn-close-border:     rgba(80, 70, 60, 0.28);
-  --btn-close-hover-bg:   rgba(80, 70, 60, 0.08);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(60, 55, 48, 0.06);
-  --picker-item-hover-bg:  rgba(60, 55, 48, 0.07);
-  --picker-item-active-bg: rgba(60, 55, 48, 0.12);
-  --picker-placeholder-bg: rgba(60, 55, 48, 0.06);
-
-  --skin-btn-active-bg:    rgba(60, 55, 48, 0.14);
-  --remove-btn-bg:         rgba(122, 48, 32, 0.70);
-  --remove-btn-border:     #7A3020;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #3A3530;
+  --drop-hint-border: #5F5144;
+  --drop-icon-color: #493C31;
+  --hint-sub-color: #463E35;
+  --rename-dashed: #5F5144;
+  --rename-input-bg: #C8C0B8;
+  --edit-bar-bg: #C8C0B8;
+  --edit-bar-border: #5F5144;
+  --edit-label-color: #3A3530;
+  --edit-label-glow: none;
+  --btn-done-color: #3A3530;
+  --btn-done-border: #5F5144;
+  --btn-done-hover-bg: #BCB4AC;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #5F5144;
+  --update-bg: #C8C0B8;
+  --update-border: #5F5144;
+  --update-color: #3A3530;
+  --update-btn-border: #5F5144;
+  --update-btn-hover-bg: #BCB4AC;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #3A3530;
+  --btn-close-border: #5F5144;
+  --btn-close-hover-bg: #BCB4AC;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #C8C0B8;
+  --picker-item-hover-bg: #BCB4AC;
+  --picker-item-active-bg: #B4ACA4;
+  --picker-placeholder-bg: #C8C0B8;
+  --skin-btn-active-bg: #B4ACA4;
+  --remove-btn-bg: #79261C;
+  --remove-btn-border: #79261C;
 }
 
-/* ── The fog. Heavy grain, white-out vignette (INVERTED — light center, darker edges) ── */
-#app::after {
-  background:
-    /* Heavy film grain — desaturated, visible on light background */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"),
-    /* Fog vignette — INVERTED: edges darken slightly, center is bright fog */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(90,82,75,0.22) 100%),
-    /* Distant rust bleed — barely there, bottom edge */
-    radial-gradient(ellipse 60% 25% at 50% 100%, rgba(100,40,20,0.04) 0%, transparent 65%),
-    /* Fog density variation — slightly brighter patches */
-    radial-gradient(ellipse 40% 35% at 30% 40%, rgba(210,200,190,0.08) 0%, transparent 55%),
-    radial-gradient(ellipse 35% 30% at 70% 60%, rgba(210,200,190,0.06) 0%, transparent 50%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Identity belongs to the frame; no foreground panno, ghost text or ambient loops. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#D0C8A8; border-bottom-color:#5F5144; }
+#header::before { background:#5F5144; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2084%2020'%3E%3Cpath%20d%3D'M4%203H20%20M4%203V17%20M6%206H17%20M7%2016L10%2015%20M17%204L19%207'%20fill%3D'none'%20stroke%3D'%23A02A1A'%20stroke-opacity%3D'0.5'%20stroke-width%3D'1.1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3Cpath%20d%3D'M34%207L58%206%20M50%2015L75%2014'%20fill%3D'none'%20stroke%3D'%235F5144'%20stroke-opacity%3D'0.08'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Georgia, 'Times New Roman', serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#3A3530; text-shadow:none; }
+#title .accent { color:#3A3530; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#463E35; }
+#header-controls button { color:#3A3530; border-color:#5F5144; }
+#header-controls button:hover, #header-controls button:active { color:#3A3530; border-color:#493C31; }
 
-/* ── Header — muted grey accent bar, barely visible ──────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #8A7A6A, rgba(100, 90, 75, 0.20));
-  box-shadow: 0 0 6px rgba(80,70,60,0.20), 0 0 16px rgba(80,70,60,0.06);
-}
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M2%204L5%203%20M1%2019L5%2017'%20fill%3D'none'%20stroke%3D'%235F5144'%20stroke-opacity%3D'0.04'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M1%2010L6%208%20M3%2029L7%2027'%20fill%3D'none'%20stroke%3D'%235F5144'%20stroke-opacity%3D'0.04'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%208'%3E%3Cpath%20d%3D'M0%204L4%201L8%204L12%201L16%204L20%201L24%204%20M0%204L4%207L8%204L12%207L16%204L20%207L24%204'%20fill%3D'none'%20stroke%3D'%235F5144'%20stroke-opacity%3D'0.22'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 bottom 0 / 24px 8px repeat-x; }
+.app-tile { background:#C8C0B8; border-color:#5F5144; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#BCB4AC; border-color:#493C31; box-shadow:none; }
+.app-tile:active { background:#B4ACA4; }
+.app-tile::before { display:none; }
+.tile-label { font-family:Georgia, 'Times New Roman', serif; font-size:12px; font-weight:400; font-style:italic; letter-spacing:0.3px; line-height:1.2; color:#3A3530; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#79261C; border-color:#79261C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#3A3530; }
+.hotkey-input.recording { background:#B4ACA4; color:#3A3530; border-color:#493C31; }
+.hotkey-status.error, .mgr-error { color:#79261C; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#BCB4AC; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#493C31; }
 
-/* ── Grid: NO device, NO panno — just fog. Atmosphere only. ──────────────── */
-/* The fog IS the theme. Nothing to see. Something to feel. */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Drifting fog banks — layered radial gradients that shift */
-    radial-gradient(ellipse 60% 45% at 35% 45%, rgba(190,182,174,0.15) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 65% 55%, rgba(185,178,170,0.12) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 35% at 50% 80%, rgba(180,172,164,0.10) 0%, transparent 60%),
-    /* Faint chain-link suggestion — barely visible, like something behind the fog */
-    repeating-linear-gradient(45deg, transparent 0px, transparent 18px, rgba(80,70,60,0.015) 18px, rgba(80,70,60,0.015) 19px),
-    repeating-linear-gradient(-45deg, transparent 0px, transparent 18px, rgba(80,70,60,0.015) 18px, rgba(80,70,60,0.015) 19px);
-  animation: sh-fog 12s ease-in-out infinite;
-}
-
-/* CPU-efficient: opacity-only (tier 1) — slow, breathing fog */
-@keyframes sh-fog {
-  0%, 100% { opacity: 0.70; }
-  30%       { opacity: 0.85; }
-  50%       { opacity: 0.60; }
-  70%       { opacity: 0.80; }
-  87%       { opacity: 0.75; }
-  88%       { opacity: 0.15; }   /* the fog parts for one terrifying moment */
-  89%       { opacity: 0.90; }   /* then closes back in, thicker */
-  92%       { opacity: 0.70; }
-}
-
-/* ── Flavor content ──────────────────────────────────────────────────────── */
-#header::after {
-  content: 'SILENT HILL // THE FOG // RADIO STATIC';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(60, 55, 48, 0.45);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'THERE WAS\AA HOLE\AHERE\A\AIT IS\AGONE\ANOW\A\ATHE FOG\AIS GETTING\ATHICKER';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(60, 55, 48, 0.12); white-space: pre;
-  animation: sh-readout 12s ease-in-out infinite;
-}
-
-@keyframes sh-readout {
-  0%, 100% { color: rgba(60,55,48,.12); }
-  28%       { color: rgba(60,55,48,.16); }
-  65%       { color: rgba(60,55,48,.09); }
-  88%       { color: rgba(200,192,184,0); }
-  89%       { color: rgba(60,55,48,.20); }
-  92%       { color: rgba(60,55,48,.12); }
-}
-
-#edit-bar::after {
-  content: 'SOMETHING IS FOLLOWING YOU';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(122, 48, 32, 0.35);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
-
-/* ── Title: fog pulse — barely visible text emerging and receding ─────────── */
-@keyframes sh-fog-title {
-  0%        { color: #5A5248; text-shadow: 0 0 8px rgba(80,70,60,.20); }
-  35%       { color: #4A4238; text-shadow: 0 0 12px rgba(80,70,60,.30); }
-  65%       { color: #7A7268; text-shadow: none; }
-  87%       { color: #5A5248; text-shadow: 0 0 6px rgba(80,70,60,.18); }
-  88%       { color: #2A2520; text-shadow: 0 0 18px rgba(40,35,30,.50), 0 0 40px rgba(122,48,32,.20); opacity: 0.90; }
-  89%       { color: #C8C0B8; text-shadow: none; opacity: 0; }
-  90%       { color: #5A5248; text-shadow: 0 0 8px rgba(80,70,60,.25); opacity: 1; }
-  100%      { color: #5A5248; text-shadow: 0 0 8px rgba(80,70,60,.20); }
-}
-
-/* ── App: fog breathing — very slow, very subtle ─────────────────────────── */
-#app { animation: sh-fog-border 12s ease-in-out infinite; }
-@keyframes sh-fog-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(80,70,60,.15), inset 0 0 30px rgba(80,70,60,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(80,70,60,.22), inset 0 0 40px rgba(80,70,60,.06); }
-  65%      { box-shadow: 0 0 0 1px rgba(80,70,60,.12), inset 0 0 20px rgba(80,70,60,.03); }
-  88%      { box-shadow: 0 0 0 2px rgba(40,35,30,.50), inset 0 0 60px rgba(122,48,32,.08), 0 0 20px rgba(60,55,48,.15); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(80,70,60,.18), inset 0 0 28px rgba(80,70,60,.04); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(170, 162, 155, 0.97); border-top-color: rgba(80, 70, 60, 0.18); }
-#theme-banner::before { content: '✝'; color: #6A5A4A; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(58, 53, 48, 0.65); }
-
-/* ── No particles. The fog is still. Nothing moves. That's what's wrong. ── */
-#particles {
-  background: none;
-}
-
-/* ── Tile: no hover effect. Just a faint border that was always there. ──── */
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: transparent;
-  border: none;
-}
-/* hover labels on a pale ground: these two base rules hard-code white (their fills are not --btn-hover-bg) */
-.update-btn:hover { color: var(--btn-hover-text); }
-#filter-chip-clear:hover { color: var(--btn-hover-text); }
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%207'%3E%3Cpath%20d%3D'M0%201L3%203L6%201L10%204L14%202L18%204L21%201L24%203'%20fill%3D'none'%20stroke%3D'%235F5144'%20stroke-opacity%3D'0.35'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #D0C8A8; border-top-color:#5F5144; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2022%2022'%3E%3Cpath%20d%3D'M4%202H13L18%207V20H4Z%20M13%202V8H18%20M5%2017L8%2015L11%2018L14%2016L17%2018'%20fill%3D'none'%20stroke%3D'%23493C31'%20stroke-opacity%3D'1'%20stroke-width%3D'1.2'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Georgia, 'Times New Roman', serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; letter-spacing:0.3px; color:#3A3530; text-shadow:none; }
+/* Adopt only the committed bounded motif; other themes keep existing behavior. */
+#header { --ql-header-art-safety:1; }

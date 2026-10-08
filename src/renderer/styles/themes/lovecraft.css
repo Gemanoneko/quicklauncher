@@ -1,219 +1,120 @@
-/* ══ LOVECRAFTIAN ═══════════════════════════════════════════════════════════════
-   The forbidden archive. Providence. Ink on aged parchment and the cold
-   geometry of things that should not be. Do not read aloud. Ph'nglui mglw'nafh.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* lovecraft: committed ThemeFidelity Batch07; original static bounded frame art. */
 :root {
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #030408;
-  --panel-bg:     rgba(4, 5, 12, 0.99);
-  --overlay-bg:   rgba(3, 4, 8, 0.97);
-  --header-bg:    rgba(64, 80, 160, 0.03);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #90A4C4;
-  --text-dim:     rgba(90, 100, 130, 0.78);
-
-  --accent-c:     #4050A0;   /* deep archive blue */
-  --accent-text:  #7888D0;   /* non-Euclidean violet-blue — clears 3:1 against --bg */
-  --accent-m:     #806020;   /* aged document gold */
-  --accent-y:     #302040;   /* cosmic violet-black */
-
-  --border:       rgba(64, 80, 160, 0.18);
-  --border-h:     rgba(80, 100, 180, 0.42);
-
-  --glow-c:       0 0 6px rgba(64,80,160,.50), 0 0 18px rgba(64,80,160,.16);
-  --glow-m:       0 0 6px rgba(128,96,32,.50), 0 0 18px rgba(128,96,32,.16);
-  --glow-y:       0 0 5px rgba(48,32,64,.40), 0 0 14px rgba(48,32,64,.12);
-
-  --pulse-glow:   inset 0 0 18px rgba(50,60,120,.05);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(64,80,160,.07);
-
-  --title-anim:   eldritch-title 12s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(50, 65, 130, 0.08);
-  --tile-hover-border: rgba(80, 100, 180, 0.32);
-  --tile-hover-shadow: 0 0 10px rgba(64, 80, 160, 0.14);
-  --tile-active-bg:    rgba(50, 65, 130, 0.15);
-  --tile-icon-glow:    drop-shadow(0 0 4px rgba(64,80,160,.45)) drop-shadow(0 0 10px rgba(50,65,130,.18));
-  --tile-icon-fx:      brightness(0.85) saturate(0.65) contrast(1.15);
-  --tile-icon-shape:   polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-  --tile-label-spacing:   0.8px;
+  --bg: #0E0F0C;
+  --panel-bg: #1B2118;
+  --overlay-bg: #1B2118;
+  --header-bg: #20271C;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #D7C79A;
+  --text-dim: #B3AE92;
+  --accent-c: #A7BA84;
+  --accent-text: #A7BA84;
+  --accent-m: #A7BA84;
+  --accent-y: #A7BA84;
+  --border: #839078;
+  --border-h: #A7BA84;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #A7BA84;
+  --title-anim: none;
+  --tile-hover-bg: #293024;
+  --tile-hover-border: #A7BA84;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #30382A;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.5px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 7s ease-in-out infinite;
-  --app-entrance-anim:   entrance-zoom 2s ease-out forwards;
-
-  --btn-hover-bg:   rgba(50, 65, 130, 0.09);
-  --btn-active-bg:  rgba(50, 65, 130, 0.18);
-
-  --drop-hint-border: rgba(64, 80, 160, 0.22);
-  --drop-icon-color:  rgba(80, 100, 180, 0.28);
-  --hint-sub-color:   rgba(90, 100, 130, 0.75);
-
-  --rename-dashed:    rgba(64, 80, 160, 0.35);
-  --rename-input-bg:  rgba(50, 65, 130, 0.07);
-
-  --edit-bar-bg:          rgba(128, 96, 32, 0.07);
-  --edit-bar-border:      rgba(128, 96, 32, 0.35);
-  --edit-label-color:     var(--accent-m);
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       var(--accent-m);
-  --btn-done-border:      rgba(128, 96, 32, 0.40);
-  --btn-done-hover-bg:    rgba(128, 96, 32, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(64, 80, 160, 0.38);
-
-  --update-bg:             rgba(64, 80, 160, 0.06);
-  --update-border:         rgba(64, 80, 160, 0.32);
-  --update-color:          var(--accent-c);
-  --update-btn-border:     rgba(64, 80, 160, 0.28);
-  --update-btn-hover-bg:   rgba(64, 80, 160, 0.09);
-  --update-btn-hover-glow: var(--glow-c);
-
-  --btn-close-color:      var(--accent-m);
-  --btn-close-border:     rgba(128, 96, 32, 0.35);
-  --btn-close-hover-bg:   rgba(128, 96, 32, 0.10);
-  --btn-close-hover-glow: var(--glow-m);
-
-  --picker-search-bg:      rgba(50, 65, 130, 0.07);
-  --picker-item-hover-bg:  rgba(50, 65, 130, 0.08);
-  --picker-item-active-bg: rgba(50, 65, 130, 0.14);
-  --picker-placeholder-bg: rgba(50, 65, 130, 0.07);
-
-  --skin-btn-active-bg:    rgba(50, 65, 130, 0.16);
-  --remove-btn-bg:         rgba(128, 96, 32, 0.88);
-  --remove-btn-border:     var(--accent-m);
+  --tile-label-weight: 400;
+  --tile-label-style: italic;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #293024;
+  --btn-active-bg: #30382A;
+  --btn-hover-text: #D7C79A;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #D7C79A;
+  --drop-hint-border: #839078;
+  --drop-icon-color: #A7BA84;
+  --hint-sub-color: #B3AE92;
+  --rename-dashed: #839078;
+  --rename-input-bg: #1B2118;
+  --edit-bar-bg: #1B2118;
+  --edit-bar-border: #839078;
+  --edit-label-color: #D7C79A;
+  --edit-label-glow: none;
+  --btn-done-color: #D7C79A;
+  --btn-done-border: #839078;
+  --btn-done-hover-bg: #293024;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #839078;
+  --update-bg: #1B2118;
+  --update-border: #839078;
+  --update-color: #D7C79A;
+  --update-btn-border: #839078;
+  --update-btn-hover-bg: #293024;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #D7C79A;
+  --btn-close-border: #839078;
+  --btn-close-hover-bg: #293024;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1B2118;
+  --picker-item-hover-bg: #293024;
+  --picker-item-active-bg: #30382A;
+  --picker-placeholder-bg: #1B2118;
+  --skin-btn-active-bg: #30382A;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Aged parchment grain + void vignette + cosmic corners ───────────────── */
-#app::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.76' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.1 0.1 0.3 0 0.01 0.1 0.1 0.3 0 0.01 0.2 0.2 0.5 0 0.02 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 25%, rgba(1,2,6,0.88) 100%),
-    radial-gradient(ellipse 40% 35% at 0% 0%, rgba(30,40,100,0.07) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 35% at 100% 100%, rgba(25,35,90,0.06) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(10,14,40,0.04) 0%, transparent 70%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Identity belongs to the frame; no foreground panno, ghost text or ambient loops. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#20271C; border-bottom-color:#839078; }
+#header::before { background:#839078; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2084%2020'%3E%3Cpath%20d%3D'M42%2010L32%202%20M42%2010L52%203%20M42%2010L62%2013%20M42%2010L45%2019%20M42%2010L25%2016%20M33%203L28%204%20M50%204L52%208%20M59%2012L58%209%20M45%2016L49%2018%20M29%2015L29%2011'%20fill%3D'none'%20stroke%3D'%23A7BA84'%20stroke-opacity%3D'0.9'%20stroke-width%3D'1.3'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'IM Fell English', 'Palatino Linotype', Georgia, serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:3px; color:#D7C79A; text-shadow:none; }
+#title .accent { color:#D7C79A; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#B3AE92; }
+#header-controls button { color:#D7C79A; border-color:#839078; }
+#header-controls button:hover, #header-controls button:active { color:#D7C79A; border-color:#A7BA84; }
 
-/* ── Header — deep archive blue accent bar ───────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #4050A0, rgba(50, 65, 130, 0.22));
-  box-shadow: 0 0 6px rgba(64,80,160,0.45), 0 0 18px rgba(50,65,130,0.14);
-}
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cellipse%20cx%3D'3'%20cy%3D'7'%20rx%3D'2.3'%20ry%3D'3.4'%20fill%3D'%23839078'%20opacity%3D'.16'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cellipse%20cx%3D'4'%20cy%3D'21'%20rx%3D'2'%20ry%3D'3'%20fill%3D'%23839078'%20opacity%3D'.15'%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2032%208'%3E%3Cpath%20d%3D'M1%204L16%203.5'%20fill%3D'none'%20stroke%3D'%23839078'%20stroke-opacity%3D'0.28'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3Cellipse%20cx%3D'25'%20cy%3D'5'%20rx%3D'2'%20ry%3D'3'%20fill%3D'%23839078'%20opacity%3D'.15'%2F%3E%3C%2Fsvg%3E") left 0 bottom 0 / 32px 8px no-repeat; }
+.app-tile { background:#1B2118; border-color:#839078; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#293024; border-color:#A7BA84; box-shadow:none; }
+.app-tile:active { background:#30382A; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Palatino Linotype', Georgia, serif; font-size:12px; font-weight:400; font-style:italic; letter-spacing:0.5px; line-height:1.2; color:#D7C79A; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#D7C79A; }
+.hotkey-input.recording { background:#30382A; color:#D7C79A; border-color:#A7BA84; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#293024; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#A7BA84; }
 
-/* ── Grid: Style B — The Necronomicon (the forbidden tome) ───────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Crect x='115' y='40' width='270' height='300' rx='5' fill='rgba(22,18,10,0.88)' stroke='rgba(128,96,32,0.40)' stroke-width='2'/%3E%3Crect x='118' y='43' width='264' height='294' rx='4' fill='none' stroke='rgba(100,80,25,0.20)' stroke-width='0.5'/%3E%3Crect x='110' y='40' width='8' height='300' rx='2' fill='rgba(35,28,14,0.85)' stroke='rgba(100,80,25,0.30)' stroke-width='1'/%3E%3Cline x1='114' y1='45' x2='114' y2='335' stroke='rgba(80,64,20,0.25)' stroke-width='0.5'/%3E%3Cline x1='112' y1='45' x2='112' y2='335' stroke='rgba(60,48,15,0.18)' stroke-width='0.5'/%3E%3Crect x='130' y='55' width='240' height='270' rx='2' fill='none' stroke='rgba(128,96,32,0.18)' stroke-width='0.8'/%3E%3Crect x='134' y='59' width='232' height='262' rx='1' fill='none' stroke='rgba(100,80,25,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='185' r='72' fill='none' stroke='rgba(64,80,160,0.18)' stroke-width='1'/%3E%3Ccircle cx='250' cy='185' r='68' fill='none' stroke='rgba(64,80,160,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='185' r='78' fill='none' stroke='rgba(128,96,32,0.12)' stroke-width='0.5' stroke-dasharray='3,8'/%3E%3Cpolygon points='250,113 271.5,179.3 342,179.3 284.2,220.7 305.9,287 250,245.5 194.1,287 215.8,220.7 158,179.3 228.5,179.3' fill='none' stroke='rgba(64,80,160,0.22)' stroke-width='1.2'/%3E%3Cpolygon points='250,125 266.8,177.6 322,177.6 276.6,210.4 293.5,263 250,230.1 206.5,263 223.4,210.4 178,177.6 233.2,177.6' fill='none' stroke='rgba(64,80,160,0.12)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='185' rx='16' ry='10' fill='none' stroke='rgba(80,100,180,0.30)' stroke-width='1'/%3E%3Cellipse cx='250' cy='185' rx='12' ry='7' fill='none' stroke='rgba(100,120,200,0.18)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='185' r='3.5' fill='rgba(64,80,160,0.35)'/%3E%3Ccircle cx='250' cy='185' r='1.5' fill='rgba(100,120,200,0.50)'/%3E%3Cline x1='250' y1='113' x2='250' y2='125' stroke='rgba(128,96,32,0.18)' stroke-width='0.5'/%3E%3Cline x1='342' y1='179' x2='322' y2='178' stroke='rgba(128,96,32,0.18)' stroke-width='0.5'/%3E%3Cline x1='306' y1='287' x2='294' y2='263' stroke='rgba(128,96,32,0.18)' stroke-width='0.5'/%3E%3Cline x1='194' y1='287' x2='207' y2='263' stroke='rgba(128,96,32,0.18)' stroke-width='0.5'/%3E%3Cline x1='158' y1='179' x2='178' y2='178' stroke='rgba(128,96,32,0.18)' stroke-width='0.5'/%3E%3Ctext x='250' y='78' text-anchor='middle' font-family='Georgia,serif' font-size='9' font-style='italic' letter-spacing='4' fill='rgba(128,96,32,0.45)'%3ENECRONOMICON%3C/text%3E%3Ctext x='250' y='92' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='2' fill='rgba(100,80,25,0.30)'%3EAL AZIF -- THE BOOK OF THE DEAD%3C/text%3E%3Cline x1='160' y1='98' x2='340' y2='98' stroke='rgba(128,96,32,0.15)' stroke-width='0.5'/%3E%3Ccircle cx='160' cy='98' r='1.5' fill='rgba(128,96,32,0.25)'/%3E%3Ccircle cx='340' cy='98' r='1.5' fill='rgba(128,96,32,0.25)'/%3E%3Ccircle cx='250' cy='98' r='1' fill='rgba(128,96,32,0.18)'/%3E%3Ctext x='250' y='306' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='2' fill='rgba(100,80,25,0.28)'%3EABDUL ALHAZRED -- DAMASCUS -- 730 A.D.%3C/text%3E%3Cline x1='160' y1='295' x2='340' y2='295' stroke='rgba(128,96,32,0.15)' stroke-width='0.5'/%3E%3Crect x='140' y='136' width='18' height='8' rx='2' fill='rgba(80,64,20,0.45)' stroke='rgba(128,96,32,0.30)' stroke-width='0.8'/%3E%3Crect x='142' y='138' width='14' height='4' rx='1' fill='rgba(50,40,12,0.70)' stroke='rgba(100,80,25,0.20)' stroke-width='0.5'/%3E%3Crect x='140' y='236' width='18' height='8' rx='2' fill='rgba(80,64,20,0.45)' stroke='rgba(128,96,32,0.30)' stroke-width='0.8'/%3E%3Crect x='142' y='238' width='14' height='4' rx='1' fill='rgba(50,40,12,0.70)' stroke='rgba(100,80,25,0.20)' stroke-width='0.5'/%3E%3Crect x='342' y='136' width='18' height='8' rx='2' fill='rgba(80,64,20,0.45)' stroke='rgba(128,96,32,0.30)' stroke-width='0.8'/%3E%3Crect x='344' y='138' width='14' height='4' rx='1' fill='rgba(50,40,12,0.70)' stroke='rgba(100,80,25,0.20)' stroke-width='0.5'/%3E%3Crect x='342' y='236' width='18' height='8' rx='2' fill='rgba(80,64,20,0.45)' stroke='rgba(128,96,32,0.30)' stroke-width='0.8'/%3E%3Crect x='344' y='238' width='14' height='4' rx='1' fill='rgba(50,40,12,0.70)' stroke='rgba(100,80,25,0.20)' stroke-width='0.5'/%3E%3Cpath d='M 250,113 Q 260,105 255,95' fill='none' stroke='rgba(64,80,160,0.12)' stroke-width='0.8'/%3E%3Cpath d='M 250,113 Q 240,105 245,95' fill='none' stroke='rgba(64,80,160,0.12)' stroke-width='0.8'/%3E%3Cpath d='M 250,257 Q 265,270 260,282' fill='none' stroke='rgba(64,80,160,0.10)' stroke-width='0.8'/%3E%3Cpath d='M 250,257 Q 235,270 240,282' fill='none' stroke='rgba(64,80,160,0.10)' stroke-width='0.8'/%3E%3Cpath d='M 185,185 Q 170,175 162,165' fill='none' stroke='rgba(64,80,160,0.08)' stroke-width='0.8'/%3E%3Cpath d='M 315,185 Q 330,175 338,165' fill='none' stroke='rgba(64,80,160,0.08)' stroke-width='0.8'/%3E%3Ccircle cx='160' cy='120' r='1' fill='rgba(64,80,160,0.15)'/%3E%3Ccircle cx='340' cy='120' r='1' fill='rgba(64,80,160,0.15)'/%3E%3Ccircle cx='160' cy='260' r='1' fill='rgba(64,80,160,0.12)'/%3E%3Ccircle cx='340' cy='260' r='1' fill='rgba(64,80,160,0.12)'/%3E%3Ccircle cx='200' cy='110' r='0.8' fill='rgba(128,96,32,0.15)'/%3E%3Ccircle cx='300' cy='110' r='0.8' fill='rgba(128,96,32,0.15)'/%3E%3Ccircle cx='200' cy='270' r='0.8' fill='rgba(128,96,32,0.12)'/%3E%3Ccircle cx='300' cy='270' r='0.8' fill='rgba(128,96,32,0.12)'/%3E%3Ctext x='250' y='320' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1.5' fill='rgba(64,80,160,0.15)'%3EDO NOT READ ALOUD%3C/text%3E%3Ctext x='55' y='190' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(64,80,160,0.10)' transform='rotate(-90,55,190)'%3EFORBIDDEN KNOWLEDGE%3C/text%3E%3Ctext x='445' y='190' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(64,80,160,0.10)' transform='rotate(90,445,190)'%3EMISKATONIC ARCHIVES%3C/text%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: necronomicon 12s ease-in-out infinite;
-}
-
-@keyframes necronomicon {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* the void claims all — synchronized blackout */
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
-/* ── Flavor content ──────────────────────────────────────────────────────── */
-#header::after {
-  content: 'MISKATONIC // NECRONOMICON // DO NOT READ ALOUD';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(110, 140, 210, 0.62);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'THE CALL OF\ACTHULHU\A-----------\ATHAT IS NOT\ADEAD WHICH\ACAN ETERNAL\ALIE\A-----------\AFHTAGN\AWGAH NAGL';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(50, 65, 130, 0.10); white-space: pre;
-  animation: eldritch-readout 12s ease-in-out infinite;
-}
-
-@keyframes eldritch-readout {
-  0%, 100% { color: rgba(50,65,130,.10); }
-  28%       { color: rgba(50,65,130,.14); }
-  65%       { color: rgba(50,65,130,.07); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(64,80,160,.18); }
-  92%       { color: rgba(50,65,130,.10); }
-}
-
-#edit-bar::after {
-  content: 'NECRONOMICON // AUTHORIZED ACCESS DENIED';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(100, 120, 180, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title: cosmic color swirl with 88% sync flash ───────────────────────── */
-@keyframes eldritch-title {
-  0%        { color: #90A4C4; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); }
-  20%       { color: #8090C0; text-shadow: 0 0 8px rgba(80,100,180,.45), 0 0 22px rgba(64,80,160,.16); }
-  40%       { color: #9080A0; text-shadow: 0 0 7px rgba(120,80,140,.40), 0 0 18px rgba(100,60,120,.14); }
-  60%       { color: #6070A0; text-shadow: 0 0 6px rgba(64,80,160,.38); }
-  87%       { color: #90A4C4; text-shadow: 0 0 6px rgba(64,80,160,.35); }
-  88%       { color: #C0A040; text-shadow: 0 0 18px rgba(192,160,64,.75), 0 0 40px rgba(128,96,32,.40); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #90A4C4; text-shadow: 0 0 8px rgba(64,80,160,.50); opacity: 1; }
-  100%      { color: #90A4C4; text-shadow: 0 0 6px rgba(64,80,160,.38), 0 0 16px rgba(64,80,160,.12); }
-}
-
-/* ── App: cosmic pulse — synchronized ────────────────────────────────────── */
-#app { animation: eldritch-border 12s ease-in-out infinite; }
-@keyframes eldritch-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(50,65,130,.18), inset 0 0 20px rgba(50,65,130,.04); }
-  30%      { box-shadow: 0 0 0 1px rgba(64,80,160,.42), inset 0 0 28px rgba(64,80,160,.07); }
-  65%      { box-shadow: 0 0 0 1px rgba(48,32,64,.30), inset 0 0 22px rgba(48,32,64,.05); }
-  88%      { box-shadow: 0 0 0 2px rgba(192,160,64,.80), inset 0 0 50px rgba(128,96,32,.15), 0 0 18px rgba(128,96,32,.25); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(64,80,160,.40), inset 0 0 22px rgba(64,80,160,.06); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 3, 7, 0.99); border-top-color: rgba(64, 80, 160, 0.22); }
-#theme-banner::before { content: '∴'; color: #4050A0; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(110, 135, 195, 0.68); }
-
-/* ── Cosmic dust — eldritch motes drifting ───────────────────────────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='500'%3E%3Ccircle cx='40' cy='80' r='1.5' fill='rgba(64,80,160,0.22)'/%3E%3Ccircle cx='130' cy='220' r='1' fill='rgba(128,96,32,0.16)'/%3E%3Ccircle cx='200' cy='380' r='2' fill='rgba(80,60,140,0.14)'/%3E%3Ccircle cx='80' cy='440' r='0.8' fill='rgba(64,80,160,0.18)'/%3E%3Ccircle cx='170' cy='140' r='1.2' fill='rgba(100,80,25,0.12)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='700'%3E%3Ccircle cx='60' cy='120' r='2' fill='rgba(80,60,140,0.10)'/%3E%3Ccircle cx='180' cy='350' r='1.5' fill='rgba(64,80,160,0.08)'/%3E%3Ccircle cx='270' cy='560' r='2.5' fill='rgba(128,96,32,0.07)'/%3E%3C/svg%3E") repeat;
-  background-size: 250px 500px, 340px 700px;
-  animation: cosmic-dust 20s linear infinite;
-}
-@keyframes cosmic-dust {
-  from { background-position: 0 0, 25px 0; }
-  to   { background-position: -50px -500px, 40px -700px; }
-}
-
-/* ── Tile: sanity fracture ───────────────────────────────────────────────── */
-.app-tile::before {
-  width: 18px; height: 18px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(80,100,180,0.45);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+#theme-banner { background:#20271C; border-top-color:#839078; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2022%2022'%3E%3Cpath%20d%3D'M5%2016H14V20H4V16Z%20M10%2016L17%204Q19%202%2020%203L14%2013%20M10%2010L15%209%20M9%2012L13%2011'%20fill%3D'none'%20stroke%3D'%23A7BA84'%20stroke-opacity%3D'1'%20stroke-width%3D'1.4'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'IM Fell English', 'Palatino Linotype', Georgia, serif; font-size:12px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#D7C79A; text-shadow:none; }
+/* Adopt only the committed bounded motif; other themes keep existing behavior. */
+#header { --ql-header-art-safety:1; }
+#header { box-shadow:inset 0 -1px 0 #3A2A2A; }
+/* Plate silhouette only: full app glyph remains uncut and unfiltered. */
+.tile-icon-wrap { isolation:isolate; overflow:visible; }
+.tile-icon-wrap::before { content:''; position:absolute; inset:-4px; z-index:-1; background:#1B2118; clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%); border:1px solid #839078; pointer-events:none; }
