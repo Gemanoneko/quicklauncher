@@ -143,8 +143,8 @@ function parseContract(file = 'preload.js') {
     return [...m[1].replace(/\/\/.*$/gm, '').matchAll(/'([^']+)'/g)].map((x) => x[1]);
   };
   const c = { invoke: grab('INVOKE_CHANNELS'), on: grab('ON_CHANNELS') };
-  for (const need of [...(file === 'preload.js' ? ['get-apps'] : ['manager:state']), 'get-settings', 'get-valid-themes', 'renderer-ready', 'set-auto-launch']) {
-    if (!c.invoke.includes(need)) throw new Error(`preload contract changed: '${need}' missing from INVOKE_CHANNELS`);
+  for (const need of [...(file === 'preload.js' ? ['get-apps'] : ['manager:state', 'set-auto-launch']), 'get-settings', 'get-valid-themes', 'renderer-ready']) {
+    if (!c.invoke.includes(need)) throw new Error(`preload contract changed: '${need}' missing from ${file} INVOKE_CHANNELS`);
   }
   return c;
 }
@@ -292,7 +292,7 @@ const PAGE_STATE = (theme, expected) => `(() => ({
   hovered: document.querySelectorAll('.app-tile:hover, button:hover, input:hover').length,
   banner: document.getElementById('theme-banner-text').textContent,
   bannerExpected: (typeof THEME_BANNERS !== 'undefined' && THEME_BANNERS['${theme}']) ? THEME_BANNERS['${theme}'][${Number(expected) || 0}] : null,
-  name: (typeof THEME_NAMES !== 'undefined' && THEME_NAMES['${theme}']) || null,
+  name: (window.QL_THEME_NAMES || (typeof THEME_NAMES !== 'undefined' ? THEME_NAMES : {}))['${theme}'] || null,
   bodyFont: getComputedStyle(document.body).fontFamily,
   tiles: document.querySelectorAll('#app-grid .app-tile').length,
   version: document.getElementById('header-version').textContent,

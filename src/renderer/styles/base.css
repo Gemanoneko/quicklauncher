@@ -704,37 +704,6 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   border-top: 1px solid var(--border);
   justify-content: flex-end;
 }
-/* ── Scrolling overlays (settings, cheat-sheet) ─────────────────────────────
-   The panel never exceeds the window; the body scrolls and the footer stays.
-   .overlay-scroll pulls itself out of the panel's 20 px padding (the
-   scrollbar sits at the window edge and no dead band shows above the title).
-   scrollbar-gutter keeps the row widths the same with and without a scrollbar. */
-.scroll-panel { max-height: 100%; display: flex; flex-direction: column; }
-.scroll-panel > .overlay-scroll {
-  flex: 1 1 auto; min-height: 0;
-  overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
-  margin: -20px -20px 0;            /* undo .overlay-panel padding-top and sides */
-  padding: 20px 14px 0 20px;        /* right 14 + the 6 px scrollbar = the old 20 */
-}
-.scroll-panel > .overlay-scroll.picker-open { overflow-y: hidden; }   /* the skin list is open (app.js) */
-.scroll-panel > .overlay-scroll::-webkit-scrollbar { width: 6px; }
-.scroll-panel > .overlay-scroll::-webkit-scrollbar-track { background: transparent; }
-.scroll-panel > .overlay-scroll::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 3px; }
-.scroll-panel > .overlay-footer { flex: none; }
-/* Short windows (the default 424x300 and 640x420): tighter vertical rhythm. */
-@media (max-height: 480px) {
-  .scroll-panel { padding: 14px 20px 10px; }
-  .scroll-panel > .overlay-scroll { margin-top: -14px; padding-top: 14px; }
-  .scroll-panel .overlay-title { margin-bottom: 12px; padding-bottom: 6px; }
-  .scroll-panel .setting-row { margin-bottom: 10px; }
-  .scroll-panel > .overlay-footer { padding-top: 10px; }
-}
-/* Narrow windows (180 px up to about 245 px wide): nothing may overflow sideways. */
-.scroll-panel > .overlay-scroll { overflow-x: hidden; }
-.scroll-panel .hotkey-input,
-.scroll-panel input[type="range"] { min-width: 0; }
-.scroll-panel > .overlay-footer { flex-wrap: wrap; row-gap: 6px; }
-
 #btn-close-settings { border-color: var(--btn-close-border); color: var(--btn-close-color); }
 #btn-close-settings:hover {
   background: var(--btn-close-hover-bg);
@@ -812,7 +781,6 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 .hidden { display: none !important; }
 
 /* ── Theme picker (searchable) ───────────────────────────────────────────────── */
-.theme-picker { position: relative; }
 .theme-search {
   width: 100%; box-sizing: border-box;
   background: var(--panel-bg);

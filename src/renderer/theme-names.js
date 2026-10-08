@@ -1,7 +1,4 @@
-/* Display names for the theme pickers in the Manager window. A copy of
-   THEME_NAMES in app.js (the region page); the two become one shared file in
-   M6, after wip/theme-fidelity merges (tech plan § 1.5). A theme missing here
-   shows its key in capitals. */
+/* Shared display-name catalog for region random-theme ordering, Manager and gallery. */
 window.QL_THEME_NAMES = {
   'cyberpunk':           'CYBERPUNK',
   'blade-runner':        'BLADE RUNNER',
@@ -43,7 +40,7 @@ window.QL_THEME_NAMES = {
   'star-wars-mando':     'STAR WARS: MANDALORIAN',
   'star-wars-separatist': 'STAR WARS: SEPARATISTS',
   'star-wars-sith':      'STAR WARS: SITH',
-  'star-wars-republic':  'STAR WARS: OLD REPUBLIC',
+  'star-wars-republic':  'STAR WARS: GALACTIC REPUBLIC',
   'doctor-who':          'DOCTOR WHO',
   'akira':               'AKIRA',
   'evangelion':          'EVANGELION',

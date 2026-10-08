@@ -192,6 +192,8 @@ function auditTheme(themePath, baseCss) {
     // under 4.5:1 today; the hash baseline keeps them warn-only until their
     // redesign batch, and a new or changed theme must pass.
     { label: '--btn-close-color on --panel-bg', color: closeText, on: panelBg, threshold: AA_NORMAL_TEXT },
+    // M6: Manager primary text paints on this same panel surface.
+    { label: '--text on --panel-bg', color: text, on: panelBg, threshold: AA_NORMAL_TEXT },
   ];
 
   for (const c of checks) {

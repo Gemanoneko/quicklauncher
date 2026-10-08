@@ -604,8 +604,6 @@ $apps | ConvertTo-Json -Depth 2
     return installedAppsPromise;
   });
 
-  ipcMain.handle('add-app-from-appid', (_, arg) => entryFromAppId(arg || {}));
-
   ipcMain.handle('add-app-dialog', async (e) => {
     // A region is a desktop child: a dialog owned by it would be owned by the
     // desktop window (and disable it while open). Regions get an unowned

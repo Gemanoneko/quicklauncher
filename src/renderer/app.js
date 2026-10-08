@@ -5,7 +5,6 @@ const APP_VERSION = window.api.version;
 let apps = [];
 let settings = {};
 let editMode = false;
-let installedApps = [];
 let reorderState = null;      // active drag-to-reorder operation
 let suppressNextClick = false; // prevent launch-on-click after a drag
 let bannerInterval = null;
@@ -18,13 +17,6 @@ let refreshingIcons = false;  // guard against concurrent refreshMissingIcons ca
 const $ = (id) => document.getElementById(id);
 const elAppGrid        = $('app-grid');
 const elApp            = $('app');
-const elAppsPicker     = $('apps-picker');
-const elSettingsOverlay= $('settings-overlay');
-const elThemeSearch    = $('theme-search');
-const elChkStartup     = $('chk-startup');
-const elChkRandomTheme = $('chk-random-theme');
-const elSliderIconSize = $('slider-icon-size');
-const elIconSizeVal    = $('icon-size-val');
 const elUpdateText     = $('update-text');
 
 // ── Banner quotes (2 to 6 per theme) ──────────────────────────────────────────
@@ -654,242 +646,10 @@ const THEME_BANNERS = {
 // with the authoritative list fetched via IPC.
 let VALID_THEMES = new Set(Object.keys(THEME_BANNERS));
 
-// Display labels for the searchable theme picker.
-const THEME_NAMES = {
-  'cyberpunk':           'CYBERPUNK',
-  'blade-runner':        'BLADE RUNNER',
-  'alien':               'ALIEN',
-  'tron':                'TRON',
-  'lcars':               'LCARS',
-  'pip-boy':             'PIP-BOY',
-  'dune':                'DUNE',
-  'x-files':             'X-FILES',
-  'mass-effect':         'MASS EFFECT',
-  'deus-ex':             'DEUS EX',
-  'ghost-shell':         'GHOST IN THE SHELL',
-  'matrix':              'MATRIX',
-  'warhammer':           'WARHAMMER 40K: IMPERIUM',
-  'warhammer-chaos':     'WARHAMMER 40K: CHAOS',
-  'warhammer-orks':      'WARHAMMER 40K: ORKS',
-  'warhammer-eldar':     'WARHAMMER 40K: ELDAR',
-  'warhammer-necrons':   'WARHAMMER 40K: NECRONS',
-  'warhammer-tyranids':  'WARHAMMER 40K: TYRANIDS',
-  'predator':            'PREDATOR',
-  'robocop':             'ROBOCOP',
-  'ff6':                 'FINAL FANTASY VI',
-  'ff8':                 'FINAL FANTASY VIII',
-  'ff9':                 'FINAL FANTASY IX',
-  'ff10':                'FINAL FANTASY X',
-  'ff14':                'FINAL FANTASY XIV',
-  'ff15':                'FINAL FANTASY XV',
-  'wow-horde':           'WOW: HORDE',
-  'wow-scourge':         'WOW: SCOURGE',
-  'wow-legion':          'WOW: BURNING LEGION',
-  'wow-nightelf':        'WOW: NIGHT ELVES',
-  'wow-alliance':        'WOW: ALLIANCE',
-  'dead-space':          'DEAD SPACE',
-  'half-life':           'HALF-LIFE',
-  'terminator':          'TERMINATOR',
-  'portal':              'PORTAL',
-  'star-wars-rebel':     'STAR WARS: REBEL ALLIANCE',
-  'star-wars-empire':    'STAR WARS: GALACTIC EMPIRE',
-  'star-wars-mando':     'STAR WARS: MANDALORIAN',
-  'star-wars-separatist': 'STAR WARS: SEPARATISTS',
-  'star-wars-sith':      'STAR WARS: SITH',
-  'star-wars-republic':  'STAR WARS: GALACTIC REPUBLIC',
-  'doctor-who':          'DOCTOR WHO',
-  'akira':               'AKIRA',
-  'evangelion':          'EVANGELION',
-  '2001':                '2001: A SPACE ODYSSEY',
-  'silent-hill':         'SILENT HILL',
-  'stalker':             'S.T.A.L.K.E.R.',
-  'resident-evil':       'RESIDENT EVIL',
-  'the-expanse':         'THE EXPANSE',
-  'event-horizon':       'EVENT HORIZON',
-  'hogwarts':            'HOGWARTS: MARAUDER\'S MAP',
-  'ministry-of-magic':   'MINISTRY OF MAGIC',
-  'gryffindor':          'GRYFFINDOR',
-  'ravenclaw':           'RAVENCLAW',
-  'hufflepuff':          'HUFFLEPUFF',
-  'slytherin':           'SLYTHERIN: DARK ARTS',
-  'rivendell':           'RIVENDELL',
-  'shire':               'THE SHIRE',
-  'mordor':              'MORDOR',
-  'scp':                 'SCP FOUNDATION',
-  'alan-wake':           'ALAN WAKE',
-  'control':             'CONTROL: THE BUREAU',
-  'twin-peaks':          'TWIN PEAKS',
-  'lovecraft':           'LOVECRAFTIAN',
-  'the-sandman':         'THE SANDMAN',
-  'persona-5':           'PERSONA 5',
-  'the-witcher':         'THE WITCHER',
-  'diablo':              'DIABLO',
-  'soma':                'SOMA',
-  'stranger-things':     'STRANGER THINGS',
-  'fatal-frame':         'FATAL FRAME',
-  'firefly':             'FIREFLY / SERENITY',
-  'persona-4':           'PERSONA 4',
-  'persona-3':           'PERSONA 3',
-  'eve-online':          'EVE ONLINE',
-  'indiana-jones':       'INDIANA JONES',
-  'game-of-thrones':     'GAME OF THRONES',
-  'doom-classic':        'DOOM (CLASSIC)',
-  'doom-eternal':        'DOOM ETERNAL',
-  'tiny-bunny':          'ЗАЙЧИК / TINY BUNNY',
-  'promise-mascot':      'PROMISE MASCOT AGENCY',
-  'mortal-kombat':       'MORTAL KOMBAT',
-  'nonary-games':        'NONARY GAMES / ZERO ESCAPE',
-  'life-is-strange':     'LIFE IS STRANGE',
-  'dragon-age':          'DRAGON AGE',
-  'yakuza':              'YAKUZA / LIKE A DRAGON',
-  'mirrors-edge':        'MIRROR\'S EDGE',
-  'tomb-raider':         'TOMB RAIDER',
-  'uncharted':           'UNCHARTED',
-  'broken-sword':        'BROKEN SWORD',
-  'swl-illuminati':      'SWL: ILLUMINATI',
-  'swl-templar':         'SWL: TEMPLAR',
-  'swl-dragon':          'SWL: DRAGON',
-  'ac-assassins':        'AC: ASSASSINS',
-  'ac-templars':         'AC: TEMPLARS',
-  'siren':               'FORBIDDEN SIREN',
-  'blair-witch':         'BLAIR WITCH',
-  'amnesia':             'AMNESIA',
-  'metal-gear':          'METAL GEAR SOLID',
-  'parasite-eve':        'PARASITE EVE',
-  'ff7':                 'FINAL FANTASY VII',
-};
-
-// Extra phrases the skin search matches, on top of each theme's label and key.
-// Add one only for a franchise or common name not in the label, a short form
-// people really type, a numeral or spelling variant, or a former name; never
-// trivia, three or four phrases at most. The key stays the saved value.
-const THEME_ALIASES = {
-  'lcars':                ['star trek'],
-  'pip-boy':              ['fallout'],
-  'ghost-shell':          ['gits'],
-  'warhammer':            ['wh40k', 'w40k'],
-  'warhammer-chaos':      ['wh40k', 'w40k'],
-  'warhammer-orks':       ['wh40k', 'w40k', 'orcs'],
-  'warhammer-eldar':      ['wh40k', 'w40k'],
-  'warhammer-necrons':    ['wh40k', 'w40k'],
-  'warhammer-tyranids':   ['wh40k', 'w40k'],
-  'ff6':                  ['ffvi', 'final fantasy 6'],
-  'ff7':                  ['ffvii', 'final fantasy 7'],
-  'ff8':                  ['ffviii', 'final fantasy 8'],
-  'ff9':                  ['ffix', 'final fantasy 9'],
-  'ff10':                 ['ffx', 'final fantasy 10'],
-  'ff14':                 ['ffxiv', 'final fantasy 14'],
-  'ff15':                 ['ffxv', 'final fantasy 15'],
-  'wow-horde':            ['world of warcraft'],
-  'wow-scourge':          ['world of warcraft'],
-  'wow-legion':           ['world of warcraft'],
-  'wow-alliance':         ['world of warcraft'],
-  'wow-nightelf':         ['world of warcraft', 'night elf'],
-  'half-life':            ['hl'],
-  'star-wars-rebel':      ['rebels'],
-  'star-wars-empire':     ['imperial'],
-  'star-wars-separatist': ['cis'],
-  'star-wars-republic':   ['old republic'],
-  'doctor-who':           ['dr who'],
-  'evangelion':           ['neon genesis'],
-  'resident-evil':        ['biohazard'],
-  'hogwarts':             ['harry potter', 'hp', 'hogwarts'],
-  'ministry-of-magic':    ['harry potter', 'hp', 'hogwarts'],
-  'gryffindor':           ['harry potter', 'hp', 'hogwarts'],
-  'ravenclaw':            ['harry potter', 'hp', 'hogwarts'],
-  'hufflepuff':           ['harry potter', 'hp', 'hogwarts'],
-  'slytherin':            ['harry potter', 'hp', 'hogwarts'],
-  'rivendell':            ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
-  'shire':                ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
-  'mordor':               ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
-  'lovecraft':            ['cthulhu'],
-  'persona-3':            ['p3'],
-  'persona-4':            ['p4'],
-  'persona-5':            ['p5'],
-  'fatal-frame':          ['project zero'],
-  'game-of-thrones':      ['got'],
-  'promise-mascot':       ['pma'],
-  'mortal-kombat':        ['mk'],
-  'life-is-strange':      ['lis'],
-  'tomb-raider':          ['lara croft'],
-  'swl-illuminati':       ['secret world legends', 'tsw'],
-  'swl-templar':          ['secret world legends', 'tsw'],
-  'swl-dragon':           ['secret world legends', 'tsw'],
-  'ac-assassins':         ['assassins creed'],
-  'ac-templars':          ['assassins creed'],
-  'metal-gear':           ['mgs'],
-};
-
+// Display names are shared by regions, Manager and gallery metadata.
+const THEME_NAMES = window.QL_THEME_NAMES;
 const ALL_THEMES = Object.keys(THEME_BANNERS)
-  .sort((a, b) => (THEME_NAMES[a] || a).localeCompare(THEME_NAMES[b] || b));
-
-// ── Skin search matching ─────────────────────────────────────────────────────
-// Every typed word must start a word of the theme's label, key or aliases
-// (tier 0); a word found anywhere inside them still matches, listed after
-// (tier 1), so nothing that matched the old substring search stops matching.
-
-// Lowercase; drop ' ’ and . (MIRROR'S -> mirrors, S.T.A.L.K.E.R. -> stalker);
-// every other run of non-letters/non-digits, any script, becomes one space.
-function normSearchText(s) {
-  return String(s).toLowerCase()
-    .replace(/['’.]/g, '')
-    .replace(/[^\p{L}\p{N}]+/gu, ' ')
-    .trim();
-}
-
-// A field's words, and all of them joined when it has more than one
-// (PIP-BOY also gives "pipboy", HALF-LIFE "halflife"). The joined word may
-// only START a match (tier 0): inside a word it spans a word boundary and
-// lists junk (picker behaviour spec 2026-10-02, section 6.2).
-function searchWords(s) {
-  const n = normSearchText(s);
-  if (!n) return { words: [], joined: [] };
-  const words = n.split(' ');
-  return { words, joined: words.length > 1 ? [words.join('')] : [] };
-}
-
-// Query words; "the" is dropped unless it is all there is.
-function searchTokens(query) {
-  const tokens = normSearchText(query).split(' ').filter(Boolean);
-  const meaningful = tokens.filter(t => t !== 'the');
-  return meaningful.length ? meaningful : tokens;
-}
-
-// Built once: each theme's searchable words (label as the row shows it, key, aliases).
-// words  = the real words (tier 1 looks inside these only)
-// starts = the real words plus each field's joined word (tier 0 prefixes)
-const THEME_SEARCH_WORDS = new Map(ALL_THEMES.map(key => {
-  const parts = [
-    searchWords(THEME_NAMES[key] || key.toUpperCase()),
-    searchWords(key),
-    ...(THEME_ALIASES[key] || []).map(searchWords),
-  ];
-  const words = parts.flatMap(p => p.words);
-  return [key, { words, starts: words.concat(parts.flatMap(p => p.joined)) }];
-}));
-
-// 0 = every token starts a word (joined words count), 1 = every token is inside
-// a real word, -1 = no match.
-function themeSearchTier(key, tokens) {
-  const { words = [], starts = [] } = THEME_SEARCH_WORDS.get(key) || {};
-  if (tokens.every(t => starts.some(w => w.startsWith(t)))) return 0;
-  if (tokens.every(t => words.some(w => w.includes(t)))) return 1;
-  return -1;
-}
-
-// The picker's matcher: theme keys in display order, tier 0 before tier 1.
-// An empty (or punctuation-only) query lists every theme.
-function matchThemes(query) {
-  const tokens = searchTokens(query || '');
-  if (!tokens.length) return ALL_THEMES.slice();
-  const starts = [], inside = [];
-  for (const key of ALL_THEMES) {
-    const tier = themeSearchTier(key, tokens);
-    if (tier === 0) starts.push(key);
-    else if (tier === 1) inside.push(key);
-  }
-  return starts.concat(inside);
-}
+  .sort((a,b) => (THEME_NAMES[a] || a).localeCompare(THEME_NAMES[b] || b));
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
@@ -916,11 +676,6 @@ async function init() {
   } catch (e) {
     console.warn('[themes] get-valid-themes failed, using THEME_BANNERS keys:', e);
   }
-  const orphanAliases = Object.keys(THEME_ALIASES).filter(t => !VALID_THEMES.has(t));
-  if (orphanAliases.length) {
-    console.warn('[themes] THEME_ALIASES keys with no matching theme:', orphanAliases);
-  }
-
   applySettings();
   renderGrid();
   setupDragDrop();
@@ -930,7 +685,6 @@ async function init() {
   // Listeners are registered: main delivers store messages it held back
   // until now (e.g. the save error from a data file locked at login).
   window.api.invoke('renderer-ready').catch(() => {});
-  document.getElementById('app-version').textContent = `v${APP_VERSION}`;
   document.getElementById('header-version').textContent = `v${APP_VERSION}`;
   refreshMissingIcons();
 }
@@ -1134,37 +888,22 @@ async function saveApps() {
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────────
-// Set by the skin picker (declared further down): brings an open list's marks up to
-// date with the skin applySettings() just applied. Picker spec Part C, C.3.
-let onSkinApplied = null;
-
 function applySettings() {
   const size = settings.iconSize || 64;
   document.documentElement.style.setProperty('--icon-size', size + 'px');
-  elSliderIconSize.value = size;
-  elIconSizeVal.textContent = size + 'px';
-  elChkStartup.checked = settings.startWithWindows !== false;
-  elChkRandomTheme.checked = settings.randomTheme !== false;
 
   // Reduced-motion is OS-or-user driven (UX Review §5). The user setting
   // adds to (does not subtract from) the OS pref — when either is set,
   // the body class is added and ambient infinite animations are suppressed
   // via .reduced-motion overrides in base.css.
-  const elChkReducedMotion = $('chk-reduced-motion');
-  if (elChkReducedMotion) elChkReducedMotion.checked = settings.reducedMotion === true;
   applyReducedMotion();
 
-  // Hotkey input — display whatever's persisted; null means disabled.
-  const elInputHotkey = $('input-hotkey');
-  if (elInputHotkey) elInputHotkey.value = settings.globalHotkey || '';
 
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
   $('theme-stylesheet').href = `styles/themes/${theme}.css`;
-  // The SKIN field is not written here: the picker owns its text (a pick empties it).
   startBannerCycle(theme);
   if (window.qlRadialRefresh) window.qlRadialRefresh();
-  if (onSkinApplied) onSkinApplied();
 }
 
 // Apply reduced-motion: union of user setting and OS prefers-reduced-motion.
@@ -1328,25 +1067,6 @@ document.addEventListener('visibilitychange', updateIdlePause);
 document.documentElement.addEventListener('mouseenter', updateIdlePause);
 document.documentElement.addEventListener('mouseleave', updateIdlePause);
 updateIdlePause();
-
-elSliderIconSize.addEventListener('input', async (e) => {
-  const size = parseInt(e.target.value, 10);
-  elIconSizeVal.textContent = size + 'px';
-  document.documentElement.style.setProperty('--icon-size', size + 'px');
-  settings.iconSize = size;
-  await window.api.invoke('save-settings', settings);
-});
-
-elChkStartup.addEventListener('change', async (e) => {
-  settings.startWithWindows = e.target.checked;
-  await window.api.invoke('save-settings', settings);
-  await window.api.invoke('set-auto-launch', e.target.checked);
-});
-
-elChkRandomTheme.addEventListener('change', async (e) => {
-  settings.randomTheme = e.target.checked;
-  await window.api.invoke('save-settings', settings);
-});
 
 // ── Drag & Drop ────────────────────────────────────────────────────────────────
 function setupDragDrop() {
@@ -1529,108 +1249,10 @@ function cancelReorder() {
   renderGrid(); // restore original order
 }
 
-// ── Installed apps picker ─────────────────────────────────────────────────────
-async function openInstalledAppsPicker() {
-  const loadingEl = $('picker-loading');
-  const listEl = $('picker-list');
-  const searchEl = $('picker-search');
-
-  listEl.innerHTML = '';
-  searchEl.value = '';
-  loadingEl.classList.remove('hidden');
-  elAppsPicker.classList.remove('hidden');
-
-  try {
-    installedApps = await window.api.invoke('get-installed-apps');
-  } catch (e) {
-    console.error('get-installed-apps failed:', e);
-    installedApps = [];
-  }
-  loadingEl.classList.add('hidden');
-  renderPickerList(installedApps);
-  searchEl.focus();
-}
-
-function renderPickerList(items) {
-  const listEl = document.getElementById('picker-list');
-  listEl.innerHTML = '';
-
-  if (items.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'picker-empty';
-    empty.textContent = 'NO MATCHES — USE BROWSE TO ADD BY FILE';
-    listEl.appendChild(empty);
-    return;
-  }
-
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'picker-item';
-
-    if (item.iconDataUrl) {
-      const img = document.createElement('img');
-      img.src = item.iconDataUrl;
-      img.alt = '';
-      el.appendChild(img);
-    } else {
-      const placeholder = document.createElement('div');
-      placeholder.className = 'picker-icon-placeholder';
-      el.appendChild(placeholder);
-    }
-
-    const nameEl = document.createElement('span');
-    nameEl.className = 'picker-item-name';
-    nameEl.textContent = item.name;
-    el.appendChild(nameEl);
-
-    el.addEventListener('click', async () => {
-      try {
-        const appItem = await window.api.invoke('add-app-from-appid', {
-          name: item.name,
-          appId: item.appId,
-          iconDataUrl: item.iconDataUrl
-        });
-        if (appItem && !apps.find(a => a.path === appItem.path)) {
-          apps.push(appItem);
-          await saveApps();
-          renderGrid();
-        }
-      } catch (e) {
-        console.error('Failed to add app from picker:', e);
-      }
-      elAppsPicker.classList.add('hidden');
-    });
-
-    listEl.appendChild(el);
-  });
-}
-
-$('picker-search').addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase();
-  renderPickerList(q ? installedApps.filter(a => a.name.toLowerCase().includes(q)) : installedApps);
-});
-
-$('btn-browse-picker').addEventListener('click', async () => {
-  elAppsPicker.classList.add('hidden');
-  await addAppFromDialog();
-});
-
-$('btn-close-picker').addEventListener('click', () => {
-  elAppsPicker.classList.add('hidden');
-});
-
-// ── Grid keyboard navigation, type-to-filter, ? cheat-sheet ─────────────────
+// ── Grid keyboard navigation and type-to-filter ─────────────────
 // (UX Review §6B–D / I2–I3 + P3.) Single keydown router on document so we
 // can interleave: arrow-key grid nav, in-grid type-to-filter, '?' cheat-sheet.
 let _filterText = '';
-
-function isOverlayOpen() {
-  return [
-    elSettingsOverlay,
-    elAppsPicker,
-    document.getElementById('cheatsheet-overlay'),
-  ].some(o => o && !o.classList.contains('hidden'));
-}
 
 function getVisibleTiles() {
   return [...elAppGrid.querySelectorAll('.app-tile:not(.filter-hidden)')];
@@ -1716,29 +1338,6 @@ function moveTileFocus(direction) {
   if (next >= 0 && next < tiles.length) focusTileAtIndex(tiles, next);
 }
 
-// Settings and the cheat-sheet scroll inside their panel, and a scroller keeps
-// its offset while hidden. Every open starts at the top (theme spec, foundation
-// review 1, F2): show the overlay first, then reset (a hidden scroller has no box).
-function showOverlayAtTop(el) {
-  el.classList.remove('hidden');
-  const sc = el.querySelector('.overlay-scroll');
-  if (sc) sc.scrollTop = 0;
-}
-
-// The one way Settings is hidden (Esc, CLOSE, CHECK FOR UPDATES, the gear toggle).
-// A focused SKIN field gives up focus, so its list resets (its blur closes it).
-function closeSettings() {
-  elSettingsOverlay.classList.add('hidden');
-  if (document.activeElement === elThemeSearch) elThemeSearch.blur();
-}
-
-function openCheatsheet() {
-  showOverlayAtTop(document.getElementById('cheatsheet-overlay'));
-}
-function closeCheatsheet() {
-  document.getElementById('cheatsheet-overlay').classList.add('hidden');
-}
-
 // Single source of truth for app-level keydown. Document-level so we catch
 // keys when no specific element has focus. Inputs (text fields, settings
 // inputs) opt out via the `editingText` early-return.
@@ -1753,27 +1352,12 @@ document.addEventListener('keydown', (e) => {
   const tag = (e.target && e.target.tagName) || '';
   const editingText = tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable);
 
-  // ? — toggle cheatsheet (works even if not editing)
-  // Note: '?' arrives as Shift+'/' on US layouts; e.key is '?' on most
-  // modern browsers regardless. Don't fire while typing into a real input.
-  if (!editingText && (e.key === '?' || (e.shiftKey && e.key === '/'))) {
-    const cs = document.getElementById('cheatsheet-overlay');
-    if (cs.classList.contains('hidden')) openCheatsheet();
-    else closeCheatsheet();
-    e.preventDefault();
-    return;
-  }
-
   // Escape: one press undoes exactly one layer, the innermost present, and
   // nothing else sees it (picker behaviour spec 2026-10-02, Addendum A.2).
   // Inner layers that consume their own Esc before it gets here: IME
   // composition (above), hotkey recording, the open skin list, the rename input.
   // This is the only document-level Esc handler.
   if (e.key === 'Escape') {
-    const cs = document.getElementById('cheatsheet-overlay');
-    if (!cs.classList.contains('hidden')) { closeCheatsheet(); e.preventDefault(); return; }
-    if (!elSettingsOverlay.classList.contains('hidden')) { closeSettings(); e.preventDefault(); return; }
-    if (!elAppsPicker.classList.contains('hidden')) { elAppsPicker.classList.add('hidden'); e.preventDefault(); return; }
     if (_filterText) { clearFilter(); e.preventDefault(); return; }
     if (editMode) { exitEditMode(); e.preventDefault(); return; }
     return; // nothing to undo: Esc does nothing (it never hides the window)
@@ -1781,7 +1365,7 @@ document.addEventListener('keydown', (e) => {
 
   // Beyond here, only react when no overlay is open and we're not in a text
   // field — type-to-filter and arrow nav must not interfere with settings.
-  if (editingText || isOverlayOpen()) return;
+  if (editingText) return;
 
   // Arrow keys — grid 2D nav
   if (e.key === 'ArrowLeft')  { moveTileFocus('left');  e.preventDefault(); return; }
@@ -1826,17 +1410,11 @@ document.addEventListener('keydown', (e) => {
   if (btn) btn.addEventListener('click', () => clearFilter());
 })();
 
-// Cheatsheet close button
-(function () {
-  const btn = $('btn-close-cheatsheet');
-  if (btn) btn.addEventListener('click', () => closeCheatsheet());
-})();
-
 // ── Context menu (right-click → edit mode) ────────────────────────────────────
 function setupContextMenu() {
   document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    if (!editMode && !e.target.closest('#settings-overlay') && !e.target.closest('#apps-picker')) {
+    if (!editMode) {
       enterEditMode();
     }
   });
@@ -1979,338 +1557,11 @@ $('btn-hide').addEventListener('click', () => {
   window.api.invoke('hide-window');
 });
 
-$('btn-close-settings').addEventListener('click', () => {
-  closeSettings();
-});
-
-$('btn-check-update').addEventListener('click', () => {
-  window.api.invoke('check-update');
-  closeSettings();
-});
-
 $('btn-add-edit').addEventListener('click', addAppFromDialog);
 $('btn-add-installed').addEventListener('click', () => {
   window.api.invoke('region:open-manager', { view: 'picker' });
 });
 $('btn-done-edit').addEventListener('click', exitEditMode);
-
-// ── Skin selection (searchable picker) ───────────────────────────────────────
-// Behaviour: Docs/QuickLaunch_SkinPicker_Behaviour_Spec_2026-10-02.md, sections 2 to 3.8.
-// Three states:
-//   IDLE    field empty, not focused, list hidden
-//   OPEN    field focused, list showing the matches for its text, one row
-//           highlighted when there are rows (class `active`: the row Enter picks)
-//   PARKED  field focused and empty, list hidden (after a pick, or Esc in OPEN);
-//           typing, a click, ArrowUp or ArrowDown reopen the list
-(function () {
-  const searchEl = elThemeSearch;
-  const listEl   = $('theme-picker-list');
-  // The settings body scrolls (theme spec, foundation A1.4): the list is fixed,
-  // so it is placed from the field's position and the body is locked while it
-  // is open (wheeling would otherwise move the field away from the list).
-  const scrollEl = searchEl.closest('.overlay-scroll');
-  let open = false;
-
-  const currentKey = () => settings.theme || 'cyberpunk';
-  const rowEls     = () => [...listEl.querySelectorAll('.theme-picker-item')];
-  const activeRow  = () => listEl.querySelector('.theme-picker-item.active');
-
-  function buildList(filter) {
-    const matches = matchThemes(filter);
-
-    listEl.innerHTML = '';
-    if (matches.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'theme-picker-empty';
-      empty.textContent = 'NO MATCHES';
-      listEl.appendChild(empty);
-      return;
-    }
-    const current = currentKey();
-    matches.forEach(key => {
-      const item = document.createElement('div');
-      item.className = 'theme-picker-item' + (key === current ? ' selected' : '');
-      item.dataset.value = key;
-      item.textContent = THEME_NAMES[key] || key.toUpperCase();
-      listEl.appendChild(item);
-    });
-  }
-
-  // Highlight one row (or none) and keep it fully inside the list's visible area.
-  function setActive(item, block) {
-    const prev = activeRow();
-    if (prev) prev.classList.remove('active');
-    if (!item) return;
-    item.classList.add('active');
-    item.scrollIntoView({ block: block || 'nearest' });
-  }
-
-  // Below the field by default; above it when there is under 150 px below and
-  // more room above. Called on open and on window resize while open.
-  function place() {
-    const rect = searchEl.getBoundingClientRect();
-    const below = innerHeight - rect.bottom - 10;
-    const above = rect.top - 10;
-    if (below < 150 && above > below) {
-      listEl.style.top = 'auto';
-      listEl.style.bottom = (innerHeight - rect.top + 3) + 'px';
-      listEl.style.maxHeight = Math.max(80, above - 3) + 'px';
-    } else {
-      listEl.style.top = (rect.bottom + 3) + 'px';
-      listEl.style.bottom = 'auto';
-      listEl.style.maxHeight = Math.max(80, below) + 'px';
-    }
-  }
-
-  // Rebuild for the field text. Filtered (at least one search token): row 1 is
-  // highlighted. Not filtered (empty, spaces, punctuation): the current skin is
-  // highlighted and centred. NO MATCHES: nothing is highlighted.
-  function refresh() {
-    buildList(searchEl.value);
-    listEl.scrollTop = 0;
-    if (searchTokens(searchEl.value).length) setActive(listEl.querySelector('.theme-picker-item'));
-    else setActive(listEl.querySelector('.theme-picker-item.selected'), 'center');
-  }
-
-  function openPicker() {
-    // The focus event fires before Chromium scrolls a focused control into view,
-    // so bring the field fully into the scroller first, then measure it.
-    searchEl.scrollIntoView({ block: 'nearest' });
-    if (scrollEl) scrollEl.classList.add('picker-open');
-    listEl.classList.remove('hidden');
-    place();
-    open = true;
-    refresh();
-  }
-
-  // Closed means: list hidden, body unlocked, field empty. Focus is not touched.
-  function closePicker() {
-    open = false;
-    listEl.classList.add('hidden');
-    if (scrollEl) scrollEl.classList.remove('picker-open');
-    searchEl.value = '';
-  }
-
-  // Close first, then apply and save: a second Enter or click lands on a closed
-  // list (one pick, one save). The current skin closes the list and saves nothing.
-  function pick(key) {
-    closePicker();
-    if (key === currentKey()) return;
-    settings.theme = key;
-    applySettings();
-    window.api.invoke('save-settings', settings)
-      .catch(err => console.error('Failed to save skin:', err));
-  }
-
-  // Clamped, no wrap. With nothing highlighted either arrow lands on row 1.
-  function moveActive(dir) {
-    const items = rowEls();
-    if (!items.length) return;
-    const idx = items.indexOf(activeRow()) + dir;
-    setActive(items[Math.max(0, Math.min(items.length - 1, idx))]);
-  }
-
-  // A row press picks and the list is gone at once, so the rest of that click sequence
-  // (the second press of a double-click, its release, click and dblclick) would land on
-  // whatever the list covered. For up to 1 s, swallow every mouse event whose click count
-  // is above the pick press's; a press with a lower or equal count is a new gesture and
-  // ends the guard. The count is the browser's own (OS double-click time and distance).
-  // Picker spec Part C, C.1.3.
-  let disarmClickGuard = null;
-  function swallowRestOfClick(down) {
-    if (disarmClickGuard) disarmClickGuard();
-    const pickCount = down.detail || 1;
-    const types = ['mousedown', 'mouseup', 'click', 'dblclick'];
-    const onEvent = (e) => {
-      if (e.type === 'mousedown' && e.detail <= pickCount) { disarm(); return; }   // a new gesture
-      if (e.detail > pickCount) { e.preventDefault(); e.stopImmediatePropagation(); }
-    };
-    const disarm = () => {
-      clearTimeout(timer);
-      types.forEach(t => window.removeEventListener(t, onEvent, true));
-      if (disarmClickGuard === disarm) disarmClickGuard = null;
-    };
-    const timer = setTimeout(disarm, 1000);
-    types.forEach(t => window.addEventListener(t, onEvent, true));   // capture: ahead of every control
-    disarmClickGuard = disarm;
-  }
-
-  // After applySettings() (an outside change: store reload, settings changed elsewhere)
-  // with the list open: move the current-skin mark to the current skin. The Enter row
-  // follows only when it sat on the current skin of an unfiltered list (the "Enter keeps
-  // the skin" state); an arrowed row or a filtered list is the user's and stays. Never
-  // rebuilds, never touches focus or the field text. Idempotent, so a call that changed
-  // no skin is a no-op. Picker spec Part C, C.3.2.
-  function syncCurrentSkin() {
-    if (!open) return;
-    const want = rowEls().find(r => r.dataset.value === currentKey()) || null;
-    const sel  = listEl.querySelector('.theme-picker-item.selected');
-    if (sel === want) return;
-    const follow = sel && sel === activeRow() && !searchTokens(searchEl.value).length;
-    if (sel) sel.classList.remove('selected');
-    if (want) want.classList.add('selected');
-    if (follow && want) setActive(want, 'center');
-  }
-  onSkinApplied = syncCurrentSkin;
-
-  searchEl.addEventListener('focus', () => { if (!open) openPicker(); });
-  searchEl.addEventListener('click', () => { if (!open) openPicker(); });
-  searchEl.addEventListener('input', () => { if (open) refresh(); else openPicker(); });
-  // Blur closes at once: no timer (a press in the list never blurs the field,
-  // see below). When the blur comes from the window losing focus (hotkey hide,
-  // Alt+Tab) the field also gives up focus, so re-activating the window never
-  // pops the list open by itself.
-  searchEl.addEventListener('blur', () => {
-    closePicker();
-    if (!document.hasFocus()) searchEl.blur();
-  });
-
-  // Any press in the list keeps focus in the field: a row press picks (primary
-  // button only, on press), a scrollbar press scrolls, NO MATCHES does nothing.
-  // A row pick also swallows the rest of its click sequence (see swallowRestOfClick).
-  listEl.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    if (e.button !== 0 || !open) return;
-    const item = e.target.closest('.theme-picker-item');
-    if (item) { pick(item.dataset.value); swallowRestOfClick(e); }
-  });
-
-  window.addEventListener('resize', () => { if (open) place(); });
-
-  searchEl.addEventListener('keydown', (e) => {
-    if (e.isComposing || e.keyCode === 229) return;   // the key belongs to the IME
-    if (e.key === 'Escape') {
-      if (!open) return;                              // nothing to undo here: Esc goes on (Settings)
-      e.preventDefault();
-      e.stopPropagation();                            // consumed: one Esc, one layer
-      closePicker();
-      return;
-    }
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (!open) openPicker();                        // from PARKED the key only opens the list
-      else moveActive(e.key === 'ArrowDown' ? 1 : -1);
-      return;
-    }
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const row = open ? activeRow() : null;          // never acts on a hidden list
-      if (row) pick(row.dataset.value);
-    }
-  });
-})();
-
-// ── Reduced-motion checkbox ─────────────────────────────────────────────────
-(function () {
-  const cb = $('chk-reduced-motion');
-  if (!cb) return;
-  cb.addEventListener('change', async (e) => {
-    settings.reducedMotion = e.target.checked;
-    applyReducedMotion();
-    await window.api.invoke('save-settings', settings);
-  });
-})();
-
-// ── Global hotkey rebinding ─────────────────────────────────────────────────
-// Pattern: input is readonly. Click to enter "recording" mode. Capture the
-// next non-modifier keydown and convert to Electron accelerator syntax. Send
-// to main for live re-registration; on success persist via save-settings.
-(function () {
-  const inputEl = $('input-hotkey');
-  const clearBtn = $('btn-hotkey-clear');
-  const statusEl = $('hotkey-status');
-  if (!inputEl) return;
-
-  let recording = false;
-
-  function setStatus(msg, isError) {
-    if (!statusEl) return;
-    statusEl.textContent = msg || '';
-    statusEl.classList.toggle('error', !!isError);
-  }
-
-  // Build an Electron accelerator from a KeyboardEvent. Returns null if
-  // the user pressed only modifiers (we wait for the actual key).
-  function eventToAccelerator(e) {
-    const parts = [];
-    if (e.ctrlKey)  parts.push('Ctrl');
-    if (e.altKey)   parts.push('Alt');
-    if (e.shiftKey) parts.push('Shift');
-    if (e.metaKey)  parts.push('Super');
-    const k = e.key;
-    // Skip pure-modifier presses
-    if (['Control', 'Alt', 'Shift', 'Meta'].includes(k)) return null;
-    let keyName = null;
-    if (k === ' ') keyName = 'Space';
-    else if (k === 'Escape') keyName = 'Escape';
-    else if (k === 'Enter') keyName = 'Return';
-    else if (k === 'Tab') keyName = 'Tab';
-    else if (k === 'Backspace') keyName = 'Backspace';
-    else if (k.length === 1) keyName = k.toUpperCase();
-    else keyName = k; // F-keys and special keys come through as-is (F1, ArrowUp…)
-    parts.push(keyName);
-    return parts.join('+');
-  }
-
-  async function tryApply(accel) {
-    const result = await window.api.invoke('apply-global-hotkey', accel);
-    if (result && result.ok) {
-      settings.globalHotkey = accel;
-      await window.api.invoke('save-settings', settings);
-      inputEl.value = accel || '';
-      setStatus(accel ? 'BOUND.' : 'DISABLED.', false);
-    } else {
-      const reason = result && result.reason === 'CONFLICT'
-        ? 'CONFLICT — IN USE BY ANOTHER APP'
-        : 'INVALID BINDING';
-      setStatus(reason, true);
-      // Restore previous value visually so the user isn't left in a stale state.
-      inputEl.value = settings.globalHotkey || '';
-    }
-  }
-
-  function startRecording() {
-    if (recording) return;
-    recording = true;
-    inputEl.classList.add('recording');
-    inputEl.value = 'PRESS KEYS...';
-    setStatus('Press your binding (Esc to cancel)', false);
-  }
-
-  function endRecording() {
-    recording = false;
-    inputEl.classList.remove('recording');
-    inputEl.blur();
-  }
-
-  inputEl.addEventListener('focus', startRecording);
-  inputEl.addEventListener('mousedown', (e) => {
-    // Don't let the readonly input trigger an extra focus toggle
-    if (recording) e.preventDefault();
-  });
-
-  inputEl.addEventListener('keydown', async (e) => {
-    if (!recording) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.key === 'Escape') {
-      inputEl.value = settings.globalHotkey || '';
-      setStatus('CANCELLED.', false);
-      endRecording();
-      return;
-    }
-    const accel = eventToAccelerator(e);
-    if (!accel) return; // pure modifier, keep waiting
-    await tryApply(accel);
-    endRecording();
-  });
-
-  if (clearBtn) {
-    clearBtn.addEventListener('click', async () => {
-      await tryApply(null);
-    });
-  }
-})();
 
 $('btn-random-theme').addEventListener('click', async () => {
   const current = settings.theme || 'cyberpunk';
