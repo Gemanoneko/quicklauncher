@@ -719,6 +719,7 @@ async function refreshMissingIcons() {
 // ── Render ───────────────────────────────────────────────────────────────────
 function renderGrid() {
   const dropHint = $('drop-hint');
+  const retainedDraft = window.qlBeforeGridRender ? window.qlBeforeGridRender() : null;
 
   elAppGrid.innerHTML = '';
 
@@ -734,6 +735,7 @@ function renderGrid() {
   if (_filterText) applyFilter();
   // Regions: an empty Column or Row draws its one dashed cell (region.js).
   if (window.qlAfterRender) window.qlAfterRender();
+  if (window.qlAfterGridRender) window.qlAfterGridRender(retainedDraft);
 }
 
 function createAppTile(appItem) {
@@ -830,7 +832,7 @@ function startRename(appItem, labelEl) {
   let cancelled = false;
 
   async function commit() {
-    if (cancelled) return;
+    if (cancelled || input._presentationMoving) return;
     const newName = input.value.trim() || appItem.name;
     appItem.name = newName;
     labelEl.textContent = newName;
@@ -904,6 +906,7 @@ function applySettings() {
   $('theme-stylesheet').href = `styles/themes/${theme}.css`;
   startBannerCycle(theme);
   if (window.qlRadialRefresh) window.qlRadialRefresh();
+  if (window.qlDisplayMetricsChanged) window.qlDisplayMetricsChanged();
 }
 
 // Apply reduced-motion: union of user setting and OS prefers-reduced-motion.
@@ -1501,7 +1504,7 @@ function drawBanner(view) {
   }
   elUpdateText.textContent = view.text;
   // A Column draws only the update layer's buttons: its message is the slot's tooltip (M4 rulings Q10).
-  banner.title = view.layer === 'update' ? view.text : '';
+  banner.title = view.title || (view.layer === 'update' ? view.text : '');
   banner.classList.toggle('notice', view.layer === 'notice');
   actionsEl.innerHTML = '';
 

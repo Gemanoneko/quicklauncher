@@ -79,7 +79,9 @@
   }
 
   function applyState() {
-    applyLayout(info.layout);
+    body.classList.toggle('display-fallback', !!info.displayFallback);
+    applyLayout(info.presentation || info.layout, !!info.displayFallback || !!info.displayRestored);
+    grip.title = info.displayFallback ? 'Resize temporary Grid' : 'Drag to resize';
     body.classList.toggle('region-active', !!info.active);
     const rnd = info.matchAll ? 'Random theme for all regions' : 'Random theme for this region';
     btnRandom.title = rnd;
@@ -102,11 +104,17 @@
   const elUpdateText = $('update-text');
   const elLeadNotice = $('lead-notice');
 
-  function applyLayout(layout) {
+  function applyLayout(layout, preserve = false) {
     const l = LAYOUTS.includes(layout) ? layout : 'grid';
     if (l === layoutNow) return;
-    cancelRename();
-    if (chipRename && chipRename._cancel) chipRename._cancel();
+    if (!preserve) {
+      cancelRename();
+      if (chipRename && chipRename._cancel) chipRename._cancel();
+    }
+    const draft = preserve && chipRename;
+    const focused = document.hasFocus() ? document.activeElement : null;
+    const selection = draft && [draft.selectionStart,draft.selectionEnd];
+    if (draft) draft._presentationMoving = true;
     cancelRegionDrag();
     body.classList.remove(`layout-${layoutNow}`);
     body.classList.add(`layout-${l}`);
@@ -119,17 +127,69 @@
     }
     elGridBox.scrollTop = 0;
     elGridBox.scrollLeft = 0;
-    renderGrid(); // the empty cell comes or goes
+    if (preserve) {
+      // Retain live controls and their listeners; rebuilding tiles would trigger
+      // blur commits or discard a rename draft. Geometry is CSS plus refreshRadial.
+      if (l === 'grid') {
+        for (const cell of elGridBox.querySelectorAll('.empty-cell')) cell.remove();
+        for (const tile of elGridBox.querySelectorAll('.app-tile')) {
+          tile.tabIndex = 0; tile.removeAttribute('aria-disabled');
+          for (const button of tile.querySelectorAll('button')) button.tabIndex=0;
+        }
+        if (draft) {
+          const tile = tileOf(draft._itemId), label = tile && tile.querySelector('.tile-label');
+          if (label) { draft._gridLabel = label; draft.className='rename-input'; label.replaceWith(draft); }
+        }
+      }
+      applyFilter();
+      if (draft) {
+        if (focused===draft && document.hasFocus()) { draft.focus({preventScroll:true}); draft.setSelectionRange(...selection); }
+        draft._presentationMoving = false;
+      }
+      refreshRadial();
+    } else renderGrid(); // explicit conversion retains ordinary behavior
     showLeadNotice();
     reportExtras();
   }
 
   // The edit bar and the notice slot make a Column 38 px taller each (spec 2.3):
   // the main process sizes the window, so it hears when either shows or hides.
-  let sentExtras = { edit: false, notice: false, preview: false };
+  let sentExtras = { edit: false, notice: false, preview: false, renaming: false };
+  let measuredGridMinimum = null;
+  function measureGridMinimum() {
+    if (layoutNow !== 'grid') return null;
+    // Intrinsic control widths and actual theme bands, with both edit and notice
+    // slots reserved so starting an interaction never makes the host unsafe.
+    const probe = $('app').cloneNode(true);
+    Object.assign(probe.style,{position:'fixed',left:'-10000px',top:'0',width:'4096px',height:'4096px',visibility:'hidden',pointerEvents:'none'});
+    for (const id of ['edit-bar','update-banner']) probe.querySelector(`#${id}`).classList.remove('hidden');
+    document.body.appendChild(probe);
+    const q=id=>probe.querySelector(`#${id}`), px=v=>parseFloat(v)||0;
+    const controls=q('header-controls'), actions=q('edit-bar').querySelector('.edit-actions');
+    const gridStyle=getComputedStyle(q('grid-container'));
+    const scrollStyle=getComputedStyle(q('app-grid'));
+    const horizontalPadding=px(gridStyle.paddingLeft)+px(gridStyle.paddingRight)+px(scrollStyle.paddingLeft)+px(scrollStyle.paddingRight);
+    const verticalPadding=px(gridStyle.paddingTop)+px(gridStyle.paddingBottom)+px(scrollStyle.paddingTop)+px(scrollStyle.paddingBottom);
+    const editLabel=q('edit-bar').querySelector('.edit-label');
+    const width=Math.ceil(Math.max(180,controls.getBoundingClientRect().width+24+26+160+8,
+      actions.getBoundingClientRect().width+(editLabel ? editLabel.getBoundingClientRect().width : 0)+24+12,
+      (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-size'),10)||64)+32+horizontalPadding+4));
+    const S=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-size'),10)||64;
+    const banner=q('theme-banner');
+    const tileHeight=Math.max(S+38,...[...probe.querySelectorAll('.app-tile:not(.filter-hidden)')].map(tile=>tile.getBoundingClientRect().height));
+    const height=Math.ceil(Math.max(150,q('header').getBoundingClientRect().height+q('edit-bar').getBoundingClientRect().height+38+
+      (banner ? banner.getBoundingClientRect().height : 0)+tileHeight+verticalPadding));
+    probe.remove();
+    const sheet=$('theme-stylesheet').sheet;
+    if (!sheet) return null;
+    const theme=new URL(sheet.href).pathname.split('/').at(-1).replace(/\.css$/,'');
+    measuredGridMinimum={width,height,iconSize:S,theme}; return measuredGridMinimum;
+  }
   function reportExtras() {
-    const x = { edit: isEditing(), notice: !elUpdate.classList.contains('hidden'), preview: radial() && (apps || []).length > 0 && !!elGridBox.querySelector('.drop-slot') && !body.classList.contains('tile-drop-rejected') };
-    if (x.edit === sentExtras.edit && x.notice === sentExtras.notice && x.preview === sentExtras.preview) return;
+    const gridMinimum = info.displayFallback ? measureGridMinimum() : null;
+    const x = { edit: isEditing(), notice: !elUpdate.classList.contains('hidden'), renaming: !!renaming || !!chipRename || !!elGridBox.querySelector('.rename-input'),
+      gridMinimum, preview: radial() && (apps || []).length > 0 && !!elGridBox.querySelector('.drop-slot') && !body.classList.contains('tile-drop-rejected') };
+    if (x.edit === sentExtras.edit && x.notice === sentExtras.notice && x.preview === sentExtras.preview && x.renaming===sentExtras.renaming && JSON.stringify(x.gridMinimum)===JSON.stringify(sentExtras.gridMinimum)) return;
     sentExtras = x;
     const previewSlot = x.preview ? elGridBox.querySelector('.drop-slot') : null;
     const previewDrag = x.preview && drop ? drop.dragId : null;
@@ -742,6 +802,7 @@
   const FILES = 0; // the preview id of a file drag (tile drags count from 1)
   const isFileDrag = (e) => !!(e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files'));
   let fileDepth = 0;
+  let fileInvalidated = false;
   let fileIdle = null;
   function endFilePreview(opts) {
     clearTimeout(fileIdle);
@@ -769,6 +830,7 @@
   }
   // The drop itself, from the paths on: the slot under the point, then the main process.
   function acceptDrop(paths, x, y) {
+    if (fileInvalidated) return Promise.resolve(null);
     if (!drop || drop.dragId !== FILES) {
       const cap = Number.isFinite(info.cap) ? info.cap : null;
       const full = cap !== null && (apps || []).length + Math.max(1, paths.length) > cap ? `FULL (${cap} max)` : null;
@@ -806,8 +868,8 @@
   function testSeam() {
     if (info.testHooks && !window.__qlFileDrop) window.__qlFileDrop = (paths, x, y) => acceptDrop(Array.isArray(paths) ? paths : [], x, y);
   }
-  window.addEventListener('dragenter', (e) => { if (!isFileDrag(e)) return; stop(e); fileDepth++; fileOver(e); }, true);
-  window.addEventListener('dragover', (e) => { if (!isFileDrag(e)) return; stop(e); fileOver(e); }, true);
+  window.addEventListener('dragenter', (e) => { if (!isFileDrag(e)) return; stop(e); if(fileDepth===0) fileInvalidated=false; fileDepth++; if(!fileInvalidated) fileOver(e); }, true);
+  window.addEventListener('dragover', (e) => { if (!isFileDrag(e)) return; stop(e); if(!fileInvalidated) fileOver(e); }, true);
   window.addEventListener('dragleave', (e) => {
     if (!isFileDrag(e)) return;
     e.stopPropagation();
@@ -1006,6 +1068,22 @@
   // M5: shared geometry and one mutually exclusive hub centre.
   let radialHover = '', radialNoticeText = '', queuedRadialNotice = '', radialNoticeTimer = null;
   let chipRename = null;
+  window.qlBeforeGridRender = () => {
+    const input=chipRename || elGridBox.querySelector('.rename-input');
+    if(!input) return null;
+    input._presentationMoving=true;
+    return {input,id:input._itemId || input.closest('.app-tile')?.dataset.id,focused:document.hasFocus()&&document.activeElement===input,selection:[input.selectionStart,input.selectionEnd]};
+  };
+  window.qlAfterGridRender = draft => {
+    if(!draft) return;
+    const input=draft.input;
+    if (!radial()) {
+      const tile=tileOf(draft.id),label=tile&&tile.querySelector('.tile-label');
+      if(label){if(input===chipRename)input._gridLabel=label;label.replaceWith(input);}
+    }
+    input._presentationMoving=false;
+    if(draft.focused&&document.hasFocus()){input.focus({preventScroll:true});input.setSelectionRange(...draft.selection);}
+  };
   let radialRefusal = '', radialRefusalLive = false, radialRefusalTimer = null;
   const isRefusal = text => /^(FULL \(\d+ max\)|NOT A SHORTCUT|No room(?: for this layout)?\.)/i.test(String(text || ''));
   function clearRadialRefusal() {
@@ -1105,13 +1183,15 @@
     if (!wasEditing) enterEditMode();
     const input = document.createElement('input'); input.type = 'text'; input.className = 'radial-chip-rename';
     input.value = item.name; input.maxLength = 40; input.title = 'Shortcut name'; input.setAttribute('aria-label','Shortcut name');
+    input._itemId = item.id;
     elHeader.appendChild(input); chipRename = input; refreshRadial(); input.focus(); input.select();
     let done = false;
     const finish = async commit => {
-      if (done) return; done = true; chipRename = null; input.remove();
+      if (done || input._presentationMoving) return; done = true; chipRename = null;
+      if (input._gridLabel) input.replaceWith(input._gridLabel); else input.remove();
       if (commit) { item.name = input.value.trim() || item.name; await saveApps(); renderGrid(); }
       if (!wasEditing && isEditing()) exitEditMode();
-      refreshRadial(); const tile = tileOf(item.id); if (tile) tile.focus();
+      refreshRadial(); reportExtras(); const tile = tileOf(item.id); if (tile && document.hasFocus()) tile.focus();
     };
     input._cancel = () => finish(false);
     input.addEventListener('blur',()=>finish(true));
@@ -1121,10 +1201,12 @@
   elGridBox.addEventListener('mouseover', e => { const tile=e.target.closest('.app-tile:not(.filter-hidden)'); radialHover=tile ? tile.dataset.id : ''; refreshRadial(); });
   elGridBox.addEventListener('mouseleave',()=>{radialHover='';refreshRadial();});
   elGridBox.addEventListener('click', e => { if(!radial() || !isEditing() || suppressNextClick || e.target.closest('button,input')) return; const tile=e.target.closest('.app-tile:not(.filter-hidden)'); if(tile) renameTile(tile.dataset.id); });
-  document.addEventListener('focusin',refreshRadial);
-  document.addEventListener('focusout',()=>queueMicrotask(refreshRadial));
+  document.addEventListener('focusin',()=>{refreshRadial();reportExtras();});
+  document.addEventListener('focusout',()=>queueMicrotask(()=>{refreshRadial();reportExtras();}));
   new MutationObserver(refreshRadial).observe($('theme-stylesheet'),{attributes:true,attributeFilter:['href']});
   $('theme-stylesheet').addEventListener('load',refreshRadial);
+  $('theme-stylesheet').addEventListener('load',reportExtras);
+  window.qlDisplayMetricsChanged = reportExtras;
   $('filter-chip-clear').setAttribute('aria-label','Clear filter');
 
   // ── From the main process ─────────────────────────────────────────────────
@@ -1141,6 +1223,15 @@
     // A display change, sleep or hide-all stopped a drag in flight.
     else if (cmd === 'cancel-drag') cancelRegionDrag();
     else if (cmd === 'cancel-tile-drag') { endDropPreview(); if (typeof cancelReorder === 'function') cancelReorder(); }
+    else if (cmd === 'cancel-geometry') {
+      if (fileDepth || (drop && drop.dragId===FILES)) { fileInvalidated=true; clearTimeout(fileIdle); fileIdle=null; }
+      endDropPreview(); if (typeof cancelReorder === 'function') cancelReorder();
+    }
+    else if (cmd === 'display-notice' && typeof c.text==='string') {
+      if (radial()) window.qlRadialNotice(c.text);
+      else qlBanner.queueNotice(c.text,c.title);
+      if (!radial()) srStatus.textContent=c.text;
+    }
   });
   // The main process changed this region's items (Manager picker, Move to).
   api.on('region:items-changed', (items) => {

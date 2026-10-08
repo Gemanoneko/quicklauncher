@@ -232,6 +232,9 @@
     err.className = 'mgr-error hidden';
     err.setAttribute('role', 'alert');
     nameWrap.append(name, err);
+    const description = document.createElement('div');
+    description.className = 'mgr-description';
+    nameWrap.appendChild(description);
     let committed = region.name;
     const commitName = async () => {
       const r = await api.invoke('manager:update-region', region.id, { name: name.value });
@@ -288,7 +291,7 @@
     });
 
     row.append(iconBtn, nameWrap, layout, theme.input, count, del);
-    const r = { row, iconBtn, name, err, layout, theme, count, del, setCommitted: (n) => { committed = n; } };
+    const r = { row, iconBtn, name, err, description, layout, theme, count, del, setCommitted: (n) => { committed = n; } };
     return r;
   }
 
@@ -325,6 +328,8 @@
         option.title = option.disabled ? `${region.count} shortcuts. ${option.value.charAt(0).toUpperCase()+option.value.slice(1)} holds ${cap}.` : '';
       }
       r.layout.value = region.layout;
+      r.description.textContent = region.displaySuppressed ? 'Not shown · display too small' : region.displayFallback ? `${region.layout.charAt(0).toUpperCase()+region.layout.slice(1)} · using Grid` : '';
+      r.description.title = r.description.textContent ? region.displayTitle : '';
       r.theme.set(region.theme, {
         disabled: state.matchAll,
         disabledTitle: 'Match all is on. Turn it off to set this region\'s theme.',

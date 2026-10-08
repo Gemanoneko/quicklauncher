@@ -24,6 +24,14 @@ function rig() {
 }
 const OFFER = ['UPDATE AVAILABLE — v9.9.9', [{ label: 'DOWNLOAD', action: 'download' }]];
 
+test('automatic layout notices queue behind refusal/update actions then keep full title for eight seconds',()=>{
+ const r=rig();r.banner.setUpdate(...OFFER);r.banner.showNotice('NOT A SHORTCUT');
+ r.banner.queueNotice('Using Grid while the display is smaller.','Full title');
+ assert.equal(r.last().text,'NOT A SHORTCUT');r.elapse(8000);assert.equal(r.last().layer,'update');
+ r.banner.closeUpdate();assert.equal(r.last().text,'Using Grid while the display is smaller.');assert.equal(r.last().title,'Full title');
+ r.elapse(8000);assert.equal(r.last(),null);assert.equal(r.dismissed(),1);
+});
+
 test('a notice over an update offer: the notice takes the slot; after 8 s the offer is back with its button; the tray dot stays', () => {
   const r = rig();
   r.banner.setUpdate(...OFFER);

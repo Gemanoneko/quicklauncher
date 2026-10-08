@@ -14,6 +14,7 @@ const M = require('./model');
 const P = require('./placement');
 const L = require('./layouts');
 const R = require('../../renderer/radial-layout');
+const D = require('./display-adaptation');
 const { RegionHost } = require('../desktop/region-host');
 const MR = require('../moves/rules');
 const { Mover } = require('../moves/mover');
@@ -511,7 +512,7 @@ class RegionController extends EventEmitter {
   _extras(id) { const rt = this.rt.get(id); return (rt && rt.extras) || NO_EXTRAS; }
 
   _radialGeometry(region, count = this._count(region.id), direction = region.fanDirection || 'up') {
-    if (this._extras(region.id).preview && count > 0) count++;
+    if (!(this.rt.get(region.id) || {}).displayFallback && this._extras(region.id).preview && count > 0) count++;
     return R.geometry(region.layout, count, this._iconSize(), direction);
   }
   _radialAnchor(region, home = false) {
@@ -557,15 +558,16 @@ class RegionController extends EventEmitter {
     const changed = !sameRect(rect, rt.shown); this._applyShown(rt, rect); this._notifyState(region.id); return changed;
   }
   _applyShape(rt, region) {
-    if (R.isRadial(region.layout)) rt.radialGeometry = this._radialGeometry(region);
+    const radial = R.isRadial(region.layout) && !rt.displayFallback;
+    if (radial) rt.radialGeometry = this._radialGeometry(region);
     if (!rt.win || rt.win.isDestroyed()) return;
     try {
-      if (R.isRadial(region.layout)) {
+      if (radial) {
         const g = this._radialGeometry(region); rt.radialGeometry = g;
         if (typeof rt.win.setShape !== 'function') throw new Error('radial window shaping unavailable');
         rt.win.setShape(R.shapeRects(g)); rt.radialShape = true;
       } else if (rt.radialShape && typeof rt.win.setShape === 'function') { rt.win.setShape([]); rt.radialShape = false; }
-      if (rt.shapeBlocked) { rt.shapeBlocked = false; rt.host.setHidden(this.hidden); }
+      if (rt.shapeBlocked) { rt.shapeBlocked = false; rt.host.setHidden(this.hidden || rt.displaySuppressed || (rt.displayFallback && !rt.gridMinimum)); }
     } catch (error) {
       // Fail closed rather than let transparent gaps cover the user's desktop.
       rt.shapeBlocked = true; if (rt.host) rt.host.setHidden(true);
@@ -580,8 +582,12 @@ class RegionController extends EventEmitter {
     if (!rect) return { ok: false, error: M.STRINGS.layoutNoRoom };
     const g = R.geometry('fan', count, this._iconSize(), direction), wa = this.workArea();
     this._updateRegion(id, { fanDirection: direction, rect, radialAnchor: { x: rect.x + g.pivot.x, y: rect.y + g.pivot.y }, home: { ...wa } });
+    rt.displayFallback = false; rt.displaySuppressed = false;
+    rt.displayRestored = false;
     rt.radialAnchor = { x: rect.x + g.pivot.x, y: rect.y + g.pivot.y };
-    this._applyShown(rt, rect); this._notifyState(id); this._managerChanged(); return { ok: true, rect };
+    this._applyShown(rt, rect);
+    rt.host.setHidden(this.hidden || !!rt.shapeBlocked);
+    this._notifyState(id); this._managerChanged(); return { ok: true, rect };
   }
 
   /**
@@ -631,6 +637,7 @@ class RegionController extends EventEmitter {
     const rt = this.rt.get(id);
     const region = this.region(id);
     if (!rt || !region || rt.drag) return false;
+    if (rt.displayFallback || rt.displaySuppressed) { this.relayoutAll('content changed', false); return true; }
     if (R.isRadial(region.layout)) return this._refitRadial(region, rt);
     if (!L.isContentSized(region.layout)) return false;
     const inner = P.innerArea(this.workArea());
@@ -650,15 +657,23 @@ class RegionController extends EventEmitter {
   _refitAllContent() { for (const r of this.regions()) this._refitContent(r.id); }
 
   /** From the region page: its edit bar or notice slot shows or hides (Column grows by 38 for each, spec 2.3). */
-  setExtras(id, { edit = false, notice = false, preview = false } = {}) {
+  setExtras(id, { edit = false, notice = false, preview = false, renaming = false, gridMinimum = null } = {}) {
     const rt = this.rt.get(id);
     if (!rt) return { ok: false };
     const region = this.region(id), count = this._count(id);
     const allowPreview = !!preview && region && R.isRadial(region.layout) && count > 0 && count < this._capOf(region) && !!this._findRadialFit(region, count + 1);
     const refusedPreview = !!preview && region && R.isRadial(region.layout) && count > 0 && !allowPreview;
     const previewResult = { preview: allowPreview, previewRejected: refusedPreview, ...(refusedPreview ? { error: M.STRINGS.layoutNoRoom } : {}) };
-    const next = { edit: !!edit, notice: !!notice, preview: allowPreview };
-    if (rt.extras && rt.extras.edit === next.edit && rt.extras.notice === next.notice && !!rt.extras.preview === !!next.preview) return { ok: !refusedPreview, changed: false, shown: { ...rt.shown }, ...previewResult };
+    const next = { edit: !!edit, notice: !!notice, preview: allowPreview, renaming: !!renaming };
+    const measurementMatches = gridMinimum && (gridMinimum.iconSize === undefined || gridMinimum.iconSize === this._iconSize())
+      && (gridMinimum.theme === undefined || gridMinimum.theme === M.effectiveTheme(region, this.settings()));
+    const minimumChanged = measurementMatches && Number.isFinite(gridMinimum.width) && Number.isFinite(gridMinimum.height)
+      && gridMinimum.width >= M.GRID.minWidth && gridMinimum.height >= M.GRID.minHeight
+      && gridMinimum.width <= 4096 && gridMinimum.height <= 4096
+      && (!rt.gridMinimum || rt.gridMinimum.width !== gridMinimum.width || rt.gridMinimum.height !== gridMinimum.height);
+    if (minimumChanged) rt.gridMinimum = { width: Math.ceil(gridMinimum.width), height: Math.ceil(gridMinimum.height), iconSize:this._iconSize(), theme:M.effectiveTheme(region,this.settings()) };
+    const renameChanged = !!rt.extras.renaming !== next.renaming;
+    if (!minimumChanged && !renameChanged && rt.extras && rt.extras.edit === next.edit && rt.extras.notice === next.notice && !!rt.extras.preview === !!next.preview) return { ok: !refusedPreview, changed: false, shown: { ...rt.shown }, ...previewResult };
     rt.extras = next;
     const changed = this._refitContent(id);
     return { ok: !refusedPreview, changed, shown: { ...rt.shown }, ...previewResult };
@@ -695,7 +710,7 @@ class RegionController extends EventEmitter {
       anchor.x = Math.round(radialAnchor.x - g.pivot.x); anchor.y = Math.round(radialAnchor.y - g.pivot.y);
       size = { width: g.width, height: g.height };
     } else if (layout === 'grid') {
-      const g = region.gridSize || { width: M.GRID.defaultWidth, height: M.GRID.defaultHeight };
+      const g = rt.displayFallback ? rt.shown : region.gridSize || { width: M.GRID.defaultWidth, height: M.GRID.defaultHeight };
       size = { width: Math.max(M.GRID.minWidth, g.width), height: Math.max(M.GRID.minHeight, g.height) };
     } else {
       const want = L.contentSize(layout, this._count(id), this._iconSize(), this._extras(id));
@@ -716,10 +731,16 @@ class RegionController extends EventEmitter {
     clearTimeout(rt.saveTimer);
     rt.saveTimer = null;
     rt.pendingSave = null;
+    const adaptedBefore = rt.displayFallback || rt.displaySuppressed;
     this._updateRegion(id, patch);
+    rt.displayFallback = false;
+    rt.displaySuppressed = false;
+    rt.displayRestored = false;
+    rt.fallbackMovementBase = null;
     this._applyShown(rt, rect);
     this._notifyState(id);
     this._managerChanged();
+    if (adaptedBefore || [...this.rt.values()].some(runtime=>runtime.displayFallback || runtime.displaySuppressed)) this.relayoutAll('layout changed', false);
     if (this.replayUpdateOffer) this.replayUpdateOffer(id);
     this.log({ event: 'layout', region: id.slice(0, 8), from: region.layout, to: layout, rect });
     return { ok: true, rect };
@@ -735,11 +756,30 @@ class RegionController extends EventEmitter {
   _fitAll() {
     const inner = P.innerArea(this.workArea());
     const regs = this.regions();
-    return P.relayout(this._wantedRects(), inner, regs.map((r) => this._minFor(r))).rects;
+    const areaKey = JSON.stringify(this.workArea());
+    if (!regs.some(r => R.isRadial(r.layout))) {
+      this._displayPlans = null;
+      return P.relayout(this._wantedRects(), inner, regs.map((r) => this._minFor(r))).rects;
+    }
+    const runtime = new Map(regs.map(r => {
+      const rt = this.rt.get(r.id);
+      return [r.id, { count: this._count(r.id), gridMinimum: rt && rt.gridMinimum,
+        temporaryRect: rt && rt.displayFallback && rt.displayAreaKey===areaKey ? {...rt.shown} : null,
+        holdFallback: !!(rt && rt.displayFallback && (rt.extras.renaming || rt.drag || rt.resize || (this.tileDrag && (this.tileDrag.sourceId===r.id || this.tileDrag.targetId===r.id)))) }];
+    }));
+    const wanted=this._wantedRects(),minimums=regs.map(r=>this._minFor(r));
+    const legacy=P.relayout(wanted,inner,minimums).rects;
+    const needsFallback=regs.some(r=>R.isRadial(r.layout)&&(!D.radialFits(r,this._count(r.id),this._iconSize(),this.workArea())||runtime.get(r.id).holdFallback));
+    const exactLegacy = !needsFallback && legacy.every((rect,index)=>!R.isRadial(regs[index].layout) ||
+      (rect.width===minimums[index].width&&rect.height===minimums[index].height&&P.fits(rect,inner,legacy.filter((_,other)=>other!==index))));
+    this._displayPlans = exactLegacy ? legacy.map((rect,index)=>({rect,minimum:minimums[index],fallback:false,suppressed:false,presentation:regs[index].layout})) :
+      D.plan({ regions: regs, wanted, minimums, iconSize: this._iconSize(), workArea: this.workArea(), runtime });
+    return this._displayPlans.map(p => p.rect);
   }
 
   _windowRectDip(region, shown) {
-    const rim = region.layout === 'grid' ? M.GRID.rim : 0;
+    const rt = this.rt.get(region.id);
+    const rim = region.layout === 'grid' || (rt && rt.displayFallback) ? M.GRID.rim : 0;
     return { x: shown.x - rim, y: shown.y - rim, width: shown.width + 2 * rim, height: shown.height + 2 * rim };
   }
 
@@ -754,13 +794,19 @@ class RegionController extends EventEmitter {
       ready: false, sentTheme: null, syncedSeq: this.latestSeq, windows: 0, drag: null, resize: null, saveTimer: null,
       pendingSave: null, extras: { ...NO_EXTRAS },
     };
+    const plan = this._displayPlans && this._displayPlans[this.regions().findIndex(r => r.id===region.id)];
+    rt.displayFallback = !!(plan && plan.fallback);
+    rt.displaySuppressed = !!(plan && plan.suppressed);
+    rt.displayAreaKey = JSON.stringify(this.workArea());
+    rt.fallbackMovementBase = { ...rt.shown };
+    rt.displayNotice = rt.displaySuppressed ? {text:D.SUPPRESSED_TEXT,title:D.SUPPRESSED_TEXT} : rt.displayFallback ? {text:D.FALLBACK_TEXT,title:D.FALLBACK_TITLE} : null;
     this.rt.set(region.id, rt);
     rt.host = new RegionHost({
       tag: region.id.slice(0, 8),
       createWindow: () => this._createRegionWindow(rt),
       screenRect: this._screenRect(region, rt.shown),
       killSwitch: this.killSwitch,
-      hidden: this.hidden,
+      hidden: this.hidden || rt.displaySuppressed || rt.displayFallback,
       log: (o) => this.log(o),
     });
     rt.host.on('mode', () => { this._notifyState(rt.id); this._managerChanged(); });
@@ -817,7 +863,7 @@ class RegionController extends EventEmitter {
         reject(new Error(`region page failed to load: ${code} ${desc}`));
       });
       // The layout rides in the URL, so the page draws its first frame in it (no Grid flash).
-      win.loadFile(INDEX_HTML, { query: { region: rt.id, rebuilt: rebuilt ? '1' : '0', layout: region.layout } });
+      win.loadFile(INDEX_HTML, { query: { region: rt.id, rebuilt: rebuilt ? '1' : '0', layout: rt.displayFallback ? 'grid' : region.layout } });
       if (rebuilt) this.log({ event: 'rebuild', region: rt.id.slice(0, 8), window: rt.windows });
     });
   }
@@ -844,7 +890,7 @@ class RegionController extends EventEmitter {
   }
 
   _shownRects(exceptId) {
-    return [...this.rt.values()].filter((r) => r.id !== exceptId).map((r) => r.shown);
+    return [...this.rt.values()].filter((r) => r.id !== exceptId && !r.displaySuppressed).map((r) => r.shown);
   }
 
   /**
@@ -855,17 +901,33 @@ class RegionController extends EventEmitter {
    * window is re-applied even when its DIP rect did not change: a scale
    * change moves the physical rect, and the shell may have moved our parent.
    */
-  relayoutAll(reason) {
-    this._cancelGestures(reason);
+  relayoutAll(reason, cancelGestures = true) {
+    if (cancelGestures) this._cancelGestures(reason);
     const fitted = this._fitAll();
     let moved = 0;
     this.regions().forEach((r, i) => {
       const rt = this.rt.get(r.id);
       if (!rt) return;
+      const previousFallback = rt.displayFallback;
+      const previousSuppressed = rt.displaySuppressed;
+      const plan = this._displayPlans && this._displayPlans[i];
+      rt.displayFallback = !!(plan && plan.fallback);
+      rt.displaySuppressed = !!(plan && plan.suppressed);
+      rt.displayRestored = previousFallback && !rt.displayFallback;
+      rt.displayAreaKey = JSON.stringify(this.workArea());
       if (!sameRect(rt.shown, fitted[i])) moved++;
       this._applyShown(rt, fitted[i]);
+      rt.fallbackMovementBase = { ...rt.shown };
+      rt.host.setHidden(this.hidden || rt.displaySuppressed || rt.shapeBlocked || (rt.displayFallback && !rt.gridMinimum));
+      this._notifyState(r.id);
+      if (previousFallback !== rt.displayFallback || previousSuppressed !== rt.displaySuppressed) {
+        const text = rt.displaySuppressed ? D.SUPPRESSED_TEXT : rt.displayFallback ? D.FALLBACK_TEXT : previousFallback ? `${layoutLabel(r.layout)} layout restored.` : null;
+        if (text) this._queueDisplayNotice(r.id, text, rt.displayFallback ? D.FALLBACK_TITLE : text);
+      }
     });
     this.log({ event: 'relayout', reason, workArea: this.workArea(), moved });
+    if (this.workArea().width<440 || this.workArea().height<420) this.log({event:'unsupported-work-area',reason:'Manager functional minimum does not fit',minimum:{width:440,height:420},workArea:this.workArea()});
+    this._managerChanged();
   }
 
   /**
@@ -874,9 +936,18 @@ class RegionController extends EventEmitter {
    */
   _cancelGestures(reason) {
     for (const rt of this.rt.values()) {
+      this._command(rt.id, 'cancel-geometry');
+      if (rt.previewBase) {
+        rt.radialAnchor = { ...rt.previewBase.anchor };
+        this._applyShown(rt, rt.previewBase.shown);
+        rt.previewBase = null;
+      }
+      rt.extras = { ...rt.extras, preview: false };
       if (!rt.drag && !rt.resize) continue;
+      const baseline = rt.drag ? rt.drag.start : rt.resize.start;
       rt.drag = null;
       rt.resize = null;
+      this._applyShown(rt, baseline);
       this._command(rt.id, 'cancel-drag');
     }
     if (this.tileDrag) this._cancelTileDrag(reason, { notifySource: true, instant: true });
@@ -887,6 +958,16 @@ class RegionController extends EventEmitter {
   // them with a fitted rect (spec 4.4: only the user changes the saved layout).
   _saveRectSoon(rt) {
     const wa = this.workArea();
+    if (rt.displayFallback) {
+      const region = this.region(rt.id), preferred = this._homeRect(region), anchor = this._radialAnchor(region, true);
+      const base = rt.fallbackMovementBase || rt.shown;
+      const dx = rt.shown.x-base.x, dy = rt.shown.y-base.y;
+      rt.pendingSave = { rect: { ...preferred, x:preferred.x+dx, y:preferred.y+dy }, radialAnchor:{x:anchor.x+dx,y:anchor.y+dy}, home:{...wa} };
+      rt.fallbackMovementBase = { ...rt.shown };
+      clearTimeout(rt.saveTimer);
+      rt.saveTimer = setTimeout(() => { rt.saveTimer=null; this._writePendingRect(rt); },SAVE_RECT_MS);
+      return;
+    }
     if (R.isRadial(this.region(rt.id).layout)) { const g = this._radialGeometry(this.region(rt.id)); rt.radialAnchor = { x:rt.shown.x+g.pivot.x,y:rt.shown.y+g.pivot.y }; }
     rt.pendingSave = { ...(rt.radialAnchor ? { radialAnchor: { ...rt.radialAnchor } } : {}), rect: { ...rt.shown }, home: { x: wa.x, y: wa.y, width: wa.width, height: wa.height } };
     clearTimeout(rt.saveTimer);
@@ -935,6 +1016,9 @@ class RegionController extends EventEmitter {
     const s = this.settings();
     return {
       id, name: region.name, icon: region.icon, layout: region.layout,
+      presentation: rt && rt.displayFallback ? 'grid' : region.layout,
+      displayFallback: !!(rt && rt.displayFallback), displaySuppressed: !!(rt && rt.displaySuppressed),
+      displayRestored: !!(rt && rt.displayRestored),
       fanDirection: region.fanDirection || 'up',
       radial: R.isRadial(region.layout) ? this._radialGeometry(region) : null,
       primary: this.primaryId() === id, active: this.activeId === id,
@@ -965,6 +1049,10 @@ class RegionController extends EventEmitter {
   /** Any region or the Manager: settings (icon size, reduced motion, theme) were changed elsewhere. */
   broadcastSettingsChanged() {
     for (const rt of this.rt.values()) {
+      if (rt.gridMinimum && (rt.gridMinimum.iconSize!==this._iconSize() || rt.gridMinimum.theme!==M.effectiveTheme(this.region(rt.id),this.settings()))) {
+        rt.gridMinimum=null;
+        if(rt.displayFallback) rt.host.setHidden(true);
+      }
       if (rt.wc && !rt.wc.isDestroyed()) rt.wc.send('settings-changed-externally');
     }
     this._refitAllContent(); // the icon size sets a Column's width and a Row's height
@@ -976,6 +1064,10 @@ class RegionController extends EventEmitter {
     const s = this.settings();
     for (const rt of this.rt.values()) {
       const eff = M.effectiveTheme(this.region(rt.id), s);
+      if(rt.gridMinimum && rt.gridMinimum.theme!==eff) {
+        rt.gridMinimum=null;
+        if(rt.displayFallback) rt.host.setHidden(true);
+      }
       if (rt.id === exceptId) { rt.sentTheme = eff; continue; }
       if (eff !== rt.sentTheme && rt.wc && !rt.wc.isDestroyed()) rt.wc.send('settings-changed-externally');
     }
@@ -999,10 +1091,21 @@ class RegionController extends EventEmitter {
     const rt = this.rt.get(id);
     if (!rt) return;
     rt.ready = true;
+    if (rt.displayNotice) this._queueDisplayNotice(id,rt.displayNotice.text,rt.displayNotice.title);
     if (this.replayUpdateOffer) this.replayUpdateOffer(id);
     if (id === this.primaryId() && this.saveErrorPending) {
       this.saveErrorPending = false;
       rt.wc.send('store-save-error');
+    }
+  }
+
+  _queueDisplayNotice(id,text,title) {
+    const rt=this.rt.get(id);
+    if (!rt) return;
+    rt.displayNotice={text,title};
+    if (rt.ready && rt.wc && !rt.wc.isDestroyed()) {
+      this._command(id,'display-notice',rt.displayNotice);
+      rt.displayNotice=null;
     }
   }
 
@@ -1324,7 +1427,7 @@ class RegionController extends EventEmitter {
   _tileTargets(sourceId) {
     if (this.hidden) return [];
     return [...this.rt.values()]
-      .filter((rt) => rt.id !== sourceId && rt.ready && rt.wc && !rt.wc.isDestroyed()
+      .filter((rt) => rt.id !== sourceId && !rt.displaySuppressed && rt.ready && rt.wc && !rt.wc.isDestroyed()
         && (rt.host.mode === 'attached' || rt.host.mode === 'fallback'))
       .map((rt) => ({ id: rt.id, rect: rt.shown }));
   }
@@ -1378,7 +1481,7 @@ class RegionController extends EventEmitter {
     if (phase === 'cancel') { this._cancelTileDrag('released in the source region'); return { ok: true }; }
     const p = this._pageToDesktop(id, x, y);
     let hitId = p ? P.regionAt(p, this._tileTargets(id)) : null;
-    if (hitId && R.isRadial(this.region(hitId).layout)) { const rt=this.rt.get(hitId), g=this._radialGeometry(this.region(hitId)); const x=p.x-rt.shown.x,y=p.y-rt.shown.y; const h=g.hub; const chip=g.chips.some(c=>x>=c.x&&x<c.x+c.width&&y>=c.y&&y<c.y+c.height); const hub=(x-g.pivot.x)**2+(y-g.pivot.y)**2<=48**2; if (!chip&&!hub) hitId=null; }
+    if (hitId && R.isRadial(this.region(hitId).layout) && !this.rt.get(hitId).displayFallback) { const rt=this.rt.get(hitId), g=this._radialGeometry(this.region(hitId)); const x=p.x-rt.shown.x,y=p.y-rt.shown.y; const chip=g.chips.some(c=>x>=c.x&&x<c.x+c.width&&y>=c.y&&y<c.y+c.height); const hub=(x-g.pivot.x)**2+(y-g.pivot.y)**2<=48**2; if (!chip&&!hub) hitId=null; }
     const dec = this._dropDecision(hitId, id);
     if (phase === 'move') {
       if (t.targetId && t.targetId !== hitId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id });
@@ -1477,12 +1580,23 @@ class RegionController extends EventEmitter {
 
   showAll() {
     this.hidden = false;
-    for (const rt of this.rt.values()) rt.host.setHidden(false);
+    this.relayoutAll('show');
+    for (const rt of this.rt.values()) rt.host.setHidden(!!(rt.displaySuppressed || rt.shapeBlocked || (rt.displayFallback && !rt.gridMinimum)));
   }
 
   toggleAll() { if (this.hidden) this.showAll(); else this.hideAll(); }
 
   // ── move and resize (script-driven, spec 4) ───────────────────────────────
+  _gestureSpace(rt) {
+    const inner = P.innerArea(this.workArea());
+    if (!rt.displayFallback) return { inner, others:this._shownRects(rt.id) };
+    const rim=M.GRID.rim;
+    return { inner:{x:inner.x+rim,y:inner.y+rim,width:Math.max(0,inner.width-rim*2),height:Math.max(0,inner.height-rim*2)},
+      others:[...this.rt.values()].filter(other=>other.id!==rt.id&&!other.displaySuppressed).map(other=>{
+        const r=other.shown, region=this.region(other.id), otherRim=other.displayFallback||region.layout==='grid'?M.GRID.rim:0;
+        const gapRim=rim+otherRim;return {x:r.x-gapRim,y:r.y-gapRim,width:r.width+gapRim*2,height:r.height+gapRim*2};
+      }) };
+  }
   drag(id, { phase, dx = 0, dy = 0, alt = false } = {}) {
     const rt = this.rt.get(id);
     if (!rt) return { ok: false };
@@ -1494,7 +1608,8 @@ class RegionController extends EventEmitter {
     if (phase === 'move') {
       const s = rt.drag.start;
       const proposed = { ...s, x: s.x + Math.round(dx), y: s.y + Math.round(dy) };
-      const res = P.dragStep(rt.drag.last, proposed, P.innerArea(this.workArea()), this._shownRects(id), { alt: !!alt });
+      const space=this._gestureSpace(rt);
+      const res = P.dragStep(rt.drag.last, proposed, space.inner, space.others, { alt: !!alt });
       rt.drag.last = res.rect;
       if (!sameRect(res.rect, rt.shown)) this._applyShown(rt, res.rect);
       return { ok: true, snapped: res.snapped, blocked: res.blocked };
@@ -1509,21 +1624,23 @@ class RegionController extends EventEmitter {
   resize(id, { phase, edges = {}, dx = 0, dy = 0, alt = false } = {}) {
     const rt = this.rt.get(id);
     const region = this.region(id);
-    if (!rt || !region || region.layout !== 'grid') return { ok: false };
+    if (!rt || !region || (region.layout !== 'grid' && !rt.displayFallback)) return { ok: false };
     if (phase === 'start') {
       rt.resize = { start: { ...rt.shown }, edges: { ...edges } };
       return { ok: true };
     }
     if (!rt.resize) return { ok: false };
     if (phase === 'move') {
+      const space=this._gestureSpace(rt);
       const res = P.resizeStep(rt.resize.start, rt.resize.edges, Math.round(dx), Math.round(dy),
-        P.innerArea(this.workArea()), this._shownRects(id), { width: M.GRID.minWidth, height: M.GRID.minHeight }, { alt: !!alt });
+        space.inner, space.others, rt.displayFallback ? D.gridMinimum(this._iconSize(),rt.gridMinimum) : { width: M.GRID.minWidth, height: M.GRID.minHeight }, { alt: !!alt });
       if (!sameRect(res.rect, rt.shown)) this._applyShown(rt, res.rect);
       return { ok: true, blocked: res.blocked };
     }
     const changed = !sameRect(rt.resize.start, rt.shown);
     rt.resize = null;
-    if (changed) this._saveRectSoon(rt);
+    if (changed && !rt.displayFallback) this._saveRectSoon(rt);
+    if (rt.displayFallback) rt.fallbackMovementBase = { ...rt.shown };
     return { ok: true, changed };
   }
 
@@ -1531,7 +1648,8 @@ class RegionController extends EventEmitter {
     const rt = this.rt.get(id);
     if (!rt || rt.drag || rt.resize) return { ok: false };
     const proposed = { ...rt.shown, x: rt.shown.x + Math.round(dx), y: rt.shown.y + Math.round(dy) };
-    const res = P.moveConstrained(rt.shown, proposed, P.innerArea(this.workArea()), this._shownRects(id));
+    const space=this._gestureSpace(rt);
+    const res = P.moveConstrained(rt.shown, proposed, space.inner, space.others);
     if (sameRect(res.rect, rt.shown)) return { ok: true, blocked: true };
     this._applyShown(rt, res.rect);
     this._saveRectSoon(rt);
@@ -1541,7 +1659,8 @@ class RegionController extends EventEmitter {
   place(id, where) {
     const rt = this.rt.get(id);
     if (!rt) return { ok: false };
-    const r = P.placeAt(where, rt.shown, P.innerArea(this.workArea()), this._shownRects(id));
+    const space=this._gestureSpace(rt);
+    const r = P.placeAt(where, rt.shown, space.inner, space.others);
     if (!r) return { ok: false };
     this._applyShown(rt, r);
     this._saveRectSoon(rt);
@@ -1725,6 +1844,9 @@ class RegionController extends EventEmitter {
     return {
       regions: this.regions().map((r, i) => ({
         id: r.id, name: r.name, icon: r.icon, layout: r.layout, theme: r.theme,
+        displayFallback: !!(this.rt.get(r.id) && this.rt.get(r.id).displayFallback),
+        displaySuppressed: !!(this.rt.get(r.id) && this.rt.get(r.id).displaySuppressed),
+        displayTitle: this.rt.get(r.id) && this.rt.get(r.id).displaySuppressed ? D.SUPPRESSED_TEXT : D.FALLBACK_TITLE,
         count: M.itemsOf(apps, r.id).length, primary: i === 0,
         layoutCaps: {fan:R.capacity('fan',this._iconSize(),this.workArea(),'up'),ring:R.capacity('ring',this._iconSize(),this.workArea())},
         mode: this.rt.get(r.id) ? this.rt.get(r.id).host.mode : 'pending',

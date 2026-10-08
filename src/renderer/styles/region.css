@@ -48,6 +48,16 @@ body.region.edit-mode #title.renameable:hover { border-bottom-color: var(--accen
 body.region.layout-grid { padding: 6px; }
 body.region.layout-grid #app { height: 100%; }
 
+/* The approved temporary Grid keeps the same controls and theme styling with
+   the addendum's 24px actionable target floor. Ordinary Grid is unchanged. */
+body.region.display-fallback #filter-chip-clear,
+body.region.display-fallback #edit-bar button,
+body.region.display-fallback .rename-input,
+body.region.display-fallback .region-rename-input {
+  min-width: 24px;
+  min-height: 24px;
+}
+
 /* Active region: the border switches to --border-h (spec 2.1). While a
    drag is snapped or blocked: --accent-c / --accent-m (spec 4.1.6). */
 body.region.region-active #app::before { border-color: var(--border-h); }

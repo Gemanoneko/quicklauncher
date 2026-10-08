@@ -30,13 +30,18 @@
     let notice = null; // { text }
     let updateTimer = null;
     let noticeTimer = null;
+    let queuedNotice = null;
 
     const stopUpdateTimer = () => { if (updateTimer !== null) clearTimer(updateTimer); updateTimer = null; };
     const stopNoticeTimer = () => { if (noticeTimer !== null) clearTimer(noticeTimer); noticeTimer = null; };
     const copyActions = () => (update ? update.actions.map((a) => ({ ...a })) : []);
 
     function render() {
-      if (notice) { draw({ layer: 'notice', text: notice.text, actions: [] }); return; }
+      if (notice) { draw({ layer: 'notice', text: notice.text, ...(notice.title ? {title: notice.title} : {}), actions: [] }); return; }
+      if (queuedNotice && !(update && update.actions.length)) {
+        const queued = queuedNotice; queuedNotice = null;
+        showNotice(queued.text, queued.title); return;
+      }
       if (update) {
         draw({ layer: 'update', text: update.text, actions: copyActions() });
         if (update.autoMs > 0 && updateTimer === null) updateTimer = setTimer(closeUpdate, update.autoMs);
@@ -75,11 +80,18 @@
     }
 
     /** A notice takes the slot for noticeMs; another notice replaces it and restarts the time. */
-    function showNotice(text) {
+    function showNotice(text, title = '') {
       stopNoticeTimer();
       stopUpdateTimer(); // a covered update message's timer starts again when it is drawn
-      notice = { text: String(text) };
+      notice = { text: String(text), ...(title ? { title: String(title) } : {}) };
       noticeTimer = setTimer(endNotice, noticeMs);
+      render();
+    }
+
+    // Automatic layout feedback waits behind existing notice/refusal and
+    // actionable updater state, then uses the same eight-second notice slot.
+    function queueNotice(text, title = '') {
+      queuedNotice = { text: String(text), title: String(title) };
       render();
     }
 
@@ -118,7 +130,7 @@
 
     function destroy() { stopUpdateTimer(); stopNoticeTimer(); }
 
-    return { setUpdate, updateProgress, markAction, showNotice, endNotice, closeUpdate, close, state, destroy };
+    return { setUpdate, updateProgress, markAction, showNotice, queueNotice, endNotice, closeUpdate, close, state, destroy };
   }
 
   return { createBanner, NOTICE_MS };

@@ -66,6 +66,7 @@ body.manager #view-settings .mgr-title { margin-bottom: 16px; }
 .mgr-icon-btn svg, .mgr-glyph svg { width: 20px; height: 20px; display: block; }
 
 .mgr-name-wrap { min-width: 0; }
+.mgr-description { font: inherit; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mgr-name, .mgr-layout {
   width: 100%; height: 28px;
   background: var(--rename-input-bg);

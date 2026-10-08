@@ -695,7 +695,8 @@ $apps | ConvertTo-Json -Depth 2
   onRegion('region:remove-broken', (id, a) => (typeof a.itemId === 'string' ? ctl.removeBrokenFromPage(id, a.itemId) : { ok: false }));
   onRegion('region:rename', (id, a) => ctl.rename(id, typeof a.name === 'string' ? a.name : ''));
   // M4: the page's edit bar or notice slot shows or hides (a Column grows by 38 for each).
-  onRegion('region:extras', (id, a) => ctl.setExtras(id, { edit: a.edit === true, notice: a.notice === true, preview: a.preview === true }));
+  onRegion('region:extras', (id, a) => ctl.setExtras(id, { edit: a.edit === true, notice: a.notice === true, preview: a.preview === true,
+    renaming: a.renaming === true, gridMinimum: a.gridMinimum && typeof a.gridMinimum === 'object' ? { width: num(a.gridMinimum.width), height: num(a.gridMinimum.height), iconSize:num(a.gridMinimum.iconSize), theme:typeof a.gridMinimum.theme==='string'?a.gridMinimum.theme:'' } : null }));
   onRegion('region:cycle', (id, a) => { ctl.cycle(id, num(a.dir) < 0 ? -1 : 1); });
   onRegion('region:open-manager', (id, a) => {
     const view = ['regions', 'settings', 'picker', 'cheatsheet'].includes(a.view) ? a.view : 'regions';
