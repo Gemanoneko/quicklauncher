@@ -536,6 +536,13 @@ class RegionController extends EventEmitter {
     // Once committed items replace the preview, count them only once before shaping.
     if (rt.previewBase && count !== rt.previewBase.geometry.count) { rt.previewBase = null; rt.extras = { ...rt.extras, preview:false }; }
     const preview = this._extras(region.id).preview && count > 0;
+    // An accepted global size also updates the stored-count cancellation box.
+    if (preview && rt.previewBase && rt.previewBase.geometry.S !== this._iconSize()) {
+      const base = rt.previewBase;
+      const geometry = R.geometry(region.layout,count,this._iconSize(),region.fanDirection || 'up');
+      const shown = this._findRadialFit(region,count,region.fanDirection || 'up',base.anchor);
+      if (shown) rt.previewBase = {shown,geometry,anchor:{x:shown.x+geometry.pivot.x,y:shown.y+geometry.pivot.y}};
+    }
     const g = R.geometry(region.layout, count + (preview ? 1 : 0), this._iconSize(), region.fanDirection || 'up');
     const anchor = this._radialAnchor(region);
     const rect = this._findRadialFit(region, count + (preview ? 1 : 0), region.fanDirection || 'up', anchor);
@@ -1054,11 +1061,33 @@ class RegionController extends EventEmitter {
     this.setTheme(id, incoming.theme, { fromPage: true });
   }
 
+  /** Q2 only: test this user-requested size against each radial region's display. */
+  _iconSizeFits(size) {
+    for (const region of this.regions()) {
+      if (!R.isRadial(region.layout)) continue;
+      const rt = this.rt.get(region.id);
+      const at = rt ? rt.shown : region.rect;
+      const wa = this._testWorkArea || (typeof screen.getDisplayMatching === 'function' && at ? screen.getDisplayMatching(at).workArea : this.workArea());
+      const count = this._count(region.id);
+      const counts = this._extras(region.id).preview && count > 0 ? [count, count + 1] : [count];
+      for (const n of counts) {
+        const g = R.geometry(region.layout, n, size, region.fanDirection || 'up');
+        if (g.width > wa.width - 48 || g.height > wa.height - 48) return false;
+      }
+    }
+    return true;
+  }
+
   /** From the Manager or the tray: a patch of global settings. */
   applySettingsPatch(patch) {
-    if (!patch || !Object.keys(patch).length) return;
+    if (!patch || !Object.keys(patch).length) return {ok:true,iconSize:this._iconSize()};
+    // Atomic refusal: no store write, broadcast, refit, preview or shape mutation.
+    if (Object.prototype.hasOwnProperty.call(patch,'iconSize') && patch.iconSize !== this.settings().iconSize && !this._iconSizeFits(patch.iconSize)) {
+      return {ok:false,iconSize:this._iconSize(),error:'No room at this icon size. Use a smaller size.'};
+    }
     this.store.set('settings', { ...this.settings(), ...patch });
     this.broadcastSettingsChanged();
+    return {ok:true,iconSize:this._iconSize()};
   }
 
   // ── store read-only merge, fanned out to every region ────────────────────

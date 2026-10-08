@@ -283,12 +283,13 @@ function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null
     }
     if (!fromManager(e)) return;
     const current = store.get('settings') || {};
-    ctl.applySettingsPatch(settingsPatch(settings));
+    const result = ctl.applySettingsPatch(settingsPatch(settings));
     // The tray's "Start with Windows" and "Random theme on startup" checkboxes
     // are read when its menu is built: rebuild it so it matches the Manager.
     const saved = store.get('settings') || {};
     if (saved.startWithWindows !== current.startWithWindows
         || saved.randomTheme !== current.randomTheme) refreshTrayMenu();
+    return result;
   });
 
   // Store delivery: each page says when it is listening, and acks a merged state.

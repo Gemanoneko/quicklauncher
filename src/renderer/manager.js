@@ -441,21 +441,65 @@
   // ── SETTINGS view ──────────────────────────────────────────────────────────
   const elSlider = $('slider-icon-size');
   const elSize = $('icon-size-val');
+  const ICON_SIZE_TITLE = 'Icon size in every region';
+  const ICON_FIT_ERROR = 'No room at this icon size. Use a smaller size.';
+  let iconRequestRevision = 0, iconSettlementRevision = 0, iconRequestPending = false;
+  let iconFitRefusal = '', iconFitTimer = null, updateStatusText = '';
+  function drawStatus(announce = false) {
+    const status = $('update-status');
+    const text = iconFitRefusal || updateStatusText;
+    if (announce || status.textContent !== text) status.replaceChildren(document.createTextNode(text));
+    status.title = text;
+  }
+  function clearIconRefusal() {
+    clearTimeout(iconFitTimer); iconFitTimer = null;
+    iconFitRefusal = ''; elSlider.title = ICON_SIZE_TITLE;
+    drawStatus();
+  }
+  function showIconRefusal(text) {
+    clearTimeout(iconFitTimer);
+    iconFitRefusal = text || ICON_FIT_ERROR;
+    elSlider.title = iconFitRefusal;
+    drawStatus(true); // one announcement per refusal, including repeated equal messages
+    iconFitTimer = setTimeout(clearIconRefusal, 8000);
+  }
   function renderSettings() {
     const size = settings.iconSize || 64;
-    if (document.activeElement !== elSlider) elSlider.value = size;
-    elSize.textContent = `${size}px`;
+    if (!iconRequestPending) {
+      if (document.activeElement !== elSlider) elSlider.value = size;
+      elSize.textContent = `${size}px`;
+    }
     $('chk-startup').checked = settings.startWithWindows !== false;
     $('chk-random-theme').checked = settings.randomTheme !== false;
     $('chk-reduced-motion').checked = settings.reducedMotion === true;
     if (!recording) $('input-hotkey').value = settings.globalHotkey || '';
   }
   const savePatch = (patch) => api.invoke('save-settings', patch);
-  elSlider.addEventListener('input', (e) => {
+  elSlider.addEventListener('input', async (e) => {
     const size = parseInt(e.target.value, 10);
+    const revision = ++iconRequestRevision;
+    iconRequestPending = true;
     elSize.textContent = `${size}px`;
-    settings.iconSize = size;
-    savePatch({ iconSize: size });
+    let result;
+    try { result = await savePatch({ iconSize: size }); }
+    catch (error) {
+      console.error('Icon size change failed:', error);
+      if (revision !== iconRequestRevision) return;
+      iconRequestPending = false;
+      elSlider.value = settings.iconSize || 64;
+      elSize.textContent = `${settings.iconSize || 64}px`;
+      return;
+    }
+    if (revision !== iconRequestRevision) return; // a later request owns the UI
+    iconRequestPending = false;
+    iconSettlementRevision++;
+    const accepted = result && Number.isFinite(result.iconSize) ? result.iconSize : settings.iconSize || 64;
+    settings.iconSize = accepted;
+    elSlider.value = accepted; // focused native range must also roll back
+    elSize.textContent = `${accepted}px`;
+    applyTheme(state ? state.theme : 'cyberpunk');
+    if (result && result.ok) clearIconRefusal();
+    else showIconRefusal(result && result.error);
   });
   $('chk-startup').addEventListener('change', async (e) => {
     settings.startWithWindows = e.target.checked;
@@ -493,12 +537,11 @@
     disabled(button, s.offer === 'downloading', title);
     const checkOff = s.checking || s.offer === 'downloading' || s.offer === 'ready';
     disabled($('btn-check-update'), checkOff, s.checking ? 'Checking for updates.' : s.offer === 'downloading' ? 'The update is downloading.' : s.offer === 'ready' ? 'The update is ready to install.' : 'Check for a newer version');
-    const status = $('update-status');
-    if (s.checking) status.textContent = 'CHECKING FOR UPDATES...';
-    else if (channel === 'update-not-available') status.textContent = 'SYSTEM IS UP TO DATE';
-    else if (channel === 'update-error') status.textContent = `UPDATE ERROR: ${arg}`;
-    else if (channel) status.textContent = '';
-    status.title = status.textContent;
+    if (s.checking) updateStatusText = 'CHECKING FOR UPDATES...';
+    else if (channel === 'update-not-available') updateStatusText = 'SYSTEM IS UP TO DATE';
+    else if (channel === 'update-error') updateStatusText = `UPDATE ERROR: ${arg}`;
+    else if (channel) updateStatusText = '';
+    drawStatus();
   }
   api.on('manager:update-state', (msg) => { updateRevision++; drawUpdate(msg.state, msg.channel, msg.arg); });
   $('btn-check-update').addEventListener('click', () => {
@@ -705,9 +748,10 @@
     refreshing = (async () => {
       do {
         again = false;
+        const iconRevision = iconRequestRevision, iconSettlement = iconSettlementRevision;
         const [st, se] = await Promise.all([api.invoke('manager:state'), api.invoke('get-settings')]);
         if (st) state = st;
-        if (se) settings = se;
+        if (se) settings = { ...se, ...(iconRequestPending || iconRevision !== iconRequestRevision || iconSettlement !== iconSettlementRevision ? { iconSize: settings.iconSize || 64 } : {}) };
         applyTheme(state.theme);
         renderRegions();
         renderMoved();
