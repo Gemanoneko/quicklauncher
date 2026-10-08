@@ -1,211 +1,138 @@
-/* ══ WARHAMMER 40K: ORKS ══════════════════════════════════════════════════════
-   WAAAGH! Da boyz iz comin. Green iz best. More dakka. Bigger iz better.
-   Scrap metal, loud gunz, and da biggest Warboss in da galaxy.
-   ══════════════════════════════════════════════════════════════════════════════ */
+/* == WARHAMMER 40K: ORKS =======================================================
+   Batch 4 redraw (theme spec 2026-10-01, section 2). Scrap and paint: bolted
+   grey plates and rust, a yellow-and-black chequer band, red speed-stripes on
+   the banner, crooked plates and labels, a toothy riveted plate in the header,
+   a cleaver icon, a battered plate with bullet holes, uneven window corners.
+   Impact title and banner, Segoe UI Semibold body. No texture, no looping
+   motion.
+   Spec flag 5 (label face) ruled Impact (spec Addendum A.5): tile labels in
+   Impact 400, 12 px, 0.4 px tracking, 14.4 px line height, the same face as
+   the title and the banner. The whole choice is the .tile-label rule below.
+   ============================================================================== */
 
 :root {
-  --radius:       0px;
-  --app-clip:     none;
-  --overlay-clip: none;
-
-  --bg:           #040800;
-  --panel-bg:     rgba(6, 12, 2, 0.99);
-  --overlay-bg:   rgba(4, 8, 1, 0.97);
-  --header-bg:    rgba(80, 160, 0, 0.04);
-
-  --font:         'Segoe UI', 'Arial', sans-serif;
-  --text:         #88AA44;
-  --text-dim:     rgba(100, 140, 50, 0.93);
-
-  --accent-c:     #50A010;   /* Ork green */
-  --accent-m:     #AA6600;   /* scrap metal orange */
-  --accent-y:     #CC2200;   /* WAAAGH red */
-
-  --border:       rgba(80, 160, 16, 0.25);
-  --border-h:     rgba(80, 160, 16, 0.55);
-
-  --glow-c:       0 0 7px rgba(80,160,16,.62), 0 0 20px rgba(80,160,16,.22);
-  --glow-m:       0 0 6px rgba(170,102,0,.55), 0 0 18px rgba(170,102,0,.18);
-  --glow-y:       0 0 6px rgba(204,34,0,.55), 0 0 18px rgba(204,34,0,.18);
-
-  --pulse-glow:   inset 0 0 22px rgba(80,160,16,.07);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(80,160,16,.10);
-
-  --title-anim:   ork-title 8s steps(1) infinite;
-
-  --tile-hover-bg:     rgba(80, 160, 16, 0.09);
-  --tile-hover-border: rgba(80, 160, 16, 0.48);
-  --tile-hover-shadow: 0 0 12px rgba(80, 160, 16, 0.22);
-  --tile-active-bg:    rgba(80, 160, 16, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(80,160,16,.55)) drop-shadow(0 0 12px rgba(170,102,0,.22));
-  --tile-icon-fx:      brightness(0.88) saturate(1.3) contrast(1.15);
-  --tile-icon-shape:   polygon(0% 5%, 20% 0%, 80% 0%, 100% 5%, 100% 95%, 80% 100%, 20% 100%, 0% 95%);
-  --tile-label-spacing:   2px;
-  --tile-label-transform: uppercase;
-  --tile-label-weight:    700;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-throb 3s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 0.8s ease-out forwards;
-
-  --btn-hover-bg:   rgba(80, 160, 16, 0.10);
-  --btn-active-bg:  rgba(80, 160, 16, 0.22);
-
-  --drop-hint-border: rgba(80, 160, 16, 0.28);
-  --drop-icon-color:  rgba(80, 160, 16, 0.38);
-  --hint-sub-color:   rgba(100, 140, 50, 0.95);
-
-  --rename-dashed:    rgba(80, 160, 16, 0.42);
-  --rename-input-bg:  rgba(80, 160, 16, 0.07);
-
-  --edit-bar-bg:          rgba(170, 102, 0, 0.08);
-  --edit-bar-border:      rgba(170, 102, 0, 0.42);
-  --edit-label-color:     #AA6600;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #AA6600;
-  --btn-done-border:      rgba(170, 102, 0, 0.42);
-  --btn-done-hover-bg:    rgba(170, 102, 0, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(80, 160, 16, 0.42);
-
-  --update-bg:             rgba(204, 34, 0, 0.06);
-  --update-border:         rgba(204, 34, 0, 0.32);
-  --update-color:          var(--accent-y);
-  --update-btn-border:     rgba(204, 34, 0, 0.28);
-  --update-btn-hover-bg:   rgba(204, 34, 0, 0.09);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #CC2200;
-  --btn-close-border:     rgba(204, 34, 0, 0.42);
-  --btn-close-hover-bg:   rgba(204, 34, 0, 0.10);
-  --btn-close-hover-glow: var(--glow-y);
-
-  --picker-search-bg:      rgba(80, 160, 16, 0.07);
-  --picker-item-hover-bg:  rgba(80, 160, 16, 0.09);
-  --picker-item-active-bg: rgba(80, 160, 16, 0.16);
-  --picker-placeholder-bg: rgba(80, 160, 16, 0.07);
-
-  --skin-btn-active-bg:    rgba(80, 160, 16, 0.18);
-  --remove-btn-bg:         rgba(204, 34, 0, 0.88);
-  --remove-btn-border:     #CC2200;
+  --radius: 2px;
+  --app-clip: polygon(0 9px, 9px 0, calc(100% - 16px) 0, 100% 12px, 100% calc(100% - 18px), calc(100% - 11px) 100%, 6px 100%, 0 calc(100% - 7px));
+  --overlay-clip: polygon(0 9px, 9px 0, calc(100% - 16px) 0, 100% 12px, 100% calc(100% - 18px), calc(100% - 11px) 100%, 6px 100%, 0 calc(100% - 7px));
+  --bg: #1B1710;
+  --panel-bg: #241E14;
+  --overlay-bg: #1B1710;
+  --header-bg: #211B11;
+  --font: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  --text: #E8DCA0;
+  --text-dim: #B8AC7C;
+  --accent-c: #4C8A2B;
+  --accent-m: #EE6A52;
+  --accent-y: #D4A012;
+  --accent-text: #E8BA2A;
+  --border: #4A3F2A;
+  --border-h: #D4A012;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #4C8A2B;
+  --title-anim: none;
+  --tile-hover-bg: #2B2316;
+  --tile-hover-border: #D4A012;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #2B2316;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: sepia(0.2) saturate(1.1) contrast(1.05);
+  --tile-icon-shape: polygon(0 4%, 100% 0, 99% 100%, 2% 97%);
+  --tile-label-spacing: 0px;
+  --tile-label-transform: none;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #3A2F1B;
+  --btn-active-bg: #4A3C22;
+  --drop-hint-border: #5A4C30;
+  --drop-icon-color: #8A7848;
+  --hint-sub-color: #B8AC7C;
+  --rename-dashed: #D4A012;
+  --rename-input-bg: #2B2316;
+  --edit-bar-bg: #3A1410;
+  --edit-bar-border: #B01E1E;
+  --edit-label-color: #F28E78;
+  --edit-label-glow: none;
+  --btn-done-color: #F28E78;
+  --btn-done-border: #B01E1E;
+  --btn-done-hover-bg: #52191A;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #8A7848;
+  --update-bg: #2A2212;
+  --update-border: #D4A012;
+  --update-color: #E8BA2A;
+  --update-btn-border: #D4A012;
+  --update-btn-hover-bg: #3E3018;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E8BA2A;
+  --btn-close-border: #8A7848;
+  --btn-close-hover-bg: #3E3018;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #2B2316;
+  --picker-item-hover-bg: #2B2316;
+  --picker-item-active-bg: #3A2F1B;
+  --picker-placeholder-bg: #2B2316;
+  --skin-btn-active-bg: #3A2F1B;
+  --remove-btn-bg: #A01E1E;
+  --remove-btn-border: #F28E78;
 }
 
-/* ── Scrap metal grain + green fog vignette ──────────────────────────────── */
-#app::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.2 0.3 0.05 0 0.01  0.15 0.35 0.05 0 0.02  0.05 0.10 0.02 0 0  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(2,4,0,0.85) 100%),
-    radial-gradient(ellipse 45% 35% at 50% 100%, rgba(50,100,8,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 30% at 0% 0%, rgba(80,50,0,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 30% at 100% 100%, rgba(80,50,0,0.04) 0%, transparent 60%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #A01E1E; }
+.hotkey-input::placeholder, .theme-search::placeholder { color: var(--text-dim); }
 
-/* ── Header — Ork green accent bar ───────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #50A010, rgba(60, 120, 12, 0.28));
-  box-shadow: 0 0 9px rgba(80,160,16,0.58), 0 0 24px rgba(80,160,16,0.20);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* ── Grid: Style B — Da Shoota (Ork weapon, scrap-built) ─────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Arial,sans-serif' font-size='10' font-weight='bold' letter-spacing='5' fill='rgba(80,160,16,0.52)'%3EWAAAGH!%3C/text%3E%3Ctext x='250' y='38' text-anchor='middle' font-family='Arial,sans-serif' font-size='6' letter-spacing='2' fill='rgba(170,102,0,0.35)'%3EMORE DAKKA -- GREEN IZ BEST -- BIGGER IZ BETTER%3C/text%3E%3Crect x='80' y='170' width='280' height='42' rx='3' fill='rgba(60,50,30,0.50)' stroke='rgba(170,102,0,0.42)' stroke-width='1.5'/%3E%3Crect x='83' y='173' width='274' height='36' rx='2' fill='none' stroke='rgba(140,85,0,0.20)' stroke-width='0.5'/%3E%3Crect x='360' y='165' width='60' height='52' rx='2' fill='rgba(50,42,25,0.55)' stroke='rgba(170,102,0,0.45)' stroke-width='1.5'/%3E%3Crect x='363' y='168' width='54' height='46' rx='1' fill='none' stroke='rgba(140,85,0,0.18)' stroke-width='0.5'/%3E%3Ccircle cx='390' cy='191' r='18' fill='rgba(25,22,12,0.65)' stroke='rgba(170,102,0,0.38)' stroke-width='1.2'/%3E%3Ccircle cx='390' cy='191' r='12' fill='rgba(15,12,6,0.60)' stroke='rgba(170,102,0,0.25)' stroke-width='0.5'/%3E%3Ccircle cx='390' cy='191' r='5' fill='rgba(80,160,16,0.30)'/%3E%3Ccircle cx='390' cy='191' r='2' fill='rgba(80,160,16,0.50)'/%3E%3Crect x='415' y='178' width='40' height='8' rx='2' fill='rgba(45,38,22,0.55)' stroke='rgba(140,85,0,0.32)' stroke-width='1'/%3E%3Crect x='415' y='196' width='40' height='8' rx='2' fill='rgba(45,38,22,0.55)' stroke='rgba(140,85,0,0.32)' stroke-width='1'/%3E%3Crect x='200' y='145' width='28' height='28' rx='2' fill='rgba(55,48,30,0.55)' stroke='rgba(170,102,0,0.38)' stroke-width='1'/%3E%3Crect x='203' y='148' width='22' height='22' rx='1' fill='none' stroke='rgba(140,85,0,0.18)' stroke-width='0.5'/%3E%3Cline x1='214' y1='148' x2='214' y2='170' stroke='rgba(170,102,0,0.15)' stroke-width='0.5'/%3E%3Cline x1='203' y1='159' x2='225' y2='159' stroke='rgba(170,102,0,0.15)' stroke-width='0.5'/%3E%3Crect x='140' y='210' width='60' height='55' rx='3' fill='rgba(50,42,25,0.48)' stroke='rgba(140,85,0,0.35)' stroke-width='1'/%3E%3Crect x='143' y='213' width='54' height='49' rx='2' fill='none' stroke='rgba(120,72,0,0.15)' stroke-width='0.5'/%3E%3Cline x1='148' y1='220' x2='190' y2='228' stroke='rgba(170,102,0,0.22)' stroke-width='0.8'/%3E%3Cline x1='190' y1='220' x2='148' y2='228' stroke='rgba(170,102,0,0.22)' stroke-width='0.8'/%3E%3Cline x1='148' y1='235' x2='190' y2='243' stroke='rgba(170,102,0,0.20)' stroke-width='0.8'/%3E%3Cline x1='190' y1='235' x2='148' y2='243' stroke='rgba(170,102,0,0.20)' stroke-width='0.8'/%3E%3Ccircle cx='100' cy='185' r='5' fill='rgba(60,50,30,0.50)' stroke='rgba(140,85,0,0.30)' stroke-width='0.8'/%3E%3Ccircle cx='100' cy='197' r='5' fill='rgba(60,50,30,0.50)' stroke='rgba(140,85,0,0.30)' stroke-width='0.8'/%3E%3Ccircle cx='130' cy='185' r='4' fill='rgba(60,50,30,0.45)' stroke='rgba(140,85,0,0.25)' stroke-width='0.8'/%3E%3Ccircle cx='130' cy='197' r='4' fill='rgba(60,50,30,0.45)' stroke='rgba(140,85,0,0.25)' stroke-width='0.8'/%3E%3Ccircle cx='260' cy='185' r='4' fill='rgba(60,50,30,0.45)' stroke='rgba(140,85,0,0.28)' stroke-width='0.8'/%3E%3Ccircle cx='260' cy='197' r='4' fill='rgba(60,50,30,0.45)' stroke='rgba(140,85,0,0.28)' stroke-width='0.8'/%3E%3Ccircle cx='300' cy='185' r='4' fill='rgba(60,50,30,0.42)' stroke='rgba(140,85,0,0.25)' stroke-width='0.8'/%3E%3Ccircle cx='300' cy='197' r='4' fill='rgba(60,50,30,0.42)' stroke='rgba(140,85,0,0.25)' stroke-width='0.8'/%3E%3Ccircle cx='340' cy='185' r='4' fill='rgba(60,50,30,0.40)' stroke='rgba(140,85,0,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='340' cy='197' r='4' fill='rgba(60,50,30,0.40)' stroke='rgba(140,85,0,0.22)' stroke-width='0.8'/%3E%3Ctext x='170' y='280' text-anchor='middle' font-family='Arial,sans-serif' font-size='6' letter-spacing='2' fill='rgba(170,102,0,0.38)'%3EDA SHOOTA%3C/text%3E%3Ctext x='390' y='230' text-anchor='middle' font-family='Arial,sans-serif' font-size='5' letter-spacing='1' fill='rgba(170,102,0,0.32)'%3EBARREL%3C/text%3E%3Ctext x='214' y='140' text-anchor='middle' font-family='Arial,sans-serif' font-size='5' letter-spacing='1' fill='rgba(80,160,16,0.35)'%3ESIGHT%3C/text%3E%3Ctext x='170' y='272' text-anchor='middle' font-family='Arial,sans-serif' font-size='5' letter-spacing='1' fill='rgba(140,85,0,0.30)'%3EGRIP%3C/text%3E%3Ctext x='75' y='85' font-family='Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(80,160,16,0.48)'%3EDAKKA LEVEL%3C/text%3E%3Crect x='25' y='92' width='110' height='6' fill='rgba(80,160,16,0.10)' rx='1'/%3E%3Crect x='25' y='92' width='99' height='6' fill='rgba(80,160,16,0.48)' rx='1'/%3E%3Ctext x='138' y='98' font-family='Arial,sans-serif' font-size='5.5' font-weight='bold' fill='rgba(80,160,16,0.45)'%3EMAX%3C/text%3E%3Ctext x='75' y='116' font-family='Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(204,34,0,0.45)'%3ECHOPPA STATUS%3C/text%3E%3Crect x='25' y='122' width='110' height='6' fill='rgba(204,34,0,0.10)' rx='1'/%3E%3Crect x='25' y='122' width='77' height='6' fill='rgba(204,34,0,0.45)' rx='1'/%3E%3Ctext x='138' y='128' font-family='Arial,sans-serif' font-size='5.5' font-weight='bold' fill='rgba(204,34,0,0.42)'%3ESHARP%3C/text%3E%3Ctext x='75' y='146' font-family='Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(170,102,0,0.45)'%3ESKRAP SUPPLY%3C/text%3E%3Crect x='25' y='152' width='110' height='6' fill='rgba(170,102,0,0.10)' rx='1'/%3E%3Crect x='25' y='152' width='55' height='6' fill='rgba(170,102,0,0.42)' rx='1'/%3E%3Ctext x='138' y='158' font-family='Arial,sans-serif' font-size='5.5' font-weight='bold' fill='rgba(170,102,0,0.40)'%3ELOW%3C/text%3E%3Ctext x='430' y='85' font-family='Arial,sans-serif' font-size='6.5' font-weight='bold' letter-spacing='1' fill='rgba(80,160,16,0.48)'%3EWARBOSS%3C/text%3E%3Ctext x='430' y='100' font-family='Arial,sans-serif' font-size='7.5' font-weight='bold' fill='rgba(80,160,16,0.52)'%3EGHAZGHKULL%3C/text%3E%3Cline x1='375' y1='105' x2='480' y2='105' stroke='rgba(80,160,16,0.20)' stroke-width='0.5'/%3E%3Ctext x='430' y='122' font-family='Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(100,140,50,0.38)'%3EKLAN%3C/text%3E%3Ctext x='430' y='135' font-family='Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(80,160,16,0.45)'%3EGOFFS%3C/text%3E%3Ctext x='430' y='155' font-family='Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(100,140,50,0.35)'%3EBOYZ COUNT%3C/text%3E%3Ctext x='430' y='168' font-family='Arial,sans-serif' font-size='8' font-weight='bold' fill='rgba(80,160,16,0.48)'%3ELOTZ%3C/text%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(80,160,16,0.22)' stroke-width='0.7'/%3E%3Ctext x='70' y='324' text-anchor='middle' font-family='Arial,sans-serif' font-size='5.5' fill='rgba(100,140,50,0.38)'%3EDAKKA%3C/text%3E%3Ctext x='70' y='338' text-anchor='middle' font-family='Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(80,160,16,0.50)'%3ENUFF%3C/text%3E%3Ctext x='200' y='324' text-anchor='middle' font-family='Arial,sans-serif' font-size='5.5' fill='rgba(100,140,50,0.38)'%3ESPEED%3C/text%3E%3Ctext x='200' y='338' text-anchor='middle' font-family='Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(204,34,0,0.48)'%3EFAST%3C/text%3E%3Ctext x='320' y='324' text-anchor='middle' font-family='Arial,sans-serif' font-size='5.5' fill='rgba(100,140,50,0.38)'%3ETEEF%3C/text%3E%3Ctext x='320' y='338' text-anchor='middle' font-family='Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(170,102,0,0.48)'%3E47%3C/text%3E%3Ctext x='440' y='324' text-anchor='middle' font-family='Arial,sans-serif' font-size='5.5' fill='rgba(100,140,50,0.38)'%3EWAAAGH%3C/text%3E%3Ctext x='440' y='338' text-anchor='middle' font-family='Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(80,160,16,0.52)'%3ERISING%3C/text%3E%3Cline x1='135' y1='312' x2='135' y2='344' stroke='rgba(80,160,16,0.15)' stroke-width='0.5'/%3E%3Cline x1='260' y1='312' x2='260' y2='344' stroke='rgba(80,160,16,0.15)' stroke-width='0.5'/%3E%3Cline x1='380' y1='312' x2='380' y2='344' stroke='rgba(80,160,16,0.15)' stroke-width='0.5'/%3E%3Ctext x='250' y='362' text-anchor='middle' font-family='Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(170,102,0,0.25)'%3EORK MEKBOY WORKSHOP -- PROPPA KUSTOMIZED -- MOAR DAKKA%3C/text%3E%3Ccircle cx='48' cy='60' r='0.8' fill='rgba(80,160,16,0.20)'/%3E%3Ccircle cx='455' cy='55' r='0.6' fill='rgba(170,102,0,0.16)'/%3E%3Ccircle cx='42' cy='250' r='0.7' fill='rgba(80,160,16,0.12)'/%3E%3Ccircle cx='458' cy='260' r='0.8' fill='rgba(204,34,0,0.10)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: ork-shoota 8s ease-in-out infinite;
-}
-
-@keyframes ork-shoota {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
-/* ── Flavor content ──────────────────────────────────────────────────────── */
+/* header: a 3 px line inside it, the faction's emblem in the art zone */
+#header { border-bottom-color: #8A8E92; box-shadow: inset 0 -2px 0 #8A8E92; }
+#header::before { background: #D4A012; box-shadow: none; }
 #header::after {
-  content: 'WAAAGH! // MORE DAKKA // GREEN IZ BEST';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(100, 180, 30, 0.62);
-  pointer-events: none; white-space: nowrap;
+  content: ''; position: absolute; top: 10px; right: 136.67px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cpath d='M2 3.2 L80.5 1.4 L83 17.6 L4.5 19 Z' fill='rgb(122,126,130)' stroke='rgb(70,72,74)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M30 2.2 L38 2 L35 6.4 L32.6 4.4 Z M62 2.4 L70 2.2 L68.4 5 L65 4.4 Z M5 15 L11 14.6 L10 18.6 L5.6 18.2 Z' fill='rgb(107,74,36)'/%3E%3Cpath d='M9 8.4 L76 7.6 L77.4 13.6 L10.6 14.4 Z' fill='rgb(20,16,10)'/%3E%3Cpath d='M14 8.3 L18.5 8.1 L16 12.2 Z M24 8.1 L28 8 L26.4 11.4 Z M36 8 L41.6 7.9 L38.6 12.6 Z M50 7.9 L54 7.8 L52.4 11.2 Z M63 7.8 L68 7.7 L65.4 12.4 Z' fill='rgb(232,220,160)'/%3E%3Cpath d='M20 14.2 L24.4 14.1 L22.4 10 Z M44 14 L49 13.9 L46.4 10.4 Z M58 13.9 L62 13.8 L60 10 Z' fill='rgb(232,220,160)'/%3E%3Ccircle cx='6' cy='5.4' r='1.6' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M5.04 5.4 H6.96' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Ccircle cx='78' cy='3.8' r='1.6' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M77.04 3.8 H78.96' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Ccircle cx='79.6' cy='15.6' r='1.6' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M78.64 15.6 H80.55999999999999' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Ccircle cx='8' cy='16.8' r='1.6' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M7.04 16.8 H8.96' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
 }
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: Impact, 'Arial Black', 'Segoe UI', sans-serif; font-weight: 400; font-style: normal; line-height: 1.2; font-size: 13px; letter-spacing: 2px; color: #E8BA2A; text-shadow: none; }
+#title .accent { color: #EE6A52; }
 
-#grid-container::after {
-  content: 'WAAAGH!\A-----------\AMORE\ADAKKA\A-----------\AGREEN IZ\ABEST\A-----------\ABIGGER IZ\ABETTER';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 2px;
-  color: rgba(80, 160, 16, 0.08); white-space: pre;
-  animation: ork-readout 8s ease-in-out infinite;
-}
-
-@keyframes ork-readout {
-  0%, 100% { color: rgba(80,160,16,.08); }
-  28%       { color: rgba(80,160,16,.12); }
-  65%       { color: rgba(80,160,16,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(80,160,16,.16); }
-  92%       { color: rgba(80,160,16,.08); }
-}
-
-#edit-bar::after {
-  content: 'MEKBOY WORKSHOP // KUSTOMIZE YER STUFF';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700;
-  font-size: 8px; letter-spacing: 2px; color: rgba(170, 102, 0, 0.42);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 5px; }
-
-@keyframes ork-title {
-  0%        { color: #88AA44; text-shadow: 0 0 6px rgba(80,160,16,.50), 0 0 18px rgba(80,160,16,.18); }
-  60%       { color: #88AA44; text-shadow: 0 0 6px rgba(80,160,16,.50); }
-  62%       { color: #50A010; text-shadow: 0 0 10px rgba(80,160,16,.75), 0 0 28px rgba(80,160,16,.30); opacity: 0.9; }
-  63%       { color: #CC2200; text-shadow: 0 0 8px rgba(204,34,0,.60); opacity: 0.6; }
-  64%       { color: #50A010; text-shadow: 0 0 8px rgba(80,160,16,.60); opacity: 1; }
-  65%       { color: #88AA44; text-shadow: 0 0 6px rgba(80,160,16,.50); }
-  87%       { color: #88AA44; text-shadow: 0 0 6px rgba(80,160,16,.45); }
-  88%       { color: #CCFF44; text-shadow: 0 0 22px rgba(204,255,68,.85), 0 0 50px rgba(80,160,16,.50); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #88AA44; text-shadow: 0 0 8px rgba(80,160,16,.55); opacity: 1; }
-  100%      { color: #88AA44; text-shadow: 0 0 6px rgba(80,160,16,.50), 0 0 18px rgba(80,160,16,.18); }
-}
-
-#app { animation: ork-border 8s ease-in-out infinite; }
-@keyframes ork-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(80,160,16,.22), inset 0 0 20px rgba(80,160,16,.05); }
-  35%      { box-shadow: 0 0 0 1px rgba(80,160,16,.50), inset 0 0 28px rgba(80,160,16,.08); }
-  65%      { box-shadow: 0 0 0 1px rgba(170,102,0,.25), inset 0 0 18px rgba(170,102,0,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(204,255,68,.80), inset 0 0 50px rgba(80,160,16,.15), 0 0 18px rgba(80,160,16,.28); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(80,160,16,.42), inset 0 0 22px rgba(80,160,16,.06); }
-}
-
-#theme-banner { background: rgba(4, 8, 1, 0.99); border-top-color: rgba(80, 160, 16, 0.25); }
-#theme-banner::before { content: '☠'; color: #50A010; font-size: 20px; }
-#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 700; letter-spacing: 2px; color: rgba(100, 180, 30, 0.65); }
-
-#particles {
+/* frame: four corner caps over two side strips over a top course (all inside the 8 px bands) */
+#grid-container {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='360'%3E%3Crect x='25' y='40' width='4' height='2' fill='rgba(80,160,16,0.18)' transform='rotate(15,27,41)'/%3E%3Crect x='90' y='150' width='3' height='3' fill='rgba(170,102,0,0.14)' transform='rotate(45,91,151)'/%3E%3Crect x='140' y='280' width='5' height='2' fill='rgba(80,160,16,0.12)' transform='rotate(25,142,281)'/%3E%3Crect x='60' y='320' width='3' height='4' fill='rgba(204,34,0,0.10)' transform='rotate(60,61,322)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='500'%3E%3Crect x='35' y='70' width='4' height='3' fill='rgba(170,102,0,0.10)' transform='rotate(35,37,71)'/%3E%3Crect x='140' y='250' width='5' height='2' fill='rgba(80,160,16,0.08)' transform='rotate(50,142,251)'/%3E%3Crect x='200' y='420' width='3' height='4' fill='rgba(204,34,0,0.07)' transform='rotate(20,201,421)'/%3E%3C/svg%3E") repeat;
-  background-size: 180px 360px, 250px 500px;
-  animation: ork-debris 8s linear infinite;
-}
-@keyframes ork-debris {
-  from { background-position: 0 0, 10px 0; }
-  to   { background-position: 30px -360px, -15px -500px; }
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='rgb(70,72,74)'/%3E%3Crect x='0.5' y='0.5' width='7' height='7' fill='none' stroke='rgb(122,126,130)' stroke-width='0.8'/%3E%3Ccircle cx='4' cy='4' r='2' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M2.8 4 H5.2' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3C/svg%3E") left 1px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='rgb(70,72,74)'/%3E%3Crect x='0.5' y='0.5' width='7' height='7' fill='none' stroke='rgb(122,126,130)' stroke-width='0.8'/%3E%3Ccircle cx='4' cy='4' r='2' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M2.8 4 H5.2' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3C/svg%3E") right 5px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='rgb(70,72,74)'/%3E%3Crect x='0.5' y='0.5' width='7' height='7' fill='none' stroke='rgb(122,126,130)' stroke-width='0.8'/%3E%3Ccircle cx='4' cy='4' r='2' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M2.8 4 H5.2' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3C/svg%3E") left 1px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='rgb(70,72,74)'/%3E%3Crect x='0.5' y='0.5' width='7' height='7' fill='none' stroke='rgb(122,126,130)' stroke-width='0.8'/%3E%3Ccircle cx='4' cy='4' r='2' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M2.8 4 H5.2' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3C/svg%3E") right 5px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 28'%3E%3Crect width='8' height='28' fill='rgb(20,16,10)'/%3E%3Crect x='0.5' y='0' width='7' height='13' fill='rgb(70,72,74)'/%3E%3Crect x='0.5' y='14.4' width='7' height='13.6' fill='rgb(122,126,130)'/%3E%3Cpath d='M0.5 13.6 L2.4 14.4 L4 13.4 L5.8 14.4 L7.5 13.6' fill='none' stroke='rgb(212,160,18)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M5.4 16 L7.4 17 L7 20.6 L4.8 19 Z' fill='rgb(107,74,36)'/%3E%3Ccircle cx='3.4' cy='6.6' r='1.5' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M2.5 6.6 H4.3' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Ccircle cx='4.6' cy='22.4' r='1.5' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M3.6999999999999997 22.4 H5.5' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3C/svg%3E") left 1px top 0 / 8px 28px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 28'%3E%3Crect width='8' height='28' fill='rgb(20,16,10)'/%3E%3Crect x='0.5' y='0' width='7' height='13' fill='rgb(70,72,74)'/%3E%3Crect x='0.5' y='14.4' width='7' height='13.6' fill='rgb(122,126,130)'/%3E%3Cpath d='M0.5 13.6 L2.4 14.4 L4 13.4 L5.8 14.4 L7.5 13.6' fill='none' stroke='rgb(212,160,18)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M5.4 16 L7.4 17 L7 20.6 L4.8 19 Z' fill='rgb(107,74,36)'/%3E%3Ccircle cx='3.4' cy='6.6' r='1.5' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M2.5 6.6 H4.3' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Ccircle cx='4.6' cy='22.4' r='1.5' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M3.6999999999999997 22.4 H5.5' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3C/svg%3E") right 5px top 0 / 8px 28px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 9'%3E%3Crect width='40' height='9' fill='rgb(20,16,10)'/%3E%3Crect x='0' y='0' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='4' y='4' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='8' y='0' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='12' y='0' width='4' height='4' fill='rgb(156,100,44)'/%3E%3Crect x='12' y='4' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='16' y='0' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='20' y='4' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='24' y='0' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='28' y='4' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='32' y='0' width='4' height='4' fill='rgb(156,100,44)'/%3E%3Crect x='36' y='4' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect y='8' width='40' height='1' fill='rgb(70,72,74)'/%3E%3Cpath d='M24 0.6 L27.4 3.4 M12 5 L15 7.6' stroke='rgb(20,16,10)' stroke-width='0.7'/%3E%3C/svg%3E") left 0 top 0 / 40px 9px repeat-x;
 }
 
-.app-tile::before {
-  background: transparent;
-  border: 1px solid rgba(80, 160, 16, 0.30);
+/* tiles */
+.app-tile { background: #241E14; border-color: #4A3F2A; border-radius: 2px; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: var(--tile-hover-bg); border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.tile-label { font-family: Impact, 'Arial Black', 'Segoe UI', sans-serif; font-synthesis: none; font-size: 12px; letter-spacing: 0.4px; line-height: 14.4px; overflow: clip; overflow-clip-margin: 3px; }
+/* no drop shadow under the plates: the crooked clip would show its box on the lighter tile ground */
+.tile-icon, .app-tile:hover .tile-icon { filter: sepia(0.2) saturate(1.1) contrast(1.05); }
+/* crooked: every third plate and label sits a degree or two off true */
+.app-tile:nth-child(3n+1) .tile-icon-wrap { transform: rotate(-2deg); }
+.app-tile:nth-child(3n+2) .tile-icon-wrap { transform: rotate(1.5deg); }
+.app-tile:nth-child(3n) .tile-icon-wrap { transform: rotate(-0.8deg); }
+.app-tile:nth-child(odd) .tile-label { transform: rotate(-0.7deg); }
+.app-tile:nth-child(even) .tile-label { transform: rotate(0.6deg); }
+
+/* banner: surface, a top course, the faction's big motif at the right end, an icon at the left */
+#theme-banner {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 34'%3E%3Cpath d='M3 32 L5 8.4 L79 4.6 L82 33.4 Z' fill='rgb(70,72,74)' stroke='rgb(122,126,130)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M44 5.6 L56 5 L42.6 33.4 L30.6 33.8 Z' fill='rgb(176,30,30)'/%3E%3Cpath d='M12 24 L22 23 L21 31 L11 31.6 Z M64 8 L76 7.4 L75.6 13 L65 13.6 Z' fill='rgb(107,74,36)'/%3E%3Cpath d='M9 11 H21 M9 15 H21' stroke='rgb(20,16,10)' stroke-width='0.4'/%3E%3Cg%3E%3Crect x='9' y='10.4' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='9' y='14.4' width='4' height='4' fill='rgb(20,16,10)'/%3E%3Crect x='13' y='10.4' width='4' height='4' fill='rgb(20,16,10)'/%3E%3Crect x='13' y='14.4' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='17' y='10.4' width='4' height='4' fill='rgb(212,160,18)'/%3E%3Crect x='17' y='14.4' width='4' height='4' fill='rgb(20,16,10)'/%3E%3C/g%3E%3Ccircle cx='62' cy='22' r='2.4' fill='rgb(20,16,10)' stroke='rgb(172,174,172)' stroke-width='0.7'/%3E%3Ccircle cx='69' cy='26' r='2' fill='rgb(20,16,10)' stroke='rgb(172,174,172)' stroke-width='0.7'/%3E%3Ccircle cx='72' cy='19' r='1.7' fill='rgb(20,16,10)' stroke='rgb(172,174,172)' stroke-width='0.7'/%3E%3Ccircle cx='7' cy='11' r='1.6' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M6.04 11 H7.96' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Ccircle cx='77' cy='8' r='1.6' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M76.04 8 H77.96' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Ccircle cx='79' cy='30' r='1.6' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M78.04 30 H79.96' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Ccircle cx='6' cy='29' r='1.6' fill='rgb(172,174,172)' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3Cpath d='M5.04 29 H6.96' stroke='rgb(20,16,10)' stroke-width='0.5'/%3E%3C/svg%3E") right 12px bottom 0 / 84px 34px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 7'%3E%3Crect width='16' height='0.9' fill='rgb(70,72,74)'/%3E%3Cpath d='M0 7 L3.6 1 H7.6 L4 7 Z M8 7 L11.6 1 H15.6 L12 7 Z' fill='rgb(176,30,30)'/%3E%3C/svg%3E") left 0 top 0 / 16px 7px repeat-x, #211B11;
+  border-top-color: #7A7E82;
 }
-.app-tile:hover::before { animation: tile-flicker .4s steps(1, end) infinite; }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M2.2 20.2 L10.8 11.6' stroke='rgb(156,100,44)' stroke-width='3.4' stroke-linecap='butt'/%3E%3Cpath d='M4.6 17.8 L6.8 20 M7.4 15 L9.6 17.2' stroke='rgb(20,16,10)' stroke-width='0.9'/%3E%3Cpath d='M7.6 8.8 L15.4 1 L17.4 2.6 L16.6 4.2 L20 4.8 L19 7 L21 8 L20.4 9.4 L19.4 10.6 L21 12.2 L17.6 12.6 L18 14.6 L13.4 14.4 Z' fill='rgb(172,174,172)' stroke='rgb(70,72,74)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M9.6 9.6 L16.4 3.6 M11.4 11.6 L18 6.4' stroke='rgb(70,72,74)' stroke-width='0.6'/%3E%3Ccircle cx='11.6' cy='11.4' r='1' fill='rgb(20,16,10)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: Impact, 'Arial Black', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 400; letter-spacing: 0.6px; text-transform: uppercase; color: #E8DCA0; margin-right: 90px; }

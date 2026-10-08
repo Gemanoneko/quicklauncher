@@ -152,5 +152,16 @@ body.manager .cheat-key { flex-basis: 130px; }
 .mgr-status:empty { display: none; }
 
 /* Approved F5 option: existing Manager controls retain readable hover text. */
-body.manager button:hover,
+body.manager button:hover { color: var(--mgr-button-hover-text, var(--text)); }
 body.manager #btn-close-settings:hover { color: var(--text); }
+
+/* Committed integration ruling: retain the active fill and its theme label ink. */
+body.manager #btn-check-update:active,
+body.manager #btn-close-cheatsheet:active,
+body.manager #btn-browse-picker:active,
+body.manager #btn-close-picker:active { color: var(--mgr-button-pressed-text, var(--btn-hover-text)); }
+
+html:has(#theme-stylesheet[href$='/2001.css']) body.manager,
+html:has(#theme-stylesheet[href$='/promise-mascot.css']) body.manager { --mgr-button-pressed-text: var(--text); }
+html:has(#theme-stylesheet[href$='/star-wars-republic.css']) body.manager,
+html:has(#theme-stylesheet[href$='/star-wars-separatist.css']) body.manager { --mgr-button-hover-text: var(--btn-hover-text); }

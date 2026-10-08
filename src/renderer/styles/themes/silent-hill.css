@@ -53,6 +53,9 @@
 
   --btn-hover-bg:   rgba(60, 55, 48, 0.08);
   --btn-active-bg:  rgba(60, 55, 48, 0.15);
+  --btn-hover-text: #332E2A;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 0.32;
 
   --drop-hint-border: rgba(80, 70, 60, 0.20);
   --drop-icon-color:  rgba(80, 70, 60, 0.25);
@@ -222,3 +225,6 @@
   background: transparent;
   border: none;
 }
+/* hover labels on a pale ground: these two base rules hard-code white (their fills are not --btn-hover-bg) */
+.update-btn:hover { color: var(--btn-hover-text); }
+#filter-chip-clear:hover { color: var(--btn-hover-text); }

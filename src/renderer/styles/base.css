@@ -86,6 +86,10 @@
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(0, 240, 255, 0.09);
   --btn-active-bg:  rgba(0, 240, 255, 0.18);
+  --btn-hover-text: #fff;   /* label colour on a hovered or pressed button: sits on --btn-hover-bg and --btn-active-bg */
+  --hover-label-floor: 0.64;     /* hover/selected label lightness floor (oklch L); light-ground themes set 0 */
+  --hover-label-ceiling: 1;      /* ceiling; a light-ground theme whose labels are too light for its ground sets ~0.3 to 0.45 */
+  --remove-hover-ceiling: 0.62;  /* the tile remove hover fill is held at or below this lightness so the white X reads */
 
   /* ── Drop hint ── */
   --drop-hint-border: rgba(0, 240, 255, 0.18);
@@ -263,14 +267,31 @@ html, body {
   box-shadow: var(--glow-c);
 }
 
-/* Constrain theme flavor text: left boundary keeps it clear of the title,
-   right boundary keeps it clear of the icon buttons.
-   Themes define content/position/color; boundaries live here. */
+/* #header::after, two kinds of user:
+   - legacy flavour text: left: 200px (set by the theme), no width. It gets the box between
+     left:200px and right:160px, and is 0 wide below a 480 px window, where that box would be
+     under 120 px. The buttons start 112.67 px from the right edge, so right:160px keeps 47 px
+     clear. It kept 12 with four buttons; the slack is left as it is.
+   - header art / tags: the theme sets left:auto, right:136.67px and an explicit width (84px).
+     136.67 is the old 172 less the removed Fullscreen button (29.33 px wide) and its 6 px
+     gap: the art keeps the gap to the buttons it had before. An explicit width wins over
+     the rule below, so art is unaffected by it.
+     Three themes also paint a left-anchored header surface the art is composed against:
+     persona-3 (seam), persona-5 (plate and saw), siren (seam and divider). They carry the
+     same 35.33 px as the art. If the art offset moves again, they move by the same amount. */
 #header::after {
-  right: 135px;
+  right: 160px;
+  width: clamp(0px, calc((100% - 480px) * 1000), calc(100% - 360px));
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Art is anchored 136.67 px from the right and is 84 px wide. It is hidden below the default
+   424 px window, the same widths as before the Fullscreen button was removed. At 423 px it
+   would clear the title by about 66 px (widest title: Star Wars Republic), so this is a rule
+   about window width, not a collision. */
+@media (max-width: 423px) { #header::after { display: none; } }
+/* The filter chip sits where header text or art is. */
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
 
 #title-area { display: flex; flex-direction: column; gap: 1px; }
 
@@ -347,7 +368,7 @@ button:hover {
   background: var(--btn-hover-bg);
   border-color: var(--accent-c);
   box-shadow: var(--glow-c);
-  color: #fff;
+  color: var(--btn-hover-text);
 }
 button:active { background: var(--btn-active-bg); }
 
@@ -356,6 +377,9 @@ button:active { background: var(--btn-active-bg); }
   flex: 1; padding: var(--grid-pad);
   position: relative;
   overflow-y: auto; overflow-x: hidden;
+  /* The 4 px scrollbar's column is always reserved, so the tile field ends at
+     W-20 with or without a scrollbar (theme spec, foundation A4). */
+  scrollbar-gutter: stable;
 }
 #grid-container::-webkit-scrollbar { width: 4px; }
 #grid-container::-webkit-scrollbar-track { background: transparent; }
@@ -483,7 +507,7 @@ button:active { background: var(--btn-active-bg); }
   border-color: var(--remove-btn-border);
   color: #fff; z-index: 10;
 }
-.btn-remove:hover { background: var(--accent-m); box-shadow: var(--glow-m); }
+.btn-remove:hover { background: oklch(from var(--accent-m) min(l, var(--remove-hover-ceiling)) calc(c * min(1, var(--remove-hover-ceiling) / max(l, 0.0001))) h); box-shadow: var(--glow-m); color: #fff; }
 
 /* ── Drop hint ───────────────────────────────────────────────────────────────── */
 #drop-hint {
@@ -680,6 +704,37 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   border-top: 1px solid var(--border);
   justify-content: flex-end;
 }
+/* ── Scrolling overlays (settings, cheat-sheet) ─────────────────────────────
+   The panel never exceeds the window; the body scrolls and the footer stays.
+   .overlay-scroll pulls itself out of the panel's 20 px padding (the
+   scrollbar sits at the window edge and no dead band shows above the title).
+   scrollbar-gutter keeps the row widths the same with and without a scrollbar. */
+.scroll-panel { max-height: 100%; display: flex; flex-direction: column; }
+.scroll-panel > .overlay-scroll {
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+  margin: -20px -20px 0;            /* undo .overlay-panel padding-top and sides */
+  padding: 20px 14px 0 20px;        /* right 14 + the 6 px scrollbar = the old 20 */
+}
+.scroll-panel > .overlay-scroll.picker-open { overflow-y: hidden; }   /* the skin list is open (app.js) */
+.scroll-panel > .overlay-scroll::-webkit-scrollbar { width: 6px; }
+.scroll-panel > .overlay-scroll::-webkit-scrollbar-track { background: transparent; }
+.scroll-panel > .overlay-scroll::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 3px; }
+.scroll-panel > .overlay-footer { flex: none; }
+/* Short windows (the default 424x300 and 640x420): tighter vertical rhythm. */
+@media (max-height: 480px) {
+  .scroll-panel { padding: 14px 20px 10px; }
+  .scroll-panel > .overlay-scroll { margin-top: -14px; padding-top: 14px; }
+  .scroll-panel .overlay-title { margin-bottom: 12px; padding-bottom: 6px; }
+  .scroll-panel .setting-row { margin-bottom: 10px; }
+  .scroll-panel > .overlay-footer { padding-top: 10px; }
+}
+/* Narrow windows (180 px up to about 245 px wide): nothing may overflow sideways. */
+.scroll-panel > .overlay-scroll { overflow-x: hidden; }
+.scroll-panel .hotkey-input,
+.scroll-panel input[type="range"] { min-width: 0; }
+.scroll-panel > .overlay-footer { flex-wrap: wrap; row-gap: 6px; }
+
 #btn-close-settings { border-color: var(--btn-close-border); color: var(--btn-close-color); }
 #btn-close-settings:hover {
   background: var(--btn-close-hover-bg);
@@ -702,6 +757,11 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
   font-family: var(--font);
 }
 .cheat-desc { color: var(--text); }
+/* Cheat-sheet in narrow windows (under 260 px): key above description, so nothing is clipped. */
+@media (max-width: 259px) {
+  .cheat-row { flex-wrap: wrap; row-gap: 1px; }
+  .cheat-key { flex-basis: 100%; }
+}
 
 .picker-panel {
   height: 100%; display: flex; flex-direction: column; padding: 20px 20px 14px;
@@ -786,7 +846,9 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 /* theme-picker rows + empty state: 12 px floor + letter-spacing
    dropped to 1 px. UX Review §3 / I6. */
 .theme-picker-item {
-  padding: 6px 10px;
+  /* Right padding on every row leaves room for the Enter-row glyph, so no row reflows
+     when the Enter row moves. Picker spec Part C, C.2.3. */
+  position: relative; padding: 6px 32px 6px 10px;
   font-family: var(--font); font-size: 12px; letter-spacing: 1px;
   color: var(--text); cursor: pointer;
   transition: background .08s, color .08s;
@@ -794,9 +856,47 @@ input[type="range"] { flex: 1; accent-color: var(--accent-c); cursor: pointer; h
 .theme-picker-item:hover,
 .theme-picker-item.active { background: var(--picker-item-hover-bg); color: var(--accent-text); }
 .theme-picker-item.selected { background: var(--picker-item-active-bg); color: var(--accent-text); }
+/* The Enter row (the highlighted row Enter picks) carries a 2 px bar in the text colour:
+   tint alone cannot tell it from the current-skin row. Inset shadow, so nothing moves.
+   Picker behaviour spec 2026-10-02, section 3.8. */
+.theme-picker-item.active { box-shadow: inset 2px 0 0 var(--text); }
+/* ...and a return-arrow glyph at its right end, in the text colour: it says what the row
+   means, which a hovered row (same tint) never shows. A drawn shape, not a string.
+   Picker spec Part C, C.2.2 and C.2.3. */
+.theme-picker-item.active::after {
+  content: ''; position: absolute; right: 10px; top: 50%; width: 12px; height: 12px; margin-top: -6px;
+  background: var(--text);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M10.5 2v4.5h-8M5 4 2.5 6.5 5 9' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M10.5 2v4.5h-8M5 4 2.5 6.5 5 9' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 .theme-picker-empty {
   padding: 12px 10px; text-align: center;
   font-family: var(--font); font-size: 12px; letter-spacing: 1px; color: var(--text-dim);
+}
+
+/* ── Hover legibility ────────────────────────────────────────────────────────── */
+/* A label painted in a theme colour on a hover, pressed or selected highlight is
+   held inside a lightness band (oklch L, 0 to 1). Hue is kept; chroma is scaled so
+   the result stays in gamut. A colour already inside the band does not move.
+   Dark-ground themes use the defaults (floor 0.64, no ceiling). A pale-ground theme
+   sets --hover-label-floor: 0 and, if its labels are too light for the ground,
+   --hover-label-ceiling: ~0.42, and the same rule pulls them down instead. */
+#btn-done-edit      { --hover-src: var(--btn-done-color); }
+#btn-close-settings { --hover-src: var(--btn-close-color); }
+.tile-label.renameable,
+.theme-picker-item  { --hover-src: var(--accent-text); }
+#btn-done-edit:hover,
+#btn-close-settings:hover,
+.tile-label.renameable:hover,
+.theme-picker-item:hover,
+.theme-picker-item.active,
+.theme-picker-item.selected {
+  color: oklch(from var(--hover-src)
+    clamp(var(--hover-label-floor), l, var(--hover-label-ceiling))
+    calc(c * min(1,
+      (1 - clamp(var(--hover-label-floor), l, var(--hover-label-ceiling))) / max(1 - l, 0.0001),
+      clamp(var(--hover-label-floor), l, var(--hover-label-ceiling)) / max(l, 0.0001)))
+    h);
 }
 
 /* ── Tile hover keyframes ────────────────────────────────────────────────────── */

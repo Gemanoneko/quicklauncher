@@ -10,6 +10,11 @@ const { contextBridge, ipcRenderer } = require('electron');
 const contract = ipcRenderer.sendSync('qlg:contract');
 const INVOKE = new Set(contract.invoke);
 const ON = new Set(contract.on);
+const listeners = new Map();
+ipcRenderer.on('qlg:event', (_event, channel, message) => {
+  if (!ON.has(channel)) throw new Error(`Blocked event channel: ${channel}`);
+  for (const fn of listeners.get(channel) || []) fn(message);
+});
 
 contextBridge.exposeInMainWorld('api', {
   invoke(channel, ...args) {
@@ -18,8 +23,9 @@ contextBridge.exposeInMainWorld('api', {
   },
   on(channel, fn) {
     if (!ON.has(channel)) throw new Error(`Blocked IPC channel: ${channel}`);
-    void fn; // the harness never pushes events
-    return () => {};
+    const list = listeners.get(channel) || [];
+    list.push(fn); listeners.set(channel, list);
+    return () => { const at = list.indexOf(fn); if (at >= 0) list.splice(at, 1); };
   },
   getPathForFile() { return ''; },
   version: contract.version,

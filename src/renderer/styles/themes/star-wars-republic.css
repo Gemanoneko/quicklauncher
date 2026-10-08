@@ -1,211 +1,141 @@
-/* ══ STAR WARS: OLD REPUBLIC ══════════════════════════════════════════════════
-   An elegant weapon, for a more civilized age. Ancient Force energy,
-   Jedi blue and violet, warm gold — the light side of a thousand years.
-   ══════════════════════════════════════════════════════════════════════════════ */
+/* == STAR WARS: GALACTIC REPUBLIC =============================================
+   Batch 6 redraw (theme spec 2026-10-01, section 1; renamed from OLD REPUBLIC,
+   the key is unchanged). The one light window: ivory ground and tiles, a
+   crimson header under a brass line, deco pilasters with crimson diamonds, a
+   stepped ziggurat between curved rings in the header, the Senate rotunda and
+   a Coruscant dusk skyline in a blue banner, arch-top plates, a rounded
+   window. The base hover rules that assume a dark ground are rewritten.
+   Bundled Cinzel 600 title, bundled Jost labels and banner. No texture, no
+   looping motion.
+   ============================================================================== */
 
 :root {
-  --radius:       2px;
-  --app-clip:     none;
-  --overlay-clip: none;
-
-  --bg:           #05040C;
-  --panel-bg:     rgba(8, 6, 16, 0.97);
-  --overlay-bg:   rgba(5, 4, 12, 0.95);
-  --header-bg:    rgba(80, 60, 180, 0.04);
-
-  --font:         'Segoe UI', Georgia, serif;
-  --text:         #9A90C8;
-  --text-dim:     rgba(140, 120, 180, 0.93);
-
-  --accent-c:     #5878E0;   /* Jedi blue */
-  --accent-m:     #C040A0;   /* Force violet */
-  --accent-y:     #C0A030;   /* ancient gold */
-
-  --border:       rgba(80, 100, 200, 0.22);
-  --border-h:     rgba(100, 130, 220, 0.55);
-
-  --glow-c:       0 0 7px rgba(88,120,224,.65), 0 0 20px rgba(88,120,224,.22);
-  --glow-m:       0 0 7px rgba(192,64,160,.65), 0 0 20px rgba(192,64,160,.22);
-  --glow-y:       0 0 7px rgba(192,160,48,.65), 0 0 20px rgba(192,160,48,.22);
-
-  --pulse-glow:   inset 0 0 20px rgba(80,100,200,.07);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(80,100,200,.10);
-
-  --title-anim:   republic-glow 10s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(70, 90, 190, 0.08);
-  --tile-hover-border: rgba(100, 130, 220, 0.35);
-  --tile-hover-shadow: 0 0 14px rgba(88, 120, 224, 0.18);
-  --tile-active-bg:    rgba(70, 90, 190, 0.15);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(88,120,224,.60)) drop-shadow(0 0 14px rgba(88,120,224,.25));
-  --tile-icon-fx:      brightness(1.05) saturate(1.2);
-  --tile-icon-shape:   circle(46% at 50% 50%);
-  --tile-label-spacing:   0.8px;
+  --radius: 2px;
+  --app-clip: inset(0 round 10px);
+  --overlay-clip: inset(0 round 10px);
+  --bg: #EFE7D6;
+  --panel-bg: #F8F2E5;
+  --overlay-bg: #EFE7D6;
+  --header-bg: #9A2220;
+  --font: Jost, 'Segoe UI', Arial, sans-serif;
+  --text: #2A2118;
+  --text-dim: #5B4F3E;
+  --accent-c: #2C4A7A;
+  --accent-m: #8E1C1A;
+  --accent-y: #2C4A7A;
+  --accent-text: #8E1C1A;
+  --border: #9A7420;
+  --border-h: #8E1C1A;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #2C4A7A;
+  --title-anim: none;
+  --tile-hover-bg: #FFF1CF;
+  --tile-hover-border: #8E1C1A;
+  --tile-hover-shadow: inset 0 -3px 0 #D9B44A;
+  --tile-active-bg: #FFF1CF;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: brightness(0.8) saturate(1.05);
+  --tile-icon-shape: inset(0 round 20px 20px 8px 8px);
+  --tile-label-spacing: 0.1px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-glow 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-zoom 1.5s ease-out forwards;
-
-  --btn-hover-bg:   rgba(70, 90, 190, 0.10);
-  --btn-active-bg:  rgba(70, 90, 190, 0.20);
-
-  --drop-hint-border: rgba(80, 100, 200, 0.25);
-  --drop-icon-color:  rgba(88, 120, 224, 0.35);
-  --hint-sub-color:   #8470AC;
-
-  --rename-dashed:    rgba(88, 120, 224, 0.40);
-  --rename-input-bg:  rgba(70, 90, 190, 0.07);
-
-  --edit-bar-bg:          rgba(192, 64, 160, 0.07);
-  --edit-bar-border:      rgba(192, 64, 160, 0.38);
-  --edit-label-color:     #C040A0;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #C040A0;
-  --btn-done-border:      rgba(192, 64, 160, 0.40);
-  --btn-done-hover-bg:    rgba(192, 64, 160, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(88, 120, 224, 0.40);
-
-  --update-bg:             rgba(192, 160, 48, 0.06);
-  --update-border:         rgba(192, 160, 48, 0.38);
-  --update-color:          #C0A030;
-  --update-btn-border:     rgba(192, 160, 48, 0.35);
-  --update-btn-hover-bg:   rgba(192, 160, 48, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #C040A0;
-  --btn-close-border:     rgba(192, 64, 160, 0.38);
-  --btn-close-hover-bg:   rgba(192, 64, 160, 0.10);
-  --btn-close-hover-glow: var(--glow-m);
-
-  --picker-search-bg:      rgba(70, 90, 190, 0.07);
-  --picker-item-hover-bg:  rgba(70, 90, 190, 0.08);
-  --picker-item-active-bg: rgba(70, 90, 190, 0.15);
-  --picker-placeholder-bg: rgba(70, 90, 190, 0.07);
-
-  --skin-btn-active-bg:    rgba(70, 90, 190, 0.16);
-  --remove-btn-bg:         rgba(192, 64, 160, 0.88);
-  --remove-btn-border:     #C040A0;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #6E1412;
+  --btn-active-bg: #5A0F0E;
+  --hover-label-floor: 0;
+  --drop-hint-border: #9A7420;
+  --drop-icon-color: #9A7420;
+  --hint-sub-color: #5B4F3E;
+  --rename-dashed: #2C4A7A;
+  --rename-input-bg: #FFF1CF;
+  --edit-bar-bg: #F6DEDA;
+  --edit-bar-border: #8E1C1A;
+  --edit-label-color: #8E1C1A;
+  --edit-label-glow: none;
+  --btn-done-color: #8E1C1A;
+  --btn-done-border: #8E1C1A;
+  --btn-done-hover-bg: #EBC3BD;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #9A7420;
+  --update-bg: #E6EDF7;
+  --update-border: #2C4A7A;
+  --update-color: #1B3157;
+  --update-btn-border: #2C4A7A;
+  --update-btn-hover-bg: #C9D8EE;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #8E1C1A;
+  --btn-close-border: #8E1C1A;
+  --btn-close-hover-bg: #F6DEDA;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #FFF1CF;
+  --picker-item-hover-bg: #FFF1CF;
+  --picker-item-active-bg: #FBE6B5;
+  --picker-placeholder-bg: #FFF1CF;
+  --skin-btn-active-bg: #FBE6B5;
+  --remove-btn-bg: #8E1C1A;
+  --remove-btn-border: #2A2118;
 }
 
-/* ── Force energy overlay — violet mist + void vignette ────────────────────── */
-#app::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(3, 2, 10, 0.70) 100%),
-    radial-gradient(ellipse 70% 60% at 30% 20%, rgba(60, 40, 160, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(80, 20, 120, 0.05) 0%, transparent 60%);
-  opacity: 1; pointer-events: none;
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #8E1C1A; }
+.hotkey-input::placeholder, .theme-search::placeholder { color: var(--text-dim); }
+/* hover label colours for controls on pale fills; plain buttons take --btn-hover-text (base default #fff) */
+.btn-remove:hover { color: #fff; }
+.update-btn:hover { color: var(--update-color); }
+#filter-chip-clear:hover { color: var(--accent-text); }
+.theme-search { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgb(42,33,24)'/%3E%3C/svg%3E"); }
 
-/* ── Header blue Force accent bar ───────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #5878E0, rgba(80, 100, 200, 0.30));
-  box-shadow: 0 0 10px rgba(88, 120, 224, 0.55), 0 0 24px rgba(88, 120, 224, 0.18);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* ── Grid: Jedi Order — kyber crystal focus, lightsaber light beams ──────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Jedi Order SVG — lightsaber hilt crystal chamber, radial Force beams */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Outer Force ring --%3E%3Ccircle cx='250' cy='190' r='130' fill='none' stroke='rgba(88,120,224,0.08)' stroke-width='1'/%3E%3C!-- Inner focus ring --%3E%3Ccircle cx='250' cy='190' r='55' fill='none' stroke='rgba(88,120,224,0.12)' stroke-width='0.8'/%3E%3C!-- Crystal point — kyber crystal hexagon --%3E%3Cpolygon points='250,162 268,171 268,209 250,218 232,209 232,171' fill='none' stroke='rgba(100,130,230,0.18)' stroke-width='1'/%3E%3C!-- Central crystal light --%3E%3Ccircle cx='250' cy='190' r='7' fill='rgba(88,120,224,0.25)'/%3E%3C!-- Force light beams — 8 thin rays radiating from crystal --%3E%3Cline x1='250' y1='183' x2='250' y2='60' stroke='rgba(88,120,224,0.08)' stroke-width='0.7'/%3E%3Cline x1='250' y1='197' x2='250' y2='320' stroke='rgba(88,120,224,0.08)' stroke-width='0.7'/%3E%3Cline x1='243' y1='190' x2='120' y2='190' stroke='rgba(88,120,224,0.08)' stroke-width='0.7'/%3E%3Cline x1='257' y1='190' x2='380' y2='190' stroke='rgba(88,120,224,0.08)' stroke-width='0.7'/%3E%3Cline x1='244' y1='184' x2='157' y2='97' stroke='rgba(88,120,224,0.06)' stroke-width='0.6'/%3E%3Cline x1='256' y1='184' x2='343' y2='97' stroke='rgba(88,120,224,0.06)' stroke-width='0.6'/%3E%3Cline x1='244' y1='196' x2='157' y2='283' stroke='rgba(88,120,224,0.06)' stroke-width='0.6'/%3E%3Cline x1='256' y1='196' x2='343' y2='283' stroke='rgba(88,120,224,0.06)' stroke-width='0.6'/%3E%3C!-- Jedi Code arc decorations --%3E%3Cpath d='M 180 100 A 90 90 0 0 1 320 100' fill='none' stroke='rgba(192,64,160,0.07)' stroke-width='0.6'/%3E%3Cpath d='M 180 280 A 90 90 0 0 0 320 280' fill='none' stroke='rgba(192,64,160,0.07)' stroke-width='0.6'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
-    /* Force ambient — violet and blue */
-    radial-gradient(ellipse 70% 55% at 30% 25%, rgba(60, 80, 180, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 45% at 80% 75%, rgba(80, 30, 140, 0.04) 0%, transparent 60%);
-  animation: force-nexus 10s ease-in-out infinite;
-}
-@keyframes force-nexus {
-  0%, 100% { opacity: 0.80; }
-  50%       { opacity: 1.0; }
-  70%       { opacity: 0.88; }
-  88%       { opacity: 1.0; }
-  89%       { opacity: 0.30; }
-}
-
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+/* header: a 3 px line inside it, the faction's emblem in the art zone */
+#header { background: linear-gradient(180deg, #9A2220 0, #7C1816 100%); border-bottom-color: #D9B44A; box-shadow: inset 0 -2px 0 #D9B44A; }
+#header::before { background: #D9B44A; box-shadow: none; }
 #header::after {
-  content: 'JEDI ORDER  //  CORUSCANT  //  PEACE THROUGH THE FORCE';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(110, 148, 240, 0.65);
-  pointer-events: none; white-space: nowrap;
+  content: ''; position: absolute; top: 10px; right: 136.67px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Cpath d='M3 17.4 Q13 14 19 3.4 M3 14.2 Q10.4 11.4 15 3.4 M3 11 Q8 9 11 3.4' fill='none' stroke='rgb(217,180,74)' stroke-width='0.9' stroke-linecap='round'/%3E%3Cpath d='M81 17.4 Q71 14 65 3.4 M81 14.2 Q73.6 11.4 69 3.4 M81 11 Q76 9 73 3.4' fill='none' stroke='rgb(217,180,74)' stroke-width='0.9' stroke-linecap='round'/%3E%3Crect x='27' y='15.2' width='30' height='3.4' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.5'/%3E%3Crect x='30.4' y='11.8' width='23.2' height='3.4' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.5'/%3E%3Crect x='33.8' y='8.4' width='16.4' height='3.4' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.5'/%3E%3Crect x='37.2' y='5' width='9.600000000000001' height='3.4' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.5'/%3E%3Crect x='41.3' y='2' width='1.4' height='3' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.4'/%3E%3Crect x='40.2' y='5.4' width='3.6' height='2.4' fill='rgb(240,207,122)'/%3E%3Crect x='38' y='8.8' width='8' height='0.8' fill='rgb(104,18,17)'/%3E%3Crect x='34' y='12.2' width='16' height='0.8' fill='rgb(104,18,17)'/%3E%3Crect x='24' y='18.6' width='36' height='0.9' fill='rgb(240,207,122)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
 }
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: Cinzel, 'Palatino Linotype', Palatino, Georgia, serif; font-weight: 600; font-style: normal; font-synthesis: none; line-height: 1.2; font-size: 11px; letter-spacing: 3px; color: #FBF4E2; text-shadow: none; }
+#title .accent { color: #F0CF7A; }
+#header-version { color: #F3DFC2; }
+#header-controls button { color: #FBF4E2; border-color: rgba(251,244,226,0.55); }
+#header-controls button:hover { background: #6E1412; border-color: #F0CF7A; color: #FFFFFF; }
 
-#grid-container::after {
-  content: 'JEDI ORDER\A\ATHERE IS NO\AEMOTION\ATHERE IS PEACE\A\ATHE FORCE\AWILL GUIDE US\A\ACORUSCANT';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 13px; line-height: 1.70; text-align: right;
-  color: rgba(80, 100, 200, 0.11); white-space: pre;
-  animation: republic-breathe 8s ease-in-out infinite;
-}
-
-@keyframes republic-breathe {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
-}
-
-#edit-bar::after {
-  content: 'JEDI COUNCIL AUTHORIZATION REQUIRED';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(192, 64, 160, 0.38);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title animation: Force glow ─────────────────────────────────────────────── */
-@keyframes republic-glow {
-  0%, 100% { text-shadow: 0 0 7px rgba(88,120,224,.55), 0 0 18px rgba(88,120,224,.20); color: #5878E0; }
-  40%       { text-shadow: 0 0 12px rgba(120,150,255,.80), 0 0 30px rgba(88,120,224,.40); color: #8090F0; }
-  70%       { text-shadow: 0 0 8px rgba(160,80,200,.55), 0 0 22px rgba(130,60,180,.25); color: #9060D0; }
-  88%       { text-shadow: 0 0 22px rgba(180,200,255,1), 0 0 50px rgba(120,160,255,.90); color: #E0EAFF; }
-  89%       { text-shadow: none; color: #05040C; }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-/* ── Force energy — Jedi blue/violet meditation pulse ───────────────────── */
-#app { animation: republic-force 10s ease-in-out infinite; }
-@keyframes republic-force {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(80,100,200,.22), inset 0 0 18px rgba(80,100,200,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(88,120,224,.48), inset 0 0 28px rgba(88,120,224,.08); }
-  36%      { box-shadow: 0 0 0 1px rgba(192,64,160,.25), inset 0 0 20px rgba(192,64,160,.04); }
-  37%      { box-shadow: 0 0 0 1px rgba(88,120,224,.42), inset 0 0 24px rgba(88,120,224,.07); }
-  70%      { box-shadow: 0 0 0 1px rgba(192,160,48,.28), inset 0 0 20px rgba(192,160,48,.05); }
-  88%      { box-shadow: 0 0 0 1px rgba(180,200,255,.90), inset 0 0 40px rgba(120,160,255,.20); }
-  89%      { box-shadow: 0 0 0 1px rgba(5,4,12,.60), inset 0 0 10px rgba(5,4,12,.10); }
-}
-
-#theme-banner { background: rgba(4, 3, 10, 0.97); border-top-color: rgba(80, 100, 200, 0.22); }
-#theme-banner::before { content: '☆'; color: #5878E0; font-size: 18px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(100, 120, 200, 0.60); }
-
-/* ── Tile: Force focus ring ──────────────────────────────────────────────── */
-.app-tile::before {
-  width: 18px; height: 18px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(88,120,224,0.50);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
-
-/* ── Republic star field — ancient Force-lit stars ───────────────────────── */
-#particles {
+/* frame: four corner caps over two side strips over a top course (all inside the 8 px bands) */
+#grid-container {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ccircle cx='22' cy='38' r='0.8' fill='rgba(120,140,220,0.30)'/%3E%3Ccircle cx='88' cy='92' r='0.5' fill='rgba(192,160,48,0.20)'/%3E%3Ccircle cx='152' cy='158' r='0.6' fill='rgba(120,140,220,0.26)'/%3E%3Ccircle cx='118' cy='28' r='0.4' fill='rgba(192,64,160,0.16)'/%3E%3Ccircle cx='42' cy='172' r='0.7' fill='rgba(120,140,220,0.24)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ccircle cx='32' cy='52' r='0.6' fill='rgba(100,120,200,0.14)'/%3E%3Ccircle cx='138' cy='142' r='0.4' fill='rgba(192,64,160,0.10)'/%3E%3Ccircle cx='242' cy='232' r='0.5' fill='rgba(100,120,200,0.12)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 200px, 300px 300px;
-  animation: republic-starfield 16s linear infinite;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(142,28,26)'/%3E%3Crect x='0' y='0' width='8' height='8' fill='none' stroke='rgb(154,116,32)' stroke-width='1'/%3E%3Cpath d='M0.6 7.4 V0.6 H7.4' fill='none' stroke='rgb(217,180,74)' stroke-width='1.2'/%3E%3Cpath d='M1 7 A6 6 0 0 1 7 1' fill='none' stroke='rgb(240,207,122)' stroke-width='0.6'/%3E%3Ccircle cx='4.2' cy='4.2' r='1.5' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.5'/%3E%3C/svg%3E") left 1px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(142,28,26)'/%3E%3Crect x='0' y='0' width='8' height='8' fill='none' stroke='rgb(154,116,32)' stroke-width='1'/%3E%3Cpath d='M0.6 7.4 V0.6 H7.4' fill='none' stroke='rgb(217,180,74)' stroke-width='1.2'/%3E%3Cpath d='M1 7 A6 6 0 0 1 7 1' fill='none' stroke='rgb(240,207,122)' stroke-width='0.6'/%3E%3Ccircle cx='4.2' cy='4.2' r='1.5' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.5'/%3E%3C/svg%3E") right 5px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(142,28,26)'/%3E%3Crect x='0' y='0' width='8' height='8' fill='none' stroke='rgb(154,116,32)' stroke-width='1'/%3E%3Cpath d='M0.6 7.4 V0.6 H7.4' fill='none' stroke='rgb(217,180,74)' stroke-width='1.2'/%3E%3Cpath d='M1 7 A6 6 0 0 1 7 1' fill='none' stroke='rgb(240,207,122)' stroke-width='0.6'/%3E%3Ccircle cx='4.2' cy='4.2' r='1.5' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.5'/%3E%3C/svg%3E") left 1px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(142,28,26)'/%3E%3Crect x='0' y='0' width='8' height='8' fill='none' stroke='rgb(154,116,32)' stroke-width='1'/%3E%3Cpath d='M0.6 7.4 V0.6 H7.4' fill='none' stroke='rgb(217,180,74)' stroke-width='1.2'/%3E%3Cpath d='M1 7 A6 6 0 0 1 7 1' fill='none' stroke='rgb(240,207,122)' stroke-width='0.6'/%3E%3Ccircle cx='4.2' cy='4.2' r='1.5' fill='rgb(217,180,74)' stroke='rgb(104,18,17)' stroke-width='0.5'/%3E%3C/svg%3E") right 5px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Crect x='0' y='0' width='8' height='24' fill='rgb(226,214,184)'/%3E%3Crect x='0' y='0' width='1' height='24' fill='rgb(154,116,32)'/%3E%3Crect x='7' y='0' width='1' height='24' fill='rgb(154,116,32)'/%3E%3Crect x='2.2' y='0' width='0.6' height='24' fill='rgb(154,116,32)'/%3E%3Crect x='5.2' y='0' width='0.6' height='24' fill='rgb(154,116,32)'/%3E%3Cpath d='M4 8.6 L6.6 12 L4 15.4 L1.4 12 Z' fill='rgb(142,28,26)' stroke='rgb(154,116,32)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12' r='0.8' fill='rgb(240,207,122)'/%3E%3C/svg%3E") left 1px top 0 / 8px 24px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Crect x='0' y='0' width='8' height='24' fill='rgb(226,214,184)'/%3E%3Crect x='0' y='0' width='1' height='24' fill='rgb(154,116,32)'/%3E%3Crect x='7' y='0' width='1' height='24' fill='rgb(154,116,32)'/%3E%3Crect x='2.2' y='0' width='0.6' height='24' fill='rgb(154,116,32)'/%3E%3Crect x='5.2' y='0' width='0.6' height='24' fill='rgb(154,116,32)'/%3E%3Cpath d='M4 8.6 L6.6 12 L4 15.4 L1.4 12 Z' fill='rgb(142,28,26)' stroke='rgb(154,116,32)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Ccircle cx='4' cy='12' r='0.8' fill='rgb(240,207,122)'/%3E%3C/svg%3E") right 5px top 0 / 8px 24px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9'%3E%3Crect x='0' y='0' width='24' height='1' fill='rgb(154,116,32)'/%3E%3Cpath d='M1 8 V6 H3 V4 H5 V2.4 H7 V4 H9 V6 H11 V8 Z' fill='rgb(251,244,226)' stroke='rgb(154,116,32)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M13 8 V6 H15 V4 H17 V2.4 H19 V4 H21 V6 H23 V8 Z' fill='rgb(251,244,226)' stroke='rgb(154,116,32)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Crect x='0' y='8' width='24' height='1' fill='rgb(142,28,26)'/%3E%3Crect x='5.2' y='3' width='1.6' height='1.4' fill='rgb(142,28,26)'/%3E%3Crect x='17.2' y='3' width='1.6' height='1.4' fill='rgb(142,28,26)'/%3E%3C/svg%3E") left 0 top 0 / 24px 9px repeat-x;
 }
-@keyframes republic-starfield {
-  from { background-position: 0 0, 0 0; }
-  to   { background-position: -200px 20px, -100px 10px; }
+
+/* tiles */
+.app-tile { background: linear-gradient(180deg, #FFFCF3 0, #F3ECDB 100%); border-color: #9A7420; border-radius: 6px; box-shadow: inset 0 1px 0 #FFFFFF; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: linear-gradient(180deg, #FFF1CF 0, #FBE6B5 100%); border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.app-tile:active { background: linear-gradient(180deg, #FFF1CF 0, #FBE6B5 100%); }
+.tile-label { font-family: Jost, 'Segoe UI', Arial, sans-serif; font-size: 11.5px; font-synthesis: none; overflow: clip; overflow-clip-margin: 3px; }
+/* the base drop shadow paints grey into the empty corners of an arch plate on a light tile */
+.tile-icon, .app-tile:hover .tile-icon { filter: var(--tile-icon-fx); }
+
+/* banner: surface, a top course, the faction's big motif at the right end, an icon at the left */
+#theme-banner {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 34'%3E%3Cpath d='M2 24 Q40 -2 82 14' fill='none' stroke='rgb(86,126,184)' stroke-width='0.9' stroke-dasharray='1.4 2.6' stroke-linecap='round'/%3E%3Crect x='3' y='29' width='14' height='5' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='5' y='24' width='10' height='5' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='7' y='19' width='6' height='5' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='9.3' y='15' width='1.4' height='4' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.4'/%3E%3Crect x='18' y='29.8' width='12' height='4.2' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='19.6' y='25.6' width='8.8' height='4.2' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='21.2' y='21.4' width='5.6' height='4.2' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='22.8' y='17.2' width='2.3999999999999986' height='4.2' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='23.3' y='14.2' width='1.4' height='3' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.4'/%3E%3Crect x='63' y='29.6' width='14' height='4.4' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='65' y='25.2' width='10' height='4.4' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='67' y='20.8' width='6' height='4.4' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='69' y='16.4' width='2' height='4.4' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='69.3' y='11.4' width='1.4' height='5' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.4'/%3E%3Crect x='76' y='29.4' width='8' height='4.6' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='77.2' y='24.8' width='5.6' height='4.6' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='78.4' y='20.2' width='3.2' height='4.6' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.5'/%3E%3Crect x='79.3' y='18.2' width='1.4' height='2' fill='rgb(27,49,87)' stroke='rgb(16,30,58)' stroke-width='0.4'/%3E%3Cpath d='M32 34 V26 Q32 16.4 46 16.4 Q60 16.4 60 26 V34 Z' fill='rgb(217,180,74)' stroke='rgb(154,116,32)' stroke-width='0.8'/%3E%3Cpath d='M36 34 V26.4 Q36 20 46 20 Q56 20 56 26.4 V34' fill='none' stroke='rgb(154,116,32)' stroke-width='0.7'/%3E%3Crect x='45.2' y='10.6' width='1.6' height='5.8' fill='rgb(217,180,74)'/%3E%3Ccircle cx='46' cy='10' r='1.4' fill='rgb(240,207,122)'/%3E%3Crect x='30' y='33' width='32' height='1' fill='rgb(240,207,122)'/%3E%3Ccircle cx='52' cy='6' r='0.7' fill='rgb(251,244,226)'/%3E%3Ccircle cx='18' cy='7' r='0.6' fill='rgb(251,244,226)'/%3E%3Ccircle cx='63' cy='5' r='0.6' fill='rgb(86,126,184)'/%3E%3Ccircle cx='38' cy='4' r='0.6' fill='rgb(86,126,184)'/%3E%3Ccircle cx='6' cy='14' r='0.6' fill='rgb(86,126,184)'/%3E%3Cg fill='rgb(240,207,122)'%3E%3Crect x='10.2' y='24' width='1' height='1' fill='rgb(240,207,122)'/%3E%3Crect x='24' y='22' width='1' height='1' fill='rgb(240,207,122)'/%3E%3Crect x='70' y='21' width='1' height='1' fill='rgb(240,207,122)'/%3E%3Crect x='80' y='24' width='1' height='1' fill='rgb(240,207,122)'/%3E%3C/g%3E%3C/svg%3E") right 12px bottom 0 / 84px 34px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 7'%3E%3Crect x='0' y='0' width='24' height='1.2' fill='rgb(217,180,74)'/%3E%3Crect x='0' y='1.2' width='24' height='0.5' fill='rgb(154,116,32)'/%3E%3Cpath d='M6 4.6 L8 2.8 L10 4.6 L8 6.4 Z M18 4.6 L20 2.8 L22 4.6 L20 6.4 Z' fill='rgb(217,180,74)'/%3E%3Crect x='11' y='4.2' width='6' height='0.8' fill='rgb(154,116,32)'/%3E%3Crect x='0' y='4.2' width='5' height='0.8' fill='rgb(154,116,32)'/%3E%3C/svg%3E") left 0 top 0 / 24px 7px repeat-x, linear-gradient(180deg, #2C4A7A 0, #1B3157 100%);
+  border-top-color: #D9B44A;
 }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Crect x='2' y='19.4' width='18' height='1.8' fill='rgb(217,180,74)' stroke='rgb(154,116,32)' stroke-width='0.5'/%3E%3Crect x='3.4' y='17.8' width='15.2' height='1.6' fill='rgb(240,207,122)' stroke='rgb(154,116,32)' stroke-width='0.5'/%3E%3Crect x='4.6' y='11.6' width='1.8' height='6.2' fill='rgb(217,180,74)'/%3E%3Crect x='8.2' y='11.6' width='1.8' height='6.2' fill='rgb(217,180,74)'/%3E%3Crect x='12' y='11.6' width='1.8' height='6.2' fill='rgb(217,180,74)'/%3E%3Crect x='15.6' y='11.6' width='1.8' height='6.2' fill='rgb(217,180,74)'/%3E%3Crect x='3.4' y='9.8' width='15.2' height='1.8' fill='rgb(240,207,122)' stroke='rgb(154,116,32)' stroke-width='0.5'/%3E%3Cpath d='M5.2 9.8 Q5.2 3.4 11 3.4 Q16.8 3.4 16.8 9.8 Z' fill='rgb(217,180,74)' stroke='rgb(154,116,32)' stroke-width='0.7'/%3E%3Cpath d='M7.4 8.6 Q7.4 5.4 10 4.8' fill='none' stroke='rgb(240,207,122)' stroke-width='0.8' stroke-linecap='round'/%3E%3Crect x='10.4' y='0.8' width='1.2' height='2.8' fill='rgb(240,207,122)'/%3E%3Ccircle cx='11' cy='0.9' r='0.9' fill='rgb(240,207,122)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: Jost, 'Segoe UI', Arial, sans-serif; font-size: 12px; font-weight: 400; font-style: normal; font-synthesis: none; letter-spacing: 0.3px; color: #FBF4E2; margin-right: 90px; }

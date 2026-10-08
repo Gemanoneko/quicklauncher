@@ -226,20 +226,23 @@ function migrate(input, ctx) {
   if (!regions.length) {
     // First start with regions: today's grid becomes the primary region.
     migrated = true;
-    const size = isPlainObject(settingsIn.windowSize)
-      && isFiniteNum(settingsIn.windowSize.width) && isFiniteNum(settingsIn.windowSize.height)
-      ? settingsIn.windowSize : null;
-    const pos = isPlainObject(settingsIn.windowPosition)
-      && isFiniteNum(settingsIn.windowPosition.x) && isFiniteNum(settingsIn.windowPosition.y)
-      ? settingsIn.windowPosition : null;
+    // Preserve the theme branch's approved legacy startup reset, without
+    // changing existing regions' home-layout/display restoration contract.
+    const saved = settingsIn.windowSize;
+    const validSize = isPlainObject(saved) && Number.isInteger(saved.width) && Number.isInteger(saved.height) && saved.width > 0 && saved.height > 0;
+    const oversized = validSize && c.workArea && (saved.width > c.workArea.width || saved.height > c.workArea.height);
+    const size = validSize && !oversized ? saved : null;
     const def = defaultGridRect(c.workArea);
     const width = size ? size.width : GRID.defaultWidth;
     const height = size ? size.height : GRID.defaultHeight;
-    const rect = pos
-      ? { x: Math.round(pos.x), y: Math.round(pos.y), width: Math.round(width), height: Math.round(height) }
-      : { ...def, width: Math.round(width), height: Math.round(height),
-        x: Math.round(c.workArea ? c.workArea.x + c.workArea.width - width - 20 : def.x),
-        y: Math.round(c.workArea ? c.workArea.y + c.workArea.height - height - 20 : def.y) };
+    const savedPos = settingsIn.windowPosition;
+    const pos = !oversized && isPlainObject(savedPos) && Number.isInteger(savedPos.x) && Number.isInteger(savedPos.y) ? savedPos : null;
+    const visible = pos && (!c.workArea || Math.min(pos.x + width,c.workArea.x+c.workArea.width)-Math.max(pos.x,c.workArea.x) >= 100 && Math.min(pos.y+height,c.workArea.y+c.workArea.height)-Math.max(pos.y,c.workArea.y) >= 50);
+    const rect = visible ? {x:pos.x,y:pos.y,width,height} : {
+      ...def,width,height,
+      x:Math.round(c.workArea ? c.workArea.x+c.workArea.width-width-20 : def.x),
+      y:Math.round(c.workArea ? c.workArea.y+c.workArea.height-height-20 : def.y),
+    };
     regions = [cleanRegion({
       id: c.newId(), name: MIGRATED_NAME, icon: 'apps', layout: 'grid', theme: defaultTheme, rect,
       home: c.workArea ? { ...c.workArea } : null,

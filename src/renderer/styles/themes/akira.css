@@ -1,228 +1,117 @@
 /* ══ AKIRA ════════════════════════════════════════════════════════════════════
-   Neo-Tokyo 2019. Speed. Power. The city on fire and one kid at the center
-   of it all. Aggressive red neon on urban black. TETSUO.
+   Batch 2 redraw (theme spec 2026-09-30, section 1). Flat cel Neo-Tokyo:
+   near-black violet ground, capsule-red rules and focus, a concrete-grey
+   banner strip with a Neo-Tokyo skyline and a red crater sun, a red-and-white
+   capsule (header tag and banner icon) beside red katakana, and a capsule
+   pill behind the hovered or focused label. No texture, no looping motion.
+   Title in the bundled Dela Gothic One (foundation spec 2026-09-30, Part B).
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #080004;
-  --panel-bg:     rgba(12, 2, 6, 0.98);
-  --overlay-bg:   rgba(8, 0, 4, 0.96);
-  --header-bg:    rgba(220, 0, 20, 0.04);
-
-  --font:         'Segoe UI', 'Consolas', monospace;
-  --text:         #C8B8A0;
-  --text-dim:     rgba(180, 150, 120, 0.78);
-
-  --accent-c:     #E01020;   /* Akira red */
-  --accent-m:     #00A8FF;   /* electric cyan-blue */
-  --accent-y:     #FF8000;   /* capsule orange */
-
-  --border:       rgba(200, 0, 20, 0.22);
-  --border-h:     rgba(220, 10, 30, 0.60);
-
-  --glow-c:       0 0 8px rgba(224,16,32,.70), 0 0 24px rgba(224,16,32,.25);
-  --glow-m:       0 0 8px rgba(0,168,255,.70), 0 0 24px rgba(0,168,255,.25);
-  --glow-y:       0 0 8px rgba(255,128,0,.70), 0 0 24px rgba(255,128,0,.25);
-
-  --pulse-glow:   inset 0 0 24px rgba(220,0,20,.08);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 3px,
-                    rgba(220, 0, 20, 0.025) 3px, rgba(220, 0, 20, 0.025) 4px
-                  );
-  --drag-over-glow: inset 0 0 24px rgba(224,16,32,.12);
-
-  --title-anim:   akira-burst 3s steps(1) infinite;
-
-  --tile-hover-bg:     rgba(200, 0, 20, 0.08);
-  --tile-hover-border: rgba(224, 16, 32, 0.45);
-  --tile-hover-shadow: 0 0 14px rgba(224, 16, 32, 0.30);
-  --tile-active-bg:    rgba(200, 0, 20, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(224,16,32,.70)) drop-shadow(0 0 14px rgba(224,16,32,.30));
-  --tile-icon-fx:      contrast(1.35) saturate(1.25);
-  --tile-icon-shape:   circle(46% at 50% 50%);
-  --tile-label-spacing:   2px;
+  --bg: #0D0D12;
+  --panel-bg: #14141B;
+  --overlay-bg: #0D0D12;
+  --header-bg: #15151C;
+  --font: Arial, 'Segoe UI', sans-serif;
+  --text: #F5F5F5;
+  --text-dim: #A6A8B8;
+  --accent-c: #E60012;
+  --accent-m: #F5C400;
+  --accent-y: #F5F5F5;
+  --accent-text: #F5C400;
+  --border: #3A3A48;
+  --border-h: #E60012;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #E60012;
+  --title-anim: none;
+  --tile-hover-bg: #1D1216;
+  --tile-hover-border: #E60012;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #1D1216;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: contrast(1.1) saturate(1.1);
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.4px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    700;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-throb 3s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 1s ease-out forwards;
-
-  --btn-hover-bg:   rgba(200, 0, 20, 0.12);
-  --btn-active-bg:  rgba(200, 0, 20, 0.22);
-
-  --drop-hint-border: rgba(200, 0, 20, 0.28);
-  --drop-icon-color:  rgba(224, 16, 32, 0.40);
-  --hint-sub-color:   #A46854;
-
-  --rename-dashed:    rgba(224, 16, 32, 0.45);
-  --rename-input-bg:  rgba(200, 0, 20, 0.07);
-
-  --edit-bar-bg:          rgba(0, 168, 255, 0.06);
-  --edit-bar-border:      rgba(0, 168, 255, 0.40);
-  --edit-label-color:     #00A8FF;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #00A8FF;
-  --btn-done-border:      rgba(0, 168, 255, 0.42);
-  --btn-done-hover-bg:    rgba(0, 168, 255, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(224, 16, 32, 0.45);
-
-  --update-bg:             rgba(255, 128, 0, 0.06);
-  --update-border:         rgba(255, 128, 0, 0.40);
-  --update-color:          #FF8000;
-  --update-btn-border:     rgba(255, 128, 0, 0.38);
-  --update-btn-hover-bg:   rgba(255, 128, 0, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #00A8FF;
-  --btn-close-border:     rgba(0, 168, 255, 0.38);
-  --btn-close-hover-bg:   rgba(0, 168, 255, 0.10);
-  --btn-close-hover-glow: var(--glow-m);
-
-  --picker-search-bg:      rgba(200, 0, 20, 0.07);
-  --picker-item-hover-bg:  rgba(200, 0, 20, 0.08);
-  --picker-item-active-bg: rgba(200, 0, 20, 0.15);
-  --picker-placeholder-bg: rgba(200, 0, 20, 0.07);
-
-  --skin-btn-active-bg:    rgba(200, 0, 20, 0.17);
-  --remove-btn-bg:         rgba(0, 168, 255, 0.88);
-  --remove-btn-border:     #00A8FF;
+  --tile-label-weight: 700;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #2A1418;
+  --btn-active-bg: #3A181E;
+  --drop-hint-border: #4A4A5A;
+  --drop-icon-color: #8A8C9A;
+  --hint-sub-color: #A6A8B8;
+  --rename-dashed: #E60012;
+  --rename-input-bg: #1D1216;
+  --edit-bar-bg: #211C06;
+  --edit-bar-border: #F5C400;
+  --edit-label-color: #F5C400;
+  --edit-label-glow: none;
+  --btn-done-color: #F5C400;
+  --btn-done-border: #F5C400;
+  --btn-done-hover-bg: #3A3208;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #8A8C9A;
+  --update-bg: #1A1A22;
+  --update-border: #F5F5F5;
+  --update-color: #F5F5F5;
+  --update-btn-border: #F5F5F5;
+  --update-btn-hover-bg: #2E2E3A;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #F5C400;
+  --btn-close-border: #F5C400;
+  --btn-close-hover-bg: #3A3208;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1D1216;
+  --picker-item-hover-bg: #1D1216;
+  --picker-item-active-bg: #2A1418;
+  --picker-placeholder-bg: #1D1216;
+  --skin-btn-active-bg: #2A1418;
+  --remove-btn-bg: #B8000F;
+  --remove-btn-border: #F5C400;
 }
 
-/* ── Urban neon + speed lines overlay ──────────────────────────────────────── */
-#app::after {
-  background:
-    /* diagonal speed lines */
-    repeating-linear-gradient(
-      108deg,
-      transparent 0px, transparent 6px,
-      rgba(220, 0, 20, 0.018) 6px, rgba(220, 0, 20, 0.018) 7px,
-      transparent 7px, transparent 40px
-    ),
-    /* scanlines */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 3px,
-      rgba(200, 0, 16, 0.022) 3px, rgba(200, 0, 16, 0.022) 4px
-    ),
-    /* vignette */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 35%, rgba(4, 0, 2, 0.75) 100%),
-    /* red neon bleed from bottom */
-    radial-gradient(ellipse 80% 30% at 50% 100%, rgba(180, 0, 16, 0.08) 0%, transparent 70%);
-  opacity: 1; pointer-events: none;
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #B8000F; }
 
-/* ── Header red neon accent bar ─────────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #E01020, rgba(180, 0, 16, 0.25));
-  box-shadow: 0 0 12px rgba(224, 16, 32, 0.70), 0 0 28px rgba(224, 16, 32, 0.25);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* ── Grid: Neo-Tokyo speed lines — motorcycle pursuit, psychic vanishing point ── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Speed lines SVG — radiating from center-bottom vanishing point like anime motorcycling */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Speed lines radiating from VP at bottom-center --%3E%3Cline x1='250' y1='350' x2='0' y2='0' stroke='rgba(220,10,24,0.07)' stroke-width='1'/%3E%3Cline x1='250' y1='350' x2='50' y2='0' stroke='rgba(220,10,24,0.06)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='125' y2='0' stroke='rgba(220,10,24,0.06)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='188' y2='0' stroke='rgba(220,10,24,0.07)' stroke-width='0.7'/%3E%3Cline x1='250' y1='350' x2='250' y2='0' stroke='rgba(220,10,24,0.08)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='312' y2='0' stroke='rgba(220,10,24,0.07)' stroke-width='0.7'/%3E%3Cline x1='250' y1='350' x2='375' y2='0' stroke='rgba(220,10,24,0.06)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='450' y2='0' stroke='rgba(220,10,24,0.06)' stroke-width='0.8'/%3E%3Cline x1='250' y1='350' x2='500' y2='0' stroke='rgba(220,10,24,0.07)' stroke-width='1'/%3E%3C!-- Additional diagonal lines for density --%3E%3Cline x1='250' y1='350' x2='0' y2='90' stroke='rgba(220,10,24,0.04)' stroke-width='0.6'/%3E%3Cline x1='250' y1='350' x2='0' y2='190' stroke='rgba(220,10,24,0.04)' stroke-width='0.6'/%3E%3Cline x1='250' y1='350' x2='500' y2='90' stroke='rgba(220,10,24,0.04)' stroke-width='0.6'/%3E%3Cline x1='250' y1='350' x2='500' y2='190' stroke='rgba(220,10,24,0.04)' stroke-width='0.6'/%3E%3C!-- Vanishing point mark --%3E%3Ccircle cx='250' cy='350' r='5' fill='rgba(224,16,32,0.30)'/%3E%3Ccircle cx='250' cy='350' r='12' fill='none' stroke='rgba(220,10,24,0.15)' stroke-width='1'/%3E%3C/svg%3E") no-repeat 50% 100% / 100% 100%,
-    /* red neon bleed from bottom — the city below */
-    linear-gradient(to top, rgba(200, 0, 20, 0.10) 0%, rgba(160, 0, 16, 0.04) 20%, transparent 45%);
-  animation: akira-speed 3s ease-in-out infinite;
-}
-@keyframes akira-speed {
-  0%, 100% { opacity: 0.75; }
-  50%       { opacity: 1.0; }
-  88%       { opacity: 0.82; }
-  90%       { opacity: 0.25; }
-  91%       { opacity: 1.0; }
-}
-
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+/* header: 3 px capsule-red rule inside the header */
+#header { border-bottom-color: #E60012; box-shadow: inset 0 -2px 0 #E60012; }
+#header::before { background: #E60012; box-shadow: none; }
 #header::after {
-  content: 'NEO-TOKYO  //  2019  //  CAPSULE GANG';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 9px; letter-spacing: 2px; color: rgba(235, 80, 90, 0.68);
-  pointer-events: none; white-space: nowrap;
+  content: 'ネオ東京';
+  position: absolute; top: 10px; right: 136.67px; left: auto;
+  width: 84px; height: 20px; padding-left: 34px;
+  font: 700 11px/20px 'Yu Gothic', 'MS Gothic', sans-serif; letter-spacing: 0.5px; white-space: nowrap;
+  color: #FF4D57;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 13'%3E%3Crect x='0.75' y='0.75' width='28.5' height='11.5' rx='5.75' fill='rgb(245,245,245)' stroke='rgb(245,245,245)' stroke-width='1.5'/%3E%3Cpath d='M15 0.75 H23.5 A5.75 5.75 0 0 1 23.5 12.25 H15 Z' fill='rgb(230,0,18)'/%3E%3Cpath d='M15 0 V13' stroke='rgb(13,13,18)' stroke-width='1.4'/%3E%3C/svg%3E") no-repeat 0 3px / 30px 13px;
+  pointer-events: none;
+}
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: 'Dela Gothic One', 'Arial Black', 'Segoe UI Black', 'Segoe UI', sans-serif; font-weight: 400; letter-spacing: 1px; font-synthesis: none; line-height: 1.2; color: #F5F5F5; text-shadow: none; }
+#title .accent { color: #FF4D57; }
+
+/* tiles */
+.app-tile { background: #14141B; border-color: #2E2E3A; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: var(--tile-hover-bg); border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.tile-label { font-family: Arial, 'Segoe UI', sans-serif; padding: 0 5px; border-radius: 999px; }
+.app-tile:hover .tile-label, .app-tile:focus-visible .tile-label, .app-tile:hover .tile-label.renameable {
+  background: #C8000F; color: #FFFFFF; box-shadow: 0 0 0 2px #C8000F;
 }
 
-#grid-container::after {
-  content: 'NEO-TOKYO\A\ATETSUO!\A\AKANEDA!\A\ACAPSULE\AGANG\A\A2019';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Consolas', monospace; letter-spacing: 2px;
-  font-size: 13px; line-height: 1.70; text-align: right;
-  color: rgba(200, 10, 24, 0.13); white-space: pre;
-  animation: akira-readout 3s ease-in-out infinite;
-}
-@keyframes akira-readout {
-  0%, 100% { color: rgba(200, 10, 24, 0.13); }
-  50%      { color: rgba(200, 10, 24, 0.18); }
-  88%      { color: rgba(200, 10, 24, 0.01); }
-  89%      { color: rgba(200, 10, 24, 0.15); }
-}
-
-#edit-bar::after {
-  content: 'POWER LEVEL EXCEEDS CONTAINMENT';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(0, 168, 255, 0.38);
-  pointer-events: none; white-space: nowrap;
-}
-
-/* Title color overridden from --accent-c (#E01020 ≈ 4.2:1 on --bg) to #FF5560
-   to clear WCAG 2.2 AA 4.5:1 at 11 px. Accent stays unchanged for borders/glows. */
-#title { font-family: 'Consolas', monospace; letter-spacing: 6px; font-weight: 700; color: #FF5560; }
-
-/* ── Title animation: energy burst ──────────────────────────────────────────── */
-@keyframes akira-burst {
-  0%, 100%  { text-shadow: 0 0 8px rgba(224,16,32,.70), 0 0 24px rgba(224,16,32,.25); }
-  88%       { text-shadow: 0 0 8px rgba(224,16,32,.70), 0 0 24px rgba(224,16,32,.25); }
-  89%       { text-shadow: 3px 0 rgba(0,168,255,.8), -3px 0 rgba(224,16,32,.8), 0 0 30px rgba(224,16,32,.5); }
-  90%       { text-shadow: -2px 0 rgba(0,168,255,.7), 2px 0 rgba(255,128,0,.7); }
-  91%       { text-shadow: 0 0 12px rgba(224,16,32,.90), 0 0 36px rgba(224,16,32,.40); }
-  92%       { text-shadow: 0 0 8px rgba(224,16,32,.70), 0 0 24px rgba(224,16,32,.25); }
-}
-
-/* ── App: aggressive border pulse ───────────────────────────────────────────── */
-#app { animation: akira-border 5s ease-in-out infinite; }
-@keyframes akira-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(200,0,20,.35), inset 0 0 20px rgba(200,0,20,.05); }
-  15%      { box-shadow: 0 0 0 1px rgba(224,16,32,.65), inset 0 0 24px rgba(224,16,32,.08); }
-  16%      { box-shadow: 0 0 0 1px rgba(200,0,20,.15), inset 0 0 14px rgba(200,0,20,.02); }
-  17%      { box-shadow: 0 0 0 1px rgba(224,16,32,.55), inset 0 0 20px rgba(224,16,32,.06); }
-  50%      { box-shadow: 0 0 0 1px rgba(200,0,20,.30), inset 0 0 18px rgba(200,0,20,.04); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(8, 0, 4, 0.98); border-top-color: rgba(220, 10, 30, 0.25); }
-#theme-banner::before { content: '◉'; color: #E01020; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(225, 80, 90, 0.72); }
-
-/* ── Tile: psychic burst ─────────────────────────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: transparent;
-  border: 1px solid rgba(220,10,24,0.28);
-}
-.app-tile:hover::before { animation: tile-flicker .6s steps(1, end) infinite; }
-
-/* ── Psychic shockwave — Tetsuo's power expanding outward ────────────────── */
-#particles {
-  background: radial-gradient(circle at 50% 50%, transparent 0%, transparent 44%, rgba(224,16,32,0.16) 46%, rgba(0,168,255,0.08) 48%, transparent 50%) no-repeat;
-  background-size: 0% 0%;
-  background-position: 50% 50%;
-  animation: akira-shockwave 4s ease-out infinite;
-}
-@keyframes akira-shockwave {
-  0%   { background-size: 0% 0%; opacity: 0.9; }
-  60%  { background-size: 450% 450%; opacity: 0; }
-  100% { background-size: 0% 0%; opacity: 0; }
-}
+/* banner: concrete strip, ink text, tilted capsule */
+#theme-banner { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 34'%3E%3Ccircle cx='60' cy='21' r='12' fill='rgb(230,0,18)'/%3E%3Cpath d='M0 34 V20 H8 V13 H14 V22 H18 V15 H27 V6 H33 V17 H40 V24 H44 V3 H50 V10 H53 V20 H61 V12 H68 V25 H72 V18 H78 V9 H84 V34 Z' fill='rgb(13,13,18)'/%3E%3Cpath d='M30 6 V1 M47 3 V0 M81 9 V4' stroke='rgb(13,13,18)' stroke-width='1'/%3E%3Cg fill='rgb(156,158,173)'%3E%3Crect x='20' y='18' width='2' height='1'/%3E%3Crect x='23' y='22' width='2' height='1'/%3E%3Crect x='29' y='10' width='2' height='1'/%3E%3Crect x='29' y='15' width='2' height='1'/%3E%3Crect x='45' y='8' width='2' height='1'/%3E%3Crect x='45' y='14' width='2' height='1'/%3E%3Crect x='47' y='20' width='2' height='1'/%3E%3Crect x='63' y='16' width='2' height='1'/%3E%3Crect x='64' y='21' width='2' height='1'/%3E%3Crect x='74' y='22' width='2' height='1'/%3E%3Crect x='80' y='14' width='2' height='1'/%3E%3Crect x='3' y='25' width='2' height='1'/%3E%3C/g%3E%3C/svg%3E") right 12px bottom 0 / 84px 34px no-repeat, #9C9EAD; border-top: 3px solid #E60012; }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cg transform='rotate(-45 11 11)'%3E%3Crect x='0.9' y='5.4' width='20.2' height='11.2' rx='5.6' fill='rgb(245,245,245)' stroke='rgb(13,13,18)' stroke-width='1.8'/%3E%3Cpath d='M11 6.3 H15.4 A4.7 4.7 0 0 1 15.4 15.7 H11 Z' fill='rgb(230,0,18)'/%3E%3Cpath d='M11 5.4 V16.6' stroke='rgb(13,13,18)' stroke-width='1.5'/%3E%3C/g%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: Arial, 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 0.5px; color: #0D0D12; }

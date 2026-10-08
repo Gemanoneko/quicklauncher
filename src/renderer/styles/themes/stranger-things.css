@@ -1,244 +1,143 @@
-/* ══ STRANGER THINGS ══════════════════════════════════════════════════════════
-   The Upside Down. Hawkins, 1983. Neon 80s summer meets dark mirror corruption.
-   String lights, VHS static, and the gate that should never have been opened.
+/* ══ STRANGER THINGS ═══════════════════════════════════════════════════════════
+   Batch 1 redraw (theme spec 2026-09-30, section 6). Hawkins, 1983, in print:
+   a paperback-cover title in a heavy serif with a thin red glow, cream italic
+   labels, neon red for fills and focus, dark Upside-Down blue for hover.
+   Lit Christmas bulbs on a slack wire in the band above the tiles. No header
+   art. The one looping animation: a stepped flicker on the banner icon.
    ══════════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #050005;
-  --panel-bg:     rgba(6, 0, 6, 0.98);
-  --overlay-bg:   rgba(5, 0, 5, 0.96);
-  --header-bg:    rgba(255, 0, 102, 0.04);
-
-  --font:         'Segoe UI', 'Consolas', monospace;
-  --text:         #C070A0;
-  --text-dim:     #B45A8C;
-
-  --accent-c:     #FF0066;   /* 80s neon pink-magenta */
-  --accent-m:     #9900CC;   /* Upside Down deep purple */
-  --accent-y:     #FFAA00;   /* warm 80s amber / string lights */
-
-  --border:       rgba(200, 0, 80, 0.22);
-  --border-h:     rgba(255, 0, 102, 0.55);
-
-  --glow-c:       0 0 8px rgba(255,0,102,.75), 0 0 24px rgba(255,0,102,.28);
-  --glow-m:       0 0 8px rgba(153,0,204,.68), 0 0 24px rgba(153,0,204,.24);
-  --glow-y:       0 0 7px rgba(255,170,0,.70), 0 0 22px rgba(255,170,0,.24);
-
-  --pulse-glow:   inset 0 0 22px rgba(255,0,102,.06);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 2px,
-                    rgba(180, 0, 80, 0.028) 2px, rgba(180, 0, 80, 0.028) 3px
-                  );
-  --drag-over-glow: inset 0 0 24px rgba(255,0,102,.11);
-
-  --title-anim:   upside-down 5s steps(1) infinite;
-
-  --tile-hover-bg:     rgba(200, 0, 80, 0.08);
-  --tile-hover-border: rgba(255, 0, 102, 0.48);
-  --tile-hover-shadow: 0 0 14px rgba(255, 0, 102, 0.28);
-  --tile-active-bg:    rgba(200, 0, 80, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(255,0,102,.70)) drop-shadow(0 0 14px rgba(153,0,204,.28));
-  --tile-icon-fx:      brightness(0.88) saturate(0.80);
-  --tile-icon-shape:   none;
-  --tile-label-spacing:   0.5px;
+  --bg: #0A0408;
+  --panel-bg: #140810;
+  --overlay-bg: #0A0408;
+  --header-bg: #10060A;
+  --font: Georgia, 'Times New Roman', serif;
+  --text: #F0E8D0;
+  --text-dim: #B5A793;
+  --accent-c: #E0182A;
+  --accent-m: #8FB4F0;
+  --accent-y: #F0E8D0;
+  --accent-text: #F0283A;
+  --border: #3A1018;
+  --border-h: #E0182A;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #E0182A;
+  --title-anim: none;
+  --tile-hover-bg: #10203C;
+  --tile-hover-border: #E0182A;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #112646;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: saturate(0.85) sepia(0.1);
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.2px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-flicker 5s steps(1) infinite;
-  --app-entrance-anim:   entrance-flash 1s ease-out forwards;
-
-  --btn-hover-bg:   rgba(200, 0, 80, 0.11);
-  --btn-active-bg:  rgba(200, 0, 80, 0.21);
-
-  --drop-hint-border: rgba(200, 0, 80, 0.28);
-  --drop-icon-color:  rgba(255, 0, 102, 0.40);
-  --hint-sub-color:   #B85486;
-
-  --rename-dashed:    rgba(255, 0, 102, 0.42);
-  --rename-input-bg:  rgba(200, 0, 80, 0.07);
-
-  --edit-bar-bg:          rgba(153, 0, 204, 0.06);
-  --edit-bar-border:      rgba(153, 0, 204, 0.38);
-  --edit-label-color:     #9900CC;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #9900CC;
-  --btn-done-border:      rgba(153, 0, 204, 0.40);
-  --btn-done-hover-bg:    rgba(153, 0, 204, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(255, 0, 102, 0.46);
-
-  --update-bg:             rgba(255, 170, 0, 0.06);
-  --update-border:         rgba(255, 170, 0, 0.36);
-  --update-color:          #FFAA00;
-  --update-btn-border:     rgba(255, 170, 0, 0.30);
-  --update-btn-hover-bg:   rgba(255, 170, 0, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #FF0066;
-  --btn-close-border:     rgba(255, 0, 102, 0.42);
-  --btn-close-hover-bg:   rgba(255, 0, 102, 0.11);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(200, 0, 80, 0.07);
-  --picker-item-hover-bg:  rgba(200, 0, 80, 0.08);
-  --picker-item-active-bg: rgba(200, 0, 80, 0.16);
-  --picker-placeholder-bg: rgba(200, 0, 80, 0.07);
-
-  --skin-btn-active-bg:    rgba(200, 0, 80, 0.17);
-  --remove-btn-bg:         rgba(153, 0, 204, 0.90);
-  --remove-btn-border:     #9900CC;
+  --tile-label-weight: 400;
+  --tile-label-style: italic;
+  --tile-label-shadow: none;
+  --banner-icon-anim: st-flicker 5s steps(1) infinite;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #10203C;
+  --btn-active-bg: #112646;
+  --hover-label-floor: 0.66;
+  --drop-hint-border: #5A1A24;
+  --drop-icon-color: #9A8C78;
+  --hint-sub-color: #B0A38F;
+  --rename-dashed: #E0182A;
+  --rename-input-bg: #1C0A12;
+  --edit-bar-bg: #0E1830;
+  --edit-bar-border: #5B8FE0;
+  --edit-label-color: #8FB4F0;
+  --edit-label-glow: none;
+  --btn-done-color: #8FB4F0;
+  --btn-done-border: #5B8FE0;
+  --btn-done-hover-bg: #112646;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #9A8C78;
+  --update-bg: #1A0A0E;
+  --update-border: #E0182A;
+  --update-color: #F0E8D0;
+  --update-btn-border: #F0E8D0;
+  --update-btn-hover-bg: #3A1018;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #F0283A;
+  --btn-close-border: #E0182A;
+  --btn-close-hover-bg: #3A1018;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1C0A12;
+  --picker-item-hover-bg: #10203C;
+  --picker-item-active-bg: #112646;
+  --picker-placeholder-bg: #10203C;
+  --skin-btn-active-bg: #112646;
+  --remove-btn-bg: #A01020;
+  --remove-btn-border: #E0182A;
 }
 
-/* ── VHS static noise + dark tendrils + purple vignette + neon pink corners ─── */
+/* The theme's one looping animation (on the banner icon via --banner-icon-anim):
+   a stepped opacity flicker near the end of a 5 s cycle. */
+@keyframes st-flicker {
+  0%, 86%, 100% { opacity: 1; }
+  88% { opacity: 0.25; }
+  90% { opacity: 1; }
+  93% { opacity: 0.5; }
+  95% { opacity: 1; }
+}
+
+/* ── Window: a darkening vignette only, kept off the header band (same look:
+      centre and radii restated for the 40 px shorter box) ─────────────────── */
 #app::after {
-  background:
-    /* VHS static noise — monochrome, very faint */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.90' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E"),
-    /* diagonal dark tendrils */
-    repeating-linear-gradient(
-      118deg,
-      transparent 0px, transparent 9px,
-      rgba(100, 0, 60, 0.018) 9px, rgba(100, 0, 60, 0.018) 10px,
-      transparent 10px, transparent 52px
-    ),
-    /* dark purple Upside Down vignette */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 28%, rgba(3, 0, 4, 0.86) 100%),
-    /* neon pink corner bleed — top left */
-    radial-gradient(ellipse 55% 38% at 0% 0%, rgba(220, 0, 80, 0.07) 0%, transparent 58%),
-    /* neon pink corner bleed — bottom right */
-    radial-gradient(ellipse 55% 38% at 100% 100%, rgba(200, 0, 70, 0.06) 0%, transparent 58%);
-  background-size: 160px 160px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
+  top: var(--header-h);
+  background: radial-gradient(ellipse 100% 104% at 50% 42%, transparent 55%, rgba(3,0,4,0.60) 100%);
 }
 
-/* ── Header hot pink neon bar with strong glow ──────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #FF0066, rgba(200, 0, 70, 0.28));
-  box-shadow: 0 0 12px rgba(255, 0, 102, 0.78), 0 0 32px rgba(255, 0, 102, 0.28);
+/* ── A lit string of lights in the band above the tiles (container background:
+      under the tiles and fixed to the container, so a scrolled tile covers it) */
+#grid-container {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 212 11'%3E%3Cpath d='M0 1.2 Q26.5 3.8 53 1.2 Q79.5 3.8 106 1.2 Q132.5 3.8 159 1.2 Q185.5 3.8 212 1.2' fill='none' stroke='rgb(110,86,58)' stroke-width='1'/%3E%3Cellipse cx='26.5' cy='7.6' rx='5' ry='3.4' fill='rgb(255,176,48)' opacity='0.26'/%3E%3Crect x='25.3' y='2.5' width='2.4' height='2.2' fill='rgb(110,86,58)'/%3E%3Cellipse cx='26.5' cy='7.6' rx='2.3' ry='3' fill='rgb(255,176,48)'/%3E%3Cellipse cx='25.8' cy='6.4' rx='0.7' ry='1' fill='rgb(255,255,255)' opacity='0.6'/%3E%3Cellipse cx='79.5' cy='7.6' rx='5' ry='3.4' fill='rgb(224,24,42)' opacity='0.26'/%3E%3Crect x='78.3' y='2.5' width='2.4' height='2.2' fill='rgb(110,86,58)'/%3E%3Cellipse cx='79.5' cy='7.6' rx='2.3' ry='3' fill='rgb(224,24,42)'/%3E%3Cellipse cx='78.8' cy='6.4' rx='0.7' ry='1' fill='rgb(255,255,255)' opacity='0.6'/%3E%3Cellipse cx='132.5' cy='7.6' rx='5' ry='3.4' fill='rgb(91,143,224)' opacity='0.26'/%3E%3Crect x='131.3' y='2.5' width='2.4' height='2.2' fill='rgb(110,86,58)'/%3E%3Cellipse cx='132.5' cy='7.6' rx='2.3' ry='3' fill='rgb(91,143,224)'/%3E%3Cellipse cx='131.8' cy='6.4' rx='0.7' ry='1' fill='rgb(255,255,255)' opacity='0.6'/%3E%3Cellipse cx='185.5' cy='7.6' rx='5' ry='3.4' fill='rgb(224,24,42)' opacity='0.26'/%3E%3Crect x='184.3' y='2.5' width='2.4' height='2.2' fill='rgb(110,86,58)'/%3E%3Cellipse cx='185.5' cy='7.6' rx='2.3' ry='3' fill='rgb(224,24,42)'/%3E%3Cellipse cx='184.8' cy='6.4' rx='0.7' ry='1' fill='rgb(255,255,255)' opacity='0.6'/%3E%3C/svg%3E") 0 0 / 212px 11px repeat-x;
 }
 
-/* ── Grid: Joyce's Christmas lights — "RUNRUNRUNRUN" ─────────────────────────── */
-#grid-container::before {
+/* ── Title: heavy serif, set tight, with a thin static red glow ──────────── */
+#title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700; letter-spacing: 0.5px;
+  color: #FF3B4A;
+  text-shadow: 0 0 1px #F0283A, 0 0 6px rgba(224,24,42,0.80);
+}
+
+/* ── Banner: five-petal flower icon (flickers), cream italic line ───────────── */
+#theme-banner { border-top-color: #5A1018; }
+#theme-banner::before {
   content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Christmas lights string — the wall in the Byers house */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Cline x1='0' y1='172' x2='500' y2='170' stroke='%23604020' stroke-opacity='0.08' stroke-width='0.6'/%3E%3Ccircle cx='20' cy='172' r='5.5' fill='%23FFAA00' fill-opacity='0.22'/%3E%3Ccircle cx='20' cy='172' r='2.5' fill='%23FFCC40' fill-opacity='0.68'/%3E%3Ccircle cx='52' cy='171' r='5' fill='%23FF4400' fill-opacity='0.20'/%3E%3Ccircle cx='52' cy='171' r='2.2' fill='%23FF7040' fill-opacity='0.62'/%3E%3Ccircle cx='88' cy='173' r='5.5' fill='%23FFEE60' fill-opacity='0.20'/%3E%3Ccircle cx='88' cy='173' r='2.5' fill='%23FFEE90' fill-opacity='0.65'/%3E%3Ccircle cx='122' cy='170' r='5' fill='%23FFAA00' fill-opacity='0.22'/%3E%3Ccircle cx='122' cy='170' r='2.2' fill='%23FFCC40' fill-opacity='0.66'/%3E%3Ccircle cx='158' cy='172' r='5' fill='%23FF6600' fill-opacity='0.20'/%3E%3Ccircle cx='158' cy='172' r='2.2' fill='%23FF8840' fill-opacity='0.60'/%3E%3Ccircle cx='192' cy='171' r='5.5' fill='%23FFAA00' fill-opacity='0.22'/%3E%3Ccircle cx='192' cy='171' r='2.5' fill='%23FFCC40' fill-opacity='0.67'/%3E%3Ccircle cx='228' cy='173' r='5' fill='%23FFFFB0' fill-opacity='0.20'/%3E%3Ccircle cx='228' cy='173' r='2.2' fill='%23FFFFE0' fill-opacity='0.62'/%3E%3Ccircle cx='262' cy='170' r='5.5' fill='%23FF4400' fill-opacity='0.20'/%3E%3Ccircle cx='262' cy='170' r='2.5' fill='%23FF7040' fill-opacity='0.63'/%3E%3Ccircle cx='298' cy='172' r='5' fill='%23FFAA00' fill-opacity='0.23'/%3E%3Ccircle cx='298' cy='172' r='2.2' fill='%23FFCC40' fill-opacity='0.68'/%3E%3Ccircle cx='332' cy='171' r='5.5' fill='%23FF6600' fill-opacity='0.20'/%3E%3Ccircle cx='332' cy='171' r='2.5' fill='%23FF8840' fill-opacity='0.60'/%3E%3Ccircle cx='368' cy='173' r='5' fill='%23FFD040' fill-opacity='0.22'/%3E%3Ccircle cx='368' cy='173' r='2.2' fill='%23FFEC60' fill-opacity='0.65'/%3E%3Ccircle cx='402' cy='170' r='5.5' fill='%23FFAA00' fill-opacity='0.23'/%3E%3Ccircle cx='402' cy='170' r='2.5' fill='%23FFCC40' fill-opacity='0.68'/%3E%3Ccircle cx='438' cy='172' r='5' fill='%23FF4400' fill-opacity='0.20'/%3E%3Ccircle cx='438' cy='172' r='2.2' fill='%23FF7040' fill-opacity='0.62'/%3E%3Ccircle cx='472' cy='171' r='5.5' fill='%23FFAA00' fill-opacity='0.22'/%3E%3Ccircle cx='472' cy='171' r='2.5' fill='%23FFCC40' fill-opacity='0.66'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* neon pink bloom at top — the Gate */
-    linear-gradient(to bottom, rgba(200, 0, 80, 0.07) 0%, transparent 25%),
-    /* Upside Down dark vine ambient */
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(80, 0, 100, 0.03) 0%, transparent 70%),
-    /* warm string-light glow on the wall */
-    linear-gradient(to top, rgba(200, 120, 0, 0.06) 0%, rgba(180, 100, 0, 0.02) 18%, transparent 40%);
+  width: 22px; height: 22px;
+  font-size: 0; opacity: 1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cg fill='none' stroke='rgb(224,24,42)' stroke-width='1.4'%3E%3Cellipse cx='11' cy='5.5' rx='2.2' ry='4.6'/%3E%3Cellipse cx='11' cy='5.5' rx='2.2' ry='4.6' transform='rotate(72 11 11)'/%3E%3Cellipse cx='11' cy='5.5' rx='2.2' ry='4.6' transform='rotate(144 11 11)'/%3E%3Cellipse cx='11' cy='5.5' rx='2.2' ry='4.6' transform='rotate(216 11 11)'/%3E%3Cellipse cx='11' cy='5.5' rx='2.2' ry='4.6' transform='rotate(288 11 11)'/%3E%3C/g%3E%3Ccircle cx='11' cy='11' r='1.6' fill='rgb(10,4,8)' stroke='rgb(224,24,42)' stroke-width='1'/%3E%3C/svg%3E") center / 22px 22px no-repeat;
+}
+#theme-banner-text {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic; font-size: 12px; letter-spacing: 0.3px; color: #F0E8D0;
 }
 
-/* ── String lights flicker — the Upside Down signal ─────────────────────── */
-#grid-container::before { animation: st-lights 0.3s steps(1, end) infinite; }
-@keyframes st-lights {
-  0%   { opacity: 1; }
-  8%   { opacity: 0.6; }
-  9%   { opacity: 1; }
-  45%  { opacity: 1; }
-  46%  { opacity: 0.3; }
-  47%  { opacity: 1; }
-  82%  { opacity: 0.8; }
-  83%  { opacity: 1; }
+/* ── Tiles: red border on an Upside-Down blue fill on hover ─────────────────── */
+.app-tile { background: #140810; border-color: #2A0E16; }
+.app-tile::before { display: none; }
+.app-tile:hover,
+.app-tile:focus-visible {
+  background: var(--tile-hover-bg);
+  border-color: var(--tile-hover-border);
+  box-shadow: var(--tile-hover-shadow);
 }
+.tile-label { font-family: Georgia, 'Times New Roman', serif; }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'HAWKINS  //  THE UPSIDE DOWN  //  THE GATE IS OPEN';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(255, 70, 145, 0.65);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'UPSIDE\ADOWN\A\AHAWKINS\ALAB\A\AVECNA\AAWAKENS\A\ADEMO-\AGORGON\A\ATHE GATE\AOPENS';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Consolas', monospace;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(140, 0, 100, 0.12); white-space: pre;
-  animation: st-lore 10s ease-in-out infinite;
-}
-
-@keyframes st-lore {
-  0%, 100% { color: rgba(140, 0, 100, 0.12); }
-  28%       { color: rgba(140, 0, 100, 0.16); }
-  65%       { color: rgba(140, 0, 100, 0.09); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(140, 0, 100, 0.20); }
-  92%       { color: rgba(140, 0, 100, 0.12); }
-}
-
-#edit-bar::after {
-  content: 'ELEVEN — CLOSE THE GATE NOW';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(255, 0, 102, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Segoe UI', sans-serif; letter-spacing: 5px; }
-
-/* ── Title animation: upside-down ────────────────────────────────────────────── */
-@keyframes upside-down {
-  0%, 100%  { text-shadow: 0 0 8px rgba(255,0,102,.70), 0 0 24px rgba(255,0,102,.26); opacity: 1; }
-  50%       { text-shadow: 0 0 10px rgba(153,0,204,.65), 0 0 28px rgba(153,0,204,.24); opacity: 1; }
-  /* Upside Down inversion flicker */
-  75%       { text-shadow: 0 0 8px rgba(255,0,102,.70), 0 0 24px rgba(255,0,102,.26); opacity: 1; }
-  77%       { opacity: 0.35; text-shadow: 0 0 6px rgba(153,0,204,.50); }
-  78%       { opacity: 1; text-shadow: 0 0 14px rgba(255,0,102,.90), 0 0 38px rgba(255,0,102,.45); }
-  79%       { text-shadow: 2px 0 rgba(153,0,204,.7), -2px 0 rgba(255,0,102,.7); }
-  80%       { opacity: 1; text-shadow: 0 0 8px rgba(255,0,102,.70), 0 0 24px rgba(255,0,102,.26); }
-  91%       { text-shadow: 0 0 8px rgba(255,0,102,.70), 0 0 24px rgba(255,0,102,.26); opacity: 1; }
-  93%       { opacity: 0.55; text-shadow: none; }
-  94%       { opacity: 1; text-shadow: 0 0 10px rgba(255,0,102,.80), 0 0 28px rgba(255,0,102,.35); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(5, 0, 5, 0.98); border-top-color: rgba(180, 0, 100, 0.28); }
-#theme-banner::before { content: '▽'; color: #9900CC; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(235, 60, 165, 0.70); }
-
-/* ── The Gate opening — Upside Down bleeds through ──────────────────────── */
-#app { animation: st-gate-bleed 9s ease-in-out infinite; }
-@keyframes st-gate-bleed {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(200,0,80,.22), inset 0 0 18px rgba(200,0,80,.04); }
-  30%      { box-shadow: 0 0 0 1px rgba(255,0,102,.50), inset 0 0 26px rgba(255,0,102,.08); }
-  31%      { box-shadow: 0 0 0 1px rgba(153,0,204,.35), inset 0 0 20px rgba(153,0,204,.06); }
-  32%      { box-shadow: 0 0 0 1px rgba(255,0,102,.62), inset 0 0 32px rgba(255,0,102,.10); }
-  33%      { box-shadow: 0 0 0 1px rgba(200,0,80,.25),  inset 0 0 16px rgba(200,0,80,.04); }
-  70%      { box-shadow: 0 0 0 1px rgba(153,0,204,.45), inset 0 0 24px rgba(153,0,204,.07); }
-  71%      { box-shadow: 0 0 0 1px rgba(200,0,80,.20),  inset 0 0 14px rgba(200,0,80,.03); }
-  72%      { box-shadow: 0 0 0 1px rgba(153,0,204,.58), inset 0 0 30px rgba(153,0,204,.09); }
-}
-
-/* ── Upside Down spores — dark organic particles drifting upward ─────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='500'%3E%3Cellipse cx='30' cy='70' rx='2.5' ry='1.5' fill='%239900CC' fill-opacity='0.22' transform='rotate(-15,30,70)'/%3E%3Ccircle cx='100' cy='200' r='2' fill='%23FF0066' fill-opacity='0.18'/%3E%3Cellipse cx='160' cy='350' rx='3' ry='2' fill='%23660066' fill-opacity='0.16' transform='rotate(20,160,350)'/%3E%3Ccircle cx='70' cy='450' r='1.5' fill='%23FFAA00' fill-opacity='0.20'/%3E%3Ccircle cx='140' cy='130' r='1.5' fill='%239900CC' fill-opacity='0.20'/%3E%3Cellipse cx='50' cy='290' rx='2' ry='1.2' fill='%23CC0066' fill-opacity='0.18' transform='rotate(8,50,290)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='700'%3E%3Ccircle cx='50' cy='100' r='3' fill='%236600AA' fill-opacity='0.12'/%3E%3Cellipse cx='140' cy='320' rx='2.5' ry='1.8' fill='%23FF0066' fill-opacity='0.10' transform='rotate(-10,140,320)'/%3E%3Ccircle cx='230' cy='550' r='3.5' fill='%23880044' fill-opacity='0.09'/%3E%3Ccircle cx='90' cy='480' r='1.8' fill='%23FFAA00' fill-opacity='0.14'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 500px, 280px 700px;
-  animation: st-spores 12s linear infinite;
-}
-@keyframes st-spores {
-  from { background-position: 0 500px, 15px 700px; }
-  to   { background-position: 25px 0, -10px 0; }
-}
-
-/* ── Tile: Upside Down glitch on hover ───────────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: rgba(255,0,102,0.04);
-}
-.app-tile:hover::before { animation: tile-glitch .4s steps(1, end) forwards; }
+/* ── Red text fails on the blue fill: these roles stay cream or move off blue ─ */
+#filter-chip { background: #0A0408; }
+.theme-picker-item:hover,
+.theme-picker-item.active,
+.theme-picker-item.selected { color: #F0E8D0; }
+.tile-label.renameable:hover { color: #F0E8D0; }

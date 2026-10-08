@@ -27,13 +27,11 @@ const elSliderIconSize = $('slider-icon-size');
 const elIconSizeVal    = $('icon-size-val');
 const elUpdateText     = $('update-text');
 
-// ── Banner quotes (3 per theme) ───────────────────────────────────────────────
+// ── Banner quotes (2 to 6 per theme) ──────────────────────────────────────────
 const THEME_BANNERS = {
   'cyberpunk':    ['WAKE UP, SAMURAI. WE HAVE A CITY TO BURN.',
-                   'THE CORPO RATS EAT WELL TONIGHT.',
-                   'THERE IS NO WINNING. ONLY DEGREES OF LOSING.',
-                   'IN THE CHROME AND NEON DARK, EVERYONE IS FOR SALE.',
-                   'YOUR BODY IS AN UPGRADE WAITING TO HAPPEN.'],
+                   'NEVER FADE AWAY.',
+                   'FOR FOLKS LIKE US? WRONG CITY, WRONG PEOPLE.'],
   'blade-runner': ['ALL THOSE MOMENTS WILL BE LOST IN TIME, LIKE TEARS IN RAIN.',
                    'MORE HUMAN THAN HUMAN IS OUR MOTTO.',
                    "IT'S TOO BAD SHE WON'T LIVE. BUT THEN AGAIN, WHO DOES?",
@@ -89,51 +87,48 @@ const THEME_BANNERS = {
                    'YOU TAKE THE RED PILL AND I SHOW YOU HOW DEEP THE RABBIT HOLE GOES.',
                    'WELCOME TO THE DESERT OF THE REAL.',
                    'EVERY MACHINE NEEDS HUMAN BEINGS.'],
-  'warhammer':    ['THE EMPEROR PROTECTS.',
-                   'VICTORY NEEDS NO EXPLANATION. DEFEAT ALLOWS NONE.',
-                   'SUFFER NOT THE UNCLEAN TO LIVE.',
-                   'FOR THE EMPEROR AND TERRA! PURGE THE XENOS!',
-                   'ONLY IN DEATH DOES DUTY END.'],
-  'warhammer-chaos': [
-    'BLOOD FOR THE BLOOD GOD. SKULLS FOR THE SKULL THRONE.',
-    'LET THE GALAXY BURN.',
-    'THE WARP IS NOT A PLACE. IT IS A HUNGER.',
-    'CHAOS IS THE ONLY TRUE CONSTANT IN THIS UNIVERSE.',
-    'DEATH TO THE FALSE EMPEROR.',
+  'warhammer': [
+    'Only in death does duty end.',
+    'Blessed is the mind too small for doubt.',
+    'The Emperor protects.',
+    'Victory needs no explanation, defeat allows none.',
+    'No man died in His service that died in vain.',
   ],
-  'warhammer-orks': [
-    'WAAAGH! DA BOYZ IZ COMIN!',
-    'MORE DAKKA! NEVER ENUFF DAKKA!',
-    'GREEN IZ BEST. EVERYONE KNOWS DAT.',
-    'OI! WHO LET DA GROT TOUCH ME SHOOTA?',
-    'DA BIGGER DA BOSS, DA HARDER DA KRUMPIN.',
+  'warhammer-chaos': [
+    'Blood for the Blood God!',
+    'Skulls for the Skull Throne.',
+    'Sanity is for the weak!',
+    'For the Dark Gods!',
+    'Do you hear the voices, too?',
   ],
   'warhammer-eldar': [
-    'THE PATH IS LONG, AND WE WALK IT ALONE.',
-    'WE ARE THE AELDARI. WE WERE OLD WHEN YOUR SPECIES WAS BORN.',
-    'SHE WHO THIRSTS WAITS FOR EVERY SOUL THAT FALLS.',
-    'THE INFINITY CIRCUIT REMEMBERS ALL WHO HAVE WALKED THE PATH.',
-    'EVEN IN DEATH, THE SPIRIT STONE PRESERVES.',
+    'The future is clouded and uncertain.',
+    'All who love life, fear the reaper.',
+    'I am Khaine incarnate.',
+    'We cannot fail.',
   ],
   'warhammer-necrons': [
-    'WE WERE HERE BEFORE YOUR KIND DREW BREATH. WE WILL BE HERE AFTER.',
-    'THE TOMB WORLD AWAKENS. THE DYNASTY RECLAIMS WHAT WAS OURS.',
-    'SIXTY MILLION YEARS OF SILENCE. NOW THE SILENCE ENDS.',
-    'THERE IS NO DEATH FOR THE NECRONTYR. ONLY METAL.',
-    'THE LIVING WILL LEARN TO FEAR THE ETERNAL.',
+    'We are your end, alien.',
+    'So much fear. So much noise.',
+    'Death has come for you at last.',
+    'Your bravado will not save you.',
+    'Your end is inevitable.',
+  ],
+  'warhammer-orks': [
+    'WAAAGH!',
+    'Orks is made for fightin!',
+    "I'm da biggest, so I'm da boss!",
+    'Dakka dakka dakka!',
+    "Ev'ryone knowz red wunz go fasta!",
   ],
   'warhammer-tyranids': [
-    'THE SWARM HUNGERS. NOTHING WILL REMAIN.',
-    'THE SHADOW IN THE WARP SILENCES ALL PRAYERS.',
-    'THEY CONSUME WORLDS LIKE WE CONSUME AIR.',
-    'THE HIVE MIND SEES ALL. THE HIVE MIND KNOWS.',
-    'EVERY WORLD DEVOURED MAKES THE SWARM STRONGER.',
+    'There is a cancer eating at the Imperium.',
+    '...it must know us only as Prey.',
   ],
   'dead-space':   ['MAKE US WHOLE.',
-                   'THE MARKER IS THE PATH TO SALVATION.',
-                   'THERE IS NO ESCAPE FROM WHAT WE HAVE DONE.',
-                   'CONVERGENCE IS COMING.',
-                   'THEY ARE NOT DEAD. NOT TRULY.'],
+                   'CUT OFF THEIR LIMBS!',
+                   'ALTMAN BE PRAISED.',
+                   'YOUR LACK OF CONFIDENCE IN ME IS DULY NOTED.'],
   'half-life':    ['THE RIGHT MAN IN THE WRONG PLACE CAN MAKE ALL THE DIFFERENCE.',
                    'PREPARE FOR UNFORESEEN CONSEQUENCES.',
                    'RISE AND SHINE, MR. FREEMAN.',
@@ -150,46 +145,34 @@ const THEME_BANNERS = {
                    'STILL ALIVE.',
                    'APERTURE SCIENCE. WE DO WHAT WE MUST BECAUSE WE CAN.'],
   'star-wars-rebel': [
-    'MANY BOTHANS DIED TO BRING US THIS INFORMATION.',
-    'REBELLIONS ARE BUILT ON HOPE.',
-    'MAY THE FORCE BE WITH YOU.',
-    'NEVER TELL ME THE ODDS.',
-    'STRIKE ME DOWN AND I WILL BECOME MORE POWERFUL THAN YOU CAN POSSIBLY IMAGINE.',
+    'Rebellions are built on hope.',
+    'Never tell me the odds!',
+    "You're my only hope.",
   ],
   'star-wars-empire': [
-    'FEAR WILL KEEP THE LOCAL SYSTEMS IN LINE.',
-    'THE ABILITY TO DESTROY A PLANET IS INSIGNIFICANT NEXT TO THE POWER OF THE FORCE.',
-    'I FIND YOUR LACK OF FAITH DISTURBING.',
-    'APOLOGY ACCEPTED, CAPTAIN NEEDA.',
-    'THE EMPEROR IS NOT AS FORGIVING AS I AM.',
+    'I find your lack of faith disturbing.',
+    'Apology accepted, Captain Needa.',
+    'Fear will keep the local systems in line.',
   ],
   'star-wars-mando': [
-    'THIS IS THE WAY.',
-    'WEAPONS ARE MY RELIGION.',
-    'I AM A MANDALORIAN. WEAPONS ARE PART OF MY RELIGION.',
-    'WHEREVER I GO, HE GOES.',
-    'BOUNTY HUNTING IS A COMPLICATED PROFESSION.',
+    'This is the Way.',
+    'I have spoken.',
+    'I like those odds.',
   ],
   'star-wars-separatist': [
-    'ROGER ROGER.',
-    'THE TRADE FEDERATION WILL NOT SIT STILL.',
-    'YOUR JEDI MIND TRICKS DO NOT WORK ON ME.',
-    'I HAVE BEEN TRAINED IN YOUR JEDI ARTS BY COUNT DOOKU.',
-    'ARMIES ARE MARCHING. THE REPUBLIC WILL FALL.',
+    'Roger, roger.',
+    'General Kenobi! You are a bold one.',
+    "I've been looking forward to this.",
   ],
   'star-wars-sith': [
-    'PEACE IS A LIE. THERE IS ONLY PASSION.',
-    'THE DARK SIDE OF THE FORCE IS A PATHWAY TO MANY ABILITIES SOME CONSIDER UNNATURAL.',
-    'GOOD. I CAN FEEL YOUR ANGER.',
-    'EXECUTE ORDER 66.',
-    'UNLIMITED POWER.',
+    'Good! Your hate has made you powerful.',
+    'Unlimited power!',
+    'Execute Order 66.',
   ],
   'star-wars-republic': [
-    'THERE IS NO EMOTION, THERE IS PEACE. THERE IS NO IGNORANCE, THERE IS KNOWLEDGE.',
-    'ONCE YOU START DOWN THE DARK PATH, FOREVER WILL IT DOMINATE YOUR DESTINY.',
-    'DO OR DO NOT. THERE IS NO TRY.',
-    'THE FORCE IS STRONG IN THIS ONE.',
-    'PASS ON WHAT YOU HAVE LEARNED. STRENGTH, MASTERY. BUT WEAKNESS, FOLLY, FAILURE ALSO.',
+    'Hello there.',
+    'This is where the fun begins.',
+    'I have the high ground.',
   ],
   'doctor-who': [
     'WIBBLY WOBBLY, TIMEY WIMEY.',
@@ -199,11 +182,11 @@ const THEME_BANNERS = {
     'YOU WANT WEAPONS? WE ARE IN A LIBRARY. BOOKS. THE BEST WEAPONS IN THE WORLD.',
   ],
   'akira': [
-    'TETSUO!',
-    'NEO-TOKYO IS ABOUT TO EXPLODE.',
-    'WHAT POWER! THIS IS THE POWER OF A GOD!',
-    'IT HAS BEGUN. THE FUTURE.',
+    'NEO-TOKYO IS ABOUT TO E.X.P.L.O.D.E.',
+    "THAT'S MISTER KANEDA TO YOU, PUNK!",
+    'I AM TETSUO.',
     'KANEDA!',
+    'TETSUO!',
   ],
   'evangelion': [
     'MANKIND STANDS UPON THE THRESHOLD OF AN EVOLUTIONARY LEAP.',
@@ -213,11 +196,11 @@ const THEME_BANNERS = {
     'HUMAN INSTRUMENTALITY PROJECT — INITIATED.',
   ],
   '2001': [
-    "I'M SORRY, DAVE. I'M AFRAID I CAN'T DO THAT.",
-    'OPEN THE POD BAY DOORS, HAL.',
-    'DAISY, DAISY, GIVE ME YOUR ANSWER DO...',
-    'THE 9000 SERIES IS THE MOST RELIABLE COMPUTER EVER MADE.',
-    'THIS MISSION IS TOO IMPORTANT FOR ME TO ALLOW YOU TO JEOPARDIZE IT.',
+    "I'm sorry, Dave. I'm afraid I can't do that.",
+    'Open the pod bay doors, HAL.',
+    'Daisy, Daisy, give me your answer do.',
+    'The 9000 series is the most reliable computer ever made.',
+    "Just what do you think you're doing, Dave?",
   ],
   'silent-hill': [
     'THERE WAS A HOLE HERE. IT IS GONE NOW.',
@@ -262,11 +245,10 @@ const THEME_BANNERS = {
     'FLOO NETWORK DISRUPTED. PLEASE USE ALTERNATIVE MAGICAL TRANSPORT.',
   ],
   'gryffindor': [
-    'IT TAKES A GREAT DEAL OF BRAVERY TO STAND UP TO YOUR ENEMIES.',
-    'IT TAKES EVEN MORE TO STAND UP TO YOUR FRIENDS.',
-    'COURAGE IS NOT THE ABSENCE OF FEAR. IT IS ACTING IN SPITE OF IT.',
-    'WE FACE WHAT COMES. THAT IS WHAT WE DO.',
-    "DUMBLEDORE'S ARMY. STILL RECRUITING.",
+    'Where dwell the brave at heart.',
+    'Their daring, nerve, and chivalry set Gryffindors apart.',
+    'Mischief managed.',
+    'I solemnly swear that I am up to no good.',
   ],
   'ravenclaw': [
     'WIT BEYOND MEASURE IS MAN\'S GREATEST TREASURE.',
@@ -297,11 +279,11 @@ const THEME_BANNERS = {
     'HE THAT BREAKS A THING TO FIND OUT WHAT IT IS HAS LEFT THE PATH OF WISDOM.',
   ],
   'shire': [
-    'IN A HOLE IN THE GROUND THERE LIVED A HOBBIT.',
-    'I AM IN FACT A HOBBIT IN ALL BUT SIZE.',
-    'ADVENTURES MAKE ONE LATE FOR DINNER.',
-    'WHAT A PITY. I SHOULD HAVE LIKED SECOND BREAKFAST.',
-    'HOME IS BEHIND. THE WORLD IS AHEAD.',
+    'In a hole in the ground there lived a hobbit.',
+    'What about second breakfast?',
+    'Home is behind, the world ahead.',
+    'The road goes ever on and on.',
+    'Not all those who wander are lost.',
   ],
   'mordor': [
     'ONE DOES NOT SIMPLY WALK INTO MORDOR.',
@@ -353,11 +335,12 @@ const THEME_BANNERS = {
     'WHEN THE FIRST LIVING THING EXISTED, I WAS THERE. WHEN THE LAST LIVING THING DIES, MY JOB WILL BE FINISHED.',
   ],
   'persona-5': [
-    'YOU ARE SLAVE. WANT EMANCIPATION?',
-    'THE SHOW\'S NOT OVER YET.',
-    'I AM THOU, THOU ART I.',
+    'STEAL BACK YOUR FUTURE.',
     'TAKE YOUR HEART.',
-    'NO MORE HOLDING BACK.',
+    'YOU ARE A SLAVE. WANT EMANCIPATION?',
+    'LET US START THE GAME.',
+    'YOUR REHABILITATION WILL SOON BEGIN.',
+    'NO MORE HOLDING BACK!',
   ],
   'the-witcher': [
     'TOSS A COIN TO YOUR WITCHER.',
@@ -381,11 +364,9 @@ const THEME_BANNERS = {
     'WE ARE ALL COPIES OF COPIES OF COPIES. WHICH ONE IS REAL?',
   ],
   'stranger-things': [
-    'MORNINGS ARE FOR COFFEE AND CONTEMPLATION.',
-    'FRIENDS DON\'T LIE.',
-    'MOUTH BREATHER.',
-    'WILL THE REAL WILL BYERS PLEASE STAND UP?',
-    'THE UPSIDE DOWN IS A DARK REFLECTION OF OUR WORLD.',
+    'Mornings are for coffee and contemplation.',
+    "Friends don't lie.",
+    'Mouth breather.',
   ],
   'fatal-frame': [
     'THE CAMERA OBSCURA CAN CAPTURE SPIRITS THE NAKED EYE CANNOT SEE.',
@@ -410,16 +391,12 @@ const THEME_BANNERS = {
   ],
   'persona-4': [
     'REACH OUT TO THE TRUTH.',
-    'MIDNIGHT CHANNEL SIGNAL STABLE.',
-    'FOG ADVISORY IN EFFECT.',
-    'THE TV WORLD AWAITS.',
-    'EVERY DAY\'S GREAT AT YOUR JUNES!',
+    "EVERY DAY'S GREAT AT YOUR JUNES!",
+    'I AM THOU, THOU ART I.',
   ],
   'persona-3': [
-    'MEMENTO MORI.',
-    'THE CLOCK STRIKES MIDNIGHT.',
-    'DARK HOUR STABILITY CONFIRMED.',
-    'THE MOMENT MAN DEVOURED THE FRUIT OF KNOWLEDGE, HE SEALED HIS FATE.',
+    'THE ARCANA IS THE MEANS BY WHICH ALL IS REVEALED.',
+    'DEATH IS NOT A HUNTER UNBEKNOWNST TO ITS PREY.',
     'BURN MY DREAD.',
   ],
   'eve-online': [
@@ -444,18 +421,18 @@ const THEME_BANNERS = {
     'A LANNISTER ALWAYS PAYS HIS DEBTS.',
   ],
   'doom-classic': [
-    'RIP AND TEAR, UNTIL IT IS DONE.',
     'KNEE-DEEP IN THE DEAD.',
-    'E1M1. THE HANGAR. HURT ME PLENTY.',
-    'THEY ARE RAGE. BRUTAL. WITHOUT MERCY.',
-    'IDDQD. IDKFA. YOU KNOW THE CODES.',
+    'THE ONLY WAY OUT IS THROUGH.',
+    'THE SHORES OF HELL.',
+    "THERE'S NO TURNING BACK NOW.",
+    'HOME AT LAST.',
+    'THY FLESH CONSUMED.',
   ],
   'doom-eternal': [
-    'THE ONLY THING THEY FEAR IS YOU.',
-    'RIP AND TEAR. UNTIL IT IS DONE.',
-    'IN THE FIRST AGE, IN THE FIRST BATTLE.',
-    'AGAINST ALL THE EVIL THAT HELL CAN CONJURE.',
-    'THE DOOM SLAYER DOES NOT SPEAK. HE ACTS.',
+    'THE ONLY THING THEY FEAR... IS YOU.',
+    'RIP AND TEAR, UNTIL IT IS DONE.',
+    'WARNING: THE SLAYER HAS ENTERED THE FACILITY.',
+    'WELCOME HOME, GREAT SLAYER.',
   ],
   'tiny-bunny': [
     'НЕ ХОДИ ТУДА. ЛЕС НЕ ОТПУСТИТ.',
@@ -465,11 +442,9 @@ const THEME_BANNERS = {
     'ТЁМНЫЙ ЛЕС. ЗИМА. ТИШИНА.',
   ],
   'promise-mascot': [
-    'YOUR FRIEND FOREVER. WE PROMISE.',
-    'SMILE. THE MASCOTS ARE WATCHING.',
-    'EMPLOYEE OF THE MONTH. EVERY MONTH. ALWAYS.',
-    'THE AGENCY CARES ABOUT YOU. DEEPLY.',
-    'WHY AREN\'T YOU SMILING?',
+    'ANOTHER DAY, ANOTHER ERRAND.',
+    'THE TOWN CAN WAIT A MINUTE.',
+    'PICK A TILE. KEEP GOING.',
   ],
   'mortal-kombat': [
     'FINISH HIM!',
@@ -479,11 +454,9 @@ const THEME_BANNERS = {
     'FATALITY.',
   ],
   'nonary-games': [
-    'SEEK A WAY OUT.',
-    'NINE HOURS. NINE PERSONS. NINE DOORS.',
-    'THE DIGITAL ROOT IS THE KEY.',
-    'ZERO ESCAPE. THE NONARY GAME BEGINS.',
-    'TRUST NO ONE. SUSPECT EVERYONE.',
+    'NINE HOURS, NINE PERSONS, NINE DOORS.',
+    'WHERE THERE IS SHADOW, THERE IS LIGHT.',
+    "I AM RIGHT HERE... I'VE ALWAYS BEEN CLOSE TO YOU.",
   ],
   'life-is-strange': [
     'THIS ACTION WILL HAVE CONSEQUENCES.',
@@ -500,11 +473,10 @@ const THEME_BANNERS = {
     'THE DREAD WOLF RISES.',
   ],
   'yakuza': [
-    'KIRYU-CHAN!',
-    'THAT\'S RAD!',
-    'A DRAGON NEVER YIELDS.',
-    'MAJIMA EVERYWHERE.',
-    'KAMUROCHO NEVER SLEEPS.',
+    'YO... KIRYU-CHAN!',
+    'THE DRAGON OF DOJIMA.',
+    'THE MAD DOG OF SHIMANO.',
+    "BAKA MITAI (I'VE BEEN A FOOL).",
   ],
   'mirrors-edge': [
     'FAITH. THE CITY NEEDS RUNNERS.',
@@ -535,46 +507,37 @@ const THEME_BANNERS = {
     'NICO, I THINK WE\'RE IN TROUBLE. AGAIN.',
   ],
   'swl-illuminati': [
-    'SEX, DRUGS, AND ROCKEFELLER. WELCOME TO THE ILLUMINATI.',
-    'WE OWN EVERYTHING. EVERYTHING.',
-    'THE EYE SEES ALL. THE LABYRINTH KNOWS ALL.',
-    'KIRSTEN GEARY SENDS HER REGARDS.',
-    'CONSPIRACY IS JUST ANOTHER WORD FOR BUSINESS PLAN.',
+    "We're the Illuminati... and we're not done.",
+    'Power is our currency, our DNA, our God.',
+    'We control the world.',
   ],
   'swl-templar': [
-    'TRADITION. DISCIPLINE. SACRIFICE.',
-    'MAY THE LIGHT OF THE TEMPLARS GUIDE YOUR PATH.',
-    'WE ARE THE SWORD AND THE SHIELD. WE HAVE ALWAYS BEEN.',
-    'TEMPLE HALL STANDS. THE ORDER ENDURES.',
-    'RICHARD SONNAC EXPECTS YOUR FULL COMMITMENT.',
+    'The world will founder without structure and discipline.',
+    'Our conflict must be a righteous one.',
+    'Laws. Tradition. Blood.',
   ],
   'swl-dragon': [
-    'A SINGLE PEBBLE CAN START AN AVALANCHE.',
-    'THE BUTTERFLY EFFECT. CHAOS IS A TOOL.',
-    'WE DO NOT FIGHT. WE ARRANGE THE BATTLEFIELD.',
-    'BONG CHA WATCHES. THE DRAGON COILS.',
-    'EVERY ACTION HAS A CONSEQUENCE. WE CHOOSE THE CONSEQUENCES.',
+    "It's a thousand coins flung into the air.",
+    'We are the hand that makes the toss.',
+    'We are the trajectory.',
+    'We are the violence in the wind.',
+    'What is chaos in theory?',
   ],
   'ac-assassins': [
-    'NOTHING IS TRUE. EVERYTHING IS PERMITTED.',
-    'WE WORK IN THE DARK TO SERVE THE LIGHT. WE ARE ASSASSINS.',
-    'REQUIESCAT IN PACE.',
-    'WHERE OTHER MEN BLINDLY FOLLOW THE TRUTH, REMEMBER: NOTHING IS TRUE.',
-    'THE LEAP OF FAITH. THE EAGLE WATCHES.',
+    'Nothing is true, everything is permitted.',
+    'We work in the dark, to serve the light.',
+    'Requiescat in pace.',
+    'Hide in plain sight.',
   ],
   'ac-templars': [
-    'MAY THE FATHER OF UNDERSTANDING GUIDE US.',
-    'ORDER. PURPOSE. DIRECTION. THE TEMPLAR WAY.',
-    'THE WORLD IS AN ILLUSION. WE PROVIDE THE TRUTH.',
-    'HUMANITY LEFT TO ITS OWN DEVICES WILL ONLY DESTROY ITSELF.',
-    'THE ORDER ENDURES. THE ORDER PREVAILS.',
+    'May the Father of Understanding guide us all.',
+    'Order. Purpose. Direction. No more than that.',
+    "It's an invitation to chaos.",
   ],
   'siren': [
-    'THE SIREN CALLS. DO NOT FOLLOW THE SOUND.',
-    'SIGHTJACK ACTIVE. YOU CAN SEE THROUGH THEIR EYES.',
-    'THE SHIBITO WALK. THEY WERE HUMAN ONCE.',
-    'HANUDA VILLAGE. THERE IS NO ESCAPE.',
-    'THE RED WATER RISES. THE DEAD DO NOT REST.',
+    'Search the Yoshimura house and well.',
+    'Hanuda Village.',
+    'Sightjack.',
   ],
   'blair-witch': [
     'I AM SO SCARED.',
@@ -612,11 +575,9 @@ const THEME_BANNERS = {
     'METAL GEAR?! IT CAN\'T BE!',
   ],
   'parasite-eve': [
-    'THE MITOCHONDRIA. THEY ARE NOT WHAT YOU THINK.',
-    'EVOLUTION HAS ITS OWN AGENDA.',
-    'THE CELLS REMEMBER. THEY HAVE ALWAYS REMEMBERED.',
-    'SHE IS NOT HUMAN ANYMORE. SHE IS SOMETHING MORE.',
-    'CARNEGIE HALL. OPENING NIGHT. THE LAST NIGHT.',
+    "I don't care if I die. I just want to get through this show.",
+    "I'll even sell my soul to the Devil if I have to.",
+    'Carnegie Hall. December 24th, 1997.',
   ],
   'wow-horde': [
     'LOK TAR OGAR! VICTORY OR DEATH!',
@@ -653,54 +614,37 @@ const THEME_BANNERS = {
     'WE WILL NOT LET DARKNESS CONSUME THIS WORLD.',
     'LOK TAR-- WAIT. FOR THE ALLIANCE!',
   ],
-  'ff6': [
-    'NOTHING CAN KILL THE MUSIC. NOTHING.',
-    'LIFE... DREAMS... HOPE... WHERE DO THEY COME FROM? WHERE DO THEY GO?',
-    'THE ESPERS ARE NOT WEAPONS. THEY ARE LIVING BEINGS.',
-    'I WILL FIND MY OWN REASON TO FIGHT.',
-    'SON OF A SUBMARINER!',
-  ],
-  'ff8': [
-    'WHATEVER.',
-    'I DREAMT I WAS A MORON.',
-    'RIGHT AND WRONG ARE NOT WHAT SEPARATE US. JUST DIFFERENT STANDPOINTS.',
-    'SEED. BALAMB GARDEN. REPORTING FOR DUTY.',
-    'EVEN IF THE WORLD BECOMES YOUR ENEMY, I WILL PROTECT YOU.',
-  ],
-  'ff9': [
-    'YOU DON\'T NEED A REASON TO HELP PEOPLE.',
-    'I WILL FIND MY PURPOSE IN LIFE. SOMEDAY.',
-    'HOW DO YOU PROVE THAT YOU EXIST? MAYBE WE DON\'T EXIST.',
-    'THE CRYSTAL TELLS ALL.',
-    'TO BE FORGOTTEN IS WORSE THAN DEATH.',
-  ],
   'ff10': [
-    'THIS IS MY STORY.',
-    'NOW! THIS IS IT! NOW IS THE TIME TO CHOOSE!',
-    'STAY AWAY FROM THE SUMMONER!',
-    'SIN IS OUR PUNISHMENT FOR OUR VANITY.',
-    'I KNOW IT SOUNDS SELFISH. BUT THIS IS MY STORY.',
+    'Listen to my story.',
+    'This is my story.',
   ],
   'ff14': [
-    'HEAR. FEEL. THINK.',
-    'A SMILE BETTER SUITS A HERO.',
-    'PRAY RETURN TO THE WAKING SANDS.',
-    'SUCH DEVASTATION. THIS WAS NOT MY INTENTION.',
-    'THE LIGHT SHALL NOT EXPIRE.',
+    'Hear. Feel. Think.',
+    'A smile better suits a hero.',
   ],
   'ff15': [
-    'A KING PUSHES ONWARD ALWAYS, ACCEPTING THE CONSEQUENCES.',
-    'WALK TALL, MY SON.',
-    'THAT\'S IT! I\'VE COME UP WITH A NEW RECIPE!',
-    'THE LINE BETWEEN LIGHT AND DARKNESS IS PAPER THIN.',
-    'KINGS OF LUCIS. COME TO ME.',
+    "I've come up with a new recipe!",
+    'A king pushes onward always.',
+  ],
+  'ff6': [
+    'I prefer the term treasure hunting!',
+    'My life is a chip in your pile.',
+    "I'm a god! I'm all-powerful!",
   ],
   'ff7': [
-    'LET\'S MOSEY.',
-    'THERE AIN\'T NO GETTING OFF THIS TRAIN WE\'RE ON.',
-    'I WILL NEVER BE A MEMORY.',
-    'THE PLANET IS DYING. SLOWLY BUT SURELY IT IS DYING.',
-    'SOLDIER 1ST CLASS. CLOUD STRIFE.',
+    'Not interested.',
+    "Let's mosey.",
+    "There ain't no gettin' offa this train we're on.",
+  ],
+  'ff8': [
+    '...Whatever.',
+    'Booyaka!',
+    'Everything will be fine now...',
+  ],
+  'ff9': [
+    "You don't need a reason to help people.",
+    'To be forgotten is worse than death.',
+    'How do you prove that you exist...?',
   ],
 };
 
@@ -752,7 +696,7 @@ const THEME_NAMES = {
   'star-wars-mando':     'STAR WARS: MANDALORIAN',
   'star-wars-separatist': 'STAR WARS: SEPARATISTS',
   'star-wars-sith':      'STAR WARS: SITH',
-  'star-wars-republic':  'STAR WARS: OLD REPUBLIC',
+  'star-wars-republic':  'STAR WARS: GALACTIC REPUBLIC',
   'doctor-who':          'DOCTOR WHO',
   'akira':               'AKIRA',
   'evangelion':          'EVANGELION',
@@ -814,8 +758,138 @@ const THEME_NAMES = {
   'parasite-eve':        'PARASITE EVE',
   'ff7':                 'FINAL FANTASY VII',
 };
+
+// Extra phrases the skin search matches, on top of each theme's label and key.
+// Add one only for a franchise or common name not in the label, a short form
+// people really type, a numeral or spelling variant, or a former name; never
+// trivia, three or four phrases at most. The key stays the saved value.
+const THEME_ALIASES = {
+  'lcars':                ['star trek'],
+  'pip-boy':              ['fallout'],
+  'ghost-shell':          ['gits'],
+  'warhammer':            ['wh40k', 'w40k'],
+  'warhammer-chaos':      ['wh40k', 'w40k'],
+  'warhammer-orks':       ['wh40k', 'w40k', 'orcs'],
+  'warhammer-eldar':      ['wh40k', 'w40k'],
+  'warhammer-necrons':    ['wh40k', 'w40k'],
+  'warhammer-tyranids':   ['wh40k', 'w40k'],
+  'ff6':                  ['ffvi', 'final fantasy 6'],
+  'ff7':                  ['ffvii', 'final fantasy 7'],
+  'ff8':                  ['ffviii', 'final fantasy 8'],
+  'ff9':                  ['ffix', 'final fantasy 9'],
+  'ff10':                 ['ffx', 'final fantasy 10'],
+  'ff14':                 ['ffxiv', 'final fantasy 14'],
+  'ff15':                 ['ffxv', 'final fantasy 15'],
+  'wow-horde':            ['world of warcraft'],
+  'wow-scourge':          ['world of warcraft'],
+  'wow-legion':           ['world of warcraft'],
+  'wow-alliance':         ['world of warcraft'],
+  'wow-nightelf':         ['world of warcraft', 'night elf'],
+  'half-life':            ['hl'],
+  'star-wars-rebel':      ['rebels'],
+  'star-wars-empire':     ['imperial'],
+  'star-wars-separatist': ['cis'],
+  'star-wars-republic':   ['old republic'],
+  'doctor-who':           ['dr who'],
+  'evangelion':           ['neon genesis'],
+  'resident-evil':        ['biohazard'],
+  'hogwarts':             ['harry potter', 'hp', 'hogwarts'],
+  'ministry-of-magic':    ['harry potter', 'hp', 'hogwarts'],
+  'gryffindor':           ['harry potter', 'hp', 'hogwarts'],
+  'ravenclaw':            ['harry potter', 'hp', 'hogwarts'],
+  'hufflepuff':           ['harry potter', 'hp', 'hogwarts'],
+  'slytherin':            ['harry potter', 'hp', 'hogwarts'],
+  'rivendell':            ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
+  'shire':                ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
+  'mordor':               ['lord of the rings', 'lotr', 'tolkien', 'middle earth'],
+  'lovecraft':            ['cthulhu'],
+  'persona-3':            ['p3'],
+  'persona-4':            ['p4'],
+  'persona-5':            ['p5'],
+  'fatal-frame':          ['project zero'],
+  'game-of-thrones':      ['got'],
+  'promise-mascot':       ['pma'],
+  'mortal-kombat':        ['mk'],
+  'life-is-strange':      ['lis'],
+  'tomb-raider':          ['lara croft'],
+  'swl-illuminati':       ['secret world legends', 'tsw'],
+  'swl-templar':          ['secret world legends', 'tsw'],
+  'swl-dragon':           ['secret world legends', 'tsw'],
+  'ac-assassins':         ['assassins creed'],
+  'ac-templars':          ['assassins creed'],
+  'metal-gear':           ['mgs'],
+};
+
 const ALL_THEMES = Object.keys(THEME_BANNERS)
   .sort((a, b) => (THEME_NAMES[a] || a).localeCompare(THEME_NAMES[b] || b));
+
+// ── Skin search matching ─────────────────────────────────────────────────────
+// Every typed word must start a word of the theme's label, key or aliases
+// (tier 0); a word found anywhere inside them still matches, listed after
+// (tier 1), so nothing that matched the old substring search stops matching.
+
+// Lowercase; drop ' ’ and . (MIRROR'S -> mirrors, S.T.A.L.K.E.R. -> stalker);
+// every other run of non-letters/non-digits, any script, becomes one space.
+function normSearchText(s) {
+  return String(s).toLowerCase()
+    .replace(/['’.]/g, '')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim();
+}
+
+// A field's words, and all of them joined when it has more than one
+// (PIP-BOY also gives "pipboy", HALF-LIFE "halflife"). The joined word may
+// only START a match (tier 0): inside a word it spans a word boundary and
+// lists junk (picker behaviour spec 2026-10-02, section 6.2).
+function searchWords(s) {
+  const n = normSearchText(s);
+  if (!n) return { words: [], joined: [] };
+  const words = n.split(' ');
+  return { words, joined: words.length > 1 ? [words.join('')] : [] };
+}
+
+// Query words; "the" is dropped unless it is all there is.
+function searchTokens(query) {
+  const tokens = normSearchText(query).split(' ').filter(Boolean);
+  const meaningful = tokens.filter(t => t !== 'the');
+  return meaningful.length ? meaningful : tokens;
+}
+
+// Built once: each theme's searchable words (label as the row shows it, key, aliases).
+// words  = the real words (tier 1 looks inside these only)
+// starts = the real words plus each field's joined word (tier 0 prefixes)
+const THEME_SEARCH_WORDS = new Map(ALL_THEMES.map(key => {
+  const parts = [
+    searchWords(THEME_NAMES[key] || key.toUpperCase()),
+    searchWords(key),
+    ...(THEME_ALIASES[key] || []).map(searchWords),
+  ];
+  const words = parts.flatMap(p => p.words);
+  return [key, { words, starts: words.concat(parts.flatMap(p => p.joined)) }];
+}));
+
+// 0 = every token starts a word (joined words count), 1 = every token is inside
+// a real word, -1 = no match.
+function themeSearchTier(key, tokens) {
+  const { words = [], starts = [] } = THEME_SEARCH_WORDS.get(key) || {};
+  if (tokens.every(t => starts.some(w => w.startsWith(t)))) return 0;
+  if (tokens.every(t => words.some(w => w.includes(t)))) return 1;
+  return -1;
+}
+
+// The picker's matcher: theme keys in display order, tier 0 before tier 1.
+// An empty (or punctuation-only) query lists every theme.
+function matchThemes(query) {
+  const tokens = searchTokens(query || '');
+  if (!tokens.length) return ALL_THEMES.slice();
+  const starts = [], inside = [];
+  for (const key of ALL_THEMES) {
+    const tier = themeSearchTier(key, tokens);
+    if (tier === 0) starts.push(key);
+    else if (tier === 1) inside.push(key);
+  }
+  return starts.concat(inside);
+}
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 async function init() {
@@ -841,6 +915,10 @@ async function init() {
     }
   } catch (e) {
     console.warn('[themes] get-valid-themes failed, using THEME_BANNERS keys:', e);
+  }
+  const orphanAliases = Object.keys(THEME_ALIASES).filter(t => !VALID_THEMES.has(t));
+  if (orphanAliases.length) {
+    console.warn('[themes] THEME_ALIASES keys with no matching theme:', orphanAliases);
   }
 
   applySettings();
@@ -1010,7 +1088,8 @@ function startRename(appItem, labelEl) {
   input.addEventListener('blur', commit);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-    if (e.key === 'Escape') { cancelled = true; input.replaceWith(labelEl); }
+    // Esc cancels the rename and is consumed: edit mode stays (one Esc, one layer).
+    if (e.key === 'Escape') { cancelled = true; input.replaceWith(labelEl); e.preventDefault(); e.stopPropagation(); }
   });
 }
 
@@ -1055,6 +1134,10 @@ async function saveApps() {
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────────
+// Set by the skin picker (declared further down): brings an open list's marks up to
+// date with the skin applySettings() just applied. Picker spec Part C, C.3.
+let onSkinApplied = null;
+
 function applySettings() {
   const size = settings.iconSize || 64;
   document.documentElement.style.setProperty('--icon-size', size + 'px');
@@ -1078,9 +1161,10 @@ function applySettings() {
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
   $('theme-stylesheet').href = `styles/themes/${theme}.css`;
-  elThemeSearch.value = '';
+  // The SKIN field is not written here: the picker owns its text (a pick empties it).
   startBannerCycle(theme);
   if (window.qlRadialRefresh) window.qlRadialRefresh();
+  if (onSkinApplied) onSkinApplied();
 }
 
 // Apply reduced-motion: union of user setting and OS prefers-reduced-motion.
@@ -1098,6 +1182,59 @@ window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',
 
 let bannerQuotes = null;
 let bannerIdx = 0;
+let bannerGen = 0;   // bumped per theme start; a stale async first pick checks it and gives up
+
+// ── Banner fit check (theme spec, foundation A3) ─────────────────────────────
+// The banner is one line. A quote wider than the box is skipped: the rotation
+// shows the first quote, cyclically from the natural next one, that fits
+// (scrollWidth <= clientWidth). If none fits it shows the natural next one, so
+// the ellipsis stays as the last resort and the rotation never stops or blanks.
+// Measuring sets the text; every caller either measures while the text is
+// invisible (the fade-out) or restores the shown quote in the same task, so
+// no frame ever paints a candidate.
+function bannerQuoteFits(textEl, quote) {
+  textEl.textContent = quote;
+  return textEl.scrollWidth <= textEl.clientWidth;
+}
+
+// Index of the first fitting quote from `start`; leaves that quote in textEl.
+function pickFittingQuote(textEl, quotes, start) {
+  for (let k = 0; k < quotes.length; k++) {
+    const i = (start + k) % quotes.length;
+    if (bannerQuoteFits(textEl, quotes[i])) return i;
+  }
+  textEl.textContent = quotes[start];
+  return start;
+}
+
+// Resolves once the theme's stylesheet is applied and the banner's fonts are
+// loaded, so the first pick measures the theme's own type (bundled fonts use
+// font-display: block and lay out with fallback metrics until they arrive).
+// Every wait is bounded (2 s for the sheet, 3 s for the fonts), so the pick always happens.
+function whenBannerReady(theme, textEl) {
+  const link = $('theme-stylesheet');
+  const want = `/styles/themes/${theme}.css`;
+  const applied = () => {
+    try { return !!(link.sheet && link.sheet.href && link.sheet.href.endsWith(want) && link.sheet.cssRules); }
+    catch { return false; }
+  };
+  const bounded = (p, ms) => Promise.race([p, new Promise((r) => setTimeout(r, ms))]);
+  // Polled, not the link's load event: Chromium does not fire it reliably when an
+  // existing stylesheet link's href changes (seen in the gallery: the theme was
+  // applied and no load event came).
+  const sheet = new Promise((resolve) => {
+    const t0 = performance.now();
+    const poll = () => (applied() || performance.now() - t0 > 2000 ? resolve() : setTimeout(poll, 16));
+    poll();
+  });
+  return sheet.then(() => {
+    // Fetch the faces the banner text resolves to, then let any other pending load finish.
+    const cs = getComputedStyle(textEl);
+    const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    const load = Promise.resolve().then(() => document.fonts.load(font, textEl.textContent || 'A')).catch(() => null);
+    return bounded(load.then(() => document.fonts.ready), 3000);
+  });
+}
 
 function startBannerCycle(theme) {
   clearInterval(bannerInterval);
@@ -1105,6 +1242,7 @@ function startBannerCycle(theme) {
   bannerInterval = null;
   bannerFadeTimer = null;
   bannerQuotes = null;
+  const gen = ++bannerGen;
 
   const quotes = THEME_BANNERS[theme];
   if (!quotes) return;
@@ -1116,6 +1254,13 @@ function startBannerCycle(theme) {
   textEl.textContent = quotes[bannerIdx];
 
   if (!idlePaused) scheduleBannerRotation();
+
+  // First pick, once the theme and its fonts are in. Skipped when another theme
+  // started meanwhile or the rotation has already moved on (it measures itself).
+  whenBannerReady(theme, textEl).catch(() => null).then(() => {
+    if (gen !== bannerGen || bannerQuotes !== quotes || bannerIdx !== 0) return;
+    bannerIdx = pickFittingQuote(textEl, quotes, 0);
+  });
 }
 
 function scheduleBannerRotation() {
@@ -1125,10 +1270,17 @@ function scheduleBannerRotation() {
   const quotes = bannerQuotes;
   const textEl = document.getElementById('theme-banner-text');
   bannerInterval = setInterval(() => {
+    // Measured now and the shown quote put back in the same task (nothing paints
+    // in between). When the pick is the quote already shown (a theme where only
+    // one quote fits), the banner stays as it is instead of blinking.
+    const shown = bannerIdx;
+    const next = pickFittingQuote(textEl, quotes, (shown + 1) % quotes.length);
+    textEl.textContent = quotes[shown];
+    if (next === shown) return;
     textEl.style.opacity = '0';
     bannerFadeTimer = setTimeout(() => {
-      bannerIdx = (bannerIdx + 1) % quotes.length;
-      textEl.textContent = quotes[bannerIdx];
+      // Re-measured while invisible: the window may have been resized meanwhile.
+      bannerIdx = pickFittingQuote(textEl, quotes, next);
       textEl.style.opacity = '1';
     }, 380);
   }, 14000);
@@ -1564,8 +1716,24 @@ function moveTileFocus(direction) {
   if (next >= 0 && next < tiles.length) focusTileAtIndex(tiles, next);
 }
 
+// Settings and the cheat-sheet scroll inside their panel, and a scroller keeps
+// its offset while hidden. Every open starts at the top (theme spec, foundation
+// review 1, F2): show the overlay first, then reset (a hidden scroller has no box).
+function showOverlayAtTop(el) {
+  el.classList.remove('hidden');
+  const sc = el.querySelector('.overlay-scroll');
+  if (sc) sc.scrollTop = 0;
+}
+
+// The one way Settings is hidden (Esc, CLOSE, CHECK FOR UPDATES, the gear toggle).
+// A focused SKIN field gives up focus, so its list resets (its blur closes it).
+function closeSettings() {
+  elSettingsOverlay.classList.add('hidden');
+  if (document.activeElement === elThemeSearch) elThemeSearch.blur();
+}
+
 function openCheatsheet() {
-  document.getElementById('cheatsheet-overlay').classList.remove('hidden');
+  showOverlayAtTop(document.getElementById('cheatsheet-overlay'));
 }
 function closeCheatsheet() {
   document.getElementById('cheatsheet-overlay').classList.add('hidden');
@@ -1596,15 +1764,19 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  // Escape: close overlays first, then clear filter, then nothing.
-  // (Fullscreen-exit Escape is wired separately below in setupContextMenu.)
+  // Escape: one press undoes exactly one layer, the innermost present, and
+  // nothing else sees it (picker behaviour spec 2026-10-02, Addendum A.2).
+  // Inner layers that consume their own Esc before it gets here: IME
+  // composition (above), hotkey recording, the open skin list, the rename input.
+  // This is the only document-level Esc handler.
   if (e.key === 'Escape') {
     const cs = document.getElementById('cheatsheet-overlay');
     if (!cs.classList.contains('hidden')) { closeCheatsheet(); e.preventDefault(); return; }
-    if (!elSettingsOverlay.classList.contains('hidden')) { elSettingsOverlay.classList.add('hidden'); e.preventDefault(); return; }
+    if (!elSettingsOverlay.classList.contains('hidden')) { closeSettings(); e.preventDefault(); return; }
     if (!elAppsPicker.classList.contains('hidden')) { elAppsPicker.classList.add('hidden'); e.preventDefault(); return; }
     if (_filterText) { clearFilter(); e.preventDefault(); return; }
-    // Fall through to the edit-mode handler
+    if (editMode) { exitEditMode(); e.preventDefault(); return; }
+    return; // nothing to undo: Esc does nothing (it never hides the window)
   }
 
   // Beyond here, only react when no overlay is open and we're not in a text
@@ -1668,10 +1840,8 @@ function setupContextMenu() {
       enterEditMode();
     }
   });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && editMode) exitEditMode();
-  });
+  // Esc for edit mode lives in the document keydown handler's Escape ladder
+  // (one handler, one layer per press).
 }
 
 // ── Update banner ─────────────────────────────────────────────────────────────
@@ -1810,12 +1980,12 @@ $('btn-hide').addEventListener('click', () => {
 });
 
 $('btn-close-settings').addEventListener('click', () => {
-  elSettingsOverlay.classList.add('hidden');
+  closeSettings();
 });
 
 $('btn-check-update').addEventListener('click', () => {
   window.api.invoke('check-update');
-  elSettingsOverlay.classList.add('hidden');
+  closeSettings();
 });
 
 $('btn-add-edit').addEventListener('click', addAppFromDialog);
@@ -1825,15 +1995,28 @@ $('btn-add-installed').addEventListener('click', () => {
 $('btn-done-edit').addEventListener('click', exitEditMode);
 
 // ── Skin selection (searchable picker) ───────────────────────────────────────
+// Behaviour: Docs/QuickLaunch_SkinPicker_Behaviour_Spec_2026-10-02.md, sections 2 to 3.8.
+// Three states:
+//   IDLE    field empty, not focused, list hidden
+//   OPEN    field focused, list showing the matches for its text, one row
+//           highlighted when there are rows (class `active`: the row Enter picks)
+//   PARKED  field focused and empty, list hidden (after a pick, or Esc in OPEN);
+//           typing, a click, ArrowUp or ArrowDown reopen the list
 (function () {
   const searchEl = elThemeSearch;
   const listEl   = $('theme-picker-list');
+  // The settings body scrolls (theme spec, foundation A1.4): the list is fixed,
+  // so it is placed from the field's position and the body is locked while it
+  // is open (wheeling would otherwise move the field away from the list).
+  const scrollEl = searchEl.closest('.overlay-scroll');
+  let open = false;
+
+  const currentKey = () => settings.theme || 'cyberpunk';
+  const rowEls     = () => [...listEl.querySelectorAll('.theme-picker-item')];
+  const activeRow  = () => listEl.querySelector('.theme-picker-item.active');
 
   function buildList(filter) {
-    const q = (filter || '').toLowerCase().trim();
-    const matches = q
-      ? ALL_THEMES.filter(k => (THEME_NAMES[k] || k).toLowerCase().includes(q))
-      : ALL_THEMES;
+    const matches = matchThemes(filter);
 
     listEl.innerHTML = '';
     if (matches.length === 0) {
@@ -1843,63 +2026,176 @@ $('btn-done-edit').addEventListener('click', exitEditMode);
       listEl.appendChild(empty);
       return;
     }
-    const current = settings.theme || 'cyberpunk';
+    const current = currentKey();
     matches.forEach(key => {
       const item = document.createElement('div');
       item.className = 'theme-picker-item' + (key === current ? ' selected' : '');
       item.dataset.value = key;
       item.textContent = THEME_NAMES[key] || key.toUpperCase();
-      item.addEventListener('mousedown', async (e) => {
-        e.preventDefault();
-        settings.theme = key;
-        applySettings();
-        await window.api.invoke('save-settings', settings);
-        closePicker();
-      });
       listEl.appendChild(item);
     });
   }
 
-  function openPicker() {
-    buildList(searchEl.value);
-    listEl.classList.remove('hidden');
-    // Position dropdown below the search input, extending to the app bottom edge
-    const rect = searchEl.getBoundingClientRect();
-    const appBottom = elApp.getBoundingClientRect().bottom;
-    listEl.style.top = (rect.bottom + 3) + 'px';
-    listEl.style.maxHeight = Math.max(80, appBottom - rect.bottom - 10) + 'px';
-    const sel = listEl.querySelector('.theme-picker-item.selected');
-    if (sel) sel.scrollIntoView({ block: 'nearest' });
+  // Highlight one row (or none) and keep it fully inside the list's visible area.
+  function setActive(item, block) {
+    const prev = activeRow();
+    if (prev) prev.classList.remove('active');
+    if (!item) return;
+    item.classList.add('active');
+    item.scrollIntoView({ block: block || 'nearest' });
   }
 
+  // Below the field by default; above it when there is under 150 px below and
+  // more room above. Called on open and on window resize while open.
+  function place() {
+    const rect = searchEl.getBoundingClientRect();
+    const below = innerHeight - rect.bottom - 10;
+    const above = rect.top - 10;
+    if (below < 150 && above > below) {
+      listEl.style.top = 'auto';
+      listEl.style.bottom = (innerHeight - rect.top + 3) + 'px';
+      listEl.style.maxHeight = Math.max(80, above - 3) + 'px';
+    } else {
+      listEl.style.top = (rect.bottom + 3) + 'px';
+      listEl.style.bottom = 'auto';
+      listEl.style.maxHeight = Math.max(80, below) + 'px';
+    }
+  }
+
+  // Rebuild for the field text. Filtered (at least one search token): row 1 is
+  // highlighted. Not filtered (empty, spaces, punctuation): the current skin is
+  // highlighted and centred. NO MATCHES: nothing is highlighted.
+  function refresh() {
+    buildList(searchEl.value);
+    listEl.scrollTop = 0;
+    if (searchTokens(searchEl.value).length) setActive(listEl.querySelector('.theme-picker-item'));
+    else setActive(listEl.querySelector('.theme-picker-item.selected'), 'center');
+  }
+
+  function openPicker() {
+    // The focus event fires before Chromium scrolls a focused control into view,
+    // so bring the field fully into the scroller first, then measure it.
+    searchEl.scrollIntoView({ block: 'nearest' });
+    if (scrollEl) scrollEl.classList.add('picker-open');
+    listEl.classList.remove('hidden');
+    place();
+    open = true;
+    refresh();
+  }
+
+  // Closed means: list hidden, body unlocked, field empty. Focus is not touched.
   function closePicker() {
+    open = false;
     listEl.classList.add('hidden');
+    if (scrollEl) scrollEl.classList.remove('picker-open');
     searchEl.value = '';
   }
 
-  function moveActive(dir) {
-    const items = [...listEl.querySelectorAll('.theme-picker-item')];
-    if (!items.length) return;
-    const cur = listEl.querySelector('.theme-picker-item.active');
-    let idx = items.indexOf(cur) + dir;
-    idx = Math.max(0, Math.min(items.length - 1, idx));
-    items.forEach(i => i.classList.remove('active'));
-    items[idx].classList.add('active');
-    items[idx].scrollIntoView({ block: 'nearest' });
+  // Close first, then apply and save: a second Enter or click lands on a closed
+  // list (one pick, one save). The current skin closes the list and saves nothing.
+  function pick(key) {
+    closePicker();
+    if (key === currentKey()) return;
+    settings.theme = key;
+    applySettings();
+    window.api.invoke('save-settings', settings)
+      .catch(err => console.error('Failed to save skin:', err));
   }
 
-  searchEl.addEventListener('focus', () => openPicker());
-  searchEl.addEventListener('input', () => buildList(searchEl.value));
-  searchEl.addEventListener('blur',  () => setTimeout(closePicker, 150));
+  // Clamped, no wrap. With nothing highlighted either arrow lands on row 1.
+  function moveActive(dir) {
+    const items = rowEls();
+    if (!items.length) return;
+    const idx = items.indexOf(activeRow()) + dir;
+    setActive(items[Math.max(0, Math.min(items.length - 1, idx))]);
+  }
+
+  // A row press picks and the list is gone at once, so the rest of that click sequence
+  // (the second press of a double-click, its release, click and dblclick) would land on
+  // whatever the list covered. For up to 1 s, swallow every mouse event whose click count
+  // is above the pick press's; a press with a lower or equal count is a new gesture and
+  // ends the guard. The count is the browser's own (OS double-click time and distance).
+  // Picker spec Part C, C.1.3.
+  let disarmClickGuard = null;
+  function swallowRestOfClick(down) {
+    if (disarmClickGuard) disarmClickGuard();
+    const pickCount = down.detail || 1;
+    const types = ['mousedown', 'mouseup', 'click', 'dblclick'];
+    const onEvent = (e) => {
+      if (e.type === 'mousedown' && e.detail <= pickCount) { disarm(); return; }   // a new gesture
+      if (e.detail > pickCount) { e.preventDefault(); e.stopImmediatePropagation(); }
+    };
+    const disarm = () => {
+      clearTimeout(timer);
+      types.forEach(t => window.removeEventListener(t, onEvent, true));
+      if (disarmClickGuard === disarm) disarmClickGuard = null;
+    };
+    const timer = setTimeout(disarm, 1000);
+    types.forEach(t => window.addEventListener(t, onEvent, true));   // capture: ahead of every control
+    disarmClickGuard = disarm;
+  }
+
+  // After applySettings() (an outside change: store reload, settings changed elsewhere)
+  // with the list open: move the current-skin mark to the current skin. The Enter row
+  // follows only when it sat on the current skin of an unfiltered list (the "Enter keeps
+  // the skin" state); an arrowed row or a filtered list is the user's and stays. Never
+  // rebuilds, never touches focus or the field text. Idempotent, so a call that changed
+  // no skin is a no-op. Picker spec Part C, C.3.2.
+  function syncCurrentSkin() {
+    if (!open) return;
+    const want = rowEls().find(r => r.dataset.value === currentKey()) || null;
+    const sel  = listEl.querySelector('.theme-picker-item.selected');
+    if (sel === want) return;
+    const follow = sel && sel === activeRow() && !searchTokens(searchEl.value).length;
+    if (sel) sel.classList.remove('selected');
+    if (want) want.classList.add('selected');
+    if (follow && want) setActive(want, 'center');
+  }
+  onSkinApplied = syncCurrentSkin;
+
+  searchEl.addEventListener('focus', () => { if (!open) openPicker(); });
+  searchEl.addEventListener('click', () => { if (!open) openPicker(); });
+  searchEl.addEventListener('input', () => { if (open) refresh(); else openPicker(); });
+  // Blur closes at once: no timer (a press in the list never blurs the field,
+  // see below). When the blur comes from the window losing focus (hotkey hide,
+  // Alt+Tab) the field also gives up focus, so re-activating the window never
+  // pops the list open by itself.
+  searchEl.addEventListener('blur', () => {
+    closePicker();
+    if (!document.hasFocus()) searchEl.blur();
+  });
+
+  // Any press in the list keeps focus in the field: a row press picks (primary
+  // button only, on press), a scrollbar press scrolls, NO MATCHES does nothing.
+  // A row pick also swallows the rest of its click sequence (see swallowRestOfClick).
+  listEl.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    if (e.button !== 0 || !open) return;
+    const item = e.target.closest('.theme-picker-item');
+    if (item) { pick(item.dataset.value); swallowRestOfClick(e); }
+  });
+
+  window.addEventListener('resize', () => { if (open) place(); });
+
   searchEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape')    { closePicker(); searchEl.blur(); return; }
-    if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1);  return; }
-    if (e.key === 'ArrowUp')   { e.preventDefault(); moveActive(-1); return; }
+    if (e.isComposing || e.keyCode === 229) return;   // the key belongs to the IME
+    if (e.key === 'Escape') {
+      if (!open) return;                              // nothing to undo here: Esc goes on (Settings)
+      e.preventDefault();
+      e.stopPropagation();                            // consumed: one Esc, one layer
+      closePicker();
+      return;
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) openPicker();                        // from PARKED the key only opens the list
+      else moveActive(e.key === 'ArrowDown' ? 1 : -1);
+      return;
+    }
     if (e.key === 'Enter') {
       e.preventDefault();
-      const active = listEl.querySelector('.theme-picker-item.active')
-                  || listEl.querySelector('.theme-picker-item');
-      if (active) active.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      const row = open ? activeRow() : null;          // never acts on a hidden list
+      if (row) pick(row.dataset.value);
     }
   });
 })();

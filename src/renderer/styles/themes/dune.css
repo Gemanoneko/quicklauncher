@@ -62,6 +62,7 @@
   /* ── Buttons ── */
   --btn-hover-bg:   rgba(200, 144, 80, 0.09);
   --btn-active-bg:  rgba(200, 144, 80, 0.18);
+  --hover-label-floor: 0.70;
 
   /* ── Drop hint ── */
   --drop-hint-border: rgba(200, 144, 80, 0.20);

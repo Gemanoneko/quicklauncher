@@ -1,213 +1,131 @@
-/* ══ STAR WARS: GALACTIC EMPIRE ══════════════════════════════════════════════
-   Order through strength. Cold precision. Imperial grey on the void.
-   Fear is the great motivator. The Emperor does not tolerate failure.
-   ══════════════════════════════════════════════════════════════════════════════ */
+/* == STAR WARS: GALACTIC EMPIRE ===============================================
+   Batch 6 tone-down with a new frame (theme spec 2026-10-01, section 3). A
+   flat bridge console: near-black ground, gunmetal panels and slots, three
+   readout bars with one red segment in the header, a wedge capital ship and a
+   battle station in the banner, a square window, red only as an alert light.
+   Bundled Libre Franklin throughout (spec section 8, approved by Sergei
+   2026-10-01): title, labels, banner and the body face (version, Settings,
+   edit and update bars), with Bahnschrift as the fallback. Labels 11 px, 0 px
+   tracking, line height 13.8 px (Judy's batch-6 review, F1). No texture, no
+   looping motion.
+   ============================================================================== */
 
 :root {
-  --radius:       0px;
-  --app-clip:     none;
+  --radius: 0px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #050507;
-  --panel-bg:     rgba(8, 8, 10, 0.98);
-  --overlay-bg:   rgba(5, 5, 7, 0.96);
-  --header-bg:    rgba(160, 168, 180, 0.03);
-
-  --font:         'Segoe UI', 'Arial', sans-serif;
-  --text:         #909AA8;
-  --text-dim:     rgba(120, 130, 145, 0.93);
-
-  --accent-c:     #C0C8D8;   /* Imperial grey-white */
-  --accent-m:     #CC1100;   /* command red */
-  --accent-y:     #A0A8B8;   /* pale grey */
-
-  --border:       rgba(150, 158, 175, 0.18);
-  --border-h:     rgba(180, 190, 210, 0.50);
-
-  --glow-c:       0 0 5px rgba(180,190,210,.50), 0 0 14px rgba(180,190,210,.15);
-  --glow-m:       0 0 5px rgba(204,17,0,.60), 0 0 14px rgba(204,17,0,.20);
-  --glow-y:       0 0 5px rgba(160,168,184,.50), 0 0 14px rgba(160,168,184,.15);
-
-  --pulse-glow:   inset 0 0 12px rgba(160,168,184,.04);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 20px rgba(160,168,184,.08);
-
-  --title-anim:   empire-flicker 14s steps(1) infinite;
-
-  --tile-hover-bg:     rgba(150, 158, 175, 0.06);
-  --tile-hover-border: rgba(180, 190, 210, 0.28);
-  --tile-hover-shadow: 0 0 8px rgba(180, 190, 210, 0.12);
-  --tile-active-bg:    rgba(150, 158, 175, 0.12);
-  --tile-icon-glow:    drop-shadow(0 0 4px rgba(180,190,210,.50));
-  --tile-icon-fx:      grayscale(0.3) brightness(0.88);
-  --tile-icon-shape:   polygon(0 22%, 22% 0, 78% 0, 100% 22%, 100% 78%, 78% 100%, 22% 100%, 0 78%);
-  --tile-label-spacing:   1.2px;
-  --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-glow 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-zoom 1.5s ease-out forwards;
-
-  --btn-hover-bg:   rgba(150, 158, 175, 0.08);
-  --btn-active-bg:  rgba(150, 158, 175, 0.16);
-
-  --drop-hint-border: rgba(150, 158, 175, 0.20);
-  --drop-icon-color:  rgba(180, 190, 210, 0.25);
-  --hint-sub-color:   rgba(120, 130, 145, 0.95);
-
-  --rename-dashed:    rgba(180, 190, 210, 0.28);
-  --rename-input-bg:  rgba(150, 158, 175, 0.06);
-
-  --edit-bar-bg:          rgba(204, 17, 0, 0.06);
-  --edit-bar-border:      rgba(204, 17, 0, 0.35);
-  --edit-label-color:     #CC1100;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #CC1100;
-  --btn-done-border:      rgba(204, 17, 0, 0.38);
-  --btn-done-hover-bg:    rgba(204, 17, 0, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(180, 190, 210, 0.28);
-
-  --update-bg:             rgba(160, 168, 184, 0.05);
-  --update-border:         rgba(180, 190, 210, 0.28);
-  --update-color:          #A0A8B8;
-  --update-btn-border:     rgba(160, 168, 184, 0.25);
-  --update-btn-hover-bg:   rgba(160, 168, 184, 0.08);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #CC1100;
-  --btn-close-border:     rgba(204, 17, 0, 0.35);
-  --btn-close-hover-bg:   rgba(204, 17, 0, 0.08);
-  --btn-close-hover-glow: var(--glow-m);
-
-  --picker-search-bg:      rgba(150, 158, 175, 0.06);
-  --picker-item-hover-bg:  rgba(150, 158, 175, 0.07);
-  --picker-item-active-bg: rgba(150, 158, 175, 0.13);
-  --picker-placeholder-bg: rgba(150, 158, 175, 0.07);
-
-  --skin-btn-active-bg:    rgba(150, 158, 175, 0.14);
-  --remove-btn-bg:         rgba(204, 17, 0, 0.88);
-  --remove-btn-border:     #CC1100;
+  --bg: #0B0C0E;
+  --panel-bg: #111317;
+  --overlay-bg: #0B0C0E;
+  --header-bg: #171A1E;
+  --font: 'Libre Franklin', Bahnschrift, 'Segoe UI', sans-serif;
+  --text: #E2E5E8;
+  --text-dim: #AEB4BA;
+  --accent-c: #A9AFB5;
+  --accent-m: #FF6B70;
+  --accent-y: #A9AFB5;
+  --accent-text: #CDD2D7;
+  --border: #4A4F55;
+  --border-h: #C9CED3;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #A9AFB5;
+  --title-anim: none;
+  --tile-hover-bg: #1F2328;
+  --tile-hover-border: #E2E5E8;
+  --tile-hover-shadow: inset 0 0 0 1px #E2E5E8;
+  --tile-active-bg: #2A2F35;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: brightness(1.08) saturate(0.9);
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0px;
+  --tile-label-transform: none;
+  --tile-label-weight: 500;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #2B3036;
+  --btn-active-bg: #383E45;
+  --drop-hint-border: #4A4F55;
+  --drop-icon-color: #7A8086;
+  --hint-sub-color: #AEB4BA;
+  --rename-dashed: #A9AFB5;
+  --rename-input-bg: #1F2328;
+  --edit-bar-bg: #2C0C0E;
+  --edit-bar-border: #D0161D;
+  --edit-label-color: #FF6B70;
+  --edit-label-glow: none;
+  --btn-done-color: #FF6B70;
+  --btn-done-border: #D0161D;
+  --btn-done-hover-bg: #471215;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #8A8F94;
+  --update-bg: #171A1E;
+  --update-border: #8A8F94;
+  --update-color: #CDD2D7;
+  --update-btn-border: #8A8F94;
+  --update-btn-hover-bg: #262B31;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #CDD2D7;
+  --btn-close-border: #8A8F94;
+  --btn-close-hover-bg: #262B31;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1F2328;
+  --picker-item-hover-bg: #1F2328;
+  --picker-item-active-bg: #262B31;
+  --picker-placeholder-bg: #1F2328;
+  --skin-btn-active-bg: #262B31;
+  --remove-btn-bg: #B0141B;
+  --remove-btn-border: #FF8A8E;
 }
 
-/* ── Minimal geometric overlay — cold and clean ─────────────────────────────── */
-#app::after {
-  background:
-    radial-gradient(ellipse 100% 80% at 50% 50%, transparent 50%, rgba(3, 3, 5, 0.65) 100%),
-    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(3, 3, 5, 0.30) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(3, 3, 5, 0.30) 0%, transparent 60%);
-  opacity: 1; pointer-events: none;
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #B0141B; }
+.hotkey-input::placeholder, .theme-search::placeholder { color: var(--text-dim); }
 
-/* ── Header cold silver accent bar ─────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #D0D8E8, rgba(150, 158, 175, 0.20));
-  box-shadow: 0 0 6px rgba(180, 190, 210, 0.40);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* ── Grid: Death Star targeting disc — surface grid + superlaser reticle ────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Death Star — full sphere with superlaser dish, equatorial trench, surface panels */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='18' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='7' letter-spacing='3' fill='rgba(160,168,184,0.38)'%3EIMPERIAL BATTLE STATION DS-1%3C/text%3E%3Ctext x='250' y='30' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(140,148,165,0.25)'%3EDESCARTES SYSTEM -- IMPERIAL NAVY -- FULLY OPERATIONAL%3C/text%3E%3Ccircle cx='250' cy='195' r='140' fill='rgba(20,22,30,0.50)' stroke='rgba(160,168,184,0.42)' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='195' r='136' fill='none' stroke='rgba(140,148,165,0.18)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='195' rx='140' ry='8' fill='none' stroke='rgba(180,190,210,0.35)' stroke-width='1.5'/%3E%3Cellipse cx='250' cy='195' rx='136' ry='6' fill='none' stroke='rgba(160,168,184,0.18)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='165' rx='130' ry='7' fill='none' stroke='rgba(140,148,165,0.15)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='135' rx='110' ry='6' fill='none' stroke='rgba(140,148,165,0.12)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='105' rx='82' ry='5' fill='none' stroke='rgba(140,148,165,0.10)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='225' rx='130' ry='7' fill='none' stroke='rgba(140,148,165,0.15)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='255' rx='110' ry='6' fill='none' stroke='rgba(140,148,165,0.12)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='285' rx='82' ry='5' fill='none' stroke='rgba(140,148,165,0.10)' stroke-width='0.5'/%3E%3Cpath d='M 250,55 Q 250,195 250,335' fill='none' stroke='rgba(140,148,165,0.12)' stroke-width='0.5'/%3E%3Cpath d='M 145,72 Q 180,195 145,318' fill='none' stroke='rgba(140,148,165,0.08)' stroke-width='0.5'/%3E%3Cpath d='M 355,72 Q 320,195 355,318' fill='none' stroke='rgba(140,148,165,0.08)' stroke-width='0.5'/%3E%3Cpath d='M 195,60 Q 210,195 195,330' fill='none' stroke='rgba(140,148,165,0.10)' stroke-width='0.5'/%3E%3Cpath d='M 305,60 Q 290,195 305,330' fill='none' stroke='rgba(140,148,165,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='205' cy='130' r='42' fill='rgba(12,14,20,0.55)' stroke='rgba(180,190,210,0.38)' stroke-width='1.2'/%3E%3Ccircle cx='205' cy='130' r='35' fill='none' stroke='rgba(160,168,184,0.25)' stroke-width='0.8'/%3E%3Ccircle cx='205' cy='130' r='25' fill='none' stroke='rgba(160,168,184,0.20)' stroke-width='0.5'/%3E%3Ccircle cx='205' cy='130' r='14' fill='none' stroke='rgba(180,190,210,0.30)' stroke-width='0.8'/%3E%3Ccircle cx='205' cy='130' r='5' fill='rgba(140,220,140,0.35)' stroke='rgba(140,220,140,0.25)' stroke-width='0.5'/%3E%3Cline x1='205' y1='85' x2='205' y2='175' stroke='rgba(160,168,184,0.15)' stroke-width='0.5'/%3E%3Cline x1='160' y1='130' x2='250' y2='130' stroke='rgba(160,168,184,0.15)' stroke-width='0.5'/%3E%3Ctext x='205' y='180' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='1.5' fill='rgba(160,168,184,0.35)'%3ESUPERLASER%3C/text%3E%3Crect x='168' y='193' width='6' height='4' fill='rgba(140,148,165,0.18)'/%3E%3Crect x='184' y='193' width='6' height='4' fill='rgba(140,148,165,0.15)'/%3E%3Crect x='200' y='193' width='6' height='4' fill='rgba(140,148,165,0.18)'/%3E%3Crect x='250' y='193' width='6' height='4' fill='rgba(140,148,165,0.12)'/%3E%3Crect x='290' y='193' width='6' height='4' fill='rgba(140,148,165,0.15)'/%3E%3Crect x='320' y='193' width='6' height='4' fill='rgba(140,148,165,0.12)'/%3E%3Crect x='340' y='168' width='4' height='4' fill='rgba(140,148,165,0.10)'/%3E%3Crect x='155' y='225' width='4' height='4' fill='rgba(140,148,165,0.10)'/%3E%3Crect x='310' y='240' width='5' height='3' fill='rgba(140,148,165,0.12)'/%3E%3Crect x='180' y='260' width='4' height='3' fill='rgba(140,148,165,0.10)'/%3E%3Ctext x='85' y='85' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(160,168,184,0.38)'%3ESTATION CLASS%3C/text%3E%3Ctext x='85' y='98' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(180,190,210,0.48)'%3EDEATH STAR%3C/text%3E%3Cline x1='28' y1='104' x2='155' y2='104' stroke='rgba(160,168,184,0.18)' stroke-width='0.5'/%3E%3Ctext x='85' y='120' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3EDIAMETER%3C/text%3E%3Ctext x='85' y='132' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(180,190,210,0.45)'%3E160 KM%3C/text%3E%3Ctext x='85' y='148' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3ECREW%3C/text%3E%3Ctext x='85' y='160' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' fill='rgba(180,190,210,0.42)'%3E1,186,295%3C/text%3E%3Ctext x='85' y='176' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3EWEAPON%3C/text%3E%3Ctext x='85' y='188' font-family='Segoe UI,Arial,sans-serif' font-size='6.5' font-weight='bold' fill='rgba(204,17,0,0.45)'%3ESUPERLASER%3C/text%3E%3Ctext x='430' y='85' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='1' fill='rgba(160,168,184,0.38)'%3EPOWER STATUS%3C/text%3E%3Ctext x='430' y='98' font-family='Segoe UI,Arial,sans-serif' font-size='7' font-weight='bold' letter-spacing='1.5' fill='rgba(140,220,140,0.45)'%3EOPERATIONAL%3C/text%3E%3Cline x1='365' y1='104' x2='480' y2='104' stroke='rgba(160,168,184,0.18)' stroke-width='0.5'/%3E%3Ctext x='430' y='120' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3EREACTOR%3C/text%3E%3Crect x='365' y='124' width='120' height='5' fill='rgba(140,148,165,0.10)' rx='1'/%3E%3Crect x='365' y='124' width='108' height='5' fill='rgba(140,220,140,0.35)' rx='1'/%3E%3Ctext x='430' y='144' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3ESHIELDS%3C/text%3E%3Crect x='365' y='148' width='120' height='5' fill='rgba(140,148,165,0.10)' rx='1'/%3E%3Crect x='365' y='148' width='96' height='5' fill='rgba(180,190,210,0.38)' rx='1'/%3E%3Ctext x='430' y='168' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='1' fill='rgba(140,148,165,0.35)'%3ESUPERLASER%3C/text%3E%3Crect x='365' y='172' width='120' height='5' fill='rgba(140,148,165,0.10)' rx='1'/%3E%3Crect x='365' y='172' width='84' height='5' fill='rgba(204,17,0,0.38)' rx='1'/%3E%3Ctext x='488' y='177' font-family='Segoe UI,Arial,sans-serif' font-size='5' fill='rgba(204,17,0,0.35)'%3E70 PCT%3C/text%3E%3Ctext x='250' y='355' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='2' fill='rgba(140,148,165,0.25)'%3EIMPERIAL NAVY -- GALACTIC EMPIRE -- DEATH STAR COMMAND%3C/text%3E%3Ccircle cx='55' cy='55' r='0.7' fill='rgba(180,190,210,0.18)'/%3E%3Ccircle cx='445' cy='48' r='0.5' fill='rgba(180,190,210,0.14)'/%3E%3Ccircle cx='48' cy='310' r='0.6' fill='rgba(180,190,210,0.12)'/%3E%3Ccircle cx='452' cy='320' r='0.8' fill='rgba(180,190,210,0.10)'/%3E%3Ccircle cx='60' cy='200' r='0.5' fill='rgba(180,190,210,0.10)'/%3E%3Ccircle cx='440' cy='240' r='0.6' fill='rgba(180,190,210,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: empire-deathstar 10s ease-in-out infinite;
-}
-@keyframes empire-deathstar {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* superlaser discharge — synchronized blackout */
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
+/* header: a 3 px line inside it, the faction's emblem in the art zone */
+#header { background: #171A1E; border-bottom-color: #7C8289; box-shadow: inset 0 -2px 0 #7C8289; }
+#header::before { background: #C9CED3; box-shadow: none; }
 #header::after {
-  content: 'IMPERIAL COMMAND  //  CORUSCANT  //  ORDER REIGNS';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 8.5px; letter-spacing: 2.5px; color: rgba(175, 183, 200, 0.52);
-  pointer-events: none; white-space: nowrap;
+  content: ''; position: absolute; top: 10px; right: 136.67px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Crect x='2' y='2.5' width='26' height='3' fill='rgb(124,130,137)'/%3E%3Crect x='30' y='2.5' width='14' height='3' fill='rgb(124,130,137)'/%3E%3Crect x='46' y='2.5' width='30' height='3' fill='rgb(124,130,137)'/%3E%3Crect x='78' y='2.5' width='4' height='3' fill='rgb(124,130,137)'/%3E%3Crect x='2' y='8.5' width='12' height='3' fill='rgb(169,175,181)'/%3E%3Crect x='16' y='8.5' width='34' height='3' fill='rgb(169,175,181)'/%3E%3Crect x='52' y='8.5' width='20' height='3' fill='rgb(169,175,181)'/%3E%3Crect x='74' y='8.5' width='8' height='3' fill='rgb(208,22,29)'/%3E%3Crect x='2' y='14.5' width='40' height='3' fill='rgb(91,97,104)'/%3E%3Crect x='44' y='14.5' width='10' height='3' fill='rgb(91,97,104)'/%3E%3Crect x='56' y='14.5' width='26' height='3' fill='rgb(91,97,104)'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
 }
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: 'Libre Franklin', Bahnschrift, 'Segoe UI', sans-serif; font-weight: 500; font-style: normal; font-synthesis: none; line-height: 1.2; font-size: 11px; letter-spacing: 4px; color: #E2E5E8; text-shadow: none; }
+#title .accent { color: #FF6B70; }
 
-#grid-container::after {
-  content: 'GALACTIC\AEMPIRE\A-----------\ADEATH STAR\AOPERATIONAL\A-----------\ACORUSCANT\ACOMMAND\AORDER REIGNS';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Segoe UI', sans-serif; letter-spacing: 3px;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(140, 150, 168, 0.09); white-space: pre;
-  animation: empire-readout 10s ease-in-out infinite;
-}
-
-@keyframes empire-readout {
-  0%, 100% { color: rgba(140,150,168,.09); }
-  28%       { color: rgba(140,150,168,.13); }
-  65%       { color: rgba(140,150,168,.07); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(160,168,184,.16); }
-  92%       { color: rgba(140,150,168,.09); }
-}
-
-#edit-bar::after {
-  content: 'ISB SURVEILLANCE PROTOCOL ACTIVE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 8px; letter-spacing: 2px; color: rgba(204, 17, 0, 0.35);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Segoe UI', sans-serif; letter-spacing: 6px; font-weight: 400; }
-
-/* ── Imperial title flicker — precise, cold ──────────────────────────────────── */
-@keyframes empire-flicker {
-  0%        { color: #C0C8D8; text-shadow: 0 0 4px rgba(180,190,210,.40); }
-  65%       { color: #C0C8D8; text-shadow: 0 0 4px rgba(180,190,210,.40); }
-  87%       { color: #C0C8D8; text-shadow: 0 0 4px rgba(180,190,210,.40); }
-  88%       { color: #FFFFFF; text-shadow: 0 0 20px rgba(255,255,255,.90), 0 0 50px rgba(180,190,210,.45); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #C0C8D8; text-shadow: 0 0 6px rgba(180,190,210,.55); opacity: 1; }
-  100%      { color: #C0C8D8; text-shadow: 0 0 4px rgba(180,190,210,.40); }
-}
-
-/* ── App border: cold measured pulse — Death Star power cycling ──────────────── */
-#app { animation: empire-border 10s ease-in-out infinite; }
-@keyframes empire-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(150,158,175,.25), inset 0 0 20px rgba(150,158,175,.04); }
-  40%      { box-shadow: 0 0 0 1px rgba(180,190,210,.55), inset 0 0 30px rgba(160,168,185,.10); }
-  65%      { box-shadow: 0 0 0 1px rgba(150,158,175,.20), inset 0 0 18px rgba(150,158,175,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(255,255,255,.85), inset 0 0 50px rgba(180,190,210,.18), 0 0 20px rgba(180,190,210,.30); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(180,190,210,.50), inset 0 0 24px rgba(160,168,185,.08); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(5, 5, 7, 0.98); border-top-color: rgba(150, 158, 175, 0.18); }
-#theme-banner::before { content: '▣'; color: #C0C8D8; font-size: 16px; }
-#theme-banner-text { font-family: 'Segoe UI', sans-serif; letter-spacing: 3px; color: rgba(140, 150, 170, 0.65); }
-
-/* ── Phase 4D/E: header strobe + tile scan ───────────────────────────────── */
-#header::before { animation: hdr-bar-strobe 8s steps(1) infinite; }
-.app-tile::before {
-  width: 100%; height: 3px;
-  left: 0; top: -3px;
-  transform: none;
-  background: var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }
-
-/* ── Imperial star field — cold stars drifting past the bridge viewport ──── */
-#particles {
+/* frame: four corner caps over two side strips over a top course (all inside the 8 px bands) */
+#grid-container {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ccircle cx='20' cy='35' r='0.8' fill='rgba(180,190,210,0.35)'/%3E%3Ccircle cx='80' cy='90' r='0.5' fill='rgba(180,190,210,0.25)'/%3E%3Ccircle cx='150' cy='150' r='0.6' fill='rgba(180,190,210,0.30)'/%3E%3Ccircle cx='120' cy='30' r='0.4' fill='rgba(180,190,210,0.20)'/%3E%3Ccircle cx='40' cy='170' r='0.7' fill='rgba(180,190,210,0.28)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ccircle cx='30' cy='50' r='0.6' fill='rgba(160,170,190,0.18)'/%3E%3Ccircle cx='130' cy='140' r='0.4' fill='rgba(160,170,190,0.14)'/%3E%3Ccircle cx='240' cy='230' r='0.5' fill='rgba(160,170,190,0.16)'/%3E%3Ccircle cx='180' cy='60' r='0.3' fill='rgba(160,170,190,0.12)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 200px, 300px 300px;
-  animation: empire-starfield 12s linear infinite;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(20,23,27)'/%3E%3Cpath d='M0.7 7.3 V0.7 H7.3' fill='none' stroke='rgb(169,175,181)' stroke-width='1.4'/%3E%3Crect x='3' y='3' width='2.5' height='2.5' fill='rgb(226,229,232)'/%3E%3C/svg%3E") left 1px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(20,23,27)'/%3E%3Cpath d='M0.7 7.3 V0.7 H7.3' fill='none' stroke='rgb(169,175,181)' stroke-width='1.4'/%3E%3Crect x='3' y='3' width='2.5' height='2.5' fill='rgb(226,229,232)'/%3E%3C/svg%3E") right 5px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(20,23,27)'/%3E%3Cpath d='M0.7 7.3 V0.7 H7.3' fill='none' stroke='rgb(169,175,181)' stroke-width='1.4'/%3E%3Crect x='3' y='3' width='2.5' height='2.5' fill='rgb(226,229,232)'/%3E%3C/svg%3E") left 1px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(20,23,27)'/%3E%3Cpath d='M0.7 7.3 V0.7 H7.3' fill='none' stroke='rgb(169,175,181)' stroke-width='1.4'/%3E%3Crect x='3' y='3' width='2.5' height='2.5' fill='rgb(226,229,232)'/%3E%3C/svg%3E") right 5px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Crect x='1' y='0' width='6' height='24' fill='rgb(20,23,27)'/%3E%3Crect x='1' y='0' width='1' height='24' fill='rgb(58,63,69)'/%3E%3Crect x='6' y='0' width='1' height='24' fill='rgb(58,63,69)'/%3E%3Crect x='2.5' y='3' width='3' height='8' fill='rgb(31,35,40)'/%3E%3Crect x='2.5' y='3' width='3' height='1' fill='rgb(91,97,104)'/%3E%3Crect x='3' y='14' width='2' height='7' fill='rgb(169,175,181)'/%3E%3C/svg%3E") left 1px top 0 / 8px 24px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Crect x='1' y='0' width='6' height='24' fill='rgb(20,23,27)'/%3E%3Crect x='1' y='0' width='1' height='24' fill='rgb(58,63,69)'/%3E%3Crect x='6' y='0' width='1' height='24' fill='rgb(58,63,69)'/%3E%3Crect x='2.5' y='3' width='3' height='8' fill='rgb(31,35,40)'/%3E%3Crect x='2.5' y='3' width='3' height='1' fill='rgb(91,97,104)'/%3E%3Crect x='3' y='14' width='2' height='7' fill='rgb(169,175,181)'/%3E%3C/svg%3E") right 5px top 0 / 8px 24px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9'%3E%3Crect x='0' y='0' width='24' height='1' fill='rgb(58,63,69)'/%3E%3Crect x='1' y='2' width='10' height='5' fill='rgb(31,35,40)'/%3E%3Crect x='1' y='2' width='10' height='1' fill='rgb(91,97,104)'/%3E%3Crect x='13' y='2' width='10' height='5' fill='rgb(31,35,40)'/%3E%3Crect x='13' y='2' width='10' height='1' fill='rgb(91,97,104)'/%3E%3Crect x='15' y='4' width='6' height='1' fill='rgb(169,175,181)'/%3E%3Crect x='0' y='8' width='24' height='1' fill='rgb(91,97,104)'/%3E%3C/svg%3E") left 0 top 0 / 24px 9px repeat-x;
 }
-@keyframes empire-starfield {
-  from { background-position: 0 0, 0 0; }
-  to   { background-position: -200px 30px, -100px 15px; }
+
+/* tiles */
+.app-tile { background: #14171B; border-color: #5B6168; border-radius: 0px; box-shadow: none; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: #1F2328; border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.app-tile:active { background: #2A2F35; }
+.tile-label { font-family: 'Libre Franklin', Bahnschrift, 'Segoe UI', sans-serif; font-size: 11px; line-height: 13.8px; font-synthesis: none; overflow: clip; overflow-clip-margin: 3px; }
+
+/* banner: surface, a top course, the faction's big motif at the right end, an icon at the left */
+#theme-banner {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 34'%3E%3Cpath d='M2 17 L60 8.4 L68 8.4 L68 25.6 L60 25.6 Z' fill='rgb(91,97,104)'/%3E%3Cpath d='M2 17 L60 8.4 L68 8.4 L68 17 Z' fill='rgb(124,130,137)'/%3E%3Cpath d='M2 17 L68 17' stroke='rgb(226,229,232)' stroke-width='0.7'/%3E%3Cpath d='M20 14.6 L30 13.3 M38 12.3 L46 11.2 M20 19.4 L30 20.7 M38 21.7 L46 22.8' stroke='rgb(58,63,69)' stroke-width='0.7'/%3E%3Crect x='54' y='13.4' width='10' height='7.2' fill='rgb(169,175,181)'/%3E%3Crect x='54' y='13.4' width='10' height='1' fill='rgb(226,229,232)'/%3E%3Crect x='56' y='11.2' width='6' height='2.2' fill='rgb(124,130,137)'/%3E%3Ccircle cx='57' cy='15.5' r='1.6' fill='rgb(91,97,104)' stroke='rgb(20,23,27)' stroke-width='0.4'/%3E%3Ccircle cx='61' cy='15.5' r='1.6' fill='rgb(91,97,104)' stroke='rgb(20,23,27)' stroke-width='0.4'/%3E%3Crect x='68' y='9.6' width='3' height='2.4' fill='rgb(226,229,232)'/%3E%3Crect x='68' y='13' width='3' height='2.4' fill='rgb(226,229,232)'/%3E%3Crect x='68' y='18.6' width='3' height='2.4' fill='rgb(226,229,232)'/%3E%3Crect x='68' y='22' width='3' height='2.4' fill='rgb(226,229,232)'/%3E%3Crect x='62.4' y='17.8' width='1.6' height='1.6' fill='rgb(208,22,29)'/%3E%3Ccircle cx='78' cy='5' r='0.7' fill='rgb(169,175,181)'/%3E%3Ccircle cx='74' cy='29' r='0.6' fill='rgb(124,130,137)'/%3E%3Ccircle cx='80' cy='21' r='0.6' fill='rgb(124,130,137)'/%3E%3Ccircle cx='8' cy='6' r='0.6' fill='rgb(124,130,137)'/%3E%3Ccircle cx='14' cy='28' r='0.7' fill='rgb(169,175,181)'/%3E%3Ccircle cx='40' cy='4' r='0.6' fill='rgb(124,130,137)'/%3E%3C/svg%3E") right 12px bottom 0 / 84px 34px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 7'%3E%3Crect x='0' y='0' width='24' height='1' fill='rgb(91,97,104)'/%3E%3Crect x='2' y='2.5' width='8' height='3' fill='rgb(31,35,40)'/%3E%3Crect x='2' y='2.5' width='8' height='1' fill='rgb(58,63,69)'/%3E%3Crect x='14' y='2.5' width='8' height='3' fill='rgb(31,35,40)'/%3E%3Crect x='14' y='2.5' width='8' height='1' fill='rgb(58,63,69)'/%3E%3Crect x='0' y='6' width='24' height='1' fill='rgb(58,63,69)'/%3E%3C/svg%3E") left 0 top 0 / 24px 7px repeat-x, #171A1E;
+  border-top-color: #5B6168;
 }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cdefs%3E%3CradialGradient id='s' cx='0.36' cy='0.3' r='0.9'%3E%3Cstop offset='0' stop-color='rgb(212,216,220)'/%3E%3Cstop offset='1' stop-color='rgb(86,92,99)'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='11' cy='11' r='9.4' fill='url(%23s)' stroke='rgb(20,23,27)' stroke-width='1'/%3E%3Cpath d='M1.8 10 H20.2' stroke='rgb(31,35,40)' stroke-width='1.5'/%3E%3Cpath d='M1.8 12.2 H20.2' stroke='rgb(124,130,137)' stroke-width='0.5'/%3E%3Ccircle cx='15.4' cy='6.6' r='2.7' fill='rgb(31,35,40)' stroke='rgb(91,97,104)' stroke-width='0.6'/%3E%3Ccircle cx='15.4' cy='6.6' r='0.9' fill='rgb(169,175,181)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: 'Libre Franklin', Bahnschrift, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 400; font-style: normal; font-synthesis: none; letter-spacing: 0.4px; color: #E2E5E8; margin-right: 90px; }

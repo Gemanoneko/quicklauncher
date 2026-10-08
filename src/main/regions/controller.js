@@ -791,6 +791,8 @@ class RegionController extends EventEmitter {
       this.byWc.set(wcId, rt.id);
       rt.win = win;
       rt.wc = win.webContents;
+      // Fullscreen removed: consume F11 before the page/default menu accelerator.
+      win.webContents.on('before-input-event',(event,input)=>{if(input.key==='F11')event.preventDefault();});
       rt.ready = false;
       this._applyShape(rt, region);
       win.webContents.on('did-start-navigation', (details) => {

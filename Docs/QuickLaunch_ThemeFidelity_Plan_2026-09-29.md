@@ -10,6 +10,13 @@ Sergei says most of the themes look weird, especially the decorative art painted
 
 4. **Delegation (2026-09-29, before Sergei went to sleep):** Judy picks which game or era each ambiguous theme follows (`diablo`, `dragon-age`, `persona-3`, `nonary-games`, `eve-online`). Sergei's words: "Decide everything yourself… Let's see what you can show me in the morning." Jane reads this as a mandate to audit, spec and implement batches overnight, committed to a work branch. **It does not cover shipping.** Nothing is merged or released until Sergei has seen the before/after, as promised to him when the plan started.
 
+5. **Morning rulings (2026-09-30):**
+   - **Batch 1 approved** as reviewed (`eb926a6`).
+   - **promise-mascot switches to the light "paper" look.** That's the bright, flat Showa print the game reviews describe, replacing the near-black grade.
+   - **Fonts: "all".** Sergei approved downloading and bundling the 7 fonts listed in `Team/Research/QuickLaunch_ThemeReferences_2026-09-29.md` § Bundling candidates (Dela Gothic One, Jost, Cinzel, Pirata One, UnifrakturCook, IM Fell English, Metamorphous; about 3.05 MiB). Each ships with its OFL.txt. The approval covers those files only. Any other font needs a new OK.
+   - **Release once, at the end.** The batches accumulate on `wip/theme-fidelity`. One final dual clearance (Futaba + Senua) and one release follow the last batch, after Sergei has seen the full before/after.
+   - **Fix the base-layout problems** from the audit's out-of-scope list, which affect every theme (e.g. Settings cut off at the default size). This is a separate work item on the same branch, done before the remaining batches, so they build on the fixed base.
+
 ## Ground rules (from the studio, stated to Sergei)
 - **Art:** original art in each franchise's style. No copied logos, game artwork or ripped assets, because the code is on GitHub. A trademark motif is evoked, never reproduced.
 - **Fonts:** free-licensed only (OFL, Apache or similar) and bundled locally, with no network fetch at runtime. Today the themes bundle no fonts: the CSP is `default-src 'self' data:`, and every theme uses font stacks that Windows already has. Bundling a new font means downloading its file, and that needs Sergei's explicit per-file OK. So **the overnight batches use installed Windows fonts only** (for example Bahnschrift, Cascadia, Yu Mincho, Constantia, Franklin Gothic, Gabriola, Sylfaen). Judy notes any theme that would clearly gain from a bundled font, and those go to Sergei as a morning question, each with file name, source and size.

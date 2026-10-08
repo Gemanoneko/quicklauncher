@@ -1,222 +1,122 @@
 /* == SECRET WORLD LEGENDS: DRAGON =============================================
-   The Dragon. Seoul. Chaos theory. The butterfly effect.
-   A single pebble can start an avalanche. They do not lead,
-   they do not follow -- they nudge. Scattered. Organic. Inevitable.
-   ============================================================================= */
+   Batch 3 tone-down (theme spec 2026-09-30, section 4). Seoul under green
+   lamps: jade and gold on green-black, a gold 서울 tag and a string of green
+   lanterns in the header, a few uneven dots and one ripple ring in the frame
+   bands, a concrete-grey banner strip with a gold coin icon and a static jade
+   serpent at the right end (Sergei 2026-09-30, Addendum A.2), pointed-hex
+   icon plates. Malgun Gothic.
+   No texture, no looping motion.
+   ============================================================================== */
 
 :root {
-  --radius:       0px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* DEEP JADE-DARK -- organic chaos beneath the Seoul city lights */
-  --bg:           #040C06;
-  --panel-bg:     rgba(5, 14, 7, 0.99);
-  --overlay-bg:   rgba(4, 10, 5, 0.97);
-  --header-bg:    rgba(32, 168, 70, 0.04);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #68A880;
-  --text-dim:     rgba(104, 160, 122, 0.83);
-
-  /* Dragon jade-green + amber chaos + shadow */
-  --accent-c:     #20A848;   /* Dragon green -- jade Seoul */
-  --accent-m:     #C89030;   /* amber chaos -- butterfly wings */
-  --accent-y:     #0C2014;   /* deep shadow */
-
-  --border:       rgba(32, 168, 70, 0.22);
-  --border-h:     rgba(32, 168, 70, 0.55);
-
-  --glow-c:       0 0 8px rgba(32,168,70,.62), 0 0 22px rgba(32,168,70,.22);
-  --glow-m:       0 0 6px rgba(200,144,48,.55), 0 0 18px rgba(200,144,48,.18);
-  --glow-y:       0 0 5px rgba(12,32,20,.42), 0 0 14px rgba(12,32,20,.14);
-
-  --pulse-glow:   inset 0 0 22px rgba(32,168,70,.06);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(32,168,70,.10);
-
-  --title-anim:   dragon-title 12s steps(1) infinite;
-
-  --tile-hover-bg:     rgba(32, 168, 70, 0.08);
-  --tile-hover-border: rgba(32, 168, 70, 0.48);
-  --tile-hover-shadow: 0 0 14px rgba(32, 168, 70, 0.22);
-  --tile-active-bg:    rgba(32, 168, 70, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(32,168,70,.58)) drop-shadow(0 0 14px rgba(200,144,48,.22));
-  --tile-icon-fx:      brightness(0.90) saturate(1.2) contrast(1.12);
-  --tile-icon-shape:   polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  --tile-label-spacing:   0.5px;
+  --bg: #07100B;
+  --panel-bg: #0F1A14;
+  --overlay-bg: #07100B;
+  --header-bg: #0B1610;
+  --font: 'Malgun Gothic', 'Segoe UI', sans-serif;
+  --text: #CFE3D4;
+  --text-dim: #8FB09A;
+  --accent-c: #2FB56A;
+  --accent-m: #E6B84F;
+  --accent-y: #CFE3D4;
+  --accent-text: #E6B84F;
+  --border: #22382B;
+  --border-h: #2FB56A;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #2FB56A;
+  --title-anim: none;
+  --tile-hover-bg: #0D2418;
+  --tile-hover-border: #2FB56A;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #0D2418;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: contrast(1.05) saturate(0.95);
+  --tile-icon-shape: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
-
-  --btn-hover-bg:   rgba(32, 168, 70, 0.10);
-  --btn-active-bg:  rgba(32, 168, 70, 0.22);
-
-  --drop-hint-border: rgba(32, 168, 70, 0.26);
-  --drop-icon-color:  rgba(32, 168, 70, 0.38);
-  --hint-sub-color:   rgba(80, 140, 96, 0.95);
-
-  --rename-dashed:    rgba(32, 168, 70, 0.42);
-  --rename-input-bg:  rgba(32, 168, 70, 0.07);
-
-  --edit-bar-bg:          rgba(200, 144, 48, 0.07);
-  --edit-bar-border:      rgba(200, 144, 48, 0.42);
-  --edit-label-color:     #C89030;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #C89030;
-  --btn-done-border:      rgba(200, 144, 48, 0.42);
-  --btn-done-hover-bg:    rgba(200, 144, 48, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(32, 168, 70, 0.42);
-
-  --update-bg:             rgba(200, 144, 48, 0.06);
-  --update-border:         rgba(200, 144, 48, 0.32);
-  --update-color:          var(--accent-m);
-  --update-btn-border:     rgba(200, 144, 48, 0.28);
-  --update-btn-hover-bg:   rgba(200, 144, 48, 0.09);
-  --update-btn-hover-glow: var(--glow-m);
-
-  --btn-close-color:      #20A848;
-  --btn-close-border:     rgba(32, 168, 70, 0.42);
-  --btn-close-hover-bg:   rgba(32, 168, 70, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(32, 168, 70, 0.07);
-  --picker-item-hover-bg:  rgba(32, 168, 70, 0.08);
-  --picker-item-active-bg: rgba(32, 168, 70, 0.16);
-  --picker-placeholder-bg: rgba(32, 168, 70, 0.07);
-
-  --skin-btn-active-bg:    rgba(32, 168, 70, 0.18);
-  --remove-btn-bg:         rgba(32, 168, 70, 0.85);
-  --remove-btn-border:     #20A848;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #14301F;
+  --btn-active-bg: #1A3D28;
+  --drop-hint-border: #2C4A38;
+  --drop-icon-color: #4E7A61;
+  --hint-sub-color: #8FB09A;
+  --rename-dashed: #2FB56A;
+  --rename-input-bg: #0D2418;
+  --edit-bar-bg: #1A1606;
+  --edit-bar-border: #C8962E;
+  --edit-label-color: #E6B84F;
+  --edit-label-glow: none;
+  --btn-done-color: #E6B84F;
+  --btn-done-border: #C8962E;
+  --btn-done-hover-bg: #362B0A;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #4E7A61;
+  --update-bg: #0F2218;
+  --update-border: #2FB56A;
+  --update-color: #CFE3D4;
+  --update-btn-border: #2FB56A;
+  --update-btn-hover-bg: #16392A;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E6B84F;
+  --btn-close-border: #C8962E;
+  --btn-close-hover-bg: #362B0A;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #0D2418;
+  --picker-item-hover-bg: #0D2418;
+  --picker-item-active-bg: #16392A;
+  --picker-placeholder-bg: #0D2418;
+  --skin-btn-active-bg: #16392A;
+  --remove-btn-bg: #A8321F;
+  --remove-btn-border: #E6B84F;
 }
 
-/* -- Fractal noise: jade-green dark tint ------------------------------------ */
-#app::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.05 0.18 0.06 0 0  0.06 0.28 0.08 0 0.01  0.03 0.10 0.04 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 30%, rgba(2,8,4,0.88) 100%),
-    radial-gradient(ellipse 35% 28% at 35% 40%, rgba(20,80,35,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 25% 20% at 75% 70%, rgba(200,144,48,0.03) 0%, transparent 55%),
-    radial-gradient(ellipse 30% 25% at 20% 80%, rgba(16,60,24,0.04) 0%, transparent 55%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #A8321F; }
 
-/* -- Header -- jade accent bar ---------------------------------------------- */
-#header::before {
-  background: linear-gradient(to bottom, #20A848, rgba(25, 130, 58, 0.28));
-  box-shadow: 0 0 10px rgba(32,168,70,0.58), 0 0 26px rgba(32,168,70,0.20);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* -- Grid: SCATTERED/ORGANIC -- conspiracy board, chaos paradigm ------------ */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ccircle cx='175' cy='152' r='22' fill='none' stroke='rgba(32,168,70,0.35)' stroke-width='1.2'/%3E%3Ccircle cx='175' cy='152' r='15' fill='rgba(12,32,18,0.30)' stroke='rgba(32,168,70,0.22)' stroke-width='0.5'/%3E%3Ccircle cx='175' cy='152' r='8' fill='none' stroke='rgba(200,144,48,0.28)' stroke-width='0.8'/%3E%3Cpath d='M 169,148 C 170,144 175,142 180,144 C 184,146 184,150 182,154 C 180,157 176,158 173,156 C 170,154 169,151 169,148 Z' fill='rgba(32,168,70,0.18)' stroke='rgba(200,144,48,0.32)' stroke-width='0.6'/%3E%3Cline x1='173' y1='145' x2='177' y2='159' stroke='rgba(200,144,48,0.20)' stroke-width='0.4'/%3E%3Cline x1='168' y1='152' x2='182' y2='152' stroke='rgba(200,144,48,0.20)' stroke-width='0.4'/%3E%3Ctext x='385' y='62' font-family='Georgia,serif' font-size='9' font-style='italic' font-weight='bold' letter-spacing='3' fill='rgba(200,144,48,0.48)' transform='rotate(-3 385 62)'%3ESEOUL%3C/text%3E%3Ctext x='60' y='305' font-family='Georgia,serif' font-size='6.5' font-style='italic' letter-spacing='1.5' fill='rgba(32,168,70,0.45)' transform='rotate(2 60 305)'%3ETHE BUTTERFLY EFFECT%3C/text%3E%3Ctext x='225' y='175' font-family='Georgia,serif' font-size='8' font-style='italic' font-weight='bold' letter-spacing='2' fill='rgba(200,144,48,0.42)'%3EBONG CHA%3C/text%3E%3Ctext x='280' y='340' font-family='Georgia,serif' font-size='6' font-style='italic' letter-spacing='1' fill='rgba(32,168,70,0.38)' transform='rotate(-1 280 340)'%3EA SINGLE PEBBLE%3C/text%3E%3Ctext x='340' y='130' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='1' fill='rgba(80,140,96,0.30)'%3ECHAOS THEORY%3C/text%3E%3Ctext x='55' y='88' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(80,140,96,0.28)' transform='rotate(4 55 88)'%3ETHE DRAGON WATCHES%3C/text%3E%3Ctext x='380' y='240' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(200,144,48,0.25)' transform='rotate(-5 380 240)'%3ENOTHING IS RANDOM%3C/text%3E%3Ctext x='125' y='230' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(32,168,70,0.28)'%3ENUDGE%3C/text%3E%3Ctext x='430' y='310' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(80,140,96,0.25)' transform='rotate(3 430 310)'%3EAVALANCHE%3C/text%3E%3Ctext x='90' y='185' font-family='Georgia,serif' font-size='4.5' font-style='italic' fill='rgba(32,168,70,0.25)' transform='rotate(-7 90 185)'%3ETHE HONEYCOMB%3C/text%3E%3Cline x1='175' y1='170' x2='225' y2='172' stroke='rgba(32,168,70,0.18)' stroke-width='0.5'/%3E%3Cline x1='160' y1='305' x2='275' y2='340' stroke='rgba(32,168,70,0.14)' stroke-width='0.4' stroke-dasharray='4,6'/%3E%3Cline x1='385' y1='68' x2='345' y2='126' stroke='rgba(200,144,48,0.14)' stroke-width='0.4' stroke-dasharray='3,5'/%3E%3Cline x1='130' y1='88' x2='160' y2='140' stroke='rgba(32,168,70,0.12)' stroke-width='0.4' stroke-dasharray='3,7'/%3E%3Cline x1='137' y1='228' x2='168' y2='173' stroke='rgba(32,168,70,0.12)' stroke-width='0.4' stroke-dasharray='2,6'/%3E%3Cline x1='290' y1='175' x2='340' y2='128' stroke='rgba(200,144,48,0.10)' stroke-width='0.4' stroke-dasharray='3,5'/%3E%3Cline x1='370' y1='340' x2='430' y2='312' stroke='rgba(80,140,96,0.10)' stroke-width='0.4' stroke-dasharray='2,5'/%3E%3Cline x1='395' y1='240' x2='437' y2='308' stroke='rgba(200,144,48,0.08)' stroke-width='0.3' stroke-dasharray='4,8'/%3E%3Cpolygon points='300,72 325,86 325,114 300,128 275,114 275,86' fill='rgba(12,32,18,0.22)' stroke='rgba(32,168,70,0.25)' stroke-width='0.8'/%3E%3Cpolygon points='300,78 320,89 320,111 300,122 280,111 280,89' fill='none' stroke='rgba(32,168,70,0.12)' stroke-width='0.4'/%3E%3Cpolygon points='420,170 438,180 438,200 420,210 402,200 402,180' fill='rgba(12,32,18,0.18)' stroke='rgba(32,168,70,0.18)' stroke-width='0.5'/%3E%3Cpolygon points='68,260 80,253 92,260 92,274 80,281 68,274' fill='rgba(12,32,18,0.15)' stroke='rgba(200,144,48,0.15)' stroke-width='0.5'/%3E%3Ccircle cx='468' cy='48' r='0.6' fill='rgba(200,144,48,0.18)'/%3E%3Ccircle cx='32' cy='42' r='0.5' fill='rgba(32,168,70,0.15)'/%3E%3Ccircle cx='445' cy='280' r='0.7' fill='rgba(32,168,70,0.10)'/%3E%3Ccircle cx='25' cy='340' r='0.8' fill='rgba(200,144,48,0.08)'/%3E%3Ccircle cx='480' cy='150' r='0.4' fill='rgba(32,168,70,0.12)'/%3E%3Ccircle cx='15' cy='170' r='0.5' fill='rgba(200,144,48,0.10)'/%3E%3Ctext x='250' y='370' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(80,140,96,0.22)'%3ETHE DRAGON -- SEOUL -- SECRET WORLD -- CHAOS IS THE DESIGN%3C/text%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: dragon-chaos 12s ease-in-out infinite;
-}
-
-/* CPU-efficient: opacity-only (tier 1) */
-@keyframes dragon-chaos {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* jade-amber flash -- synchronized blackout */
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
-/* -- Flavor content --------------------------------------------------------- */
+/* header: a 2 px jade line inside it, the Hangul tag and a string of lanterns in the art zone */
+#header { border-bottom-color: #2FB56A; box-shadow: inset 0 -1px 0 #2FB56A; }
+#header::before { background: #2FB56A; box-shadow: none; }
 #header::after {
-  content: 'THE DRAGON // SEOUL // THE BUTTERFLY EFFECT';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(80, 152, 96, 0.58);
-  pointer-events: none; white-space: nowrap;
+  content: '서울'; position: absolute; top: 10px; right: 136.67px; left: auto;
+  width: 84px; height: 20px; white-space: nowrap;
+  font: 700 11px/20px 'Malgun Gothic', 'Segoe UI', sans-serif; letter-spacing: 1px; color: #E6B84F;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 54 20'%3E%3Cpath d='M0 2.5 Q14 6 27 3 T54 4.5' fill='none' stroke='rgb(112,132,120)' stroke-width='0.9'/%3E%3Cpath d='M7 3.6 V6.3' stroke='rgb(112,132,120)' stroke-width='0.8'/%3E%3Crect x='5.3' y='5.9' width='3.3' height='1.6' fill='rgb(217,176,74)'/%3E%3Cellipse cx='7' cy='9.5' rx='3.0' ry='3.4' fill='rgb(47,181,106)'/%3E%3Cellipse cx='7' cy='9.5' rx='1.3' ry='1.5' fill='rgb(160,240,196)'/%3E%3Crect x='5.8' y='12.7' width='2.4' height='1.2' fill='rgb(217,176,74)'/%3E%3Cpath d='M19 3.6 V10.9' stroke='rgb(112,132,120)' stroke-width='0.8'/%3E%3Crect x='17.1' y='10.5' width='3.7' height='1.6' fill='rgb(217,176,74)'/%3E%3Cellipse cx='19' cy='14.5' rx='3.4' ry='3.8' fill='rgb(47,181,106)'/%3E%3Cellipse cx='19' cy='14.5' rx='1.4' ry='1.7' fill='rgb(160,240,196)'/%3E%3Crect x='17.6' y='18.1' width='2.7' height='1.2' fill='rgb(217,176,74)'/%3E%3Cpath d='M31 3.6 V7.3' stroke='rgb(112,132,120)' stroke-width='0.8'/%3E%3Crect x='29.4' y='6.9' width='3.3' height='1.6' fill='rgb(217,176,74)'/%3E%3Cellipse cx='31' cy='10.5' rx='3.0' ry='3.4' fill='rgb(47,181,106)'/%3E%3Cellipse cx='31' cy='10.5' rx='1.3' ry='1.5' fill='rgb(160,240,196)'/%3E%3Crect x='29.8' y='13.7' width='2.4' height='1.2' fill='rgb(217,176,74)'/%3E%3Cpath d='M43 3.6 V10.8' stroke='rgb(112,132,120)' stroke-width='0.8'/%3E%3Crect x='41.1' y='10.4' width='3.7' height='1.6' fill='rgb(217,176,74)'/%3E%3Cellipse cx='43' cy='14.4' rx='3.4' ry='3.8' fill='rgb(47,181,106)'/%3E%3Cellipse cx='43' cy='14.4' rx='1.4' ry='1.7' fill='rgb(160,240,196)'/%3E%3Crect x='41.6' y='18.0' width='2.7' height='1.2' fill='rgb(217,176,74)'/%3E%3C/svg%3E") no-repeat right 0 top 0 / 54px 20px;
+  pointer-events: none;
 }
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: 'Malgun Gothic', 'Segoe UI', sans-serif; font-weight: 700; letter-spacing: 3px; color: #E6B84F; text-shadow: none; }
+#title .accent { color: #2FB56A; }
 
-/* -- Ghost text: scattered Dragon wisdom ------------------------------------ */
-#grid-container::after {
-  content: 'A SINGLE\APEBBLE\ACAN START\AAN AVALANCHE\ATHE DRAGON\AWATCHES';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(32, 168, 70, 0.08); white-space: pre;
-  animation: dragon-readout 12s ease-in-out infinite;
-}
-
-/* CPU-efficient: color-only (tier 3) */
-@keyframes dragon-readout {
-  0%, 100% { color: rgba(32,168,70,.08); }
-  28%       { color: rgba(32,168,70,.12); }
-  65%       { color: rgba(32,168,70,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(200,144,48,.15); }
-  92%       { color: rgba(32,168,70,.08); }
-}
-
-#edit-bar::after {
-  content: 'CHAOS IS A TOOL // THE DRAGON NUDGES';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(200, 144, 48, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* -- Title: jade-amber contemplative pulse with 88% sync (tier 3) ----------- */
-@keyframes dragon-title {
-  0%        { color: #68A880; text-shadow: 0 0 6px rgba(32,168,70,.48), 0 0 18px rgba(32,168,70,.16); }
-  60%       { color: #68A880; text-shadow: 0 0 6px rgba(32,168,70,.45); }
-  62%       { color: #50D878; text-shadow: 0 0 10px rgba(80,216,120,.70), 0 0 28px rgba(32,168,70,.25); opacity: 0.85; }
-  63%       { color: #C89030; text-shadow: 0 0 6px rgba(200,144,48,.55); opacity: 0.6; }
-  64%       { color: #68A880; text-shadow: 0 0 8px rgba(32,168,70,.55); opacity: 1; }
-  87%       { color: #68A880; text-shadow: 0 0 6px rgba(32,168,70,.42); }
-  88%       { color: #90EAA8; text-shadow: 0 0 22px rgba(144,234,168,.82), 0 0 50px rgba(32,168,70,.45); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #68A880; text-shadow: 0 0 8px rgba(32,168,70,.55); opacity: 1; }
-  100%      { color: #68A880; text-shadow: 0 0 6px rgba(32,168,70,.48), 0 0 18px rgba(32,168,70,.16); }
-}
-
-/* -- App: jade chaos border -- box-shadow 12s (tier 5) ---------------------- */
-#app { animation: dragon-border 12s ease-in-out infinite; }
-@keyframes dragon-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(32,168,70,.22), inset 0 0 20px rgba(32,168,70,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(32,168,70,.45), inset 0 0 28px rgba(200,144,48,.05); }
-  65%      { box-shadow: 0 0 0 1px rgba(12,32,20,.22), inset 0 0 18px rgba(12,32,20,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(128,224,152,.80), inset 0 0 50px rgba(32,168,70,.15), 0 0 18px rgba(32,168,70,.28); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(32,168,70,.35), inset 0 0 22px rgba(32,168,70,.05); }
-}
-
-/* -- Banner ----------------------------------------------------------------- */
-#theme-banner { background: rgba(4, 10, 5, 0.99); border-top-color: rgba(32, 168, 70, 0.22); }
-#theme-banner::before { content: '\262F'; color: #20A848; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 1px; color: rgba(80, 152, 112, 0.62); }
-
-/* -- Particles: jade circles drifting RANDOM directions (multi-layer) ------- */
-#particles {
+/* frame: scattered dots on the pad, one ripple ring */
+#grid-container {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='42' cy='70' r='1.8' fill='rgba(32,168,70,0.22)'/%3E%3Ccircle cx='130' cy='190' r='1.2' fill='rgba(200,144,48,0.16)'/%3E%3Ccircle cx='170' cy='340' r='2' fill='rgba(32,168,70,0.14)'/%3E%3Ccircle cx='75' cy='280' r='1' fill='rgba(80,140,96,0.18)'/%3E%3Ccircle cx='155' cy='50' r='1.5' fill='rgba(32,168,70,0.12)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='55' cy='120' r='1.5' fill='rgba(32,168,70,0.14)'/%3E%3Ccircle cx='190' cy='380' r='2' fill='rgba(200,144,48,0.10)'/%3E%3Ccircle cx='240' cy='80' r='1' fill='rgba(32,168,70,0.12)'/%3E%3Ccircle cx='110' cy='460' r='1.8' fill='rgba(80,140,96,0.08)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='35' cy='420' r='1.2' fill='rgba(200,144,48,0.14)'/%3E%3Ccircle cx='180' cy='200' r='1.8' fill='rgba(32,168,70,0.10)'/%3E%3Ccircle cx='100' cy='60' r='1.5' fill='rgba(80,140,96,0.12)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 400px, 280px 560px, 240px 480px;
-  animation: dragon-drift 12s linear infinite;
-}
-@keyframes dragon-drift {
-  from { background-position: 0 0, 0 0, 0 0; }
-  to   { background-position: -30px -400px, 25px 560px, -50px -240px; }
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 424 10'%3E%3Ccircle cx='38' cy='5' r='1.6' fill='rgb(47,181,106)'/%3E%3Ccircle cx='71' cy='3.5' r='1' fill='rgb(217,176,74)'/%3E%3Ccircle cx='139' cy='6' r='1.9' fill='rgb(47,181,106)' fill-opacity='0.8'/%3E%3Ccircle cx='207' cy='4' r='1.1' fill='rgb(217,176,74)'/%3E%3Ccircle cx='262' cy='6.5' r='1.5' fill='rgb(47,181,106)'/%3E%3Ccircle cx='331' cy='3.5' r='1.2' fill='rgb(47,181,106)' fill-opacity='0.8'/%3E%3Ccircle cx='377' cy='5.5' r='1' fill='rgb(217,176,74)'/%3E%3C/svg%3E") left 0 top 1px / 424px 10px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 212'%3E%3Ccircle cx='5' cy='24' r='2.4' fill='rgb(47,181,106)'/%3E%3Ccircle cx='7' cy='47' r='1.2' fill='rgb(217,176,74)'/%3E%3Ccircle cx='3.5' cy='103' r='1.8' fill='rgb(47,181,106)'/%3E%3Ccircle cx='6.5' cy='131' r='1.1' fill='rgb(217,176,74)'/%3E%3Ccircle cx='4' cy='176' r='2.1' fill='rgb(47,181,106)' fill-opacity='0.8'/%3E%3C/svg%3E") left 1px top 0 / 10px 212px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 212'%3E%3Ccircle cx='4.5' cy='12' r='1.3' fill='rgb(217,176,74)'/%3E%3Ccircle cx='6' cy='66' r='1.9' fill='rgb(47,181,106)'/%3E%3Ccircle cx='5' cy='118' r='4' fill='none' stroke='rgb(47,181,106)' stroke-width='0.9' stroke-opacity='0.8'/%3E%3Ccircle cx='5' cy='118' r='1.2' fill='rgb(217,176,74)'/%3E%3Ccircle cx='3.5' cy='168' r='1.5' fill='rgb(47,181,106)' fill-opacity='0.8'/%3E%3Ccircle cx='6.5' cy='196' r='1.1' fill='rgb(217,176,74)'/%3E%3C/svg%3E") right 5px top 0 / 10px 212px no-repeat;
 }
 
-/* -- Tile: hexagonal chaos pulse on hover ----------------------------------- */
-.app-tile::before {
-  background: transparent;
-  border: 1px solid rgba(32, 168, 70, 0.30);
-}
-.app-tile:hover::before { animation: tile-flicker .4s steps(1, end) infinite; }
+/* tiles: pointed-hex plates, jade edge, gold label on hover */
+.app-tile { background: #0F1A14; border-color: #1B2E23; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: var(--tile-hover-bg); border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.tile-label { font-family: 'Malgun Gothic', 'Segoe UI', sans-serif; }
+.app-tile:hover .tile-label, .app-tile:focus-visible .tile-label { color: #E6B84F; }
+
+/* banner: a concrete strip, a gold coin, a jade serpent at the right end */
+#theme-banner { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 34'%3E%3Cpolygon points='2.1,28.2 3.3,27.5 4.6,26.8 5.8,26.1 7,25.4 8.2,24.6 9.3,23.7 10.5,22.8 11.5,21.8 12.5,20.7 13.4,19.5 14.2,18.4 15,17.3 15.8,16.3 16.7,15.3 17.5,14.6 18.5,14 19.6,13.6 20.7,13.3 21.8,13.2 22.8,13.4 23.7,13.7 24.5,14.1 25.2,14.8 26,15.7 26.8,16.7 27.6,17.8 28.4,19 29.3,20.2 30.3,21.3 31.2,22.3 32.1,23.3 33,24.4 34,25.5 35,26.6 36.2,27.6 37.5,28.6 39,29.5 40.7,30 42.3,30.4 43.9,30.5 45.5,30.5 47,30.4 48.6,30.1 50.1,29.8 51.7,29.2 53.2,28.4 54.5,27.6 55.6,26.7 56.7,25.9 57.8,25.1 58.7,24.5 59.7,24.1 60.6,23.9 61.7,23.9 62.9,24 64.3,24.1 65.8,24.3 67.5,24.3 69.1,24 70.6,23.7 72,23.3 73.5,22.8 75,22.2 76.4,21.4 77.8,20.3 78.9,19 79.9,17.7 80.6,16.3 81.2,14.9 81.8,13.3 82,11.5 81.8,9.6 81.1,7.9 80,6.3 78.3,5.1 76.4,4.7 74.8,4.7 73.4,4.8 72,4.9 72.1,4.3 69.5,3.5 65.9,4.5 64,6.1 65.7,7.9 69.3,9.3 71.9,8.7 72,8.1 73.4,8.2 74.8,8.2 76,8.2 76.8,8.4 77.3,8.9 77.8,9.6 78.1,10.4 78.1,11.3 77.9,12.3 77.5,13.3 76.9,14.4 76.3,15.4 75.6,16.3 74.9,17.1 74,17.8 73.1,18.3 72,18.8 70.8,19.2 69.6,19.5 68.3,19.7 67.1,19.9 66,19.9 64.8,19.8 63.4,19.6 61.8,19.5 60.1,19.5 58.4,19.9 56.7,20.6 55.3,21.4 54.1,22.3 53,23.2 51.9,24 50.9,24.7 50,25.2 48.9,25.5 47.7,25.8 46.5,26 45.3,26.1 44.1,26.1 42.9,26 41.8,25.8 40.8,25.5 39.9,25 39,24.3 38.1,23.5 37.2,22.5 36.3,21.5 35.4,20.5 34.4,19.4 33.5,18.4 32.6,17.5 31.8,16.4 31,15.3 30.2,14.2 29.3,13 28.2,11.8 26.8,10.6 25.1,9.9 23.3,9.5 21.6,9.5 19.9,9.8 18.3,10.4 16.9,11.1 15.6,12.1 14.4,13.3 13.6,14.6 12.8,15.8 12.1,17.1 11.4,18.3 10.7,19.4 10,20.5 9.2,21.5 8.2,22.5 7.2,23.4 6.2,24.3 5.1,25.2 4,26.1 3,26.9 1.9,27.8' fill='rgb(47,181,106)' stroke='rgb(18,100,58)' stroke-width='1.4' stroke-linejoin='round' paint-order='stroke'/%3E%3Cpolyline points='17.7,12.6 20.3,11.6 23.1,11.4 25.7,12.4 27.6,14.3 29.3,16.6 31,18.8 32.8,20.9 34.7,23 36.6,25 38.7,26.8 41.2,27.9 44,28.3 46.8,28.2 49.5,27.6 52,26.6 54.3,24.9 56.5,23.3 59,22 61.8,21.7 64.5,22 67.3,22.1 70.1,21.6 72.7,20.8' fill='none' stroke='rgb(160,240,196)' stroke-width='0.9' stroke-linecap='round' stroke-linejoin='round' stroke-opacity='0.85'/%3E%3Ccircle cx='68.5' cy='7.5' r='0.95' fill='rgb(217,176,74)'/%3E%3Cpath d='M64,6.1L62.4,6M62.4,6L60.4,7.2M62.4,6L60.5,4.6' fill='none' stroke='rgb(217,176,74)' stroke-width='0.6' stroke-linecap='round'/%3E%3C/svg%3E") right 12px bottom 0 / 84px 34px no-repeat, #252B28; border-top: 2px solid #2FB56A; }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath fill-rule='evenodd' d='M11 1 A10 10 0 1 1 10.99 1 Z M7.8 7.8 H14.2 V14.2 H7.8 Z' fill='rgb(217,176,74)'/%3E%3Ccircle cx='11' cy='11' r='8.2' fill='none' stroke='rgb(140,104,30)' stroke-width='0.9'/%3E%3Cpath d='M7 7 H15 V15 H7 Z M7.8 7.8 V14.2 H14.2 V7.8 Z' fill-rule='evenodd' fill='rgb(140,104,30)'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: 'Malgun Gothic', 'Segoe UI', sans-serif; font-weight: 400; letter-spacing: 0.3px; color: #DCEBDD; margin-right: 90px; }

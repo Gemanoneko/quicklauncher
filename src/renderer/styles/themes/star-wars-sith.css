@@ -1,214 +1,132 @@
-/* ══ STAR WARS: SITH ══════════════════════════════════════════════════════════
-   The Dark Side. Peace is a lie. There is only passion.
-   Through passion I gain strength. Through strength I gain power.
-   Through power I gain victory. Through victory my chains are broken.
-   ══════════════════════════════════════════════════════════════════════════════ */
+/* == STAR WARS: SITH ==========================================================
+   Batch 6 tone-down with a new frame (theme spec 2026-10-01, section 5).
+   Obsidian with a crimson edge-light: jagged cut corners on the window,
+   black-glass slots with red blade lines, three inverted talons in the header,
+   an open holocron and a saber in the banner, a one-cut plate; crimson is a
+   line and a light, never a fill. Title in bundled Oxanium 700 (spec section
+   8, approved by Sergei 2026-10-01), tracking 4 px: at the spec value of 5 px
+   it ended at x 159.2, over the 156 gate, so the first ladder step was taken
+   (Foundation B2 rule 5). Labels stay Bahnschrift 600 SemiCondensed because
+   Oxanium has no Cyrillic and the labels are user text (spec section 8: check
+   Cyrillic first). No texture, no looping motion.
+   ============================================================================== */
 
 :root {
-  --radius:       0px;
-  --app-clip:     none;
-  --overlay-clip: none;
-
-  /* HIGH CONTRAST DUO — only red + black. Nothing else. */
-  --bg:           #080000;
-  --panel-bg:     rgba(12, 0, 0, 0.99);
-  --overlay-bg:   rgba(8, 0, 0, 0.97);
-  --header-bg:    rgba(200, 16, 16, 0.04);
-
-  --font:         'Segoe UI', 'Arial', sans-serif;
-  --text:         #D88080;
-  --text-dim:     rgba(200, 90, 90, 0.98);
-
-  --accent-c:     #CC1010;   /* Sith red — pure, vivid */
-  --accent-m:     #880808;   /* dark blood */
-  --accent-y:     #401010;   /* deep ember */
-
-  --border:       rgba(200, 16, 16, 0.25);
-  --border-h:     rgba(200, 16, 16, 0.60);
-
-  --glow-c:       0 0 8px rgba(200,16,16,.65), 0 0 22px rgba(200,16,16,.22);
-  --glow-m:       0 0 6px rgba(136,8,8,.55), 0 0 18px rgba(136,8,8,.18);
-  --glow-y:       0 0 5px rgba(64,16,16,.45), 0 0 14px rgba(64,16,16,.14);
-
-  --pulse-glow:   inset 0 0 22px rgba(200,16,16,.07);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(200,16,16,.10);
-
-  --title-anim:   sith-title 10s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(200, 16, 16, 0.08);
-  --tile-hover-border: rgba(200, 16, 16, 0.50);
-  --tile-hover-shadow: 0 0 14px rgba(200, 16, 16, 0.25);
-  --tile-active-bg:    rgba(200, 16, 16, 0.18);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,16,16,.60)) drop-shadow(0 0 14px rgba(200,16,16,.25));
-  --tile-icon-fx:      brightness(0.85) saturate(1.4) contrast(1.2);
-  --tile-icon-shape:   polygon(0% 0%, 50% 12%, 100% 0%, 100% 100%, 0% 100%);
-  --tile-label-spacing:   1.5px;
+  --radius: 0px;
+  --app-clip: polygon(14px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 8px 100%, 0 calc(100% - 8px), 0 14px);
+  --overlay-clip: polygon(14px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 8px 100%, 0 calc(100% - 8px), 0 14px);
+  --bg: #0A0708;
+  --panel-bg: #110C0E;
+  --overlay-bg: #0A0708;
+  --header-bg: #150E10;
+  --font: Bahnschrift, 'Segoe UI', sans-serif;
+  --text: #DCD6D2;
+  --text-dim: #ABA39F;
+  --accent-c: #E5333B;
+  --accent-m: #FF6B72;
+  --accent-y: #E5333B;
+  --accent-text: #FF7E84;
+  --border: #666A70;
+  --border-h: #E5333B;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 3px #E5333B;
+  --title-anim: none;
+  --tile-hover-bg: #2A0C10;
+  --tile-hover-border: #E5333B;
+  --tile-hover-shadow: inset 0 -2px 0 #E5333B;
+  --tile-active-bg: #3A1016;
+  --tile-icon-glow: drop-shadow(0 0 0 rgba(0,0,0,0));
+  --tile-icon-fx: brightness(1.1) saturate(0.88);
+  --tile-icon-shape: polygon(0 0, 74% 0, 100% 26%, 100% 100%, 0 100%);
+  --tile-label-spacing: 0.5px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
-  --app-entrance-anim:   entrance-zoom 1.5s ease-out forwards;
-
-  --btn-hover-bg:   rgba(200, 16, 16, 0.10);
-  --btn-active-bg:  rgba(200, 16, 16, 0.22);
-
-  --drop-hint-border: rgba(200, 16, 16, 0.28);
-  --drop-icon-color:  rgba(200, 16, 16, 0.38);
-  --hint-sub-color:   #C85050;
-
-  --rename-dashed:    rgba(200, 16, 16, 0.42);
-  --rename-input-bg:  rgba(200, 16, 16, 0.07);
-
-  --edit-bar-bg:          rgba(136, 8, 8, 0.08);
-  --edit-bar-border:      rgba(136, 8, 8, 0.42);
-  --edit-label-color:     #880808;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #880808;
-  --btn-done-border:      rgba(136, 8, 8, 0.42);
-  --btn-done-hover-bg:    rgba(136, 8, 8, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(200, 16, 16, 0.42);
-
-  --update-bg:             rgba(64, 16, 16, 0.06);
-  --update-border:         rgba(200, 16, 16, 0.30);
-  --update-color:          var(--accent-c);
-  --update-btn-border:     rgba(200, 16, 16, 0.28);
-  --update-btn-hover-bg:   rgba(200, 16, 16, 0.08);
-  --update-btn-hover-glow: var(--glow-c);
-
-  --btn-close-color:      #CC1010;
-  --btn-close-border:     rgba(200, 16, 16, 0.42);
-  --btn-close-hover-bg:   rgba(200, 16, 16, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(200, 16, 16, 0.07);
-  --picker-item-hover-bg:  rgba(200, 16, 16, 0.08);
-  --picker-item-active-bg: rgba(200, 16, 16, 0.16);
-  --picker-placeholder-bg: rgba(200, 16, 16, 0.07);
-
-  --skin-btn-active-bg:    rgba(200, 16, 16, 0.18);
-  --remove-btn-bg:         rgba(200, 16, 16, 0.88);
-  --remove-btn-border:     #CC1010;
+  --tile-label-weight: 600;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: entrance-fade 0.8s ease-out forwards;
+  --btn-hover-bg: #3A1016;
+  --btn-active-bg: #4F161E;
+  --drop-hint-border: #4A4E54;
+  --drop-icon-color: #7A5058;
+  --hint-sub-color: #ABA39F;
+  --rename-dashed: #E5333B;
+  --rename-input-bg: #2A0C10;
+  --edit-bar-bg: #2A0A0E;
+  --edit-bar-border: #B3121A;
+  --edit-label-color: #FF6B72;
+  --edit-label-glow: none;
+  --btn-done-color: #FF6B72;
+  --btn-done-border: #B3121A;
+  --btn-done-hover-bg: #471218;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #9EA2A8;
+  --update-bg: #171114;
+  --update-border: #E0A030;
+  --update-color: #FF7E84;
+  --update-btn-border: #E0A030;
+  --update-btn-hover-bg: #2A1C0C;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #FF7E84;
+  --btn-close-border: #B3121A;
+  --btn-close-hover-bg: #2A0C10;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #2A0C10;
+  --picker-item-hover-bg: #2A0C10;
+  --picker-item-active-bg: #3A1016;
+  --picker-placeholder-bg: #2A0C10;
+  --skin-btn-active-bg: #3A1016;
+  --remove-btn-bg: #B3121A;
+  --remove-btn-border: #FF8A90;
 }
 
-/* ── Dark side grain + blood vignette ────────────────────────────────────── */
-#app::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.4 0.05 0.05 0 0.02  0.08 0.01 0.01 0 0  0.04 0.005 0.005 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 25%, rgba(4,0,0,0.90) 100%),
-    radial-gradient(ellipse 45% 35% at 50% 100%, rgba(120,5,5,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 25% at 50% 0%, rgba(80,0,0,0.05) 0%, transparent 55%);
-  background-size: 200px 200px, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+#app-version { color: var(--accent-text); }
+.btn-remove:hover { background: #B3121A; }
+.hotkey-input::placeholder, .theme-search::placeholder { color: var(--text-dim); }
 
-/* ── Header — Sith red accent bar ────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #CC1010, rgba(150, 10, 10, 0.25));
-  box-shadow: 0 0 10px rgba(200,16,16,0.60), 0 0 26px rgba(200,16,16,0.20);
-}
+/* window: no texture layer */
+#app::after { background: none; }
 
-/* ── Grid: BOTTOM-HEAVY — Sith Holocron inverted pyramid in lower half ──── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='45' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='3' fill='rgba(200,16,16,0.30)'%3EPEACE IS A LIE%3C/text%3E%3Ctext x='150' y='80' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.20)'%3ETHERE IS ONLY PASSION%3C/text%3E%3Ctext x='350' y='100' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.18)'%3ETHROUGH PASSION%3C/text%3E%3Ctext x='100' y='125' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.15)'%3EI GAIN STRENGTH%3C/text%3E%3Ctext x='400' y='65' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.14)'%3ETHROUGH STRENGTH%3C/text%3E%3Ctext x='80' y='160' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(200,16,16,0.12)'%3EI GAIN POWER%3C/text%3E%3Cpath d='M 250,150 L 370,340 L 130,340 Z' fill='rgba(30,0,0,0.50)' stroke='rgba(200,16,16,0.42)' stroke-width='2'/%3E%3Cpath d='M 250,165 L 358,335 L 142,335 Z' fill='none' stroke='rgba(200,16,16,0.20)' stroke-width='0.5'/%3E%3Cline x1='250' y1='150' x2='250' y2='340' stroke='rgba(200,16,16,0.15)' stroke-width='0.5'/%3E%3Cline x1='130' y1='340' x2='370' y2='340' stroke='rgba(200,16,16,0.15)' stroke-width='0.5'/%3E%3Cline x1='190' y1='245' x2='310' y2='245' stroke='rgba(200,16,16,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='260' r='22' fill='rgba(80,0,0,0.40)' stroke='rgba(200,16,16,0.38)' stroke-width='1.2'/%3E%3Ccircle cx='250' cy='260' r='14' fill='rgba(120,0,0,0.35)' stroke='rgba(200,16,16,0.22)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='260' r='5' fill='rgba(200,16,16,0.55)'/%3E%3Ccircle cx='250' cy='260' r='2' fill='rgba(255,40,40,0.70)'/%3E%3Cline x1='250' y1='150' x2='228' y2='260' stroke='rgba(200,16,16,0.18)' stroke-width='0.5' stroke-dasharray='3,5'/%3E%3Cline x1='250' y1='150' x2='272' y2='260' stroke='rgba(200,16,16,0.18)' stroke-width='0.5' stroke-dasharray='3,5'/%3E%3Cline x1='130' y1='340' x2='228' y2='260' stroke='rgba(200,16,16,0.12)' stroke-width='0.5' stroke-dasharray='3,5'/%3E%3Cline x1='370' y1='340' x2='272' y2='260' stroke='rgba(200,16,16,0.12)' stroke-width='0.5' stroke-dasharray='3,5'/%3E%3Ctext x='250' y='300' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='6' letter-spacing='3' fill='rgba(200,16,16,0.42)'%3ESITH HOLOCRON%3C/text%3E%3Ctext x='250' y='315' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5' letter-spacing='2' fill='rgba(136,8,8,0.30)'%3EDARK SIDE KNOWLEDGE%3C/text%3E%3Ctext x='250' y='358' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='5.5' letter-spacing='2' fill='rgba(200,16,16,0.22)'%3ETHE FORCE SHALL FREE ME%3C/text%3E%3Ccircle cx='60' cy='50' r='0.7' fill='rgba(200,16,16,0.18)'/%3E%3Ccircle cx='440' cy='45' r='0.5' fill='rgba(200,16,16,0.14)'/%3E%3Ccircle cx='45' cy='200' r='0.8' fill='rgba(200,16,16,0.10)'/%3E%3Ccircle cx='455' cy='180' r='0.6' fill='rgba(200,16,16,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: sith-holocron 10s ease-in-out infinite;
-}
-
-@keyframes sith-holocron {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* the dark side consumes — synchronized blackout */
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
-/* ── Flavor content ──────────────────────────────────────────────────────── */
+/* header: a 3 px line inside it, the faction's emblem in the art zone */
+#header { background: linear-gradient(180deg, #150E10 0, #0F090B 100%); border-bottom-color: #E5333B; box-shadow: inset 0 -2px 0 #E5333B; }
+#header::before { background: #E5333B; box-shadow: none; }
 #header::after {
-  content: 'SITH ORDER // DARK SIDE // THE FORCE SHALL FREE ME';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(220, 50, 50, 0.65);
-  pointer-events: none; white-space: nowrap;
+  content: ''; position: absolute; top: 10px; right: 136.67px; left: auto;
+  width: 84px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 20'%3E%3Crect x='2' y='1.5' width='80' height='1' fill='rgb(102,106,112)'/%3E%3Cpath d='M13 2.5 H31 L22 16.5 Z' fill='rgb(24,16,18)' stroke='rgb(158,162,168)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M22 16.5 L31 2.5' stroke='rgb(229,51,59)' stroke-width='1.1'/%3E%3Cpath d='M32 2.5 H52 L42 19 Z' fill='rgb(24,16,18)' stroke='rgb(158,162,168)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M42 19 L52 2.5' stroke='rgb(229,51,59)' stroke-width='1.3'/%3E%3Cpath d='M42 19 L37 11' stroke='rgb(74,10,14)' stroke-width='1'/%3E%3Cpath d='M53 2.5 H71 L62 16.5 Z' fill='rgb(24,16,18)' stroke='rgb(158,162,168)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M62 16.5 L71 2.5' stroke='rgb(229,51,59)' stroke-width='1.1'/%3E%3C/svg%3E") no-repeat 0 0 / 84px 20px;
+  pointer-events: none;
 }
+#header:has(#filter-chip:not(.hidden))::after { display: none; }
+#title { font-family: Oxanium, Bahnschrift, 'Segoe UI', sans-serif; font-weight: 700; font-stretch: 87.5%; font-style: normal; font-synthesis: none; line-height: 1.2; font-size: 12px; letter-spacing: 4px; color: #EAE3E0; text-shadow: none; }
+#title .accent { color: #FF5A62; }
 
-#grid-container::after {
-  content: 'PEACE IS\AA LIE\A-----------\ATHERE IS\AONLY\APASSION\A-----------\ATHE DARK\ASIDE\ACONSUMES';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(200, 16, 16, 0.08); white-space: pre;
-  animation: sith-readout 10s ease-in-out infinite;
-}
-
-@keyframes sith-readout {
-  0%, 100% { color: rgba(200,16,16,.08); }
-  28%       { color: rgba(200,16,16,.12); }
-  65%       { color: rgba(200,16,16,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(200,16,16,.16); }
-  92%       { color: rgba(200,16,16,.08); }
-}
-
-#edit-bar::after {
-  content: 'EMBRACE THE DARK SIDE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 8px; letter-spacing: 2.5px; color: rgba(136, 8, 8, 0.42);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 5px; }
-
-/* ── Title: dark side pulse with 88% sync ────────────────────────────────── */
-@keyframes sith-title {
-  0%        { color: #D88080; text-shadow: 0 0 6px rgba(200,16,16,.50), 0 0 18px rgba(200,16,16,.18); }
-  35%       { color: #E84040; text-shadow: 0 0 12px rgba(200,16,16,.72), 0 0 30px rgba(200,16,16,.28); }
-  65%       { color: #AA5050; text-shadow: 0 0 4px rgba(160,40,40,.35); }
-  87%       { color: #D88080; text-shadow: 0 0 6px rgba(200,16,16,.45); }
-  88%       { color: #FF9090; text-shadow: 0 0 22px rgba(255,128,128,.85), 0 0 50px rgba(200,16,16,.50); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #D88080; text-shadow: 0 0 8px rgba(200,16,16,.58); opacity: 1; }
-  100%      { color: #D88080; text-shadow: 0 0 6px rgba(200,16,16,.50), 0 0 18px rgba(200,16,16,.18); }
-}
-
-/* ── App: dark side pulse — 10s/88% sync ─────────────────────────────────── */
-#app { animation: sith-border 10s ease-in-out infinite; }
-@keyframes sith-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(200,16,16,.22), inset 0 0 22px rgba(200,16,16,.05); }
-  35%      { box-shadow: 0 0 0 1px rgba(200,16,16,.52), inset 0 0 30px rgba(200,16,16,.08); }
-  65%      { box-shadow: 0 0 0 1px rgba(136,8,8,.22), inset 0 0 18px rgba(136,8,8,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(255,64,64,.82), inset 0 0 50px rgba(200,16,16,.16), 0 0 20px rgba(200,16,16,.30); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(200,16,16,.42), inset 0 0 24px rgba(200,16,16,.06); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(8, 0, 0, 0.99); border-top-color: rgba(200, 16, 16, 0.25); }
-#theme-banner::before { content: '⚔'; color: #CC1010; font-size: 20px; }
-#theme-banner-text { font-family: 'Segoe UI', 'Arial', sans-serif; letter-spacing: 2px; color: rgba(220, 50, 50, 0.68); }
-
-/* ── Dark side energy — red diagonal slashes drifting upward ─────────────── */
-#particles {
+/* frame: four corner caps over two side strips over a top course (all inside the 8 px bands) */
+#grid-container {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='360'%3E%3Cline x1='25' y1='40' x2='32' y2='48' stroke='rgba(200,16,16,0.20)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cline x1='90' y1='150' x2='97' y2='158' stroke='rgba(200,16,16,0.16)' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='140' y1='270' x2='147' y2='278' stroke='rgba(200,16,16,0.14)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cline x1='55' y1='320' x2='62' y2='328' stroke='rgba(136,8,8,0.18)' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='500'%3E%3Cline x1='35' y1='60' x2='42' y2='68' stroke='rgba(200,16,16,0.12)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cline x1='130' y1='230' x2='137' y2='238' stroke='rgba(136,8,8,0.10)' stroke-width='1' stroke-linecap='round'/%3E%3Cline x1='200' y1='410' x2='207' y2='418' stroke='rgba(200,16,16,0.08)' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E") repeat;
-  background-size: 180px 360px, 240px 500px;
-  animation: sith-energy 10s linear infinite;
-}
-@keyframes sith-energy {
-  from { background-position: 0 0, 10px 0; }
-  to   { background-position: -20px -360px, 15px -500px; }
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(10,7,8)'/%3E%3Cpath d='M0.6 7.4 V2.4 L2.4 0.6 H7.4' fill='none' stroke='rgb(158,162,168)' stroke-width='1.1' stroke-linejoin='miter'/%3E%3Cpath d='M2.4 7.4 V3.4 L3.4 2.4 H7.4' fill='none' stroke='rgb(229,51,59)' stroke-width='0.8'/%3E%3C/svg%3E") left 1px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(10,7,8)'/%3E%3Cpath d='M0.6 7.4 V2.4 L2.4 0.6 H7.4' fill='none' stroke='rgb(158,162,168)' stroke-width='1.1' stroke-linejoin='miter'/%3E%3Cpath d='M2.4 7.4 V3.4 L3.4 2.4 H7.4' fill='none' stroke='rgb(229,51,59)' stroke-width='0.8'/%3E%3C/svg%3E") right 5px top 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(10,7,8)'/%3E%3Cpath d='M0.6 7.4 V2.4 L2.4 0.6 H7.4' fill='none' stroke='rgb(158,162,168)' stroke-width='1.1' stroke-linejoin='miter'/%3E%3Cpath d='M2.4 7.4 V3.4 L3.4 2.4 H7.4' fill='none' stroke='rgb(229,51,59)' stroke-width='0.8'/%3E%3C/svg%3E") left 1px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect x='0' y='0' width='8' height='8' fill='rgb(10,7,8)'/%3E%3Cpath d='M0.6 7.4 V2.4 L2.4 0.6 H7.4' fill='none' stroke='rgb(158,162,168)' stroke-width='1.1' stroke-linejoin='miter'/%3E%3Cpath d='M2.4 7.4 V3.4 L3.4 2.4 H7.4' fill='none' stroke='rgb(229,51,59)' stroke-width='0.8'/%3E%3C/svg%3E") right 5px bottom 0 / 8px 8px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Crect x='0' y='0' width='8' height='24' fill='rgb(10,7,8)'/%3E%3Crect x='0' y='0' width='1' height='24' fill='rgb(62,64,70)'/%3E%3Crect x='7' y='0' width='1' height='24' fill='rgb(62,64,70)'/%3E%3Crect x='3.1' y='0' width='1.8' height='24' fill='rgb(74,10,14)'/%3E%3Crect x='3.5' y='0' width='1' height='24' fill='rgb(179,18,26)'/%3E%3Cpath d='M1 10 L3.2 12 L1 14 Z M7 10 L4.8 12 L7 14 Z' fill='rgb(102,106,112)'/%3E%3Crect x='3.7' y='9' width='0.6' height='6' fill='rgb(229,51,59)'/%3E%3C/svg%3E") left 1px top 0 / 8px 24px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Crect x='0' y='0' width='8' height='24' fill='rgb(10,7,8)'/%3E%3Crect x='0' y='0' width='1' height='24' fill='rgb(62,64,70)'/%3E%3Crect x='7' y='0' width='1' height='24' fill='rgb(62,64,70)'/%3E%3Crect x='3.1' y='0' width='1.8' height='24' fill='rgb(74,10,14)'/%3E%3Crect x='3.5' y='0' width='1' height='24' fill='rgb(179,18,26)'/%3E%3Cpath d='M1 10 L3.2 12 L1 14 Z M7 10 L4.8 12 L7 14 Z' fill='rgb(102,106,112)'/%3E%3Crect x='3.7' y='9' width='0.6' height='6' fill='rgb(229,51,59)'/%3E%3C/svg%3E") right 5px top 0 / 8px 24px repeat-y,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 9'%3E%3Crect x='0' y='0' width='24' height='1.6' fill='rgb(179,18,26)'/%3E%3Crect x='0' y='1.6' width='24' height='0.5' fill='rgb(74,10,14)'/%3E%3Cpath d='M2 7.6 L5.4 3 H8 L4.6 7.6 Z M10 7.6 L13.4 3 H16 L12.6 7.6 Z M18 7.6 L21.4 3 H24 L20.6 7.6 Z' fill='rgb(44,30,34)' stroke='rgb(62,64,70)' stroke-width='0.5' stroke-linejoin='round'/%3E%3Crect x='0' y='8' width='24' height='1' fill='rgb(62,64,70)'/%3E%3C/svg%3E") left 0 top 0 / 24px 9px repeat-x;
 }
 
-/* ── Tile: dark side flicker ─────────────────────────────────────────────── */
-.app-tile::before {
-  background: transparent;
-  border: 1px solid rgba(200, 16, 16, 0.30);
+/* tiles */
+.app-tile { background: #150F11; border-color: #666A70; border-radius: 0px; box-shadow: none; }
+.app-tile::before { display: none; }
+.app-tile:hover, .app-tile:focus-visible { background: #2A0C10; border-color: var(--tile-hover-border); box-shadow: var(--tile-hover-shadow); }
+.app-tile:active { background: #3A1016; }
+.tile-label { font-family: Bahnschrift, 'Segoe UI', sans-serif; font-size: 11px; line-height: 13.8px; font-stretch: 87.5%; font-synthesis: none; overflow: clip; overflow-clip-margin: 3px; }
+
+/* banner: surface, a top course, the faction's big motif at the right end, an icon at the left */
+#theme-banner {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84 34'%3E%3Cpath d='M26 21 L29.4 11 L32 18 Z' fill='rgb(44,30,34)' stroke='rgb(102,106,112)' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpath d='M66 23 L70 13 L71 22 Z' fill='rgb(44,30,34)' stroke='rgb(102,106,112)' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpath d='M62 30 L65 25 L66 30 Z' fill='rgb(44,30,34)' stroke='rgb(102,106,112)' stroke-width='0.5' stroke-linejoin='round'/%3E%3Cpath d='M35 15.5 L47 9.5 L59 15.5 L47 21.5 Z' fill='rgb(224,160,48)' stroke='rgb(158,162,168)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M40 15.5 L47 12 L54 15.5 L47 19 Z' fill='rgb(255,208,120)'/%3E%3Cpath d='M38 14 L40 7.4 M47 11 V5 M56 14 L54 7.4' stroke='rgb(224,160,48)' stroke-width='1.1' stroke-opacity='0.55' stroke-linecap='round'/%3E%3Cpath d='M35 15.5 L47 21.5 V33.5 L35 27.5 Z' fill='rgb(24,16,18)' stroke='rgb(158,162,168)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M59 15.5 L47 21.5 V33.5 L59 27.5 Z' fill='rgb(10,7,8)' stroke='rgb(158,162,168)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M38 20.4 L44 23.4 M38 24 L44 27' stroke='rgb(229,51,59)' stroke-width='1'/%3E%3Cpath d='M50 24 L56 21 M50 28 L56 25' stroke='rgb(179,18,26)' stroke-width='1'/%3E%3Cpath d='M35 6 L47 0.4 L59 6 L47 12 Z' fill='rgb(44,30,34)' stroke='rgb(158,162,168)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M35 6 L47 12 V14.2 L35 8.2 Z' fill='rgb(24,16,18)' stroke='rgb(158,162,168)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Cpath d='M59 6 L47 12 V14.2 L59 8.2 Z' fill='rgb(10,7,8)' stroke='rgb(158,162,168)' stroke-width='0.7' stroke-linejoin='round'/%3E%3Cpath d='M41 6 L47 3 L53 6' fill='none' stroke='rgb(229,51,59)' stroke-width='0.9'/%3E%3Ccircle cx='8' cy='8' r='0.6' fill='rgb(102,106,112)'/%3E%3Ccircle cx='14' cy='27' r='0.6' fill='rgb(102,106,112)'/%3E%3Ccircle cx='78' cy='6' r='0.6' fill='rgb(102,106,112)'/%3E%3Ccircle cx='79' cy='26' r='0.6' fill='rgb(102,106,112)'/%3E%3C/svg%3E") right 12px bottom 0 / 84px 34px no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 7'%3E%3Crect x='0' y='0' width='24' height='1.4' fill='rgb(179,18,26)'/%3E%3Crect x='0' y='1.4' width='24' height='0.5' fill='rgb(74,10,14)'/%3E%3Cpath d='M0 5.6 L4 3.2 L8 5.6 L12 3.2 L16 5.6 L20 3.2 L24 5.6' fill='none' stroke='rgb(102,106,112)' stroke-width='0.8' stroke-linejoin='miter'/%3E%3C/svg%3E") left 0 top 0 / 24px 7px repeat-x, #0F090B;
+  border-top-color: #B3121A;
 }
-.app-tile:hover::before { animation: tile-flicker .5s steps(1, end) infinite; }
+#theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cg transform='rotate(45 11 11)'%3E%3Crect x='9.2' y='-1' width='3.6' height='15.6' rx='1.8' fill='rgb(179,18,26)' fill-opacity='0.55'/%3E%3Crect x='9.9' y='-0.4' width='2.2' height='15' rx='1.1' fill='rgb(229,51,59)'/%3E%3Crect x='10.6' y='0.6' width='0.8' height='13.6' rx='0.4' fill='rgb(255,238,232)'/%3E%3Crect x='9.4' y='14.6' width='3.2' height='1.6' fill='rgb(158,162,168)' stroke='rgb(10,7,8)' stroke-width='0.4'/%3E%3Crect x='9.6' y='16.2' width='2.8' height='5.4' fill='rgb(102,106,112)' stroke='rgb(10,7,8)' stroke-width='0.5'/%3E%3Crect x='9.6' y='17.4' width='2.8' height='0.7' fill='rgb(10,7,8)'/%3E%3Crect x='9.6' y='19.2' width='2.8' height='0.7' fill='rgb(10,7,8)'/%3E%3C/g%3E%3C/svg%3E") center / 22px 22px no-repeat; }
+#theme-banner-text { font-family: Bahnschrift, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 500; font-stretch: 87.5%; font-style: normal; font-synthesis: none; letter-spacing: 0.6px; color: #DCD6D2; margin-right: 90px; }

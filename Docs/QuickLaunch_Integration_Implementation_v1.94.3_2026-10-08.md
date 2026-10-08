@@ -1,0 +1,49 @@
+# QuickLaunch integration implementation evidence
+
+Version: 1.94.3. Source checkout: C:/Antigravity Projects/Studio Illuminati/WIP/QuickLaunch-integration. Branch: codex/regions-themes-integration. Source HEAD: 864c31756fcaa2357b0110bbfadea1247da4e399. Incoming MERGE_HEAD: 8de41d52e3ed1ad08b2e83ce727462ac3842cc08. Git operations belong to Sully; conflict text is resolved on disk but the merge index remains unmerged until his review/staging.
+
+## Preservation and ports
+
+All eight conflict paths were resolved without restoring the obsolete single-window architecture: Docs/QuickLaunch_Brief.md, package.json, scripts/theme-gallery/main.cjs, scripts/theme-gallery/run.mjs, src/main/ipc.js, src/main/window.js (deleted), src/renderer/app.js, and src/renderer/index.html. The incoming theme command registry, fonts, art, baseline files and contrast/hover build gates coexist with the approved regions/Manager command registry and sender-scoped IPC. The Brief preserves both branches' decision histories and qualifies historical single-window statements.
+
+Additional necessary implementation paths are src/main/regions/model.js, src/main/regions/controller.js, src/renderer/manager.html, src/renderer/styles/manager.css, scripts/theme-gallery/hover.cjs, and scripts/theme-gallery/preload.cjs. Test ports are test/window/stub-electron.js, test/window/startup-bounds.test.js, test/window/window-save.test.js, test/regions/manager-hover.test.js, test/regions/mover-radial-preflight.test.js, and test/integration/merge-preservation.test.js.
+
+Malformed or oversized first-migration legacy saved windows reset through the actual regions model. Existing region homes retain the accepted primary-display contract; second-monitor legacy positions do not add multimonitor placement. Captured gesture saves use actual controller state without reading a destroyed window. Actual region windows consume before-input-event to suppress F11 and retain fullscreenable:false. Manager hotkey recording behavior remains unchanged.
+
+The actual app Settings control invokes region:open-manager with view:settings. applySettings keeps both qlRadialRefresh and onSkinApplied. Escape remains one layer at a time with edit mode included in that ladder. The gallery forwards only the existing production allowlisted event contract and reaches the real Manager/picker rather than certifying unreachable legacy overlays. Manager loads local theme fonts via its own fonts/fonts.css link.
+
+## Measured checks
+
+Full explicit pure/mock regression before the final measured alias correction: 228/228 passed, zero failures/skips/cancellations, 5.662 seconds; safe-regression-final.txt. Window/model focused checks: 49/49. Merge preservation tests: 7/7 (included in final 228). These totals count Node tests, not renderer assertions. Tests use fake stores/windows and do not launch product main or native region hosts.
+
+Static theme contrast: 101 themes, zero errors, 32 unchanged legacy warnings; contrast.txt. Gallery self-test: 2/2 themes, 6/6 deterministic captures, 13 positive controls, 23/23 guard stubs, zero surviving owned processes. Column: seven supported states/captures. Row: six states/captures. Normal mode: main/hover/actual Manager Settings three captures. Compare: independent captures identical and true grid-versus-hover difference control changed 6.2 percent. Neutered hover positive control 4 made the run VOID rather than falsely accepting coverage.
+
+Initial reachable six-theme hover measured 228/228 pairs and failed four silent-hill pressed label states under the unchanged 4.5 floor. The committed studio spec 3fe4c942e34ce2946f32003115999abddc6ec9a6 prescribed four Manager ID active labels using the existing btn-hover-text token. That exact candidate was implemented and then the full reachable gate measured 3838/3838 pairs across 101 themes, failing 32 states in four themes. Existing token exceptions and actual Star Wars header glyph states require a further committed Judy ruling. These failed artifacts are retained; the integration is not ready for handoff yet.
+
+## Limits and exclusions
+
+No installed launcher, product main, native region hosts, user data/store/Desktop, signed-in browser, real updater, real input or display changes were exercised. Native smoke, display transitions and real-input acceptance remain pending. The existing QA receipt hook blocks even a read-only command mentioning the entry script because it requires an unsupported timeout field; this report does not claim a formal entry receipt. Operational repair is deferred to separately authorised task 3.
+
+M6 cleanup, theme batches 7–13 and temporary Grid display-shrink implementation are excluded. The unrelated uncommitted Docs/QuickLaunch_DisplayShrink_UXSpec_2026-10-08.md must be excluded from this merge pin and commit. Version/bump/tag/release and all Git writes remain Sully's scope. No guards, baselines, thresholds or legacy warnings were relaxed.
+
+Scratch candidate compositor evidence: the unchanged 38-pair gate passed 3838/3838 across 101 themes, zero errors/allowances, 57.4 seconds, four controls fired, 92 guard stubs intact and zero owned processes remaining. The bounded seven-ID four-state plus open-cheatsheet active-only adapter measured 2929/2929, 45.9 seconds, guards intact and zero remaining owned processes. All four Manager labels passed 1616/1616 affected state readings. Nineteen additional glyph states failed; the exact nineteen-pair prepatch comparison classifies all nineteen as inherited and zero as introduced. Their sampled label/fill, unrounded ratio, text boxes, geometry and computed styles are exactly unchanged. They remain recorded findings outside the primary gate, not baseline exemptions.
+
+
+
+## Final implementation and bounded verdict
+
+Studio UX addendum b2cf38b12b9b1315a59fa1be1ba812b2aaec397d (spec SHA256 2fcaa939397609fb3e4f4d1010c9a8eef6a9357c84681f2aee322302379a352b) authorizes the measured existing-token aliases in Manager and the three two-theme region header states. Exact measured candidate manager.css and region.css bytes were copied to production. Independent readback verifies every one of the 138 renderer files equals gallery/pin-candidate; candidate-production-equality.json retains all hashes. Therefore the candidate3838 primary measurements and1616 four-label state measurements apply to the final renderer source without a redundant sender matrix. Futaba independently verifies the frozen final source.
+
+The changed CLOSE mutation anchor now removes the exact split CLOSE-specific rule, with the applied-mutation and approved-text assertions retained. Focused final mock regression passes2/2 (72.1057ms), zero failures/skips. The preceding228-test regression remains reported with its own source identity rather than claiming it was rerun after the final alias copy. No production theme file, token value, baseline, fill, focus, rectangle, threshold, native route or settings schema changed for this correction.
+
+The guarded gallery preload pure contract check passes three actual renderer-ready/show-view endpoints and six allowlist/unsubscribe checks. Deliberate missing-forward fixture breaks all three endpoint assertions while retaining the production allowlist. See gallery/routing-forward-results.json and replay/fixtures/preload-missing-forward.cjs. No Electron was used for this contract test.
+
+Deferred inherited findings: FF8 three header/rest states; Persona4 three header/active-only states; Manager hotkey active-only in Control, FF6, FF9, Ministry, Mirror's Edge, Resident Evil, Silent Hill, Star Wars Rebel, Republic, Separatist, The Witcher, WoW Alliance and Horde. Exactly19 pairs,15 themes,7.0s, guards retained and zero remaining processes. The expanded2929-reading diagnostic is not a pass. Required original32 reachable failures are resolved at the unchanged floor. This is a bounded development integration pass, not release/native/remaining-theme clearance.
+
+## Immutable handoff locations
+
+Complete source: C:\Antigravity Projects\Studio Illuminati\WIP\QuickLaunch\scratch\2026-10-08-integration-ender/integration-source-pin1. Manifest: C:\Antigravity Projects\Studio Illuminati\WIP\QuickLaunch\scratch\2026-10-08-integration-ender/integration-source-pin1-manifest.json. Measured candidate: C:\Antigravity Projects\Studio Illuminati\WIP\QuickLaunch\scratch\2026-10-08-integration-ender/gallery/pin-candidate. Candidate production equality: C:\Antigravity Projects\Studio Illuminati\WIP\QuickLaunch\scratch\2026-10-08-integration-ender/candidate-production-equality.json. Guarded replay fixtures and evidence are preserved under C:\Antigravity Projects\Studio Illuminati\WIP\QuickLaunch\scratch\2026-10-08-integration-ender/gallery; the final replay allowlist identifies only complete source/fixture inputs and omits profiles/caches.
+
+Actual runtime uses the existing external regions node_modules directory read-only, with a scratch-only dependency junction for the frozen gallery package. The source manifest records actual Node and Electron executable versions/hashes and dependency package manifests as well as the complete source package-lock. No dependency was installed or updated.
+
+Safe sender pure command: node C:\Antigravity Projects\Studio Illuminati\WIP\QuickLaunch\scratch\2026-10-08-integration-ender/run-safe.cjs C:\Antigravity Projects\Studio Illuminati\WIP\QuickLaunch\scratch\2026-10-08-integration-ender/integration-source-pin1 (explicit25-file allowlist; no product/native entrypoints). Focused command: from the source pin, node --test test/regions/manager-hover.test.js. Sender runs are complete; no automatic repeat is requested. Renderer commands require the complete replay package and its audited guards/config generator, not direct product/gallery-main launch. Formal entry receipt remains explicitly blocked by the P9 timeout/schema mismatch; no handoff repair or bypass was performed.
