@@ -1,331 +1,125 @@
-/* ══ TERMINATOR ════════════════════════════════════════════════════════════════
-   Skynet / T-800 HUD / Endoskeleton targeting system.
-   Pure red on absolute black. You have been targeted. Acquisition: COMPLETE.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* terminator: approved ThemeFidelity Batch13. Frame artwork is original and bounded. */
 :root {
-  /* Backgrounds */
-  --bg:                   #020000;
-  --panel-bg:             rgba(4, 0, 0, 0.99);
-  --overlay-bg:           rgba(2, 0, 0, 0.94);
-  --header-bg:            rgba(10, 2, 2, 0.97);
-
-  /* Typography — targeting computer monospace */
-  --font:                 Consolas, 'Courier New', monospace;
-  --text:                 #D09090;
-  --text-dim:             #b06060;
-
-  /* Shape — rectangular targeting scanner, no chamfer */
-  --radius:               0px;
-  --app-clip:             none;
-  --overlay-clip:         none;
-
-  /* Accent palette — targeting red / dim red / bright alert red */
-  --accent-c:             #FF2000;
-  --accent-m:             #880000;
-  --accent-y:             #FF5040;
-
-  /* Borders */
-  --border:               rgba(255, 32, 0, 0.2);
-  --border-h:             rgba(255, 32, 0, 0.65);
-
-  /* Glows — targeting lock indicator */
-  --glow-c:               0 0 5px rgba(255, 32, 0, 0.8), 0 0 16px rgba(255, 32, 0, 0.35), 0 0 32px rgba(255, 32, 0, 0.1);
-  --glow-m:               0 0 5px rgba(136, 0, 0, 0.85), 0 0 14px rgba(136, 0, 0, 0.4);
-  --glow-y:               0 0 5px rgba(255, 80, 64, 0.75), 0 0 16px rgba(255, 80, 64, 0.3);
-  --pulse-glow:           inset 0 0 22px rgba(255, 32, 0, 0.1), inset 0 0 5px rgba(136, 0, 0, 0.12);
-
-  /* Scanlines — dim red CRT display, endoskeleton HUD */
-  --scanlines:            repeating-linear-gradient(
-                            to bottom,
-                            transparent 0px,
-                            transparent 2px,
-                            rgba(0, 0, 0, 0.35) 2px,
-                            rgba(0, 0, 0, 0.35) 3px
-                          );
-
-  /* Title — targeting acquisition lock animation */
-  --title-anim:           t-scan 5s steps(1) infinite;
-
-  /* Tiles */
-  --tile-hover-bg:        rgba(255, 32, 0, 0.07);
-  --tile-hover-border:    #FF2000;
-  --tile-hover-shadow:    0 0 10px rgba(255, 32, 0, 0.4), inset 0 0 8px rgba(255, 32, 0, 0.05);
-  --tile-active-bg:       rgba(255, 32, 0, 0.13);
-  --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 32, 0, 0.85)) drop-shadow(0 0 12px rgba(255, 32, 0, 0.4));
-  --tile-icon-fx:         grayscale(0.65) brightness(0.88);
-  --tile-icon-shape:      polygon(0 22%, 22% 0, 78% 0, 100% 22%, 100% 78%, 78% 100%, 22% 100%, 0 78%);
-  --tile-label-spacing:   1.5px;
+  --radius: 0px;
+  --app-clip: none;
+  --overlay-clip: none;
+  --bg: #06080C;
+  --panel-bg: #1A1E27;
+  --overlay-bg: #1A1E27;
+  --header-bg: #282029;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #EDD4CE;
+  --text-dim: #CDBDC2;
+  --accent-c: #F39D93;
+  --accent-text: #F39D93;
+  --accent-m: #F39D93;
+  --accent-y: #F39D93;
+  --border: #A7A7B2;
+  --border-h: #9FBFE1;
+  --drag-over-glow: inset 0 0 0 2px #9FBFE1;
+  --tile-hover-bg: #32262D;
+  --tile-hover-border: #9FBFE1;
+  --tile-active-bg: #3C2E35;
+  --tile-label-spacing: 0.5px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --app-entrance-anim:   entrance-flash 1s ease-out forwards;
-
-  /* Buttons */
-  --btn-hover-bg:         rgba(255, 32, 0, 0.1);
-  --btn-active-bg:        rgba(255, 32, 0, 0.18);
-
-  /* Drop hint */
-  --drop-hint-border:     rgba(255, 32, 0, 0.3);
-  --drop-icon-color:      rgba(255, 32, 0, 0.45);
-  --hint-sub-color:       #b06060;
-
-  /* Rename */
-  --rename-dashed:        rgba(255, 32, 0, 0.5);
-  --rename-input-bg:      rgba(255, 32, 0, 0.06);
-
-  /* Edit bar — blood mode */
-  --edit-bar-bg:          rgba(136, 0, 0, 0.12);
-  --edit-bar-border:      rgba(136, 0, 0, 0.65);
-  --edit-label-color:     #CC1000;
-  --edit-label-glow:      0 0 8px rgba(136, 0, 0, 0.85), 0 0 20px rgba(136, 0, 0, 0.4);
-  --btn-done-color:       #CC1000;
-  --btn-done-border:      rgba(136, 0, 0, 0.6);
-  --btn-done-hover-bg:    rgba(136, 0, 0, 0.14);
-  --btn-done-hover-glow:  0 0 10px rgba(136, 0, 0, 0.65);
-  --btn-add-border:       rgba(255, 32, 0, 0.4);
-
-  /* Update banner — bright targeting red */
-  --update-bg:            rgba(255, 80, 64, 0.07);
-  --update-border:        rgba(255, 80, 64, 0.55);
-  --update-color:         #FF5040;
-  --update-btn-border:    rgba(255, 80, 64, 0.5);
-  --update-btn-hover-bg:  rgba(255, 80, 64, 0.1);
-  --update-btn-hover-glow: 0 0 10px rgba(255, 80, 64, 0.55);
-
-  /* Settings CLOSE — dim red */
-  --btn-close-color:      #CC1000;
-  --btn-close-border:     rgba(136, 0, 0, 0.5);
-  --btn-close-hover-bg:   rgba(136, 0, 0, 0.1);
-  --btn-close-hover-glow: 0 0 10px rgba(136, 0, 0, 0.6);
-
-  /* Picker / search */
-  --picker-search-bg:         rgba(255, 32, 0, 0.05);
-  --picker-item-hover-bg:     rgba(255, 32, 0, 0.08);
-  --picker-item-active-bg:    rgba(255, 32, 0, 0.14);
-  --picker-placeholder-bg:    rgba(255, 32, 0, 0.06);
-
-  /* Skin / remove */
-  --skin-btn-active-bg:   rgba(255, 32, 0, 0.14);
-  --remove-btn-bg:        rgba(136, 0, 0, 0.16);
-  --remove-btn-border:    rgba(136, 0, 0, 0.6);
-
-  /* Drag */
-  --drag-over-glow:       inset 0 0 24px rgba(255, 32, 0, 0.25);
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --btn-hover-bg: #32262D;
+  --btn-active-bg: #3C2E35;
+  --btn-hover-text: #EDD4CE;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #EDD4CE;
+  --drop-hint-border: #A7A7B2;
+  --drop-icon-color: #F39D93;
+  --hint-sub-color: #CDBDC2;
+  --rename-dashed: #A7A7B2;
+  --rename-input-bg: #1A1E27;
+  --edit-bar-bg: #1A1E27;
+  --edit-bar-border: #A7A7B2;
+  --edit-label-color: #F39D93;
+  --btn-done-color: #F39D93;
+  --btn-done-border: #A7A7B2;
+  --btn-done-hover-bg: #32262D;
+  --btn-add-border: #A7A7B2;
+  --update-bg: #1A1E27;
+  --update-border: #A7A7B2;
+  --update-color: #F39D93;
+  --update-btn-border: #A7A7B2;
+  --update-btn-hover-bg: #32262D;
+  --btn-close-color: #F39D93;
+  --btn-close-border: #A7A7B2;
+  --btn-close-hover-bg: #32262D;
+  --picker-search-bg: #1A1E27;
+  --picker-item-hover-bg: #32262D;
+  --picker-item-active-bg: #3C2E35;
+  --picker-placeholder-bg: #1A1E27;
+  --skin-btn-active-bg: #3C2E35;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --title-anim: none;
+  --tile-hover-shadow: none;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --edit-label-glow: none;
+  --btn-done-hover-glow: none;
+  --update-btn-hover-glow: none;
+  --btn-close-hover-glow: none;
 }
 
-/* ── Acquisition lock — border flares red on target confirmed ────────────── */
-#app { animation: t-acquire 14s steps(1) infinite; }
-@keyframes t-acquire {
-  0%, 72%, 100% { box-shadow: none; }
-  73% { box-shadow: 0 0 0 1px rgba(255,32,0,.65), inset 0 0 20px rgba(255,32,0,.06); }
-  74% { box-shadow: 0 0 0 1px rgba(255,32,0,.35); }
-  75% { box-shadow: 0 0 0 2px rgba(255,32,0,.85), inset 0 0 30px rgba(255,32,0,.10); }
-  76% { box-shadow: 0 0 0 1px rgba(255,32,0,.45); }
-  77% { box-shadow: none; }
-  90% { box-shadow: 0 0 0 1px rgba(255,80,64,.55), inset 0 0 16px rgba(255,80,64,.05); }
-  91% { box-shadow: none; }
-}
+/* Quiet surfaces; artwork never sits above an app glyph or functional label. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; will-change:auto; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#282029; border-bottom-color:#A7A7B2; box-shadow:none; }
+#header::before { background:#A7A7B2; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2084%2020%22%20fill%3D%22none%22%20stroke%3D%22%23D8281A%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M7%205H43M7%2010H65M7%2015H30%22%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Consolas, 'Courier New', monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#EDD4CE; text-transform:uppercase; text-shadow:none; }
+#title .accent { color:#F39D93; }
+#title::after { content:none; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#CDBDC2; opacity:1; }
+#header-controls button { color:#EDD4CE; border-color:#A7A7B2; }
+#header-controls button:hover, #header-controls button:active { color:#EDD4CE; border-color:#9FBFE1; }
+#grid-container { background:none; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#1A1E27; border-color:#A7A7B2; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#32262D; border-color:#9FBFE1; box-shadow:none; }
+.app-tile:focus-visible { outline-color:#9FBFE1; }
+.app-tile:active { background:#3C2E35; }
+.app-tile::before { display:none; animation:none; }
+.tile-label { font-family:Consolas, 'Courier New', monospace; font-size:12px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.5px; line-height:1.2; color:#EDD4CE; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; isolation:isolate; overflow:visible; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#EDD4CE; }
+.hotkey-input.recording { background:#3C2E35; color:#EDD4CE; border-color:#9FBFE1; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#32262D; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#9FBFE1; }
+#theme-banner { background:#282029; border-top-color:#A7A7B2; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2022%2022%22%20fill%3D%22none%22%20stroke%3D%22%23D8281A%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%228%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%222%22%20fill%3D%22%23D8281A%22%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Consolas, 'Courier New', monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#EDD4CE; text-shadow:none; }
+/* Shape belongs to an independent plate, never the icon clip. */
+.tile-icon-wrap::before { content:""; position:absolute; inset:-2px; z-index:-1; background:#1A1E27; border:1px solid #A7A7B2; border-radius:0px; clip-path:none; pointer-events:none; }
+/* Gutter material scrolls with the existing Grid, and is omitted in shapes without gutters. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%239FBFE1%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%203H6V12%20M2%2037H6V28%22%2F%3E%3C%2Fsvg%3E") left top / 8px 40px repeat-y, url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%239FBFE1%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%203H6V12%20M2%2037H6V28%22%2F%3E%3C%2Fsvg%3E") right 4px top / 8px 40px repeat-y; }
+body.region.layout-radial #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+#header { background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.06) 3px 4px),#282029; }
+/* Cold-blue corner brackets stay on the plate, clear of the glyph. */
+.app-tile:hover .tile-icon-wrap::before, .app-tile:focus-visible .tile-icon-wrap::before { border-color:#9FBFE1; background:linear-gradient(#9FBFE1,#9FBFE1) left top/6px 1px no-repeat,linear-gradient(#9FBFE1,#9FBFE1) right bottom/6px 1px no-repeat,#1A1E27; }
 
-/* ── Header — dim red background, T-800 visual cortex feed ──────────────── */
-#header {
-  background: rgba(18, 2, 2, 0.97);
-  border-bottom: 1px solid rgba(255, 32, 0, 0.25);
-}
-
-/* ── Header left bar — bright targeting red ──────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #FF2000, rgba(255, 32, 0, 0.25));
-  box-shadow: 0 0 8px rgba(255, 32, 0, 0.8), 0 0 20px rgba(255, 32, 0, 0.35);
-}
-
-/* ── Overlay panel — red border, threat assessment terminal ─────────────── */
-.overlay-panel {
-  border: 1px solid rgba(255, 32, 0, 0.45);
-  box-shadow: 0 0 20px rgba(255, 32, 0, 0.12), inset 0 0 20px rgba(136, 0, 0, 0.05);
-}
-
-/* ── Very faint scanline overlay — machine vision CRT ───────────────────── */
-#app::after {
-  content: '';
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.3) 2px,
-      rgba(0, 0, 0, 0.3) 3px
-    );
-  opacity: 1;
-  pointer-events: none;
-}
-
-/* ── Targeting HUD — reticle grid, crosshair, scan sweep ────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  animation: t-sweep 5s linear infinite;
-  background:
-    /* center crosshair — horizontal arm */
-    linear-gradient(to right, transparent 0, transparent calc(50% - 20px), rgba(255, 32, 0, 0.12) calc(50% - 20px), rgba(255, 32, 0, 0.12) calc(50% - 1px), transparent calc(50% - 1px), transparent calc(50% + 1px), rgba(255, 32, 0, 0.12) calc(50% + 1px), rgba(255, 32, 0, 0.12) calc(50% + 20px), transparent calc(50% + 20px)) 0 50% / 100% 1px no-repeat,
-    /* center crosshair — vertical arm */
-    linear-gradient(to bottom, transparent 0, transparent calc(50% - 20px), rgba(255, 32, 0, 0.12) calc(50% - 20px), rgba(255, 32, 0, 0.12) calc(50% - 1px), transparent calc(50% - 1px), transparent calc(50% + 1px), rgba(255, 32, 0, 0.12) calc(50% + 1px), rgba(255, 32, 0, 0.12) calc(50% + 20px), transparent calc(50% + 20px)) 50% 0 / 1px 100% no-repeat,
-    /* outer targeting ring */
-    radial-gradient(circle 55px at 50% 50%, transparent 53px, rgba(255, 32, 0, 0.09) 53px, rgba(255, 32, 0, 0.09) 55px, transparent 55px),
-    /* inner targeting ring */
-    radial-gradient(circle 30px at 50% 50%, transparent 28px, rgba(255, 32, 0, 0.11) 28px, rgba(255, 32, 0, 0.11) 30px, transparent 30px),
-    /* sparse HUD grid */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 79px,
-      rgba(255, 32, 0, 0.04) 79px,
-      rgba(255, 32, 0, 0.04) 80px
-    ),
-    repeating-linear-gradient(
-      to right,
-      transparent 0px,
-      transparent 79px,
-      rgba(255, 32, 0, 0.03) 79px,
-      rgba(255, 32, 0, 0.03) 80px
-    );
-}
-
-/* ── Targeting corner brackets — threat containment frame ───────────────── */
-#grid-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    /* TL horizontal */
-    linear-gradient(to right,  rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) 10px 10px / 20px 2px no-repeat,
-    /* TL vertical */
-    linear-gradient(to bottom, rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) 10px 10px / 2px 20px no-repeat,
-    /* TR horizontal */
-    linear-gradient(to left,   rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) calc(100% - 10px) 10px / 20px 2px no-repeat,
-    /* TR vertical */
-    linear-gradient(to bottom, rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) calc(100% - 11px) 10px / 2px 20px no-repeat,
-    /* BL horizontal */
-    linear-gradient(to right,  rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) 10px calc(100% - 10px) / 20px 2px no-repeat,
-    /* BL vertical */
-    linear-gradient(to top,    rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) 10px calc(100% - 10px) / 2px 20px no-repeat,
-    /* BR horizontal */
-    linear-gradient(to left,   rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) calc(100% - 10px) calc(100% - 10px) / 20px 2px no-repeat,
-    /* BR vertical */
-    linear-gradient(to top,    rgba(255, 32, 0, 0.5) 0px, rgba(255, 32, 0, 0.5) 2px, transparent 2px) calc(100% - 11px) calc(100% - 10px) / 2px 20px no-repeat;
-}
-
-/* ── T-800 slow scan sweep across the grid ───────────────────────────────── */
-@keyframes t-sweep {
-  0%   { background-position-y: 0, 0, center, center, 0, 0, 10px, 10px, calc(100% - 10px), calc(100% - 10px); }
-  100% { background-position-y: 0, 0, center, center, 0, 0, 10px, 10px, calc(100% - 10px), calc(100% - 10px); }
-}
-
-/* ── Targeting acquisition lock animation ────────────────────────────────── */
-@keyframes t-scan {
-  0%, 78%, 100% {
-    text-shadow: 0 0 5px rgba(255, 32, 0, 0.65), 0 0 14px rgba(255, 32, 0, 0.28);
-    opacity: 1;
-    letter-spacing: 4px;
-  }
-  /* acquisition phase — brief letter-spacing shift, like lock-on */
-  79% {
-    text-shadow: 0 0 8px rgba(255, 32, 0, 0.9), 0 0 22px rgba(255, 32, 0, 0.5);
-    opacity: 0.7;
-    letter-spacing: 6px;
-  }
-  80% {
-    text-shadow: 1px 0 rgba(255, 80, 64, 0.9), -1px 0 rgba(136, 0, 0, 0.9);
-    opacity: 1;
-    letter-spacing: 3px;
-  }
-  81% {
-    text-shadow: -2px 0 rgba(255, 32, 0, 0.9), 2px 0 rgba(255, 80, 64, 0.5);
-    opacity: 0.9;
-    letter-spacing: 5px;
-  }
-  82% {
-    text-shadow: 0 0 5px rgba(255, 32, 0, 0.65), 0 0 14px rgba(255, 32, 0, 0.28);
-    opacity: 1;
-    letter-spacing: 4px;
-  }
-  /* lock confirm — brief bright flash */
-  90% {
-    text-shadow: 0 0 10px rgba(255, 32, 0, 1), 0 0 28px rgba(255, 32, 0, 0.6), 0 0 50px rgba(255, 32, 0, 0.2);
-    opacity: 1;
-    letter-spacing: 4px;
-  }
-  91% {
-    text-shadow: 0 0 5px rgba(255, 32, 0, 0.65), 0 0 14px rgba(255, 32, 0, 0.28);
-    opacity: 1;
-    letter-spacing: 4px;
-  }
-}
-
-/* ── Flavor content ────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'SKYNET  //  TARGET: ACQUIRED  //  TERMINATE';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Consolas, 'Courier New', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(255, 80, 55, 0.68);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'THREAT LEVEL\AMAXIMUM\A\ATERMINATE\AWITH EXTREME\APREJUDICE\A\AHUMANS:\AHOSTILE\A\APRIORITY:\ATY1\A\ASKYNET\AONLINE';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(255, 32, 0, 0.10); white-space: pre;
-  animation: t-lore 10s ease-in-out infinite;
-}
-
-@keyframes t-lore {
-  0%, 100% { color: rgba(255, 32, 0, 0.10); }
-  28%       { color: rgba(255, 32, 0, 0.14); }
-  65%       { color: rgba(255, 32, 0, 0.07); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(255, 32, 0, 0.18); }
-  92%       { color: rgba(255, 32, 0, 0.10); }
-}
-
-#edit-bar::after {
-  content: 'TARGET SELECTION MODE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Consolas, 'Courier New', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(255, 32, 0, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(6, 0, 0, 0.98); border-top-color: rgba(255, 32, 0, 0.22); }
-#theme-banner::before { content: '⊕'; color: #FF2000; font-size: 22px; animation: tm-blink 2s step-start infinite; }
-@keyframes tm-blink { 0%, 80%, 100% { opacity: 0.55; } 85% { opacity: 1; } 90% { opacity: 0.2; } 95% { opacity: 0.9; } }
-#theme-banner-text { font-family: Consolas, 'Courier New', monospace; color: rgba(255, 80, 60, 0.65); }
-
-/* ── Phase 4D/E: header strobe + tile scan ───────────────────────────────── */
-#header::before { animation: hdr-bar-strobe 8s steps(1) infinite; }
-.app-tile::before {
-  width: 100%; height: 3px;
-  left: 0; top: -3px;
-  transform: none;
-  background: var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }
-
-/* ── T-800 targeting scan — horizontal acquisition sweep ─────────────────── */
-#particles {
-  background:
-    linear-gradient(to right, transparent 0px, rgba(255,32,0,0.06) 20px, rgba(255,32,0,0.14) 50px, rgba(255,32,0,0.06) 80px, transparent 100px) no-repeat;
-  background-size: 100px 100%;
-  animation: t-hud-scan 4s linear infinite;
-}
-@keyframes t-hud-scan {
-  from { background-position: -100px 0; }
-  to   { background-position: calc(100% + 100px) 0; }
-}
+/* Loading remains readable without an ambient blink; existing functional transitions stay. */
+.picker-loading { animation:none; opacity:1; color:var(--text-dim); }
+#theme-banner::before { will-change:auto; }
+#theme-banner { background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.06) 3px 4px),#282029; }

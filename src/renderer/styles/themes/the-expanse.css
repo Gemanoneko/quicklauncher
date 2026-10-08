@@ -1,229 +1,121 @@
-/* ══ THE EXPANSE ══════════════════════════════════════════════════════════════
-   The Rocinante. The Belt. Practical near-future ship UI — no nonsense,
-   no glamour. Physics still works out here. Inyalowda.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* the-expanse: approved ThemeFidelity Batch11 palette, typography and original static frame motifs. */
 :root {
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #030507;
-  --panel-bg:     rgba(5, 8, 12, 0.98);
-  --overlay-bg:   rgba(3, 5, 8, 0.96);
-  --header-bg:    rgba(50, 90, 140, 0.04);
-
-  --font:         'Segoe UI', 'Consolas', monospace;
-  --text:         #A0B4CC;
-  --text-dim:     #687C9A;
-
-  --accent-c:     #3A7A9C;   /* ship blue / Belter teal */
-  --accent-m:     #AA2010;   /* MCRN red */
-  --accent-y:     #607888;   /* tech grey-blue */
-
-  --border:       rgba(50, 100, 140, 0.22);
-  --border-h:     rgba(60, 120, 165, 0.52);
-
-  --glow-c:       0 0 6px rgba(58,122,156,.58), 0 0 18px rgba(58,122,156,.18);
-  --glow-m:       0 0 6px rgba(170,32,16,.58), 0 0 18px rgba(170,32,16,.18);
-  --glow-y:       0 0 5px rgba(96,120,136,.50), 0 0 16px rgba(96,120,136,.15);
-
-  --pulse-glow:   inset 0 0 18px rgba(50,100,140,.06);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 3px,
-                    rgba(50, 90, 130, 0.020) 3px, rgba(50, 90, 130, 0.020) 4px
-                  );
-  --drag-over-glow: inset 0 0 22px rgba(58,122,156,.10);
-
-  --title-anim:   expanse-scan 7s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(50, 100, 140, 0.07);
-  --tile-hover-border: rgba(60, 120, 165, 0.32);
-  --tile-hover-shadow: 0 0 12px rgba(58, 122, 156, 0.16);
-  --tile-active-bg:    rgba(50, 100, 140, 0.14);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(58,122,156,.55)) drop-shadow(0 0 12px rgba(58,122,156,.22));
-  --tile-icon-fx:      brightness(0.92) saturate(0.8) contrast(1.08);
-  --tile-icon-shape:   polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
-  --tile-label-spacing:   1.2px;
+  --bg: #0A0E14;
+  --panel-bg: #1A2028;
+  --overlay-bg: #1A2028;
+  --header-bg: #242C35;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #E2E4DB;
+  --text-dim: #C0CCCD;
+  --accent-c: #F2B378;
+  --accent-text: #F2B378;
+  --accent-m: #F2B378;
+  --accent-y: #F2B378;
+  --border: #95A6B5;
+  --border-h: #9AC5E5;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #9AC5E5;
+  --title-anim: none;
+  --tile-hover-bg: #2D3742;
+  --tile-hover-border: #9AC5E5;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #35414D;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.5px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-glow 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
-
-  --btn-hover-bg:   rgba(50, 100, 140, 0.10);
-  --btn-active-bg:  rgba(50, 100, 140, 0.20);
-
-  --drop-hint-border: rgba(50, 100, 140, 0.25);
-  --drop-icon-color:  rgba(58, 122, 156, 0.35);
-  --hint-sub-color:   #5C7A98;
-
-  --rename-dashed:    rgba(58, 122, 156, 0.38);
-  --rename-input-bg:  rgba(50, 100, 140, 0.07);
-
-  --edit-bar-bg:          rgba(170, 32, 16, 0.07);
-  --edit-bar-border:      rgba(170, 32, 16, 0.38);
-  --edit-label-color:     #AA2010;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #AA2010;
-  --btn-done-border:      rgba(170, 32, 16, 0.40);
-  --btn-done-hover-bg:    rgba(170, 32, 16, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(58, 122, 156, 0.38);
-
-  --update-bg:             rgba(96, 120, 136, 0.05);
-  --update-border:         rgba(110, 135, 155, 0.28);
-  --update-color:          #607888;
-  --update-btn-border:     rgba(96, 120, 136, 0.25);
-  --update-btn-hover-bg:   rgba(96, 120, 136, 0.08);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #AA2010;
-  --btn-close-border:     rgba(170, 32, 16, 0.38);
-  --btn-close-hover-bg:   rgba(170, 32, 16, 0.10);
-  --btn-close-hover-glow: var(--glow-m);
-
-  --picker-search-bg:      rgba(50, 100, 140, 0.07);
-  --picker-item-hover-bg:  rgba(50, 100, 140, 0.08);
-  --picker-item-active-bg: rgba(50, 100, 140, 0.14);
-  --picker-placeholder-bg: rgba(50, 100, 140, 0.07);
-
-  --skin-btn-active-bg:    rgba(50, 100, 140, 0.16);
-  --remove-btn-bg:         rgba(170, 32, 16, 0.88);
-  --remove-btn-border:     #AA2010;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #2D3742;
+  --btn-active-bg: #35414D;
+  --btn-hover-text: #E2E4DB;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-hover-text: #E2E4DB;
+  --mgr-button-pressed-text: #E2E4DB;
+  --drop-hint-border: #95A6B5;
+  --drop-icon-color: #F2B378;
+  --hint-sub-color: #C0CCCD;
+  --rename-dashed: #95A6B5;
+  --rename-input-bg: #1A2028;
+  --edit-bar-bg: #1A2028;
+  --edit-bar-border: #95A6B5;
+  --edit-label-color: #F2B378;
+  --edit-label-glow: none;
+  --btn-done-color: #F2B378;
+  --btn-done-border: #95A6B5;
+  --btn-done-hover-bg: #2D3742;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #95A6B5;
+  --update-bg: #1A2028;
+  --update-border: #95A6B5;
+  --update-color: #F2B378;
+  --update-btn-border: #95A6B5;
+  --update-btn-hover-bg: #2D3742;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E2E4DB;
+  --btn-close-border: #95A6B5;
+  --btn-close-hover-bg: #2D3742;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1A2028;
+  --picker-item-hover-bg: #2D3742;
+  --picker-item-active-bg: #35414D;
+  --picker-placeholder-bg: #1A2028;
+  --skin-btn-active-bg: #35414D;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Ship hull overlay — practical, functional ──────────────────────────────── */
-#app::after {
-  background:
-    /* horizontal hull panel lines */
-    repeating-linear-gradient(0deg,
-      transparent 0px, transparent 19px,
-      rgba(50, 90, 130, 0.022) 19px, rgba(50, 90, 130, 0.022) 20px
-    ),
-    /* scanlines */
-    repeating-linear-gradient(to bottom,
-      transparent 0px, transparent 3px,
-      rgba(40, 80, 115, 0.018) 3px, rgba(40, 80, 115, 0.018) 4px
-    ),
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 42%, rgba(1, 3, 5, 0.70) 100%);
-  background-size: 100% 20px, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Remove foreground panno/readouts and ambient motion; preserve functional transitions. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#242C35; border-bottom-color:#95A6B5; }
+#header::before { background:#95A6B5; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23F2B378%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.65%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M4%203h28v7H8M38%2017h22V5h-7M7%2016h12%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%2210%22%20r%3D%222%22%20fill%3D%22%23F2B378%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Bahnschrift, 'Segoe UI', sans-serif; font-size:11px; font-weight:300; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#E2E4DB; text-shadow:none; }
+#title .accent { color:#F2B378; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#C0CCCD; opacity:1; }
+#header-controls button { color:#E2E4DB; border-color:#95A6B5; }
+#header-controls button:hover, #header-controls button:active { color:#E2E4DB; border-color:#9AC5E5; }
 
-/* ── Header teal accent bar ──────────────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #3A7A9C, rgba(50, 100, 140, 0.28));
-  box-shadow: 0 0 8px rgba(58, 122, 156, 0.52), 0 0 20px rgba(58, 122, 156, 0.16);
-}
+/* Eight-pixel scrolling outer trim, omitted where radial layouts lack safe bands. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2395A6B5%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%201l7%2014%22%20stroke%3D%22%23E8781A%22%20stroke-opacity%3D%22.2%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2395A6B5%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%201l7%2014%22%20stroke%3D%22%23E8781A%22%20stroke-opacity%3D%22.2%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px no-repeat; }
+body.region.layout-fan #grid-container, body.region.layout-ring #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+.app-tile { background:#1A2028; border-color:#95A6B5; box-shadow:none; border-radius:4px; }
+.app-tile:hover { background:#2D3742; border-color:#9AC5E5; box-shadow:none; }
+.app-tile:focus-visible { background:#2D3742; border-color:#9AC5E5; outline-color:#9AC5E5; }
+.app-tile:active { background:#35414D; }
+.app-tile::before { display:none; }
+.tile-label { font-family:Bahnschrift, 'Segoe UI', sans-serif; font-size:12px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.5px; line-height:1.2; color:#E2E4DB; text-shadow:none; overflow:hidden; text-overflow:ellipsis; padding-bottom:3px; margin-bottom:-3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active, .mgr-delete:hover, .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#F2B378; }
+.hotkey-input.recording { background:#35414D; color:#F2B378; border-color:#9AC5E5; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#2D3742; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#9AC5E5; }
 
-/* ── Grid: Ring Gate — alien aperture in the void ───────────────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Ring Gate — outermost containment ring */
-    radial-gradient(circle at 50% 40%, transparent 118px, rgba(58,122,156,0.07) 119px, rgba(58,122,156,0.07) 123px, transparent 124px),
-    /* Ring Gate — second ring */
-    radial-gradient(circle at 50% 40%, transparent 84px, rgba(58,140,170,0.11) 85px, rgba(58,140,170,0.11) 89px, transparent 90px),
-    /* Ring Gate — third ring */
-    radial-gradient(circle at 50% 40%, transparent 52px, rgba(40,160,190,0.15) 53px, rgba(40,160,190,0.15) 57px, transparent 58px),
-    /* Ring Gate — innermost aperture ring (brightest — protomolecule teal) */
-    radial-gradient(circle at 50% 40%, transparent 26px, rgba(30,200,220,0.24) 27px, rgba(30,200,220,0.24) 32px, transparent 33px),
-    /* aperture inner glow */
-    radial-gradient(circle at 50% 40%, rgba(20,100,160,0.18) 0px, rgba(15,80,130,0.09) 24px, transparent 30px),
-    /* tactical crosshair — H line through gate center */
-    linear-gradient(to bottom, transparent calc(40% - 0.5px), rgba(40,140,170,0.08) calc(40% - 0.5px), rgba(40,140,170,0.08) calc(40% + 0.5px), transparent calc(40% + 0.5px)),
-    /* tactical crosshair — V line */
-    linear-gradient(to right, transparent calc(50% - 0.5px), rgba(40,140,170,0.06) calc(50% - 0.5px), rgba(40,140,170,0.06) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    /* deep space cold ambient */
-    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(10,30,70,0.08) 0%, transparent 65%);
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2395A6B5%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%202h8%22%20stroke%3D%22%234A90C8%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M8%202h8%22%20stroke%3D%22%23A83A2A%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M16%202h8%22%20stroke%3D%22%23E8781A%22%20stroke-width%3D%223%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #242C35; border-top-color:#95A6B5; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; animation:none; will-change:auto; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23F2B378%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22M6%206l10%2010M16%206L6%2016%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Bahnschrift, 'Segoe UI', sans-serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#E2E4DB; text-shadow:none; }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'ROCINANTE  //  RING GATE  //  INYALOWDA';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(70, 148, 190, 0.65);
-  pointer-events: none; white-space: nowrap;
-}
+/* Three distinct faction colours are static chrome, never status or text. */
+#header { background:linear-gradient(90deg,#4A90C8 0 33.333%,#A83A2A 33.333% 66.666%,#E8781A 66.666% 100%) left bottom / 100% 3px no-repeat,#242C35; }
 
-#grid-container::after {
-  content: 'ROCINANTE\A\ABELTER\ACREWE\A\ARING GATE\AAPPROACH\A\AINYALOWDA\A\AMCRN';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Consolas', monospace; letter-spacing: 1.5px;
-  font-size: 12px; line-height: 1.7; text-align: right;
-  color: rgba(50, 100, 140, 0.11); white-space: pre;
-  animation: expanse-ghost 10s ease-in-out infinite;
-}
-
-@keyframes expanse-ghost {
-  0%, 100% { color: rgba(50, 100, 140, 0.11); }
-  22%       { color: rgba(50, 100, 140, 0.15); }
-  60%       { color: rgba(50, 100, 140, 0.08); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(50, 100, 140, 0.18); }
-  92%       { color: rgba(50, 100, 140, 0.11); }
-}
-
-#edit-bar::after {
-  content: 'WEAPONS FREE  —  RETURNING FIRE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(170, 32, 16, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Consolas', monospace; letter-spacing: 5px; }
-
-/* ── Title animation: nav scan ───────────────────────────────────────────────── */
-@keyframes expanse-scan {
-  0%, 100% { text-shadow: 0 0 6px rgba(58,122,156,.55), 0 0 18px rgba(58,122,156,.18); opacity: 1; }
-  50%       { text-shadow: 0 0 10px rgba(58,122,156,.78), 0 0 26px rgba(58,122,156,.32); opacity: 0.94; }
-}
-
-/* ── Ring Gate activation pulse ──────────────────────────────────────────── */
-#app { animation: expanse-gate 7s ease-in-out infinite; }
-@keyframes expanse-gate {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(50,100,140,.22), inset 0 0 20px rgba(50,100,140,.05); }
-  38%      { box-shadow: 0 0 0 1px rgba(30,200,220,.55), inset 0 0 32px rgba(30,180,210,.10); }
-  39%      { box-shadow: 0 0 0 1px rgba(170,32,16,.28),  inset 0 0 18px rgba(170,32,16,.04); }
-  40%      { box-shadow: 0 0 0 1px rgba(30,180,210,.48), inset 0 0 28px rgba(30,180,210,.08); }
-  70%      { box-shadow: 0 0 0 1px rgba(30,80,110,.18),  inset 0 0 16px rgba(30,80,110,.04); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(3, 5, 8, 0.98); border-top-color: rgba(50, 100, 140, 0.22); }
-#theme-banner::before { content: '⊗'; color: #3A7A9C; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(65, 135, 178, 0.75); }
-
-/* ── Ring Gate beacon ping — single ring expanding from aperture center ──── */
-#particles {
-  background: radial-gradient(circle at center,
-    transparent 0%, transparent 17%,
-    rgba(30,200,220,0.35) 17%, rgba(30,200,220,0.35) 21%,
-    transparent 21%
-  );
-  background-size: 80px 80px;
-  background-position: 50% 40%;
-  background-repeat: no-repeat;
-  animation: roci-ping 4.5s ease-out infinite;
-}
-@keyframes roci-ping {
-  0%   { background-size: 50px 50px; opacity: 1; }
-  72%  { background-size: 900px 900px; opacity: 0; }
-  73%  { background-size: 50px 50px; opacity: 0; }
-  100% { background-size: 50px 50px; opacity: 0; }
-}
-
-/* ── Tile: tactical sensor sweep ─────────────────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 2px;
-  left: 0; top: -2px;
-  transform: none;
-  background: var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-scan-v .45s ease-in forwards; }
+/* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
+body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }

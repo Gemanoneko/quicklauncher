@@ -1,224 +1,126 @@
-/* ══ HUFFLEPUFF ═════════════════════════════════════════════════════════════════
-   You might belong in Hufflepuff where they are just and loyal. The badger
-   burrows deep. Warm kitchens, earthy common rooms, sunflowers and patience.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* hufflepuff: approved ThemeFidelity Batch10 palette, typography and original static frame motifs. */
 :root {
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #030200;
-  --panel-bg:     rgba(6, 4, 0, 0.97);
-  --overlay-bg:   rgba(4, 2, 0, 0.95);
-  --header-bg:    rgba(200, 150, 20, 0.04);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #C09040;
-  --text-dim:     rgba(175, 130, 50, 0.88);
-
-  --accent-c:     #D09020;   /* Hufflepuff yellow */
-  --accent-m:     #604020;   /* badger brown / earth */
-  --accent-y:     #E0B040;   /* warm bright gold */
-
-  --border:       rgba(180, 130, 20, 0.22);
-  --border-h:     rgba(210, 155, 30, 0.50);
-
-  --glow-c:       0 0 8px rgba(208,144,32,.58), 0 0 22px rgba(208,144,32,.20);
-  --glow-m:       0 0 7px rgba(96,64,32,.52), 0 0 18px rgba(96,64,32,.18);
-  --glow-y:       0 0 9px rgba(224,176,64,.65), 0 0 26px rgba(224,176,64,.22);
-
-  --pulse-glow:   inset 0 0 22px rgba(180,130,20,.05);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(208,144,32,.09);
-
-  --title-anim:   huff-title 10s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(180, 130, 20, 0.07);
-  --tile-hover-border: rgba(210, 155, 30, 0.34);
-  --tile-hover-shadow: 0 0 13px rgba(208, 144, 32, 0.20);
-  --tile-active-bg:    rgba(180, 130, 20, 0.14);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(208,144,32,.58)) drop-shadow(0 0 14px rgba(96,64,32,.26));
-  --tile-icon-fx:      brightness(1.08) sepia(0.15) saturate(1.1);
-  --tile-icon-shape:   polygon(20% 0%, 80% 0%, 95% 25%, 100% 50%, 95% 75%, 80% 100%, 20% 100%, 5% 75%, 0% 50%, 5% 25%);
-  --tile-label-spacing:   0.5px;
+  --bg: #1A160C;
+  --panel-bg: #2D2413;
+  --overlay-bg: #2D2413;
+  --header-bg: #352A16;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #F0E2B8;
+  --text-dim: #D4C59E;
+  --accent-c: #FFC500;
+  --accent-text: #FFC500;
+  --accent-m: #FFC500;
+  --accent-y: #FFC500;
+  --border: #B6985D;
+  --border-h: #FFC500;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #FFC500;
+  --title-anim: none;
+  --tile-hover-bg: #41331A;
+  --tile-hover-border: #FFC500;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #4A3B20;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
-
-  --btn-hover-bg:   rgba(180, 130, 20, 0.09);
-  --btn-active-bg:  rgba(180, 130, 20, 0.18);
-
-  --drop-hint-border: rgba(180, 130, 20, 0.26);
-  --drop-icon-color:  rgba(208, 144, 32, 0.38);
-  --hint-sub-color:   rgba(160, 110, 40, 1);
-
-  --rename-dashed:    rgba(208, 144, 32, 0.40);
-  --rename-input-bg:  rgba(180, 130, 20, 0.07);
-
-  --edit-bar-bg:          rgba(96, 64, 32, 0.08);
-  --edit-bar-border:      rgba(96, 64, 32, 0.42);
-  --edit-label-color:     #D09020;
-  --edit-label-glow:      var(--glow-c);
-  --btn-done-color:       #D09020;
-  --btn-done-border:      rgba(208, 144, 32, 0.42);
-  --btn-done-hover-bg:    rgba(208, 144, 32, 0.10);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(208, 144, 32, 0.42);
-
-  --update-bg:             rgba(224, 176, 64, 0.06);
-  --update-border:         rgba(210, 165, 50, 0.34);
-  --update-color:          #B08030;
-  --update-btn-border:     rgba(224, 176, 64, 0.28);
-  --update-btn-hover-bg:   rgba(224, 176, 64, 0.09);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #D09020;
-  --btn-close-border:     rgba(208, 144, 32, 0.40);
-  --btn-close-hover-bg:   rgba(208, 144, 32, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(180, 130, 20, 0.07);
-  --picker-item-hover-bg:  rgba(180, 130, 20, 0.08);
-  --picker-item-active-bg: rgba(180, 130, 20, 0.16);
-  --picker-placeholder-bg: rgba(180, 130, 20, 0.07);
-
-  --skin-btn-active-bg:    rgba(180, 130, 20, 0.16);
-  --remove-btn-bg:         rgba(96, 64, 32, 0.90);
-  --remove-btn-border:     #604020;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #41331A;
+  --btn-active-bg: #4A3B20;
+  --btn-hover-text: #F0E2B8;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-hover-text: #F0E2B8;
+  --mgr-button-pressed-text: #F0E2B8;
+  --drop-hint-border: #B6985D;
+  --drop-icon-color: #FFC500;
+  --hint-sub-color: #D4C59E;
+  --rename-dashed: #B6985D;
+  --rename-input-bg: #2D2413;
+  --edit-bar-bg: #2D2413;
+  --edit-bar-border: #B6985D;
+  --edit-label-color: #FFC500;
+  --edit-label-glow: none;
+  --btn-done-color: #FFC500;
+  --btn-done-border: #B6985D;
+  --btn-done-hover-bg: #41331A;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #B6985D;
+  --update-bg: #2D2413;
+  --update-border: #B6985D;
+  --update-color: #FFC500;
+  --update-btn-border: #B6985D;
+  --update-btn-hover-bg: #41331A;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #F0E2B8;
+  --btn-close-border: #B6985D;
+  --btn-close-hover-bg: #41331A;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #2D2413;
+  --picker-item-hover-bg: #41331A;
+  --picker-item-active-bg: #4A3B20;
+  --picker-placeholder-bg: #2D2413;
+  --skin-btn-active-bg: #4A3B20;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Warm earth grain + soft kitchen glow — cozy, never harsh ───────────────── */
-#app::after {
-  background:
-    /* warm organic grain — earthy, like packed soil and straw */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.6 0 0 0 0.06  0.5 0 0 0 0.04  0.2 0 0 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* gentle warm vignette — soft, like candlelight at the edges */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 44%, rgba(2, 1, 0, 0.68) 100%),
-    /* kitchen hearth glow from below — warm and welcoming */
-    radial-gradient(ellipse 85% 40% at 50% 100%, rgba(170, 100, 10, 0.08) 0%, rgba(130, 70, 5, 0.04) 55%, transparent 75%),
-    /* sunlight from above — as if through a round window */
-    radial-gradient(ellipse 55% 28% at 50% 0%, rgba(200, 150, 20, 0.06) 0%, transparent 62%),
-    /* cozy center warmth — the common room fire */
-    radial-gradient(ellipse 50% 50% at 50% 60%, rgba(140, 90, 10, 0.04) 0%, transparent 65%);
-  background-size: 300px 300px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Remove foreground panno/readouts and ambient motion; preserve functional transitions. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#352A16; border-bottom-color:#B6985D; }
+#header::before { background:#B6985D; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23FFC500%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.65%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cellipse%20cx%3D%2212%22%20cy%3D%2210%22%20rx%3D%227%22%20ry%3D%228%22%2F%3E%3Cellipse%20cx%3D%2230%22%20cy%3D%2210%22%20rx%3D%227%22%20ry%3D%228%22%2F%3E%3Cpath%20d%3D%22M50%2018V11a8%208%200%200116%200v7M50%2018h16%22%2F%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%2212%22%20r%3D%221%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Constantia, Georgia, serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#F0E2B8; text-shadow:none; }
+#title .accent { color:#FFC500; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#D4C59E; opacity:1; }
+#header-controls button { color:#F0E2B8; border-color:#B6985D; }
+#header-controls button:hover, #header-controls button:active { color:#F0E2B8; border-color:#FFC500; }
 
-/* ── Header — Hufflepuff yellow accent bar ───────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #D09020, rgba(180, 120, 20, 0.28));
-  box-shadow: 0 0 10px rgba(208, 144, 32, 0.55), 0 0 26px rgba(208, 144, 32, 0.18);
-}
+/* Eight-pixel scrolling outer trim, omitted where radial layouts lack safe bands. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23B6985D%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M2%200V32M5%200V32%22%20stroke%3D%22%23B6985D%22%20stroke-opacity%3D%22.12%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23B6985D%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M2%200V32M5%200V32%22%20stroke%3D%22%23B6985D%22%20stroke-opacity%3D%22.12%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+body.region.layout-fan #grid-container, body.region.layout-ring #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+.app-tile { background:#2D2413; border-color:#B6985D; box-shadow:none; border-radius:2px; }
+.app-tile:hover { background:#41331A; border-color:#FFC500; box-shadow:none; }
+.app-tile:focus-visible { background:#41331A; border-color:#FFC500; outline-color:#FFC500; }
+.app-tile:active { background:#4A3B20; }
+.app-tile::before { display:none; }
+.tile-label { font-family:Constantia, Georgia, serif; font-size:12px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#F0E2B8; text-shadow:none; overflow:hidden; text-overflow:ellipsis; padding-bottom:3px; margin-bottom:-3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active, .mgr-delete:hover, .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#FFC500; }
+.hotkey-input.recording { background:#4A3B20; color:#FFC500; border-color:#FFC500; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#41331A; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#FFC500; }
 
-/* ── Grid: Style B — Helga Hufflepuff's Cup (the golden goblet) ──────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='4' fill='rgba(208,144,32,0.52)'%3EHELGA HUFFLEPUFF%3C/text%3E%3Ctext x='250' y='36' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(180,130,20,0.35)'%3EFOUNDER -- HOGWARTS -- LOYAL AND TRUE%3C/text%3E%3Cellipse cx='250' cy='105' rx='50' ry='12' fill='rgba(120,80,15,0.30)' stroke='rgba(208,144,32,0.45)' stroke-width='1.2'/%3E%3Cellipse cx='250' cy='105' rx='46' ry='10' fill='none' stroke='rgba(224,176,64,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 200,105 Q 198,150 202,190 Q 208,220 220,240 Q 235,255 250,260 Q 265,255 280,240 Q 292,220 298,190 Q 302,150 300,105' fill='rgba(100,68,12,0.28)' stroke='rgba(208,144,32,0.45)' stroke-width='1.5'/%3E%3Cpath d='M 204,108 Q 202,148 206,188 Q 212,218 224,238 Q 237,252 250,256 Q 263,252 276,238 Q 288,218 294,188 Q 298,148 296,108' fill='none' stroke='rgba(180,130,20,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 200,120 C 185,118 175,128 172,140 C 168,155 175,168 188,172 C 195,174 200,170 202,162' fill='none' stroke='rgba(208,144,32,0.40)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M 300,120 C 315,118 325,128 328,140 C 332,155 325,168 312,172 C 305,174 300,170 298,162' fill='none' stroke='rgba(208,144,32,0.40)' stroke-width='1.5' stroke-linecap='round'/%3E%3Cellipse cx='250' cy='170' rx='28' ry='20' fill='none' stroke='rgba(96,64,32,0.30)' stroke-width='1'/%3E%3Ccircle cx='250' cy='168' r='10' fill='rgba(96,64,32,0.25)' stroke='rgba(208,144,32,0.35)' stroke-width='0.8'/%3E%3Cpath d='M 243,165 Q 245,160 250,158 Q 255,160 257,165 Q 258,170 255,174 Q 250,176 245,174 Q 242,170 243,165 Z' fill='rgba(120,80,15,0.35)' stroke='rgba(208,144,32,0.30)' stroke-width='0.5'/%3E%3Cline x1='250' y1='162' x2='250' y2='172' stroke='rgba(208,144,32,0.22)' stroke-width='0.5'/%3E%3Cline x1='245' y1='167' x2='255' y2='167' stroke='rgba(208,144,32,0.22)' stroke-width='0.5'/%3E%3Cpath d='M 230,148 C 225,142 218,142 215,148' fill='none' stroke='rgba(208,144,32,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 270,148 C 275,142 282,142 285,148' fill='none' stroke='rgba(208,144,32,0.18)' stroke-width='0.5'/%3E%3Cpath d='M 222,200 C 218,205 220,210 225,212' fill='none' stroke='rgba(208,144,32,0.15)' stroke-width='0.5'/%3E%3Cpath d='M 278,200 C 282,205 280,210 275,212' fill='none' stroke='rgba(208,144,32,0.15)' stroke-width='0.5'/%3E%3Crect x='240' y='260' width='20' height='18' rx='2' fill='rgba(100,68,12,0.30)' stroke='rgba(208,144,32,0.38)' stroke-width='1'/%3E%3Crect x='243' y='263' width='14' height='12' rx='1' fill='none' stroke='rgba(180,130,20,0.18)' stroke-width='0.5'/%3E%3Cellipse cx='250' cy='284' rx='35' ry='8' fill='rgba(100,68,12,0.30)' stroke='rgba(208,144,32,0.42)' stroke-width='1.2'/%3E%3Cellipse cx='250' cy='284' rx='31' ry='6' fill='none' stroke='rgba(180,130,20,0.20)' stroke-width='0.5'/%3E%3Ctext x='250' y='305' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='3' fill='rgba(208,144,32,0.45)'%3ETHE CUP OF HUFFLEPUFF%3C/text%3E%3Ctext x='250' y='318' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(180,130,20,0.30)'%3ERELIQUARY -- FOUNDER ARTIFACT%3C/text%3E%3Ctext x='80' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' font-weight='bold' fill='rgba(208,144,32,0.48)'%3EHOUSE VIRTUES%3C/text%3E%3Cline x1='20' y1='85' x2='140' y2='85' stroke='rgba(180,130,20,0.20)' stroke-width='0.5'/%3E%3Ctext x='20' y='100' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,130,20,0.40)'%3ELOYALTY%3C/text%3E%3Crect x='20' y='104' width='110' height='5' fill='rgba(180,130,20,0.10)' rx='1'/%3E%3Crect x='20' y='104' width='99' height='5' fill='rgba(208,144,32,0.42)' rx='1'/%3E%3Ctext x='20' y='122' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,130,20,0.40)'%3EPATIENCE%3C/text%3E%3Crect x='20' y='126' width='110' height='5' fill='rgba(180,130,20,0.10)' rx='1'/%3E%3Crect x='20' y='126' width='88' height='5' fill='rgba(208,144,32,0.40)' rx='1'/%3E%3Ctext x='20' y='144' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,130,20,0.38)'%3EDEDICATION%3C/text%3E%3Crect x='20' y='148' width='110' height='5' fill='rgba(180,130,20,0.10)' rx='1'/%3E%3Crect x='20' y='148' width='93' height='5' fill='rgba(208,144,32,0.38)' rx='1'/%3E%3Ctext x='20' y='166' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(180,130,20,0.38)'%3EFAIR PLAY%3C/text%3E%3Crect x='20' y='170' width='110' height='5' fill='rgba(180,130,20,0.10)' rx='1'/%3E%3Crect x='20' y='170' width='104' height='5' fill='rgba(224,176,64,0.38)' rx='1'/%3E%3Cline x1='20' y1='185' x2='140' y2='185' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Ctext x='80' y='200' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(208,144,32,0.38)'%3EUNAFRAID OF TOIL%3C/text%3E%3Ctext x='420' y='80' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' font-weight='bold' fill='rgba(208,144,32,0.48)'%3ENOTABLE BADGERS%3C/text%3E%3Cline x1='350' y1='85' x2='480' y2='85' stroke='rgba(180,130,20,0.20)' stroke-width='0.5'/%3E%3Ctext x='355' y='100' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(208,144,32,0.48)'%3ECEDRIC DIGGORY%3C/text%3E%3Ctext x='355' y='118' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(208,144,32,0.44)'%3ENEWT SCAMANDER%3C/text%3E%3Ctext x='355' y='136' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(208,144,32,0.42)'%3ENYMPHADORA TONKS%3C/text%3E%3Ctext x='355' y='154' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(96,64,32,0.42)'%3EPOMONA SPROUT%3C/text%3E%3Ctext x='355' y='172' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' fill='rgba(96,64,32,0.38)'%3EERNEST MACMILLAN%3C/text%3E%3Cline x1='350' y1='182' x2='480' y2='182' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Ctext x='420' y='198' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(96,64,32,0.35)'%3ESUBJECT%3C/text%3E%3Ctext x='420' y='212' text-anchor='middle' font-family='Georgia,serif' font-size='7.5' font-style='italic' font-weight='bold' fill='rgba(208,144,32,0.48)'%3EHERBOLOGY%3C/text%3E%3Cline x1='20' y1='308' x2='480' y2='308' stroke='rgba(180,130,20,0.22)' stroke-width='0.7'/%3E%3Ctext x='70' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,130,20,0.35)'%3ECOMMON ROOM%3C/text%3E%3Ctext x='70' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(208,144,32,0.48)'%3EKITCHENS%3C/text%3E%3Ctext x='200' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,130,20,0.35)'%3EELEMENT%3C/text%3E%3Ctext x='200' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(96,64,32,0.45)'%3EEARTH%3C/text%3E%3Ctext x='330' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,130,20,0.35)'%3EANIMAL%3C/text%3E%3Ctext x='330' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(208,144,32,0.48)'%3EBADGER%3C/text%3E%3Ctext x='450' y='324' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(180,130,20,0.35)'%3EGHOST%3C/text%3E%3Ctext x='450' y='338' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-weight='bold' font-style='italic' fill='rgba(96,64,32,0.42)'%3EFAT FRIAR%3C/text%3E%3Cline x1='135' y1='312' x2='135' y2='344' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Cline x1='265' y1='312' x2='265' y2='344' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Cline x1='390' y1='312' x2='390' y2='344' stroke='rgba(180,130,20,0.12)' stroke-width='0.5'/%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(180,130,20,0.25)'%3EHOGWARTS SCHOOL OF WITCHCRAFT AND WIZARDRY -- HUFFLEPUFF HOUSE%3C/text%3E%3Ccircle cx='45' cy='62' r='0.8' fill='rgba(208,144,32,0.22)'/%3E%3Ccircle cx='455' cy='56' r='0.6' fill='rgba(224,176,64,0.18)'/%3E%3Ccircle cx='40' cy='240' r='0.7' fill='rgba(96,64,32,0.14)'/%3E%3Ccircle cx='460' cy='250' r='0.8' fill='rgba(208,144,32,0.12)'/%3E%3Ccircle cx='50' cy='340' r='0.5' fill='rgba(224,176,64,0.10)'/%3E%3Ccircle cx='452' cy='340' r='0.6' fill='rgba(96,64,32,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: huff-cup 10s ease-in-out infinite;
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23B6985D%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%201h24M0%205h24%22%20stroke%3D%22%23B6985D%22%2F%3E%3Cpath%20d%3D%22M0%203h24%22%20stroke%3D%22%231A160C%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #352A16; border-top-color:#B6985D; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; animation:none; will-change:auto; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23FFC500%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%2019V10a8%208%200%200116%200v9M3%2019h16%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2211%22%20r%3D%221.2%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Constantia, Georgia, serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#F0E2B8; text-shadow:none; }
 
-/* CPU-efficient: opacity-only (tier 1) */
-@keyframes huff-cup {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* golden warmth flash — synchronized blackout */
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
+/* Shape only the supporting plate; application glyph is complete above it. */
+.tile-icon-wrap::before { content:''; position:absolute; inset:0; background:#352A16; border:1px solid #B6985D; border-radius:38%; clip-path:none; pointer-events:none; }
+.tile-icon { position:relative; z-index:1; }
 
-/* ── Flavor content ──────────────────────────────────────────────────────── */
-#header::after {
-  content: 'HUFFLEPUFF // JUST AND LOYAL // UNAFRAID OF TOIL';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(200, 145, 30, 0.62);
-  pointer-events: none; white-space: nowrap;
-}
+/* Honey warmth remains a restrained static chrome material. */
+#header { background:linear-gradient(90deg,rgba(255,197,0,.05),transparent 55%),#352A16; }
+#header { border-bottom:2px solid #B6985D; }
 
-#grid-container::after {
-  content: 'HUFFLEPUFF\AJUST AND\ALOYAL\A-----------\APATIENCE\ADEDICATION\AFAIR PLAY\A-----------\ATHE BADGER\ABURROWS DEEP';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(180, 130, 20, 0.08); white-space: pre;
-  animation: huff-readout 10s ease-in-out infinite;
-}
-
-/* CPU-efficient: color-only (tier 3) */
-@keyframes huff-readout {
-  0%, 100% { color: rgba(180,130,20,.08); }
-  28%       { color: rgba(180,130,20,.12); }
-  65%       { color: rgba(180,130,20,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(208,144,32,.15); }
-  92%       { color: rgba(180,130,20,.08); }
-}
-
-#edit-bar::after {
-  content: 'LOYALTY IS THE HIGHEST MAGIC';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(208, 144, 32, 0.42);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title: warm gold pulse with 88% sync — color + text-shadow (tier 3) ── */
-@keyframes huff-title {
-  0%        { color: #C09040; text-shadow: 0 0 6px rgba(208,144,32,.48), 0 0 18px rgba(208,144,32,.16); }
-  35%       { color: #E0B040; text-shadow: 0 0 10px rgba(224,176,64,.65), 0 0 28px rgba(224,176,64,.22); }
-  65%       { color: #906828; text-shadow: 0 0 4px rgba(96,64,32,.35); }
-  87%       { color: #C09040; text-shadow: 0 0 6px rgba(208,144,32,.42); }
-  88%       { color: #FFD870; text-shadow: 0 0 22px rgba(255,216,112,.82), 0 0 50px rgba(208,144,32,.42); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #C09040; text-shadow: 0 0 8px rgba(208,144,32,.55); opacity: 1; }
-  100%      { color: #C09040; text-shadow: 0 0 6px rgba(208,144,32,.48), 0 0 18px rgba(208,144,32,.16); }
-}
-
-/* ── App: warm amber border — box-shadow ≥ 10s (tier 5) ──────────────────── */
-#app { animation: huff-border 10s ease-in-out infinite; }
-@keyframes huff-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(180,130,20,.22), inset 0 0 20px rgba(180,130,20,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(210,155,30,.45), inset 0 0 28px rgba(208,144,32,.07); }
-  65%      { box-shadow: 0 0 0 1px rgba(96,64,32,.22), inset 0 0 18px rgba(96,64,32,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(255,216,112,.78), inset 0 0 50px rgba(208,144,32,.15), 0 0 18px rgba(208,144,32,.25); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(210,155,30,.40), inset 0 0 22px rgba(208,144,32,.06); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(5, 3, 0, 0.98); border-top-color: rgba(180, 130, 20, 0.22); }
-#theme-banner::before { content: '❋'; color: #D09020; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 140, 30, 0.65); }
-
-/* ── Sunflower pollen — hexagonal golden motes drifting gently ───────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2020/svg' width='220' height='420'%3E%3Cpolygon points='32,52 34,50 36,52 34,54' fill='rgba(224,176,64,0.38)'/%3E%3Cpolygon points='108,175 110,173 112,175 110,177' fill='rgba(208,144,32,0.30)'/%3E%3Cpolygon points='172,298 175,296 178,298 175,300' fill='rgba(224,176,64,0.32)'/%3E%3Cpolygon points='58,365 60,363 62,365 60,367' fill='rgba(200,130,28,0.28)'/%3E%3Cpolygon points='145,118 147,116 149,118 147,120' fill='rgba(224,176,64,0.26)'/%3E%3Ccircle cx='85' cy='240' r='1.5' fill='rgba(180,120,20,0.28)'/%3E%3Ccircle cx='195' cy='340' r='1' fill='rgba(208,144,32,0.22)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2020/svg' width='300' height='580'%3E%3Cpolygon points='52,88 55,85 58,88 55,91' fill='rgba(224,176,64,0.22)'/%3E%3Cpolygon points='155,270 158,267 161,270 158,273' fill='rgba(96,64,32,0.20)'/%3E%3Cpolygon points='238,445 241,442 244,445 241,448' fill='rgba(208,144,32,0.18)'/%3E%3Ccircle cx='110' cy='160' r='1.8' fill='rgba(224,176,64,0.16)'/%3E%3Ccircle cx='270' cy='380' r='1.2' fill='rgba(180,120,20,0.14)'/%3E%3C/svg%3E") repeat;
-  background-size: 220px 420px, 300px 580px;
-  animation: hufflepuff-pollen 16s linear infinite;
-}
-@keyframes hufflepuff-pollen {
-  from { background-position: 0 -420px, 22px -580px; }
-  to   { background-position: -18px 0, 8px 0; }
-}
-
-/* ── Tile: warm honey pulse on hover ─────────────────────────────────────── */
-.app-tile::before {
-  width: 16px; height: 16px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0) rotate(30deg);
-  border-radius: 0;
-  background: transparent;
-  border: 1px solid rgba(208,144,32,0.55);
-}
-.app-tile:hover::before { animation: tile-radial .5s ease-out forwards; }
+/* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
+body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }

@@ -1,230 +1,118 @@
-/* ══ THE WITCHER ══════════════════════════════════════════════════════════════
-   Alchemy, contracts, and the monsters between. Medieval manuscript meets
-   dark fantasy — parchment gold, blood-contract red, Witcher school green.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* the-witcher: ThemeFidelity Batch09; committed palette/type and original bounded motifs. */
 :root {
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #050400;
-  --panel-bg:     rgba(8, 6, 0, 0.98);
-  --overlay-bg:   rgba(5, 4, 0, 0.96);
-  --header-bg:    rgba(192, 160, 32, 0.04);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #C0B080;
-  --text-dim:     rgba(140, 120, 70, 0.98);
-
-  --accent-c:     #C0A020;   /* alchemy gold */
-  --accent-m:     #8B3020;   /* blood contract red */
-  --accent-y:     #406020;   /* Witcher school green */
-
-  --border:       rgba(180, 150, 30, 0.22);
-  --border-h:     rgba(192, 160, 32, 0.52);
-
-  --glow-c:       0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20);
-  --glow-m:       0 0 7px rgba(139,48,32,.60), 0 0 20px rgba(139,48,32,.20);
-  --glow-y:       0 0 7px rgba(64,96,32,.55), 0 0 20px rgba(64,96,32,.18);
-
-  --pulse-glow:   inset 0 0 22px rgba(192,160,32,.06);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 22px rgba(192,160,32,.09);
-
-  --title-anim:   witcher-signs 8s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(180, 150, 30, 0.08);
-  --tile-hover-border: rgba(192, 160, 32, 0.42);
-  --tile-hover-shadow: 0 0 12px rgba(192, 160, 32, 0.22);
-  --tile-active-bg:    rgba(180, 150, 30, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(192,160,32,.58)) drop-shadow(0 0 12px rgba(192,160,32,.22));
-  --tile-icon-fx:      sepia(0.25) brightness(1.05) contrast(1.1);
-  --tile-icon-shape:   circle(46% at 50% 50%);
-  --tile-label-spacing:   0.6px;
+  --bg: #0E0C0A;
+  --panel-bg: #263024;
+  --overlay-bg: #263024;
+  --header-bg: #302920;
+  --font: 'Segoe UI','Yu Gothic',Arial,sans-serif;
+  --text: #E4D9BE;
+  --text-dim: #C6C0AA;
+  --accent-c: #E0BE70;
+  --accent-text: #E0BE70;
+  --accent-m: #E0BE70;
+  --accent-y: #E0BE70;
+  --border: #9DA893;
+  --border-h: #E0BE70;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #E0BE70;
+  --title-anim: none;
+  --tile-hover-bg: #313B2C;
+  --tile-hover-border: #E0BE70;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #394333;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: .3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-glow 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
-
-  --btn-hover-bg:   rgba(180, 150, 30, 0.10);
-  --btn-active-bg:  rgba(180, 150, 30, 0.20);
-
-  --drop-hint-border: rgba(180, 150, 30, 0.28);
-  --drop-icon-color:  rgba(192, 160, 32, 0.38);
-  --hint-sub-color:   #94763F;
-
-  --rename-dashed:    rgba(192, 160, 32, 0.40);
-  --rename-input-bg:  rgba(180, 150, 30, 0.07);
-
-  --edit-bar-bg:          rgba(139, 48, 32, 0.07);
-  --edit-bar-border:      rgba(139, 48, 32, 0.40);
-  --edit-label-color:     #8B3020;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #C0A020;
-  --btn-done-border:      rgba(192, 160, 32, 0.42);
-  --btn-done-hover-bg:    rgba(192, 160, 32, 0.10);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(180, 150, 30, 0.42);
-
-  --update-bg:             rgba(64, 96, 32, 0.06);
-  --update-border:         rgba(64, 96, 32, 0.36);
-  --update-color:          #406020;
-  --update-btn-border:     rgba(64, 96, 32, 0.30);
-  --update-btn-hover-bg:   rgba(64, 96, 32, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #C0A020;
-  --btn-close-border:     rgba(192, 160, 32, 0.40);
-  --btn-close-hover-bg:   rgba(192, 160, 32, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(180, 150, 30, 0.07);
-  --picker-item-hover-bg:  rgba(180, 150, 30, 0.08);
-  --picker-item-active-bg: rgba(180, 150, 30, 0.15);
-  --picker-placeholder-bg: rgba(180, 150, 30, 0.07);
-
-  --skin-btn-active-bg:    rgba(180, 150, 30, 0.17);
-  --remove-btn-bg:         rgba(139, 48, 32, 0.90);
-  --remove-btn-border:     #8B3020;
+  --tile-label-weight: 700;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #313B2C;
+  --btn-active-bg: #394333;
+  --btn-hover-text: #E4D9BE;
+  --mgr-button-hover-text: #E4D9BE;
+  --mgr-button-pressed-text: #E4D9BE;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --drop-hint-border: #9DA893;
+  --drop-icon-color: #E0BE70;
+  --hint-sub-color: #C6C0AA;
+  --rename-dashed: #9DA893;
+  --rename-input-bg: #263024;
+  --edit-bar-bg: #263024;
+  --edit-bar-border: #9DA893;
+  --edit-label-color: #E4D9BE;
+  --edit-label-glow: none;
+  --btn-done-color: #E4D9BE;
+  --btn-done-border: #9DA893;
+  --btn-done-hover-bg: #313B2C;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #9DA893;
+  --update-bg: #263024;
+  --update-border: #9DA893;
+  --update-color: #E4D9BE;
+  --update-btn-border: #9DA893;
+  --update-btn-hover-bg: #313B2C;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E4D9BE;
+  --btn-close-border: #9DA893;
+  --btn-close-hover-bg: #313B2C;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #263024;
+  --picker-item-hover-bg: #313B2C;
+  --picker-item-active-bg: #394333;
+  --picker-placeholder-bg: #263024;
+  --skin-btn-active-bg: #394333;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
+/* Decoration stays in chrome/scrolling frame, with complete app icons. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#302920; border-bottom-color:#9DA893; --ql-header-art-safety:1; }
+#header::before { background:#9DA893; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cpath%20d%3D%27M5%2010Q22%201%2042%2010Q62%2019%2079%2010Q60%201%2042%2010Q23%2019%205%2010Z%27%20fill%3D%27none%27%20stroke%3D%27%23E0BE70%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpath%20d%3D%27M42%205V15%27%20fill%3D%27none%27%20stroke%3D%27%23E0BE70%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.7%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Metamorphous','Palatino Linotype',Georgia,serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; text-transform:none; color:#E4D9BE; text-shadow:none; }
+#title .accent { color:#E4D9BE; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#C6C0AA; }
+#header-controls button { color:#E4D9BE; border-color:#9DA893; }
+#header-controls button:hover, #header-controls button:active { color:#E4D9BE; border-color:#E0BE70; }
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cpath%20d%3D%27M3%200V32%20M1%203L5%205%20M1%2011L5%2013%20M1%2019L5%2021%20M1%2027L5%2029%27%20fill%3D%27none%27%20stroke%3D%27%239DA893%27%20stroke-opacity%3D%270.18%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cpath%20d%3D%27M3%200V32%20M1%203L5%205%20M1%2011L5%2013%20M1%2019L5%2021%20M1%2027L5%2029%27%20fill%3D%27none%27%20stroke%3D%27%239DA893%27%20stroke-opacity%3D%270.18%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#263024; border-color:#9DA893; box-shadow:none; }
+.app-tile:hover { background:#313B2C; border-color:#E0BE70; box-shadow:none; }
+.app-tile:active { background:#394333; }
+.app-tile:focus-visible { border-color:#E0BE70; outline-color:#E0BE70; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Palatino Linotype',Georgia,serif; font-size:12px; font-weight:700; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#E4D9BE; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#E4D9BE; }
+.hotkey-input.recording { background:#394333; color:#E4D9BE; border-color:#E0BE70; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#313B2C; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#E0BE70; }
+body.manager #btn-open-cheatsheet:is(:hover,:active) { background:transparent; color:#E0BE70; }
+#theme-banner { background:#302920; border-top-color:#9DA893; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cpath%20d%3D%27M11%202L14%205L18%204L18%208L21%2011L18%2014L18%2018L14%2017L11%2021L8%2017L4%2018L4%2014L1%2011L4%208L4%204L8%205Z%27%20fill%3D%27none%27%20stroke%3D%27%239DA893%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ccircle%20cx%3D%2711%27%20cy%3D%2711%27%20r%3D%275%27%20fill%3D%27none%27%20stroke%3D%27%23E0BE70%27%20stroke-width%3D%271.2%27%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Palatino Linotype',Georgia,serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#E4D9BE; text-shadow:none; }
+.tile-icon-wrap { isolation:isolate; overflow:visible; }
+.tile-icon-wrap::before { content:''; position:absolute; inset:-4px; z-index:-1; background:#263024; clip-path:circle(50% at 50% 50%); border:1px solid #9DA893; pointer-events:none; }
+.edit-mode #edit-bar { background-image:linear-gradient(#6A1A1A,#6A1A1A); background-size:16px 1px; background-repeat:no-repeat; }
 
-/* ── Parchment grain + heavy forest vignette + campfire bottom glow ─────────── */
-#app::after {
-  background:
-    /* warm parchment grain texture */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0.5 0 0 0  0.8 0.5 0 0 0  0.3 0.2 0 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* heavy dark forest vignette */
-    radial-gradient(ellipse 95% 85% at 50% 50%, transparent 30%, rgba(2, 2, 0, 0.84) 100%),
-    /* campfire amber glow from bottom */
-    radial-gradient(ellipse 70% 30% at 50% 100%, rgba(160, 100, 8, 0.07) 0%, transparent 65%),
-    /* cold forest top */
-    radial-gradient(ellipse 80% 25% at 50% 0%, rgba(20, 30, 8, 0.06) 0%, transparent 60%);
-  background-size: 180px 180px, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
-
-/* ── Header alchemy gold bar ────────────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #C0A020, rgba(160, 130, 16, 0.28));
-  box-shadow: 0 0 10px rgba(192, 160, 32, 0.55), 0 0 28px rgba(192, 160, 32, 0.18);
-}
-
-/* ── Grid: Quen Sign — protective pentagram + witcher circle of power ────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Quen Sign SVG — pentagram inscribed in circle, center glow */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Outer circle of power --%3E%3Ccircle cx='250' cy='190' r='128' fill='none' stroke='rgba(192,160,32,0.10)' stroke-width='1'/%3E%3C!-- Inner focus ring --%3E%3Ccircle cx='250' cy='190' r='16' fill='none' stroke='rgba(192,160,32,0.18)' stroke-width='0.8'/%3E%3C!-- Pentagram — 5 lines connecting alternate vertices (star polygon) --%3E%3Cline x1='250' y1='62' x2='321' y2='287' stroke='rgba(192,160,32,0.12)' stroke-width='1'/%3E%3Cline x1='321' y1='287' x2='136' y2='153' stroke='rgba(192,160,32,0.12)' stroke-width='1'/%3E%3Cline x1='136' y1='153' x2='364' y2='153' stroke='rgba(192,160,32,0.12)' stroke-width='1'/%3E%3Cline x1='364' y1='153' x2='179' y2='287' stroke='rgba(192,160,32,0.12)' stroke-width='1'/%3E%3Cline x1='179' y1='287' x2='250' y2='62' stroke='rgba(192,160,32,0.12)' stroke-width='1'/%3E%3C!-- Vertex tick marks --%3E%3Ccircle cx='250' cy='62' r='3' fill='rgba(192,160,32,0.22)'/%3E%3Ccircle cx='364' cy='153' r='3' fill='rgba(192,160,32,0.18)'/%3E%3Ccircle cx='321' cy='287' r='3' fill='rgba(192,160,32,0.18)'/%3E%3Ccircle cx='179' cy='287' r='3' fill='rgba(192,160,32,0.18)'/%3E%3Ccircle cx='136' cy='153' r='3' fill='rgba(192,160,32,0.18)'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
-    /* campfire amber warmth at bottom */
-    linear-gradient(to top, rgba(160, 100, 8, 0.07) 0%, rgba(140, 90, 6, 0.02) 22%, transparent 48%),
-    /* dark forest edges */
-    radial-gradient(ellipse 32% 100% at 0% 50%, rgba(2, 2, 0, 0.14) 0%, transparent 58%),
-    radial-gradient(ellipse 32% 100% at 100% 50%, rgba(2, 2, 0, 0.14) 0%, transparent 58%);
-  animation: quen-pulse 9s ease-in-out infinite;
-}
-@keyframes quen-pulse {
-  0%, 100% { opacity: 0.80; }
-  50%       { opacity: 1.0; }
-  88%       { opacity: 0.90; }
-  90%       { opacity: 0.35; }
-  91%       { opacity: 1.0; }
-}
-
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'THE WITCHER  //  MONSTER CONTRACT  //  BY ORDER OF THE GUILD';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 170, 48, 0.55);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'THE\AWITCHER\A\AMONSTER\ACONTRACT\A\AALCHEMY\ASIGNS\A\AKAER\AMORHEN';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.7; text-align: right;
-  color: rgba(160, 130, 16, 0.11); white-space: pre;
-  animation: witcher-ghost 10s ease-in-out infinite;
-}
-
-@keyframes witcher-ghost {
-  0%, 100% { color: rgba(160, 130, 16, 0.11); }
-  22%       { color: rgba(160, 130, 16, 0.15); }
-  60%       { color: rgba(160, 130, 16, 0.08); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(160, 130, 16, 0.18); }
-  92%       { color: rgba(160, 130, 16, 0.11); }
-}
-
-#edit-bar::after {
-  content: 'SIGN CHARGED  —  AARD OR IGNI?';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(192, 160, 32, 0.42);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
-
-/* ── Title animation: witcher-signs ─────────────────────────────────────────── */
-@keyframes witcher-signs {
-  /* Igni — fire orange */
-  0%        { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
-  15%       { text-shadow: 0 0 9px rgba(220,120,20,.70), 0 0 28px rgba(220,100,10,.25); color: #C09040; }
-  /* Aard — silver */
-  33%       { text-shadow: 0 0 7px rgba(180,190,200,.55), 0 0 22px rgba(160,175,185,.18); color: #B0B8C0; }
-  /* Quen — gold */
-  55%       { text-shadow: 0 0 8px rgba(192,160,32,.65), 0 0 26px rgba(192,160,32,.22); color: #C0A020; }
-  75%       { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
-  /* brief sign flash */
-  90%       { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
-  92%       { text-shadow: 0 0 14px rgba(255,200,50,.80), 0 0 36px rgba(192,160,32,.40); }
-  93%       { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
-  100%      { text-shadow: 0 0 7px rgba(192,160,32,.60), 0 0 22px rgba(192,160,32,.20); }
-}
-
-/* ── Witcher sign pulse — Quen shield shimmer ───────────────────────────── */
-#app { animation: witcher-sign-pulse 7s ease-in-out infinite; }
-@keyframes witcher-sign-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(180,150,30,.22), inset 0 0 18px rgba(180,150,30,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(192,160,32,.50), inset 0 0 28px rgba(192,160,32,.08); }
-  36%      { box-shadow: 0 0 0 1px rgba(64,96,32,.28), inset 0 0 20px rgba(64,96,32,.05); }
-  37%      { box-shadow: 0 0 0 1px rgba(192,160,32,.42), inset 0 0 24px rgba(192,160,32,.07); }
-  70%      { box-shadow: 0 0 0 1px rgba(139,48,32,.30), inset 0 0 20px rgba(139,48,32,.05); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(5, 4, 0, 0.98); border-top-color: rgba(180, 150, 30, 0.26); }
-#theme-banner::before { content: '⚔'; color: #C0A020; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(180, 148, 28, 0.58); }
-
-/* ── Campfire embers — spark shapes rising from the hearth ───────────────── */
-#particles {
-  background:
-    /* Bright ember sparks — tear/diamond shapes near the fire */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='300'%3E%3Cpolygon points='20,45 23,50 20,58 17,50' fill='rgba(220,160,20,0.42)'/%3E%3Cpolygon points='65,135 67,140 65,148 63,140' fill='rgba(160,100,8,0.36)'/%3E%3Cpolygon points='110,235 113,240 110,248 107,240' fill='rgba(192,160,32,0.32)'/%3E%3Cpolygon points='45,275 47,280 45,288 43,280' fill='rgba(180,80,20,0.34)'/%3E%3C/svg%3E") repeat,
-    /* Dim ember afterglow — fading trails */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='450'%3E%3Ccircle cx='35' cy='68' r='2.2' fill='rgba(192,160,32,0.20)'/%3E%3Ccircle cx='110' cy='208' r='1.5' fill='rgba(160,100,8,0.16)'/%3E%3Ccircle cx='170' cy='368' r='2.8' fill='rgba(192,120,16,0.14)'/%3E%3C/svg%3E") repeat;
-  background-size: 140px 300px, 200px 450px;
-  animation: witcher-embers 8s linear infinite;
-}
-@keyframes witcher-embers {
-  from { background-position: 0 0, -15px 0; }
-  to   { background-position: 12px -300px, 8px -450px; }
-}
-
-/* ── Tile: sign activation ───────────────────────────────────────────────── */
-.app-tile::before {
-  width: 18px; height: 18px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(192,160,32,0.55);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

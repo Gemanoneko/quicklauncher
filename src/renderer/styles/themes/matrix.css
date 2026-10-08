@@ -1,271 +1,129 @@
-/* ══ MATRIX ═════════════════════════════════════════════════════════════════════
-   The Construct. Digital rain. Wake up, Neo.
-   Pure terminal green on black — the cold clarity of a simulated world.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* matrix: approved ThemeFidelity Batch13. Frame artwork is original and bounded. */
 :root {
-  /* ── Shape ── */
-  --radius:       0px;
-  --app-clip:     none;
+  --radius: 0px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── Backgrounds ── */
-  --bg:           rgba(0, 2, 0, 0.96);
-  --panel-bg:     rgba(0, 3, 0, 0.98);
-  --overlay-bg:   rgba(0, 2, 0, 0.97);
-  --header-bg:    rgba(0, 255, 65, 0.03);
-
-  /* ── Typography ── */
-  --font:         'Consolas', 'Courier New', monospace;
-
-  /* ── Text ── */
-  --text:         #00CC33;
-  --text-dim:     rgba(0, 204, 51, 0.78);
-
-  /* ── Accents ── */
-  --accent-c:     #00FF41;   /* terminal green — primary */
-  --accent-m:     #008F11;   /* dim green — edit/destructive */
-  --accent-y:     #00FF41;   /* bright green — updates */
-
-  /* ── Borders ── */
-  --border:       rgba(0, 255, 65, 0.16);
-  --border-h:     rgba(0, 255, 65, 0.45);
-
-  /* ── Glows ── */
-  --glow-c:       0 0 6px rgba(0,255,65,.65),   0 0 18px rgba(0,255,65,.20);
-  --glow-m:       0 0 4px rgba(0,143,17,.55),   0 0 12px rgba(0,143,17,.18);
-  --glow-y:       0 0 6px rgba(0,255,65,.65),   0 0 18px rgba(0,255,65,.20);
-
-  /* ── App window decoration ── */
-  --pulse-glow:   inset 0 0 12px rgba(0,255,65,.03);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(0,255,65,.06);
-
-  /* ── Title animation ── */
-  --title-anim:   mx-title 10s steps(1) infinite;
-
-  /* ── Tiles ── */
-  --tile-hover-bg:     rgba(0, 255, 65, 0.05);
-  --tile-hover-border: rgba(0, 255, 65, 0.22);
-  --tile-hover-shadow: 0 0 8px rgba(0, 255, 65, 0.08);
-  --tile-active-bg:    rgba(0, 255, 65, 0.10);
-  --tile-icon-glow:    drop-shadow(0 0 7px rgba(0,255,65,.35));
-  --tile-icon-fx:      brightness(0.88) saturate(0.85);
-  --tile-icon-shape:   none;
-  --tile-label-spacing:   0.8px;
+  --bg: #061009;
+  --panel-bg: #10251A;
+  --overlay-bg: #10251A;
+  --header-bg: #163021;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #B0E8BD;
+  --text-dim: #A0CFAC;
+  --accent-c: #87ECA0;
+  --accent-text: #87ECA0;
+  --accent-m: #87ECA0;
+  --accent-y: #87ECA0;
+  --border: #83B994;
+  --border-h: #87ECA0;
+  --drag-over-glow: inset 0 0 0 2px #87ECA0;
+  --tile-hover-bg: #1E3B29;
+  --tile-hover-border: #87ECA0;
+  --tile-active-bg: #264734;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-blink 2s step-end infinite;
-  --app-entrance-anim:   entrance-glitch 1s ease-out forwards;
-
-  /* ── Buttons ── */
-  --btn-hover-bg:   rgba(0, 255, 65, 0.08);
-  --btn-active-bg:  rgba(0, 255, 65, 0.15);
-
-  /* ── Drop hint ── */
-  --drop-hint-border: rgba(0, 255, 65, 0.16);
-  --drop-icon-color:  rgba(0, 255, 65, 0.22);
-  --hint-sub-color:   rgba(0, 255, 65, 0.75);
-
-  /* ── Rename ── */
-  --rename-dashed:    rgba(0, 255, 65, 0.28);
-  --rename-input-bg:  rgba(0, 255, 65, 0.06);
-
-  /* ── Edit bar (dim green) ── */
-  --edit-bar-bg:          rgba(0, 143, 17, 0.07);
-  --edit-bar-border:      rgba(0, 143, 17, 0.32);
-  --edit-label-color:     #008F11;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #008F11;
-  --btn-done-border:      rgba(0, 143, 17, 0.35);
-  --btn-done-hover-bg:    rgba(0, 143, 17, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(0, 255, 65, 0.32);
-
-  /* ── Update banner (bright green) ── */
-  --update-bg:             rgba(0, 255, 65, 0.05);
-  --update-border:         rgba(0, 255, 65, 0.32);
-  --update-color:          var(--accent-y);
-  --update-btn-border:     rgba(0, 255, 65, 0.28);
-  --update-btn-hover-bg:   rgba(0, 255, 65, 0.09);
-  --update-btn-hover-glow: var(--glow-y);
-
-  /* ── Close / secondary buttons ── */
-  --btn-close-color:      #008F11;
-  --btn-close-border:     rgba(0, 143, 17, 0.35);
-  --btn-close-hover-bg:   rgba(0, 143, 17, 0.10);
-  --btn-close-hover-glow: var(--glow-m);
-
-  /* ── Picker ── */
-  --picker-search-bg:      rgba(0, 255, 65, 0.06);
-  --picker-item-hover-bg:  rgba(0, 255, 65, 0.06);
-  --picker-item-active-bg: rgba(0, 255, 65, 0.12);
-  --picker-placeholder-bg: rgba(0, 255, 65, 0.07);
-
-  /* ── Skin selector ── */
-  --skin-btn-active-bg:    rgba(0, 255, 65, 0.13);
-
-  /* ── Remove button ── */
-  --remove-btn-bg:         rgba(0, 143, 17, 0.88);
-  --remove-btn-border:     #008F11;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --btn-hover-bg: #1E3B29;
+  --btn-active-bg: #264734;
+  --btn-hover-text: #B0E8BD;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #B0E8BD;
+  --drop-hint-border: #83B994;
+  --drop-icon-color: #87ECA0;
+  --hint-sub-color: #A0CFAC;
+  --rename-dashed: #83B994;
+  --rename-input-bg: #10251A;
+  --edit-bar-bg: #10251A;
+  --edit-bar-border: #83B994;
+  --edit-label-color: #87ECA0;
+  --btn-done-color: #87ECA0;
+  --btn-done-border: #83B994;
+  --btn-done-hover-bg: #1E3B29;
+  --btn-add-border: #83B994;
+  --update-bg: #10251A;
+  --update-border: #83B994;
+  --update-color: #87ECA0;
+  --update-btn-border: #83B994;
+  --update-btn-hover-bg: #1E3B29;
+  --btn-close-color: #87ECA0;
+  --btn-close-border: #83B994;
+  --btn-close-hover-bg: #1E3B29;
+  --picker-search-bg: #10251A;
+  --picker-item-hover-bg: #1E3B29;
+  --picker-item-active-bg: #264734;
+  --picker-placeholder-bg: #10251A;
+  --skin-btn-active-bg: #264734;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --title-anim: none;
+  --tile-hover-shadow: none;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --edit-label-glow: none;
+  --btn-done-hover-glow: none;
+  --update-btn-hover-glow: none;
+  --btn-close-hover-glow: none;
 }
 
-/* ── App border: terminal green pulse ──────────────────────────────────────── */
-@keyframes border-pulse {
-  0%, 100% { border-color: rgba(0,255,65,.16); box-shadow: none; }
-  50%       { border-color: rgba(0,255,65,.42); box-shadow: inset 0 0 12px rgba(0,255,65,.03); }
-}
+/* Quiet surfaces; artwork never sits above an app glyph or functional label. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; will-change:auto; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#163021; border-bottom-color:#83B994; box-shadow:none; }
+#header::before { background:#83B994; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2084%2020%22%20fill%3D%22none%22%20stroke%3D%22%2387ECA0%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ctext%20x%3D%2220%22%20y%3D%229%22%20font-family%3D%22Consolas%2C%20monospace%22%20font-size%3D%229%22%20stroke%3D%22none%22%20fill%3D%22%2387ECA0%22%3E01%3C%2Ftext%3E%3Ctext%20x%3D%2249%22%20y%3D%2217%22%20font-family%3D%22Consolas%2C%20monospace%22%20font-size%3D%229%22%20stroke%3D%22none%22%20fill%3D%22%2387ECA0%22%3E10%3C%2Ftext%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Consolas, 'Courier New', monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#B0E8BD; text-transform:uppercase; text-shadow:none; }
+#title .accent { color:#87ECA0; }
+#title::after { content:none; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#A0CFAC; opacity:1; }
+#header-controls button { color:#B0E8BD; border-color:#83B994; }
+#header-controls button:hover, #header-controls button:active { color:#B0E8BD; border-color:#87ECA0; }
+#grid-container { background:none; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#10251A; border-color:#83B994; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#1E3B29; border-color:#87ECA0; box-shadow:none; }
+.app-tile:focus-visible { outline-color:#87ECA0; }
+.app-tile:active { background:#264734; }
+.app-tile::before { display:none; animation:none; }
+.tile-label { font-family:Consolas, 'Courier New', monospace; font-size:12px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#B0E8BD; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; isolation:isolate; overflow:visible; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#B0E8BD; }
+.hotkey-input.recording { background:#264734; color:#B0E8BD; border-color:#87ECA0; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#1E3B29; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#87ECA0; }
+#theme-banner { background:#163021; border-top-color:#83B994; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2022%2022%22%20fill%3D%22none%22%20stroke%3D%22%2387ECA0%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M8%205H14V17H8Z%22%20fill%3D%22%2387ECA0%22%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Consolas, 'Courier New', monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#B0E8BD; text-shadow:none; }
+/* Shape belongs to an independent plate, never the icon clip. */
+.tile-icon-wrap::before { content:""; position:absolute; inset:-2px; z-index:-1; background:#10251A; border:1px solid #83B994; border-radius:0px; clip-path:none; pointer-events:none; }
+/* Gutter material scrolls with the existing Grid, and is omitted in shapes without gutters. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%23243A46%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%200V40%20M2%2012H6%20M2%2028H6%22%2F%3E%3C%2Fsvg%3E") left top / 8px 40px repeat-y, url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%23243A46%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%200V40%20M2%2012H6%20M2%2028H6%22%2F%3E%3C%2Fsvg%3E") right 4px top / 8px 40px repeat-y; }
+body.region.layout-radial #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+/* Approved bounded rain exception. Opaque tiles and label backing isolate moving ink. */
+#grid-container::before { content:''; position:absolute; inset:-320px 0 0; z-index:0; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2088%20320%22%20fill%3D%22none%22%20stroke%3D%22%2387ECA0%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Ctext%20x%3D%2212%22%20y%3D%2218%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.850%22%20stroke%3D%22none%22%3E%E3%82%A6%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%2240%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.795%22%20stroke%3D%22none%22%3E3%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%2262%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.740%22%20stroke%3D%22none%22%3E%E3%82%A3%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%2284%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.685%22%20stroke%3D%22none%22%3E9%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22106%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.630%22%20stroke%3D%22none%22%3E%E3%82%B3%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22128%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.575%22%20stroke%3D%22none%22%3E7%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22150%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.520%22%20stroke%3D%22none%22%3E%E3%82%AA%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22172%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.465%22%20stroke%3D%22none%22%3E%E3%82%A1%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22194%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.410%22%20stroke%3D%22none%22%3E5%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22216%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.355%22%20stroke%3D%22none%22%3E%E3%82%A8%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22238%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.300%22%20stroke%3D%22none%22%3E1%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22260%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.245%22%20stroke%3D%22none%22%3E%E3%82%AB%3C%2Ftext%3E%3Ctext%20x%3D%2212%22%20y%3D%22282%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2214%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.190%22%20stroke%3D%22none%22%3E0%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2247%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.850%22%20stroke%3D%22none%22%3E%E3%82%A6%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2269%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.795%22%20stroke%3D%22none%22%3E3%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2291%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.740%22%20stroke%3D%22none%22%3E%E3%82%A3%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22113%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.685%22%20stroke%3D%22none%22%3E9%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22135%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.630%22%20stroke%3D%22none%22%3E%E3%82%B3%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22157%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.575%22%20stroke%3D%22none%22%3E7%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22179%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.520%22%20stroke%3D%22none%22%3E%E3%82%AA%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22201%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.465%22%20stroke%3D%22none%22%3E%E3%82%A1%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22223%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.410%22%20stroke%3D%22none%22%3E5%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22245%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.355%22%20stroke%3D%22none%22%3E%E3%82%A8%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22267%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.300%22%20stroke%3D%22none%22%3E1%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22289%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.245%22%20stroke%3D%22none%22%3E%E3%82%AB%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%22311%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2216%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.190%22%20stroke%3D%22none%22%3E0%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%2275%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.850%22%20stroke%3D%22none%22%3E%E3%82%A6%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%2297%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.795%22%20stroke%3D%22none%22%3E3%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22119%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.740%22%20stroke%3D%22none%22%3E%E3%82%A3%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22141%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.685%22%20stroke%3D%22none%22%3E9%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22163%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.630%22%20stroke%3D%22none%22%3E%E3%82%B3%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22185%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.575%22%20stroke%3D%22none%22%3E7%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22207%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.520%22%20stroke%3D%22none%22%3E%E3%82%AA%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22229%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.465%22%20stroke%3D%22none%22%3E%E3%82%A1%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22251%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.410%22%20stroke%3D%22none%22%3E5%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22273%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.355%22%20stroke%3D%22none%22%3E%E3%82%A8%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22295%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.300%22%20stroke%3D%22none%22%3E1%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%22317%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.245%22%20stroke%3D%22none%22%3E%E3%82%AB%3C%2Ftext%3E%3Ctext%20x%3D%2269%22%20y%3D%2239%22%20font-family%3D%22MS%20Gothic%2CConsolas%2Cmonospace%22%20font-size%3D%2218%22%20fill%3D%22%2387ECA0%22%20fill-opacity%3D%220.190%22%20stroke%3D%22none%22%3E0%3C%2Ftext%3E%3C%2Fsvg%3E") left top/88px 320px repeat; opacity:.35; will-change:auto; animation:ql-matrix-rain 16s steps(320,end) infinite; }
+@keyframes ql-matrix-rain { from { transform:translateY(0); } to { transform:translateY(320px); } }
+.tile-label { background:#10251A; text-shadow:0 0 3px #000; }
+#header { border-bottom-color:#243A46; }
+/* Radial shape masking is owned by existing region geometry: suppress rain where no safe grid exists. */
+body.region.layout-radial #grid-container::before, body.region.layout-row #grid-container::before, body.region.layout-column #grid-container::before { content:none; display:none; animation:none; }
+@media(prefers-reduced-motion:reduce) { #grid-container::before { animation:none; } }
 
-/* ── System intrusion: border flickers when the construct detects presence ───── */
-#app { animation: mx-intrusion 10s steps(1) infinite; }
-@keyframes mx-intrusion {
-  0%, 87%, 90%, 100% { box-shadow: none; }
-  88% { box-shadow: 0 0 0 1px rgba(0,255,65,.75), inset 0 0 24px rgba(0,255,65,.06); }
-  89% { box-shadow: none; }
-}
-
-/* ── Title: green flash / blackout sync ─────────────────────────────────────── */
-@keyframes mx-title {
-  0%, 87%, 90%, 100% { color: #00CC33; text-shadow: 0 0 6px rgba(0,255,65,.35), 0 0 16px rgba(0,255,65,.12); }
-  88%                 { color: #00FF41; text-shadow: 0 0 14px rgba(0,255,65,.90), 0 0 32px rgba(0,255,65,.40); }
-  89%                 { color: transparent; text-shadow: none; opacity: 0; }
-}
-
-/* ── App::after — fractal noise + scanlines + descending green scan sweep ──── */
-#app::after {
-  background:
-    /* fractal noise — green-tinted digital texture */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.05 0.2 0.05 0 0  0.1 0.4 0.1 0 0.02  0.02 0.1 0.02 0 0  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* scan sweep — bright bar descending through the rain */
-    linear-gradient(to bottom, transparent 0, rgba(0,255,65,.07) 40px, transparent 80px) no-repeat,
-    /* very faint scanlines */
-    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 3px);
-  background-size: 200px 200px, 100% 80px, 100% 3px;
-  background-position: 0 0, 0 -80px, 0 0;
-  animation: mx-sweep 10s linear infinite;
-  opacity: 1;
-}
-@keyframes mx-sweep {
-  from { background-position: 0 0, 0 -80px, 0 0; }
-  to   { background-position: 0 0, 0 calc(100% + 80px), 0 0; }
-}
-
-/* ── Grid container: THREE-LAYER digital rain ───────────────────────────────── */
-#grid-container {
-  position: relative;
-}
-
-/* Rain animation */
-@keyframes mx-rain {
-  to {
-    background-position:
-      0 160px,
-      11px calc(53px + 240px),
-      25px calc(107px + 320px);
-  }
-}
-
-#grid-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-
-  /* Three layers of digital rain SVGs at different scales and offsets */
-  background:
-    /* Layer 1 — narrow columns, fast-ish */
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'25'%20height%3D'160'%3E%3Ctext%20x%3D'12'%20y%3D'18'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.42'%20text-anchor%3D'middle'%3E%E3%82%A6%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'36'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.35'%20text-anchor%3D'middle'%3E3%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'54'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.28'%20text-anchor%3D'middle'%3E%E3%82%A3%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'72'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.20'%20text-anchor%3D'middle'%3E9%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'90'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.14'%20text-anchor%3D'middle'%3E%E3%82%B3%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'108'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.09'%20text-anchor%3D'middle'%3E7%3C%2Ftext%3E%3Ctext%20x%3D'12'%20y%3D'126'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'14'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.05'%20text-anchor%3D'middle'%3E%E3%82%AA%3C%2Ftext%3E%3C%2Fsvg%3E"),
-    /* Layer 2 — medium columns */
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'38'%20height%3D'240'%3E%3Ctext%20x%3D'19'%20y%3D'20'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.38'%20text-anchor%3D'middle'%3E%E3%82%A1%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'42'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.32'%20text-anchor%3D'middle'%3E5%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'64'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.26'%20text-anchor%3D'middle'%3E%E3%82%A8%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'86'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.20'%20text-anchor%3D'middle'%3E1%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'108'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.15'%20text-anchor%3D'middle'%3E%E3%82%BD%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'130'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.10'%20text-anchor%3D'middle'%3E8%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'152'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.06'%20text-anchor%3D'middle'%3E%E3%82%B5%3C%2Ftext%3E%3Ctext%20x%3D'19'%20y%3D'174'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'16'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.03'%20text-anchor%3D'middle'%3E0%3C%2Ftext%3E%3C%2Fsvg%3E"),
-    /* Layer 3 — wide columns, slow, deep */
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'52'%20height%3D'320'%3E%3Ctext%20x%3D'26'%20y%3D'22'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.36'%20text-anchor%3D'middle'%3E%E3%82%B3%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'46'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.30'%20text-anchor%3D'middle'%3E2%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'70'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.24'%20text-anchor%3D'middle'%3E%E3%82%A6%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'94'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.18'%20text-anchor%3D'middle'%3E4%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'118'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.14'%20text-anchor%3D'middle'%3E%E3%82%AA%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'142'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.10'%20text-anchor%3D'middle'%3E6%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'166'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.07'%20text-anchor%3D'middle'%3E%E3%82%A8%3C%2Ftext%3E%3Ctext%20x%3D'26'%20y%3D'190'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'18'%20fill%3D'%2300FF41'%20fill-opacity%3D'0.04'%20text-anchor%3D'middle'%3E1%3C%2Ftext%3E%3C%2Fsvg%3E");
-
-  background-size:  25px 160px, 38px 240px, 52px 320px;
-  background-position: 0 0, 11px 53px, 25px 107px;
-  animation: mx-rain 8s linear infinite, mx-rain-sync 10s steps(1) infinite;
-}
-@keyframes mx-rain-sync {
-  0%, 87%, 90%, 100% { opacity: 1; }
-  88%                 { opacity: 1; filter: brightness(1.6) drop-shadow(0 0 3px rgba(0,255,65,.50)); }
-  89%                 { opacity: 0; }
-}
-
-#grid-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  /* deep black bottom — characters falling into the void */
-  background:
-    linear-gradient(180deg, transparent 70%, rgba(0,2,0,.55) 100%),
-    /* very faint green glow — the simulation's ambient light */
-    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(0,20,0,.06) 0%, transparent 70%);
-}
-
-/* ── Header: terminal feel, green bottom line ───────────────────────────────── */
-#header {
-  border-bottom: 1px solid rgba(0, 255, 65, 0.18);
-  box-shadow: 0 1px 8px rgba(0,0,0,.60);
-}
-
-/* ── Header accent bar: terminal green ─────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(180deg, #00FF41 0%, rgba(0,255,65,.3) 100%);
-  box-shadow: 0 0 6px rgba(0,255,65,.5);
-}
-
-/* ── Flavor content ────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'THE MATRIX  HAS YOU  ///  FOLLOW THE WHITE RABBIT';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(0, 255, 65, 0.52);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'WAKE UP, NEO...\A\ATHE MATRIX\AHAS YOU\A\ATHERE IS\ANO SPOON\A\AFREE YOUR MIND';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(0, 255, 65, 0.10); white-space: pre;
-  animation: matrix-lore-flicker 10s ease-in-out infinite;
-}
-
-@keyframes matrix-lore-flicker {
-  0%, 100% { color: rgba(0,255,65,0.10); }
-  28%       { color: rgba(0,255,65,0.14); }
-  65%       { color: rgba(0,255,65,0.07); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(0,255,65,0.18); }
-  92%       { color: rgba(0,255,65,0.10); }
-}
-
-#edit-bar::after {
-  content: 'THERE IS NO SPOON';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 8px; letter-spacing: 3px; color: rgba(0, 255, 65, 0.35);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Courier New', Courier, monospace; }
-
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(0, 2, 0, 0.98); border-top-color: rgba(0, 255, 65, 0.16); }
-#theme-banner::before { content: '〓'; color: #00FF41; font-size: 20px; font-family: 'Courier New', monospace; }
-#theme-banner-text { font-family: 'Courier New', Courier, monospace; color: rgba(0, 200, 50, 0.68); }
-
-/* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
-#header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: var(--tile-hover-bg);
-}
-.app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }
+/* Loading remains readable without an ambient blink; existing functional transitions stay. */
+.picker-loading { animation:none; opacity:1; color:var(--text-dim); }
+#theme-banner::before { will-change:auto; }

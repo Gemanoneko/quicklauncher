@@ -146,3 +146,6 @@
   background: #F5D60A; color: #1A1A1A;
   box-shadow: 0 0 0 2px #F5D60A;
 }
+
+/* Committed inherited-contrast addenda: preserve existing art, geometry and rest states. */
+body.region #header-controls :is(#btn-random-theme,#btn-settings,#btn-hide):active { background:#27220F; color:#F5D60A; border-color:#F5D60A; }

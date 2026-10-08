@@ -1,242 +1,124 @@
-/* ══ MORDOR ═══════════════════════════════════════════════════════════════════
-   One does not simply walk into Mordor. Ash plains, iron ramparts, and the
-   Eye of Sauron above Barad-dûr. Cracked volcanic ember on blackened steel.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* mordor: approved ThemeFidelity Batch10 palette, typography and original static frame motifs. */
 :root {
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* WARM VOLCANIC MID-TONE — not just dark-with-red */
-  --bg:           #1A0C04;
-  --panel-bg:     rgba(22, 10, 4, 0.97);
-  --overlay-bg:   rgba(18, 8, 3, 0.96);
-  --header-bg:    rgba(180, 60, 0, 0.04);
-
-  --font:         'Segoe UI', Georgia, serif;
-  --text:         #A88858;
-  --text-dim:     #967858;
-
-  --accent-c:     #CC4800;   /* volcanic ember */
-  --accent-m:     #880000;   /* lava red */
-  --accent-y:     #604020;   /* burnt iron */
-
-  --border:       rgba(160, 55, 0, 0.25);
-  --border-h:     rgba(200, 70, 0, 0.55);
-
-  --glow-c:       0 0 8px rgba(204,72,0,.65), 0 0 22px rgba(204,72,0,.22);
-  --glow-m:       0 0 7px rgba(136,0,0,.60), 0 0 20px rgba(136,0,0,.20);
-  --glow-y:       0 0 6px rgba(96,64,32,.50), 0 0 16px rgba(96,64,32,.16);
-
-  --pulse-glow:   inset 0 0 24px rgba(160,55,0,.08);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 4px,
-                    rgba(140, 40, 0, 0.025) 4px, rgba(140, 40, 0, 0.025) 5px
-                  );
-  --drag-over-glow: inset 0 0 24px rgba(204,72,0,.12);
-
-  --title-anim:   eye-of-sauron 5s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(160, 55, 0, 0.08);
-  --tile-hover-border: rgba(200, 70, 0, 0.42);
-  --tile-hover-shadow: 0 0 14px rgba(204, 72, 0, 0.28);
-  --tile-active-bg:    rgba(160, 55, 0, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(204,72,0,.65)) drop-shadow(0 0 14px rgba(204,72,0,.28));
-  --tile-icon-fx:      brightness(0.82) contrast(1.3) sepia(0.3);
-  --tile-icon-shape:   polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  --tile-label-spacing:   1px;
-  --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 1.2s ease-out forwards;
-
-  --btn-hover-bg:   rgba(160, 55, 0, 0.12);
-  --btn-active-bg:  rgba(160, 55, 0, 0.22);
-
-  --drop-hint-border: rgba(160, 55, 0, 0.28);
-  --drop-icon-color:  rgba(204, 72, 0, 0.40);
-  --hint-sub-color:   #A4724A;
-
-  --rename-dashed:    rgba(204, 72, 0, 0.42);
-  --rename-input-bg:  rgba(160, 55, 0, 0.08);
-
-  --edit-bar-bg:          rgba(136, 0, 0, 0.08);
-  --edit-bar-border:      rgba(136, 0, 0, 0.45);
-  --edit-label-color:     #880000;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #CC4800;
-  --btn-done-border:      rgba(204, 72, 0, 0.45);
-  --btn-done-hover-bg:    rgba(204, 72, 0, 0.12);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(160, 55, 0, 0.42);
-
-  --update-bg:             rgba(96, 64, 32, 0.06);
-  --update-border:         rgba(96, 64, 32, 0.34);
-  --update-color:          #604020;
-  --update-btn-border:     rgba(96, 64, 32, 0.30);
-  --update-btn-hover-bg:   rgba(96, 64, 32, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #CC4800;
-  --btn-close-border:     rgba(204, 72, 0, 0.42);
-  --btn-close-hover-bg:   rgba(204, 72, 0, 0.12);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(160, 55, 0, 0.08);
-  --picker-item-hover-bg:  rgba(160, 55, 0, 0.09);
-  --picker-item-active-bg: rgba(160, 55, 0, 0.16);
-  --picker-placeholder-bg: rgba(160, 55, 0, 0.08);
-
-  --skin-btn-active-bg:    rgba(160, 55, 0, 0.18);
-  --remove-btn-bg:         rgba(136, 0, 0, 0.90);
-  --remove-btn-border:     #880000;
+  --bg: #0A0706;
+  --panel-bg: #1B1918;
+  --overlay-bg: #1B1918;
+  --header-bg: #24201D;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #E5D4BD;
+  --text-dim: #C7B8A5;
+  --accent-c: #EDAB77;
+  --accent-text: #EDAB77;
+  --accent-m: #EDAB77;
+  --accent-y: #EDAB77;
+  --border: #A69786;
+  --border-h: #EDAB77;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #EDAB77;
+  --title-anim: none;
+  --tile-hover-bg: #312722;
+  --tile-hover-border: #EDAB77;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #3B2D25;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight: 700;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #312722;
+  --btn-active-bg: #3B2D25;
+  --btn-hover-text: #E5D4BD;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-hover-text: #E5D4BD;
+  --mgr-button-pressed-text: #E5D4BD;
+  --drop-hint-border: #A69786;
+  --drop-icon-color: #EDAB77;
+  --hint-sub-color: #C7B8A5;
+  --rename-dashed: #A69786;
+  --rename-input-bg: #1B1918;
+  --edit-bar-bg: #1B1918;
+  --edit-bar-border: #A69786;
+  --edit-label-color: #EDAB77;
+  --edit-label-glow: none;
+  --btn-done-color: #EDAB77;
+  --btn-done-border: #A69786;
+  --btn-done-hover-bg: #312722;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #A69786;
+  --update-bg: #1B1918;
+  --update-border: #A69786;
+  --update-color: #EDAB77;
+  --update-btn-border: #A69786;
+  --update-btn-hover-bg: #312722;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E5D4BD;
+  --btn-close-border: #A69786;
+  --btn-close-hover-bg: #312722;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1B1918;
+  --picker-item-hover-bg: #312722;
+  --picker-item-active-bg: #3B2D25;
+  --picker-placeholder-bg: #1B1918;
+  --skin-btn-active-bg: #3B2D25;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Volcanic ash + ember glow + cracked ground ─────────────────────────────── */
-#app::after {
-  background:
-    /* ash grain — WARM volcanic tint, not desaturated */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.5 0.2 0.05 0 0.03  0.3 0.1 0.02 0 0.01  0.1 0.04 0.01 0 0  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* diagonal fire streaks */
-    repeating-linear-gradient(106deg, transparent 0px, transparent 5px, rgba(180,55,0,0.025) 5px, rgba(180,55,0,0.025) 6px, transparent 6px, transparent 42px),
-    /* vignette — NOT full dark, preserves warm mid-tone */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 35%, rgba(8,2,0,0.70) 100%),
-    /* STRONG ember glow from below — Mount Doom lava */
-    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(180,50,0,0.18) 0%, rgba(140,35,0,0.08) 40%, transparent 70%),
-    /* Eye glow from above */
-    radial-gradient(ellipse 45% 35% at 50% 0%, rgba(200,60,0,0.10) 0%, transparent 60%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Remove foreground panno/readouts and ambient motion; preserve functional transitions. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#24201D; border-bottom-color:#A69786; }
+#header::before { background:#A69786; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23EDAB77%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.65%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M8%2018V8l4-5%204%205h16l4-5%204%205h16l4-5%204%205v10M8%2012h56M20%208v10M36%208v10M52%208v10%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2215%22%20r%3D%22.7%22%2F%3E%3Ccircle%20cx%3D%2261%22%20cy%3D%2215%22%20r%3D%22.7%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Metamorphous', Georgia, serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#E5D4BD; text-shadow:none; }
+#title .accent { color:#EDAB77; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#C7B8A5; opacity:1; }
+#header-controls button { color:#E5D4BD; border-color:#A69786; }
+#header-controls button:hover, #header-controls button:active { color:#E5D4BD; border-color:#EDAB77; }
 
-/* ── Header molten ember accent bar ─────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #CC4800, rgba(160, 55, 0, 0.25));
-  box-shadow: 0 0 12px rgba(204, 72, 0, 0.65), 0 0 28px rgba(204, 72, 0, 0.22);
-}
+/* Eight-pixel scrolling outer trim, omitted where radial layouts lack safe bands. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A69786%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%200l2%207-3%205%204%206-3%207%202%207%22%20stroke%3D%22%23B23A0E%22%20stroke-opacity%3D%22.22%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A69786%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%200l2%207-3%205%204%206-3%207%202%207%22%20stroke%3D%22%23B23A0E%22%20stroke-opacity%3D%22.22%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+body.region.layout-fan #grid-container, body.region.layout-ring #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+.app-tile { background:#1B1918; border-color:#A69786; box-shadow:none; border-radius:2px; }
+.app-tile:hover { background:#312722; border-color:#EDAB77; box-shadow:none; }
+.app-tile:focus-visible { background:#312722; border-color:#EDAB77; outline-color:#EDAB77; }
+.app-tile:active { background:#3B2D25; }
+.app-tile::before { display:none; }
+.tile-label { font-family:Georgia, 'Times New Roman', serif; font-size:12px; font-weight:700; font-style:normal; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#E5D4BD; text-shadow:none; overflow:hidden; text-overflow:ellipsis; padding-bottom:3px; margin-bottom:-3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active, .mgr-delete:hover, .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#EDAB77; }
+.hotkey-input.recording { background:#3B2D25; color:#EDAB77; border-color:#EDAB77; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#312722; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#EDAB77; }
 
-/* ── Grid: The Eye of Sauron — ever watchful above Barad-dûr ─────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Eye outer ring — the great corona of fire */
-    radial-gradient(ellipse 42% 82% at 50% 46%, transparent 52%, rgba(170,45,0,0.15) 53%, rgba(150,35,0,0.15) 59%, transparent 60%),
-    /* Eye iris ring */
-    radial-gradient(ellipse 26% 56% at 50% 46%, transparent 30%, rgba(200,60,0,0.19) 31%, rgba(180,50,0,0.19) 38%, transparent 39%),
-    /* Eye inner glow — lava behind the iris */
-    radial-gradient(ellipse 16% 38% at 50% 46%, rgba(230,80,0,0.16) 0%, rgba(200,60,0,0.10) 55%, transparent 75%),
-    /* Pupil slit — the Eye's vertical cat-slit */
-    radial-gradient(ellipse 3.5% 28% at 50% 46%, rgba(255,120,0,0.30) 0%, rgba(230,90,0,0.18) 55%, transparent 80%),
-    /* Ash plain from top */
-    linear-gradient(to bottom, rgba(140, 40, 0, 0.07) 0%, transparent 28%),
-    /* Lava seep from Orodruin below */
-    linear-gradient(to top, rgba(180, 50, 0, 0.09) 0%, rgba(140, 35, 0, 0.04) 18%, transparent 45%);
-  animation: mordor-eye 10s ease-in-out infinite;
-}
-@keyframes mordor-eye {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* the Eye blinks — synchronized blackout */
-  89%       { opacity: 0.90; }   /* it opens wider */
-  92%       { opacity: 0.82; }
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A69786%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%205h3l2-3%202%203h10l2-3%202%203h3%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%223%22%20r%3D%22.7%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #24201D; border-top-color:#A69786; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; animation:none; will-change:auto; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23EDAB77%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M11%202c1%205%207%207%207%2012a7%207%200%2001-14%200c0-4%203-6%204-9l3%204M11%2010v8%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Georgia, 'Times New Roman', serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#E5D4BD; text-shadow:none; }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'MORDOR  //  BARAD-DÛR  //  THE EYE IS UPON YOU';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(218, 95, 20, 0.68);
-  pointer-events: none; white-space: nowrap;
-}
+/* Shape only the supporting plate; application glyph is complete above it. */
+.tile-icon-wrap::before { content:''; position:absolute; inset:0; background:#24201D; border:1px solid #A69786; border-radius:2px; clip-path:polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% 100%,0 100%); pointer-events:none; }
+.tile-icon { position:relative; z-index:1; }
 
-#grid-container::after {
-  content: 'MORDOR\A\AONE DOES\ANOT SIMPLY\AWALK\AINTO\AMORDOR\A\ABARAD-DÛR\A\AMOUNT DOOM';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(160, 50, 0, 0.12); white-space: pre;
-  animation: mordor-lore-flicker 10s ease-in-out infinite;
-}
+.app-tile:hover { box-shadow:inset 2px 0 #F26A1B; }
 
-@keyframes mordor-lore-flicker {
-  0%, 100% { color: rgba(160,50,0,0.12); }
-  28%       { color: rgba(160,50,0,0.16); }
-  65%       { color: rgba(160,50,0,0.09); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(160,50,0,0.20); }
-  92%       { color: rgba(160,50,0,0.12); }
-}
-
-#edit-bar::after {
-  content: 'ASH NAZG DURBATULÛK';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 8px; letter-spacing: 2px; color: rgba(136, 0, 0, 0.45);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; letter-spacing: 5px; }
-
-/* ── Title animation: Eye of Sauron glow ────────────────────────────────────── */
-@keyframes eye-of-sauron {
-  0%        { color: #CC4800; text-shadow: 0 0 8px rgba(204,72,0,.55), 0 0 22px rgba(204,72,0,.18); }
-  35%       { color: #E06000; text-shadow: 0 0 14px rgba(220,80,0,.75), 0 0 32px rgba(200,60,0,.30); }
-  65%       { color: #A03800; text-shadow: 0 0 5px rgba(160,55,0,.40); }
-  87%       { color: #CC4800; text-shadow: 0 0 8px rgba(204,72,0,.50); }
-  88%       { color: #FF8820; text-shadow: 0 0 22px rgba(255,136,32,.85), 0 0 50px rgba(204,72,0,.45); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #CC4800; text-shadow: 0 0 10px rgba(204,72,0,.60); opacity: 1; }
-  100%      { color: #CC4800; text-shadow: 0 0 8px rgba(204,72,0,.55), 0 0 22px rgba(204,72,0,.18); }
-}
-
-/* ── App: volcanic border — synced at 10s/88% ────────────────────────────── */
-#app { animation: mordor-border 10s ease-in-out infinite; }
-@keyframes mordor-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(160,55,0,.28), inset 0 0 24px rgba(160,55,0,.05); }
-  35%      { box-shadow: 0 0 0 1px rgba(204,72,0,.52), inset 0 0 34px rgba(180,50,0,.08); }
-  65%      { box-shadow: 0 0 0 1px rgba(136,0,0,.25), inset 0 0 20px rgba(136,0,0,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(255,136,32,.80), inset 0 0 50px rgba(204,72,0,.15), 0 0 18px rgba(204,72,0,.28); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(204,72,0,.45), inset 0 0 28px rgba(160,55,0,.07); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(8, 3, 0, 0.98); border-top-color: rgba(160, 55, 0, 0.25); }
-#theme-banner::before { content: '◬'; color: #CC4800; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; color: rgba(205, 95, 20, 0.75); }
-
-/* ── Mount Doom — volcanic ash flakes fall + ember sparks rise ───────────── */
-#particles {
-  background:
-    /* Ash flakes — elongated grey-brown rectangles drifting down */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='420'%3E%3Crect x='18' y='30' width='6' height='2' rx='1' fill='rgba(90,65,45,0.28)' transform='rotate(-12,18,30)'/%3E%3Crect x='75' y='110' width='8' height='2' rx='1' fill='rgba(70,50,35,0.22)' transform='rotate(8,75,110)'/%3E%3Crect x='140' y='65' width='5' height='2' rx='1' fill='rgba(100,72,48,0.25)' transform='rotate(-5,140,65)'/%3E%3Crect x='55' y='200' width='7' height='2' rx='1' fill='rgba(80,58,38,0.20)' transform='rotate(15,55,200)'/%3E%3Crect x='185' y='155' width='6' height='2' rx='1' fill='rgba(88,62,42,0.24)' transform='rotate(-18,185,155)'/%3E%3Crect x='110' y='280' width='9' height='2' rx='1' fill='rgba(75,54,35,0.19)' transform='rotate(6,110,280)'/%3E%3Crect x='30' y='340' width='5' height='2' rx='1' fill='rgba(95,68,46,0.26)' transform='rotate(-10,30,340)'/%3E%3Crect x='170' y='360' width='7' height='2' rx='1' fill='rgba(82,58,38,0.21)' transform='rotate(20,170,360)'/%3E%3C/svg%3E") repeat,
-    /* Ember sparks — bright orange-red dots rising from below */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='380'%3E%3Ccircle cx='28' cy='340' r='1.8' fill='rgba(255,100,20,0.45)'/%3E%3Ccircle cx='90' cy='290' r='1.2' fill='rgba(204,72,0,0.38)'/%3E%3Ccircle cx='145' cy='355' r='2.2' fill='rgba(255,80,10,0.35)'/%3E%3Ccircle cx='55' cy='310' r='1' fill='rgba(255,130,30,0.42)'/%3E%3Ccircle cx='160' cy='270' r='1.5' fill='rgba(230,90,15,0.32)'/%3E%3Ccircle cx='105' cy='370' r='1.8' fill='rgba(255,110,25,0.40)'/%3E%3C/svg%3E") repeat;
-  background-size: 220px 420px, 180px 380px;
-  animation: mordor-ash 10s linear infinite, mordor-embers 7s linear infinite reverse;
-}
-@keyframes mordor-ash {
-  from { background-position: 0 -420px, 0 0; }
-  to   { background-position: 30px 0,    0 0; }
-}
-@keyframes mordor-embers {
-  from { background-position: 0 0,          10px -380px; }
-  to   { background-position: 0 0,          -10px 0; }
-}
-
-/* ── Tile: volcanic ember shimmer ────────────────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: transparent;
-  border: 1px solid rgba(204,72,0,0.30);
-}
-.app-tile:hover::before { animation: tile-flicker .8s steps(1, end) infinite; }
+/* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
+body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }

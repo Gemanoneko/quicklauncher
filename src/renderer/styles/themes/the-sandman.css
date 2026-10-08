@@ -1,238 +1,122 @@
-/* ══ THE SANDMAN ════════════════════════════════════════════════════════════════
-   The Dreaming. Dream takes his throne. Death smiles. Delirium dances.
-   Between waking and sleep lives the Endless — and you are always dreaming.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* the-sandman: committed ThemeFidelity Batch08; original static bounded frame art. */
 :root {
-  /* ── Shape ── */
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── Backgrounds ── */
-  --bg:           #030208;
-  --panel-bg:     rgba(4, 3, 12, 0.99);
-  --overlay-bg:   rgba(3, 2, 8, 0.97);
-  --header-bg:    rgba(96, 64, 192, 0.03);
-
-  /* ── Typography ── */
-  --font:         Georgia, 'Times New Roman', serif;
-
-  /* ── Text ── */
-  --text:         #9888C8;
-  --text-dim:     rgba(130, 115, 170, 0.78);
-
-  /* ── Accents ── */
-  --accent-c:     #6040C0;   /* Morpheus violet */
-  --accent-text:  #9080E0;   /* sigil violet lifted — clears 3:1 against --bg */
-  --accent-m:     #C08020;   /* Death's gold */
-  --accent-y:     #202040;   /* void indigo */
-
-  /* ── Borders ── */
-  --border:       rgba(96, 64, 192, 0.28);
-  --border-h:     rgba(120, 80, 220, 0.58);
-
-  /* ── Glows ── */
-  --glow-c:       0 0 7px rgba(96,64,192,.60),   0 0 22px rgba(96,64,192,.20);
-  --glow-m:       0 0 6px rgba(192,128,32,.55),  0 0 20px rgba(192,128,32,.18);
-  --glow-y:       0 0 5px rgba(32,32,64,.40),    0 0 14px rgba(32,32,64,.12);
-
-  /* ── App window decoration ── */
-  --pulse-glow:   inset 0 0 22px rgba(80,50,160,.06);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(96,64,192,.08);
-
-  /* ── Title animation ── */
-  --title-anim:   dream-shift 8s ease-in-out infinite;
-
-  /* ── Tiles ── */
-  --tile-hover-bg:     rgba(80, 50, 160, 0.09);
-  --tile-hover-border: rgba(120, 80, 220, 0.35);
-  --tile-hover-shadow: 0 0 12px rgba(96, 64, 192, 0.18);
-  --tile-active-bg:    rgba(80, 50, 160, 0.18);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(96,64,192,.58)) drop-shadow(0 0 14px rgba(80,50,160,.22));
-  --tile-icon-fx:      brightness(0.88) saturate(1.3) contrast(1.05);
-  --tile-icon-shape:   circle(46% at 50% 50%);
-  --tile-label-spacing:   0.6px;
+  --bg: #0A0812;
+  --panel-bg: #21182F;
+  --overlay-bg: #21182F;
+  --header-bg: #292039;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #E1D5F0;
+  --text-dim: #C5B3DC;
+  --accent-c: #E6BD73;
+  --accent-text: #E6BD73;
+  --accent-m: #E6BD73;
+  --accent-y: #E6BD73;
+  --border: #9B88B6;
+  --border-h: #D2B4E8;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #D2B4E8;
+  --title-anim: none;
+  --tile-hover-bg: #352844;
+  --tile-hover-border: #D2B4E8;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #3E304D;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
-
-  /* ── Buttons ── */
-  --btn-hover-bg:   rgba(80, 50, 160, 0.10);
-  --btn-active-bg:  rgba(80, 50, 160, 0.20);
-
-  /* ── Drop hint ── */
-  --drop-hint-border: rgba(96, 64, 192, 0.22);
-  --drop-icon-color:  rgba(120, 80, 220, 0.30);
-  --hint-sub-color:   rgba(110, 90, 150, 0.75);
-
-  /* ── Rename ── */
-  --rename-dashed:    rgba(96, 64, 192, 0.38);
-  --rename-input-bg:  rgba(80, 50, 160, 0.07);
-
-  /* ── Edit bar (Death's gold) ── */
-  --edit-bar-bg:          rgba(192, 128, 32, 0.07);
-  --edit-bar-border:      rgba(192, 128, 32, 0.35);
-  --edit-label-color:     var(--accent-m);
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       var(--accent-m);
-  --btn-done-border:      rgba(192, 128, 32, 0.40);
-  --btn-done-hover-bg:    rgba(192, 128, 32, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(96, 64, 192, 0.38);
-
-  /* ── Update banner (Morpheus violet) ── */
-  --update-bg:             rgba(96, 64, 192, 0.06);
-  --update-border:         rgba(96, 64, 192, 0.32);
-  --update-color:          var(--accent-c);
-  --update-btn-border:     rgba(96, 64, 192, 0.28);
-  --update-btn-hover-bg:   rgba(96, 64, 192, 0.09);
-  --update-btn-hover-glow: var(--glow-c);
-
-  /* ── Close / secondary buttons ── */
-  --btn-close-color:      var(--accent-m);
-  --btn-close-border:     rgba(192, 128, 32, 0.35);
-  --btn-close-hover-bg:   rgba(192, 128, 32, 0.10);
-  --btn-close-hover-glow: var(--glow-m);
-
-  /* ── Picker ── */
-  --picker-search-bg:      rgba(80, 50, 160, 0.07);
-  --picker-item-hover-bg:  rgba(80, 50, 160, 0.08);
-  --picker-item-active-bg: rgba(80, 50, 160, 0.15);
-  --picker-placeholder-bg: rgba(80, 50, 160, 0.07);
-
-  /* ── Skin selector ── */
-  --skin-btn-active-bg:    rgba(80, 50, 160, 0.18);
-
-  /* ── Remove button ── */
-  --remove-btn-bg:         rgba(192, 128, 32, 0.88);
-  --remove-btn-border:     var(--accent-m);
+  --tile-label-weight: 400;
+  --tile-label-style: italic;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #352844;
+  --btn-active-bg: #3E304D;
+  --btn-hover-text: #E1D5F0;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #E1D5F0;
+  --drop-hint-border: #9B88B6;
+  --drop-icon-color: #E6BD73;
+  --hint-sub-color: #C5B3DC;
+  --rename-dashed: #9B88B6;
+  --rename-input-bg: #21182F;
+  --edit-bar-bg: #21182F;
+  --edit-bar-border: #9B88B6;
+  --edit-label-color: #E1D5F0;
+  --edit-label-glow: none;
+  --btn-done-color: #E1D5F0;
+  --btn-done-border: #9B88B6;
+  --btn-done-hover-bg: #352844;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #9B88B6;
+  --update-bg: #21182F;
+  --update-border: #9B88B6;
+  --update-color: #E1D5F0;
+  --update-btn-border: #9B88B6;
+  --update-btn-hover-bg: #352844;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E1D5F0;
+  --btn-close-border: #9B88B6;
+  --btn-close-hover-bg: #352844;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #21182F;
+  --picker-item-hover-bg: #352844;
+  --picker-item-active-bg: #3E304D;
+  --picker-placeholder-bg: #21182F;
+  --skin-btn-active-bg: #3E304D;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Star-field + dream-mist + deep void vignette + violet cosmic corners ─────── */
-#app::after {
-  background:
-    /* fine star-field — very faint points of dream-light */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.2 0.1 0.5 0 0 0.1 0.1 0.4 0 0 0.3 0.2 0.6 0 0 0 0 0 1 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.06'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* dream mist — central soft violet radial */
-    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(60, 40, 120, 0.05) 0%, transparent 65%),
-    /* deep void vignette */
-    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 25%, rgba(1, 1, 6, 0.86) 100%),
-    /* violet cosmic corners */
-    radial-gradient(ellipse 38% 32% at 0% 0%, rgba(50, 30, 110, 0.08) 0%, transparent 65%),
-    radial-gradient(ellipse 38% 32% at 100% 100%, rgba(40, 25, 100, 0.07) 0%, transparent 65%);
-  background-size: 400px 400px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Identity belongs to the frame; no foreground panno, ghost text or ambient loops. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#292039; border-bottom-color:#9B88B6; }
+#header::before { background:#9B88B6; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2084%2020'%3E%3Cpath%20d%3D'M48%2018Q30%2012%2048%202Q40%2010%2054%2016%20M42%205L37%200L39%208%20M46%203L44%200%20M39%2010L29%207L36%2013%20M40%2014L33%2018L45%2016'%20fill%3D'none'%20stroke%3D'%23E6BD73'%20stroke-opacity%3D'0.9'%20stroke-width%3D'1.2'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Palatino Linotype',Georgia,serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#E1D5F0; text-shadow:none; }
+#title .accent { color:#E1D5F0; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#C5B3DC; }
+#header-controls button { color:#E1D5F0; border-color:#9B88B6; }
+#header-controls button:hover, #header-controls button:active { color:#E1D5F0; border-color:#D2B4E8; }
 
-/* ── Header Morpheus violet accent bar ───────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #6040C0, rgba(80, 50, 160, 0.25));
-  box-shadow: 0 0 8px rgba(96, 64, 192, 0.55), 0 0 22px rgba(80, 50, 160, 0.18);
-}
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Ccircle%20cx%3D'2'%20cy%3D'4'%20r%3D'.7'%20fill%3D'%23E6BD73'%20opacity%3D'.05'%2F%3E%3Ccircle%20cx%3D'5'%20cy%3D'16'%20r%3D'.6'%20fill%3D'%23E6BD73'%20opacity%3D'.05'%2F%3E%3Ccircle%20cx%3D'3'%20cy%3D'27'%20r%3D'.7'%20fill%3D'%23E6BD73'%20opacity%3D'.05'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Ccircle%20cx%3D'4'%20cy%3D'7'%20r%3D'.7'%20fill%3D'%23E6BD73'%20opacity%3D'.05'%2F%3E%3Ccircle%20cx%3D'2'%20cy%3D'20'%20r%3D'.6'%20fill%3D'%23E6BD73'%20opacity%3D'.05'%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+.app-tile { background:#21182F; border-color:#9B88B6; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#352844; border-color:#D2B4E8; box-shadow:none; }
+.app-tile:active { background:#3E304D; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Palatino Linotype',Georgia,serif; font-size:12px; font-weight:400; font-style:italic; letter-spacing:0.3px; line-height:1.2; color:#E1D5F0; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#E1D5F0; }
+.hotkey-input.recording { background:#3E304D; color:#E1D5F0; border-color:#D2B4E8; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#352844; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#D2B4E8; }
 
-/* ── Grid: Dreaming constellation — starfield with Dream's throne at center ──── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Dream constellation — star nodes connected by void-light threads */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Cline x1='250' y1='45' x2='148' y2='98' stroke='rgba(96,64,192,0.12)' stroke-width='0.8'/%3E%3Cline x1='250' y1='45' x2='362' y2='85' stroke='rgba(96,64,192,0.11)' stroke-width='0.8'/%3E%3Cline x1='148' y1='98' x2='82' y2='195' stroke='rgba(96,64,192,0.10)' stroke-width='0.7'/%3E%3Cline x1='362' y1='85' x2='418' y2='175' stroke='rgba(96,64,192,0.10)' stroke-width='0.7'/%3E%3Cline x1='82' y1='195' x2='168' y2='295' stroke='rgba(96,64,192,0.09)' stroke-width='0.7'/%3E%3Cline x1='418' y1='175' x2='352' y2='310' stroke='rgba(96,64,192,0.09)' stroke-width='0.7'/%3E%3Cline x1='168' y1='295' x2='250' y2='340' stroke='rgba(96,64,192,0.09)' stroke-width='0.6'/%3E%3Cline x1='352' y1='310' x2='250' y2='340' stroke='rgba(96,64,192,0.09)' stroke-width='0.6'/%3E%3Cline x1='148' y1='98' x2='250' y2='182' stroke='rgba(96,64,192,0.08)' stroke-width='0.6'/%3E%3Cline x1='362' y1='85' x2='250' y2='182' stroke='rgba(96,64,192,0.08)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='45' r='3' fill='rgba(192,128,32,0.45)'/%3E%3Ccircle cx='148' cy='98' r='2' fill='rgba(96,64,192,0.32)'/%3E%3Ccircle cx='362' cy='85' r='2.5' fill='rgba(96,64,192,0.30)'/%3E%3Ccircle cx='82' cy='195' r='1.8' fill='rgba(96,64,192,0.24)'/%3E%3Ccircle cx='418' cy='175' r='1.8' fill='rgba(96,64,192,0.24)'/%3E%3Ccircle cx='168' cy='295' r='2' fill='rgba(120,80,220,0.22)'/%3E%3Ccircle cx='352' cy='310' r='2' fill='rgba(120,80,220,0.22)'/%3E%3Ccircle cx='250' cy='340' r='2.5' fill='rgba(192,128,32,0.28)'/%3E%3Ccircle cx='250' cy='182' r='8' fill='none' stroke='rgba(96,64,192,0.20)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='182' r='3' fill='rgba(96,64,192,0.30)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* void depth from edges */
-    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(2, 1, 8, 0.16) 0%, transparent 65%),
-    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(2, 1, 8, 0.16) 0%, transparent 65%);
-  animation: dream-constellation 18s ease-in-out infinite;
-}
-@keyframes dream-constellation {
-  0%, 100% { opacity: 0.85; }
-  50%      { opacity: 1.00; }
-  88%      { opacity: 0.85; }
-  89%      { opacity: 0.30; }
-  90%      { opacity: 0.90; }
-}
+#theme-banner { background:#292039; border-top-color:#9B88B6; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2022%2022'%3E%3Cpath%20d%3D'M16%202Q1%204%204%2015Q7%2023%2018%2019Q7%2017%208%2010Q9%205%2016%202'%20fill%3D'none'%20stroke%3D'%23282032'%20stroke-opacity%3D'1'%20stroke-width%3D'1.4'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Palatino Linotype',Georgia,serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; letter-spacing:0.3px; color:#E1D5F0; text-shadow:none; }
 
-/* ── Flavor content ──────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'THE SANDMAN  //  THE DREAMING  //  DREAM TAKES HIS THRONE';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(130, 108, 210, 0.72);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'THE\ADREAMING\A\AMORPHEUS\AAWAKENS\A\ADEATH\ADELIRIUM\ADESTINY\ADESIRE\ADESPAIR\ADESTRUCTION';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(80, 55, 150, 0.09); white-space: pre;
-  animation: dream-ghost 10s ease-in-out infinite;
-}
-
-@keyframes dream-ghost {
-  0%, 100% { color: rgba(80, 55, 150, 0.09); }
-  22%       { color: rgba(80, 55, 150, 0.13); }
-  60%       { color: rgba(80, 55, 150, 0.06); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(80, 55, 150, 0.16); }
-  92%       { color: rgba(80, 55, 150, 0.09); }
-}
-
-#edit-bar::after {
-  content: 'YOU ARE DREAMING  —  THE WAKING WORLD IS NOT REAL';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(150, 110, 220, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title animation: 8s violet→gold→deep blue→violet dream cycle ─────────────── */
-@keyframes dream-shift {
-  0%   { color: #8070B0; text-shadow: 0 0 7px rgba(96,64,192,.45), 0 0 20px rgba(96,64,192,.15); }
-  25%  { color: #9060D0; text-shadow: 0 0 10px rgba(120,80,220,.60), 0 0 28px rgba(96,64,192,.22); }
-  50%  { color: #C09040; text-shadow: 0 0 8px rgba(192,144,64,.55), 0 0 24px rgba(192,128,32,.20); }
-  75%  { color: #5060A0; text-shadow: 0 0 7px rgba(64,80,160,.50), 0 0 20px rgba(50,65,140,.18); }
-  100% { color: #8070B0; text-shadow: 0 0 7px rgba(96,64,192,.45), 0 0 20px rgba(96,64,192,.15); }
-}
-
-/* ── App: the Dreaming breathes ──────────────────────────────────────────────── */
-#app { animation: dream-breathe 10s ease-in-out infinite; }
-@keyframes dream-breathe {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(80,50,160,.22), inset 0 0 30px rgba(80,50,160,.05); }
-  50%      { box-shadow: 0 0 0 1px rgba(100,65,200,.38), inset 0 0 30px rgba(96,64,192,.09); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 2, 7, 0.99); border-top-color: rgba(96, 64, 192, 0.22); }
-#theme-banner::before { content: '✴'; color: #6040C0; font-size: 18px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(130, 108, 210, 0.82); }
-
-/* ── Dream sand — violet motes spiraling through the Dreaming ───────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='440'%3E%3Ccircle cx='35' cy='70' r='1.5' fill='rgba(96,64,192,0.26)'/%3E%3Ccircle cx='110' cy='200' r='1' fill='rgba(192,128,32,0.18)'/%3E%3Ccircle cx='180' cy='340' r='2' fill='rgba(120,80,220,0.16)'/%3E%3Ccircle cx='70' cy='400' r='0.8' fill='rgba(96,64,192,0.22)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='310' height='620'%3E%3Ccircle cx='55' cy='110' r='2' fill='rgba(120,80,220,0.12)'/%3E%3Ccircle cx='160' cy='300' r='1.5' fill='rgba(96,64,192,0.10)'/%3E%3Ccircle cx='250' cy='500' r='2.5' fill='rgba(192,128,32,0.08)'/%3E%3C/svg%3E") repeat;
-  background-size: 220px 440px, 310px 620px;
-  animation: dream-sand 15s linear infinite;
-}
-@keyframes dream-sand {
-  from { background-position: 0 0, 20px 0; }
-  to   { background-position: 50px -440px, -35px -620px; }
-}
-
-/* ── Tile: dream radial ──────────────────────────────────────────────────────── */
-.app-tile::before {
-  width: 20px; height: 20px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(120, 80, 220, 0.38);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+/* Reuse the committed measured header-art visibility contract. */
+#header { --ql-header-art-safety:1; }
+#header { box-shadow:inset 2px 0 0 #4A3A8A; }
+#edit-bar { box-shadow:inset 0 -1px 0 #8A2A4A; }
+#theme-banner { background:#E8E4F0; border-top-color:#282032; box-shadow:inset 2px 0 0 #E6BD73; }
+#theme-banner-text { color:#282032; }
+.tile-icon-wrap { isolation:isolate; overflow:visible; }
+.tile-icon-wrap::before { content:""; position:absolute; inset:-3px; background:#21182F; border:1px solid #9B88B6; border-radius:50%; z-index:-1; pointer-events:none; }

@@ -1,263 +1,118 @@
-/* ══ GAME OF THRONES ═══════════════════════════════════════════════════════════
-   When you play the game of thrones, you win or you die.
-   The night is dark and full of terrors. Valar morghulis. Dracarys.
-   Winter is coming. The North remembers.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* game-of-thrones: ThemeFidelity Batch09; committed palette/type and original bounded motifs. */
 :root {
-  /* ── Shape ── */
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── Backgrounds ── */
-  --bg:           #050408;
-  --panel-bg:     rgba(7, 5, 10, 0.99);
-  --overlay-bg:   rgba(5, 4, 8, 0.97);
-  --header-bg:    rgba(200, 160, 40, 0.04);
-
-  /* ── Typography ── */
-  --font:         Georgia, 'Times New Roman', serif;
-
-  /* ── Text ── */
-  --text:         #BEB090;
-  --text-dim:     rgba(190, 176, 144, 0.78);
-
-  /* ── Accents ── */
-  --accent-c:     #C9A030;   /* Lannister gold / candlelight throne-room */
-  --accent-m:     #8B1818;   /* Targaryen blood / dracarys war-fire */
-  --accent-y:     #5E4D30;   /* Stark castle stone / dark keep */
-
-  /* ── Borders ── */
-  --border:       rgba(165, 128, 45, 0.28);
-  --border-h:     rgba(210, 168, 65, 0.62);
-
-  /* ── Glows ── */
-  --glow-c:       0 0 8px rgba(201,160,48,.65), 0 0 24px rgba(200,150,30,.22);
-  --glow-m:       0 0 7px rgba(139,24,24,.62),  0 0 20px rgba(139,24,24,.20);
-  --glow-y:       0 0 6px rgba(94,77,48,.55),   0 0 18px rgba(94,77,48,.18);
-
-  /* ── App window decoration ── */
-  --pulse-glow:   inset 0 0 22px rgba(120,85,15,.07);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(139,24,24,.12);
-
-  /* ── Title animation ── */
-  --title-anim:   iron-throne 10s ease-in-out infinite;
-
-  /* ── Tiles ── */
-  --tile-hover-bg:     rgba(150, 110, 25, 0.08);
-  --tile-hover-border: rgba(210, 168, 55, 0.48);
-  --tile-hover-shadow: 0 0 14px rgba(200, 155, 35, 0.25);
-  --tile-active-bg:    rgba(150, 110, 25, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,155,38,.55)) drop-shadow(0 0 14px rgba(150,110,20,.22));
-  --tile-icon-fx:      sepia(0.15) contrast(1.08) brightness(0.92) saturate(0.82);
-  --tile-icon-shape:   polygon(0% 0%, 100% 0%, 100% 62%, 50% 100%, 0% 62%);
-  --tile-label-spacing:   1.0px;
+  --bg: #0C0C10;
+  --panel-bg: #1A2029;
+  --overlay-bg: #1A2029;
+  --header-bg: #232B35;
+  --font: 'Segoe UI','Yu Gothic',Arial,sans-serif;
+  --text: #E8E8EC;
+  --text-dim: #BEC8D8;
+  --accent-c: #DFC16D;
+  --accent-text: #DFC16D;
+  --accent-m: #DFC16D;
+  --accent-y: #DFC16D;
+  --border: #8C9BAD;
+  --border-h: #DFC16D;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #DFC16D;
+  --title-anim: none;
+  --tile-hover-bg: #2C3541;
+  --tile-hover-border: #DFC16D;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #343F4C;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: .3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-throb 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-zoom 2s ease-out forwards;
-
-  /* ── Buttons ── */
-  --btn-hover-bg:   rgba(150, 110, 25, 0.10);
-  --btn-active-bg:  rgba(150, 110, 25, 0.20);
-
-  /* ── Drop hint ── */
-  --drop-hint-border: rgba(150, 110, 25, 0.28);
-  --drop-icon-color:  rgba(200, 155, 38, 0.38);
-  --hint-sub-color:   #967337;
-
-  /* ── Rename ── */
-  --rename-dashed:    rgba(200, 155, 38, 0.40);
-  --rename-input-bg:  rgba(80, 60, 15, 0.07);
-
-  /* ── Edit bar (crimson — valar morghulis) ── */
-  --edit-bar-bg:          rgba(139, 24, 24, 0.07);
-  --edit-bar-border:      rgba(139, 24, 24, 0.40);
-  --edit-label-color:     #8B1818;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #C9A030;
-  --btn-done-border:      rgba(201, 160, 48, 0.45);
-  --btn-done-hover-bg:    rgba(201, 160, 48, 0.10);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(165, 128, 45, 0.42);
-
-  /* ── Update banner (aged stone) ── */
-  --update-bg:             rgba(94, 77, 48, 0.07);
-  --update-border:         rgba(120, 98, 60, 0.38);
-  --update-color:          #5E4D30;
-  --update-btn-border:     rgba(94, 77, 48, 0.32);
-  --update-btn-hover-bg:   rgba(94, 77, 48, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  /* ── Close / secondary buttons ── */
-  --btn-close-color:      #C9A030;
-  --btn-close-border:     rgba(201, 160, 48, 0.42);
-  --btn-close-hover-bg:   rgba(201, 160, 48, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  /* ── Picker ── */
-  --picker-search-bg:      rgba(80, 60, 15, 0.07);
-  --picker-item-hover-bg:  rgba(150, 110, 25, 0.09);
-  --picker-item-active-bg: rgba(150, 110, 25, 0.16);
-  --picker-placeholder-bg: rgba(80, 60, 15, 0.07);
-
-  /* ── Skin selector ── */
-  --skin-btn-active-bg:    rgba(150, 110, 25, 0.18);
-
-  /* ── Remove button ── */
-  --remove-btn-bg:         rgba(139, 24, 24, 0.90);
-  --remove-btn-border:     #8B1818;
+  --tile-label-weight: 700;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #2C3541;
+  --btn-active-bg: #343F4C;
+  --btn-hover-text: #E8E8EC;
+  --mgr-button-hover-text: #E8E8EC;
+  --mgr-button-pressed-text: #E8E8EC;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --drop-hint-border: #8C9BAD;
+  --drop-icon-color: #DFC16D;
+  --hint-sub-color: #BEC8D8;
+  --rename-dashed: #8C9BAD;
+  --rename-input-bg: #1A2029;
+  --edit-bar-bg: #1A2029;
+  --edit-bar-border: #8C9BAD;
+  --edit-label-color: #E8E8EC;
+  --edit-label-glow: none;
+  --btn-done-color: #E8E8EC;
+  --btn-done-border: #8C9BAD;
+  --btn-done-hover-bg: #2C3541;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #8C9BAD;
+  --update-bg: #1A2029;
+  --update-border: #8C9BAD;
+  --update-color: #E8E8EC;
+  --update-btn-border: #8C9BAD;
+  --update-btn-hover-bg: #2C3541;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E8E8EC;
+  --btn-close-border: #8C9BAD;
+  --btn-close-hover-bg: #2C3541;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1A2029;
+  --picker-item-hover-bg: #2C3541;
+  --picker-item-active-bg: #343F4C;
+  --picker-placeholder-bg: #1A2029;
+  --skin-btn-active-bg: #343F4C;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
+/* Decoration stays in chrome/scrolling frame, with complete app icons. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#232B35; border-bottom-color:#8C9BAD; --ql-header-art-safety:1; }
+#header::before { background:#8C9BAD; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cpath%20d%3D%27M16%2017A25%2018%200%200%201%2066%2017%20M26%2017A15%2011%200%200%201%2056%2017%20M11%2015L70%207%20M23%202L62%2018%20M42%202V18%27%20fill%3D%27none%27%20stroke%3D%27%23DFC16D%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:11px; font-weight:700; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:3px; text-transform:none; color:#E8E8EC; text-shadow:none; }
+#title .accent { color:#E8E8EC; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#BEC8D8; }
+#header-controls button { color:#E8E8EC; border-color:#8C9BAD; }
+#header-controls button:hover, #header-controls button:active { color:#E8E8EC; border-color:#DFC16D; }
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cpath%20d%3D%27M2%200V32%20M6%200V32%20M2%204H6%20M2%2016H6%20M2%2028H6%27%20fill%3D%27none%27%20stroke%3D%27%238C9BAD%27%20stroke-opacity%3D%270.12%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cpath%20d%3D%27M2%200V32%20M6%200V32%20M2%204H6%20M2%2016H6%20M2%2028H6%27%20fill%3D%27none%27%20stroke%3D%27%238C9BAD%27%20stroke-opacity%3D%270.12%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#1A2029; border-color:#8C9BAD; box-shadow:none; }
+.app-tile:hover { background:#2C3541; border-color:#DFC16D; box-shadow:none; }
+.app-tile:active { background:#343F4C; }
+.app-tile:focus-visible { border-color:#DFC16D; outline-color:#DFC16D; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Palatino Linotype',Georgia,serif; font-size:12px; font-weight:700; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#E8E8EC; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#E8E8EC; }
+.hotkey-input.recording { background:#343F4C; color:#E8E8EC; border-color:#DFC16D; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#2C3541; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#DFC16D; }
+body.manager #btn-open-cheatsheet:is(:hover,:active) { background:transparent; color:#DFC16D; }
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cpath%20d%3D%27M0%201L4%206L8%201L12%206L16%201L20%206L24%201%27%20fill%3D%27none%27%20stroke%3D%27%23DFC16D%27%20stroke-opacity%3D%270.22%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #232B35; border-top-color:#8C9BAD; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cpath%20d%3D%27M11%202L14%204L18%205L18%209L20%2012L17%2015L16%2019L12%2019L9%2021L6%2018L3%2016L4%2012L2%209L6%207L7%203Z%27%20fill%3D%27none%27%20stroke%3D%27%23DFC16D%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ccircle%20cx%3D%2711%27%20cy%3D%2711%27%20r%3D%275%27%20fill%3D%27none%27%20stroke%3D%27%238C9BAD%27%20stroke-width%3D%271.2%27%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Palatino Linotype',Georgia,serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#E8E8EC; text-shadow:none; }
+.tile-icon-wrap { isolation:isolate; overflow:visible; }
+.tile-icon-wrap::before { content:''; position:absolute; inset:-4px; z-index:-1; background:#1A2029; clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),50% 100%,0 calc(100% - 8px)); border:1px solid #8C9BAD; pointer-events:none; }
+.edit-mode #edit-bar { background-image:linear-gradient(#A81C1C,#A81C1C); background-size:16px 1px; background-repeat:no-repeat; }
 
-/* ── Castle stone grain + winter frost + torchfire warmth + dungeon vignette ── */
-#app::after {
-  background:
-    /* cold granite grain — Westeros keep walls, ashlar masonry */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.5 0.3 0.15 0 0.03  0.4 0.25 0.10 0 0.02  0.15 0.08 0.03 0 0  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* stone masonry mortar joints — coursed ashlar every 20px */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 19px,
-      rgba(100, 85, 55, 0.016) 19px, rgba(100, 85, 55, 0.016) 20px
-    ),
-    /* vertical pillar shadows — great hall columns */
-    repeating-linear-gradient(
-      to right,
-      transparent 0px, transparent 118px,
-      rgba(20, 15, 5, 0.022) 118px, rgba(20, 15, 5, 0.022) 120px,
-      transparent 120px, transparent 238px
-    ),
-    /* winter frost bleeding down from The Wall — cold blue at top */
-    linear-gradient(to bottom, rgba(160, 185, 210, 0.045) 0%, transparent 28%),
-    /* torch warmth from lower corners — great hall braziers */
-    radial-gradient(ellipse 48% 38% at 0% 100%, rgba(175, 108, 10, 0.075) 0%, transparent 62%),
-    radial-gradient(ellipse 48% 38% at 100% 100%, rgba(175, 108, 10, 0.075) 0%, transparent 62%),
-    /* heavy dungeon vignette — castle walls consuming the light */
-    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 22%, rgba(3, 2, 5, 0.88) 100%);
-  background-size: 220px 220px, auto, auto, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
-
-/* ── Header: Lannister gold accent bar ──────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #C9A030, rgba(155, 115, 12, 0.30));
-  box-shadow: 0 0 10px rgba(200, 158, 40, 0.60), 0 0 28px rgba(155, 115, 12, 0.22);
-}
-
-/* ── Grid: Westeros map — illuminated parchment chart of the Seven Kingdoms ─── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Seven Kingdoms expedition map — double border, continent, Wall, keeps, compass */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(165,128,45,0.22)' stroke-width='1.5'/%3E%3Crect x='14' y='14' width='472' height='352' fill='none' stroke='rgba(140,108,38,0.12)' stroke-width='0.7'/%3E%3Cline x1='8' y1='26' x2='24' y2='26' stroke='rgba(165,128,45,0.28)' stroke-width='0.8'/%3E%3Cline x1='26' y1='8' x2='26' y2='24' stroke='rgba(165,128,45,0.28)' stroke-width='0.8'/%3E%3Cline x1='492' y1='26' x2='476' y2='26' stroke='rgba(165,128,45,0.28)' stroke-width='0.8'/%3E%3Cline x1='474' y1='8' x2='474' y2='24' stroke='rgba(165,128,45,0.28)' stroke-width='0.8'/%3E%3Cline x1='8' y1='354' x2='24' y2='354' stroke='rgba(165,128,45,0.28)' stroke-width='0.8'/%3E%3Cline x1='26' y1='372' x2='26' y2='356' stroke='rgba(165,128,45,0.28)' stroke-width='0.8'/%3E%3Cline x1='492' y1='354' x2='476' y2='354' stroke='rgba(165,128,45,0.28)' stroke-width='0.8'/%3E%3Cline x1='474' y1='372' x2='474' y2='356' stroke='rgba(165,128,45,0.28)' stroke-width='0.8'/%3E%3Cline x1='95' y1='14' x2='95' y2='366' stroke='rgba(140,108,38,0.045)' stroke-width='0.5'/%3E%3Cline x1='178' y1='14' x2='178' y2='366' stroke='rgba(140,108,38,0.045)' stroke-width='0.5'/%3E%3Cline x1='261' y1='14' x2='261' y2='366' stroke='rgba(140,108,38,0.045)' stroke-width='0.5'/%3E%3Cline x1='344' y1='14' x2='344' y2='366' stroke='rgba(140,108,38,0.045)' stroke-width='0.5'/%3E%3Cline x1='14' y1='80' x2='486' y2='80' stroke='rgba(140,108,38,0.045)' stroke-width='0.5'/%3E%3Cline x1='14' y1='154' x2='486' y2='154' stroke='rgba(140,108,38,0.045)' stroke-width='0.5'/%3E%3Cline x1='14' y1='228' x2='486' y2='228' stroke='rgba(140,108,38,0.045)' stroke-width='0.5'/%3E%3Cline x1='14' y1='302' x2='486' y2='302' stroke='rgba(140,108,38,0.045)' stroke-width='0.5'/%3E%3Cpath d='M 68,22 C 120,15 175,16 222,25 C 245,30 262,44 268,65 C 272,82 255,90 250,92 C 265,112 285,138 302,165 C 318,192 324,220 320,232 C 312,240 298,228 295,232 C 298,248 318,260 346,272 C 353,288 342,315 318,335 C 290,352 242,360 195,357 C 148,354 100,342 70,316 C 48,292 42,255 44,215 C 46,175 50,138 50,100 C 50,70 55,46 68,28 Z' fill='rgba(80,62,35,0.12)' stroke='rgba(130,102,45,0.32)' stroke-width='0.8'/%3E%3Crect x='52' y='88' width='196' height='7' fill='rgba(150,152,165,0.28)' stroke='rgba(175,178,195,0.55)' stroke-width='0.8'/%3E%3Crect x='52' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='63' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='74' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='85' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='96' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='107' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='118' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='129' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='140' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='151' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='162' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='173' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='184' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='195' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='206' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='217' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='228' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Crect x='239' y='85' width='8' height='3' fill='rgba(160,162,175,0.32)'/%3E%3Cpolygon points='70,82 75,62 80,82' fill='rgba(35,52,28,0.22)'/%3E%3Cpolygon points='84,84 90,62 96,84' fill='rgba(35,52,28,0.20)'/%3E%3Cpolygon points='98,82 105,60 112,82' fill='rgba(35,52,28,0.22)'/%3E%3Cpolygon points='114,84 122,60 130,84' fill='rgba(35,52,28,0.20)'/%3E%3Cpolygon points='132,82 140,58 148,82' fill='rgba(35,52,28,0.22)'/%3E%3Cpolygon points='150,84 158,60 166,84' fill='rgba(35,52,28,0.20)'/%3E%3Cpolygon points='168,82 175,62 182,82' fill='rgba(35,52,28,0.18)'/%3E%3Cpolygon points='184,84 190,64 196,84' fill='rgba(35,52,28,0.16)'/%3E%3Cpolygon points='212,88 222,68 232,88' fill='rgba(100,88,68,0.18)' stroke='rgba(120,105,78,0.32)' stroke-width='0.7'/%3E%3Cpolygon points='226,88 238,64 250,88' fill='rgba(100,88,68,0.20)' stroke='rgba(120,105,78,0.34)' stroke-width='0.7'/%3E%3Cpolygon points='222,68 218,78 226,78' fill='rgba(195,200,210,0.22)'/%3E%3Cpolygon points='238,64 234,76 242,76' fill='rgba(195,200,210,0.24)'/%3E%3Cpolygon points='284,138 295,112 306,138' fill='rgba(100,88,68,0.18)' stroke='rgba(120,105,78,0.32)' stroke-width='0.7'/%3E%3Cpolygon points='298,145 312,115 326,145' fill='rgba(105,92,72,0.20)' stroke='rgba(125,110,82,0.35)' stroke-width='0.7'/%3E%3Cpolygon points='316,142 327,120 338,142' fill='rgba(100,88,68,0.18)' stroke='rgba(120,105,78,0.30)' stroke-width='0.7'/%3E%3Cpolygon points='295,112 291,124 299,124' fill='rgba(195,200,210,0.20)'/%3E%3Cpolygon points='312,115 308,128 316,128' fill='rgba(195,200,210,0.22)'/%3E%3Cpolygon points='327,120 323,132 331,132' fill='rgba(195,200,210,0.18)'/%3E%3Cpolygon points='58,108 64,90 70,108' fill='rgba(40,58,32,0.16)'/%3E%3Cpolygon points='70,112 77,92 84,112' fill='rgba(40,58,32,0.14)'/%3E%3Cpolygon points='84,110 90,92 96,110' fill='rgba(40,58,32,0.16)'/%3E%3Cpath d='M 180,155 Q 215,168 248,185 Q 270,195 285,210' fill='none' stroke='rgba(72,96,128,0.28)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 195,215 Q 232,230 268,248 Q 298,262 330,272' fill='none' stroke='rgba(72,96,128,0.24)' stroke-width='1.0' stroke-linecap='round'/%3E%3Cpath d='M 320,232 C 335,240 350,252 355,268 C 352,282 340,285 328,278 C 318,272 312,260 318,248 C 320,240 320,236 320,232 Z' fill='rgba(50,70,105,0.12)' stroke='rgba(72,96,128,0.20)' stroke-width='0.7'/%3E%3Cellipse cx='45' cy='185' rx='10' ry='6' fill='rgba(65,55,38,0.15)' stroke='rgba(105,88,55,0.30)' stroke-width='0.7'/%3E%3Cellipse cx='35' cy='196' rx='7' ry='4' fill='rgba(65,55,38,0.12)' stroke='rgba(105,88,55,0.26)' stroke-width='0.7'/%3E%3Cellipse cx='56' cy='198' rx='6' ry='3' fill='rgba(65,55,38,0.10)' stroke='rgba(105,88,55,0.22)' stroke-width='0.7'/%3E%3Cellipse cx='400' cy='282' rx='20' ry='13' fill='rgba(55,38,60,0.15)' stroke='rgba(95,65,100,0.35)' stroke-width='0.8'/%3E%3Cpath d='M 370,80 Q 382,88 378,98 Q 374,108 384,118' fill='none' stroke='rgba(55,78,115,0.18)' stroke-width='0.8'/%3E%3Cpath d='M 385,80 Q 397,88 393,98 Q 389,108 399,118' fill='none' stroke='rgba(55,78,115,0.16)' stroke-width='0.8'/%3E%3Cpath d='M 372,135 Q 384,143 380,153 Q 376,163 386,173' fill='none' stroke='rgba(55,78,115,0.14)' stroke-width='0.7'/%3E%3Cpath d='M 388,138 Q 400,146 396,156 Q 392,166 402,176' fill='none' stroke='rgba(55,78,115,0.13)' stroke-width='0.7'/%3E%3Cpath d='M 375,185 Q 387,193 383,203' fill='none' stroke='rgba(55,78,115,0.13)' stroke-width='0.7'/%3E%3Crect x='146' y='99' width='12' height='9' fill='none' stroke='rgba(175,165,140,0.60)' stroke-width='0.8'/%3E%3Crect x='146' y='96' width='3' height='3' fill='rgba(165,155,132,0.45)'/%3E%3Crect x='150' y='96' width='3' height='3' fill='rgba(165,155,132,0.45)'/%3E%3Crect x='154' y='96' width='3' height='3' fill='rgba(165,155,132,0.45)'/%3E%3Crect x='157' y='96' width='3' height='3' fill='rgba(165,155,132,0.45)'/%3E%3Crect x='140' y='103' width='6' height='6' fill='none' stroke='rgba(160,150,128,0.45)' stroke-width='0.7'/%3E%3Crect x='162' y='103' width='6' height='6' fill='none' stroke='rgba(160,150,128,0.45)' stroke-width='0.7'/%3E%3Crect x='322' y='260' width='14' height='11' fill='none' stroke='rgba(210,168,52,0.72)' stroke-width='0.8'/%3E%3Crect x='322' y='257' width='3' height='3' fill='rgba(201,158,48,0.60)'/%3E%3Crect x='326' y='257' width='3' height='3' fill='rgba(201,158,48,0.60)'/%3E%3Crect x='330' y='257' width='3' height='3' fill='rgba(201,158,48,0.60)'/%3E%3Crect x='333' y='257' width='3' height='3' fill='rgba(201,158,48,0.60)'/%3E%3Crect x='316' y='265' width='6' height='6' fill='none' stroke='rgba(200,50,40,0.42)' stroke-width='0.7'/%3E%3Crect x='338' y='265' width='6' height='6' fill='none' stroke='rgba(200,50,40,0.42)' stroke-width='0.7'/%3E%3Crect x='68' y='226' width='12' height='9' fill='none' stroke='rgba(210,168,52,0.55)' stroke-width='0.8'/%3E%3Crect x='68' y='223' width='3' height='3' fill='rgba(201,158,48,0.44)'/%3E%3Crect x='72' y='223' width='3' height='3' fill='rgba(201,158,48,0.44)'/%3E%3Crect x='76' y='223' width='3' height='3' fill='rgba(201,158,48,0.44)'/%3E%3Cpolygon points='398,275 403,262 408,275' fill='rgba(120,72,120,0.30)' stroke='rgba(150,95,148,0.52)' stroke-width='0.8'/%3E%3Cpolygon points='395,280 400,268 405,280' fill='rgba(110,62,110,0.22)' stroke='rgba(140,88,138,0.42)' stroke-width='0.7'/%3E%3Cpath d='M 152,108 L 148,138 L 150,168 L 158,198 L 172,225 L 205,248 L 258,262 L 322,268' fill='none' stroke='rgba(155,115,38,0.28)' stroke-width='1' stroke-dasharray='4,5' stroke-linecap='round'/%3E%3Cpath d='M 152,100 L 155,95 L 158,100 L 155,105 Z' fill='none' stroke='rgba(172,162,138,0.55)' stroke-width='0.7'/%3E%3Cpath d='M 74,227 L 77,222 L 80,227 L 77,232 Z' fill='none' stroke='rgba(210,168,52,0.62)' stroke-width='0.7'/%3E%3Cpath d='M 329,261 L 332,256 L 335,261 L 332,266 Z' fill='none' stroke='rgba(210,50,40,0.55)' stroke-width='0.7'/%3E%3Ccircle cx='445' cy='58' r='36' fill='none' stroke='rgba(165,128,45,0.12)' stroke-width='0.6'/%3E%3Ccircle cx='445' cy='58' r='26' fill='none' stroke='rgba(165,128,45,0.18)' stroke-width='0.7'/%3E%3Ccircle cx='445' cy='58' r='12' fill='none' stroke='rgba(165,128,45,0.16)' stroke-width='0.6'/%3E%3Cline x1='445' y1='22' x2='445' y2='94' stroke='rgba(165,128,45,0.30)' stroke-width='0.8'/%3E%3Cline x1='409' y1='58' x2='481' y2='58' stroke='rgba(165,128,45,0.30)' stroke-width='0.8'/%3E%3Cline x1='419' y1='32' x2='471' y2='84' stroke='rgba(155,118,40,0.16)' stroke-width='0.6'/%3E%3Cline x1='471' y1='32' x2='419' y2='84' stroke='rgba(155,118,40,0.16)' stroke-width='0.6'/%3E%3Cpolygon points='445,22 442,38 445,32 448,38' fill='rgba(210,165,50,0.62)'/%3E%3Cpolygon points='445,94 442,78 445,84 448,78' fill='rgba(155,118,40,0.35)'/%3E%3Cpolygon points='481,58 465,55 471,58 465,61' fill='rgba(155,118,40,0.35)'/%3E%3Cpolygon points='409,58 425,55 419,58 425,61' fill='rgba(155,118,40,0.35)'/%3E%3Ccircle cx='419' cy='32' r='1.5' fill='rgba(155,118,40,0.28)'/%3E%3Ccircle cx='471' cy='32' r='1.5' fill='rgba(155,118,40,0.28)'/%3E%3Ccircle cx='471' cy='84' r='1.5' fill='rgba(155,118,40,0.28)'/%3E%3Ccircle cx='419' cy='84' r='1.5' fill='rgba(155,118,40,0.28)'/%3E%3Ccircle cx='445' cy='58' r='3' fill='none' stroke='rgba(210,165,50,0.35)' stroke-width='0.8'/%3E%3Ccircle cx='445' cy='58' r='1.5' fill='rgba(210,165,50,0.45)'/%3E%3Ctext x='445' y='18' font-family='Georgia,serif' font-size='7' font-weight='bold' fill='rgba(210,165,50,0.68)' text-anchor='middle'%3EN%3C/text%3E%3Ctext x='445' y='108' font-family='Georgia,serif' font-size='6' fill='rgba(155,118,40,0.45)' text-anchor='middle'%3ES%3C/text%3E%3Ctext x='492' y='62' font-family='Georgia,serif' font-size='6' fill='rgba(155,118,40,0.45)' text-anchor='middle'%3EE%3C/text%3E%3Ctext x='398' y='62' font-family='Georgia,serif' font-size='6' fill='rgba(155,118,40,0.45)' text-anchor='middle'%3EW%3C/text%3E%3Ctext x='250' y='32' font-family='Georgia,serif' font-size='12' font-style='italic' fill='rgba(175,138,48,0.48)' letter-spacing='5' text-anchor='middle'%3EWESTEROS%3C/text%3E%3Ctext x='164' y='100' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(175,165,140,0.55)'%3EWINTERFELL%3C/text%3E%3Ctext x='340' y='275' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(210,168,52,0.62)'%3EKINGS LANDING%3C/text%3E%3Ctext x='78' y='240' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(210,168,52,0.48)'%3ECASTERLY ROCK%3C/text%3E%3Ctext x='382' y='298' font-family='Georgia,serif' font-size='6' font-style='italic' fill='rgba(148,95,145,0.52)'%3EDRAGONSTONE%3C/text%3E%3Ctext x='22' y='192' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(140,110,45,0.40)'%3EIRON ISLES%3C/text%3E%3Ctext x='100' y='55' font-family='Georgia,serif' font-size='8' font-style='italic' fill='rgba(165,155,135,0.30)' letter-spacing='1'%3ETHE NORTH%3C/text%3E%3Ctext x='286' y='150' font-family='Georgia,serif' font-size='6.5' font-style='italic' fill='rgba(148,132,100,0.30)'%3ETHE VALE%3C/text%3E%3Ctext x='80' y='282' font-family='Georgia,serif' font-size='7' font-style='italic' fill='rgba(135,155,95,0.28)'%3ETHE REACH%3C/text%3E%3Ctext x='56' y='74' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(145,162,145,0.35)' letter-spacing='0.5'%3EHAUNTED FOREST%3C/text%3E%3Ctext x='130' y='82' font-family='Georgia,serif' font-size='6' fill='rgba(175,178,200,0.55)' letter-spacing='2' text-anchor='middle'%3ETHE WALL%3C/text%3E%3Cline x1='28' y1='354' x2='88' y2='354' stroke='rgba(140,108,38,0.32)' stroke-width='0.8'/%3E%3Cline x1='28' y1='350' x2='28' y2='358' stroke='rgba(140,108,38,0.32)' stroke-width='0.8'/%3E%3Cline x1='58' y1='350' x2='58' y2='358' stroke='rgba(140,108,38,0.32)' stroke-width='0.8'/%3E%3Cline x1='88' y1='350' x2='88' y2='358' stroke='rgba(140,108,38,0.32)' stroke-width='0.8'/%3E%3Ctext x='58' y='347' font-family='Georgia,serif' font-size='5.5' fill='rgba(140,108,38,0.38)' text-anchor='middle'%3E100 LEAGUES%3C/text%3E%3Ctext x='480' y='372' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(130,100,38,0.28)' text-anchor='end'%3EARCHMAESTER EBROSE  //  OLDTOWN%3C/text%3E%3Ctext x='250' y='372' font-family='Georgia,serif' font-size='7' font-style='italic' fill='rgba(148,115,42,0.35)' letter-spacing='3' text-anchor='middle'%3ETHE SEVEN KINGDOMS%3C/text%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* torchlight amber bleeding from above — great hall firelight */
-    radial-gradient(ellipse 62% 42% at 50% 0%, rgba(118, 78, 8, 0.065) 0%, transparent 58%),
-    /* dungeon wall shadows — left and right flanks */
-    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(3, 2, 5, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(3, 2, 5, 0.12) 0%, transparent 60%);
-  animation: westeros-shadow 10s ease-in-out infinite;
-}
-@keyframes westeros-shadow {
-  0%, 100% { opacity: 0.85; }
-  50%       { opacity: 1.0; }
-  87%       { opacity: 0.88; }
-  88%       { opacity: 0.12; }   /* dragon shadow passes over — darkness blots the map */
-  89%       { opacity: 0.95; }
-  90%       { opacity: 0.78; }
-  91%       { opacity: 1.0; }
-}
-
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'SEVEN KINGDOMS  //  IRON THRONE  //  VALAR MORGHULIS';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(215, 175, 68, 0.62);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'WINTER\AIS COMING\A\AVALAR\AMORGHULIS\A\ATHE NIGHT\AIS DARK\AAND FULL\AOF TERRORS\A\ADRACARYS';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 13px; line-height: 1.70; text-align: right;
-  color: rgba(140, 105, 28, 0.09); white-space: pre;
-  animation: westeros-breathe 10s ease-in-out infinite;
-}
-
-@keyframes westeros-breathe {
-  0%, 100% { opacity: 0.60; }
-  50%       { opacity: 1.0; }
-  88%       { opacity: 0.95; }
-  89%       { opacity: 0.08; }
-  90%       { opacity: 0.65; }
-}
-
-#edit-bar::after {
-  content: 'VALAR MORGHULIS';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 3px; color: rgba(139, 24, 24, 0.42);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title animation: candlelight throne glow with dracarys dragon fire ──────── */
-@keyframes iron-throne {
-  0%, 100% { color: #C0A038; text-shadow: 0 0 7px rgba(200,158,42,.55), 0 0 22px rgba(180,130,20,.20); }
-  30%       { color: #D4B555; text-shadow: 0 0 12px rgba(212,172,52,.78), 0 0 32px rgba(200,148,22,.32); }
-  65%       { color: #A88828; text-shadow: 0 0 6px rgba(178,128,18,.48), 0 0 16px rgba(148,108,10,.16); }
-  87%       { color: #C0A038; text-shadow: 0 0 7px rgba(200,158,42,.55), 0 0 22px rgba(180,130,20,.20); }
-  88%       { color: #FFD060; text-shadow: 0 0 22px rgba(255,208,96,.95), 0 0 55px rgba(220,170,40,.65); }
-  89%       { color: #050408; text-shadow: none; opacity: 0.05; }
-  90%       { color: #C0A038; text-shadow: 0 0 7px rgba(200,158,42,.55), 0 0 22px rgba(180,130,20,.20); opacity: 1; }
-}
-
-/* ── App: castle walls breathing — torch pulse with dracarys flare ──────────── */
-#app { animation: got-fires 10s ease-in-out infinite; }
-@keyframes got-fires {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(148,108,22,.28), inset 0 0 22px rgba(80,58,8,.06); }
-  30%      { box-shadow: 0 0 0 1px rgba(200,158,42,.48), inset 0 0 32px rgba(158,118,16,.10); }
-  42%      { box-shadow: 0 0 0 1px rgba(139,24,24,.22),  inset 0 0 18px rgba(120,0,0,.04); }
-  43%      { box-shadow: 0 0 0 1px rgba(200,158,42,.40), inset 0 0 28px rgba(158,118,16,.08); }
-  75%      { box-shadow: 0 0 0 1px rgba(95,75,22,.25),   inset 0 0 18px rgba(55,40,8,.05); }
-  87%      { box-shadow: 0 0 0 1px rgba(148,108,22,.28), inset 0 0 22px rgba(80,58,8,.06); }
-  88%      { box-shadow: 0 0 0 2px rgba(255,108,38,.72), inset 0 0 52px rgba(220,80,20,.20); }
-  89%      { box-shadow: 0 0 0 1px rgba(200,158,42,.52), inset 0 0 32px rgba(158,118,16,.12); }
-  90%      { box-shadow: 0 0 0 1px rgba(148,108,22,.28), inset 0 0 22px rgba(80,58,8,.06); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(6, 4, 8, 0.99); border-top-color: rgba(155, 115, 28, 0.28); }
-#theme-banner::before { content: '⚔'; color: #C9A030; font-size: 18px; opacity: 0.90; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(200, 160, 55, 0.75); }
-
-/* ── Dragon embers — red-orange sparks and grey ash rising from the fires ───── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='440'%3E%3Ccircle cx='25' cy='60' r='1.5' fill='rgba(230,90,30,0.25)'/%3E%3Ccircle cx='88' cy='185' r='1' fill='rgba(200,70,20,0.20)'/%3E%3Ccircle cx='155' cy='298' r='2' fill='rgba(215,80,25,0.18)'/%3E%3Ccircle cx='48' cy='375' r='0.8' fill='rgba(235,95,35,0.22)'/%3E%3Ccircle cx='172' cy='118' r='1.2' fill='rgba(200,65,22,0.16)'/%3E%3Ccircle cx='112' cy='238' r='1.5' fill='rgba(225,85,30,0.18)'/%3E%3Ccircle cx='72' cy='318' r='1' fill='rgba(210,75,25,0.15)'/%3E%3Ccircle cx='138' cy='158' r='0.8' fill='rgba(240,100,38,0.20)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='580'%3E%3Ccircle cx='42' cy='100' r='1' fill='rgba(178,168,158,0.12)'/%3E%3Ccircle cx='148' cy='268' r='1.5' fill='rgba(162,152,142,0.10)'/%3E%3Ccircle cx='225' cy='455' r='2' fill='rgba(178,165,155,0.09)'/%3E%3Ccircle cx='82' cy='538' r='1' fill='rgba(188,175,165,0.11)'/%3E%3Ccircle cx='185' cy='188' r='0.8' fill='rgba(170,160,150,0.10)'/%3E%3Ccircle cx='95' cy='368' r='1.2' fill='rgba(175,165,155,0.09)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 440px, 280px 580px;
-  animation: ember-rise 16s linear infinite;
-}
-@keyframes ember-rise {
-  from { background-position: 0 0, 12px 0; }
-  to   { background-position: 6px -440px, -8px -580px; }
-}
-
-/* ── Tile: heraldic shield glow ripple on hover ─────────────────────────────── */
-.app-tile::before {
-  width: 18px; height: 18px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(210, 168, 55, 0.50);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }

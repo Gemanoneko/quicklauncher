@@ -1,232 +1,124 @@
-/* ══ EVANGELION ═══════════════════════════════════════════════════════════════
-   NERV. Geofront. Evangelion Unit-01. Warning overlays and terminal green
-   on Instrumentality black. The Human Instrumentality Project is underway.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* evangelion: approved ThemeFidelity Batch14. Frame artwork is original and bounded. */
 :root {
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 0px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #030308;
-  --panel-bg:     rgba(5, 5, 12, 0.98);
-  --overlay-bg:   rgba(3, 3, 8, 0.96);
-  --header-bg:    rgba(220, 80, 0, 0.04);
-
-  --font:         'Segoe UI', 'Consolas', monospace;
-  --text:         #C0A840;
-  --text-dim:     rgba(180, 150, 50, 0.78);
-
-  --accent-c:     #E05800;   /* NERV orange */
-  --accent-m:     #CC0000;   /* warning red */
-  --accent-y:     #00C000;   /* terminal green */
-
-  --border:       rgba(200, 70, 0, 0.22);
-  --border-h:     rgba(220, 90, 0, 0.55);
-
-  --glow-c:       0 0 7px rgba(224,88,0,.65), 0 0 20px rgba(224,88,0,.22);
-  --glow-m:       0 0 7px rgba(204,0,0,.65), 0 0 20px rgba(204,0,0,.22);
-  --glow-y:       0 0 7px rgba(0,192,0,.65), 0 0 20px rgba(0,192,0,.22);
-
-  --pulse-glow:   inset 0 0 20px rgba(200,70,0,.07);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 2px,
-                    rgba(200, 70, 0, 0.03) 2px, rgba(200, 70, 0, 0.03) 3px
-                  );
-  --drag-over-glow: inset 0 0 24px rgba(224,88,0,.10);
-
-  --title-anim:   nerv-alert 7s steps(1) infinite;
-
-  --tile-hover-bg:     rgba(200, 70, 0, 0.08);
-  --tile-hover-border: rgba(224, 88, 0, 0.40);
-  --tile-hover-shadow: 0 0 12px rgba(224, 88, 0, 0.22);
-  --tile-active-bg:    rgba(200, 70, 0, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(224,88,0,.65)) drop-shadow(0 0 12px rgba(224,88,0,.28));
-  --tile-icon-fx:      saturate(1.15);
-  --tile-icon-shape:   polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  --tile-label-spacing:   1.5px;
+  --bg: #000000;
+  --panel-bg: #161616;
+  --overlay-bg: #161616;
+  --header-bg: #211C18;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #FFFFFF;
+  --text-dim: #D6D3CC;
+  --accent-c: #FFC39D;
+  --accent-text: #FFC39D;
+  --accent-m: #FFC39D;
+  --accent-y: #FFC39D;
+  --border: #AB9C8C;
+  --border-h: #FFD28A;
+  --drag-over-glow: inset 0 0 0 2px #FFD28A;
+  --tile-hover-bg: #2D261E;
+  --tile-hover-border: #FFD28A;
+  --tile-active-bg: #382C22;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    700;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-throb 3s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 1s ease-out forwards;
-
-  --btn-hover-bg:   rgba(200, 70, 0, 0.10);
-  --btn-active-bg:  rgba(200, 70, 0, 0.20);
-
-  --drop-hint-border: rgba(200, 70, 0, 0.25);
-  --drop-icon-color:  rgba(224, 88, 0, 0.38);
-  --hint-sub-color:   rgba(160, 110, 20, 1);
-
-  --rename-dashed:    rgba(224, 88, 0, 0.42);
-  --rename-input-bg:  rgba(200, 70, 0, 0.07);
-
-  --edit-bar-bg:          rgba(204, 0, 0, 0.07);
-  --edit-bar-border:      rgba(204, 0, 0, 0.42);
-  --edit-label-color:     #CC0000;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #CC0000;
-  --btn-done-border:      rgba(204, 0, 0, 0.44);
-  --btn-done-hover-bg:    rgba(204, 0, 0, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(224, 88, 0, 0.42);
-
-  --update-bg:             rgba(0, 192, 0, 0.06);
-  --update-border:         rgba(0, 192, 0, 0.38);
-  --update-color:          #00C000;
-  --update-btn-border:     rgba(0, 192, 0, 0.35);
-  --update-btn-hover-bg:   rgba(0, 192, 0, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #CC0000;
-  --btn-close-border:     rgba(204, 0, 0, 0.40);
-  --btn-close-hover-bg:   rgba(204, 0, 0, 0.10);
-  --btn-close-hover-glow: var(--glow-m);
-
-  --picker-search-bg:      rgba(200, 70, 0, 0.07);
-  --picker-item-hover-bg:  rgba(200, 70, 0, 0.08);
-  --picker-item-active-bg: rgba(200, 70, 0, 0.15);
-  --picker-placeholder-bg: rgba(200, 70, 0, 0.07);
-
-  --skin-btn-active-bg:    rgba(200, 70, 0, 0.17);
-  --remove-btn-bg:         rgba(204, 0, 0, 0.88);
-  --remove-btn-border:     #CC0000;
+  --tile-label-weight: 700;
+  --tile-label-style: normal;
+  --btn-hover-bg: #2D261E;
+  --btn-active-bg: #382C22;
+  --btn-hover-text: #FFFFFF;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #FFFFFF;
+  --drop-hint-border: #AB9C8C;
+  --drop-icon-color: #FFC39D;
+  --hint-sub-color: #D6D3CC;
+  --rename-dashed: #AB9C8C;
+  --rename-input-bg: #161616;
+  --edit-bar-bg: #161616;
+  --edit-bar-border: #AB9C8C;
+  --edit-label-color: #FFC39D;
+  --btn-done-color: #FFC39D;
+  --btn-done-border: #AB9C8C;
+  --btn-done-hover-bg: #2D261E;
+  --btn-add-border: #AB9C8C;
+  --update-bg: #161616;
+  --update-border: #AB9C8C;
+  --update-color: #FFC39D;
+  --update-btn-border: #AB9C8C;
+  --update-btn-hover-bg: #2D261E;
+  --btn-close-color: #FFC39D;
+  --btn-close-border: #AB9C8C;
+  --btn-close-hover-bg: #2D261E;
+  --picker-search-bg: #161616;
+  --picker-item-hover-bg: #2D261E;
+  --picker-item-active-bg: #382C22;
+  --picker-placeholder-bg: #161616;
+  --skin-btn-active-bg: #382C22;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --title-anim: none;
+  --tile-hover-shadow: none;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --edit-label-glow: none;
+  --btn-done-hover-glow: none;
+  --update-btn-hover-glow: none;
+  --btn-close-hover-glow: none;
 }
 
-/* ── AT Field pulse — hexagonal barrier expands and contracts ───────────────── */
-#app { animation: ev-at-field 9s ease-in-out infinite; }
-@keyframes ev-at-field {
-  0%, 45%, 100% { box-shadow: none; }
-  55% { box-shadow: 0 0 0 1px rgba(224,88,0,.60), 0 0 14px rgba(224,88,0,.28), inset 0 0 20px rgba(200,70,0,.12); }
-  65% { box-shadow: 0 0 0 3px rgba(224,88,0,.85), 0 0 32px rgba(224,88,0,.50), inset 0 0 40px rgba(200,70,0,.22); }
-  70% { box-shadow: 0 0 0 2px rgba(204,0,0,.90), 0 0 40px rgba(204,0,0,.45), inset 0 0 36px rgba(204,0,0,.18); }
-  78% { box-shadow: 0 0 0 3px rgba(224,88,0,.70), 0 0 24px rgba(224,88,0,.38), inset 0 0 28px rgba(200,70,0,.16); }
-  88% { box-shadow: none; }
-}
+/* Quiet surfaces; artwork never sits above an app glyph or functional label. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; will-change:auto; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#211C18; border-bottom-color:#AB9C8C; box-shadow:none; }
+#header::before { background:#AB9C8C; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2084%2020%22%20fill%3D%22none%22%20stroke%3D%22%23FFC39D%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M11%205L19%201L27%205V14L19%2018L11%2014Z%20M33%205L41%201L49%205V14L41%2018L33%2014Z%20M55%205L63%201L71%205V14L63%2018L55%2014Z%22%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Cambria, Georgia, serif; font-size:14px; font-weight:700; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:1px; color:#FFFFFF; text-transform:uppercase; text-shadow:none; }
+#title .accent { color:#FFC39D; }
+#title::after { content:none; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#D6D3CC; opacity:1; }
+#header-controls button { color:#FFFFFF; border-color:#AB9C8C; }
+#header-controls button:hover, #header-controls button:active { color:#FFFFFF; border-color:#FFD28A; }
+#grid-container { background:none; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#161616; border-color:#AB9C8C; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#2D261E; border-color:#FFD28A; box-shadow:none; }
+.app-tile:focus-visible { outline-color:#FFD28A; }
+.app-tile:active { background:#382C22; }
+.app-tile::before { display:none; animation:none; }
+.tile-label { font-family:Cambria, Georgia, serif; font-size:12px; font-weight:700; font-style:normal; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#FFFFFF; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; isolation:isolate; overflow:visible; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#FFFFFF; }
+.hotkey-input.recording { background:#382C22; color:#FFFFFF; border-color:#FFD28A; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#2D261E; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#FFD28A; }
+#theme-banner { background:#211C18; border-top-color:#AB9C8C; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2022%2022%22%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%209V3H9%20M13%203H19V9%20M19%2013V19H13%20M9%2019H3V13%22%2F%3E%3Cpath%20d%3D%22M7%2011H15%22%20stroke%3D%22%23F66E25%22%20stroke-width%3D%223%22%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Cambria, Georgia, serif; font-size:11px; font-weight:700; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#FFFFFF; text-shadow:none; }
+/* Shape belongs to an independent plate, never the icon clip. */
+.tile-icon-wrap::before { content:""; position:absolute; inset:-2px; z-index:-1; background:#161616; border:1px solid #AB9C8C; border-radius:0px; clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%); pointer-events:none; }
+/* Gutter material scrolls with the existing Grid, and is omitted in shapes without gutters. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%23AB9C8C%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%200V40%20M3%205H6%20M3%2035H6%22%2F%3E%3C%2Fsvg%3E") left top / 8px 40px repeat-y, url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%23AB9C8C%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%200V40%20M3%205H6%20M3%2035H6%22%2F%3E%3C%2Fsvg%3E") right 4px top / 8px 40px repeat-y; }
+body.region.layout-radial #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+#theme-banner { background:linear-gradient(90deg,#F66E25 0 26px,transparent 26px) left top / 100% 4px no-repeat, #211C18; }
+#header { border-top:1px solid #0A3A2A; }
+#edit-bar { border-bottom:1px solid #D3290F; }
 
-/* ── NERV terminal overlay + scanlines ──────────────────────────────────────── */
-#app::after {
-  background:
-    /* NERV cross pattern — very faint */
-    repeating-linear-gradient(0deg,
-      transparent 0px, transparent 59px,
-      rgba(200, 70, 0, 0.025) 59px, rgba(200, 70, 0, 0.025) 60px
-    ),
-    repeating-linear-gradient(90deg,
-      transparent 0px, transparent 59px,
-      rgba(200, 70, 0, 0.018) 59px, rgba(200, 70, 0, 0.018) 60px
-    ),
-    /* scanlines */
-    repeating-linear-gradient(to bottom,
-      transparent 0px, transparent 2px,
-      rgba(180, 60, 0, 0.025) 2px, rgba(180, 60, 0, 0.025) 3px
-    ),
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(2, 2, 6, 0.72) 100%);
-  opacity: 1; pointer-events: none;
-}
-
-/* ── Header NERV orange accent bar ─────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #E05800, rgba(200, 70, 0, 0.28));
-  box-shadow: 0 0 10px rgba(224, 88, 0, 0.60), 0 0 24px rgba(224, 88, 0, 0.20);
-}
-
-/* ── Grid: NERV targeting computer — diamond + crosshair + range arcs ───────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* NERV targeting diamond SVG — outer diamond, inner diamond, crosshair, range arcs */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Outer targeting diamond --%3E%3Cpolygon points='250,22 468,190 250,358 32,190' fill='none' stroke='rgba(224,88,0,0.11)' stroke-width='1'/%3E%3C!-- Diamond vertex tick marks --%3E%3Cline x1='250' y1='22' x2='238' y2='33' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='250' y1='22' x2='262' y2='33' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='468' y1='190' x2='457' y2='178' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='468' y1='190' x2='457' y2='202' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='250' y1='358' x2='238' y2='347' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='250' y1='358' x2='262' y2='347' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='32' y1='190' x2='43' y2='178' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3Cline x1='32' y1='190' x2='43' y2='202' stroke='rgba(224,88,0,0.28)' stroke-width='1'/%3E%3C!-- Crosshair — broken with center gap --%3E%3Cline x1='250' y1='22' x2='250' y2='162' stroke='rgba(224,88,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='250' y1='218' x2='250' y2='358' stroke='rgba(224,88,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='32' y1='190' x2='182' y2='190' stroke='rgba(224,88,0,0.07)' stroke-width='0.5'/%3E%3Cline x1='318' y1='190' x2='468' y2='190' stroke='rgba(224,88,0,0.07)' stroke-width='0.5'/%3E%3C!-- Inner targeting diamond --%3E%3Cpolygon points='250,108 342,190 250,272 158,190' fill='none' stroke='rgba(224,88,0,0.17)' stroke-width='0.8'/%3E%3C!-- Center aim circle + dot --%3E%3Ccircle cx='250' cy='190' r='5' fill='none' stroke='rgba(224,88,0,0.40)' stroke-width='1'/%3E%3Ccircle cx='250' cy='190' r='1.8' fill='rgba(224,88,0,0.50)'/%3E%3C!-- Range arcs — radar sweep feel --%3E%3Cpath d='M 170 190 a 80 80 0 0 1 80 -80' fill='none' stroke='rgba(200,60,0,0.09)' stroke-width='0.5'/%3E%3Cpath d='M 130 190 a 120 120 0 0 1 120 -120' fill='none' stroke='rgba(200,60,0,0.06)' stroke-width='0.5'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
-    /* Ambient NERV orange — top terminal glow */
-    linear-gradient(to bottom, rgba(180, 60, 0, 0.05) 0%, transparent 28%),
-    /* Warning red — base seep */
-    linear-gradient(to top, rgba(204, 0, 0, 0.05) 0%, rgba(160, 40, 0, 0.02) 16%, transparent 38%);
-  animation: nerv-target 8s steps(1) infinite;
-}
-@keyframes nerv-target {
-  0%, 100% { opacity: 0.90; }
-  82%       { opacity: 0.90; }
-  83%       { opacity: 0.45; }
-  84%       { opacity: 1.0; }
-  85%       { opacity: 0.70; }
-  86%       { opacity: 1.0; }
-}
-
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'NERV HQ  //  GEOFRONT  //  UNIT-01 SYNCHRONIZED';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(235, 115, 0, 0.65);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'NERV\AGEOFRONT\A\AUNIT-01\AAWAKENS\A\AHUMAN\AINSTRUMENTALITY\APROJECT\A\AINITIATED';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Consolas', monospace; letter-spacing: 1.5px;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(200, 70, 0, 0.12); white-space: pre;
-  animation: evangelion-readout 10s ease-in-out infinite;
-}
-
-@keyframes evangelion-readout {
-  0%, 100% { color: rgba(200,70,0,.10); }
-  28%       { color: rgba(200,70,0,.14); }
-  65%       { color: rgba(200,70,0,.07); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(200,70,0,.18); }
-  92%       { color: rgba(200,70,0,.10); }
-}
-
-#edit-bar::after {
-  content: 'SYNCHRONIZATION RATE  —  87.4%';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(204, 0, 0, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Consolas', monospace; letter-spacing: 5px; }
-
-/* ── Title animation: NERV alert ─────────────────────────────────────────────── */
-@keyframes nerv-alert {
-  0%, 100%  { text-shadow: 0 0 7px rgba(224,88,0,.60), 0 0 20px rgba(224,88,0,.22); color: #E05800; }
-  85%       { text-shadow: 0 0 7px rgba(224,88,0,.60), 0 0 20px rgba(224,88,0,.22); color: #E05800; }
-  86%       { text-shadow: 0 0 4px rgba(204,0,0,.90), 0 0 16px rgba(204,0,0,.50); color: #CC0000; }
-  87%       { text-shadow: 0 0 7px rgba(224,88,0,.60), 0 0 20px rgba(224,88,0,.22); color: #E05800; }
-  88%       { text-shadow: 0 0 4px rgba(204,0,0,.85); color: #CC0000; }
-  89%       { text-shadow: 0 0 7px rgba(224,88,0,.60), 0 0 20px rgba(224,88,0,.22); color: #E05800; }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(3, 3, 8, 0.98); border-top-color: rgba(200, 70, 0, 0.22); }
-#theme-banner::before { content: '⬡'; color: #E05800; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', monospace; letter-spacing: 2px; color: rgba(210, 120, 0, 0.72); }
-
-/* ── Phase 4E: tile radial ring ──────────────────────────────────────────── */
-.app-tile::before {
-  width: 20px; height: 20px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
-
-/* ── AT Field — hexagonal pulse waves expanding from NERV center ─────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='60'%3E%3Cpolygon points='26,2 50,15 50,45 26,58 2,45 2,15' fill='none' stroke='rgba(224,88,0,0.06)' stroke-width='0.5'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='78' height='90'%3E%3Cpolygon points='39,3 75,22 75,68 39,87 3,68 3,22' fill='none' stroke='rgba(224,88,0,0.04)' stroke-width='0.5'/%3E%3C/svg%3E") repeat;
-  background-size: 52px 60px, 78px 90px;
-  animation: eva-at-field 6s linear infinite;
-}
-@keyframes eva-at-field {
-  from { background-position: 0 0, 13px 0; }
-  to   { background-position: 26px -60px, -13px -90px; }
-}
+/* Loading remains readable without an ambient blink; existing functional transitions stay. */
+.picker-loading { animation:none; opacity:1; color:var(--text-dim); }
+#theme-banner::before { will-change:auto; }

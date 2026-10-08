@@ -1,236 +1,122 @@
-/* ══ SOMA ══════════════════════════════════════════════════════════════════════
-   PATHOS-II. Deep sea. 2104. The WAU wants to help you. Consciousness transfer
-   protocol active. Submarine hull. Abyssal darkness. SCAN complete.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* soma: approved ThemeFidelity Batch12 palette, typography and original static frame motifs. */
 :root {
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #020608;
-  --panel-bg:     rgba(2, 6, 10, 0.98);
-  --overlay-bg:   rgba(2, 6, 8, 0.96);
-  --header-bg:    rgba(0, 138, 154, 0.04);
-
-  --font:         'Segoe UI', 'Consolas', monospace;
-  --text:         #7EA0B8;
-  --text-dim:     #5E7C8B;
-
-  --accent-c:     #008A9A;   /* deep-sea teal/cyan */
-  --accent-m:     #0A5A70;   /* abyssal dark teal */
-  --accent-y:     #607080;   /* industrial grey-blue */
-
-  --border:       rgba(0, 120, 140, 0.22);
-  --border-h:     rgba(0, 150, 175, 0.50);
-
-  --glow-c:       0 0 7px rgba(0,138,154,.60), 0 0 22px rgba(0,138,154,.20);
-  --glow-m:       0 0 7px rgba(10,90,112,.58), 0 0 20px rgba(10,90,112,.18);
-  --glow-y:       0 0 6px rgba(96,112,128,.48), 0 0 18px rgba(96,112,128,.16);
-
-  --pulse-glow:   inset 0 0 22px rgba(0,138,154,.06);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 3px,
-                    rgba(0, 120, 140, 0.032) 3px, rgba(0, 120, 140, 0.032) 4px
-                  );
-  --drag-over-glow: inset 0 0 22px rgba(0,138,154,.10);
-
-  --title-anim:   wau-scan 6s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(0, 120, 140, 0.08);
-  --tile-hover-border: rgba(0, 150, 175, 0.42);
-  --tile-hover-shadow: 0 0 12px rgba(0, 138, 154, 0.22);
-  --tile-active-bg:    rgba(0, 120, 140, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(0,138,154,.58)) drop-shadow(0 0 12px rgba(0,138,154,.22));
-  --tile-icon-fx:      brightness(0.85) saturate(0.7) contrast(1.1);
-  --tile-icon-shape:   circle(46% at 50% 50%);
-  --tile-label-spacing:   0.8px;
+  --bg: #06090C;
+  --panel-bg: #1A2A32;
+  --overlay-bg: #1A2A32;
+  --header-bg: #20323B;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #D9E5E8;
+  --text-dim: #B7CCD1;
+  --accent-c: #92CADC;
+  --accent-text: #92CADC;
+  --accent-m: #92CADC;
+  --accent-y: #92CADC;
+  --border: #91ABB3;
+  --border-h: #E8D070;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #E8D070;
+  --title-anim: none;
+  --tile-hover-bg: #293F47;
+  --tile-hover-border: #E8D070;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #324B53;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-glow 4s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
-
-  --btn-hover-bg:   rgba(0, 120, 140, 0.10);
-  --btn-active-bg:  rgba(0, 120, 140, 0.20);
-
-  --drop-hint-border: rgba(0, 120, 140, 0.26);
-  --drop-icon-color:  rgba(0, 138, 154, 0.36);
-  --hint-sub-color:   #5A7D8C;
-
-  --rename-dashed:    rgba(0, 138, 154, 0.38);
-  --rename-input-bg:  rgba(0, 120, 140, 0.07);
-
-  --edit-bar-bg:          rgba(10, 90, 112, 0.07);
-  --edit-bar-border:      rgba(10, 90, 112, 0.40);
-  --edit-label-color:     #0A5A70;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #008A9A;
-  --btn-done-border:      rgba(0, 138, 154, 0.42);
-  --btn-done-hover-bg:    rgba(0, 138, 154, 0.10);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(0, 120, 140, 0.44);
-
-  --update-bg:             rgba(96, 112, 128, 0.07);
-  --update-border:         rgba(96, 112, 128, 0.35);
-  --update-color:          #607080;
-  --update-btn-border:     rgba(96, 112, 128, 0.28);
-  --update-btn-hover-bg:   rgba(96, 112, 128, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #008A9A;
-  --btn-close-border:     rgba(0, 138, 154, 0.40);
-  --btn-close-hover-bg:   rgba(0, 138, 154, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(0, 120, 140, 0.07);
-  --picker-item-hover-bg:  rgba(0, 120, 140, 0.08);
-  --picker-item-active-bg: rgba(0, 120, 140, 0.16);
-  --picker-placeholder-bg: rgba(0, 120, 140, 0.07);
-
-  --skin-btn-active-bg:    rgba(0, 120, 140, 0.17);
-  --remove-btn-bg:         rgba(10, 90, 112, 0.90);
-  --remove-btn-border:     #0A5A70;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #293F47;
+  --btn-active-bg: #324B53;
+  --btn-hover-text: #D9E5E8;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-hover-text: #D9E5E8;
+  --mgr-button-pressed-text: #D9E5E8;
+  --drop-hint-border: #91ABB3;
+  --drop-icon-color: #92CADC;
+  --hint-sub-color: #B7CCD1;
+  --rename-dashed: #91ABB3;
+  --rename-input-bg: #1A2A32;
+  --edit-bar-bg: #1A2A32;
+  --edit-bar-border: #91ABB3;
+  --edit-label-color: #92CADC;
+  --edit-label-glow: none;
+  --btn-done-color: #92CADC;
+  --btn-done-border: #91ABB3;
+  --btn-done-hover-bg: #293F47;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #91ABB3;
+  --update-bg: #1A2A32;
+  --update-border: #91ABB3;
+  --update-color: #92CADC;
+  --update-btn-border: #91ABB3;
+  --update-btn-hover-bg: #293F47;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #D9E5E8;
+  --btn-close-border: #91ABB3;
+  --btn-close-hover-bg: #293F47;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1A2A32;
+  --picker-item-hover-bg: #293F47;
+  --picker-item-active-bg: #324B53;
+  --picker-placeholder-bg: #1A2A32;
+  --skin-btn-active-bg: #324B53;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Heavy ocean noise + water-pressure scan lines + deep teal vignette ─────── */
-#app::after {
-  background:
-    /* dark ocean noise texture */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.2 0 0 0 0  0.5 0 0 0 0.015  0.6 0 0 0 0.025  0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* horizontal water-pressure scan bands */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 18px,
-      rgba(0, 120, 140, 0.018) 18px, rgba(0, 120, 140, 0.018) 19px,
-      transparent 19px, transparent 42px
-    ),
-    /* deep ocean vignette — darkness from below */
-    radial-gradient(ellipse 95% 85% at 50% 60%, transparent 30%, rgba(1, 3, 5, 0.88) 100%),
-    /* cold teal ambient top */
-    radial-gradient(ellipse 80% 28% at 50% 0%, rgba(0, 80, 100, 0.06) 0%, transparent 65%),
-    /* abyssal bottom dark */
-    radial-gradient(ellipse 100% 35% at 50% 100%, rgba(0, 2, 4, 0.35) 0%, transparent 70%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Remove foreground panno/readouts and ambient motion; preserve functional transitions. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#20323B; border-bottom-color:#91ABB3; }
+#header::before { background:#91ABB3; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2392CADC%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.65%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M12%2016a10%2010%200%20017-13M30%203a12%2012%200%20018%2014M49%2017a9%209%200%20017-13%22%2F%3E%3Ccircle%20cx%3D%2269%22%20cy%3D%2210%22%20r%3D%222%22%2F%3E%3Cpath%20d%3D%22M69%208v4M67%2010h4%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Segoe UI', Arial, sans-serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#D9E5E8; text-shadow:none; }
+#title .accent { color:#92CADC; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#B7CCD1; opacity:1; }
+#header-controls button { color:#D9E5E8; border-color:#91ABB3; }
+#header-controls button:hover, #header-controls button:active { color:#D9E5E8; border-color:#E8D070; }
 
-/* ── Header deep teal bar ───────────────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #008A9A, rgba(0, 100, 120, 0.25));
-  box-shadow: 0 0 10px rgba(0, 138, 154, 0.55), 0 0 28px rgba(0, 138, 154, 0.18);
-}
+/* Eight-pixel scrolling outer trim, omitted where radial layouts lack safe bands. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2391ABB3%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M2%200l2%2010M6%2020l-2%2012%22%20stroke%3D%22%239A3A2A%22%20stroke-opacity%3D%22.18%22%2F%3E%3Cpath%20d%3D%22M1%2015l5%204%201-3M5%2019l-2%204%22%20stroke%3D%22%239A7880%22%20stroke-opacity%3D%22.05%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2391ABB3%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M2%200l2%2010M6%2020l-2%2012%22%20stroke%3D%22%239A3A2A%22%20stroke-opacity%3D%22.18%22%2F%3E%3Cpath%20d%3D%22M1%2015l5%204%201-3M5%2019l-2%204%22%20stroke%3D%22%239A7880%22%20stroke-opacity%3D%22.05%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px no-repeat; }
+body.region.layout-fan #grid-container, body.region.layout-ring #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+.app-tile { background:#1A2A32; border-color:#91ABB3; box-shadow:none; border-radius:4px; }
+.app-tile:hover { background:#293F47; border-color:#E8D070; box-shadow:none; }
+.app-tile:focus-visible { background:#293F47; border-color:#E8D070; outline-color:#E8D070; }
+.app-tile:active { background:#324B53; }
+.app-tile::before { display:none; }
+.tile-label { font-family:Consolas, 'Courier New', monospace; font-size:12px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#D9E5E8; text-shadow:none; overflow:hidden; text-overflow:ellipsis; padding-bottom:3px; margin-bottom:-3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active, .mgr-delete:hover, .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#92CADC; }
+.hotkey-input.recording { background:#324B53; color:#92CADC; border-color:#E8D070; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#293F47; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#E8D070; }
 
-/* ── Grid: WAU sonar scan — PATHOS-II targeting display ────────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* WAU sonar — 4 range rings, crosshair, center beacon */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Ccircle cx='250' cy='190' r='40' fill='none' stroke='rgba(0,138,154,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='190' r='80' fill='none' stroke='rgba(0,138,154,0.17)' stroke-width='0.7'/%3E%3Ccircle cx='250' cy='190' r='122' fill='none' stroke='rgba(0,120,140,0.13)' stroke-width='0.7'/%3E%3Ccircle cx='250' cy='190' r='165' fill='none' stroke='rgba(0,100,120,0.09)' stroke-width='0.6'/%3E%3Cline x1='250' y1='8' x2='250' y2='172' stroke='rgba(0,138,154,0.10)' stroke-width='0.6'/%3E%3Cline x1='250' y1='208' x2='250' y2='372' stroke='rgba(0,138,154,0.10)' stroke-width='0.6'/%3E%3Cline x1='8' y1='190' x2='210' y2='190' stroke='rgba(0,138,154,0.10)' stroke-width='0.6'/%3E%3Cline x1='290' y1='190' x2='492' y2='190' stroke='rgba(0,138,154,0.10)' stroke-width='0.6'/%3E%3Cline x1='250' y1='150' x2='250' y2='143' stroke='rgba(0,138,154,0.22)' stroke-width='0.8'/%3E%3Cline x1='250' y1='230' x2='250' y2='237' stroke='rgba(0,138,154,0.22)' stroke-width='0.8'/%3E%3Cline x1='210' y1='190' x2='217' y2='190' stroke='rgba(0,138,154,0.22)' stroke-width='0.8'/%3E%3Cline x1='290' y1='190' x2='283' y2='190' stroke='rgba(0,138,154,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='190' r='4' fill='rgba(0,138,154,0.32)'/%3E%3Ccircle cx='250' cy='190' r='1.5' fill='rgba(0,180,200,0.55)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* deep abyssal darkness at edges */
-    radial-gradient(ellipse 38% 100% at 0% 50%, rgba(1, 3, 5, 0.20) 0%, transparent 65%),
-    radial-gradient(ellipse 38% 100% at 100% 50%, rgba(1, 3, 5, 0.20) 0%, transparent 65%);
-  animation: wau-ping 8s ease-out infinite;
-}
-@keyframes wau-ping {
-  0%, 100%  { opacity: 0.80; }
-  40%       { opacity: 1.00; }
-  70%       { opacity: 0.80; }
-  72%       { opacity: 0.25; }
-  73%       { opacity: 1.00; }
-  74%       { opacity: 0.80; }
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2391ABB3%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%204h24M4%201v5M18%201v5%22%2F%3E%3Cpath%20d%3D%22M11%201v5%22%20stroke%3D%22%239A3A2A%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #20323B; border-top-color:#91ABB3; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; animation:none; will-change:auto; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2392CADC%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%227%22%2F%3E%3Ccircle%20cx%3D%225%22%20cy%3D%223%22%20r%3D%221%22%2F%3E%3Ccircle%20cx%3D%2219%22%20cy%3D%229%22%20r%3D%221%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%2220%22%20r%3D%221%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Consolas, 'Courier New', monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#D9E5E8; text-shadow:none; }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'PATHOS-II  //  DEEP SEA STATION  //  WAU SYSTEMS ONLINE';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 175, 195, 0.62);
-  pointer-events: none; white-space: nowrap;
-}
+/* Shape only the supporting plate; application glyph is complete above it. */
+.tile-icon-wrap::before { content:''; position:absolute; inset:0; background:#20323B; border:1px solid #91ABB3; border-radius:50%; clip-path:none; pointer-events:none; }
+.tile-icon { position:relative; z-index:1; }
 
-#grid-container::after {
-  content: 'PATHOS-II\A\ASCAN\ACOMPLETE\A\ATHE WAU\AWANTS\ATO HELP\A\ADEEP SEA\ASTATION\ATIHN ALPHA';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Consolas', monospace;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(0, 120, 140, 0.11); white-space: pre;
-  animation: soma-lore 10s ease-in-out infinite;
-}
-
-@keyframes soma-lore {
-  0%, 100% { color: rgba(0, 120, 140, 0.11); }
-  28%       { color: rgba(0, 120, 140, 0.15); }
-  65%       { color: rgba(0, 120, 140, 0.08); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(0, 120, 140, 0.19); }
-  92%       { color: rgba(0, 120, 140, 0.11); }
-}
-
-#edit-bar::after {
-  content: 'CONSCIOUSNESS SCAN IN PROGRESS — DO NOT DISCONNECT';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(0, 138, 154, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Consolas', monospace; letter-spacing: 5px; }
-
-/* ── Title animation: wau-scan ──────────────────────────────────────────────── */
-@keyframes wau-scan {
-  0%, 100%  { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); opacity: 1; }
-  40%       { text-shadow: 0 0 9px rgba(0,160,180,.65), 0 0 28px rgba(0,138,154,.24); opacity: 1; }
-  /* WAU corruption warning flicker */
-  70%       { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); opacity: 1; }
-  72%       { opacity: 0.45; text-shadow: 0 0 4px rgba(0,138,154,.30); }
-  73%       { opacity: 1; text-shadow: 0 0 12px rgba(0,200,220,.80), 0 0 34px rgba(0,138,154,.40); }
-  74%       { opacity: 0.70; }
-  75%       { opacity: 1; text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); }
-  88%       { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); opacity: 1; }
-  90%       { text-shadow: 0 0 10px rgba(0,180,200,.70), 0 0 30px rgba(0,138,154,.30); }
-  92%       { text-shadow: 0 0 7px rgba(0,138,154,.58), 0 0 22px rgba(0,138,154,.20); }
-}
-
-/* ── Consciousness heartbeat — WAU monitor pulse ────────────────────────── */
-#app { animation: soma-heartbeat 4s ease-in-out infinite; }
-@keyframes soma-heartbeat {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(0,120,140,.22), inset 0 0 18px rgba(0,120,140,.04); }
-  25%      { box-shadow: 0 0 0 1px rgba(0,138,154,.50), inset 0 0 28px rgba(0,138,154,.09); }
-  28%      { box-shadow: 0 0 0 1px rgba(0,120,140,.18), inset 0 0 14px rgba(0,120,140,.03); }
-  38%      { box-shadow: 0 0 0 1px rgba(0,138,154,.42), inset 0 0 24px rgba(0,138,154,.07); }
-  42%      { box-shadow: 0 0 0 1px rgba(0,120,140,.22), inset 0 0 18px rgba(0,120,140,.04); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 5, 8, 0.98); border-top-color: rgba(0, 120, 140, 0.26); }
-#theme-banner::before { content: '≋'; color: #008A9A; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(0, 165, 185, 0.75); }
-
-/* ── PATHOS-II bubbles — bioluminescent particles rising through the deep ── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='400'%3E%3Ccircle cx='25' cy='60' r='2' fill='rgba(0,138,154,0.22)' stroke='rgba(0,180,200,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='90' cy='180' r='1.5' fill='rgba(0,160,180,0.18)'/%3E%3Ccircle cx='145' cy='310' r='2.5' fill='rgba(0,138,154,0.14)' stroke='rgba(0,200,220,0.08)' stroke-width='0.5'/%3E%3Ccircle cx='60' cy='360' r='1' fill='rgba(0,180,200,0.20)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='600'%3E%3Ccircle cx='40' cy='100' r='3' fill='rgba(0,138,154,0.10)' stroke='rgba(0,200,220,0.06)' stroke-width='0.5'/%3E%3Ccircle cx='140' cy='300' r='2' fill='rgba(0,160,180,0.08)'/%3E%3Ccircle cx='210' cy='500' r='3.5' fill='rgba(0,138,154,0.06)' stroke='rgba(0,220,240,0.04)' stroke-width='0.5'/%3E%3C/svg%3E") repeat;
-  background-size: 180px 400px, 260px 600px;
-  animation: soma-bubbles 10s linear infinite;
-}
-@keyframes soma-bubbles {
-  from { background-position: 0 0, 15px 0; }
-  to   { background-position: 20px -400px, -10px -600px; }
-}
-
-/* ── Tile: sonar radial ping ─────────────────────────────────────────────────── */
-.app-tile::before {
-  width: 20px; height: 20px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+/* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
+body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }

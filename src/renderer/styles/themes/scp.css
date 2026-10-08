@@ -1,252 +1,118 @@
-/* ══ SCP FOUNDATION ════════════════════════════════════════════════════════════
-   Secure. Contain. Protect. Institutional black and clinical grey.
-   Containment protocols active. Level 4 clearance required.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* scp: approved ThemeFidelity Batch12 palette, typography and original static frame motifs. */
 :root {
-  /* ── Shape ── */
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── Backgrounds ── */
-  --bg:           #030303;
-  --panel-bg:     rgba(5, 5, 5, 0.99);
-  --overlay-bg:   rgba(3, 3, 3, 0.97);
-  --header-bg:    rgba(150, 150, 150, 0.03);
-
-  /* ── Typography ── */
-  --font:         'Consolas', monospace;
-
-  /* ── Text ── */
-  --text:         #AAAAAA;
-  --text-dim:     #7A7A7A;
-
-  /* ── Accents ── */
-  --accent-c:     #BBBBBB;   /* clinical documentation white-grey */
-  --accent-m:     #CC0000;   /* containment breach red */
-  --accent-y:     #444444;   /* dark grey */
-
-  /* ── Borders ── */
-  --border:       rgba(150, 150, 150, 0.18);
-  --border-h:     rgba(180, 180, 180, 0.45);
-
-  /* ── Glows ── */
-  --glow-c:       0 0 5px rgba(187,187,187,.38), 0 0 14px rgba(187,187,187,.12);
-  --glow-m:       0 0 6px rgba(204,0,0,.55),     0 0 18px rgba(204,0,0,.18);
-  --glow-y:       0 0 4px rgba(68,68,68,.35),    0 0 12px rgba(68,68,68,.10);
-
-  /* ── App window decoration ── */
-  --pulse-glow:   inset 0 0 16px rgba(150,150,150,.03);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 3px,
-                    rgba(120, 120, 120, 0.025) 3px, rgba(120, 120, 120, 0.025) 4px
-                  );
-  --drag-over-glow: inset 0 0 24px rgba(187,187,187,.06);
-
-  /* ── Title animation ── */
-  --title-anim:   scp-blink 5s steps(1) infinite;
-
-  /* ── Tiles ── */
-  --tile-hover-bg:     rgba(150, 150, 150, 0.06);
-  --tile-hover-border: rgba(180, 180, 180, 0.30);
-  --tile-hover-shadow: 0 0 8px rgba(187, 187, 187, 0.10);
-  --tile-active-bg:    rgba(150, 150, 150, 0.12);
-  --tile-icon-glow:    drop-shadow(0 0 4px rgba(187,187,187,.35)) drop-shadow(0 0 8px rgba(150,150,150,.14));
-  --tile-icon-fx:      grayscale(0.4) brightness(0.9) contrast(1.1);
-  --tile-icon-shape:   inset(3%);
-  --tile-label-spacing:   2px;
+  --bg: #0E0E0E;
+  --panel-bg: #1A1A1A;
+  --overlay-bg: #1A1A1A;
+  --header-bg: #242424;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #D8D8D8;
+  --text-dim: #BFBDB7;
+  --accent-c: #E3A2A2;
+  --accent-text: #E3A2A2;
+  --accent-m: #E3A2A2;
+  --accent-y: #E3A2A2;
+  --border: #A49C91;
+  --border-h: #E8CA74;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #E8CA74;
+  --title-anim: none;
+  --tile-hover-bg: #2D2929;
+  --tile-hover-border: #E8CA74;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #373030;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-blink 3s step-end infinite;
-  --app-entrance-anim:   entrance-glitch 1s ease-out forwards;
-
-  /* ── Buttons ── */
-  --btn-hover-bg:   rgba(150, 150, 150, 0.08);
-  --btn-active-bg:  rgba(150, 150, 150, 0.16);
-
-  /* ── Drop hint ── */
-  --drop-hint-border: rgba(150, 150, 150, 0.22);
-  --drop-icon-color:  rgba(187, 187, 187, 0.28);
-  --hint-sub-color:   rgba(120, 120, 120, 1);
-
-  /* ── Rename ── */
-  --rename-dashed:    rgba(187, 187, 187, 0.32);
-  --rename-input-bg:  rgba(150, 150, 150, 0.06);
-
-  /* ── Edit bar (containment breach red) ── */
-  --edit-bar-bg:          rgba(204, 0, 0, 0.06);
-  --edit-bar-border:      rgba(204, 0, 0, 0.32);
-  --edit-label-color:     var(--accent-m);
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       var(--accent-m);
-  --btn-done-border:      rgba(204, 0, 0, 0.38);
-  --btn-done-hover-bg:    rgba(204, 0, 0, 0.09);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(150, 150, 150, 0.35);
-
-  /* ── Update banner (grey) ── */
-  --update-bg:             rgba(68, 68, 68, 0.07);
-  --update-border:         rgba(68, 68, 68, 0.35);
-  --update-color:          var(--accent-y);
-  --update-btn-border:     rgba(68, 68, 68, 0.28);
-  --update-btn-hover-bg:   rgba(68, 68, 68, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  /* ── Close / secondary buttons ── */
-  --btn-close-color:      var(--accent-m);
-  --btn-close-border:     rgba(204, 0, 0, 0.35);
-  --btn-close-hover-bg:   rgba(204, 0, 0, 0.09);
-  --btn-close-hover-glow: var(--glow-m);
-
-  /* ── Picker ── */
-  --picker-search-bg:      rgba(150, 150, 150, 0.06);
-  --picker-item-hover-bg:  rgba(150, 150, 150, 0.07);
-  --picker-item-active-bg: rgba(150, 150, 150, 0.13);
-  --picker-placeholder-bg: rgba(150, 150, 150, 0.07);
-
-  /* ── Skin selector ── */
-  --skin-btn-active-bg:    rgba(150, 150, 150, 0.15);
-
-  /* ── Remove button ── */
-  --remove-btn-bg:         rgba(204, 0, 0, 0.88);
-  --remove-btn-border:     var(--accent-m);
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #2D2929;
+  --btn-active-bg: #373030;
+  --btn-hover-text: #D8D8D8;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-hover-text: #D8D8D8;
+  --mgr-button-pressed-text: #D8D8D8;
+  --drop-hint-border: #A49C91;
+  --drop-icon-color: #E3A2A2;
+  --hint-sub-color: #BFBDB7;
+  --rename-dashed: #A49C91;
+  --rename-input-bg: #1A1A1A;
+  --edit-bar-bg: #1A1A1A;
+  --edit-bar-border: #A49C91;
+  --edit-label-color: #E3A2A2;
+  --edit-label-glow: none;
+  --btn-done-color: #E3A2A2;
+  --btn-done-border: #A49C91;
+  --btn-done-hover-bg: #2D2929;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #A49C91;
+  --update-bg: #1A1A1A;
+  --update-border: #A49C91;
+  --update-color: #E3A2A2;
+  --update-btn-border: #A49C91;
+  --update-btn-hover-bg: #2D2929;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #D8D8D8;
+  --btn-close-border: #A49C91;
+  --btn-close-hover-bg: #2D2929;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1A1A1A;
+  --picker-item-hover-bg: #2D2929;
+  --picker-item-active-bg: #373030;
+  --picker-placeholder-bg: #1A1A1A;
+  --skin-btn-active-bg: #373030;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Clinical noise + vignette + containment red corner seep ─────────────────── */
-#app::after {
-  background:
-    /* fine monochrome noise grain — institutional sterility */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E"),
-    /* heavy containment vignette */
-    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.82) 100%),
-    /* subtle containment red — corner seep, bottom-right breach */
-    radial-gradient(ellipse 45% 35% at 100% 100%, rgba(160, 0, 0, 0.06) 0%, transparent 65%),
-    /* secondary red — top-left */
-    radial-gradient(ellipse 35% 25% at 0% 0%, rgba(140, 0, 0, 0.04) 0%, transparent 60%);
-  background-size: 180px 180px, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Remove foreground panno/readouts and ambient motion; preserve functional transitions. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#242424; border-bottom-color:#A49C91; }
+#header::before { background:#A49C91; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23E3A2A2%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.65%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M4%204h44M4%2010h68M4%2016h32%22%20stroke%3D%22%23080808%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M74%205l6%2010H68z%22%20stroke%3D%22%23E8B020%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Segoe UI', Arial, sans-serif; font-size:11px; font-weight:600; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#D8D8D8; text-shadow:none; }
+#title .accent { color:#E3A2A2; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#BFBDB7; opacity:1; }
+#header-controls button { color:#D8D8D8; border-color:#A49C91; }
+#header-controls button:hover, #header-controls button:active { color:#D8D8D8; border-color:#E8CA74; }
 
-/* ── Header clinical grey-white accent bar ───────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #BBBBBB, rgba(140, 140, 140, 0.25));
-  box-shadow: 0 0 6px rgba(187, 187, 187, 0.40), 0 0 16px rgba(150, 150, 150, 0.12);
-}
+/* Eight-pixel scrolling outer trim, omitted where radial layouts lack safe bands. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A49C91%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M2%200v8M2%2024v8%22%20stroke%3D%22%23B01818%22%20stroke-opacity%3D%22.2%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A49C91%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M2%200v8M2%2024v8%22%20stroke%3D%22%23B01818%22%20stroke-opacity%3D%22.2%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+body.region.layout-fan #grid-container, body.region.layout-ring #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+.app-tile { background:#1A1A1A; border-color:#A49C91; box-shadow:none; border-radius:2px; }
+.app-tile:hover { background:#2D2929; border-color:#E8CA74; box-shadow:none; }
+.app-tile:focus-visible { background:#2D2929; border-color:#E8CA74; outline-color:#E8CA74; }
+.app-tile:active { background:#373030; }
+.app-tile::before { display:none; }
+.tile-label { font-family:Consolas, 'Courier New', monospace; font-size:12px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#D8D8D8; text-shadow:none; overflow:hidden; text-overflow:ellipsis; padding-bottom:3px; margin-bottom:-3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active, .mgr-delete:hover, .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#E3A2A2; }
+.hotkey-input.recording { background:#373030; color:#E3A2A2; border-color:#E8CA74; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#2D2929; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#E8CA74; }
 
-/* ── Grid: SCP document — classified redaction bars, institutional dossier ───── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Redaction bar 1 — "OBJECT CLASS" line */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Crect x='12' y='58' width='240' height='9' fill='%23181818' fill-opacity='0.55'/%3E%3Crect x='12' y='118' width='320' height='9' fill='%23181818' fill-opacity='0.45'/%3E%3Crect x='12' y='178' width='180' height='9' fill='%23181818' fill-opacity='0.50'/%3E%3Crect x='12' y='238' width='280' height='9' fill='%23181818' fill-opacity='0.42'/%3E%3Crect x='12' y='298' width='210' height='9' fill='%23181818' fill-opacity='0.48'/%3E%3Crect x='12' y='338' width='160' height='9' fill='%23CC0000' fill-opacity='0.12'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* Graph paper background — faint document lines */
-    repeating-linear-gradient(0deg, transparent 0px, transparent 19px, rgba(130,130,130,0.014) 19px, rgba(130,130,130,0.014) 20px),
-    /* containment breach corner — red seep bottom */
-    linear-gradient(to top, rgba(140, 0, 0, 0.05) 0%, transparent 25%),
-    /* institutional cold ceiling */
-    linear-gradient(to bottom, rgba(100,100,100,0.02) 0%, transparent 20%);
-  background-size: 100% 100%, 100% 20px, 100% 100%, 100% 100%;
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A49C91%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%203h8M12%203h12%22%20stroke%3D%22%23080808%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M9%202l1%202%22%20stroke%3D%22%23E8B020%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #242424; border-top-color:#A49C91; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; animation:none; will-change:auto; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23E3A2A2%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%223%22%2F%3E%3Cpath%20d%3D%22M11%201v6M8%204l3%203%203-3M2%2018l5-3M3%2013l4%202-1%204M20%2018l-5-3M16%2019l-1-4%204-2%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Consolas, 'Courier New', monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#D8D8D8; text-shadow:none; }
 
-/* ── Flavor content ──────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'SCP FOUNDATION  //  CONTAINMENT PROTOCOL  //  LEVEL 4 CLEARANCE';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(170, 170, 170, 0.52);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'SCP\AFOUNDATION\A\ASECURE\ACONTAIN\APROTECT\A\ACLASS:\AKETER\AEUCLID\ASAFE';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Consolas', monospace;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(130, 130, 130, 0.09); white-space: pre;
-  animation: scp-lore 10s ease-in-out infinite;
-}
-
-@keyframes scp-lore {
-  0%, 100% { color: rgba(130, 130, 130, 0.09); }
-  28%       { color: rgba(130, 130, 130, 0.13); }
-  65%       { color: rgba(130, 130, 130, 0.06); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(130, 130, 130, 0.17); }
-  92%       { color: rgba(130, 130, 130, 0.09); }
-}
-
-#edit-bar::after {
-  content: 'UNAUTHORIZED ACCESS — CONTAINMENT BREACH IMMINENT';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Consolas', monospace;
-  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(204, 0, 0, 0.42);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Consolas', monospace; letter-spacing: 6px; }
-
-/* ── Title animation: slow clinical ID blink ─────────────────────────────────── */
-@keyframes scp-blink {
-  0%, 100% { color: #AAAAAA; text-shadow: 0 0 5px rgba(187,187,187,.28), 0 0 12px rgba(187,187,187,.08); opacity: 1; }
-  85%       { color: #AAAAAA; text-shadow: 0 0 5px rgba(187,187,187,.28), 0 0 12px rgba(187,187,187,.08); opacity: 1; }
-  87%       { color: #BBBBBB; text-shadow: 0 0 8px rgba(187,187,187,.55), 0 0 20px rgba(187,187,187,.18); opacity: 1; }
-  89%       { color: #CC0000; text-shadow: 0 0 6px rgba(204,0,0,.60), 0 0 16px rgba(204,0,0,.22); opacity: 0.85; }
-  91%       { color: #AAAAAA; text-shadow: 0 0 4px rgba(187,187,187,.20); opacity: 1; }
-}
-
-/* ── Containment breach alert — institutional flash ─────────────────────── */
-#app { animation: scp-containment 10s steps(1) infinite; }
-@keyframes scp-containment {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(150,150,150,.18); }
-  78%      { box-shadow: 0 0 0 1px rgba(150,150,150,.18); }
-  79%      { box-shadow: 0 0 0 1px rgba(204,0,0,.55), inset 0 0 20px rgba(204,0,0,.06); }
-  80%      { box-shadow: 0 0 0 1px rgba(150,150,150,.30); }
-  81%      { box-shadow: 0 0 0 1px rgba(204,0,0,.45), inset 0 0 16px rgba(204,0,0,.05); }
-  82%      { box-shadow: 0 0 0 1px rgba(150,150,150,.18); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 2, 2, 0.99); border-top-color: rgba(150, 150, 150, 0.20); }
-#theme-banner::before { content: '◼'; color: #CC0000; font-size: 18px; }
-#theme-banner-text { font-family: 'Consolas', monospace; color: rgba(150, 150, 150, 0.62); }
-
-/* ── Containment scan sweep + classified breach alert ────────────────────── */
-#particles {
-  background:
-    /* Primary scan band — grey containment sweep */
-    linear-gradient(to bottom,
-      transparent 0px,
-      rgba(50,50,50,0.10) 6px,
-      rgba(80,80,80,0.18) 16px,
-      rgba(50,50,50,0.10) 26px,
-      transparent 32px
-    ) no-repeat,
-    /* Secondary scan band — red breach alert */
-    linear-gradient(to bottom,
-      transparent 0px,
-      rgba(204,0,0,0.05) 4px,
-      rgba(204,0,0,0.10) 10px,
-      rgba(204,0,0,0.05) 16px,
-      transparent 20px
-    ) no-repeat;
-  background-size: 100% 32px, 100% 20px;
-  animation: scp-scan 6s linear infinite;
-}
-@keyframes scp-scan {
-  from { background-position: 0 -32px, 0 calc(100% + 20px); }
-  to   { background-position: 0 calc(100% + 32px), 0 -20px; }
-}
-
-/* ── Tile: institutional square stamp ────────────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 2px;
-  left: 0; top: -2px;
-  transform: none;
-  background: rgba(204,0,0,0.35);
-}
-.app-tile:hover::before { animation: tile-scan-v .3s ease-in forwards; }
+/* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
+body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }

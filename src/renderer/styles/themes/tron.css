@@ -1,258 +1,122 @@
-/* ══ TRON ══════════════════════════════════════════════════════════════════════
-   Tron Legacy — electric blue circuit traces on deep blue-black space.
-   Perfect right angles. Light grid. Orange identity disc accents.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* tron: approved ThemeFidelity Batch14. Frame artwork is original and bounded. */
 :root {
-  /* Backgrounds */
-  --bg:                   #000814;
-  --panel-bg:             rgba(0, 8, 20, 0.97);
-  --overlay-bg:           rgba(0, 5, 14, 0.9);
-  --header-bg:            rgba(0, 6, 18, 0.96);
-
-  /* Typography */
-  --font:                 'Consolas', 'Courier New', monospace;
-  --text:                 #A8E0F0;
-  --text-dim:             #6a98ac;
-
-  /* Shape — perfect rectangles */
-  --radius:               0px;
-  --app-clip:             none;
-  --overlay-clip:         none;
-
-  /* Accent palette — electric blue / orange / white */
-  --accent-c:             #6DE8FF;
-  --accent-m:             #FF7F00;
-  --accent-y:             #FFFFFF;
-
-  /* Borders */
-  --border:               rgba(109, 232, 255, 0.18);
-  --border-h:             rgba(109, 232, 255, 0.6);
-
-  /* Glows */
-  --glow-c:               0 0 6px #6DE8FF, 0 0 16px rgba(109, 232, 255, 0.4);
-  --glow-m:               0 0 6px #FF7F00, 0 0 16px rgba(255, 127, 0, 0.4);
-  --glow-y:               0 0 6px #ffffff, 0 0 16px rgba(255, 255, 255, 0.3);
-  --pulse-glow:           inset 0 0 20px rgba(109, 232, 255, 0.18), inset 0 0 5px rgba(109, 232, 255, 0.1);
-
-  /* Scanlines — very faint blue horizontal */
-  --scanlines:            repeating-linear-gradient(
-                            to bottom,
-                            transparent 0px,
-                            transparent 5px,
-                            rgba(109, 232, 255, 0.025) 5px,
-                            rgba(109, 232, 255, 0.025) 6px
-                          );
-
-  /* Title animation — sharp digital pulse, 10s synced */
-  --title-anim:           tron-title 10s ease-in-out infinite;
-
-  /* Tiles */
-  --tile-hover-bg:        rgba(109, 232, 255, 0.06);
-  --tile-hover-border:    #6DE8FF;
-  --tile-hover-shadow:    0 0 10px rgba(109, 232, 255, 0.4), inset 0 0 8px rgba(109, 232, 255, 0.05);
-  --tile-active-bg:       rgba(109, 232, 255, 0.12);
-  --tile-icon-glow:       drop-shadow(0 0 5px #6DE8FF) drop-shadow(0 0 12px rgba(109, 232, 255, 0.5));
-  --tile-icon-fx:         brightness(1.15) saturate(1.1) contrast(1.05);
-  --tile-icon-shape:      polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-  --tile-label-spacing:   1.5px;
+  --radius: 0px;
+  --app-clip: none;
+  --overlay-clip: none;
+  --bg: #000A14;
+  --panel-bg: #0A243B;
+  --overlay-bg: #0A243B;
+  --header-bg: #112C43;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #E8FAFF;
+  --text-dim: #C0D9E3;
+  --accent-c: #91DDF2;
+  --accent-text: #91DDF2;
+  --accent-m: #91DDF2;
+  --accent-y: #91DDF2;
+  --border: #8EAEBE;
+  --border-h: #F4CE7D;
+  --drag-over-glow: inset 0 0 0 2px #F4CE7D;
+  --tile-hover-bg: #183A50;
+  --tile-hover-border: #F4CE7D;
+  --tile-active-bg: #22475C;
+  --tile-label-spacing: 0.5px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-glow 3s ease-in-out infinite;
-  --app-entrance-anim:   entrance-glitch 0.8s ease-out forwards;
-
-  /* Buttons */
-  --btn-hover-bg:         rgba(109, 232, 255, 0.08);
-  --btn-active-bg:        rgba(109, 232, 255, 0.15);
-
-  /* Drop hint */
-  --drop-hint-border:     rgba(109, 232, 255, 0.3);
-  --drop-icon-color:      rgba(109, 232, 255, 0.4);
-  --hint-sub-color:       #6a98ac;
-
-  /* Rename */
-  --rename-dashed:        rgba(109, 232, 255, 0.45);
-  --rename-input-bg:      rgba(109, 232, 255, 0.04);
-
-  /* Edit bar — orange identity disc */
-  --edit-bar-bg:          rgba(255, 127, 0, 0.07);
-  --edit-bar-border:      rgba(255, 127, 0, 0.55);
-  --edit-label-color:     #FF7F00;
-  --edit-label-glow:      0 0 7px rgba(255, 127, 0, 0.7), 0 0 18px rgba(255, 127, 0, 0.3);
-  --btn-done-color:       #FF7F00;
-  --btn-done-border:      rgba(255, 127, 0, 0.55);
-  --btn-done-hover-bg:    rgba(255, 127, 0, 0.1);
-  --btn-done-hover-glow:  0 0 10px rgba(255, 127, 0, 0.55);
-  --btn-add-border:       rgba(109, 232, 255, 0.4);
-
-  /* Update banner — white/blue */
-  --update-bg:            rgba(109, 232, 255, 0.05);
-  --update-border:        rgba(109, 232, 255, 0.45);
-  --update-color:         #6DE8FF;
-  --update-btn-border:    rgba(109, 232, 255, 0.45);
-  --update-btn-hover-bg:  rgba(109, 232, 255, 0.08);
-  --update-btn-hover-glow: 0 0 10px rgba(109, 232, 255, 0.45);
-
-  /* Settings CLOSE — orange */
-  --btn-close-color:      #FF7F00;
-  --btn-close-border:     rgba(255, 127, 0, 0.45);
-  --btn-close-hover-bg:   rgba(255, 127, 0, 0.08);
-  --btn-close-hover-glow: 0 0 10px rgba(255, 127, 0, 0.5);
-
-  /* Picker / search */
-  --picker-search-bg:         rgba(109, 232, 255, 0.04);
-  --picker-item-hover-bg:     rgba(109, 232, 255, 0.07);
-  --picker-item-active-bg:    rgba(109, 232, 255, 0.13);
-  --picker-placeholder-bg:    rgba(109, 232, 255, 0.04);
-
-  /* Skin / remove */
-  --skin-btn-active-bg:   rgba(109, 232, 255, 0.12);
-  --remove-btn-bg:        rgba(255, 127, 0, 0.1);
-  --remove-btn-border:    rgba(255, 127, 0, 0.45);
-
-  /* Drag */
-  --drag-over-glow:       inset 0 0 22px rgba(109, 232, 255, 0.25);
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --btn-hover-bg: #183A50;
+  --btn-active-bg: #22475C;
+  --btn-hover-text: #E8FAFF;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #E8FAFF;
+  --drop-hint-border: #8EAEBE;
+  --drop-icon-color: #91DDF2;
+  --hint-sub-color: #C0D9E3;
+  --rename-dashed: #8EAEBE;
+  --rename-input-bg: #0A243B;
+  --edit-bar-bg: #0A243B;
+  --edit-bar-border: #8EAEBE;
+  --edit-label-color: #91DDF2;
+  --btn-done-color: #91DDF2;
+  --btn-done-border: #8EAEBE;
+  --btn-done-hover-bg: #183A50;
+  --btn-add-border: #8EAEBE;
+  --update-bg: #0A243B;
+  --update-border: #8EAEBE;
+  --update-color: #91DDF2;
+  --update-btn-border: #8EAEBE;
+  --update-btn-hover-bg: #183A50;
+  --btn-close-color: #91DDF2;
+  --btn-close-border: #8EAEBE;
+  --btn-close-hover-bg: #183A50;
+  --picker-search-bg: #0A243B;
+  --picker-item-hover-bg: #183A50;
+  --picker-item-active-bg: #22475C;
+  --picker-placeholder-bg: #0A243B;
+  --skin-btn-active-bg: #22475C;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --title-anim: none;
+  --tile-hover-shadow: none;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --edit-label-glow: none;
+  --btn-done-hover-glow: none;
+  --update-btn-hover-glow: none;
+  --btn-close-hover-glow: none;
 }
 
-/* ── Hex game-grid overlay across entire app + scanlines ─────────────────── */
-#app::after {
-  content: '';
-  background:
-    /* TRON: Legacy hexagonal game-grid architecture — full app */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='52'%3E%3Cpolygon points='22,1 43,14 43,38 22,51 1,38 1,14' fill='none' stroke='rgba(109,232,255,0.038)' stroke-width='0.5'/%3E%3C/svg%3E"),
-    /* blue phosphor scanlines */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 5px,
-      rgba(109, 232, 255, 0.018) 5px, rgba(109, 232, 255, 0.018) 6px
-    );
-  opacity: 1;
-  pointer-events: none;
-}
+/* Quiet surfaces; artwork never sits above an app glyph or functional label. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; will-change:auto; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#112C43; border-bottom-color:#8EAEBE; box-shadow:none; }
+#header::before { background:#8EAEBE; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2084%2020%22%20fill%3D%22none%22%20stroke%3D%22%232AC8FF%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%203H26L36%2013H80%20M3%2010H20L28%2018H58%20M45%202H62L72%2010H80%22%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Consolas, 'Courier New', monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#E8FAFF; text-transform:uppercase; text-shadow:none; }
+#title .accent { color:#91DDF2; }
+#title::after { content:none; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#C0D9E3; opacity:1; }
+#header-controls button { color:#E8FAFF; border-color:#8EAEBE; }
+#header-controls button:hover, #header-controls button:active { color:#E8FAFF; border-color:#F4CE7D; }
+#grid-container { background:none; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#0A243B; border-color:#8EAEBE; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#183A50; border-color:#F4CE7D; box-shadow:none; }
+.app-tile:focus-visible { outline-color:#F4CE7D; }
+.app-tile:active { background:#22475C; }
+.app-tile::before { display:none; animation:none; }
+.tile-label { font-family:Consolas, 'Courier New', monospace; font-size:12px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.5px; line-height:1.2; color:#E8FAFF; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; isolation:isolate; overflow:visible; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#E8FAFF; }
+.hotkey-input.recording { background:#22475C; color:#E8FAFF; border-color:#F4CE7D; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#183A50; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#F4CE7D; }
+#theme-banner { background:#112C43; border-top-color:#8EAEBE; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2022%2022%22%20fill%3D%22none%22%20stroke%3D%22%232AC8FF%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M18%206A8%208%200%201%200%2019%2012H15%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M17%204L19%206%22%20stroke%3D%22%23F4AF2D%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Consolas, 'Courier New', monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#E8FAFF; text-shadow:none; }
+/* Shape belongs to an independent plate, never the icon clip. */
+.tile-icon-wrap::before { content:""; position:absolute; inset:-2px; z-index:-1; background:#0A243B; border:1px solid #8EAEBE; border-radius:0px; clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%); pointer-events:none; }
+/* Gutter material scrolls with the existing Grid, and is omitted in shapes without gutters. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%232AC8FF%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%200V11L6%2015V26L2%2030V40%22%2F%3E%3C%2Fsvg%3E") left top / 8px 40px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%232AC8FF%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%200V11L6%2015V26L2%2030V40%22%2F%3E%3C%2Fsvg%3E") right 4px top / 8px 40px no-repeat; }
+body.region.layout-radial #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%207%22%20fill%3D%22none%22%20stroke%3D%22%232AC8FF%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M0%206H40%20M4%200L0%207%20M12%200L10%207%20M20%200V7%20M28%200L30%207%20M36%200L40%207%22%2F%3E%3C%2Fsvg%3E") left top/40px 7px repeat-x,#112C43; }
 
-/* ── Header orange identity bar (differentiates from Cyberpunk cyan) ──────── */
-#header::before {
-  background: linear-gradient(to bottom, #FF7F00, rgba(255, 127, 0, 0.3));
-  box-shadow: 0 0 10px rgba(255, 127, 0, 0.7), 0 0 22px rgba(255, 127, 0, 0.3);
-}
-
-/* ── The Grid: perspective floor grid receding to vanishing point ─────────── */
-/* THE iconic Tron visual — infinite grid stretching into darkness */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Perspective grid — horizontal lines that compress toward the horizon (top 40%) */
-    repeating-linear-gradient(to bottom,
-      transparent 0px, transparent 6px, rgba(109,232,255,0.08) 6px, rgba(109,232,255,0.08) 7px
-    ),
-    /* Vertical grid lines */
-    repeating-linear-gradient(to right,
-      transparent 0px, transparent 60px, rgba(109,232,255,0.05) 60px, rgba(109,232,255,0.05) 61px
-    ),
-    /* Horizon glow — where the grid meets the sky */
-    linear-gradient(to bottom,
-      rgba(109,232,255,0.12) 0%, rgba(109,232,255,0.04) 8%, transparent 35%
-    ),
-    /* Identity disc glow — center, orange */
-    radial-gradient(circle at 50% 50%, rgba(255,127,0,0.06) 0%, transparent 35%),
-    /* Vanishing point glow at top center */
-    radial-gradient(ellipse 30% 15% at 50% 0%, rgba(109,232,255,0.10) 0%, transparent 65%);
-  animation: tron-grid 10s ease-in-out infinite;
-}
-
-@keyframes tron-grid {
-  0%, 100% { opacity: 0.70; }
-  28%       { opacity: 0.80; }
-  65%       { opacity: 0.62; }
-  87%       { opacity: 0.65; }
-  88%       { opacity: 0.04; }   /* derez — synchronized blackout */
-  89%       { opacity: 0.88; }
-  92%       { opacity: 0.70; }
-}
-
-/* ── Title: sharp digital pulse with 88% sync ────────────────────────────── */
-@keyframes tron-title {
-  0%        { color: #6DE8FF; text-shadow: 0 0 6px rgba(109,232,255,.60), 0 0 18px rgba(109,232,255,.25); }
-  35%       { color: #9FFFFF; text-shadow: 0 0 10px rgba(109,232,255,.85), 0 0 30px rgba(109,232,255,.40); }
-  65%       { color: #4A90A0; text-shadow: 0 0 4px rgba(109,232,255,.30); }
-  87%       { color: #6DE8FF; text-shadow: 0 0 6px rgba(109,232,255,.50); }
-  88%       { color: #FFFFFF; text-shadow: 0 0 22px rgba(255,255,255,.90), 0 0 50px rgba(109,232,255,.50); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #6DE8FF; text-shadow: 0 0 8px rgba(109,232,255,.65); opacity: 1; }
-  100%      { color: #6DE8FF; text-shadow: 0 0 6px rgba(109,232,255,.60), 0 0 18px rgba(109,232,255,.25); }
-}
-
-/* ── Flavor content ────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'THE GRID // PROGRAMME ACTIVE // END OF LINE';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-size: 7.5px; letter-spacing: 2.5px; color: rgba(109, 232, 255, 0.52);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'I FIGHT FOR\ATHE USERS\A-----------\ATHE GRID\ASECTOR 7-G\A-----------\AIDENTITY\ADISC: ON\ACYCLES:\A1024000';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(109, 232, 255, 0.08); white-space: pre;
-  animation: tron-readout 10s ease-in-out infinite;
-}
-
-@keyframes tron-readout {
-  0%, 100% { color: rgba(109,232,255,.08); }
-  28%       { color: rgba(109,232,255,.12); }
-  65%       { color: rgba(109,232,255,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(109,232,255,.16); }
-  92%       { color: rgba(109,232,255,.08); }
-}
-
-#edit-bar::after {
-  content: 'END OF LINE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-size: 8px; letter-spacing: 3px; color: rgba(255, 127, 0, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(0, 4, 12, 0.98); border-top-color: rgba(109, 232, 255, 0.18); }
-#theme-banner::before { content: '◇'; color: #6DE8FF; font-size: 20px; }
-#theme-banner-text { font-family: 'Consolas', 'Courier New', monospace; letter-spacing: 2px; color: rgba(168, 224, 240, 0.60); }
-
-/* ── App: grid pulse — synced at 10s/88% ─────────────────────────────────── */
-#app { animation: tron-border 10s ease-in-out infinite; }
-@keyframes tron-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(109,232,255,.18), inset 0 0 16px rgba(109,232,255,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(109,232,255,.48), inset 0 0 26px rgba(109,232,255,.08); }
-  65%      { box-shadow: 0 0 0 1px rgba(255,127,0,.25), inset 0 0 18px rgba(255,127,0,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(255,255,255,.85), inset 0 0 50px rgba(109,232,255,.15), 0 0 20px rgba(109,232,255,.28); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(109,232,255,.40), inset 0 0 22px rgba(109,232,255,.06); }
-}
-
-/* ── Phase 4D/E: header glitch + tile glitch ─────────────────────────────── */
-#header::before { animation: hdr-bar-glitch 10s steps(1) infinite; }
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: var(--tile-hover-bg);
-}
-.app-tile:hover::before { animation: tile-glitch .6s steps(1) forwards; }
-
-/* ── Grid light pulse — programme energy traveling the circuit ───────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='500'%3E%3Cline x1='32' y1='0' x2='32' y2='500' stroke='rgba(109,232,255,0.04)' stroke-width='0.5'/%3E%3Crect x='30' y='20' width='4' height='20' rx='2' fill='rgba(109,232,255,0.25)'/%3E%3Crect x='30' y='180' width='4' height='12' rx='2' fill='rgba(109,232,255,0.18)'/%3E%3Crect x='30' y='350' width='4' height='16' rx='2' fill='rgba(255,127,0,0.15)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='700'%3E%3Cline x1='48' y1='0' x2='48' y2='700' stroke='rgba(109,232,255,0.03)' stroke-width='0.5'/%3E%3Crect x='46' y='40' width='4' height='24' rx='2' fill='rgba(109,232,255,0.14)'/%3E%3Crect x='46' y='300' width='4' height='16' rx='2' fill='rgba(255,127,0,0.10)'/%3E%3Crect x='46' y='550' width='4' height='20' rx='2' fill='rgba(109,232,255,0.12)'/%3E%3C/svg%3E") repeat;
-  background-size: 64px 500px, 96px 700px;
-  animation: tron-light-pulse 5s linear infinite;
-}
-@keyframes tron-light-pulse {
-  from { background-position: 0 -500px, 20px -700px; }
-  to   { background-position: 0 0, 20px 0; }
-}
+/* Loading remains readable without an ambient blink; existing functional transitions stay. */
+.picker-loading { animation:none; opacity:1; color:var(--text-dim); }
+#theme-banner::before { will-change:auto; }

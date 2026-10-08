@@ -1,255 +1,118 @@
-/* ══ INDIANA JONES ════════════════════════════════════════════════════════════
-   It belongs in a museum. Torchlight on ancient stone, aged parchment maps,
-   leather journals, and the smell of jungle and desert. X marks the spot —
-   follow the expedition route through catacombs to fortune and glory.
-   Snakes. Why did it have to be snakes.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* indiana-jones: committed ThemeFidelity Batch08; original static bounded frame art. */
 :root {
-  /* ── Shape ── */
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── Backgrounds ── */
-  --bg:           #060400;
-  --panel-bg:     rgba(10, 6, 1, 0.98);
-  --overlay-bg:   rgba(7, 4, 1, 0.96);
-  --header-bg:    rgba(180, 120, 20, 0.04);
-
-  /* ── Typography ── */
-  --font:         Georgia, 'Times New Roman', serif;
-
-  /* ── Text ── */
-  --text:         #C0A060;
-  --text-dim:     rgba(160, 128, 70, 0.93);
-
-  /* ── Accents ── */
-  --accent-c:     #C8900C;   /* golden torch / treasure amber */
-  --accent-m:     #8B2020;   /* danger / blood contract red */
-  --accent-y:     #7A5828;   /* aged leather / earth brown */
-
-  /* ── Borders ── */
-  --border:       rgba(180, 130, 30, 0.22);
-  --border-h:     rgba(210, 158, 42, 0.56);
-
-  /* ── Glows ── */
-  --glow-c:       0 0 8px rgba(200,144,12,.65), 0 0 24px rgba(200,144,12,.22);
-  --glow-m:       0 0 7px rgba(139,32,32,.62),  0 0 20px rgba(139,32,32,.20);
-  --glow-y:       0 0 6px rgba(122,88,40,.55),  0 0 18px rgba(122,88,40,.18);
-
-  /* ── App window decoration ── */
-  --pulse-glow:   inset 0 0 22px rgba(160,110,10,.07);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(200,144,12,.12);
-
-  /* ── Title animation ── */
-  --title-anim:   torch-glow 6s ease-in-out infinite;
-
-  /* ── Tiles ── */
-  --tile-hover-bg:     rgba(160, 110, 10, 0.08);
-  --tile-hover-border: rgba(210, 158, 42, 0.42);
-  --tile-hover-shadow: 0 0 14px rgba(200, 144, 12, 0.22);
-  --tile-active-bg:    rgba(160, 110, 10, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(200,144,12,.58)) drop-shadow(0 0 14px rgba(160,110,10,.24));
-  --tile-icon-fx:      sepia(0.25) brightness(1.08) contrast(1.12) saturate(0.90);
-  --tile-icon-shape:   inset(3% round 2px);
-  --tile-label-spacing:   0.8px;
+  --bg: #2A1C10;
+  --panel-bg: #362719;
+  --overlay-bg: #362719;
+  --header-bg: #352314;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #F3E3BD;
+  --text-dim: #D8C49E;
+  --accent-c: #F1CC85;
+  --accent-text: #F1CC85;
+  --accent-m: #F1CC85;
+  --accent-y: #F1CC85;
+  --border: #B3956D;
+  --border-h: #F1CC85;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #F1CC85;
+  --title-anim: none;
+  --tile-hover-bg: #423022;
+  --tile-hover-border: #F1CC85;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #4B3628;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-glow 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
-
-  /* ── Buttons ── */
-  --btn-hover-bg:   rgba(160, 110, 10, 0.10);
-  --btn-active-bg:  rgba(160, 110, 10, 0.20);
-
-  /* ── Drop hint ── */
-  --drop-hint-border: rgba(160, 110, 10, 0.28);
-  --drop-icon-color:  rgba(200, 144, 12, 0.38);
-  --hint-sub-color:   #987034;
-
-  /* ── Rename ── */
-  --rename-dashed:    rgba(200, 144, 12, 0.42);
-  --rename-input-bg:  rgba(160, 110, 10, 0.07);
-
-  /* ── Edit bar (crimson — it belongs in a museum) ── */
-  --edit-bar-bg:          rgba(139, 32, 32, 0.07);
-  --edit-bar-border:      rgba(139, 32, 32, 0.42);
-  --edit-label-color:     #8B2020;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #C8900C;
-  --btn-done-border:      rgba(200, 144, 12, 0.45);
-  --btn-done-hover-bg:    rgba(200, 144, 12, 0.10);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(180, 130, 30, 0.42);
-
-  /* ── Update banner (aged leather) ── */
-  --update-bg:             rgba(122, 88, 40, 0.07);
-  --update-border:         rgba(150, 110, 50, 0.38);
-  --update-color:          #7A5828;
-  --update-btn-border:     rgba(122, 88, 40, 0.32);
-  --update-btn-hover-bg:   rgba(122, 88, 40, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  /* ── Close / secondary buttons ── */
-  --btn-close-color:      #C8900C;
-  --btn-close-border:     rgba(200, 144, 12, 0.42);
-  --btn-close-hover-bg:   rgba(200, 144, 12, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  /* ── Picker ── */
-  --picker-search-bg:      rgba(160, 110, 10, 0.07);
-  --picker-item-hover-bg:  rgba(160, 110, 10, 0.09);
-  --picker-item-active-bg: rgba(160, 110, 10, 0.16);
-  --picker-placeholder-bg: rgba(160, 110, 10, 0.07);
-
-  /* ── Skin selector ── */
-  --skin-btn-active-bg:    rgba(160, 110, 10, 0.18);
-
-  /* ── Remove button ── */
-  --remove-btn-bg:         rgba(139, 32, 32, 0.90);
-  --remove-btn-border:     #8B2020;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #423022;
+  --btn-active-bg: #4B3628;
+  --btn-hover-text: #F3E3BD;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #F3E3BD;
+  --drop-hint-border: #B3956D;
+  --drop-icon-color: #F1CC85;
+  --hint-sub-color: #D8C49E;
+  --rename-dashed: #B3956D;
+  --rename-input-bg: #362719;
+  --edit-bar-bg: #362719;
+  --edit-bar-border: #B3956D;
+  --edit-label-color: #F3E3BD;
+  --edit-label-glow: none;
+  --btn-done-color: #F3E3BD;
+  --btn-done-border: #B3956D;
+  --btn-done-hover-bg: #423022;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #B3956D;
+  --update-bg: #362719;
+  --update-border: #B3956D;
+  --update-color: #F3E3BD;
+  --update-btn-border: #B3956D;
+  --update-btn-hover-bg: #423022;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #F3E3BD;
+  --btn-close-border: #B3956D;
+  --btn-close-hover-bg: #423022;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #362719;
+  --picker-item-hover-bg: #423022;
+  --picker-item-active-bg: #4B3628;
+  --picker-placeholder-bg: #362719;
+  --skin-btn-active-bg: #4B3628;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Aged parchment grain + torchlight vignette + cave shadow depths ─────── */
-#app::after {
-  background:
-    /* warm parchment grain — aged paper, leather-bound field journal */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1.2 0.6 0 0 0  0.9 0.7 0 0 0  0.3 0.2 0 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* diagonal aged-paper fold lines — worn map crease */
-    repeating-linear-gradient(
-      -45deg,
-      transparent 0px, transparent 80px,
-      rgba(160, 110, 20, 0.012) 80px, rgba(160, 110, 20, 0.012) 81px,
-      transparent 81px, transparent 160px
-    ),
-    /* torchlight amber bleeding from above */
-    radial-gradient(ellipse 75% 45% at 50% 0%, rgba(185, 112, 10, 0.09) 0%, transparent 65%),
-    /* heavy cave vignette — temple darkness at edges */
-    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 28%, rgba(3, 2, 0, 0.82) 100%),
-    /* desert heat rising from below */
-    radial-gradient(ellipse 70% 28% at 50% 100%, rgba(140, 80, 8, 0.07) 0%, transparent 62%),
-    /* tunnel wall shadows — left and right */
-    radial-gradient(ellipse 22% 100% at 0% 50%, rgba(4, 2, 0, 0.10) 0%, transparent 62%),
-    radial-gradient(ellipse 22% 100% at 100% 50%, rgba(4, 2, 0, 0.10) 0%, transparent 62%);
-  background-size: 200px 200px, auto, auto, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Identity belongs to the frame; no foreground panno, ghost text or ambient loops. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#352314; border-bottom-color:#B3956D; }
+#header::before { background:#B3956D; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2084%2020'%3E%3Cpath%20d%3D'M1%2016H69'%20fill%3D'none'%20stroke%3D'%23B3956D'%20stroke-opacity%3D'0.85'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3Cpath%20d%3D'M3%2015V17%20M10%2015V17%20M17%2015V17%20M24%2015V17%20M31%2015V17%20M38%2015V17%20M45%2015V17%20M52%2015V17%20M59%2015V17'%20fill%3D'none'%20stroke%3D'%23B3956D'%20stroke-opacity%3D'0.8'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3Cpath%20d%3D'M72%2011L81%2019%20M81%2011L72%2019'%20fill%3D'none'%20stroke%3D'%23C84A1A'%20stroke-opacity%3D'1'%20stroke-width%3D'1.4'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Palatino Linotype',Georgia,serif; font-size:11px; font-weight:700; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#F3E3BD; text-shadow:none; }
+#title .accent { color:#F3E3BD; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#D8C49E; }
+#header-controls button { color:#F3E3BD; border-color:#B3956D; }
+#header-controls button:hover, #header-controls button:active { color:#F3E3BD; border-color:#F1CC85; }
 
-/* ── Header golden torch accent bar ─────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #C8900C, rgba(160, 110, 10, 0.28));
-  box-shadow: 0 0 10px rgba(200, 144, 12, 0.62), 0 0 28px rgba(160, 110, 10, 0.22);
-}
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M2%200V32%20M5%202V7%20M5%2013V18%20M5%2024V29'%20fill%3D'none'%20stroke%3D'%23B3956D'%20stroke-opacity%3D'0.2'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M6%200V32%20M3%203V8%20M3%2014V19%20M3%2025V30'%20fill%3D'none'%20stroke%3D'%23B3956D'%20stroke-opacity%3D'0.2'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+.app-tile { background:#362719; border-color:#B3956D; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#423022; border-color:#F1CC85; box-shadow:none; }
+.app-tile:active { background:#4B3628; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Courier New',Consolas,monospace; font-size:12px; font-weight:400; font-style:normal; letter-spacing:0.3px; line-height:1.2; color:#F3E3BD; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#F3E3BD; }
+.hotkey-input.recording { background:#4B3628; color:#F3E3BD; border-color:#F1CC85; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#423022; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#F1CC85; }
 
-/* ── Grid: Expedition map — parchment chart with compass rose, route, X ──── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Aged expedition map SVG — map border, grid, terrain, compass, route, X */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Crect x='8' y='8' width='484' height='364' fill='none' stroke='rgba(180,138,50,0.20)' stroke-width='1.2'/%3E%3Crect x='14' y='14' width='472' height='352' fill='none' stroke='rgba(155,118,42,0.12)' stroke-width='0.6'/%3E%3Cline x1='8' y1='28' x2='22' y2='28' stroke='rgba(180,138,50,0.22)' stroke-width='0.8'/%3E%3Cline x1='28' y1='8' x2='28' y2='22' stroke='rgba(180,138,50,0.22)' stroke-width='0.8'/%3E%3Cline x1='492' y1='28' x2='478' y2='28' stroke='rgba(180,138,50,0.22)' stroke-width='0.8'/%3E%3Cline x1='472' y1='8' x2='472' y2='22' stroke='rgba(180,138,50,0.22)' stroke-width='0.8'/%3E%3Cline x1='8' y1='352' x2='22' y2='352' stroke='rgba(180,138,50,0.22)' stroke-width='0.8'/%3E%3Cline x1='28' y1='372' x2='28' y2='358' stroke='rgba(180,138,50,0.22)' stroke-width='0.8'/%3E%3Cline x1='492' y1='352' x2='478' y2='352' stroke='rgba(180,138,50,0.22)' stroke-width='0.8'/%3E%3Cline x1='472' y1='372' x2='472' y2='358' stroke='rgba(180,138,50,0.22)' stroke-width='0.8'/%3E%3Cline x1='83' y1='14' x2='83' y2='366' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cline x1='165' y1='14' x2='165' y2='366' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cline x1='247' y1='14' x2='247' y2='366' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cline x1='329' y1='14' x2='329' y2='366' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cline x1='411' y1='14' x2='411' y2='366' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cline x1='14' y1='73' x2='486' y2='73' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cline x1='14' y1='146' x2='486' y2='146' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cline x1='14' y1='219' x2='486' y2='219' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cline x1='14' y1='292' x2='486' y2='292' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Cpath d='M 30 55 C 55 40 100 42 145 58 C 180 70 210 64 240 76 C 265 85 275 80 285 92 C 295 104 288 118 268 124 C 248 130 220 122 195 130 C 170 138 148 148 120 138 C 92 128 65 115 45 100 C 30 89 26 75 30 60 Z' fill='none' stroke='rgba(155,118,42,0.085)' stroke-width='0.8'/%3E%3Cpath d='M 34 65 C 58 50 100 52 138 66 C 168 77 198 70 228 80' fill='none' stroke='rgba(140,108,38,0.062)' stroke-width='0.6' stroke-dasharray='2,5'/%3E%3Cpath d='M 358 78 C 390 65 432 70 462 88 C 480 99 485 116 472 130 C 459 144 432 147 408 138 C 388 130 368 122 358 108 C 350 97 350 88 358 78 Z' fill='none' stroke='rgba(140,108,38,0.075)' stroke-width='0.7'/%3E%3Cpath d='M 318 98 L 330 76 L 342 98' fill='none' stroke='rgba(140,108,38,0.12)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M 340 102 L 354 72 L 368 102' fill='none' stroke='rgba(140,108,38,0.12)' stroke-width='0.9' stroke-linejoin='round'/%3E%3Cpath d='M 366 99 L 377 82 L 388 99' fill='none' stroke='rgba(140,108,38,0.10)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M 327 82 L 330 76 L 333 82' fill='none' stroke='rgba(180,148,80,0.10)' stroke-width='0.7'/%3E%3Cpath d='M 351 78 L 354 72 L 357 78' fill='none' stroke='rgba(180,148,80,0.10)' stroke-width='0.7'/%3E%3Cpath d='M 346 108 C 338 126 326 142 312 158 C 298 174 280 182 262 188' fill='none' stroke='rgba(80,120,180,0.09)' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M 44 246 L 52 228 L 60 246 Z' fill='none' stroke='rgba(80,120,55,0.10)' stroke-width='0.7'/%3E%3Cpath d='M 60 252 L 68 232 L 76 252 Z' fill='none' stroke='rgba(80,120,55,0.09)' stroke-width='0.7'/%3E%3Cpath d='M 76 246 L 84 226 L 92 246 Z' fill='none' stroke='rgba(80,120,55,0.10)' stroke-width='0.7'/%3E%3Cpath d='M 33 258 L 41 240 L 49 258 Z' fill='none' stroke='rgba(80,120,55,0.08)' stroke-width='0.6'/%3E%3Cpath d='M 92 250 L 99 234 L 106 250 Z' fill='none' stroke='rgba(80,120,55,0.08)' stroke-width='0.6'/%3E%3Cpath d='M 360 290 C 385 280 415 278 440 285 C 460 290 472 300 465 310 C 458 318 438 315 415 312 C 392 309 368 308 355 302 C 347 297 350 293 360 290 Z' fill='none' stroke='rgba(155,118,42,0.07)' stroke-width='0.6'/%3E%3Cpath d='M 380 320 C 400 313 425 312 445 318' fill='none' stroke='rgba(155,118,42,0.055)' stroke-width='0.5'/%3E%3Ccircle cx='440' cy='62' r='40' fill='none' stroke='rgba(180,138,50,0.10)' stroke-width='0.6'/%3E%3Ccircle cx='440' cy='62' r='28' fill='none' stroke='rgba(165,128,46,0.16)' stroke-width='0.8'/%3E%3Ccircle cx='440' cy='62' r='10' fill='none' stroke='rgba(165,128,46,0.14)' stroke-width='0.6'/%3E%3Cpolygon points='440,22 443,56 440,50 437,56' fill='rgba(210,162,48,0.30)'/%3E%3Cpolygon points='440,102 443,68 440,74 437,68' fill='rgba(165,125,40,0.18)'/%3E%3Cpolygon points='480,62 446,59 452,62 446,65' fill='rgba(165,125,40,0.18)'/%3E%3Cpolygon points='400,62 434,59 428,62 434,65' fill='rgba(165,125,40,0.18)'/%3E%3Cpolygon points='468,34 448,55 451,51 455,54' fill='rgba(155,118,42,0.14)'/%3E%3Cpolygon points='412,34 432,55 429,51 425,54' fill='rgba(155,118,42,0.14)'/%3E%3Cpolygon points='468,90 448,69 451,73 455,70' fill='rgba(155,118,42,0.12)'/%3E%3Cpolygon points='412,90 432,69 429,73 425,70' fill='rgba(155,118,42,0.12)'/%3E%3Cline x1='440' y1='22' x2='440' y2='26' stroke='rgba(190,148,50,0.28)' stroke-width='1'/%3E%3Cline x1='440' y1='98' x2='440' y2='102' stroke='rgba(180,138,48,0.22)' stroke-width='0.8'/%3E%3Cline x1='400' y1='62' x2='404' y2='62' stroke='rgba(180,138,48,0.22)' stroke-width='0.8'/%3E%3Cline x1='476' y1='62' x2='480' y2='62' stroke='rgba(180,138,48,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='440' cy='62' r='5' fill='none' stroke='rgba(200,158,48,0.26)' stroke-width='0.8'/%3E%3Ccircle cx='440' cy='62' r='2' fill='rgba(210,162,50,0.35)'/%3E%3Ctext x='440' y='18' font-family='Georgia,serif' font-size='7' font-weight='bold' fill='rgba(200,158,48,0.30)' text-anchor='middle'%3EN%3C/text%3E%3Ctext x='440' y='115' font-family='Georgia,serif' font-size='6' fill='rgba(165,125,40,0.22)' text-anchor='middle'%3ES%3C/text%3E%3Ctext x='488' y='65' font-family='Georgia,serif' font-size='6' fill='rgba(165,125,40,0.22)' text-anchor='middle'%3EE%3C/text%3E%3Ctext x='392' y='65' font-family='Georgia,serif' font-size='6' fill='rgba(165,125,40,0.22)' text-anchor='middle'%3EW%3C/text%3E%3Cpath d='M 45 338 C 65 312 90 292 118 272 C 146 252 168 235 196 216 C 222 198 246 186 268 176' fill='none' stroke='rgba(178,45,25,0.23)' stroke-width='1.3' stroke-dasharray='5,6' stroke-linecap='round'/%3E%3Cpath d='M 268 176 C 288 167 308 156 326 144' fill='none' stroke='rgba(178,45,25,0.14)' stroke-width='0.8' stroke-dasharray='3,7' stroke-linecap='round'/%3E%3Ccircle cx='70' cy='318' r='4' fill='none' stroke='rgba(178,45,25,0.28)' stroke-width='1'/%3E%3Ccircle cx='70' cy='318' r='1.5' fill='rgba(178,45,25,0.22)'/%3E%3Ccircle cx='152' cy='244' r='4' fill='none' stroke='rgba(178,45,25,0.25)' stroke-width='1'/%3E%3Ccircle cx='152' cy='244' r='1.5' fill='rgba(178,45,25,0.18)'/%3E%3Ccircle cx='232' cy='198' r='4' fill='none' stroke='rgba(178,45,25,0.25)' stroke-width='1'/%3E%3Ccircle cx='232' cy='198' r='1.5' fill='rgba(178,45,25,0.18)'/%3E%3Ccircle cx='268' cy='176' r='22' fill='none' stroke='rgba(210,158,40,0.10)' stroke-width='1'/%3E%3Ccircle cx='268' cy='176' r='14' fill='none' stroke='rgba(210,158,40,0.18)' stroke-width='0.8'/%3E%3Cline x1='254' y1='162' x2='282' y2='190' stroke='rgba(218,165,42,0.44)' stroke-width='2.2' stroke-linecap='round'/%3E%3Cline x1='282' y1='162' x2='254' y2='190' stroke='rgba(218,165,42,0.44)' stroke-width='2.2' stroke-linecap='round'/%3E%3Ccircle cx='268' cy='176' r='3' fill='rgba(225,175,52,0.38)'/%3E%3Cline x1='188' y1='362' x2='312' y2='362' stroke='rgba(155,118,42,0.18)' stroke-width='0.8'/%3E%3Cline x1='188' y1='357' x2='188' y2='367' stroke='rgba(155,118,42,0.18)' stroke-width='0.8'/%3E%3Cline x1='250' y1='357' x2='250' y2='367' stroke='rgba(155,118,42,0.18)' stroke-width='0.8'/%3E%3Cline x1='312' y1='357' x2='312' y2='367' stroke='rgba(155,118,42,0.18)' stroke-width='0.8'/%3E%3Ctext x='250' y='354' font-family='Georgia,serif' font-size='5.5' fill='rgba(155,118,42,0.22)' text-anchor='middle'%3E100 LEAGUES%3C/text%3E%3Ctext x='478' y='372' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(140,108,38,0.20)' text-anchor='end'%3ESTRICTLY CONFIDENTIAL%3C/text%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* torchlight amber from above */
-    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(145, 90, 8, 0.07) 0%, transparent 60%),
-    /* cave wall shadows — sides */
-    radial-gradient(ellipse 28% 100% at 0% 50%, rgba(3, 2, 0, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 28% 100% at 100% 50%, rgba(3, 2, 0, 0.12) 0%, transparent 60%);
-  animation: map-reveal 14s ease-in-out infinite;
-}
-@keyframes map-reveal {
-  0%, 100% { opacity: 0.82; }
-  50%       { opacity: 1.0; }
-  86%       { opacity: 0.88; }
-  87%       { opacity: 0.25; }   /* torch flicker */
-  88%       { opacity: 1.0; }
-  89%       { opacity: 0.72; }
-  90%       { opacity: 1.0; }
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%207'%3E%3Cpath%20d%3D'M0%203H3%20M6%203H9%20M12%203H15%20M18%203H21'%20fill%3D'none'%20stroke%3D'%23392A1C'%20stroke-opacity%3D'0.55'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #352314; border-top-color:#B3956D; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2022%2022'%3E%3Cpath%20d%3D'M5%2013L7%205Q11%202%2015%205L17%2013%20M2%2015Q11%2011%2020%2015Q19%2019%202%2017Z'%20fill%3D'%23392A1C'%20stroke%3D'%23392A1C'%20stroke-width%3D'1'%2F%3E%3Cpath%20d%3D'M7%2011H15'%20stroke%3D'%23EAD8A8'%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Courier New',Consolas,monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#F3E3BD; text-shadow:none; }
 
-/* ── Flavor content ──────────────────────────────────────────────────────── */
-#header::after {
-  content: 'DEPT. OF ARCHAEOLOGY  //  ARTIFACT RECOVERY  //  EYES ONLY';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(210, 162, 55, 0.62);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'EXPEDITION\AMAP\A\AX MARKS\ATHE SPOT\A\AIT BELONGS\AIN A\AMUSEUM\A\AFORTUNE\AAND\AGLORY';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 13px; line-height: 1.70; text-align: right;
-  color: rgba(160, 110, 20, 0.10); white-space: pre;
-  animation: map-breathe 12s ease-in-out infinite;
-}
-
-@keyframes map-breathe {
-  0%, 100% { opacity: 0.65; }
-  50%       { opacity: 1.0; }
-}
-
-#edit-bar::after {
-  content: 'IT BELONGS IN A MUSEUM';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2.5px; color: rgba(139, 32, 32, 0.45);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title animation: torch flame — warm amber glow with occasional flicker ─ */
-@keyframes torch-glow {
-  0%, 100% { color: #C8A050; text-shadow: 0 0 7px rgba(200,144,12,.55), 0 0 22px rgba(200,144,12,.20); }
-  30%       { color: #D4B060; text-shadow: 0 0 13px rgba(212,160,20,.80), 0 0 34px rgba(200,144,12,.36); }
-  65%       { color: #B89040; text-shadow: 0 0 7px rgba(182,130,10,.52), 0 0 18px rgba(160,110,8,.18); }
-  88%       { color: #C8A050; text-shadow: 0 0 7px rgba(200,144,12,.55), 0 0 22px rgba(200,144,12,.20); }
-  89%       { color: #ECD878; text-shadow: 0 0 20px rgba(224,184,32,.95), 0 0 50px rgba(200,144,12,.58); opacity: 0.78; }
-  90%       { color: #C8A050; text-shadow: 0 0 7px rgba(200,144,12,.55), 0 0 22px rgba(200,144,12,.20); }
-}
-
-/* ── App: torchlight border — warm pulse with flame flicker ─────────────── */
-#app { animation: indy-torchlight 8s ease-in-out infinite; }
-@keyframes indy-torchlight {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(160,110,10,.28), inset 0 0 22px rgba(160,110,10,.05); }
-  35%      { box-shadow: 0 0 0 1px rgba(200,148,12,.52), inset 0 0 32px rgba(185,130,10,.09); }
-  36%      { box-shadow: 0 0 0 1px rgba(139,32,32,.22),  inset 0 0 20px rgba(139,32,32,.04); }
-  37%      { box-shadow: 0 0 0 1px rgba(200,148,12,.44), inset 0 0 28px rgba(185,130,10,.07); }
-  70%      { box-shadow: 0 0 0 1px rgba(122,88,40,.30),  inset 0 0 20px rgba(122,88,40,.05); }
-  88%      { box-shadow: 0 0 0 1px rgba(160,110,10,.28), inset 0 0 22px rgba(160,110,10,.05); }
-  89%      { box-shadow: 0 0 0 2px rgba(225,172,28,.65), inset 0 0 44px rgba(205,150,12,.15); }
-  90%      { box-shadow: 0 0 0 1px rgba(160,110,10,.28), inset 0 0 22px rgba(160,110,10,.05); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(7, 4, 0, 0.98); border-top-color: rgba(160, 110, 10, 0.25); }
-#theme-banner::before { content: '✦'; color: #C8900C; font-size: 18px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(195, 150, 48, 0.72); }
-
-/* ── Temple dust motes — golden particles drifting in shafts of torchlight ─ */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='440'%3E%3Ccircle cx='28' cy='55' r='1.5' fill='rgba(200,158,40,0.22)'/%3E%3Ccircle cx='92' cy='168' r='1' fill='rgba(180,138,30,0.18)'/%3E%3Ccircle cx='158' cy='285' r='2' fill='rgba(210,162,45,0.16)'/%3E%3Ccircle cx='52' cy='368' r='0.8' fill='rgba(190,145,35,0.20)'/%3E%3Ccircle cx='175' cy='108' r='1.2' fill='rgba(200,155,38,0.15)'/%3E%3Ccircle cx='118' cy='228' r='1.5' fill='rgba(178,135,30,0.18)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='580'%3E%3Ccircle cx='42' cy='98' r='1' fill='rgba(200,158,40,0.12)'/%3E%3Ccircle cx='148' cy='262' r='1.5' fill='rgba(185,142,32,0.10)'/%3E%3Ccircle cx='228' cy='450' r='2' fill='rgba(200,155,38,0.09)'/%3E%3Ccircle cx='82' cy='530' r='1' fill='rgba(210,162,44,0.11)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 440px, 280px 580px;
-  animation: dust-motes 18s linear infinite;
-}
-@keyframes dust-motes {
-  from { background-position: 0 0, 18px 0; }
-  to   { background-position: -12px -440px, 6px -580px; }
-}
-
-/* ── Tile: golden artifact ripple on hover ──────────────────────────────── */
-.app-tile::before {
-  width: 18px; height: 18px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(210, 158, 42, 0.52);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+/* Reuse the committed measured header-art visibility contract. */
+#header { --ql-header-art-safety:1; }
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%207'%3E%3Cpath%20d%3D'M0%203H3%20M6%203H9%20M12%203H15%20M18%203H21'%20fill%3D'none'%20stroke%3D'%23392A1C'%20stroke-opacity%3D'0.55'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #EAD8A8; border-top-color:#392A1C; }
+#theme-banner-text { color:#392A1C; }

@@ -1,222 +1,129 @@
-/* ══ LIFE IS STRANGE ══════════════════════════════════════════════════════════
-   Arcadia Bay. Polaroids. Rewinding time. Indie rock and golden hour.
-   This action will have consequences. Max Caulfield. Everyday Heroes.
-   A warm, faded photograph — nostalgia made tangible.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* life-is-strange: committed ThemeFidelity Batch08; original static bounded frame art. */
 :root {
-  --radius:       4px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* WARM POLAROID — soft, faded, like a sun-bleached photograph */
-  --bg:           #141010;
-  --panel-bg:     rgba(18, 14, 12, 0.99);
-  --overlay-bg:   rgba(16, 12, 10, 0.97);
-  --header-bg:    rgba(192, 120, 72, 0.04);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #B89878;
-  --text-dim:     rgba(160, 120, 90, 0.98);
-
-  --accent-c:     #C07848;   /* warm sunset orange */
-  --accent-m:     #4878A0;   /* indie blue — faded denim sky */
-  --accent-y:     #483020;   /* deep warm brown */
-
-  --border:       rgba(192, 120, 72, 0.22);
-  --border-h:     rgba(192, 120, 72, 0.55);
-
-  --glow-c:       0 0 7px rgba(192,120,72,.58), 0 0 20px rgba(192,120,72,.20);
-  --glow-m:       0 0 6px rgba(72,120,160,.50), 0 0 18px rgba(72,120,160,.16);
-  --glow-y:       0 0 5px rgba(72,48,32,.45), 0 0 14px rgba(72,48,32,.14);
-
-  --pulse-glow:   inset 0 0 22px rgba(192,120,72,.06);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(192,120,72,.10);
-
-  --title-anim:   lis-rewind 12s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(192, 120, 72, 0.08);
-  --tile-hover-border: rgba(192, 120, 72, 0.45);
-  --tile-hover-shadow: 0 0 12px rgba(192, 120, 72, 0.20);
-  --tile-active-bg:    rgba(192, 120, 72, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(192,120,72,.55)) drop-shadow(0 0 12px rgba(192,120,72,.22));
-  --tile-icon-fx:      sepia(0.30) brightness(0.95) contrast(1.05) saturate(0.90);
-  --tile-icon-shape:   inset(2% round 4px);
-  --tile-label-spacing:   0.4px;
+  --bg: #14121A;
+  --panel-bg: #211D2A;
+  --overlay-bg: #211D2A;
+  --header-bg: #292231;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #F0E8E0;
+  --text-dim: #C4B8C7;
+  --accent-c: #F08CAF;
+  --accent-text: #F08CAF;
+  --accent-m: #F08CAF;
+  --accent-y: #F08CAF;
+  --border: #9D859E;
+  --border-h: #70C7D7;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #70C7D7;
+  --title-anim: none;
+  --tile-hover-bg: #33293D;
+  --tile-hover-border: #70C7D7;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #3B3045;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
-
-  --btn-hover-bg:   rgba(192, 120, 72, 0.10);
-  --btn-active-bg:  rgba(192, 120, 72, 0.20);
-
-  --drop-hint-border: rgba(192, 120, 72, 0.25);
-  --drop-icon-color:  rgba(192, 120, 72, 0.35);
-  --hint-sub-color:   rgba(160, 120, 90, 1);
-
-  --rename-dashed:    rgba(192, 120, 72, 0.40);
-  --rename-input-bg:  rgba(192, 120, 72, 0.07);
-
-  --edit-bar-bg:          rgba(72, 120, 160, 0.07);
-  --edit-bar-border:      rgba(72, 120, 160, 0.38);
-  --edit-label-color:     #4878A0;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #4878A0;
-  --btn-done-border:      rgba(72, 120, 160, 0.40);
-  --btn-done-hover-bg:    rgba(72, 120, 160, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(192, 120, 72, 0.42);
-
-  --update-bg:             rgba(72, 120, 160, 0.06);
-  --update-border:         rgba(72, 120, 160, 0.32);
-  --update-color:          var(--accent-m);
-  --update-btn-border:     rgba(72, 120, 160, 0.28);
-  --update-btn-hover-bg:   rgba(72, 120, 160, 0.09);
-  --update-btn-hover-glow: var(--glow-m);
-
-  --btn-close-color:      #C07848;
-  --btn-close-border:     rgba(192, 120, 72, 0.38);
-  --btn-close-hover-bg:   rgba(192, 120, 72, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(192, 120, 72, 0.07);
-  --picker-item-hover-bg:  rgba(192, 120, 72, 0.08);
-  --picker-item-active-bg: rgba(192, 120, 72, 0.16);
-  --picker-placeholder-bg: rgba(192, 120, 72, 0.07);
-
-  --skin-btn-active-bg:    rgba(192, 120, 72, 0.18);
-  --remove-btn-bg:         rgba(192, 120, 72, 0.88);
-  --remove-btn-border:     #C07848;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #33293D;
+  --btn-active-bg: #3B3045;
+  --btn-hover-text: #F0E8E0;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #F0E8E0;
+  --drop-hint-border: #9D859E;
+  --drop-icon-color: #F08CAF;
+  --hint-sub-color: #C4B8C7;
+  --rename-dashed: #9D859E;
+  --rename-input-bg: #211D2A;
+  --edit-bar-bg: #211D2A;
+  --edit-bar-border: #9D859E;
+  --edit-label-color: #F0E8E0;
+  --edit-label-glow: none;
+  --btn-done-color: #F0E8E0;
+  --btn-done-border: #9D859E;
+  --btn-done-hover-bg: #33293D;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #9D859E;
+  --update-bg: #211D2A;
+  --update-border: #9D859E;
+  --update-color: #F0E8E0;
+  --update-btn-border: #9D859E;
+  --update-btn-hover-bg: #33293D;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #F0E8E0;
+  --btn-close-border: #9D859E;
+  --btn-close-hover-bg: #33293D;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #211D2A;
+  --picker-item-hover-bg: #33293D;
+  --picker-item-active-bg: #3B3045;
+  --picker-placeholder-bg: #211D2A;
+  --skin-btn-active-bg: #3B3045;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Warm Polaroid grain + golden vignette + nostalgic haze ───────────────── */
-#app::after {
-  background:
-    /* Warm film grain — golden tone, faded photograph */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.18 0.12 0.05 0 0.02  0.14 0.10 0.04 0 0.01  0.06 0.04 0.02 0 0  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* warm golden hour haze — top */
-    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(192,120,72,0.06) 0%, transparent 60%),
-    /* deep warm vignette */
-    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 25%, rgba(10,6,4,0.82) 100%),
-    /* soft sunset bleed — bottom */
-    radial-gradient(ellipse 60% 30% at 50% 100%, rgba(160,90,40,0.05) 0%, transparent 55%);
-  background-size: 200px 200px, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Identity belongs to the frame; no foreground panno, ghost text or ambient loops. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#292231; border-bottom-color:#9D859E; }
+#header::before { background:#9D859E; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2084%2020'%3E%3Cpath%20d%3D'M3%2012Q9%202%2018%208T34%208Q39%2017%2048%2011T60%208%20M64%2017V3H81V17%20M67%2014V6H78'%20fill%3D'none'%20stroke%3D'%23F08CAF'%20stroke-opacity%3D'0.8'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Ink Free','Segoe UI',sans-serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:1px; color:#F0E8E0; text-shadow:none; }
+#title .accent { color:#F0E8E0; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#C4B8C7; }
+#header-controls button { color:#F0E8E0; border-color:#9D859E; }
+#header-controls button:hover, #header-controls button:active { color:#F0E8E0; border-color:#70C7D7; }
 
-/* ── Header — warm sunset accent bar ──────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #C07848, rgba(160, 90, 48, 0.25));
-  box-shadow: 0 0 8px rgba(192,120,72,0.55), 0 0 22px rgba(192,120,72,0.18);
-}
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M2%204L6%203%20M1%2019L6%2021'%20fill%3D'none'%20stroke%3D'%239D859E'%20stroke-opacity%3D'0.15'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M2%2011L7%209%20M1%2028L6%2030'%20fill%3D'none'%20stroke%3D'%239D859E'%20stroke-opacity%3D'0.15'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+.app-tile { background:#211D2A; border-color:#9D859E; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#33293D; border-color:#70C7D7; box-shadow:none; }
+.app-tile:active { background:#3B3045; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Ink Free','Segoe UI',sans-serif; font-size:12px; font-weight:400; font-style:normal; letter-spacing:0.3px; line-height:1.2; color:#F0E8E0; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#F0E8E0; }
+.hotkey-input.recording { background:#3B3045; color:#F0E8E0; border-color:#70C7D7; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#33293D; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#70C7D7; }
 
-/* ── Grid: Polaroid frame + rewind spiral — ASYMMETRIC layout ─────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Crect x='30' y='28' width='120' height='148' rx='2' fill='rgba(255,250,240,0.06)' stroke='rgba(255,250,240,0.12)' stroke-width='1.2'/%3E%3Crect x='38' y='34' width='104' height='108' fill='rgba(192,120,72,0.05)' stroke='rgba(192,120,72,0.10)' stroke-width='0.6'/%3E%3Cline x1='38' y1='142' x2='142' y2='142' stroke='rgba(255,250,240,0.06)' stroke-width='0.5'/%3E%3Ctext x='90' y='160' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='6' fill='rgba(192,120,72,0.35)'%3EEVERYDAY HEROES%3C/text%3E%3Ctext x='90' y='55' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='5.5' fill='rgba(72,120,160,0.30)'%3EMAX CAULFIELD%3C/text%3E%3Cpath d='M390,280 C390,260 370,250 370,270 C370,290 390,280 390,260 C390,240 370,230 370,250 C370,270 390,260 390,240 C390,220 370,210 370,230' fill='none' stroke='rgba(72,120,160,0.22)' stroke-width='1.5'/%3E%3Ccircle cx='390' cy='280' r='3' fill='rgba(72,120,160,0.30)'/%3E%3Ccircle cx='370' cy='230' r='2' fill='rgba(72,120,160,0.20)'/%3E%3Ctext x='380' y='305' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='5' letter-spacing='1' fill='rgba(192,120,72,0.28)'%3EREWIND%3C/text%3E%3Ctext x='250' y='20' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='6.5' letter-spacing='1.5' fill='rgba(192,120,72,0.32)'%3ETHIS ACTION WILL HAVE CONSEQUENCES%3C/text%3E%3Cline x1='80' y1='25' x2='420' y2='25' stroke='rgba(192,120,72,0.08)' stroke-width='0.5'/%3E%3Ctext x='250' y='365' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-size='6' letter-spacing='2' fill='rgba(160,120,90,0.22)'%3EARCADIA BAY%3C/text%3E%3Ccircle cx='440' cy='60' r='18' fill='none' stroke='rgba(192,120,72,0.08)' stroke-width='0.5' stroke-dasharray='2,4'/%3E%3Ccircle cx='440' cy='60' r='8' fill='rgba(192,120,72,0.04)'/%3E%3Cline x1='180' y1='200' x2='320' y2='200' stroke='rgba(72,120,160,0.06)' stroke-width='0.3' stroke-dasharray='3,6'/%3E%3Crect x='340' y='130' width='60' height='4' rx='2' fill='rgba(192,120,72,0.08)'/%3E%3Crect x='340' y='140' width='45' height='4' rx='2' fill='rgba(192,120,72,0.06)'/%3E%3Crect x='340' y='150' width='55' height='4' rx='2' fill='rgba(192,120,72,0.05)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.85;
-  animation: lis-polaroid 12s ease-in-out infinite;
-}
+#theme-banner { background:#292231; border-top-color:#9D859E; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2022%2022'%3E%3Cpath%20d%3D'M11%206Q4%200%202%205Q0%209%208%2011Q1%2013%204%2018Q7%2022%2011%2013%20M11%206Q18%200%2020%205Q22%209%2014%2011Q21%2013%2018%2018Q15%2022%2011%2013%20M11%205V19%20M11%206L8%203%20M11%206L14%203'%20fill%3D'none'%20stroke%3D'%23F08CAF'%20stroke-opacity%3D'1'%20stroke-width%3D'1.25'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Ink Free','Segoe UI',sans-serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#F0E8E0; text-shadow:none; }
 
-/* CPU-efficient: opacity-only (tier 1) */
-@keyframes lis-polaroid {
-  0%, 100% { opacity: 0.85; }
-  28%       { opacity: 0.92; }
-  65%       { opacity: 0.78; }
-  88%       { opacity: 0.06; }
-  89%       { opacity: 0.95; }
-  92%       { opacity: 0.85; }
-}
-
-/* ── Flavor content ──────────────────────────────────────────────────────── */
-#header::after {
-  content: 'ARCADIA BAY // EVERYDAY HEROES // TIME IS NOT ON YOUR SIDE';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(192, 120, 72, 0.55);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'ARCADIA\ABAY\A\AMAX\ACAULFIELD\A\AEVERYDAY\AHEROES\A\ATHIS ACTION\AWILL HAVE\ACONSEQUENCES';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(192, 120, 72, 0.08); white-space: pre;
-  animation: lis-ghost 12s ease-in-out infinite;
-}
-
-@keyframes lis-ghost {
-  0%, 100% { color: rgba(192,120,72,.08); }
-  28%       { color: rgba(192,120,72,.12); }
-  65%       { color: rgba(192,120,72,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(72,120,160,.14); }
-  92%       { color: rgba(192,120,72,.08); }
-}
-
-#edit-bar::after {
-  content: 'REWIND // CONSEQUENCES PENDING';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(72, 120, 160, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 3px; }
-
-/* ── Title: warm nostalgic pulse with golden flash at 88% ─────────────────── */
-@keyframes lis-rewind {
-  0%, 100% { color: #B89878; text-shadow: 0 0 6px rgba(192,120,72,.42), 0 0 18px rgba(192,120,72,.14); }
-  30%       { color: #C0A080; text-shadow: 0 0 8px rgba(192,120,72,.55), 0 0 24px rgba(192,120,72,.18); }
-  60%       { color: #A88868; text-shadow: 0 0 5px rgba(72,120,160,.30), 0 0 16px rgba(72,120,160,.10); }
-  87%       { color: #B89878; text-shadow: 0 0 6px rgba(192,120,72,.38); }
-  88%       { color: #E8C888; text-shadow: 0 0 18px rgba(232,200,136,.80), 0 0 40px rgba(192,120,72,.40); }
-  89%       { color: transparent; text-shadow: none; }
-  90%       { color: #B89878; text-shadow: 0 0 8px rgba(192,120,72,.50); }
-}
-
-/* ── App: warm photo border — golden glow breathing ──────────────────────── */
-#app { animation: lis-frame 12s ease-in-out infinite; }
-@keyframes lis-frame {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(192,120,72,.20), inset 0 0 20px rgba(160,90,48,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(192,120,72,.42), inset 0 0 28px rgba(192,120,72,.06); }
-  65%      { box-shadow: 0 0 0 1px rgba(72,120,160,.22), inset 0 0 18px rgba(72,120,160,.03); }
-  88%      { box-shadow: 0 0 0 2px rgba(232,200,136,.75), inset 0 0 50px rgba(192,120,72,.12), 0 0 18px rgba(192,120,72,.25); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(192,120,72,.35), inset 0 0 22px rgba(192,120,72,.05); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(14, 10, 8, 0.99); border-top-color: rgba(192, 120, 72, 0.22); }
-#theme-banner::before { content: '◐'; color: #C07848; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(184, 152, 120, 0.72); }
-
-/* ── Tile: soft polaroid glow ─────────────────────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: transparent;
-  border: 1px solid rgba(192, 120, 72, 0.18);
-  border-radius: 4px;
-}
-.app-tile:hover::before { animation: tile-flicker .9s steps(1, end) infinite; }
-
-/* ── Dust in sunlight — warm golden particles drifting lazily ─────────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Ccircle cx='30' cy='60' r='2.5' fill='rgba(210,160,90,0.18)'/%3E%3Ccircle cx='120' cy='180' r='1.5' fill='rgba(192,120,72,0.14)'/%3E%3Ccircle cx='170' cy='320' r='3' fill='rgba(220,180,110,0.10)'/%3E%3Ccircle cx='70' cy='250' r='2' fill='rgba(200,140,80,0.16)'/%3E%3Ccircle cx='150' cy='80' r='1' fill='rgba(230,190,120,0.20)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='560'%3E%3Ccircle cx='50' cy='100' r='2' fill='rgba(192,120,72,0.10)'/%3E%3Ccircle cx='180' cy='340' r='1.5' fill='rgba(220,170,100,0.08)'/%3E%3Ccircle cx='240' cy='480' r='2.5' fill='rgba(200,140,70,0.06)'/%3E%3C/svg%3E") repeat;
-  background-size: 200px 400px, 280px 560px;
-  animation: lis-dust 14s linear infinite;
-}
-@keyframes lis-dust {
-  from { background-position: 0 0, 10px 0; }
-  to   { background-position: 30px -400px, -20px -560px; }
-}
+/* Reuse the committed measured header-art visibility contract. */
+#header { --ql-header-art-safety:1; }
+#title { text-transform:capitalize; text-decoration-line:underline; text-decoration-style:wavy; text-decoration-color:#70C7D7; text-decoration-thickness:1px; text-underline-offset:2px; }
+#theme-banner { box-shadow:inset 2px 0 0 #F0C848; }
+/* Committed art-only fit: photo window/content stay in their original plane. */
+.tile-icon-wrap { isolation:isolate; overflow:visible; }
+.tile-icon-wrap::before { content:''; position:absolute; inset:-6px; border:6px solid #F0E8E0; background:transparent; z-index:-2; pointer-events:none; transform:rotate(1deg); clip-path:inset(0 0 4px 0); mask:linear-gradient(#000 0 0),linear-gradient(#000 0 0); mask-size:100% 100%,calc(100% - 6px) calc(100% - 6px); mask-position:center; mask-repeat:no-repeat; mask-composite:exclude; opacity:0; }
+.app-tile:hover .tile-icon-wrap::before, .app-tile:focus-visible .tile-icon-wrap::before { opacity:1; }
+/* Radial focus is inside the chip: reserve three pixels and use static 0deg. */
+body.region.layout-radial .tile-icon-wrap::before { transform:none; clip-path:inset(3px 3px 4px 3px); mask-size:100% 100%,calc(100% - 10px) calc(100% - 10px); }
+/* Preserve the real remove target and its outline with an art-only corner cut. */
+.edit-mode .tile-icon-wrap::before { clip-path:polygon(0 0,calc(100% - 32px) 0,calc(100% - 32px) 32px,100% 32px,100% calc(100% - 4px),0 calc(100% - 4px)); }
+body.region.layout-radial.edit-mode .tile-icon-wrap::before { clip-path:polygon(3px 3px,calc(100% - 32px) 3px,calc(100% - 32px) 32px,calc(100% - 3px) 32px,calc(100% - 3px) calc(100% - 4px),3px calc(100% - 4px)); }
+/* The input outline has priority over the lower paper; retain upper/side edges. */
+.app-tile:has(.rename-input) .tile-icon-wrap::before { transform:none; clip-path:polygon(0 0,calc(100% - 32px) 0,calc(100% - 32px) 32px,100% 32px,100% calc(100% - 6px),0 calc(100% - 6px)); }

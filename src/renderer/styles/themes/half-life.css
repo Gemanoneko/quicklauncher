@@ -1,330 +1,123 @@
-/* ══ HALF-LIFE ════════════════════════════════════════════════════════════════
-   Black Mesa Research Facility / HEV Suit / The Resonance Cascade.
-   Military-industrial green-black, HEV orange readouts, lambda yellow.
-   Theoretical physicist. Practical crowbar.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* half-life: approved ThemeFidelity Batch13. Frame artwork is original and bounded. */
 :root {
-  /* Backgrounds */
-  --bg:                   #030703;
-  --panel-bg:             rgba(4, 10, 4, 0.98);
-  --overlay-bg:           rgba(3, 7, 3, 0.92);
-  --header-bg:            rgba(6, 14, 5, 0.97);
-
-  /* Typography — corporate science terminal */
-  --font:                 Consolas, 'Courier New', monospace;
-  --text:                 #A0B090;
-  --text-dim:             #7a9c6a;
-
-  /* Shape — rectangular, no nonsense, this is a research facility */
-  --radius:               0px;
-  --app-clip:             none;
-  --overlay-clip:         none;
-
-  /* Accent palette — HEV orange / military olive / lambda yellow */
-  --accent-c:             #DE8000;
-  --accent-m:             #4C7040;
-  --accent-y:             #D0A800;
-
-  /* Borders */
-  --border:               rgba(76, 112, 64, 0.28);
-  --border-h:             rgba(222, 128, 0, 0.60);
-
-  /* Glows — HEV readout, hazard warning */
-  --glow-c:               0 0 5px rgba(222, 128, 0, 0.75), 0 0 16px rgba(222, 128, 0, 0.3);
-  --glow-m:               0 0 5px rgba(76, 112, 64, 0.8), 0 0 16px rgba(76, 112, 64, 0.35);
-  --glow-y:               0 0 5px rgba(208, 168, 0, 0.75), 0 0 16px rgba(208, 168, 0, 0.3);
-  --pulse-glow:           inset 0 0 22px rgba(76, 112, 64, 0.14), inset 0 0 6px rgba(222, 128, 0, 0.08);
-
-  /* Scanlines — HEV suit readout horizontal scan */
-  --scanlines:            repeating-linear-gradient(
-                            to bottom,
-                            transparent 0px,
-                            transparent 3px,
-                            rgba(0, 0, 0, 0.22) 3px,
-                            rgba(0, 0, 0, 0.22) 4px
-                          );
-
-  /* Title — occasional static/flicker, corrupted transmission */
-  --title-anim:           hl-static 9s steps(1) infinite;
-
-  /* Tiles */
-  --tile-hover-bg:        rgba(222, 128, 0, 0.07);
-  --tile-hover-border:    #DE8000;
-  --tile-hover-shadow:    0 0 10px rgba(222, 128, 0, 0.38), inset 0 0 8px rgba(222, 128, 0, 0.05);
-  --tile-active-bg:       rgba(222, 128, 0, 0.13);
-  --tile-icon-glow:       drop-shadow(0 0 5px rgba(222, 128, 0, 0.8)) drop-shadow(0 0 12px rgba(222, 128, 0, 0.4));
-  --tile-icon-fx:         saturate(0.7) brightness(0.85);
-  --tile-label-spacing:   1.2px;
+  --radius: 0px;
+  --app-clip: none;
+  --overlay-clip: none;
+  --bg: #0A0A08;
+  --panel-bg: #24251E;
+  --overlay-bg: #24251E;
+  --header-bg: #2D2D22;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #E8E2CD;
+  --text-dim: #CFCBB5;
+  --accent-c: #FFD078;
+  --accent-text: #FFD078;
+  --accent-m: #FFD078;
+  --accent-y: #FFD078;
+  --border: #A8A38C;
+  --border-h: #F0D374;
+  --drag-over-glow: inset 0 0 0 2px #F0D374;
+  --tile-hover-bg: #38382B;
+  --tile-hover-border: #F0D374;
+  --tile-active-bg: #424234;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 1.2s ease-out forwards;
-
-  /* Buttons */
-  --btn-hover-bg:         rgba(222, 128, 0, 0.1);
-  --btn-active-bg:        rgba(222, 128, 0, 0.18);
-
-  /* Drop hint */
-  --drop-hint-border:     rgba(76, 112, 64, 0.35);
-  --drop-icon-color:      rgba(222, 128, 0, 0.4);
-  --hint-sub-color:       #7a9c6a;
-
-  /* Rename */
-  --rename-dashed:        rgba(222, 128, 0, 0.5);
-  --rename-input-bg:      rgba(222, 128, 0, 0.06);
-
-  /* Edit bar — olive green (military authority) */
-  --edit-bar-bg:          rgba(76, 112, 64, 0.1);
-  --edit-bar-border:      rgba(76, 112, 64, 0.6);
-  --edit-label-color:     #5A8050;
-  --edit-label-glow:      0 0 8px rgba(76, 112, 64, 0.8), 0 0 20px rgba(76, 112, 64, 0.35);
-  --btn-done-color:       #5A8050;
-  --btn-done-border:      rgba(76, 112, 64, 0.6);
-  --btn-done-hover-bg:    rgba(76, 112, 64, 0.13);
-  --btn-done-hover-glow:  0 0 10px rgba(76, 112, 64, 0.6);
-  --btn-add-border:       rgba(222, 128, 0, 0.4);
-
-  /* Update banner — lambda yellow */
-  --update-bg:            rgba(208, 168, 0, 0.07);
-  --update-border:        rgba(208, 168, 0, 0.55);
-  --update-color:         #D0A800;
-  --update-btn-border:    rgba(208, 168, 0, 0.5);
-  --update-btn-hover-bg:  rgba(208, 168, 0, 0.1);
-  --update-btn-hover-glow: 0 0 10px rgba(208, 168, 0, 0.5);
-
-  /* Settings CLOSE — olive */
-  --btn-close-color:      #5A8050;
-  --btn-close-border:     rgba(76, 112, 64, 0.5);
-  --btn-close-hover-bg:   rgba(76, 112, 64, 0.1);
-  --btn-close-hover-glow: 0 0 10px rgba(76, 112, 64, 0.55);
-
-  /* Picker / search */
-  --picker-search-bg:         rgba(222, 128, 0, 0.05);
-  --picker-item-hover-bg:     rgba(222, 128, 0, 0.08);
-  --picker-item-active-bg:    rgba(222, 128, 0, 0.14);
-  --picker-placeholder-bg:    rgba(222, 128, 0, 0.06);
-
-  /* Skin / remove */
-  --skin-btn-active-bg:   rgba(222, 128, 0, 0.14);
-  --remove-btn-bg:        rgba(139, 0, 0, 0.14);
-  --remove-btn-border:    rgba(139, 0, 0, 0.55);
-
-  /* Drag */
-  --drag-over-glow:       inset 0 0 24px rgba(222, 128, 0, 0.22);
+  --tile-label-weight: 700;
+  --tile-label-style: normal;
+  --btn-hover-bg: #38382B;
+  --btn-active-bg: #424234;
+  --btn-hover-text: #E8E2CD;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #E8E2CD;
+  --drop-hint-border: #A8A38C;
+  --drop-icon-color: #FFD078;
+  --hint-sub-color: #CFCBB5;
+  --rename-dashed: #A8A38C;
+  --rename-input-bg: #24251E;
+  --edit-bar-bg: #24251E;
+  --edit-bar-border: #A8A38C;
+  --edit-label-color: #FFD078;
+  --btn-done-color: #FFD078;
+  --btn-done-border: #A8A38C;
+  --btn-done-hover-bg: #38382B;
+  --btn-add-border: #A8A38C;
+  --update-bg: #24251E;
+  --update-border: #A8A38C;
+  --update-color: #FFD078;
+  --update-btn-border: #A8A38C;
+  --update-btn-hover-bg: #38382B;
+  --btn-close-color: #FFD078;
+  --btn-close-border: #A8A38C;
+  --btn-close-hover-bg: #38382B;
+  --picker-search-bg: #24251E;
+  --picker-item-hover-bg: #38382B;
+  --picker-item-active-bg: #424234;
+  --picker-placeholder-bg: #24251E;
+  --skin-btn-active-bg: #424234;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --title-anim: none;
+  --tile-hover-shadow: none;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --edit-label-glow: none;
+  --btn-done-hover-glow: none;
+  --update-btn-hover-glow: none;
+  --btn-close-hover-glow: none;
 }
 
-/* ── Header — military olive top stripe, reinforced frame ─────────────────── */
-#header {
-  border-top: 3px solid rgba(80, 112, 64, 0.6);
-  border-bottom: 1px solid rgba(76, 112, 64, 0.35);
-}
+/* Quiet surfaces; artwork never sits above an app glyph or functional label. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; will-change:auto; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#2D2D22; border-bottom-color:#A8A38C; box-shadow:none; }
+#header::before { background:#A8A38C; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2084%2020%22%20fill%3D%22none%22%20stroke%3D%22%23FFD078%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M42%202L55%2018H29Z%20M42%207V12%20M42%2015V16%22%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Trebuchet MS', 'Segoe UI', sans-serif; font-size:11px; font-weight:700; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:1px; color:#E8E2CD; text-transform:uppercase; text-shadow:none; }
+#title .accent { color:#FFD078; }
+#title::after { content:none; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#CFCBB5; opacity:1; }
+#header-controls button { color:#E8E2CD; border-color:#A8A38C; }
+#header-controls button:hover, #header-controls button:active { color:#E8E2CD; border-color:#F0D374; }
+#grid-container { background:none; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#24251E; border-color:#A8A38C; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#38382B; border-color:#F0D374; box-shadow:none; }
+.app-tile:focus-visible { outline-color:#F0D374; }
+.app-tile:active { background:#424234; }
+.app-tile::before { display:none; animation:none; }
+.tile-label { font-family:'Trebuchet MS', 'Segoe UI', sans-serif; font-size:12px; font-weight:700; font-style:normal; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#E8E2CD; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; isolation:isolate; overflow:visible; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#E8E2CD; }
+.hotkey-input.recording { background:#424234; color:#E8E2CD; border-color:#F0D374; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#38382B; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#F0D374; }
+#theme-banner { background:#2D2D22; border-top-color:#A8A38C; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2022%2022%22%20fill%3D%22none%22%20stroke%3D%22%23FFD078%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ctext%20x%3D%224%22%20y%3D%2218%22%20font-family%3D%22Trebuchet%20MS%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22700%22%20fill%3D%22%23FFD078%22%20stroke%3D%22none%22%3E%CE%BB%3C%2Ftext%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Trebuchet MS', 'Segoe UI', sans-serif; font-size:11px; font-weight:700; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#E8E2CD; text-shadow:none; }
+/* Shape belongs to an independent plate, never the icon clip. */
+.tile-icon-wrap::before { content:""; position:absolute; inset:-2px; z-index:-1; background:#24251E; border:1px solid #A8A38C; border-radius:0px; clip-path:none; pointer-events:none; }
+/* Gutter material scrolls with the existing Grid, and is omitted in shapes without gutters. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%23FFD078%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M0%208L7%201%20M0%2024L7%2017%20M0%2040L7%2033%22%2F%3E%3C%2Fsvg%3E") left top / 8px 40px repeat-y, url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%2040%22%20fill%3D%22none%22%20stroke%3D%22%23FFD078%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M0%208L7%201%20M0%2024L7%2017%20M0%2040L7%2033%22%2F%3E%3C%2Fsvg%3E") right 4px top / 8px 40px repeat-y; }
+body.region.layout-radial #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+#theme-banner { background:repeating-linear-gradient(135deg,#F0D374 0 5px,#2D2D22 5px 10px) left top / 100% 4px no-repeat, #2D2D22; }
+#edit-bar { border-bottom:1px solid #F0D374; }
 
-/* ── Header left bar — olive green, sector clearance indicator ───────────── */
-#header::before {
-  background: linear-gradient(to bottom, #4C7040, rgba(76, 112, 64, 0.25));
-  box-shadow: 0 0 8px rgba(76, 112, 64, 0.7), 0 0 20px rgba(76, 112, 64, 0.3);
-}
-
-/* ── Overlay — olive top border ──────────────────────────────────────────── */
-.overlay-panel {
-  border-top: 2px solid rgba(76, 112, 64, 0.6);
-  box-shadow: 0 -2px 12px rgba(76, 112, 64, 0.2);
-}
-
-/* ── HEV suit readout scanlines ──────────────────────────────────────────── */
-#app::after {
-  content: '';
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 3px,
-      rgba(0, 0, 0, 0.20) 3px,
-      rgba(0, 0, 0, 0.20) 4px
-    );
-  opacity: 1;
-  pointer-events: none;
-}
-
-/* ── Lambda watermark — the resonance symbol behind the tiles ────────────── */
-#grid-container::before {
-  content: 'Λ';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Consolas, 'Courier New', monospace;
-  font-size: 200px;
-  font-weight: bold;
-  line-height: 1;
-  color: rgba(208, 168, 0, 0.05);
-  text-shadow: 0 0 60px rgba(208, 168, 0, 0.03);
-  /* HEV power bar stripes on the right edge */
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(222, 128, 0, 0.06) 0%,
-      transparent 15%
-    ),
-    /* vertical HEV power bar stripes — right edge */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 8px,
-      rgba(222, 128, 0, 0.05) 8px,
-      rgba(222, 128, 0, 0.05) 10px
-    );
-  background-size: 100% 100%, 6px 100%;
-  background-position: 0 0, calc(100% - 4px) 0;
-  background-repeat: no-repeat, repeat-y;
-}
-
-/* ── HEV grid line matrix ─────────────────────────────────────────────────── */
-#grid-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    /* subtle horizontal grid lines — HEV display grid */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 63px,
-      rgba(76, 112, 64, 0.06) 63px,
-      rgba(76, 112, 64, 0.06) 64px
-    ),
-    /* subtle vertical grid lines */
-    repeating-linear-gradient(
-      to right,
-      transparent 0px,
-      transparent 95px,
-      rgba(76, 112, 64, 0.04) 95px,
-      rgba(76, 112, 64, 0.04) 96px
-    );
-}
-
-/* ── Resonance cascade — dimensional bleed, orange-green border surge ───────── */
-#app { animation: hl-cascade 16s steps(1) infinite; }
-@keyframes hl-cascade {
-  0%, 70%, 100% { box-shadow: none; }
-  71% { box-shadow: 0 0 0 2px rgba(222,128,0,.80), 0 0 20px rgba(222,128,0,.40), inset 0 0 30px rgba(222,128,0,.18); }
-  72% { box-shadow: 0 0 0 2px rgba(76,140,64,.85), 0 0 24px rgba(76,140,64,.45), inset 0 0 35px rgba(60,110,50,.20); }
-  73% { box-shadow: 0 0 0 3px rgba(222,128,0,.95), 0 0 36px rgba(222,128,0,.60), inset 0 0 50px rgba(222,128,0,.28); }
-  74% { box-shadow: 0 0 0 1px rgba(76,140,64,.60), 0 0 14px rgba(76,140,64,.30); }
-  75% { box-shadow: 0 0 0 3px rgba(222,128,0,.90), 0 0 40px rgba(222,128,0,.55), inset 0 0 45px rgba(222,128,0,.24); }
-  76% { box-shadow: 0 0 16px rgba(222,128,0,.35); }
-  77% { box-shadow: none; }
-}
-
-/* ── Static flicker — corrupted transmission through the resonance cascade ── */
-@keyframes hl-static {
-  0%, 88%, 100% {
-    text-shadow: 0 0 5px rgba(222, 128, 0, 0.6), 0 0 14px rgba(222, 128, 0, 0.25);
-    transform: translate(0, 0);
-    opacity: 1;
-    filter: none;
-  }
-  89% {
-    text-shadow: 2px 0 rgba(208, 168, 0, 0.8), -2px 0 rgba(76, 112, 64, 0.6);
-    transform: translate(-1px, 0);
-    opacity: 0.9;
-    filter: brightness(1.3);
-  }
-  90% {
-    text-shadow: -1px 0 rgba(222, 128, 0, 0.9), 1px 0 rgba(208, 168, 0, 0.5);
-    transform: translate(2px, 0);
-    opacity: 1;
-    filter: none;
-  }
-  91% {
-    text-shadow: 0 0 5px rgba(222, 128, 0, 0.6), 0 0 14px rgba(222, 128, 0, 0.25);
-    transform: translate(0, 0);
-    opacity: 1;
-    filter: none;
-  }
-  93% {
-    text-shadow: 3px 0 rgba(208, 168, 0, 0.7), -3px 0 rgba(76, 112, 64, 0.5);
-    transform: translate(-2px, 0);
-    opacity: 0.85;
-    filter: brightness(1.2);
-    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
-  }
-  94% {
-    text-shadow: 0 0 5px rgba(222, 128, 0, 0.6), 0 0 14px rgba(222, 128, 0, 0.25);
-    transform: translate(0, 0);
-    opacity: 1;
-    filter: none;
-    clip-path: none;
-  }
-}
-
-/* ── Flavor content ────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'BLACK MESA  //  ANOMALOUS READINGS';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Consolas, 'Courier New', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(222, 160, 0, 0.50);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'HEV SUIT ONLINE\A\AABNORMAL\AMATERIAL\ARESONANCE\A\ABLACK MESA\ARESEARCH\AFACILITY\A\ARESONANCE\ACASCADE\ADETECTED\A\AEVACUATE';
-  display: flex; align-items: flex-end; justify-content: flex-start;
-  padding: 0 0 10px 12px;
-  font-family: Consolas, 'Courier New', monospace;
-  font-size: 12px; line-height: 1.70; text-align: left;
-  color: rgba(222, 160, 0, 0.12); white-space: pre;
-  animation: hl-lore-breathe 10s ease-in-out infinite;
-}
-
-@keyframes hl-lore-breathe {
-  0%, 100% { color: rgba(222,160,0,.12); }
-  28%       { color: rgba(222,160,0,.16); }
-  65%       { color: rgba(222,160,0,.08); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(222,160,0,.18); }
-  92%       { color: rgba(222,160,0,.12); }
-}
-
-#edit-bar::after {
-  content: 'HEV RECALIBRATION';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Consolas, 'Courier New', monospace;
-  font-size: 8px; letter-spacing: 2px; color: rgba(222, 128, 0, 0.38);
-  pointer-events: none; white-space: nowrap;
-}
-
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 2, 0, 0.97); border-top-color: rgba(76, 112, 64, 0.35); border-top-width: 2px; }
-#theme-banner::before { content: 'Λ'; color: #DEB000; font-size: 24px; font-family: Consolas, monospace; font-weight: bold; }
-#theme-banner-text { font-family: Consolas, 'Courier New', monospace; color: rgba(200, 160, 60, 0.55); }
-
-/* ── Phase 4D/E: header strobe + tile scan ───────────────────────────────── */
-#header::before { animation: hdr-bar-strobe 8s steps(1) infinite; }
-.app-tile::before {
-  width: 100%; height: 3px;
-  left: 0; top: -3px;
-  transform: none;
-  background: var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-scan-v .5s ease-in forwards; }
-
-/* ── Resonance cascade — shockwave ring expanding from the breach ────────── */
-#particles {
-  background: radial-gradient(circle at 50% 50%, transparent 0%, transparent 40%, rgba(222,128,0,0.14) 42%, rgba(222,128,0,0.07) 44%, transparent 46%) no-repeat;
-  background-size: 0% 0%;
-  background-position: 50% 50%;
-  animation: hl-cascade 6s ease-out infinite;
-}
-@keyframes hl-cascade {
-  0%   { background-size: 0% 0%; opacity: 0.85; }
-  65%  { background-size: 400% 400%; opacity: 0; }
-  100% { background-size: 0% 0%; opacity: 0; }
-}
+/* Loading remains readable without an ambient blink; existing functional transitions stay. */
+.picker-loading { animation:none; opacity:1; color:var(--text-dim); }
+#theme-banner::before { will-change:auto; }

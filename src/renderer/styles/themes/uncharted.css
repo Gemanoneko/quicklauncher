@@ -1,247 +1,119 @@
-/* ══ UNCHARTED ════════════════════════════════════════════════════════════════
-   Sic Parvis Magna. Nathan Drake's leather-bound adventure journal — warm
-   brown pages, scribbled notes, compass roses, and the names of lost cities.
-   Greatness from small beginnings. Oh crap oh crap oh crap.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* uncharted: committed ThemeFidelity Batch08; original static bounded frame art. */
 :root {
-  /* ── Shape ── */
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── Backgrounds — warm brown leather, NOT black, NOT cold ── */
-  --bg:           #1E1610;
-  --panel-bg:     rgba(28, 22, 16, 0.99);
-  --overlay-bg:   rgba(24, 18, 12, 0.97);
-  --header-bg:    rgba(192, 144, 64, 0.04);
-
-  /* ── Typography — journal handwriting ── */
-  --font:         Georgia, 'Times New Roman', serif;
-
-  /* ── Text ── */
-  --text:         #B89868;
-  --text-dim:     rgba(160, 130, 85, 0.98);
-
-  /* ── Accents ── */
-  --accent-c:     #C09040;   /* aged gold ink */
-  --accent-m:     #307898;   /* ocean / adventure blue */
-  --accent-y:     #705028;   /* worn leather */
-
-  /* ── Borders ── */
-  --border:       rgba(192, 144, 64, 0.22);
-  --border-h:     rgba(192, 144, 64, 0.55);
-
-  /* ── Glows ── */
-  --glow-c:       0 0 8px rgba(192,144,64,.60), 0 0 22px rgba(192,144,64,.20);
-  --glow-m:       0 0 7px rgba(48,120,152,.55), 0 0 18px rgba(48,120,152,.18);
-  --glow-y:       0 0 6px rgba(112,80,40,.50), 0 0 16px rgba(112,80,40,.16);
-
-  /* ── App window decoration ── */
-  --pulse-glow:   inset 0 0 22px rgba(192,144,64,.06);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(192,144,64,.10);
-
-  /* ── Title animation ── */
-  --title-anim:   drake-title 12s ease-in-out infinite;
-
-  /* ── Tiles — torn photograph shape ── */
-  --tile-hover-bg:     rgba(192, 144, 64, 0.08);
-  --tile-hover-border: rgba(192, 144, 64, 0.45);
-  --tile-hover-shadow: 0 0 14px rgba(192, 144, 64, 0.22);
-  --tile-active-bg:    rgba(192, 144, 64, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(192,144,64,.55)) drop-shadow(0 0 14px rgba(192,144,64,.22));
-  --tile-icon-fx:      sepia(0.20) brightness(1.05) contrast(1.08) saturate(0.92);
-  --tile-icon-shape:   polygon(2% 0%, 98% 2%, 100% 98%, 96% 100%, 0% 96%);
-  --tile-label-spacing:   0.5px;
+  --bg: #2A1E14;
+  --panel-bg: #37291D;
+  --overlay-bg: #37291D;
+  --header-bg: #392B1F;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #F0E3C0;
+  --text-dim: #D8C5A6;
+  --accent-c: #E8B56F;
+  --accent-text: #E8B56F;
+  --accent-m: #E8B56F;
+  --accent-y: #E8B56F;
+  --border: #B4936D;
+  --border-h: #84C5C0;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #84C5C0;
+  --title-anim: none;
+  --tile-hover-bg: #463425;
+  --tile-hover-border: #84C5C0;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #4F3C2A;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
-
-  /* ── Buttons ── */
-  --btn-hover-bg:   rgba(192, 144, 64, 0.10);
-  --btn-active-bg:  rgba(192, 144, 64, 0.20);
-
-  /* ── Drop hint ── */
-  --drop-hint-border: rgba(192, 144, 64, 0.26);
-  --drop-icon-color:  rgba(192, 144, 64, 0.38);
-  --hint-sub-color:   rgba(160, 130, 85, 0.95);
-
-  /* ── Rename ── */
-  --rename-dashed:    rgba(192, 144, 64, 0.42);
-  --rename-input-bg:  rgba(192, 144, 64, 0.07);
-
-  /* ── Edit bar (ocean blue — adventure calls) ── */
-  --edit-bar-bg:          rgba(48, 120, 152, 0.07);
-  --edit-bar-border:      rgba(48, 120, 152, 0.42);
-  --edit-label-color:     #307898;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #C09040;
-  --btn-done-border:      rgba(192, 144, 64, 0.45);
-  --btn-done-hover-bg:    rgba(192, 144, 64, 0.10);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(192, 144, 64, 0.42);
-
-  /* ── Update banner (worn leather) ── */
-  --update-bg:             rgba(112, 80, 40, 0.07);
-  --update-border:         rgba(112, 80, 40, 0.38);
-  --update-color:          #705028;
-  --update-btn-border:     rgba(112, 80, 40, 0.30);
-  --update-btn-hover-bg:   rgba(112, 80, 40, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  /* ── Close / secondary buttons ── */
-  --btn-close-color:      #C09040;
-  --btn-close-border:     rgba(192, 144, 64, 0.40);
-  --btn-close-hover-bg:   rgba(192, 144, 64, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  /* ── Picker ── */
-  --picker-search-bg:      rgba(192, 144, 64, 0.07);
-  --picker-item-hover-bg:  rgba(192, 144, 64, 0.08);
-  --picker-item-active-bg: rgba(192, 144, 64, 0.16);
-  --picker-placeholder-bg: rgba(192, 144, 64, 0.07);
-
-  /* ── Skin selector ── */
-  --skin-btn-active-bg:    rgba(192, 144, 64, 0.18);
-
-  /* ── Remove button ── */
-  --remove-btn-bg:         rgba(112, 80, 40, 0.90);
-  --remove-btn-border:     #705028;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #463425;
+  --btn-active-bg: #4F3C2A;
+  --btn-hover-text: #F0E3C0;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #F0E3C0;
+  --drop-hint-border: #B4936D;
+  --drop-icon-color: #E8B56F;
+  --hint-sub-color: #D8C5A6;
+  --rename-dashed: #B4936D;
+  --rename-input-bg: #37291D;
+  --edit-bar-bg: #37291D;
+  --edit-bar-border: #B4936D;
+  --edit-label-color: #F0E3C0;
+  --edit-label-glow: none;
+  --btn-done-color: #F0E3C0;
+  --btn-done-border: #B4936D;
+  --btn-done-hover-bg: #463425;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #B4936D;
+  --update-bg: #37291D;
+  --update-border: #B4936D;
+  --update-color: #F0E3C0;
+  --update-btn-border: #B4936D;
+  --update-btn-hover-bg: #463425;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #F0E3C0;
+  --btn-close-border: #B4936D;
+  --btn-close-hover-bg: #463425;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #37291D;
+  --picker-item-hover-bg: #463425;
+  --picker-item-active-bg: #4F3C2A;
+  --picker-placeholder-bg: #37291D;
+  --skin-btn-active-bg: #4F3C2A;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Aged paper/leather grain — HEAVY warm brown-gold tint ──────────────── */
-#app::after {
-  background:
-    /* fractal noise — heavy aged paper/leather grain, high base freq + octaves */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1.4 0.7 0 0 0.08  1.0 0.8 0 0 0.05  0.3 0.2 0 0 0  0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* warm leather vignette — soft, like aged book binding */
-    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 35%, rgba(18, 12, 6, 0.72) 100%),
-    /* tropical sunlight from upper left — warm and golden */
-    radial-gradient(ellipse 60% 40% at 25% 10%, rgba(192, 144, 64, 0.07) 0%, transparent 65%),
-    /* warm ambient from center — journal page glow */
-    radial-gradient(ellipse 55% 55% at 50% 50%, rgba(160, 120, 50, 0.04) 0%, transparent 65%),
-    /* earthy warmth from below */
-    radial-gradient(ellipse 70% 30% at 50% 100%, rgba(140, 100, 40, 0.05) 0%, transparent 62%);
-  background-size: 250px 250px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Identity belongs to the frame; no foreground panno, ghost text or ambient loops. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#392B1F; border-bottom-color:#B4936D; }
+#header::before { background:#B4936D; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2084%2020'%3E%3Cpath%20d%3D'M9%204L15%201L20%208L13%2011Z%20M65%2014L72%2010L77%2017L70%2020Z'%20fill%3D'none'%20stroke%3D'%23B4936D'%20stroke-opacity%3D'0.7'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Palatino Linotype',Georgia,serif; font-size:11px; font-weight:700; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#F0E3C0; text-shadow:none; }
+#title .accent { color:#F0E3C0; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#D8C5A6; }
+#header-controls button { color:#F0E3C0; border-color:#B4936D; }
+#header-controls button:hover, #header-controls button:active { color:#F0E3C0; border-color:#84C5C0; }
 
-/* ── Header — aged gold accent bar ─────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #C09040, rgba(160, 120, 40, 0.28));
-  box-shadow: 0 0 10px rgba(192,144,64,0.58), 0 0 26px rgba(192,144,64,0.20);
-}
+#grid-container { background:; }
+.app-tile { background:#37291D; border-color:#B4936D; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#463425; border-color:#84C5C0; box-shadow:none; }
+.app-tile:active { background:#4F3C2A; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Ink Free','Segoe UI',sans-serif; font-size:12px; font-weight:400; font-style:normal; letter-spacing:0.3px; line-height:1.2; color:#F0E3C0; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#F0E3C0; }
+.hotkey-input.recording { background:#4F3C2A; color:#F0E3C0; border-color:#84C5C0; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#463425; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#84C5C0; }
 
-/* ── Grid: Style B — Nathan Drake's Journal (scattered/organic layout) ──── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='388' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='1.5' fill='rgba(192,144,64,0.28)'%3ENATE%27S JOURNAL%3C/text%3E%3Ctext x='112' y='370' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='1' fill='rgba(160,130,85,0.22)'%3ENATHAN DRAKE -- FIELD NOTES%3C/text%3E%3Cline x1='388' y1='38' x2='388' y2='92' stroke='rgba(192,144,64,0.32)' stroke-width='1'/%3E%3Cline x1='348' y1='65' x2='428' y2='65' stroke='rgba(192,144,64,0.32)' stroke-width='1'/%3E%3Cline x1='388' y1='38' x2='391' y2='42' stroke='rgba(192,144,64,0.28)' stroke-width='0.6'/%3E%3Cline x1='388' y1='38' x2='385' y2='42' stroke='rgba(192,144,64,0.28)' stroke-width='0.6'/%3E%3Cline x1='388' y1='92' x2='391' y2='88' stroke='rgba(160,130,85,0.22)' stroke-width='0.6'/%3E%3Cline x1='388' y1='92' x2='385' y2='88' stroke='rgba(160,130,85,0.22)' stroke-width='0.6'/%3E%3Cline x1='348' y1='65' x2='352' y2='62' stroke='rgba(160,130,85,0.22)' stroke-width='0.6'/%3E%3Cline x1='348' y1='65' x2='352' y2='68' stroke='rgba(160,130,85,0.22)' stroke-width='0.6'/%3E%3Cline x1='428' y1='65' x2='424' y2='62' stroke='rgba(160,130,85,0.22)' stroke-width='0.6'/%3E%3Cline x1='428' y1='65' x2='424' y2='68' stroke='rgba(160,130,85,0.22)' stroke-width='0.6'/%3E%3Cline x1='362' y1='42' x2='414' y2='88' stroke='rgba(192,144,64,0.14)' stroke-width='0.5'/%3E%3Cline x1='414' y1='42' x2='362' y2='88' stroke='rgba(192,144,64,0.14)' stroke-width='0.5'/%3E%3Ccircle cx='388' cy='65' r='22' fill='none' stroke='rgba(192,144,64,0.18)' stroke-width='0.7'/%3E%3Ccircle cx='388' cy='65' r='12' fill='none' stroke='rgba(192,144,64,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='388' cy='65' r='3' fill='rgba(192,144,64,0.25)'/%3E%3Ctext x='388' y='34' font-family='Georgia,serif' font-size='7' font-weight='bold' fill='rgba(192,144,64,0.38)' text-anchor='middle'%3EN%3C/text%3E%3Ctext x='388' y='102' font-family='Georgia,serif' font-size='6' fill='rgba(160,130,85,0.25)' text-anchor='middle'%3ES%3C/text%3E%3Ctext x='436' y='68' font-family='Georgia,serif' font-size='6' fill='rgba(160,130,85,0.25)' text-anchor='middle'%3EE%3C/text%3E%3Ctext x='340' y='68' font-family='Georgia,serif' font-size='6' fill='rgba(160,130,85,0.25)' text-anchor='middle'%3EW%3C/text%3E%3Ctext x='388' y='116' text-anchor='middle' font-family='Georgia,serif' font-size='6.5' font-style='italic' letter-spacing='2' fill='rgba(192,144,64,0.42)'%3ESIC PARVIS MAGNA%3C/text%3E%3Ctext x='75' y='62' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='2' fill='rgba(192,144,64,0.38)'%3ELIBERTALIA%3C/text%3E%3Cline x1='32' y1='66' x2='135' y2='66' stroke='rgba(192,144,64,0.15)' stroke-width='0.5'/%3E%3Ctext x='185' y='142' font-family='Georgia,serif' font-size='7.5' font-style='italic' letter-spacing='2' fill='rgba(192,144,64,0.32)'%3ESHAMBHALA%3C/text%3E%3Ctext x='58' y='198' font-family='Georgia,serif' font-size='9' font-style='italic' letter-spacing='3' fill='rgba(192,144,64,0.42)'%3EEL DORADO%3C/text%3E%3Cline x1='20' y1='202' x2='148' y2='202' stroke='rgba(192,144,64,0.18)' stroke-width='0.5'/%3E%3Ctext x='340' y='195' font-family='Georgia,serif' font-size='7' font-style='italic' letter-spacing='2' fill='rgba(192,144,64,0.30)'%3EUBAR%3C/text%3E%3Cline x1='155' y1='248' x2='175' y2='228' stroke='rgba(192,144,64,0.45)' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='175' y1='248' x2='155' y2='228' stroke='rgba(192,144,64,0.45)' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='165' cy='238' r='10' fill='none' stroke='rgba(192,144,64,0.20)' stroke-width='0.7'/%3E%3Ctext x='165' y='262' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' fill='rgba(160,130,85,0.30)'%3Edig here%3C/text%3E%3Ctext x='55' y='112' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(160,130,85,0.32)'%3Egreatness from%3C/text%3E%3Ctext x='55' y='124' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(160,130,85,0.28)'%3Esmall beginnings%3C/text%3E%3Ctext x='350' y='275' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(192,144,64,0.28)'%3Eoh crap oh crap%3C/text%3E%3Ctext x='365' y='287' font-family='Georgia,serif' font-size='5.5' font-style='italic' fill='rgba(192,144,64,0.24)'%3Eoh crap oh crap%3C/text%3E%3Cpath d='M 280 155 C 300 148 325 150 350 158 C 368 164 380 175 375 186 C 370 195 355 198 340 194 C 320 188 300 182 285 176 C 275 170 272 162 280 155 Z' fill='none' stroke='rgba(160,130,85,0.12)' stroke-width='0.8'/%3E%3Cpath d='M 285 170 C 295 165 310 163 330 168' fill='none' stroke='rgba(160,130,85,0.08)' stroke-width='0.5' stroke-dasharray='3,4'/%3E%3Cpath d='M 30 280 C 55 268 85 270 115 275 C 140 280 160 290 175 305' fill='none' stroke='rgba(160,130,85,0.12)' stroke-width='0.8'/%3E%3Cpath d='M 175 305 C 185 315 190 325 185 335' fill='none' stroke='rgba(160,130,85,0.10)' stroke-width='0.6'/%3E%3Cpath d='M 400 220 C 420 215 445 218 465 228 C 478 236 480 248 470 255' fill='none' stroke='rgba(160,130,85,0.10)' stroke-width='0.7'/%3E%3Cpath d='M 470 255 C 462 260 448 258 435 252' fill='none' stroke='rgba(160,130,85,0.08)' stroke-width='0.5'/%3E%3Cpath d='M 200 310 C 230 300 265 305 290 318 C 305 326 310 338 300 345' fill='none' stroke='rgba(160,130,85,0.09)' stroke-width='0.6' stroke-dasharray='4,5'/%3E%3Cline x1='18' y1='86' x2='22' y2='82' stroke='rgba(192,144,64,0.12)' stroke-width='0.5'/%3E%3Cline x1='18' y1='86' x2='18' y2='78' stroke='rgba(192,144,64,0.12)' stroke-width='0.5'/%3E%3Cline x1='470' y1='320' x2='474' y2='316' stroke='rgba(192,144,64,0.10)' stroke-width='0.5'/%3E%3Cline x1='470' y1='320' x2='470' y2='312' stroke='rgba(192,144,64,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='48' cy='55' r='0.7' fill='rgba(192,144,64,0.18)'/%3E%3Ccircle cx='455' cy='145' r='0.5' fill='rgba(160,130,85,0.14)'/%3E%3Ccircle cx='35' cy='310' r='0.8' fill='rgba(192,144,64,0.12)'/%3E%3Ccircle cx='465' cy='350' r='0.6' fill='rgba(160,130,85,0.10)'/%3E%3Ctext x='250' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(160,130,85,0.22)'%3EDRAKE -- SULLIVAN -- FISHER -- CHLOE%3C/text%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: drake-journal 12s ease-in-out infinite;
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%207'%3E%3Cpath%20d%3D'M0%202L4%205L7%202L12%206L16%203L20%205L24%202'%20fill%3D'none'%20stroke%3D'%23B4936D'%20stroke-opacity%3D'0.35'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #392B1F; border-top-color:#B4936D; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2022%2022'%3E%3Cpath%20d%3D'M11%201L14%208L21%2011L14%2014L11%2021L8%2014L1%2011L8%208Z%20M11%205L14%2014L8%208Z'%20fill%3D'none'%20stroke%3D'%23E8B56F'%20stroke-opacity%3D'1'%20stroke-width%3D'1.1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Ink Free','Segoe UI',sans-serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#F0E3C0; text-shadow:none; }
 
-/* CPU-efficient: opacity-only (tier 1) */
-@keyframes drake-journal {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* warm golden flash — synchronized blackout */
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
-/* ── Flavor content ──────────────────────────────────────────────────────── */
-#header::after {
-  content: 'SIC PARVIS MAGNA  //  GREATNESS FROM SMALL BEGINNINGS';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(192, 144, 64, 0.62);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'SIC PARVIS\AMAGNA\A-----------\AGREATNESS\AFROM SMALL\ABEGINNINGS\A-----------\AOH CRAP';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(192, 144, 64, 0.08); white-space: pre;
-  animation: drake-readout 12s ease-in-out infinite;
-}
-
-/* CPU-efficient: color-only (tier 3) */
-@keyframes drake-readout {
-  0%, 100% { color: rgba(192,144,64,.08); }
-  28%       { color: rgba(192,144,64,.12); }
-  65%       { color: rgba(192,144,64,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(192,144,64,.15); }
-  92%       { color: rgba(192,144,64,.08); }
-}
-
-#edit-bar::after {
-  content: 'I AM A MAN OF FORTUNE AND MUST SEEK MY FORTUNE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(48, 120, 152, 0.42);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title: warm journal ink with 88% sync — color + text-shadow (tier 3) ── */
-@keyframes drake-title {
-  0%        { color: #B89868; text-shadow: 0 0 6px rgba(192,144,64,.48), 0 0 18px rgba(192,144,64,.16); }
-  35%       { color: #C8A870; text-shadow: 0 0 10px rgba(192,144,64,.62), 0 0 26px rgba(192,144,64,.20); }
-  65%       { color: #987848; text-shadow: 0 0 4px rgba(112,80,40,.35); }
-  87%       { color: #B89868; text-shadow: 0 0 6px rgba(192,144,64,.42); }
-  88%       { color: #F0D080; text-shadow: 0 0 22px rgba(240,208,128,.82), 0 0 50px rgba(192,144,64,.42); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #B89868; text-shadow: 0 0 8px rgba(192,144,64,.55); opacity: 1; }
-  100%      { color: #B89868; text-shadow: 0 0 6px rgba(192,144,64,.48), 0 0 18px rgba(192,144,64,.16); }
-}
-
-/* ── App: warm leather border — box-shadow ≥ 12s (tier 5) ──────────────── */
-#app { animation: drake-border 12s ease-in-out infinite; }
-@keyframes drake-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(192,144,64,.22), inset 0 0 20px rgba(192,144,64,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(192,144,64,.45), inset 0 0 28px rgba(192,144,64,.07); }
-  65%      { box-shadow: 0 0 0 1px rgba(112,80,40,.22), inset 0 0 18px rgba(112,80,40,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(240,208,128,.78), inset 0 0 50px rgba(192,144,64,.15), 0 0 18px rgba(192,144,64,.25); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(192,144,64,.40), inset 0 0 22px rgba(192,144,64,.06); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(22, 16, 10, 0.99); border-top-color: rgba(192, 144, 64, 0.22); }
-#theme-banner::before { content: '✦'; color: #C09040; font-size: 18px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(192, 144, 64, 0.65); }
-
-/* ── Golden dust motes — warm circles drifting slowly down in tropical light ─ */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='440'%3E%3Ccircle cx='32' cy='55' r='2' fill='rgba(210,170,80,0.22)'/%3E%3Ccircle cx='105' cy='175' r='1.5' fill='rgba(192,144,64,0.18)'/%3E%3Ccircle cx='168' cy='295' r='2.5' fill='rgba(220,180,90,0.14)'/%3E%3Ccircle cx='58' cy='370' r='1' fill='rgba(200,155,70,0.20)'/%3E%3Ccircle cx='145' cy='110' r='1.2' fill='rgba(192,144,64,0.16)'/%3E%3Ccircle cx='82' cy='235' r='1.8' fill='rgba(210,170,80,0.18)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='580'%3E%3Ccircle cx='48' cy='98' r='1.5' fill='rgba(210,170,80,0.12)'/%3E%3Ccircle cx='158' cy='268' r='2' fill='rgba(192,144,64,0.10)'/%3E%3Ccircle cx='240' cy='455' r='1.2' fill='rgba(220,180,90,0.09)'/%3E%3Ccircle cx='88' cy='530' r='1' fill='rgba(200,155,70,0.11)'/%3E%3C/svg%3E") repeat;
-  background-size: 220px 440px, 300px 580px;
-  animation: drake-dust 18s linear infinite;
-}
-/* Warm golden dust drifting slowly DOWN */
-@keyframes drake-dust {
-  from { background-position: 0 0, 15px 0; }
-  to   { background-position: -10px 440px, 8px 580px; }
-}
-
-/* ── Tile: warm journal ripple on hover ─────────────────────────────────── */
-.app-tile::before {
-  width: 18px; height: 18px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(192, 144, 64, 0.52);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
+/* Reuse the committed measured header-art visibility contract. */
+#header { --ql-header-art-safety:1; }
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2012'%3E%3Cpath%20d%3D%22M0%202L7%200L8%2010L1%2012Z%22%20fill%3D%22%23B4936D%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 12px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2012'%3E%3Cpath%20d%3D%22M0%202L7%200L8%2010L1%2012Z%22%20fill%3D%22%23B4936D%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 12px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2012'%3E%3Cpath%20d%3D%22M0%202L7%200L8%2010L1%2012Z%22%20fill%3D%22%23B4936D%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E") left 0 bottom 0 / 8px 12px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2012'%3E%3Cpath%20d%3D%22M0%202L7%200L8%2010L1%2012Z%22%20fill%3D%22%23B4936D%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E") right 4px bottom 0 / 8px 12px no-repeat; }
+#theme-banner::after { content:""; position:absolute; right:14px; top:10px; width:26px; height:26px; border:2px solid #B4936D; border-radius:50%; opacity:.3; pointer-events:none; }
+#theme-banner-text { margin-right:38px; }
+@media(max-width:639px) { #theme-banner::after { display:none; } #theme-banner-text { margin-right:0; } }

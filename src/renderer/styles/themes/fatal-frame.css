@@ -1,228 +1,120 @@
-/* ══ FATAL FRAME ══════════════════════════════════════════════════════════════
-   Project Zero. Spirit Photography. Shrine maidens and Camera Obscura lenses.
-   Old photograph grain, concentric ghost rings, cold shrine night. The Rift.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* fatal-frame: approved ThemeFidelity Batch12 palette, typography and original static frame motifs. */
 :root {
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #030408;
-  --panel-bg:     rgba(3, 4, 10, 0.98);
-  --overlay-bg:   rgba(3, 4, 8, 0.96);
-  --header-bg:    rgba(80, 96, 160, 0.04);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #9AAED0;
-  --text-dim:     #707A98;
-
-  --accent-c:     #5060A0;   /* spirit photography indigo-blue */
-  --accent-m:     #C0A0C0;   /* ectoplasmic silver-violet */
-  --accent-y:     #302840;   /* deep ritual purple */
-
-  --border:       rgba(70, 80, 140, 0.22);
-  --border-h:     rgba(90, 100, 175, 0.50);
-
-  --glow-c:       0 0 7px rgba(80,96,160,.55), 0 0 22px rgba(80,96,160,.18);
-  --glow-m:       0 0 7px rgba(192,160,192,.50), 0 0 20px rgba(192,160,192,.16);
-  --glow-y:       0 0 5px rgba(48,40,64,.48), 0 0 16px rgba(48,40,64,.15);
-
-  --pulse-glow:   inset 0 0 20px rgba(80,96,160,.05);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 22px rgba(80,96,160,.09);
-
-  --title-anim:   spirit-photo 8s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(70, 80, 140, 0.08);
-  --tile-hover-border: rgba(90, 100, 175, 0.42);
-  --tile-hover-shadow: 0 0 12px rgba(80, 96, 160, 0.20);
-  --tile-active-bg:    rgba(70, 80, 140, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(80,96,160,.52)) drop-shadow(0 0 12px rgba(192,160,192,.20));
-  --tile-icon-fx:      grayscale(0.3) brightness(0.88) contrast(1.12);
-  --tile-icon-shape:   inset(5%);
-  --tile-label-spacing:   0.6px;
+  --bg: #08080C;
+  --panel-bg: #171E2A;
+  --overlay-bg: #171E2A;
+  --header-bg: #202737;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #D9DDEA;
+  --text-dim: #BBC5D9;
+  --accent-c: #A5BFD7;
+  --accent-text: #A5BFD7;
+  --accent-m: #A5BFD7;
+  --accent-y: #A5BFD7;
+  --border: #8F9FB5;
+  --border-h: #C3D6E8;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #C3D6E8;
+  --title-anim: none;
+  --tile-hover-bg: #2A3345;
+  --tile-hover-border: #C3D6E8;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #333E50;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-flicker 5s steps(1) infinite;
-  --app-entrance-anim:   entrance-zoom 1.8s ease-out forwards;
-
-  --btn-hover-bg:   rgba(70, 80, 140, 0.10);
-  --btn-active-bg:  rgba(70, 80, 140, 0.20);
-
-  --drop-hint-border: rgba(70, 80, 140, 0.26);
-  --drop-icon-color:  rgba(80, 96, 160, 0.35);
-  --hint-sub-color:   #727795;
-
-  --rename-dashed:    rgba(80, 96, 160, 0.38);
-  --rename-input-bg:  rgba(70, 80, 140, 0.07);
-
-  --edit-bar-bg:          rgba(192, 160, 192, 0.05);
-  --edit-bar-border:      rgba(192, 160, 192, 0.35);
-  --edit-label-color:     #C0A0C0;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #5060A0;
-  --btn-done-border:      rgba(80, 96, 160, 0.40);
-  --btn-done-hover-bg:    rgba(80, 96, 160, 0.10);
-  --btn-done-hover-glow:  var(--glow-c);
-  --btn-add-border:       rgba(70, 80, 140, 0.42);
-
-  --update-bg:             rgba(48, 40, 64, 0.08);
-  --update-border:         rgba(48, 40, 64, 0.36);
-  --update-color:          #302840;
-  --update-btn-border:     rgba(48, 40, 64, 0.30);
-  --update-btn-hover-bg:   rgba(48, 40, 64, 0.12);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #5060A0;
-  --btn-close-border:     rgba(80, 96, 160, 0.38);
-  --btn-close-hover-bg:   rgba(80, 96, 160, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(70, 80, 140, 0.07);
-  --picker-item-hover-bg:  rgba(70, 80, 140, 0.08);
-  --picker-item-active-bg: rgba(70, 80, 140, 0.15);
-  --picker-placeholder-bg: rgba(70, 80, 140, 0.07);
-
-  --skin-btn-active-bg:    rgba(70, 80, 140, 0.17);
-  --remove-btn-bg:         rgba(192, 160, 192, 0.88);
-  --remove-btn-border:     #C0A0C0;
+  --tile-label-weight: 400;
+  --tile-label-style: italic;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #2A3345;
+  --btn-active-bg: #333E50;
+  --btn-hover-text: #D9DDEA;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-hover-text: #D9DDEA;
+  --mgr-button-pressed-text: #D9DDEA;
+  --drop-hint-border: #8F9FB5;
+  --drop-icon-color: #A5BFD7;
+  --hint-sub-color: #BBC5D9;
+  --rename-dashed: #8F9FB5;
+  --rename-input-bg: #171E2A;
+  --edit-bar-bg: #171E2A;
+  --edit-bar-border: #8F9FB5;
+  --edit-label-color: #A5BFD7;
+  --edit-label-glow: none;
+  --btn-done-color: #A5BFD7;
+  --btn-done-border: #8F9FB5;
+  --btn-done-hover-bg: #2A3345;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #8F9FB5;
+  --update-bg: #171E2A;
+  --update-border: #8F9FB5;
+  --update-color: #A5BFD7;
+  --update-btn-border: #8F9FB5;
+  --update-btn-hover-bg: #2A3345;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #D9DDEA;
+  --btn-close-border: #8F9FB5;
+  --btn-close-hover-bg: #2A3345;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #171E2A;
+  --picker-item-hover-bg: #2A3345;
+  --picker-item-active-bg: #333E50;
+  --picker-placeholder-bg: #171E2A;
+  --skin-btn-active-bg: #333E50;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Old photograph grain + concentric spirit rings + heavy shrine vignette ─── */
-#app::after {
-  background:
-    /* old photograph grain — warm tinted */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.5 0 0 0 0.008  0.5 0 0 0 0.010  0.8 0 0 0 0.018  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='190' height='190' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* spirit/ghost concentric ring emanation — outer */
-    radial-gradient(circle 55% at 50% 50%, transparent 40%, rgba(60,70,130,.024) 41%, transparent 44%),
-    /* spirit ring — middle */
-    radial-gradient(circle 38% at 50% 50%, transparent 32%, rgba(60,70,130,.018) 33%, transparent 36%),
-    /* heavy dark shrine vignette */
-    radial-gradient(ellipse 95% 88% at 50% 50%, transparent 28%, rgba(1, 2, 5, 0.90) 100%),
-    /* cold indigo corner hazes */
-    radial-gradient(ellipse 50% 40% at 0% 0%, rgba(40, 50, 110, 0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(40, 50, 110, 0.05) 0%, transparent 55%);
-  background-size: 190px 190px, auto, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Remove foreground panno/readouts and ambient motion; preserve functional transitions. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#202737; border-bottom-color:#8F9FB5; }
+#header::before { background:#8F9FB5; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A5BFD7%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.65%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M5%202h7v4H5zM5%2014h7v4H5zM25%203h48v14H25M29%206h10M29%206v8%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Palatino Linotype', Georgia, serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#D9DDEA; text-shadow:none; }
+#title .accent { color:#A5BFD7; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#BBC5D9; opacity:1; }
+#header-controls button { color:#D9DDEA; border-color:#8F9FB5; }
+#header-controls button:hover, #header-controls button:active { color:#D9DDEA; border-color:#C3D6E8; }
 
-/* ── Header spirit indigo bar ────────────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #5060A0, rgba(60, 72, 130, 0.25));
-  box-shadow: 0 0 10px rgba(80, 96, 160, 0.50), 0 0 26px rgba(80, 96, 160, 0.16);
-}
+/* Eight-pixel scrolling outer trim, omitted where radial layouts lack safe bands. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%208%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%238F9FB5%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.6%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M7%201H1v6%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left top / 8px 8px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%208%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%238F9FB5%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.6%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M1%201h6v6%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px top / 8px 8px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%208%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%238F9FB5%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.6%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M1%201v6h6%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left bottom / 8px 8px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%208%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%238F9FB5%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.6%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M7%201v6H1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px bottom / 8px 8px no-repeat; }
+body.region.layout-fan #grid-container, body.region.layout-ring #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+.app-tile { background:#171E2A; border-color:#8F9FB5; box-shadow:none; border-radius:4px; }
+.app-tile:hover { background:#2A3345; border-color:#C3D6E8; box-shadow:none; }
+.app-tile:focus-visible { background:#2A3345; border-color:#C3D6E8; outline-color:#C3D6E8; }
+.app-tile:active { background:#333E50; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Palatino Linotype', Georgia, serif; font-size:12px; font-weight:400; font-style:italic; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#D9DDEA; text-shadow:none; overflow:hidden; text-overflow:ellipsis; padding-bottom:3px; margin-bottom:-3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active, .mgr-delete:hover, .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#A5BFD7; }
+.hotkey-input.recording { background:#333E50; color:#A5BFD7; border-color:#C3D6E8; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#2A3345; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#C3D6E8; }
 
-/* ── Grid: Camera Obscura viewfinder + spirit emanation rings ─────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Camera Obscura viewfinder frame + crosshair */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Crect x='140' y='88' width='220' height='196' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='1' fill='none'/%3E%3Cline x1='140' y1='88' x2='162' y2='88' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='140' y1='88' x2='140' y2='110' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='360' y1='88' x2='338' y2='88' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='360' y1='88' x2='360' y2='110' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='140' y1='284' x2='162' y2='284' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='140' y1='284' x2='140' y2='262' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='360' y1='284' x2='338' y2='284' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Cline x1='360' y1='284' x2='360' y2='262' stroke='%234E60A8' stroke-opacity='0.28' stroke-width='1.5'/%3E%3Ccircle cx='250' cy='186' r='3' fill='%234E60A8' fill-opacity='0.22'/%3E%3Cline x1='236' y1='186' x2='246' y2='186' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='0.8'/%3E%3Cline x1='254' y1='186' x2='264' y2='186' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='0.8'/%3E%3Cline x1='250' y1='172' x2='250' y2='182' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='0.8'/%3E%3Cline x1='250' y1='190' x2='250' y2='200' stroke='%234E60A8' stroke-opacity='0.18' stroke-width='0.8'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* Spirit emanation ring 1 — inner */
-    radial-gradient(circle at 50% 50%, transparent 36%, rgba(70,82,155,0.05) 37%, rgba(70,82,155,0.05) 40%, transparent 41%),
-    /* Spirit ring 2 — outer */
-    radial-gradient(circle at 50% 50%, transparent 56%, rgba(60,70,140,0.035) 57%, rgba(60,70,140,0.035) 60%, transparent 61%),
-    /* Spirit ring 3 — far outer */
-    radial-gradient(circle at 50% 50%, transparent 76%, rgba(50,60,120,0.025) 77%, rgba(50,60,120,0.025) 80%, transparent 81%),
-    /* Cold shrine haze from top */
-    linear-gradient(to bottom, rgba(60, 72, 140, 0.07) 0%, transparent 28%),
-    /* Shrine depth */
-    linear-gradient(to top, rgba(8, 6, 18, 0.12) 0%, transparent 35%);
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%238F9FB5%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%204h24M4%202h5M15%202h5%22%20stroke%3D%22%232F3440%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%223%22%20r%3D%22.6%22%20fill%3D%22%238A1A2A%22%20stroke%3D%22none%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #E8DCC8; border-top-color:#8F9FB5; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; animation:none; will-change:auto; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%232F3440%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%208V3h5M14%203h5v5M19%2014v5h-5M8%2019H3v-5M7%2011l4-4%204%204-4%204z%22%2F%3E%3Cpath%20d%3D%22M17%208a7%207%200%2001-1%208%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Palatino Linotype', Georgia, serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; letter-spacing:0.3px; color:#2F3440; text-shadow:none; }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'PROJECT ZERO  //  HIMURO MANSION  //  CAMERA OBSCURA READY';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(110, 130, 200, 0.62);
-  pointer-events: none; white-space: nowrap;
-}
+#edit-bar { border-bottom-color:#8A1A2A; }
 
-#grid-container::after {
-  content: 'PROJECT\AZERO\A\ASPIRIT\APHOTOGRAPHY\A\AFATAL\AFRAME\A\ACAMERA\AOBSCURA\A\ATHE RIFT';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(60, 72, 130, 0.09); white-space: pre;
-  animation: fatal-frame-readout 10s ease-in-out infinite;
-}
-
-@keyframes fatal-frame-readout {
-  0%, 100% { color: rgba(60,72,130,.10); }
-  28%       { color: rgba(60,72,130,.14); }
-  65%       { color: rgba(60,72,130,.07); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(60,72,130,.18); }
-  92%       { color: rgba(60,72,130,.10); }
-}
-
-#edit-bar::after {
-  content: 'FATAL FRAME — DO NOT LOOK DIRECTLY AT THE SPIRIT';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(80, 96, 160, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
-
-/* ── Title animation: spirit-photo ──────────────────────────────────────────── */
-@keyframes spirit-photo {
-  0%, 100%  { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); opacity: 1; }
-  40%       { text-shadow: 0 0 9px rgba(90,108,175,.60), 0 0 28px rgba(80,96,160,.22); }
-  /* camera flash — brief white-out */
-  70%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); opacity: 1; }
-  72%       { text-shadow: 0 0 18px rgba(220,220,255,.95), 0 0 50px rgba(160,170,255,.60); opacity: 1; }
-  73%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); opacity: 0.55; }
-  74%       { opacity: 1; text-shadow: 0 0 10px rgba(192,160,192,.65), 0 0 30px rgba(80,96,160,.28); }
-  75%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); opacity: 1; }
-  /* secondary slow fade */
-  88%       { text-shadow: 0 0 7px rgba(80,96,160,.52), 0 0 22px rgba(80,96,160,.18); }
-  94%       { text-shadow: 0 0 8px rgba(100,115,180,.58), 0 0 24px rgba(80,96,160,.22); }
-}
-
-/* ── Camera Obscura shutter — spirit presence flash ─────────────────────── */
-#app { animation: spirit-shutter 9s ease-in-out infinite; }
-@keyframes spirit-shutter {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(70,80,140,.22), inset 0 0 18px rgba(70,80,140,.04); }
-  40%      { box-shadow: 0 0 0 1px rgba(80,96,160,.40), inset 0 0 24px rgba(80,96,160,.07); }
-  /* camera flash */
-  70%      { box-shadow: 0 0 0 1px rgba(80,96,160,.30), inset 0 0 18px rgba(80,96,160,.05); }
-  72%      { box-shadow: 0 0 0 2px rgba(220,220,255,.55), inset 0 0 40px rgba(192,160,192,.12); }
-  73%      { box-shadow: 0 0 0 1px rgba(192,160,192,.35), inset 0 0 22px rgba(192,160,192,.06); }
-  74%      { box-shadow: 0 0 0 1px rgba(70,80,140,.22), inset 0 0 18px rgba(70,80,140,.04); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(3, 3, 8, 0.98); border-top-color: rgba(70, 80, 140, 0.26); }
-#theme-banner::before { content: '✿'; color: #5060A0; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(105, 125, 190, 0.72); }
-
-/* ── Spirit orbs — paranormal concentric-ring orbs, cold shrine glide ────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='40' cy='70' r='8' fill='%235060A0' fill-opacity='0.07'/%3E%3Ccircle cx='40' cy='70' r='4' fill='%235060A0' fill-opacity='0.12'/%3E%3Ccircle cx='40' cy='70' r='1.5' fill='%23C0B0D0' fill-opacity='0.35'/%3E%3Ccircle cx='120' cy='200' r='6' fill='%23C0A0C0' fill-opacity='0.06'/%3E%3Ccircle cx='120' cy='200' r='3' fill='%23C0A0C0' fill-opacity='0.11'/%3E%3Ccircle cx='120' cy='200' r='1.2' fill='%23E0D0E8' fill-opacity='0.30'/%3E%3Ccircle cx='190' cy='350' r='10' fill='%235060A0' fill-opacity='0.05'/%3E%3Ccircle cx='190' cy='350' r='5' fill='%235060A0' fill-opacity='0.10'/%3E%3Ccircle cx='190' cy='350' r='1.8' fill='%23A0A8D0' fill-opacity='0.32'/%3E%3Ccircle cx='70' cy='430' r='7' fill='%23C0A0C0' fill-opacity='0.06'/%3E%3Ccircle cx='70' cy='430' r='3.5' fill='%23C0A0C0' fill-opacity='0.10'/%3E%3Ccircle cx='70' cy='430' r='1.4' fill='%23E0C8E8' fill-opacity='0.28'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='650'%3E%3Ccircle cx='60' cy='120' r='9' fill='%23C0A0C0' fill-opacity='0.04'/%3E%3Ccircle cx='60' cy='120' r='4.5' fill='%23C0A0C0' fill-opacity='0.08'/%3E%3Ccircle cx='60' cy='120' r='1.8' fill='%23E0D0E8' fill-opacity='0.24'/%3E%3Ccircle cx='170' cy='320' r='7' fill='%235060A0' fill-opacity='0.05'/%3E%3Ccircle cx='170' cy='320' r='3.5' fill='%235060A0' fill-opacity='0.09'/%3E%3Ccircle cx='170' cy='320' r='1.4' fill='%23A0A8D0' fill-opacity='0.26'/%3E%3Ccircle cx='260' cy='530' r='11' fill='%23C0A0C0' fill-opacity='0.04'/%3E%3Ccircle cx='260' cy='530' r='5.5' fill='%23C0A0C0' fill-opacity='0.07'/%3E%3Ccircle cx='260' cy='530' r='2' fill='%23E0C8E8' fill-opacity='0.22'/%3E%3C/svg%3E") repeat;
-  background-size: 240px 480px, 320px 650px;
-  animation: ghost-orbs 20s linear infinite;
-}
-@keyframes ghost-orbs {
-  from { background-position: 0 0, 15px 0; }
-  to   { background-position: -40px -480px, 30px -650px; }
-}
-
-/* ── Tile: spirit camera flash on hover ──────────────────────────────────── */
-.app-tile::before {
-  width: 20px; height: 20px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(192,160,192,0.60);
-}
-.app-tile:hover::before { animation: tile-radial .5s ease-out forwards; }
+/* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
+body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }

@@ -1,215 +1,122 @@
-/* ══ DOCTOR WHO ═══════════════════════════════════════════════════════════════
-   Time and Relative Dimension in Space. TARDIS blue, coral console warmth,
-   and the impossible geometry of Gallifreyan circular script.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* doctor-who: approved ThemeFidelity Batch11 palette, typography and original static frame motifs. */
 :root {
-  --radius:       3px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #020510;
-  --panel-bg:     rgba(4, 8, 20, 0.97);
-  --overlay-bg:   rgba(2, 5, 14, 0.95);
-  --header-bg:    rgba(0, 80, 160, 0.05);
-
-  --font:         'Segoe UI', Georgia, serif;
-  --text:         #90AACE;
-  --text-dim:     rgba(120, 150, 190, 0.83);
-
-  --accent-c:     #0070C0;   /* TARDIS blue */
-  --accent-m:     #D04820;   /* coral/orange */
-  --accent-y:     #C8A030;   /* warm console gold */
-
-  --border:       rgba(0, 96, 180, 0.22);
-  --border-h:     rgba(0, 120, 200, 0.55);
-
-  --glow-c:       0 0 8px rgba(0,112,192,.65), 0 0 22px rgba(0,112,192,.22);
-  --glow-m:       0 0 8px rgba(208,72,32,.65), 0 0 22px rgba(208,72,32,.22);
-  --glow-y:       0 0 8px rgba(200,160,48,.65), 0 0 22px rgba(200,160,48,.22);
-
-  --pulse-glow:   inset 0 0 22px rgba(0,96,180,.07);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(0,112,192,.10);
-
-  --title-anim:   tardis-hum 5s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(0, 80, 160, 0.08);
-  --tile-hover-border: rgba(0, 120, 200, 0.35);
-  --tile-hover-shadow: 0 0 14px rgba(0, 112, 192, 0.20);
-  --tile-active-bg:    rgba(0, 80, 160, 0.16);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(0,112,192,.60)) drop-shadow(0 0 14px rgba(0,112,192,.25));
-  --tile-icon-fx:      brightness(0.88);
-  --tile-icon-shape:   circle(47%);
-  --tile-label-spacing:   0.8px;
-  --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 4s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.5s ease-out forwards;
-
-  --btn-hover-bg:   rgba(0, 80, 160, 0.10);
-  --btn-active-bg:  rgba(0, 80, 160, 0.20);
-
-  --drop-hint-border: rgba(0, 96, 180, 0.25);
-  --drop-icon-color:  rgba(0, 112, 192, 0.35);
-  --hint-sub-color:   rgba(90, 130, 180, 0.95);
-
-  --rename-dashed:    rgba(0, 112, 192, 0.40);
-  --rename-input-bg:  rgba(0, 80, 160, 0.07);
-
-  --edit-bar-bg:          rgba(208, 72, 32, 0.07);
-  --edit-bar-border:      rgba(208, 72, 32, 0.38);
-  --edit-label-color:     #D04820;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #D04820;
-  --btn-done-border:      rgba(208, 72, 32, 0.40);
-  --btn-done-hover-bg:    rgba(208, 72, 32, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(0, 112, 192, 0.40);
-
-  --update-bg:             rgba(200, 160, 48, 0.06);
-  --update-border:         rgba(200, 160, 48, 0.38);
-  --update-color:          #C8A030;
-  --update-btn-border:     rgba(200, 160, 48, 0.35);
-  --update-btn-hover-bg:   rgba(200, 160, 48, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #D04820;
-  --btn-close-border:     rgba(208, 72, 32, 0.38);
-  --btn-close-hover-bg:   rgba(208, 72, 32, 0.10);
-  --btn-close-hover-glow: var(--glow-m);
-
-  --picker-search-bg:      rgba(0, 80, 160, 0.07);
-  --picker-item-hover-bg:  rgba(0, 80, 160, 0.08);
-  --picker-item-active-bg: rgba(0, 80, 160, 0.15);
-  --picker-placeholder-bg: rgba(0, 80, 160, 0.07);
-
-  --skin-btn-active-bg:    rgba(0, 80, 160, 0.16);
-  --remove-btn-bg:         rgba(208, 72, 32, 0.88);
-  --remove-btn-border:     #D04820;
+  --bg: #0A1030;
+  --panel-bg: #152747;
+  --overlay-bg: #152747;
+  --header-bg: #003B6F;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #F0E8D0;
+  --text-dim: #CCD6E4;
+  --accent-c: #A9D8F1;
+  --accent-text: #A9D8F1;
+  --accent-m: #A9D8F1;
+  --accent-y: #A9D8F1;
+  --border: #91B6D4;
+  --border-h: #F3C568;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #F3C568;
+  --title-anim: none;
+  --tile-hover-bg: #1A4670;
+  --tile-hover-border: #F3C568;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #22547C;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
+  --tile-label-transform: uppercase;
+  --tile-label-weight: 600;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #1A4670;
+  --btn-active-bg: #22547C;
+  --btn-hover-text: #F0E8D0;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-hover-text: #F0E8D0;
+  --mgr-button-pressed-text: #F0E8D0;
+  --drop-hint-border: #91B6D4;
+  --drop-icon-color: #A9D8F1;
+  --hint-sub-color: #CCD6E4;
+  --rename-dashed: #91B6D4;
+  --rename-input-bg: #152747;
+  --edit-bar-bg: #152747;
+  --edit-bar-border: #91B6D4;
+  --edit-label-color: #A9D8F1;
+  --edit-label-glow: none;
+  --btn-done-color: #A9D8F1;
+  --btn-done-border: #91B6D4;
+  --btn-done-hover-bg: #1A4670;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #91B6D4;
+  --update-bg: #152747;
+  --update-border: #91B6D4;
+  --update-color: #A9D8F1;
+  --update-btn-border: #91B6D4;
+  --update-btn-hover-bg: #1A4670;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #F0E8D0;
+  --btn-close-border: #91B6D4;
+  --btn-close-hover-bg: #1A4670;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #152747;
+  --picker-item-hover-bg: #1A4670;
+  --picker-item-active-bg: #22547C;
+  --picker-placeholder-bg: #152747;
+  --skin-btn-active-bg: #22547C;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── TARDIS materialization — blue shimmer on arrival ───────────────────────── */
-#app { animation: dw-materialize 12s steps(1) infinite; }
-@keyframes dw-materialize {
-  0%, 65%, 100% { box-shadow: none; }
-  66% { box-shadow: 0 0 0 1px rgba(0,112,192,.70), 0 0 18px rgba(0,112,192,.30), inset 0 0 24px rgba(0,80,160,.18); }
-  67% { box-shadow: 0 0 0 2px rgba(0,150,255,.90), 0 0 40px rgba(0,112,192,.55), inset 0 0 50px rgba(0,80,160,.30); }
-  68% { box-shadow: 0 0 0 1px rgba(0,112,192,.50), 0 0 24px rgba(0,112,192,.35), inset 0 0 30px rgba(0,80,160,.20); }
-  69% { box-shadow: 0 0 0 2px rgba(0,150,255,.80), 0 0 36px rgba(0,112,192,.48), inset 0 0 44px rgba(0,80,160,.26); }
-  70% { box-shadow: 0 0 0 1px rgba(0,112,192,.40), 0 0 14px rgba(0,112,192,.22), inset 0 0 16px rgba(0,80,160,.12); }
-  71% { box-shadow: none; }
-}
+/* Remove foreground panno/readouts and ambient motion; preserve functional transitions. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#003B6F; border-bottom-color:#91B6D4; }
+#header::before { background:#91B6D4; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A9D8F1%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.65%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2210%22%20r%3D%226%22%2F%3E%3Ccircle%20cx%3D%2242%22%20cy%3D%2210%22%20r%3D%226%22%2F%3E%3Ccircle%20cx%3D%2267%22%20cy%3D%2210%22%20r%3D%226%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2210%22%20r%3D%224%22%20opacity%3D%22.25%22%2F%3E%3Ccircle%20cx%3D%2242%22%20cy%3D%2210%22%20r%3D%224%22%20opacity%3D%22.25%22%2F%3E%3Ccircle%20cx%3D%2267%22%20cy%3D%2210%22%20r%3D%224%22%20opacity%3D%22.25%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Segoe UI', Arial, sans-serif; font-size:11px; font-weight:600; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#F0E8D0; text-shadow:none; }
+#title .accent { color:#A9D8F1; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#CCD6E4; opacity:1; }
+#header-controls button { color:#F0E8D0; border-color:#91B6D4; }
+#header-controls button:hover, #header-controls button:active { color:#F0E8D0; border-color:#F3C568; }
 
-/* ── Time vortex overlay + Gallifreyan concentric rings ────────────────────── */
-#app::after {
-  background:
-    /* Gallifreyan-inspired concentric ring haloes */
-    radial-gradient(circle at 50% 50%, transparent 30%, rgba(0,80,160,.04) 31%, transparent 32%),
-    radial-gradient(circle at 50% 50%, transparent 48%, rgba(0,80,160,.035) 49%, transparent 50%),
-    radial-gradient(circle at 50% 50%, transparent 66%, rgba(0,80,160,.03) 67%, transparent 68%),
-    radial-gradient(circle at 50% 50%, transparent 84%, rgba(0,80,160,.025) 85%, transparent 86%),
-    /* vignette */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 40%, rgba(1, 3, 10, 0.72) 100%),
-    /* TARDIS blue ambient */
-    radial-gradient(ellipse 70% 50% at 50% 20%, rgba(0, 60, 140, 0.06) 0%, transparent 65%);
-  opacity: 1; pointer-events: none;
-}
+/* Eight-pixel scrolling outer trim, omitted where radial layouts lack safe bands. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2391B6D4%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%221%22%20cy%3D%225%22%20r%3D%224%22%20stroke%3D%22%2391B6D4%22%20stroke-opacity%3D%22.18%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2391B6D4%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%221%22%20cy%3D%225%22%20r%3D%224%22%20stroke%3D%22%2391B6D4%22%20stroke-opacity%3D%22.18%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px no-repeat; }
+body.region.layout-fan #grid-container, body.region.layout-ring #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+.app-tile { background:#152747; border-color:#91B6D4; box-shadow:none; border-radius:4px; }
+.app-tile:hover { background:#1A4670; border-color:#F3C568; box-shadow:none; }
+.app-tile:focus-visible { background:#1A4670; border-color:#F3C568; outline-color:#F3C568; }
+.app-tile:active { background:#22547C; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Segoe UI', Arial, sans-serif; font-size:12px; font-weight:600; font-style:normal; font-synthesis:none; letter-spacing:0.3px; line-height:1.2; color:#F0E8D0; text-shadow:none; overflow:hidden; text-overflow:ellipsis; padding-bottom:3px; margin-bottom:-3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active, .mgr-delete:hover, .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#A9D8F1; }
+.hotkey-input.recording { background:#22547C; color:#A9D8F1; border-color:#F3C568; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#1A4670; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#F3C568; }
 
-/* ── Header TARDIS blue accent bar ─────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #0070C0, rgba(0, 80, 160, 0.30));
-  box-shadow: 0 0 10px rgba(0, 112, 192, 0.55), 0 0 24px rgba(0, 112, 192, 0.18);
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%2391B6D4%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%201h24M0%204h24%22%20stroke%3D%22%23F0E8D0%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #003B6F; border-top-color:#91B6D4; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; animation:none; will-change:auto; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23A9D8F1%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M3%203h16v16H3zM5%206h5v6H5zM12%206h5v6h-5zM3%2015h16%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Segoe UI', Arial, sans-serif; font-size:11px; font-weight:600; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#F0E8D0; text-shadow:none; }
 
-/* ── Grid: Gallifreyan circular script — sentence circle with word-circles ────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Gallifreyan sentence circle with 4 word-circles and consonant markings */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Ccircle cx='250' cy='190' r='120' fill='none' stroke='rgba(0,112,192,0.18)' stroke-width='1'/%3E%3Ccircle cx='250' cy='70' r='26' fill='none' stroke='rgba(0,112,192,0.20)' stroke-width='0.8'/%3E%3Cline x1='224' y1='70' x2='276' y2='70' stroke='rgba(0,112,192,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='262' cy='50' r='2.5' fill='rgba(0,112,192,0.22)'/%3E%3Ccircle cx='370' cy='190' r='22' fill='none' stroke='rgba(0,112,192,0.18)' stroke-width='0.8'/%3E%3Cline x1='370' y1='168' x2='370' y2='212' stroke='rgba(0,112,192,0.20)' stroke-width='0.8'/%3E%3Ccircle cx='390' cy='178' r='2' fill='rgba(0,112,192,0.18)'/%3E%3Ccircle cx='250' cy='310' r='24' fill='none' stroke='rgba(0,112,192,0.18)' stroke-width='0.8'/%3E%3Cline x1='226' y1='310' x2='274' y2='310' stroke='rgba(0,112,192,0.20)' stroke-width='0.8'/%3E%3Cline x1='250' y1='286' x2='250' y2='334' stroke='rgba(0,112,192,0.16)' stroke-width='0.6'/%3E%3Ccircle cx='130' cy='190' r='22' fill='none' stroke='rgba(0,112,192,0.18)' stroke-width='0.8'/%3E%3Cline x1='108' y1='190' x2='152' y2='190' stroke='rgba(0,112,192,0.20)' stroke-width='0.8'/%3E%3Ccircle cx='140' cy='172' r='2' fill='rgba(0,112,192,0.18)'/%3E%3Ccircle cx='250' cy='190' r='16' fill='none' stroke='rgba(0,112,192,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='190' r='5' fill='rgba(0,112,192,0.20)'/%3E%3Ccircle cx='250' cy='190' r='2' fill='rgba(0,150,255,0.35)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* TARDIS blue ambient */
-    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0, 60, 140, 0.05) 0%, transparent 65%);
-  animation: tardis-script 14s ease-in-out infinite;
-}
-@keyframes tardis-script {
-  0%, 100% { opacity: 0.85; }
-  50%      { opacity: 1.00; }
-  66%      { opacity: 0.85; }
-  67%      { opacity: 0.40; }
-  68%      { opacity: 1.00; }
-  69%      { opacity: 0.70; }
-  70%      { opacity: 0.85; }
-}
+/* Shape only the supporting plate; application glyph is complete above it. */
+.tile-icon-wrap::before { content:''; position:absolute; inset:0; background:#003B6F; border:1px solid #91B6D4; border-radius:50%; clip-path:none; pointer-events:none; }
+.tile-icon { position:relative; z-index:1; }
 
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'T.A.R.D.I.S.  //  TIME LORD  //  GALLIFREY STANDS';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(0, 150, 235, 0.65);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'TIME AND\ARELATIVE\ADIMENSION\AIN SPACE\A\AGALLIFREY\A\AALL OF TIME\AAND SPACE';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 13px; line-height: 1.70; text-align: right;
-  color: rgba(0, 100, 180, 0.12); white-space: pre;
-  animation: tardis-drift 9s ease-in-out infinite;
-}
-
-@keyframes tardis-drift {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1.0; }
-}
-
-#edit-bar::after {
-  content: 'SONIC SCREWDRIVER ENGAGED';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(208, 72, 32, 0.38);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
-
-/* ── Title animation: TARDIS hum ────────────────────────────────────────────── */
-@keyframes tardis-hum {
-  0%, 100% { text-shadow: 0 0 7px rgba(0,112,192,.55), 0 0 18px rgba(0,112,192,.20); color: #0070C0; }
-  35%       { text-shadow: 0 0 12px rgba(0,150,255,.80), 0 0 30px rgba(0,112,192,.40); color: #2090E0; }
-  65%       { text-shadow: 0 0 8px rgba(0,100,180,.55), 0 0 20px rgba(0,80,160,.25); color: #0060B0; }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(2, 4, 12, 0.97); border-top-color: rgba(0, 96, 180, 0.22); }
-#theme-banner::before { content: '∞'; color: #0070C0; font-size: 22px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(0, 140, 210, 0.72); }
-
-/* ── Phase 4E: tile radial ring ──────────────────────────────────────────── */
-.app-tile::before {
-  width: 20px; height: 20px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-radial .55s ease-out forwards; }
-
-/* ── TARDIS materialization — blue pulse wave expanding outward ───────────── */
-#particles {
-  background: radial-gradient(circle at 50% 50%, transparent 0%, transparent 38%, rgba(0,112,192,0.12) 40%, rgba(0,112,192,0.06) 42%, transparent 44%) no-repeat;
-  background-size: 0% 0%;
-  background-position: 50% 50%;
-  animation: tardis-pulse 5s ease-out infinite;
-}
-@keyframes tardis-pulse {
-  0%   { background-size: 0% 0%; opacity: 0.9; }
-  70%  { background-size: 350% 350%; opacity: 0; }
-  100% { background-size: 0% 0%; opacity: 0; }
-}
+/* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
+body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }

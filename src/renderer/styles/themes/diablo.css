@@ -1,240 +1,120 @@
-/* ══ DIABLO ════════════════════════════════════════════════════════════════════
-   Hell has been unleashed upon Sanctuary. Hellfire gothic — cathedral vaults
-   and demon blood. Prime Evil awakens. The horadric seal is broken.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* diablo: ThemeFidelity Batch09; committed palette/type and original bounded motifs. */
 :root {
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #060000;
-  --panel-bg:     rgba(10, 0, 0, 0.98);
-  --overlay-bg:   rgba(6, 0, 0, 0.96);
-  --header-bg:    rgba(204, 0, 0, 0.04);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #CC8080;
-  --text-dim:     #AC6657;
-
-  --accent-c:     #CC0000;   /* hellfire red */
-  --accent-m:     #FF4400;   /* ember orange */
-  --accent-y:     #604000;   /* burnt cathedral gold */
-
-  --border:       rgba(160, 0, 0, 0.25);
-  --border-h:     rgba(204, 0, 0, 0.55);
-
-  --glow-c:       0 0 8px rgba(204,0,0,.70), 0 0 24px rgba(204,0,0,.25);
-  --glow-m:       0 0 8px rgba(255,68,0,.65), 0 0 22px rgba(255,68,0,.22);
-  --glow-y:       0 0 6px rgba(96,64,0,.55), 0 0 18px rgba(96,64,0,.18);
-
-  --pulse-glow:   inset 0 0 22px rgba(180,0,0,.08);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 3px,
-                    rgba(100, 0, 0, 0.038) 3px, rgba(100, 0, 0, 0.038) 4px
-                  );
-  --drag-over-glow: inset 0 0 24px rgba(204,0,0,.11);
-
-  --title-anim:   hellfire-flicker 4s steps(1) infinite;
-
-  --tile-hover-bg:     rgba(160, 0, 0, 0.09);
-  --tile-hover-border: rgba(204, 0, 0, 0.45);
-  --tile-hover-shadow: 0 0 12px rgba(204, 0, 0, 0.26);
-  --tile-active-bg:    rgba(160, 0, 0, 0.18);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(204,0,0,.68)) drop-shadow(0 0 14px rgba(255,68,0,.28));
-  --tile-icon-fx:      contrast(1.3) brightness(0.85) sepia(0.2);
-  --tile-icon-shape:   polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-  --tile-label-spacing:   0.8px;
+  --bg: #0A0605;
+  --panel-bg: #2A1A12;
+  --overlay-bg: #2A1A12;
+  --header-bg: #281E17;
+  --font: 'Segoe UI','Yu Gothic',Arial,sans-serif;
+  --text: #E9DCC1;
+  --text-dim: #CCBFA5;
+  --accent-c: #D7B267;
+  --accent-text: #D7B267;
+  --accent-m: #D7B267;
+  --accent-y: #D7B267;
+  --border: #A08C70;
+  --border-h: #D7B267;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #D7B267;
+  --title-anim: none;
+  --tile-hover-bg: #39281C;
+  --tile-hover-border: #D7B267;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #443024;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: .3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-throb 4s ease-in-out infinite;
-  --app-entrance-anim:   entrance-flash 1.2s ease-out forwards;
-
-  --btn-hover-bg:   rgba(160, 0, 0, 0.12);
-  --btn-active-bg:  rgba(160, 0, 0, 0.22);
-
-  --drop-hint-border: rgba(160, 0, 0, 0.28);
-  --drop-icon-color:  rgba(204, 0, 0, 0.40);
-  --hint-sub-color:   #AA6450;
-
-  --rename-dashed:    rgba(204, 0, 0, 0.42);
-  --rename-input-bg:  rgba(160, 0, 0, 0.08);
-
-  --edit-bar-bg:          rgba(255, 68, 0, 0.06);
-  --edit-bar-border:      rgba(255, 68, 0, 0.38);
-  --edit-label-color:     #FF4400;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #FF4400;
-  --btn-done-border:      rgba(255, 68, 0, 0.40);
-  --btn-done-hover-bg:    rgba(255, 68, 0, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(204, 0, 0, 0.46);
-
-  --update-bg:             rgba(96, 64, 0, 0.07);
-  --update-border:         rgba(96, 64, 0, 0.36);
-  --update-color:          #604000;
-  --update-btn-border:     rgba(96, 64, 0, 0.30);
-  --update-btn-hover-bg:   rgba(96, 64, 0, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  --btn-close-color:      #CC0000;
-  --btn-close-border:     rgba(204, 0, 0, 0.42);
-  --btn-close-hover-bg:   rgba(204, 0, 0, 0.11);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(160, 0, 0, 0.08);
-  --picker-item-hover-bg:  rgba(160, 0, 0, 0.09);
-  --picker-item-active-bg: rgba(160, 0, 0, 0.17);
-  --picker-placeholder-bg: rgba(160, 0, 0, 0.08);
-
-  --skin-btn-active-bg:    rgba(160, 0, 0, 0.18);
-  --remove-btn-bg:         rgba(255, 68, 0, 0.88);
-  --remove-btn-border:     #FF4400;
+  --tile-label-weight: 700;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #39281C;
+  --btn-active-bg: #443024;
+  --btn-hover-text: #E9DCC1;
+  --mgr-button-hover-text: #E9DCC1;
+  --mgr-button-pressed-text: #E9DCC1;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --drop-hint-border: #A08C70;
+  --drop-icon-color: #D7B267;
+  --hint-sub-color: #CCBFA5;
+  --rename-dashed: #A08C70;
+  --rename-input-bg: #2A1A12;
+  --edit-bar-bg: #2A1A12;
+  --edit-bar-border: #A08C70;
+  --edit-label-color: #E9DCC1;
+  --edit-label-glow: none;
+  --btn-done-color: #E9DCC1;
+  --btn-done-border: #A08C70;
+  --btn-done-hover-bg: #39281C;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #A08C70;
+  --update-bg: #2A1A12;
+  --update-border: #A08C70;
+  --update-color: #E9DCC1;
+  --update-btn-border: #A08C70;
+  --update-btn-hover-bg: #39281C;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E9DCC1;
+  --btn-close-border: #A08C70;
+  --btn-close-hover-bg: #39281C;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #2A1A12;
+  --picker-item-hover-bg: #39281C;
+  --picker-item-active-bg: #443024;
+  --picker-placeholder-bg: #2A1A12;
+  --skin-btn-active-bg: #443024;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
+/* Decoration stays in chrome/scrolling frame, with complete app icons. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#281E17; border-bottom-color:#A08C70; --ql-header-art-safety:1; }
+#header::before { background:#A08C70; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cpath%20d%3D%27M3%2010H81%20M9%205V15%20M18%208V12%20M29%204L33%2010L29%2016%20M41%206V14%20M51%204L47%2010L51%2016%20M62%208V12%20M74%205V15%27%20fill%3D%27none%27%20stroke%3D%27%23A08C70%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Pirata One','Palatino Linotype',Georgia,serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:3px; text-transform:none; color:#E9DCC1; text-shadow:none; }
+#title .accent { color:#E9DCC1; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#CCBFA5; }
+#header-controls button { color:#E9DCC1; border-color:#A08C70; }
+#header-controls button:hover, #header-controls button:active { color:#E9DCC1; border-color:#D7B267; }
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Ccircle%20cx%3D%273%27%20cy%3D%275%27%20r%3D%271%27%20fill%3D%27none%27%20stroke%3D%27%23A08C70%27%20stroke-width%3D%271.2%27%2F%3E%3Ccircle%20cx%3D%273%27%20cy%3D%2716%27%20r%3D%271%27%20fill%3D%27none%27%20stroke%3D%27%23A08C70%27%20stroke-width%3D%271.2%27%2F%3E%3Ccircle%20cx%3D%273%27%20cy%3D%2727%27%20r%3D%271%27%20fill%3D%27none%27%20stroke%3D%27%23A08C70%27%20stroke-width%3D%271.2%27%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Ccircle%20cx%3D%273%27%20cy%3D%275%27%20r%3D%271%27%20fill%3D%27none%27%20stroke%3D%27%23A08C70%27%20stroke-width%3D%271.2%27%2F%3E%3Ccircle%20cx%3D%273%27%20cy%3D%2716%27%20r%3D%271%27%20fill%3D%27none%27%20stroke%3D%27%23A08C70%27%20stroke-width%3D%271.2%27%2F%3E%3Ccircle%20cx%3D%273%27%20cy%3D%2727%27%20r%3D%271%27%20fill%3D%27none%27%20stroke%3D%27%23A08C70%27%20stroke-width%3D%271.2%27%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#2A1A12; border-color:#A08C70; box-shadow:none; }
+.app-tile:hover { background:#39281C; border-color:#D7B267; box-shadow:none; }
+.app-tile:active { background:#443024; }
+.app-tile:focus-visible { border-color:#D7B267; outline-color:#D7B267; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Palatino Linotype',Georgia,serif; font-size:12px; font-weight:700; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#E9DCC1; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#E9DCC1; }
+.hotkey-input.recording { background:#443024; color:#E9DCC1; border-color:#D7B267; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#39281C; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#D7B267; }
+body.manager #btn-open-cheatsheet:is(:hover,:active) { background:transparent; color:#D7B267; }
+#theme-banner { background:#281E17; border-top-color:#A08C70; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Ccircle%20cx%3D%2711%27%20cy%3D%2711%27%20r%3D%278%27%20fill%3D%27%238A2028%27%20stroke%3D%27%23E9DCC1%27%20stroke-width%3D%271.2%27%2F%3E%3Cpath%20d%3D%27M5%207Q9%203%2014%205%27%20fill%3D%27none%27%20stroke%3D%27%23E9DCC1%27%20stroke-opacity%3D%270.65%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Palatino Linotype',Georgia,serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#E9DCC1; text-shadow:none; }
+.tile-icon-wrap { border-radius:2px; }
+/* Optional mana globe is its own flex slot; narrow banners retain quote width. */
+@media(min-width:560px) { #theme-banner::after { content:""; width:22px; height:22px; flex:0 0 22px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Ccircle%20cx%3D%2711%27%20cy%3D%2711%27%20r%3D%278%27%20fill%3D%27%23244E91%27%20stroke%3D%27%23BDD9F4%27%20stroke-width%3D%271.2%27%2F%3E%3Cpath%20d%3D%27M5%207Q9%203%2014%205%27%20fill%3D%27none%27%20stroke%3D%27%23BDD9F4%27%20stroke-opacity%3D%270.65%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; } }
+.app-tile:hover { border-color:#D7B267; }
+.app-tile:hover { background-image:linear-gradient(#E8501A,#E8501A); background-size:8px 1px; background-position:center top; background-repeat:no-repeat; }
 
-/* ── Heavy noise grain + diagonal fire streaks + blood-black vignette ────────── */
-#app::after {
-  background:
-    /* dark warm noise grain */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.8 0 0 0 0.02  0.4 0 0 0 0  0.3 0 0 0 0  0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    /* diagonal fire streaks */
-    repeating-linear-gradient(
-      115deg,
-      transparent 0px, transparent 8px,
-      rgba(180, 20, 0, 0.018) 8px, rgba(180, 20, 0, 0.018) 9px,
-      transparent 9px, transparent 48px
-    ),
-    /* blood-black vignette */
-    radial-gradient(ellipse 100% 90% at 50% 50%, transparent 45%, rgba(3, 0, 0, 0.75) 100%),
-    /* ember seep from bottom */
-    radial-gradient(ellipse 75% 32% at 50% 100%, rgba(160, 30, 0, 0.09) 0%, transparent 68%),
-    /* dark corners */
-    radial-gradient(ellipse 45% 55% at 0% 0%, rgba(40, 0, 0, 0.06) 0%, transparent 55%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
-
-/* ── App: dramatic hell-red border pulse ────────────────────────────────────── */
-#app { animation: diablo-border 7s ease-in-out infinite; }
-@keyframes diablo-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(160,0,0,.35), inset 0 0 20px rgba(160,0,0,.06); }
-  10%      { box-shadow: 0 0 0 1px rgba(204,0,0,.70), inset 0 0 30px rgba(204,0,0,.10); }
-  11%      { box-shadow: 0 0 0 1px rgba(160,0,0,.10), inset 0 0 10px rgba(160,0,0,.02); }
-  12%      { box-shadow: 0 0 0 1px rgba(204,0,0,.55), inset 0 0 24px rgba(204,0,0,.08); }
-  13%      { box-shadow: 0 0 0 1px rgba(160,0,0,.20), inset 0 0 14px rgba(160,0,0,.03); }
-  40%      { box-shadow: 0 0 0 1px rgba(160,0,0,.28), inset 0 0 16px rgba(160,0,0,.04); }
-  /* re-ignition */
-  75%      { box-shadow: 0 0 0 1px rgba(160,0,0,.28), inset 0 0 16px rgba(160,0,0,.04); }
-  78%      { box-shadow: 0 0 0 2px rgba(255,68,0,.35), inset 0 0 26px rgba(255,68,0,.07); }
-  80%      { box-shadow: 0 0 0 1px rgba(204,0,0,.50), inset 0 0 22px rgba(204,0,0,.07); }
-}
-
-/* ── Header hellfire red bar with strong glow ───────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #CC0000, rgba(160, 0, 0, 0.28));
-  box-shadow: 0 0 12px rgba(204, 0, 0, 0.75), 0 0 32px rgba(204, 0, 0, 0.28);
-}
-
-/* ── Grid: Horadric Seal — demon sigil, pentagram of the Prime Evils ─────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Horadric demon seal SVG — outer ring, inner pentagram, runic details */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3C!-- Outer ritual circle --%3E%3Ccircle cx='250' cy='190' r='140' fill='none' stroke='rgba(160,0,0,0.10)' stroke-width='1'/%3E%3C!-- Middle ring --%3E%3Ccircle cx='250' cy='190' r='108' fill='none' stroke='rgba(180,0,0,0.08)' stroke-width='0.8'/%3E%3C!-- Inner seal ring --%3E%3Ccircle cx='250' cy='190' r='70' fill='none' stroke='rgba(200,0,0,0.12)' stroke-width='1'/%3E%3C!-- Pentagram — inverted for demon seal --%3E%3Cline x1='250' y1='320' x2='321' y2='95' stroke='rgba(180,20,0,0.13)' stroke-width='1'/%3E%3Cline x1='321' y1='95' x2='109' y2='247' stroke='rgba(180,20,0,0.13)' stroke-width='1'/%3E%3Cline x1='109' y1='247' x2='391' y2='247' stroke='rgba(180,20,0,0.13)' stroke-width='1'/%3E%3Cline x1='391' y1='247' x2='179' y2='95' stroke='rgba(180,20,0,0.13)' stroke-width='1'/%3E%3Cline x1='179' y1='95' x2='250' y2='320' stroke='rgba(180,20,0,0.13)' stroke-width='1'/%3E%3C!-- Center eye --%3E%3Ccircle cx='250' cy='190' r='8' fill='rgba(200,0,0,0.18)' /%3E%3Ccircle cx='250' cy='190' r='3' fill='rgba(255,40,0,0.30)'/%3E%3C!-- Cardinal rune marks --%3E%3Cline x1='250' y1='46' x2='250' y2='58' stroke='rgba(160,0,0,0.22)' stroke-width='1.2'/%3E%3Cline x1='250' y1='322' x2='250' y2='334' stroke='rgba(160,0,0,0.22)' stroke-width='1.2'/%3E%3Cline x1='106' y1='190' x2='118' y2='190' stroke='rgba(160,0,0,0.22)' stroke-width='1.2'/%3E%3Cline x1='382' y1='190' x2='394' y2='190' stroke='rgba(160,0,0,0.22)' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat 50% 50% / 100% 100%,
-    /* hellfire ember lava from below */
-    linear-gradient(to top, rgba(200, 40, 0, 0.08) 0%, rgba(160, 20, 0, 0.03) 20%, transparent 45%),
-    /* dark cathedral columns */
-    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(3, 0, 0, 0.18) 0%, transparent 58%),
-    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(3, 0, 0, 0.18) 0%, transparent 58%);
-  animation: diablo-seal 6s ease-in-out infinite;
-}
-@keyframes diablo-seal {
-  0%, 100% { opacity: 0.80; }
-  50%       { opacity: 1.0; }
-  75%       { opacity: 0.88; }
-  77%       { opacity: 0.30; }
-  78%       { opacity: 1.0; }
-}
-
-/* ── Flavor content ─────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'SANCTUARY  //  CATHEDRAL OF LIGHT  //  PRIME EVIL DETECTED';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(220, 60, 50, 0.70);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'DIABLO\ALORD OF\ATERROR\A\ASANCTUARY\AFALLS\A\AULTIMATE\AEVIL\AAWAKENS\A\ANEPHALEM';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(160, 0, 0, 0.10); white-space: pre;
-  animation: diablo-readout 10s ease-in-out infinite;
-}
-
-@keyframes diablo-readout {
-  0%, 100% { color: rgba(160,0,0,.10); }
-  28%       { color: rgba(160,0,0,.14); }
-  65%       { color: rgba(160,0,0,.07); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(160,0,0,.18); }
-  92%       { color: rgba(160,0,0,.10); }
-}
-
-#edit-bar::after {
-  content: 'HORADRIC AUTHORIZATION REQUIRED';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(255, 68, 0, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title animation: hellfire-flicker ──────────────────────────────────────── */
-@keyframes hellfire-flicker {
-  0%, 100%  { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); opacity: 1; }
-  60%       { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); opacity: 1; }
-  62%       { text-shadow: 0 0 12px rgba(255,68,0,.85), 0 0 32px rgba(255,68,0,.40); opacity: 0.9; }
-  63%       { opacity: 0.5; text-shadow: none; }
-  64%       { opacity: 1; text-shadow: 0 0 16px rgba(255,100,0,.90), 0 0 40px rgba(204,0,0,.50); }
-  65%       { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); }
-  85%       { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); opacity: 1; }
-  87%       { text-shadow: 0 0 10px rgba(255,68,0,.75), 0 0 28px rgba(255,68,0,.30); }
-  88%       { text-shadow: 0 0 8px rgba(204,0,0,.68), 0 0 24px rgba(204,0,0,.25); }
-}
-
-/* ── Banner ─────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(6, 0, 0, 0.98); border-top-color: rgba(160, 0, 0, 0.28); }
-#theme-banner::before { content: '✵'; color: #CC0000; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(215, 70, 55, 0.75); }
-
-/* ── Tile: hellfire shimmer ──────────────────────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: transparent;
-  border: 1px solid rgba(204,0,0,0.30);
-}
-.app-tile:hover::before { animation: tile-flicker .9s steps(1, end) infinite; }
-
-/* ── Hellfire embers — sparks rising from the cathedral depths ───────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='250'%3E%3Ccircle cx='18' cy='40' r='1.5' fill='rgba(255,100,20,0.40)'/%3E%3Ccircle cx='55' cy='130' r='1' fill='rgba(255,68,0,0.30)'/%3E%3Ccircle cx='95' cy='200' r='1.8' fill='rgba(204,0,0,0.25)'/%3E%3Ccircle cx='40' cy='90' r='0.8' fill='rgba(255,140,40,0.35)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='400'%3E%3Ccircle cx='30' cy='60' r='2' fill='rgba(255,80,10,0.22)'/%3E%3Ccircle cx='100' cy='200' r='1.5' fill='rgba(204,0,0,0.18)'/%3E%3Ccircle cx='150' cy='340' r='2.5' fill='rgba(255,120,30,0.15)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='600'%3E%3Ccircle cx='40' cy='100' r='2.5' fill='rgba(255,68,0,0.10)'/%3E%3Ccircle cx='130' cy='300' r='3' fill='rgba(204,0,0,0.08)'/%3E%3Ccircle cx='200' cy='500' r='2' fill='rgba(255,100,20,0.07)'/%3E%3C/svg%3E") repeat;
-  background-size: 120px 250px, 180px 400px, 250px 600px;
-  animation: diablo-embers 6s linear infinite;
-}
-@keyframes diablo-embers {
-  from { background-position: 0 0, -20px 0, -40px 0; }
-  to   { background-position: 15px -250px, 0 -400px, 10px -600px; }
-}

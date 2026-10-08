@@ -1,284 +1,121 @@
-/* ══ X-FILES ════════════════════════════════════════════════════════════════════
-   The Truth Is Out There. FBI paranoia. Government surveillance.
-   Cold teal and institutional red — the weight of classified knowledge.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* x-files: committed ThemeFidelity Batch08; original static bounded frame art. */
 :root {
-  /* ── Shape ── */
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 0px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── Backgrounds ── */
-  --bg:           rgba(2, 4, 8, 0.93);
-  --panel-bg:     rgba(3, 6, 12, 0.97);
-  --overlay-bg:   rgba(2, 4, 8, 0.95);
-  --header-bg:    rgba(0, 176, 160, 0.04);
-
-  /* ── Typography ── */
-  --font:         'Consolas', 'Courier New', monospace;
-
-  /* ── Text ── */
-  --text:         #A0B4C0;
-  --text-dim:     rgba(160, 180, 192, 0.78);
-
-  /* ── Accents ── */
-  --accent-c:     #00B0A0;   /* FBI teal — primary */
-  --accent-m:     #C02828;   /* FBI red — edit/destructive */
-  --accent-y:     #00B0A0;   /* teal — updates */
-
-  /* ── Borders ── */
-  --border:       rgba(0, 176, 160, 0.16);
-  --border-h:     rgba(0, 176, 160, 0.48);
-
-  /* ── Glows ── */
-  --glow-c:       0 0 6px rgba(0,176,160,.65),  0 0 18px rgba(0,176,160,.22);
-  --glow-m:       0 0 6px rgba(192,40,40,.65),  0 0 18px rgba(192,40,40,.22);
-  --glow-y:       0 0 6px rgba(0,176,160,.65),  0 0 18px rgba(0,176,160,.22);
-
-  /* ── App window decoration ── */
-  --pulse-glow:   inset 0 0 12px rgba(0,176,160,.04);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(0,176,160,.07);
-
-  /* ── Title animation ── */
-  --title-anim:   x-pulse 7s ease-in-out infinite;
-
-  /* ── Tiles ── */
-  --tile-hover-bg:     rgba(0, 176, 160, 0.055);
-  --tile-hover-border: rgba(0, 176, 160, 0.24);
-  --tile-hover-shadow: 0 0 10px rgba(0, 176, 160, 0.09);
-  --tile-active-bg:    rgba(0, 176, 160, 0.11);
-  --tile-icon-glow:    drop-shadow(0 0 7px rgba(0,176,160,.38));
-  --tile-icon-fx:      brightness(0.9) saturate(0.8) contrast(1.12);
-  --tile-icon-shape:   none;
-  --tile-label-spacing:   1.5px;
-  --tile-label-transform: uppercase;
-  --tile-label-weight:    400;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-blink 3s step-end infinite;
-  --app-entrance-anim:   entrance-glitch 1s ease-out forwards;
-
-  /* ── Buttons ── */
-  --btn-hover-bg:   rgba(0, 176, 160, 0.09);
-  --btn-active-bg:  rgba(0, 176, 160, 0.18);
-
-  /* ── Drop hint ── */
-  --drop-hint-border: rgba(0, 176, 160, 0.18);
-  --drop-icon-color:  rgba(0, 176, 160, 0.25);
-  --hint-sub-color:   rgba(0, 176, 160, 0.75);
-
-  /* ── Rename ── */
-  --rename-dashed:    rgba(0, 176, 160, 0.30);
-  --rename-input-bg:  rgba(0, 176, 160, 0.07);
-
-  /* ── Edit bar (FBI red) ── */
-  --edit-bar-bg:          rgba(192, 40, 40, 0.06);
-  --edit-bar-border:      rgba(192, 40, 40, 0.30);
-  --edit-label-color:     var(--accent-m);
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       var(--accent-m);
-  --btn-done-border:      rgba(192, 40, 40, 0.35);
-  --btn-done-hover-bg:    rgba(192, 40, 40, 0.09);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(0, 176, 160, 0.35);
-
-  /* ── Update banner (teal) ── */
-  --update-bg:             rgba(0, 176, 160, 0.06);
-  --update-border:         rgba(0, 176, 160, 0.35);
-  --update-color:          var(--accent-y);
-  --update-btn-border:     rgba(0, 176, 160, 0.30);
-  --update-btn-hover-bg:   rgba(0, 176, 160, 0.10);
-  --update-btn-hover-glow: var(--glow-y);
-
-  /* ── Close / secondary buttons ── */
-  --btn-close-color:      var(--accent-m);
-  --btn-close-border:     rgba(192, 40, 40, 0.35);
-  --btn-close-hover-bg:   rgba(192, 40, 40, 0.09);
-  --btn-close-hover-glow: var(--glow-m);
-
-  /* ── Picker ── */
-  --picker-search-bg:      rgba(0, 176, 160, 0.07);
-  --picker-item-hover-bg:  rgba(0, 176, 160, 0.07);
-  --picker-item-active-bg: rgba(0, 176, 160, 0.13);
-  --picker-placeholder-bg: rgba(0, 176, 160, 0.08);
-
-  /* ── Skin selector ── */
-  --skin-btn-active-bg:    rgba(0, 176, 160, 0.15);
-
-  /* ── Remove button ── */
-  --remove-btn-bg:         rgba(192, 40, 40, 0.88);
-  --remove-btn-border:     var(--accent-m);
+  --bg: #06090C;
+  --panel-bg: #172128;
+  --overlay-bg: #172128;
+  --header-bg: #1B2930;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #D8E0E4;
+  --text-dim: #B6C7CD;
+  --accent-c: #79C4CF;
+  --accent-text: #79C4CF;
+  --accent-m: #79C4CF;
+  --accent-y: #79C4CF;
+  --border: #7D9DA8;
+  --border-h: #E8D8A8;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #E8D8A8;
+  --title-anim: none;
+  --tile-hover-bg: #25363D;
+  --tile-hover-border: #E8D8A8;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #2D4047;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
+  --tile-label-transform: none;
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #25363D;
+  --btn-active-bg: #2D4047;
+  --btn-hover-text: #D8E0E4;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #D8E0E4;
+  --drop-hint-border: #7D9DA8;
+  --drop-icon-color: #79C4CF;
+  --hint-sub-color: #B6C7CD;
+  --rename-dashed: #7D9DA8;
+  --rename-input-bg: #172128;
+  --edit-bar-bg: #172128;
+  --edit-bar-border: #7D9DA8;
+  --edit-label-color: #D8E0E4;
+  --edit-label-glow: none;
+  --btn-done-color: #D8E0E4;
+  --btn-done-border: #7D9DA8;
+  --btn-done-hover-bg: #25363D;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #7D9DA8;
+  --update-bg: #172128;
+  --update-border: #7D9DA8;
+  --update-color: #D8E0E4;
+  --update-btn-border: #7D9DA8;
+  --update-btn-hover-bg: #25363D;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #D8E0E4;
+  --btn-close-border: #7D9DA8;
+  --btn-close-hover-bg: #25363D;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #172128;
+  --picker-item-hover-bg: #25363D;
+  --picker-item-active-bg: #2D4047;
+  --picker-placeholder-bg: #172128;
+  --skin-btn-active-bg: #2D4047;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Title animation: ominous slow teal/red pulse ──────────────────────────── */
-@keyframes x-pulse {
-  0%, 100% {
-    color: #A0B4C0;
-    text-shadow: 0 0 8px rgba(0,176,160,.40);
-  }
-  25% {
-    color: #00C0B0;
-    text-shadow: 0 0 12px rgba(0,176,160,.65), 0 0 28px rgba(0,176,160,.20);
-  }
-  65% {
-    color: #C84040;
-    text-shadow: 0 0 10px rgba(192,40,40,.55), 0 0 24px rgba(192,40,40,.18);
-  }
-  80% {
-    color: #A0B4C0;
-    text-shadow: none;
-  }
-}
+/* Identity belongs to the frame; no foreground panno, ghost text or ambient loops. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#1B2930; border-bottom-color:#7D9DA8; }
+#header::before { background:#7D9DA8; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2084%2020'%3E%3Cpath%20d%3D'M8%2017V6H28L32%202H52L57%206H77V17Z%20M8%209H77'%20fill%3D'none'%20stroke%3D'%23E8D8A8'%20stroke-opacity%3D'0.85'%20stroke-width%3D'1.2'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:300; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#D8E0E4; text-shadow:none; }
+#title .accent { color:#D8E0E4; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#B6C7CD; }
+#header-controls button { color:#D8E0E4; border-color:#7D9DA8; }
+#header-controls button:hover, #header-controls button:active { color:#D8E0E4; border-color:#E8D8A8; }
 
-/* ── App border: cold teal pulse ───────────────────────────────────────────── */
-@keyframes border-pulse {
-  0%, 100% { border-color: rgba(0,176,160,.16); box-shadow: none; }
-  50%       { border-color: rgba(0,176,160,.45); box-shadow: inset 0 0 12px rgba(0,176,160,.04); }
-}
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M2%200V32%20M5%203H7%20M5%2029H7'%20fill%3D'none'%20stroke%3D'%237D9DA8'%20stroke-opacity%3D'0.15'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M6%200V32%20M2%209H4%20M2%2023H4'%20fill%3D'none'%20stroke%3D'%237D9DA8'%20stroke-opacity%3D'0.15'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+.app-tile { background:#172128; border-color:#7D9DA8; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#25363D; border-color:#E8D8A8; box-shadow:none; }
+.app-tile:active { background:#2D4047; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Courier New',Consolas,monospace; font-size:12px; font-weight:400; font-style:normal; letter-spacing:0.3px; line-height:1.2; color:#D8E0E4; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#D8E0E4; }
+.hotkey-input.recording { background:#2D4047; color:#D8E0E4; border-color:#E8D8A8; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#25363D; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#E8D8A8; }
 
-/* ── App::after — noise texture + faint scanlines ──────────────────────────── */
-#app::after {
-  background:
-    /* surveillance scanlines — very faint */
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 2px,
-      rgba(0,0,0,.04) 2px,
-      rgba(0,0,0,.04) 3px
-    ),
-    /* edge darkness — vignette */
-    radial-gradient(ellipse 110% 100% at 50% 50%, transparent 50%, rgba(0,0,0,.50) 100%);
-  opacity: 1;
-}
+#theme-banner { background:#1B2930; border-top-color:#7D9DA8; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2022%2022'%3E%3Cellipse%20cx%3D'11'%20cy%3D'13'%20rx%3D'10'%20ry%3D'3'%20fill%3D'none'%20stroke%3D'%2379C4CF'%20stroke-width%3D'1.4'%2F%3E%3Cpath%20d%3D'M6%2011Q11%202%2016%2011%20M7%2013H8%20M14%2013H15%20M6%2017L4%2019%20M16%2017L18%2019'%20fill%3D'none'%20stroke%3D'%2379C4CF'%20stroke-opacity%3D'1'%20stroke-width%3D'1.3'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Courier New',Consolas,monospace; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#D8E0E4; text-shadow:none; }
 
-/* ── Grid container: CLASSIFIED watermark + horizontal rule pattern ─────────── */
-#grid-container {
-  position: relative;
-}
-
-#grid-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    /* CLASSIFIED text watermark — SVG at very low opacity */
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'320'%20height%3D'120'%3E%3Ctext%20x%3D'50%25'%20y%3D'55%25'%20font-family%3D%27Consolas%2C%20monospace%27%20font-size%3D'36'%20font-weight%3D'bold'%20fill%3D'%23C02828'%20fill-opacity%3D'0.04'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%20transform%3D'rotate(-12%20160%2060)'%3ECLASSIFIED%3C%2Ftext%3E%3C%2Fsvg%3E"),
-    /* FBI horizontal rule grid — institutional bureaucratic feel */
-    repeating-linear-gradient(
-      180deg,
-      transparent 0px,
-      transparent 34px,
-      rgba(0,176,160,.018) 34px,
-      rgba(0,176,160,.018) 35px
-    ),
-    /* subtle left-edge accent — cold blue */
-    linear-gradient(90deg, rgba(0,176,160,.04) 0px, transparent 40px),
-    /* cold overall tint */
-    radial-gradient(ellipse 100% 80% at 50% 0%, rgba(0,20,24,.08) 0%, transparent 70%);
-  background-size: 320px 120px, 100% 35px, 100% 100%, 100% 100%;
-}
-
-#grid-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  /* Bottom fade — shadow of something hidden below */
-  background: radial-gradient(ellipse 80% 25% at 50% 100%, rgba(192,40,40,.03) 0%, transparent 100%);
-}
-
-/* ── Header: FBI red stripe at top + teal bottom glow ─────────────────────── */
-#header {
-  border-top: 2px solid rgba(192, 40, 40, 0.50);
-  border-bottom: 1px solid rgba(0, 176, 160, 0.18);
-  box-shadow: 0 2px 10px rgba(0,0,0,.30);
-}
-
-/* ── Header accent bar: teal ───────────────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(180deg, #00B0A0 0%, rgba(0,176,160,.4) 100%);
-  box-shadow: 0 0 6px rgba(0,176,160,.5);
-}
-
-/* ── Flavor content ────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'FBI  //  SPECIAL PROJECTS  //  EYES ONLY';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(215, 75, 70, 0.72);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'CASE: X-73841\AAGENT: MULDER, F.\ACLASSIFICATION:\AEYES ONLY\A\ATHE TRUTH\AIS OUT THERE\A\ATRUST NO ONE\A\AI WANT TO\ABELIEVE\A\ACASE STATUS:\AOPEN';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(0, 176, 160, 0.10); white-space: pre;
-  animation: xfiles-ghost 10s ease-in-out infinite;
-}
-
-@keyframes xfiles-ghost {
-  0%, 100% { color: rgba(0, 176, 160, 0.10); }
-  22%       { color: rgba(0, 176, 160, 0.14); }
-  60%       { color: rgba(0, 176, 160, 0.07); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(0, 176, 160, 0.17); }
-  92%       { color: rgba(0, 176, 160, 0.10); }
-}
-
-#edit-bar::after {
-  content: 'TRUST NO ONE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 8px; letter-spacing: 3px; color: rgba(192, 40, 40, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: 'Courier New', Courier, monospace; }
-
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-/* ── Classified — FBI surveillance teal/red flash ───────────────────────── */
-#app { animation: xfiles-classified 10s steps(1) infinite; }
-@keyframes xfiles-classified {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(0,176,160,.18); }
-  75%      { box-shadow: 0 0 0 1px rgba(0,176,160,.18); }
-  76%      { box-shadow: 0 0 0 1px rgba(0,176,160,.48), inset 0 0 22px rgba(0,176,160,.06); }
-  77%      { box-shadow: 0 0 0 1px rgba(192,40,40,.35), inset 0 0 18px rgba(192,40,40,.04); }
-  78%      { box-shadow: 0 0 0 1px rgba(0,176,160,.42), inset 0 0 20px rgba(0,176,160,.05); }
-  79%      { box-shadow: 0 0 0 1px rgba(0,176,160,.18); }
-}
-
-#theme-banner { background: rgba(0, 2, 4, 0.97); border-top-color: rgba(0, 176, 160, 0.18); }
-#theme-banner::before { content: '✕'; color: #C02828; font-size: 18px; }
-#theme-banner-text { font-family: 'Courier New', Courier, monospace; color: rgba(160, 180, 192, 0.55); }
-
-/* ── Flashlight sweep — truth-seeking beam scanning the dark ─────────────── */
-#particles {
-  background:
-    radial-gradient(
-      ellipse 35% 100% at 50% 0%,
-      rgba(0,176,160,0.06) 0%,
-      rgba(0,176,160,0.03) 40%,
-      transparent 70%
-    ) no-repeat;
-  background-size: 100% 100%;
-  animation: xfiles-beam 7s ease-in-out infinite;
-}
-@keyframes xfiles-beam {
-  0%, 100% { background-position: -60% 0; }
-  50%      { background-position: 160% 0; }
-}
-
-/* ── X-Files paranormal flicker ──────────────────────────────────────────── */
-.app-tile::before {
-  background: transparent;
-  border: 1px solid rgba(0, 176, 160, 0.28);
-}
-.app-tile:hover::before { animation: tile-flicker .8s steps(1, end) infinite; }
+/* Reuse the committed measured header-art visibility contract. */
+#header { --ql-header-art-safety:1; }
+#title { text-transform:uppercase; }
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2060'%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22cone%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23E8D8A8%22%20stop-opacity%3D%22.06%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23E8D8A8%22%20stop-opacity%3D%220%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%228%22%20height%3D%2260%22%20fill%3D%22url(%23cone)%22%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 60px no-repeat, url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M2%200V32%20M5%203H7%20M5%2029H7'%20fill%3D'none'%20stroke%3D'%237D9DA8'%20stroke-opacity%3D'0.15'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M6%200V32%20M2%209H4%20M2%2023H4'%20fill%3D'none'%20stroke%3D'%237D9DA8'%20stroke-opacity%3D'0.15'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+#theme-banner::after { content:""; position:absolute; right:14px; top:14px; width:28px; height:16px; border:1px solid #A82A1A; pointer-events:none; }
+#theme-banner-text { margin-right:42px; }
+@media(max-width:639px) { #theme-banner::after { display:none; } #theme-banner-text { margin-right:0; } }

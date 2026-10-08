@@ -1,254 +1,119 @@
-/* ══ TWIN PEAKS ════════════════════════════════════════════════════════════════
-   The Black Lodge. Red curtains and dark wood. Fire walk with me.
-   The owls are not what they seem. Coffee. Diane. Twenty-five years later.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* twin-peaks: committed ThemeFidelity Batch08; original static bounded frame art. */
 :root {
-  /* ── Shape ── */
-  --radius:       1px;
-  --app-clip:     none;
+  --radius: 2px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  /* ── Backgrounds ── */
-  --bg:           #050102;
-  --panel-bg:     rgba(8, 2, 3, 0.99);
-  --overlay-bg:   rgba(5, 1, 2, 0.97);
-  --header-bg:    rgba(136, 0, 0, 0.04);
-
-  /* ── Typography ── */
-  --font:         Georgia, 'Times New Roman', serif;
-
-  /* ── Text ── */
-  --text:         #D0A080;
-  --text-dim:     rgba(170, 120, 80, 0.78);
-
-  /* ── Accents ── */
-  --accent-c:     #880000;   /* deep curtain red */
-  --accent-text:  #D83838;   /* brighter Lodge-curtain red (Sergei locked) — ~4.49:1 vs --bg, accepted within WCAG measurement noise; clears 3:1 with headroom */
-  --accent-m:     #3A1A08;   /* dark mahogany wood */
-  --accent-y:     #D4B860;   /* diner coffee / fluorescent cream */
-
-  /* ── Borders ── */
-  --border:       rgba(130, 25, 12, 0.32);
-  --border-h:     rgba(160, 35, 18, 0.62);
-
-  /* ── Glows ── */
-  --glow-c:       0 0 7px rgba(136,0,0,.60),    0 0 20px rgba(136,0,0,.20);
-  --glow-m:       0 0 5px rgba(58,26,8,.45),    0 0 14px rgba(58,26,8,.14);
-  --glow-y:       0 0 6px rgba(212,184,96,.50), 0 0 18px rgba(212,184,96,.16);
-
-  /* ── App window decoration ── */
-  --pulse-glow:   inset 0 0 22px rgba(100,0,0,.07);
-  --scanlines:    repeating-linear-gradient(
-                    to bottom,
-                    transparent 0px, transparent 3px,
-                    rgba(60, 10, 5, 0.035) 3px, rgba(60, 10, 5, 0.035) 4px
-                  );
-  --drag-over-glow: inset 0 0 24px rgba(136,0,0,.10);
-
-  /* ── Title animation ── */
-  --title-anim:   lodge-pulse 7s ease-in-out infinite;
-
-  /* ── Tiles ── */
-  --tile-hover-bg:     rgba(110, 10, 5, 0.09);
-  --tile-hover-border: rgba(140, 20, 10, 0.38);
-  --tile-hover-shadow: 0 0 12px rgba(136, 0, 0, 0.18);
-  --tile-active-bg:    rgba(110, 10, 5, 0.18);
-  --tile-icon-glow:    drop-shadow(0 0 5px rgba(136,0,0,.52)) drop-shadow(0 0 12px rgba(100,0,0,.20));
-  --tile-icon-fx:      sepia(0.35) brightness(0.92) contrast(1.1);
-  --tile-icon-shape:   none;
-  --tile-label-spacing:   0.6px;
+  --bg: #0C0A08;
+  --panel-bg: #2A2018;
+  --overlay-bg: #2A2018;
+  --header-bg: #631719;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #E8DCC0;
+  --text-dim: #CBBCA2;
+  --accent-c: #D9B363;
+  --accent-text: #D9B363;
+  --accent-m: #D9B363;
+  --accent-y: #D9B363;
+  --border: #A48B6B;
+  --border-h: #94BAA4;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #94BAA4;
+  --title-anim: none;
+  --tile-hover-bg: #35271F;
+  --tile-hover-border: #94BAA4;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #403025;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: 0.3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 5s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
-
-  /* ── Buttons ── */
-  --btn-hover-bg:   rgba(110, 10, 5, 0.10);
-  --btn-active-bg:  rgba(110, 10, 5, 0.20);
-
-  /* ── Drop hint ── */
-  --drop-hint-border: rgba(110, 10, 5, 0.28);
-  --drop-icon-color:  rgba(136, 0, 0, 0.32);
-  --hint-sub-color:   rgba(160, 100, 60, 0.75);
-
-  /* ── Rename ── */
-  --rename-dashed:    rgba(136, 0, 0, 0.38);
-  --rename-input-bg:  rgba(110, 10, 5, 0.08);
-
-  /* ── Edit bar (dark mahogany) ── */
-  --edit-bar-bg:          rgba(58, 26, 8, 0.10);
-  --edit-bar-border:      rgba(100, 40, 15, 0.40);
-  --edit-label-color:     #D4B860;
-  --edit-label-glow:      var(--glow-y);
-  --btn-done-color:       #D4B860;
-  --btn-done-border:      rgba(212, 184, 96, 0.38);
-  --btn-done-hover-bg:    rgba(212, 184, 96, 0.09);
-  --btn-done-hover-glow:  var(--glow-y);
-  --btn-add-border:       rgba(136, 0, 0, 0.38);
-
-  /* ── Update banner (coffee cream) ── */
-  --update-bg:             rgba(212, 184, 96, 0.06);
-  --update-border:         rgba(212, 184, 96, 0.32);
-  --update-color:          var(--accent-y);
-  --update-btn-border:     rgba(212, 184, 96, 0.28);
-  --update-btn-hover-bg:   rgba(212, 184, 96, 0.09);
-  --update-btn-hover-glow: var(--glow-y);
-
-  /* ── Close / secondary buttons ── */
-  --btn-close-color:      var(--accent-c);
-  --btn-close-border:     rgba(136, 0, 0, 0.38);
-  --btn-close-hover-bg:   rgba(110, 0, 0, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  /* ── Picker ── */
-  --picker-search-bg:      rgba(110, 10, 5, 0.08);
-  --picker-item-hover-bg:  rgba(110, 10, 5, 0.09);
-  --picker-item-active-bg: rgba(110, 10, 5, 0.16);
-  --picker-placeholder-bg: rgba(110, 10, 5, 0.08);
-
-  /* ── Skin selector ── */
-  --skin-btn-active-bg:    rgba(110, 10, 5, 0.18);
-
-  /* ── Remove button ── */
-  --remove-btn-bg:         rgba(136, 0, 0, 0.90);
-  --remove-btn-border:     var(--accent-c);
+  --tile-label-weight: 400;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #35271F;
+  --btn-active-bg: #403025;
+  --btn-hover-text: #E8DCC0;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-pressed-text: #E8DCC0;
+  --drop-hint-border: #A48B6B;
+  --drop-icon-color: #D9B363;
+  --hint-sub-color: #CBBCA2;
+  --rename-dashed: #A48B6B;
+  --rename-input-bg: #2A2018;
+  --edit-bar-bg: #2A2018;
+  --edit-bar-border: #A48B6B;
+  --edit-label-color: #E8DCC0;
+  --edit-label-glow: none;
+  --btn-done-color: #E8DCC0;
+  --btn-done-border: #A48B6B;
+  --btn-done-hover-bg: #35271F;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #A48B6B;
+  --update-bg: #2A2018;
+  --update-border: #A48B6B;
+  --update-color: #E8DCC0;
+  --update-btn-border: #A48B6B;
+  --update-btn-hover-bg: #35271F;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #E8DCC0;
+  --btn-close-border: #A48B6B;
+  --btn-close-hover-bg: #35271F;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #2A2018;
+  --picker-item-hover-bg: #35271F;
+  --picker-item-active-bg: #403025;
+  --picker-placeholder-bg: #2A2018;
+  --skin-btn-active-bg: #403025;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── Heavy film grain + diagonal curtain pattern + deep red-black vignette ───── */
-#app::after {
-  background:
-    /* heavy film grain — 16mm Pacific Northwest cinema */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E"),
-    /* diagonal curtain pattern — faint red chevron */
-    repeating-linear-gradient(
-      -60deg,
-      transparent 0px, transparent 12px,
-      rgba(100, 0, 0, 0.018) 12px, rgba(100, 0, 0, 0.018) 14px,
-      transparent 14px, transparent 26px
-    ),
-    /* heavy red-black vignette */
-    radial-gradient(ellipse 100% 95% at 50% 50%, transparent 22%, rgba(3, 0, 1, 0.85) 100%),
-    /* curtain warmth from sides */
-    radial-gradient(ellipse 25% 100% at 0% 50%, rgba(80, 0, 0, 0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 25% 100% at 100% 50%, rgba(80, 0, 0, 0.07) 0%, transparent 60%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
+/* Identity belongs to the frame; no foreground panno, ghost text or ambient loops. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#631719; border-bottom-color:#A48B6B; }
+#header::before { background:#A48B6B; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2084%2020'%3E%3Cpath%20d%3D'M3%2018L9%2010H5L12%202L19%2010H15L21%2018%20M28%2018L34%2011H31L38%203L45%2011H42L49%2018%20M57%2018L64%209H60L68%201L76%209H72L81%2018'%20fill%3D'none'%20stroke%3D'%2394BAA4'%20stroke-opacity%3D'0.8'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Bahnschrift,'Segoe UI',sans-serif; font-size:11px; font-weight:600; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:2px; color:#E8DCC0; text-shadow:none; }
+#title .accent { color:#E8DCC0; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#CBBCA2; }
+#header-controls button { color:#E8DCC0; border-color:#A48B6B; }
+#header-controls button:hover, #header-controls button:active { color:#E8DCC0; border-color:#94BAA4; }
 
-/* ── Header deep curtain red accent bar ──────────────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #880000, rgba(100, 0, 0, 0.22));
-  box-shadow: 0 0 8px rgba(136, 0, 0, 0.55), 0 0 22px rgba(100, 0, 0, 0.18);
-}
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M2%200V32%20M5%205L7%208%20M2%2019L4%2021'%20fill%3D'none'%20stroke%3D'%23A48B6B'%20stroke-opacity%3D'0.12'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%208%2032'%3E%3Cpath%20d%3D'M6%200V32%20M3%2010L1%2013%20M6%2024L4%2026'%20fill%3D'none'%20stroke%3D'%23A48B6B'%20stroke-opacity%3D'0.12'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+.app-tile { background:#2A2018; border-color:#A48B6B; box-shadow:none; }
+.app-tile:hover, .app-tile:focus-visible { background:#35271F; border-color:#94BAA4; box-shadow:none; }
+.app-tile:active { background:#403025; }
+.app-tile::before { display:none; }
+.tile-label { font-family:'Segoe UI',Arial,sans-serif; font-size:12px; font-weight:400; font-style:normal; letter-spacing:0.3px; line-height:1.2; color:#E8DCC0; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#E8DCC0; }
+.hotkey-input.recording { background:#403025; color:#E8DCC0; border-color:#94BAA4; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#35271F; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#94BAA4; }
 
-/* ── Grid: Black Lodge zigzag diamond floor ──────────────────────────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* Black Lodge diamond floor — the iconic zigzag pattern */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='380'%3E%3Cdefs%3E%3Cpattern id='lf' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Cpolygon points='20,0 40,20 20,40 0,20' fill='rgba(80,0,0,0.10)'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='500' height='380' fill='url(%23lf)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
-    /* curtain warmth from sides */
-    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(80, 0, 0, 0.08) 0%, transparent 65%),
-    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(80, 0, 0, 0.08) 0%, transparent 65%),
-    /* floor depth — brighter near bottom like candlelight below */
-    linear-gradient(to top, rgba(80, 0, 0, 0.08) 0%, transparent 55%);
-  animation: lodge-floor 12s steps(1) infinite;
-}
-@keyframes lodge-floor {
-  0%, 100%  { opacity: 0.90; }
-  86%       { opacity: 0.90; }
-  87%       { opacity: 0.20; }
-  88%       { opacity: 1.00; }
-  89%       { opacity: 0.30; }
-  90%       { opacity: 0.90; }
-}
+#theme-banner { background:#631719; border-top-color:#A48B6B; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2022%2022'%3E%3Cpath%20d%3D'M4%209L3%202L9%205Q11%204%2013%205L19%202L18%209Q21%2019%2011%2021Q1%2019%204%209%20M7%208Q11%207%2011%2012Q11%207%2015%208%20M8%2010H8.1%20M14%2010H14.1%20M9%2014L11%2016L13%2014%20M6%2017L4%2019%20M16%2017L18%2019'%20fill%3D'none'%20stroke%3D'%23E8DCC0'%20stroke-opacity%3D'1'%20stroke-width%3D'1.2'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0.3px; color:#E8DCC0; text-shadow:none; }
 
-/* ── Flavor content ──────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'TWIN PEAKS  //  BLACK LODGE  //  THE OWLS ARE NOT WHAT THEY SEEM';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(180, 115, 65, 0.72);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'BLACK\ALODGE\A\AFIRE\AWALK\AWITH ME\A\ATHE OWL\AAWAITS\A\ATWENTY-FIVE\AYEARS\ALATER';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(110, 10, 5, 0.12); white-space: pre;
-  animation: lodge-lore 10s ease-in-out infinite;
-}
-
-@keyframes lodge-lore {
-  0%, 100% { color: rgba(110, 10, 5, 0.12); }
-  28%       { color: rgba(110, 10, 5, 0.16); }
-  65%       { color: rgba(110, 10, 5, 0.09); }
-  88%       { color: rgba(0, 0, 0, 0); }
-  89%       { color: rgba(110, 10, 5, 0.20); }
-  92%       { color: rgba(110, 10, 5, 0.12); }
-}
-
-#edit-bar::after {
-  content: 'DIANE, I\'M ENTERING EDIT MODE';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8.5px; letter-spacing: 2px; color: rgba(200, 140, 60, 0.40);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 4px; }
-
-/* ── Title animation: slow deep red pulse + backward-speech flicker ───────────── */
-@keyframes lodge-pulse {
-  0%, 100% { color: #C09070; text-shadow: 0 0 7px rgba(136,0,0,.40), 0 0 20px rgba(136,0,0,.14); opacity: 1; }
-  40%       { color: #C09070; text-shadow: 0 0 10px rgba(136,0,0,.55), 0 0 28px rgba(136,0,0,.20); opacity: 0.95; }
-  70%       { color: #C09070; text-shadow: 0 0 6px rgba(136,0,0,.38); opacity: 1; }
-  88%       { color: #C09070; opacity: 1; }
-  89%       { color: #D4B860; text-shadow: 0 0 6px rgba(212,184,96,.45); opacity: 0.8; transform: scaleX(-1); }
-  90%       { color: #C09070; text-shadow: 0 0 7px rgba(136,0,0,.40); opacity: 1; transform: scaleX(1); }
-  91%       { color: #D83838; text-shadow: 0 0 10px rgba(136,0,0,.65); opacity: 0.9; }
-  92%       { color: #C09070; text-shadow: 0 0 7px rgba(136,0,0,.40); opacity: 1; }
-}
-
-/* ── Black Lodge curtain — red flicker between worlds ───────────────────── */
-#app { animation: lodge-curtain 8s ease-in-out infinite; }
-@keyframes lodge-curtain {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(110,10,5,.22), inset 0 0 20px rgba(100,0,0,.05); }
-  35%      { box-shadow: 0 0 0 1px rgba(136,0,0,.48), inset 0 0 28px rgba(136,0,0,.08); }
-  36%      { box-shadow: 0 0 0 1px rgba(212,184,96,.25), inset 0 0 18px rgba(212,184,96,.04); }
-  37%      { box-shadow: 0 0 0 1px rgba(136,0,0,.40), inset 0 0 24px rgba(136,0,0,.07); }
-  70%      { box-shadow: 0 0 0 1px rgba(100,0,0,.28), inset 0 0 20px rgba(100,0,0,.05); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(4, 1, 2, 0.99); border-top-color: rgba(110, 10, 5, 0.25); }
-#theme-banner::before { content: '◑'; color: #880000; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(190, 90, 60, 0.82); }
-
-/* ── Tile: curtain flicker ─────────────────────────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 100%;
-  left: 0; top: 0;
-  transform: none;
-  background: transparent;
-  border: 1px solid rgba(136, 0, 0, 0.28);
-}
-.app-tile:hover::before { animation: tile-flicker .9s steps(1, end) infinite; }
-
-/* ── Black Lodge curtain sway — red ambient light shifting side to side ──── */
-#particles {
-  background:
-    radial-gradient(ellipse 30% 100% at 0% 50%, rgba(136,0,0,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 30% 100% at 100% 50%, rgba(136,0,0,0.07) 0%, transparent 60%);
-  animation: lodge-sway 8s ease-in-out infinite;
-}
-@keyframes lodge-sway {
-  0%, 100% { opacity: 0.3; background-position: -12% 0, 112% 0; }
-  50%      { opacity: 1; background-position: 6% 0, 94% 0; }
-}
+/* Reuse the committed measured header-art visibility contract. */
+#header { --ql-header-art-safety:1; }
+#title { transform:none; top:auto; vertical-align:baseline; }
+#header, #theme-banner { background:repeating-linear-gradient(90deg,#631719 0px,#7A2224 10px,#631719 22px); }
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2024%206'%3E%3Cpath%20d%3D'M0%201L6%205L12%201L18%205L24%201'%20fill%3D'none'%20stroke%3D'%23E8DCC0'%20stroke-opacity%3D'0.4'%20stroke-width%3D'1'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 6px repeat-x, repeating-linear-gradient(90deg,#631719 0px,#7A2224 10px,#631719 22px); }

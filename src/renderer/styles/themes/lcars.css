@@ -1,243 +1,126 @@
-/* ══ LCARS ════════════════════════════════════════════════════════════════════
-   Star Trek TNG — Library Computer Access/Retrieval System.
-   Warm amber + purple + teal color blocks. Rounded everywhere. Steady display.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* lcars: approved ThemeFidelity Batch11 palette, typography and original static frame motifs. */
 :root {
-  /* Backgrounds */
-  --bg:                   #000000;
-  --panel-bg:             rgba(0, 0, 0, 0.97);
-  --overlay-bg:           rgba(0, 0, 0, 0.9);
-  --header-bg:            rgba(10, 5, 0, 0.98);
-
-  /* Typography */
-  --font:                 'Arial', 'Helvetica', sans-serif;
-  --text:                 #FFCC44;
-  --text-dim:             #c89a3a;
-
-  /* Shape — rounded everywhere */
-  --radius:               16px;
-  --app-clip:             none;
-  --overlay-clip:         none;
-
-  /* Accent palette — LCARS orange / purple / teal */
-  --accent-c:             #FF9900;
-  --accent-m:             #CC88FF;
-  --accent-y:             #66CCCC;
-
-  /* Borders */
-  --border:               rgba(255, 153, 0, 0.2);
-  --border-h:             rgba(255, 153, 0, 0.6);
-
-  /* Glows */
-  --glow-c:               0 0 8px rgba(255, 153, 0, 0.5), 0 0 20px rgba(255, 153, 0, 0.2);
-  --glow-m:               0 0 8px rgba(204, 136, 255, 0.5), 0 0 20px rgba(204, 136, 255, 0.2);
-  --glow-y:               0 0 8px rgba(102, 204, 204, 0.5), 0 0 20px rgba(102, 204, 204, 0.2);
-  --pulse-glow:           inset 0 0 20px rgba(255, 153, 0, 0.1);
-
-  /* No scanlines — LCARS is a clean display */
-  --scanlines:            none;
-
-  /* Title animation — none, LCARS displays are steady */
-  --title-anim:           none;
-
-  /* Tiles */
-  --tile-hover-bg:        rgba(255, 153, 0, 0.08);
-  --tile-hover-border:    #FF9900;
-  --tile-hover-shadow:    0 0 10px rgba(255, 153, 0, 0.35), inset 0 0 8px rgba(255, 153, 0, 0.05);
-  --tile-active-bg:       rgba(255, 153, 0, 0.15);
-  --tile-icon-glow:       drop-shadow(0 0 5px rgba(255, 153, 0, 0.6)) drop-shadow(0 0 12px rgba(255, 153, 0, 0.3));
-  --tile-icon-fx:         saturate(1.2) brightness(1.1);
-  --tile-icon-shape:      inset(2% round 14px);
-  --tile-label-spacing:   1px;
+  --radius: 4px;
+  --app-clip: none;
+  --overlay-clip: none;
+  --bg: #080808;
+  --panel-bg: #171717;
+  --overlay-bg: #171717;
+  --header-bg: #202020;
+  --font: 'Segoe UI', 'Yu Gothic', Arial, sans-serif;
+  --text: #F3E7D9;
+  --text-dim: #D4C3B2;
+  --accent-c: #FFCC99;
+  --accent-text: #FFCC99;
+  --accent-m: #FFCC99;
+  --accent-y: #FFCC99;
+  --border: #BC9AAC;
+  --border-h: #99CCFF;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #99CCFF;
+  --title-anim: none;
+  --tile-hover-bg: #2B2B2B;
+  --tile-hover-border: #99CCFF;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #353535;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: -0.2px;
   --tile-label-transform: uppercase;
-  --tile-label-weight:    700;
-  --tile-label-style:     normal;
-  --banner-icon-anim:    banner-pulse 3s ease-in-out infinite;
-  --app-entrance-anim:   entrance-glitch 0.8s ease-out forwards;
-
-  /* Buttons */
-  --btn-hover-bg:         rgba(255, 153, 0, 0.1);
-  --btn-active-bg:        rgba(255, 153, 0, 0.18);
-
-  /* Drop hint */
-  --drop-hint-border:     rgba(255, 153, 0, 0.35);
-  --drop-icon-color:      rgba(255, 153, 0, 0.45);
-  --hint-sub-color:       #c89a3a;
-
-  /* Rename */
-  --rename-dashed:        rgba(255, 153, 0, 0.5);
-  --rename-input-bg:      rgba(255, 153, 0, 0.05);
-
-  /* Edit bar — purple */
-  --edit-bar-bg:          rgba(204, 136, 255, 0.07);
-  --edit-bar-border:      rgba(204, 136, 255, 0.55);
-  --edit-label-color:     #CC88FF;
-  --edit-label-glow:      0 0 8px rgba(204, 136, 255, 0.55), 0 0 18px rgba(204, 136, 255, 0.2);
-  --btn-done-color:       #CC88FF;
-  --btn-done-border:      rgba(204, 136, 255, 0.55);
-  --btn-done-hover-bg:    rgba(204, 136, 255, 0.1);
-  --btn-done-hover-glow:  0 0 10px rgba(204, 136, 255, 0.5);
-  --btn-add-border:       rgba(255, 153, 0, 0.45);
-
-  /* Update banner — teal */
-  --update-bg:            rgba(102, 204, 204, 0.06);
-  --update-border:        rgba(102, 204, 204, 0.5);
-  --update-color:         #66CCCC;
-  --update-btn-border:    rgba(102, 204, 204, 0.5);
-  --update-btn-hover-bg:  rgba(102, 204, 204, 0.1);
-  --update-btn-hover-glow: 0 0 10px rgba(102, 204, 204, 0.45);
-
-  /* Settings CLOSE — red alert */
-  --btn-close-color:      #CC3333;
-  --btn-close-border:     rgba(204, 51, 51, 0.5);
-  --btn-close-hover-bg:   rgba(204, 51, 51, 0.1);
-  --btn-close-hover-glow: 0 0 10px rgba(204, 51, 51, 0.5);
-
-  /* Picker / search */
-  --picker-search-bg:         rgba(255, 153, 0, 0.05);
-  --picker-item-hover-bg:     rgba(255, 153, 0, 0.09);
-  --picker-item-active-bg:    rgba(255, 153, 0, 0.16);
-  --picker-placeholder-bg:    rgba(255, 153, 0, 0.05);
-
-  /* Skin / remove */
-  --skin-btn-active-bg:   rgba(255, 153, 0, 0.15);
-  --remove-btn-bg:        rgba(204, 51, 51, 0.12);
-  --remove-btn-border:    rgba(204, 51, 51, 0.45);
-
-  /* Drag */
-  --drag-over-glow:       inset 0 0 22px rgba(255, 153, 0, 0.2);
+  --tile-label-weight: 600;
+  --tile-label-style: normal;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #2B2B2B;
+  --btn-active-bg: #353535;
+  --btn-hover-text: #F3E7D9;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --mgr-button-hover-text: #F3E7D9;
+  --mgr-button-pressed-text: #F3E7D9;
+  --drop-hint-border: #BC9AAC;
+  --drop-icon-color: #FFCC99;
+  --hint-sub-color: #D4C3B2;
+  --rename-dashed: #BC9AAC;
+  --rename-input-bg: #171717;
+  --edit-bar-bg: #171717;
+  --edit-bar-border: #BC9AAC;
+  --edit-label-color: #FFCC99;
+  --edit-label-glow: none;
+  --btn-done-color: #FFCC99;
+  --btn-done-border: #BC9AAC;
+  --btn-done-hover-bg: #2B2B2B;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #BC9AAC;
+  --update-bg: #171717;
+  --update-border: #BC9AAC;
+  --update-color: #FFCC99;
+  --update-btn-border: #BC9AAC;
+  --update-btn-hover-bg: #2B2B2B;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #F3E7D9;
+  --btn-close-border: #BC9AAC;
+  --btn-close-hover-bg: #2B2B2B;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #171717;
+  --picker-item-hover-bg: #2B2B2B;
+  --picker-item-active-bg: #353535;
+  --picker-placeholder-bg: #171717;
+  --skin-btn-active-bg: #353535;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
 
-/* ── LCARS sidebar — full-height, 16px, authentic 4-block color column ─────── */
-#header::before {
-  top: 0; bottom: 0; width: 16px;
-  border-radius: 0 8px 8px 0;
-  background: linear-gradient(to bottom,
-    #FF9900 0%,   #FF9900 25%,
-    #CC88FF 25%,  #CC88FF 55%,
-    #66CCCC 55%,  #66CCCC 78%,
-    #CC3333 78%,  #CC3333 100%
-  );
-  box-shadow: 3px 0 14px rgba(255,153,0,0.38), 3px 0 5px rgba(204,136,255,0.22);
-}
+/* Remove foreground panno/readouts and ambient motion; preserve functional transitions. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { --ql-header-art-safety:1; background:#202020; border-bottom-color:#BC9AAC; }
+#header::before { background:#BC9AAC; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23FFCC99%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.65%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%223%22%20y%3D%222%22%20width%3D%2276%22%20height%3D%224%22%20rx%3D%222%22%20fill%3D%22%23FFCC99%22%20stroke%3D%22none%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%228%22%20width%3D%2253%22%20height%3D%224%22%20rx%3D%222%22%20fill%3D%22%23CC99CC%22%20stroke%3D%22none%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%2214%22%20width%3D%2268%22%20height%3D%224%22%20rx%3D%222%22%20fill%3D%22%2399CCFF%22%20stroke%3D%22none%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Bahnschrift, 'Segoe UI', sans-serif; font-size:11px; font-weight:600; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:-0.2px; color:#F3E7D9; text-shadow:none; }
+#title .accent { color:#FFCC99; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#D4C3B2; opacity:1; }
+#header-controls button { color:#F3E7D9; border-color:#BC9AAC; }
+#header-controls button:hover, #header-controls button:active { color:#F3E7D9; border-color:#99CCFF; }
 
-/* ── LCARS display grid: left sidebar echo + thick color bottom bar ─────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    /* left sidebar ambient echo — same color blocks as the header bar */
-    linear-gradient(to right,
-      rgba(255,153,0,0.10)  0px,  rgba(255,153,0,0.10)  3px,
-      rgba(204,136,255,0.08) 3px, rgba(204,136,255,0.08) 5px,
-      rgba(102,204,204,0.06) 5px, rgba(102,204,204,0.06) 7px,
-      rgba(204,51,51,0.05)  7px,  rgba(204,51,51,0.05)  9px,
-      transparent 9px
-    ),
-    /* bottom LCARS color bar — real LCARS has thick colored blocks at bottom */
-    linear-gradient(to top,
-      rgba(255,153,0,0.12)  0px,  rgba(255,153,0,0.12)  7px,
-      rgba(204,136,255,0.10) 7px, rgba(204,136,255,0.10) 14px,
-      rgba(204,51,51,0.09)  14px, rgba(204,51,51,0.09)  20px,
-      rgba(102,204,204,0.08) 20px,rgba(102,204,204,0.08) 26px,
-      transparent 26px
-    ),
-    /* top data header bar */
-    linear-gradient(to bottom,
-      rgba(255,153,0,0.07) 0px, rgba(255,153,0,0.07) 5px,
-      rgba(102,204,204,0.06) 5px, rgba(102,204,204,0.06) 10px,
-      transparent 10px
-    ),
-    /* warm center radial */
-    radial-gradient(ellipse 70% 55% at 55% 50%, rgba(255,153,0,0.025) 0%, transparent 70%);
-}
+/* Eight-pixel scrolling outer trim, omitted where radial layouts lack safe bands. */
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23BC9AAC%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M2%200v9%22%20stroke%3D%22%23FF9900%22%20stroke-width%3D%224%22%2F%3E%3Cpath%20d%3D%22M2%2012v8%22%20stroke%3D%22%23CC99CC%22%20stroke-width%3D%224%22%2F%3E%3Cpath%20d%3D%22M2%2023v9%22%20stroke%3D%22%239999CC%22%20stroke-width%3D%224%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y, url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23BC9AAC%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M2%200v9%22%20stroke%3D%22%23FF9900%22%20stroke-width%3D%224%22%2F%3E%3Cpath%20d%3D%22M2%2012v8%22%20stroke%3D%22%23CC99CC%22%20stroke-width%3D%224%22%2F%3E%3Cpath%20d%3D%22M2%2023v9%22%20stroke%3D%22%239999CC%22%20stroke-width%3D%224%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+body.region.layout-fan #grid-container, body.region.layout-ring #grid-container, body.region.layout-row #grid-container, body.region.layout-column #grid-container { background:none; }
+.app-tile { background:#171717; border-color:#BC9AAC; box-shadow:none; border-radius:4px; }
+.app-tile:hover { background:#2B2B2B; border-color:#99CCFF; box-shadow:none; }
+.app-tile:focus-visible { background:#2B2B2B; border-color:#99CCFF; outline-color:#99CCFF; }
+.app-tile:active { background:#353535; }
+.app-tile::before { display:none; }
+.tile-label { font-family:Bahnschrift, 'Segoe UI', sans-serif; font-size:12px; font-weight:600; font-style:normal; font-synthesis:none; letter-spacing:-0.2px; line-height:1.2; color:#F3E7D9; text-shadow:none; overflow:hidden; text-overflow:ellipsis; padding-bottom:3px; margin-bottom:-3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active, .mgr-delete:hover, .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#FFCC99; }
+.hotkey-input.recording { background:#353535; color:#FFCC99; border-color:#99CCFF; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#2B2B2B; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#99CCFF; }
 
-/* ── Overlay panel rounded with orange top border ─────────────────────────── */
-.overlay-panel {
-  border-radius: 16px;
-  border-top: 3px solid rgba(255, 153, 0, 0.7);
-  box-shadow: 0 0 30px rgba(255, 153, 0, 0.15), 0 0 60px rgba(0, 0, 0, 0.8);
-}
+#theme-banner { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23BC9AAC%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%203h8%22%20stroke%3D%22%23FF9900%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M10%203h6%22%20stroke%3D%22%23CC99CC%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M18%203h6%22%20stroke%3D%22%2399CCFF%22%20stroke-width%3D%223%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x, #202020; border-top-color:#BC9AAC; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; animation:none; will-change:auto; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23FFCC99%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%271%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M4%203h14v5H9v11H4z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Bahnschrift, 'Segoe UI', sans-serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0px; color:#F3E7D9; text-shadow:none; }
 
-/* ── App rounded container + LCARS system alert ──────────────────────────── */
-#app {
-  border-radius: 16px;
-  border: 1px solid rgba(255, 153, 0, 0.25);
-  animation: lcars-alert 10s ease-in-out infinite;
-}
-@keyframes lcars-alert {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(255,153,0,.20); }
-  40%      { box-shadow: 0 0 0 1px rgba(255,153,0,.40), inset 0 0 20px rgba(255,153,0,.06); }
-  41%      { box-shadow: 0 0 0 1px rgba(204,136,255,.35), inset 0 0 18px rgba(204,136,255,.05); }
-  42%      { box-shadow: 0 0 0 1px rgba(255,153,0,.45), inset 0 0 22px rgba(255,153,0,.07); }
-  80%      { box-shadow: 0 0 0 1px rgba(102,204,204,.38), inset 0 0 18px rgba(102,204,204,.05); }
-  81%      { box-shadow: 0 0 0 1px rgba(255,153,0,.30), inset 0 0 14px rgba(255,153,0,.04); }
-}
+/* Shape only the supporting plate; application glyph is complete above it. */
+.tile-icon-wrap::before { content:''; position:absolute; inset:0; background:#202020; border:1px solid #BC9AAC; border-radius:999px; clip-path:none; pointer-events:none; }
+.tile-icon { position:relative; z-index:1; }
 
-/* ── Flavor content ────────────────────────────────────────────────────────── */
-#header::after {
-  content: 'STARDATE  47634.44';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Arial, Helvetica, sans-serif; font-weight: bold;
-  font-size: 9px; letter-spacing: 3px; color: rgba(255, 153, 0, 0.60);
-  pointer-events: none; white-space: nowrap;
-}
+/* Four-pixel elbow does not extend into the title's historical 12px start. */
+#header { background:linear-gradient(#FF9900,#FF9900) left bottom / 4px 12px no-repeat,#202020; }
+#theme-banner { background:linear-gradient(#CC99CC,#CC99CC) left top / 4px 12px no-repeat,url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%207%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23BC9AAC%27%20stroke-width%3D%271.2%27%20stroke-opacity%3D%270.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%22M0%203h8%22%20stroke%3D%22%23FF9900%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M10%203h6%22%20stroke%3D%22%23CC99CC%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M18%203h6%22%20stroke%3D%22%2399CCFF%22%20stroke-width%3D%223%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left 0 top 0 / 24px 7px repeat-x,#202020; }
 
-#grid-container::after {
-  content: 'SHIELDS: NOMINAL\AWARP CORE: STABLE\ASENSORS: ACTIVE\AO2: NOMINAL\AALL SYSTEMS: ONLINE\A\AFEDERATION\ASTANDARD';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Arial, Helvetica, sans-serif; font-weight: bold;
-  font-size: 12px; line-height: 1.70; text-align: right;
-  color: rgba(255, 153, 0, 0.12); white-space: pre;
-  background: none;
-  animation: lcars-lore-breathe 10s ease-in-out infinite;
-}
-
-@keyframes lcars-lore-breathe {
-  0%, 100% { color: rgba(255,153,0,.12); }
-  28%       { color: rgba(255,153,0,.16); }
-  65%       { color: rgba(255,153,0,.08); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(255,153,0,.18); }
-  92%       { color: rgba(255,153,0,.12); }
-}
-
-#edit-bar::after {
-  content: 'COMPUTER: READY';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Arial, Helvetica, sans-serif; font-weight: bold;
-  font-size: 8px; letter-spacing: 2px; color: rgba(102, 204, 204, 0.45);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Arial, Helvetica, sans-serif; font-weight: bold; }
-
-/* ── Banner ────────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(0, 0, 0, 0.97); border-top-color: rgba(255, 153, 0, 0.35); border-top-width: 3px; }
-#theme-banner::before { content: '▮'; color: #FF9900; font-size: 20px; }
-#theme-banner-text { font-family: Arial, Helvetica, sans-serif; font-weight: bold; color: rgba(255, 200, 60, 0.55); }
-
-/* ── LCARS data flow — color blocks streaming through channels ───────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='300'%3E%3Crect x='2' y='20' width='8' height='12' rx='4' fill='rgba(255,153,0,0.14)'/%3E%3Crect x='2' y='90' width='8' height='8' rx='4' fill='rgba(204,136,255,0.12)'/%3E%3Crect x='2' y='170' width='8' height='14' rx='4' fill='rgba(102,204,204,0.10)'/%3E%3Crect x='2' y='250' width='8' height='10' rx='4' fill='rgba(255,153,0,0.12)'/%3E%3C/svg%3E") repeat-y,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='450'%3E%3Crect x='2' y='40' width='8' height='16' rx='4' fill='rgba(204,136,255,0.10)'/%3E%3Crect x='2' y='160' width='8' height='10' rx='4' fill='rgba(102,204,204,0.08)'/%3E%3Crect x='2' y='300' width='8' height='12' rx='4' fill='rgba(204,51,51,0.07)'/%3E%3Crect x='2' y='400' width='8' height='8' rx='4' fill='rgba(255,153,0,0.09)'/%3E%3C/svg%3E") repeat-y;
-  background-size: 40px 300px, 40px 450px;
-  background-position-x: 0, 0;
-  animation: lcars-dataflow 4s linear infinite;
-}
-@keyframes lcars-dataflow {
-  from { background-position: 0 -300px, 0 -450px; }
-  to   { background-position: 0 0, 0 0; }
-}
-
-/* ── LCARS data block — horizontal bar scan ──────────────────────────────── */
-.app-tile::before {
-  width: 100%; height: 3px;
-  left: 0; top: -3px;
-  transform: none;
-  background: var(--tile-hover-border);
-}
-.app-tile:hover::before { animation: tile-scan-v .4s ease-in forwards; }
+/* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
+body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }

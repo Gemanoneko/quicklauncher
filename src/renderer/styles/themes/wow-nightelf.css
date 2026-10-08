@@ -1,219 +1,121 @@
-/* ══ WORLD OF WARCRAFT: NIGHT ELVES ══════════════════════════════════════════
-   Elune adore. Children of the Stars. Silver moonlight on still water,
-   ancient forests, and the eternal vigil. The Kaldorei remember.
-   ══════════════════════════════════════════════════════════════════════════════ */
-
+/* wow-nightelf: ThemeFidelity Batch09; committed palette/type and original bounded motifs. */
 :root {
-  --radius:       2px;
-  --app-clip:     none;
+  --radius: 4px;
+  --app-clip: none;
   --overlay-clip: none;
-
-  --bg:           #060810;
-  --panel-bg:     rgba(8, 10, 20, 0.99);
-  --overlay-bg:   rgba(6, 8, 16, 0.97);
-  --header-bg:    rgba(128, 112, 192, 0.04);
-
-  --font:         Georgia, 'Times New Roman', serif;
-  --text:         #A098C0;
-  --text-dim:     rgba(140, 130, 175, 0.88);
-
-  --accent-c:     #8070C0;   /* moonlight violet */
-  --accent-m:     #40A8A0;   /* nature teal */
-  --accent-y:     #181830;   /* night shadow */
-
-  --border:       rgba(128, 112, 192, 0.22);
-  --border-h:     rgba(128, 112, 192, 0.52);
-
-  --glow-c:       0 0 8px rgba(128,112,192,.58), 0 0 22px rgba(128,112,192,.20);
-  --glow-m:       0 0 7px rgba(64,168,160,.52), 0 0 18px rgba(64,168,160,.18);
-  --glow-y:       0 0 5px rgba(24,24,48,.42), 0 0 14px rgba(24,24,48,.14);
-
-  --pulse-glow:   inset 0 0 22px rgba(128,112,192,.06);
-  --scanlines:    none;
-  --drag-over-glow: inset 0 0 24px rgba(128,112,192,.10);
-
-  --title-anim:   nelf-title 12s ease-in-out infinite;
-
-  --tile-hover-bg:     rgba(128, 112, 192, 0.08);
-  --tile-hover-border: rgba(128, 112, 192, 0.42);
-  --tile-hover-shadow: 0 0 14px rgba(128, 112, 192, 0.20);
-  --tile-active-bg:    rgba(128, 112, 192, 0.15);
-  --tile-icon-glow:    drop-shadow(0 0 6px rgba(128,112,192,.55)) drop-shadow(0 0 14px rgba(64,168,160,.20));
-  --tile-icon-fx:      brightness(0.95) saturate(1.15) contrast(1.1);
-  --tile-icon-shape:   polygon(50% 0%, 85% 10%, 100% 40%, 100% 70%, 85% 100%, 15% 100%, 0% 70%, 0% 40%, 15% 10%);
-  --tile-label-spacing:   0.8px;
+  --bg: #0E0A1E;
+  --panel-bg: #1B182C;
+  --overlay-bg: #1B182C;
+  --header-bg: #242037;
+  --font: 'Segoe UI','Yu Gothic',Arial,sans-serif;
+  --text: #D6E2F1;
+  --text-dim: #BAC5DC;
+  --accent-c: #BAA1EB;
+  --accent-text: #BAA1EB;
+  --accent-m: #BAA1EB;
+  --accent-y: #BAA1EB;
+  --border: #8B9DAC;
+  --border-h: #BAA1EB;
+  --glow-c: none;
+  --glow-m: none;
+  --glow-y: none;
+  --pulse-glow: none;
+  --scanlines: none;
+  --drag-over-glow: inset 0 0 0 2px #73DED3;
+  --title-anim: none;
+  --tile-hover-bg: #2D2944;
+  --tile-hover-border: #BAA1EB;
+  --tile-hover-shadow: none;
+  --tile-active-bg: #352F4D;
+  --tile-icon-glow: none;
+  --tile-icon-fx: none;
+  --tile-icon-shape: none;
+  --tile-label-spacing: .3px;
   --tile-label-transform: none;
-  --tile-label-weight:    400;
-  --tile-label-style:     italic;
-  --banner-icon-anim:    banner-pulse 6s ease-in-out infinite;
-  --app-entrance-anim:   entrance-fade 1.8s ease-out forwards;
-
-  --btn-hover-bg:   rgba(128, 112, 192, 0.10);
-  --btn-active-bg:  rgba(128, 112, 192, 0.20);
-
-  --drop-hint-border: rgba(128, 112, 192, 0.25);
-  --drop-icon-color:  rgba(64, 168, 160, 0.32);
-  --hint-sub-color:   rgba(140, 130, 175, 0.9);
-
-  --rename-dashed:    rgba(128, 112, 192, 0.40);
-  --rename-input-bg:  rgba(128, 112, 192, 0.07);
-
-  --edit-bar-bg:          rgba(64, 168, 160, 0.07);
-  --edit-bar-border:      rgba(64, 168, 160, 0.40);
-  --edit-label-color:     #40A8A0;
-  --edit-label-glow:      var(--glow-m);
-  --btn-done-color:       #40A8A0;
-  --btn-done-border:      rgba(64, 168, 160, 0.42);
-  --btn-done-hover-bg:    rgba(64, 168, 160, 0.10);
-  --btn-done-hover-glow:  var(--glow-m);
-  --btn-add-border:       rgba(128, 112, 192, 0.40);
-
-  --update-bg:             rgba(64, 168, 160, 0.06);
-  --update-border:         rgba(64, 168, 160, 0.32);
-  --update-color:          var(--accent-m);
-  --update-btn-border:     rgba(64, 168, 160, 0.28);
-  --update-btn-hover-bg:   rgba(64, 168, 160, 0.09);
-  --update-btn-hover-glow: var(--glow-m);
-
-  --btn-close-color:      #8070C0;
-  --btn-close-border:     rgba(128, 112, 192, 0.38);
-  --btn-close-hover-bg:   rgba(128, 112, 192, 0.10);
-  --btn-close-hover-glow: var(--glow-c);
-
-  --picker-search-bg:      rgba(128, 112, 192, 0.07);
-  --picker-item-hover-bg:  rgba(128, 112, 192, 0.08);
-  --picker-item-active-bg: rgba(128, 112, 192, 0.15);
-  --picker-placeholder-bg: rgba(128, 112, 192, 0.07);
-
-  --skin-btn-active-bg:    rgba(128, 112, 192, 0.16);
-  --remove-btn-bg:         rgba(64, 168, 160, 0.88);
-  --remove-btn-border:     #40A8A0;
+  --tile-label-weight: 400;
+  --tile-label-style: italic;
+  --tile-label-shadow: none;
+  --banner-icon-anim: none;
+  --app-entrance-anim: none;
+  --btn-hover-bg: #2D2944;
+  --btn-active-bg: #352F4D;
+  --btn-hover-text: #D6E2F1;
+  --mgr-button-hover-text: #D6E2F1;
+  --mgr-button-pressed-text: #D6E2F1;
+  --hover-label-floor: 0;
+  --hover-label-ceiling: 1;
+  --drop-hint-border: #8B9DAC;
+  --drop-icon-color: #BAA1EB;
+  --hint-sub-color: #BAC5DC;
+  --rename-dashed: #8B9DAC;
+  --rename-input-bg: #1B182C;
+  --edit-bar-bg: #1B182C;
+  --edit-bar-border: #8B9DAC;
+  --edit-label-color: #D6E2F1;
+  --edit-label-glow: none;
+  --btn-done-color: #D6E2F1;
+  --btn-done-border: #8B9DAC;
+  --btn-done-hover-bg: #2D2944;
+  --btn-done-hover-glow: none;
+  --btn-add-border: #8B9DAC;
+  --update-bg: #1B182C;
+  --update-border: #8B9DAC;
+  --update-color: #D6E2F1;
+  --update-btn-border: #8B9DAC;
+  --update-btn-hover-bg: #2D2944;
+  --update-btn-hover-glow: none;
+  --btn-close-color: #D6E2F1;
+  --btn-close-border: #8B9DAC;
+  --btn-close-hover-bg: #2D2944;
+  --btn-close-hover-glow: none;
+  --picker-search-bg: #1B182C;
+  --picker-item-hover-bg: #2D2944;
+  --picker-item-active-bg: #352F4D;
+  --picker-placeholder-bg: #1B182C;
+  --skin-btn-active-bg: #352F4D;
+  --remove-btn-bg: #70222C;
+  --remove-btn-border: #70222C;
 }
+/* Decoration stays in chrome/scrolling frame, with complete app icons. */
+#app::after, #grid-container::before, #grid-container::after, #edit-bar::after { content:none; background:none; animation:none; }
+#particles { background:none; animation:none; }
+#app, #title, #header::before, #header::after, #theme-banner::before { animation:none; box-shadow:none; text-shadow:none; }
+#header { background:#242037; border-bottom-color:#8B9DAC; --ql-header-art-safety:1; }
+#header::before { background:#8B9DAC; box-shadow:none; }
+#header::after { content:''; position:absolute; left:auto; right:172px; top:10px; transform:none; width:84px; height:20px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2084%2020%27%3E%3Cpath%20d%3D%27M3%2018Q8%209%2024%204Q31%203%2036%209%20M3%2018Q13%2018%2023%2010%20M9%2012L8%206%20M21%206L23%202%20M81%2018Q76%209%2060%204Q53%203%2048%209%20M81%2018Q71%2018%2061%2010%20M75%2012L76%206%20M63%206L61%202%27%20fill%3D%27none%27%20stroke%3D%27%238B9DAC%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Cpath%20d%3D%27M43%203Q36%209%2044%2013Q38%2013%2037%208Q36%203%2043%203Z%27%20fill%3D%27none%27%20stroke%3D%27%23BAA1EB%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / 84px 20px no-repeat; pointer-events:none; }
+body.region:not(.manager) #header::after { right:172px; }
+#header:has(#filter-chip:not(.hidden))::after, #header:has(.region-rename-input)::after { display:none; }
+@media(max-width:423px) { #header::after { display:none; } }
+#title { font-family:Constantia,Georgia,serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; line-height:1.2; letter-spacing:2px; text-transform:none; color:#D6E2F1; text-shadow:none; }
+#title .accent { color:#D6E2F1; }
+#header-version, .hotkey-input::placeholder, .theme-search::placeholder { color:#BAC5DC; }
+#header-controls button { color:#D6E2F1; border-color:#8B9DAC; }
+#header-controls button:hover, #header-controls button:active { color:#D6E2F1; border-color:#BAA1EB; }
+#grid-container { background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cpath%20d%3D%27M1%2031Q7%2020%204%207%20M4%207L1%202%20M5%2018L7%2013%27%20fill%3D%27none%27%20stroke%3D%27%232F5A3E%27%20stroke-opacity%3D%270.2%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") left 0 top 0 / 8px 32px repeat-y,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%208%2032%27%3E%3Cpath%20d%3D%27M1%2031Q7%2020%204%207%20M4%207L1%202%20M5%2018L7%2013%27%20fill%3D%27none%27%20stroke%3D%27%232F5A3E%27%20stroke-opacity%3D%270.2%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") right 4px top 0 / 8px 32px repeat-y; }
+body.region.layout-radial #grid-container { background:none; }
+.app-tile { background:#1B182C; border-color:#8B9DAC; box-shadow:none; }
+.app-tile:hover { background:#2D2944; border-color:#BAA1EB; box-shadow:none; }
+.app-tile:active { background:#352F4D; }
+.app-tile:focus-visible { border-color:#73DED3; outline-color:#73DED3; }
+.app-tile::before { display:none; }
+.tile-label { font-family:Constantia,Georgia,serif; font-size:12px; font-weight:400; font-style:italic; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#D6E2F1; text-shadow:none; overflow:clip; overflow-clip-margin:3px; }
+.tile-icon-wrap { clip-path:none; }
+.tile-icon, .app-tile:hover .tile-icon { filter:none; }
+.btn-remove, .btn-remove:hover, .btn-remove:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+.update-btn:hover, #filter-chip-clear:hover, .theme-picker-item.active, .theme-picker-item.selected { color:#D6E2F1; }
+.hotkey-input.recording { background:#352F4D; color:#D6E2F1; border-color:#73DED3; }
+.hotkey-status.error, .mgr-error { color:#F1B5B7; }
+.rename-input:hover, .region-rename-input:hover, .mgr-name:hover { background:#2D2944; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline-color:#73DED3; }
+body.manager #btn-open-cheatsheet:is(:hover,:active) { background:transparent; color:#BAA1EB; }
+#theme-banner { background:#242037; border-top-color:#8B9DAC; }
+#theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cpath%20d%3D%27M15%203Q6%205%207%2013Q8%2018%2015%2019Q3%2020%202%2011Q2%202%2015%203Z%27%20fill%3D%27none%27%20stroke%3D%27%23D6E2F1%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
+#theme-banner-text { font-family:Constantia,Georgia,serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#D6E2F1; text-shadow:none; }
+.tile-icon-wrap { border-radius:4px; }
+.tile-icon-wrap { isolation:isolate; overflow:visible; }
+.tile-icon-wrap::before { content:""; position:absolute; inset:-4px; z-index:-1; border:1px solid #8B9DAC; background:#1B182C; border-radius:45% 45% 4px 4px; pointer-events:none; }
 
-/* ── Moonlit grain + silver-violet vignette ─────────────────────────────── */
-#app::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.15 0.1 0.3 0 0.01  0.12 0.08 0.25 0 0.01  0.25 0.2 0.5 0 0.02  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 28%, rgba(3,4,8,0.88) 100%),
-    radial-gradient(ellipse 55% 45% at 50% 30%, rgba(100,85,160,0.06) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 30% at 0% 100%, rgba(40,100,95,0.04) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 30% at 100% 100%, rgba(40,100,95,0.03) 0%, transparent 55%);
-  background-size: 200px 200px, auto, auto, auto, auto;
-  opacity: 1; pointer-events: none;
-}
 
-/* ── Header — moonlight violet accent bar ───────────────────────────────── */
-#header::before {
-  background: linear-gradient(to bottom, #8070C0, rgba(100, 85, 160, 0.28));
-  box-shadow: 0 0 9px rgba(128,112,192,0.55), 0 0 24px rgba(128,112,192,0.18);
-}
-
-/* ── Grid: Style B — Moonwell (sacred pool of Elune's light) ────────────── */
-#grid-container::before {
-  content: '';
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 380' width='500' height='380'%3E%3Ctext x='250' y='22' text-anchor='middle' font-family='Georgia,serif' font-size='8' font-style='italic' letter-spacing='4' fill='rgba(128,112,192,0.50)'%3EELUNE ADORE%3C/text%3E%3Ctext x='250' y='36' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(160,152,192,0.32)'%3ECHILDREN OF THE STARS -- KALDOREI -- ETERNAL VIGIL%3C/text%3E%3Ccircle cx='250' cy='185' r='110' fill='none' stroke='rgba(128,112,192,0.10)' stroke-width='0.5'/%3E%3Ccircle cx='250' cy='185' r='95' fill='none' stroke='rgba(128,112,192,0.14)' stroke-width='0.6'/%3E%3Ccircle cx='250' cy='185' r='80' fill='none' stroke='rgba(128,112,192,0.18)' stroke-width='0.7'/%3E%3Ccircle cx='250' cy='185' r='65' fill='none' stroke='rgba(128,112,192,0.22)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='50' fill='none' stroke='rgba(128,112,192,0.28)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='35' fill='none' stroke='rgba(160,152,192,0.32)' stroke-width='1'/%3E%3Ccircle cx='250' cy='185' r='20' fill='none' stroke='rgba(180,170,210,0.38)' stroke-width='1'/%3E%3Ccircle cx='250' cy='185' r='8' fill='rgba(200,195,230,0.22)' stroke='rgba(200,195,230,0.42)' stroke-width='0.8'/%3E%3Ccircle cx='250' cy='185' r='3' fill='rgba(220,215,245,0.55)'/%3E%3Ccircle cx='250' cy='185' r='50' fill='rgba(100,85,160,0.06)'/%3E%3Ccircle cx='250' cy='185' r='80' fill='rgba(80,70,140,0.04)'/%3E%3Ctext x='250' y='62' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' font-weight='bold' letter-spacing='3' fill='rgba(200,195,230,0.48)'%3EELUNE ADORE%3C/text%3E%3Ctext x='90' y='190' text-anchor='middle' font-family='Georgia,serif' font-size='6.5' font-style='italic' font-weight='bold' letter-spacing='1' fill='rgba(64,168,160,0.42)'%3ETELDRASSIL%3C/text%3E%3Ctext x='415' y='190' text-anchor='middle' font-family='Georgia,serif' font-size='6' font-style='italic' font-weight='bold' letter-spacing='1' fill='rgba(128,112,192,0.42)'%3ETYRANDE WHISPERWIND%3C/text%3E%3Ctext x='250' y='320' text-anchor='middle' font-family='Georgia,serif' font-size='7' font-style='italic' font-weight='bold' letter-spacing='2' fill='rgba(160,152,192,0.45)'%3EDARNASSUS%3C/text%3E%3Ctext x='250' y='335' text-anchor='middle' font-family='Georgia,serif' font-size='5' font-style='italic' letter-spacing='2' fill='rgba(128,112,192,0.28)'%3ECITY OF THE KALDOREI -- MOONWELL SANCTUM%3C/text%3E%3Ccircle cx='232' cy='170' r='1.5' fill='rgba(200,195,230,0.30)'/%3E%3Ccircle cx='268' cy='170' r='1' fill='rgba(200,195,230,0.25)'/%3E%3Ccircle cx='240' cy='200' r='1.2' fill='rgba(200,195,230,0.22)'/%3E%3Ccircle cx='260' cy='195' r='0.8' fill='rgba(200,195,230,0.28)'/%3E%3Ccircle cx='250' cy='175' r='0.6' fill='rgba(220,215,245,0.35)'/%3E%3Cline x1='250' y1='68' x2='250' y2='120' stroke='rgba(128,112,192,0.10)' stroke-width='0.5' stroke-dasharray='3,4'/%3E%3Cline x1='250' y1='250' x2='250' y2='308' stroke='rgba(128,112,192,0.10)' stroke-width='0.5' stroke-dasharray='3,4'/%3E%3Cline x1='125' y1='185' x2='140' y2='185' stroke='rgba(64,168,160,0.12)' stroke-width='0.5'/%3E%3Cline x1='360' y1='185' x2='375' y2='185' stroke='rgba(128,112,192,0.12)' stroke-width='0.5'/%3E%3Ctext x='250' y='358' text-anchor='middle' font-family='Georgia,serif' font-size='5.5' font-style='italic' letter-spacing='2' fill='rgba(128,112,192,0.22)'%3EWORLD OF WARCRAFT -- NIGHT ELVES -- ELUNE%27S BLESSING%3C/text%3E%3Ccircle cx='48' cy='55' r='0.7' fill='rgba(128,112,192,0.18)'/%3E%3Ccircle cx='455' cy='50' r='0.5' fill='rgba(64,168,160,0.14)'/%3E%3Ccircle cx='42' cy='300' r='0.8' fill='rgba(128,112,192,0.10)'/%3E%3Ccircle cx='460' cy='310' r='0.6' fill='rgba(64,168,160,0.08)'/%3E%3C/svg%3E") center / contain no-repeat;
-  opacity: 0.82;
-  animation: nelf-moonwell 12s ease-in-out infinite;
-}
-
-/* CPU-efficient: opacity-only (tier 1) */
-@keyframes nelf-moonwell {
-  0%, 100% { opacity: 0.82; }
-  28%       { opacity: 0.88; }
-  65%       { opacity: 0.75; }
-  88%       { opacity: 0.04; }   /* silver-white moonlight flash — synchronized blackout */
-  89%       { opacity: 0.90; }
-  92%       { opacity: 0.82; }
-}
-
-/* ── Flavor content ──────────────────────────────────────────────────────── */
-#header::after {
-  content: 'ELUNE ADORE // KALDOREI // THE MOONWELL AWAITS';
-  position: absolute; left: 200px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 7.5px; letter-spacing: 2px; color: rgba(160, 152, 192, 0.62);
-  pointer-events: none; white-space: nowrap;
-}
-
-#grid-container::after {
-  content: 'ELUNE\AADORE\A-----------\ATHE MOON\AGODDESS\AWATCHES\A-----------\ATELDRASSIL';
-  display: flex; align-items: flex-end; justify-content: flex-end;
-  padding: 0 12px 10px 0;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 12px; line-height: 1.70; text-align: right; letter-spacing: 1px;
-  color: rgba(128, 112, 192, 0.08); white-space: pre;
-  animation: nelf-readout 12s ease-in-out infinite;
-}
-
-/* CPU-efficient: color-only (tier 3) */
-@keyframes nelf-readout {
-  0%, 100% { color: rgba(128,112,192,.08); }
-  28%       { color: rgba(128,112,192,.12); }
-  65%       { color: rgba(128,112,192,.06); }
-  88%       { color: rgba(0,0,0,0); }
-  89%       { color: rgba(200,195,230,.15); }
-  92%       { color: rgba(128,112,192,.08); }
-}
-
-#edit-bar::after {
-  content: 'ISHNU-ALAH // THE GODDESS WATCHES OVER US';
-  position: absolute; right: 225px; top: 50%; transform: translateY(-50%);
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic;
-  font-size: 8px; letter-spacing: 2px; color: rgba(64, 168, 160, 0.42);
-  pointer-events: none; white-space: nowrap;
-}
-
-#title { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: 5px; }
-
-/* ── Title: moonlight pulse with 88% sync — color + text-shadow (tier 3) ── */
-@keyframes nelf-title {
-  0%        { color: #A098C0; text-shadow: 0 0 6px rgba(128,112,192,.48), 0 0 18px rgba(128,112,192,.16); }
-  35%       { color: #B8B0D8; text-shadow: 0 0 10px rgba(160,152,210,.62), 0 0 28px rgba(128,112,192,.22); }
-  65%       { color: #706890; text-shadow: 0 0 4px rgba(24,24,48,.30); }
-  87%       { color: #A098C0; text-shadow: 0 0 6px rgba(128,112,192,.42); }
-  88%       { color: #E0DCFF; text-shadow: 0 0 22px rgba(224,220,255,.82), 0 0 50px rgba(128,112,192,.42); opacity: 0.90; }
-  89%       { color: transparent; text-shadow: none; opacity: 0; }
-  90%       { color: #A098C0; text-shadow: 0 0 8px rgba(128,112,192,.55); opacity: 1; }
-  100%      { color: #A098C0; text-shadow: 0 0 6px rgba(128,112,192,.48), 0 0 18px rgba(128,112,192,.16); }
-}
-
-/* ── App: moonlight border — box-shadow ≥ 12s (tier 5) ──────────────────── */
-#app { animation: nelf-border 12s ease-in-out infinite; }
-@keyframes nelf-border {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(128,112,192,.20), inset 0 0 20px rgba(128,112,192,.04); }
-  35%      { box-shadow: 0 0 0 1px rgba(128,112,192,.42), inset 0 0 28px rgba(128,112,192,.07); }
-  65%      { box-shadow: 0 0 0 1px rgba(64,168,160,.22), inset 0 0 18px rgba(64,168,160,.04); }
-  88%      { box-shadow: 0 0 0 2px rgba(224,220,255,.78), inset 0 0 50px rgba(128,112,192,.14), 0 0 18px rgba(128,112,192,.25); }
-  89%      { box-shadow: 0 0 0 0px transparent; }
-  90%      { box-shadow: 0 0 0 1px rgba(128,112,192,.38), inset 0 0 22px rgba(128,112,192,.06); }
-}
-
-/* ── Banner ──────────────────────────────────────────────────────────────── */
-#theme-banner { background: rgba(6, 8, 16, 0.99); border-top-color: rgba(128, 112, 192, 0.22); }
-#theme-banner::before { content: '☽'; color: #8070C0; font-size: 20px; }
-#theme-banner-text { font-family: Georgia, 'Times New Roman', serif; font-style: italic; color: rgba(160, 152, 192, 0.65); }
-
-/* ── Silver moonlight motes — circles drifting VERY slowly ─────────────── */
-#particles {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='480'%3E%3Ccircle cx='38' cy='65' r='1.8' fill='rgba(200,195,230,0.22)'/%3E%3Ccircle cx='120' cy='195' r='1.2' fill='rgba(180,170,210,0.18)'/%3E%3Ccircle cx='175' cy='320' r='2' fill='rgba(200,195,230,0.15)'/%3E%3Ccircle cx='65' cy='400' r='1' fill='rgba(64,168,160,0.16)'/%3E%3Ccircle cx='155' cy='130' r='1.5' fill='rgba(200,195,230,0.20)'/%3E%3Ccircle cx='90' cy='260' r='0.8' fill='rgba(180,170,210,0.24)'/%3E%3C/svg%3E") repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='640'%3E%3Ccircle cx='55' cy='110' r='1.5' fill='rgba(200,195,230,0.12)'/%3E%3Ccircle cx='180' cy='300' r='2' fill='rgba(180,170,210,0.10)'/%3E%3Ccircle cx='260' cy='480' r='1.2' fill='rgba(200,195,230,0.08)'/%3E%3Ccircle cx='110' cy='540' r='1.8' fill='rgba(64,168,160,0.10)'/%3E%3C/svg%3E") repeat;
-  background-size: 240px 480px, 320px 640px;
-  animation: nelf-motes 22s linear infinite;
-}
-@keyframes nelf-motes {
-  from { background-position: 0 0, 18px 0; }
-  to   { background-position: -15px -480px, 8px -640px; }
-}
-
-/* ── Tile: moonwell ripple on hover ─────────────────────────────────────── */
-.app-tile::before {
-  width: 20px; height: 20px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(200,195,230,0.45);
-}
-.app-tile:hover::before { animation: tile-radial .6s ease-out forwards; }
+/* Quiet violet material remains confined to header chrome. */
+#header { background-image:linear-gradient(180deg,rgba(186,161,235,.06),transparent); }

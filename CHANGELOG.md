@@ -4,6 +4,17 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.95.0] - 2026-10-09
+
+### Added
+- Desktop regions with Grid, Fan and Ring layouts, region settings and tray controls.
+- Complete theme fidelity collection across all 101 themes, including the remaining batches 08–14.
+
+### Fixed
+- Readability of region header controls in FF8 and Persona4 and shortcut links in FF6, FF9 and the Rebel, Republic and Separatist themes.
+
+### Notes
+- Sergei will perform manual QA. Agent QA, native-test tooling and automated QA lifecycle scripts are excluded from this release.
 ## [v1.94.3] - 2026-09-29
 
 ### Fixed

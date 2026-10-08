@@ -128,3 +128,6 @@
 }
 #theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cdefs%3E%3CradialGradient id='m' cx='0.38' cy='0.32' r='0.85'%3E%3Cstop offset='0' stop-color='rgb(244,248,252)'/%3E%3Cstop offset='1' stop-color='rgb(168,186,210)'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='11' cy='11' r='9.2' fill='url(%23m)' stroke='rgb(150,168,194)' stroke-width='0.9'/%3E%3Ccircle cx='7.6' cy='7.6' r='2' fill='rgb(150,168,194)'/%3E%3Ccircle cx='14.4' cy='13.4' r='1.6' fill='rgb(150,168,194)'/%3E%3Ccircle cx='8.4' cy='15.2' r='1.1' fill='rgb(150,168,194)'/%3E%3Ccircle cx='15.2' cy='6.8' r='0.9' fill='rgb(150,168,194)'/%3E%3Cpath d='M14.6 3.4 A9.2 9.2 0 0 1 16.4 18.4 A7.4 7.4 0 0 0 14.6 3.4 Z' fill='rgb(106,126,156)' fill-opacity='0.55'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
 #theme-banner-text { font-family: Jost, 'Segoe UI', Arial, sans-serif; font-size: 12px; font-weight: 300; font-style: normal; font-synthesis: none; letter-spacing: 0.6px; color: #E4ECF6; margin-right: 90px; }
+
+/* Committed inherited-contrast addenda: preserve existing art, geometry and rest states. */
+body.region #header-controls :is(#btn-random-theme,#btn-settings,#btn-hide):not(:hover):not(:active) { background:#22395C; color:#E4ECF6; }
