@@ -71,3 +71,9 @@ Futaba uses committed build/pinned snapshot, measured rects/pass-total with meth
 
 No real input/native menus/desktop click-through/drag capture/display/lifecycle or actual updates without later authorized safe window. No visible tests/user profile/launch links. Renderer/logic acceptance supports development only. QA-tool fixes belong to Ender, no product UX change here.
 
+
+## Correction — empty Fan follows its direction (2026-10-08)
+
+This supersedes the top-slot clause above and base §2.8 for Fan only. An empty Fan keeps the selected direction's n=1 box, pivot and radius. Its one dashed ⊕ landing slot uses exactly the hit square where item 1 will appear: Up at 12 oclock, Right at 3 oclock, Down at 6 oclock, Left at 9 oclock. Relative to pivot (px,py), chip centre is (px,py−R), (px+R,py), (px,py+R), (px−R,py), respectively; slot square side T=S+12, top-left centre−(T/2,T/2). Use the same rotated n1 geometry as the real chip, with no separate empty-only bounds or extra top slot. Ring remains at 12 oclock.
+
+Hub empty copy remains Drop shortcuts here. During a valid drop preview this existing slot becomes the insertion slot, hides ⊕/hint and takes the M2 A1 border; cancellation restores it. Direction change rotates empty geometry about the preserved pivot as for populated Fan. Acceptance: compare empty slot rect to the same direction's one-item chip rect for Up/Right/Down/Left at S32/64/128; equality within the product's shared rounding, contained within the n1 box, no hub overlap. Adding first item must not jump its position or change the region anchor. Fit-policy question stays pending; this correction makes no product-policy ruling.
