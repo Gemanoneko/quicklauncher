@@ -45,10 +45,8 @@
     ${if} $R6 == "1"
       MessageBox MB_OK|MB_ICONINFORMATION "Some shortcuts could not go back to the desktop.$\r$\nThey are in:$\r$\n$R7$\r$\n$\r$\nDrag them out when you want them back. Nothing was deleted." /SD IDOK
     ${elseif} $R8 == "0"
-      ; Everything is back. The folder holds only its own README: that goes,
-      ; then the folder if it is empty (RMDir without /r never removes a
-      ; folder that still holds anything).
-      Delete "$R7\README.txt"
+      ; Preserve any existing README or other user file. Only remove the
+      ; folder if it is empty; RMDir without /r leaves nonempty folders.
       RMDir "$R7"
     ${endif}
   ${endif}
