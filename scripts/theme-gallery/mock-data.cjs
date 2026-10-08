@@ -67,3 +67,13 @@ function settings(theme) {
 }
 
 module.exports = { apps, settings, TILE_COUNT: TILES.length, HOVER_TILE_INDEX: 1 };
+
+// Complete Manager state for current regions snapshots; one harmless mock Grid.
+module.exports.managerState = (theme) => ({
+  theme, sharedTheme: theme, matchAll: false, cap: 8,
+  regions: [{ id: 'gallery', name: 'Gallery', layout: 'grid', theme, icon: 'games', count: TILES.length, primary: true }],
+  strings: { lastRegion: 'Keep one region', cap: 'Eight regions' },
+  layouts: ['grid', 'column', 'row'],
+  moved: { orphans: [], available: true, count: 0, countText: '0 moved shortcuts',
+    tips: { noneToMoveBack: 'None to move back', moveAllBack: 'Move all back' }, items: [] },
+});

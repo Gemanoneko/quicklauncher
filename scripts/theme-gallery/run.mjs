@@ -177,7 +177,7 @@ if (ref) {
   const done = path.join(root, '.complete');
   if (!fs.existsSync(done)) {
     fs.rmSync(root, { recursive: true, force: true });
-    const files = git('ls-tree', '-r', '-z', '--name-only', sha, '--', 'src/renderer', 'src/main/preload.js', 'package.json').split('\0').filter(Boolean);
+    const files = git('ls-tree', '-r', '-z', '--name-only', sha, '--', 'src/renderer', 'src/main/preload.js', 'src/main/manager-preload.js', 'package.json').split('\0').filter(Boolean);
     const r = spawnSync('git', ['-C', REPO, 'cat-file', '--batch'], { input: files.map((f) => `${sha}:${f}`).join('\n') + '\n', windowsHide: true, maxBuffer: 512 * 1024 * 1024, timeout: 60000 });
     if (r.status !== 0) throw new Error('git cat-file failed');
     let off = 0;
@@ -348,7 +348,7 @@ const manifest = {
     frame: `looping animations paused at currentTime ${cfgBase.freezeMs} ms; one-shot animations (entrance, hover flourishes) and transitions finished; banner rotation stopped on quote #1`,
     states: region
       ? Object.fromEntries(region.states.map((st) => [st, `${region.layout} ${region.sizes[st].width}x${region.sizes[st].height}: ${{ view: 'nothing hovered', hover: 'synthetic mouse move over tile #2', edit: 'edit mode', filter: '"calc" typed', rename: 'F2 on the handle', notice: 'the notice "TARGET UNREADABLE"', update: 'an update offer with DOWNLOAD' }[st]}`]))
-      : { grid: 'main grid, nothing hovered', settings: 'Settings overlay open (btn-settings click)', hover: 'synthetic mouse move over tile #2 (Calculator), settled' },
+      : { grid: 'main grid, nothing hovered', settings: fs.existsSync(path.join(root, 'src', 'renderer', 'manager.html')) ? 'Manager Settings page (btn-settings route; isolated mocked window)' : 'Settings overlay open (btn-settings click)', hover: 'synthetic mouse move over tile #2 (Calculator), settled' },
     tiles: region ? `${region.items} of the 14 mock tiles in a ${region.layout} region named "${region.name}" (scripts/theme-gallery/mock-data.cjs), store-default settings` : '14 mock tiles (scripts/theme-gallery/mock-data.cjs), store-default settings',
     displays: res ? res.extra.displays : null, displayEvents: res ? res.extra.displayEvents : null },
   isolation: {

@@ -133,20 +133,24 @@ fullHandler = true;
 setTimeout(() => finish(4, `WATCHDOG after ${cfg.timeoutSec}s`), cfg.timeoutSec * 1000).unref();
 
 // ── the renderer contract, read from the real preload ────────────────────────
-function parseContract() {
-  const src = fs.readFileSync(path.join(ROOT, 'src', 'main', 'preload.js'), 'utf8');
+function parseContract(file = 'preload.js') {
+  const src = fs.readFileSync(path.join(ROOT, 'src', 'main', file), 'utf8');
   const grab = (name) => {
     const m = new RegExp(`const ${name} = new Set\\(\\[([\\s\\S]*?)\\]\\)`).exec(src);
     if (!m) throw new Error(`preload contract changed: ${name} not found in src/main/preload.js`);
     return [...m[1].replace(/\/\/.*$/gm, '').matchAll(/'([^']+)'/g)].map((x) => x[1]);
   };
   const c = { invoke: grab('INVOKE_CHANNELS'), on: grab('ON_CHANNELS') };
-  for (const need of ['get-apps', 'get-settings', 'get-valid-themes', 'renderer-ready', 'set-auto-launch']) {
+  for (const need of [...(file === 'preload.js' ? ['get-apps'] : ['manager:state']), 'get-settings', 'get-valid-themes', 'renderer-ready', 'set-auto-launch']) {
     if (!c.invoke.includes(need)) throw new Error(`preload contract changed: '${need}' missing from INVOKE_CHANNELS`);
   }
   return c;
 }
 const contract = parseContract();
+const HAS_MANAGER = fs.existsSync(path.join(RENDERER, 'manager.html'));
+const managerContract = HAS_MANAGER ? parseContract('manager-preload.js') : null;
+const managerPages = new Set();
+const settingsRequests = new Map();
 const version = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
 const THEMES_ALL = fs.readdirSync(path.join(RENDERER, 'styles', 'themes')).filter((f) => f.endsWith('.css')).map((f) => f.slice(0, -4)).sort();
 for (const t of THEMES_ALL) if (!/^[a-z0-9-]+$/.test(t)) { console.error('unexpected theme file name: ' + t); process.exit(2); }
@@ -154,16 +158,20 @@ const THEMES = cfg.only && cfg.only.length ? cfg.only : THEMES_ALL;
 for (const t of THEMES) if (!THEMES_ALL.includes(t)) { console.error('unknown theme: ' + t); process.exit(2); }
 
 // ── mock IPC (the only thing the renderer can reach) ─────────────────────────
-const EXPECTED_IPC = new Set(['get-apps', 'get-settings', 'get-valid-themes', 'renderer-ready', ...(REGION ? ['region:info', 'region:extras'] : [])]);
+const EXPECTED_IPC = new Set(['get-apps', 'get-settings', 'get-valid-themes', 'renderer-ready', ...(REGION ? ['region:info', 'region:extras'] : HAS_MANAGER ? ['region:info', 'region:open-manager', 'manager:state', 'get-update-state', 'manager:close'] : [])]);
 const ipcCalls = {};
 const unexpectedIpc = [];
 const themeOfWc = new Map();
-ipcMain.on('qlg:contract', (e) => { e.returnValue = { invoke: contract.invoke, on: contract.on, version }; });
+ipcMain.on('qlg:contract', (e) => { const c = managerPages.has(e.sender.id) ? managerContract : contract; e.returnValue = { invoke: c.invoke, on: c.on, version }; });
 ipcMain.handle('qlg:invoke', (e, channel, args) => {
   ipcCalls[channel] = (ipcCalls[channel] || 0) + 1;
   const theme = themeOfWc.get(e.sender.id) || '?';
   if (!EXPECTED_IPC.has(channel)) unexpectedIpc.push({ theme, channel });
   switch (channel) {
+    case 'manager:state': return mock.managerState(theme);
+    case 'get-update-state': return { offer: 'none', checking: false, percent: 0 };
+    case 'region:open-manager': settingsRequests.set(e.sender.id, args[0] && args[0].view); return null;
+    case 'manager:close': return null;
     case 'get-apps': return REGION ? mock.apps().slice(0, REGION.items) : mock.apps();
     case 'region:info': if (!REGION) return null;
       return { id: 'gallery', name: REGION.name, icon: 'games', layout: REGION.layout, primary: true, active: false, matchAll: false, regionCount: 1, mode: 'attached', hidden: false, cap: null, testHooks: false };
@@ -427,6 +435,38 @@ function emulate(win) {
 const viewportProblem = (p, win = null) => (p.viewport[0] !== viewOf(win).width || p.viewport[1] !== viewOf(win).height || Math.abs(p.dpr - cfg.scale) > 1e-6
   ? `viewport ${p.viewport.join('x')} at ${p.dpr}x, expected ${viewOf(win).width}x${viewOf(win).height} at ${cfg.scale}x` : null);
 
+
+// The gallery follows the current Settings route without loading product main.
+// Old snapshots retain their real overlay; regions snapshots use real Manager
+// markup/scripts in another guarded offscreen window with mock IPC/state.
+async function settingsPage(win, theme) {
+  settingsRequests.delete(win.webContents.id);
+  await js(win, `document.getElementById('btn-settings').click(), true`);
+  if (!HAS_MANAGER) {
+    await waitFor(win, `!document.getElementById('settings-overlay').classList.contains('hidden')`, 3000, 'settings overlay open');
+    return { win, close: async () => {
+      await js(win, `document.getElementById('btn-close-settings').click(), true`);
+      await waitFor(win, `document.getElementById('settings-overlay').classList.contains('hidden')`, 3000, 'settings overlay closed');
+    } };
+  }
+  const started = Date.now();
+  while (settingsRequests.get(win.webContents.id) !== 'settings' && Date.now() - started < 3000) await sleep(40);
+  if (settingsRequests.get(win.webContents.id) !== 'settings') throw new Error('Settings did not request Manager settings');
+  const manager = makeRenderWindow();
+  managerPages.add(manager.webContents.id);
+  themeOfWc.set(manager.webContents.id, theme);
+  try {
+    await manager.loadFile(path.join(RENDERER, 'manager.html'));
+    emulate(manager);
+    await manager.webContents.insertCSS('*, *::before, *::after { animation-play-state: paused !important; }', { cssOrigin: 'user' });
+    await waitFor(manager, `document.getElementById('region-list').children.length === 1 && document.getElementById('app-version').textContent.length > 0 && document.getElementById('theme-stylesheet').getAttribute('href').endsWith('/${theme}.css')`, 10000, 'Manager state ready');
+    await js(manager, `document.getElementById('tab-settings').click(), true`);
+    await waitFor(manager, `!document.getElementById('view-settings').classList.contains('hidden')`, 3000, 'Manager settings open');
+    await js(manager, `document.fonts.ready`);
+    return { win: manager, close: async () => { managerPages.delete(manager.webContents.id); manager.destroy(); } };
+  } catch (error) { managerPages.delete(manager.webContents.id); manager.destroy(); throw error; }
+}
+
 async function renderTheme(win, theme, outDir) {
   const wc = win.webContents;
   themeOfWc.set(wc.id, theme);
@@ -462,15 +502,15 @@ async function renderTheme(win, theme, outDir) {
   const grid = await capture(win, outDir && path.join(outDir, `${theme}-grid.png`));
   r.fonts = await platformFonts(win, { title: '#title', tileLabel: '#app-grid .app-tile .tile-label', banner: '#theme-banner-text' });
 
-  // (b) settings overlay
-  await js(win, `document.getElementById('btn-settings').click(), true`);
-  await waitFor(win, `!document.getElementById('settings-overlay').classList.contains('hidden')`, 3000, 'settings overlay open');
-  await sleep(250);
-  r.freeze.settings = await freeze(win);
-  const settings = await capture(win, outDir && path.join(outDir, `${theme}-settings.png`));
-  Object.assign(r.fonts, await platformFonts(win, { overlayTitle: '#settings-overlay .overlay-title', settingLabel: '#settings-overlay .setting-row label' }));
-  await js(win, `document.getElementById('btn-close-settings').click(), true`);
-  await waitFor(win, `document.getElementById('settings-overlay').classList.contains('hidden')`, 3000, 'settings overlay closed');
+  // (b) Settings: overlay on legacy snapshots, Manager on regions snapshots.
+  const settingsView = await settingsPage(win, theme);
+  let settings;
+  try {
+    await sleep(250);
+    r.freeze.settings = await freeze(settingsView.win);
+    settings = await capture(settingsView.win, outDir && path.join(outDir, `${theme}-settings.png`));
+    Object.assign(r.fonts, await platformFonts(settingsView.win, { overlayTitle: HAS_MANAGER ? '#view-settings .overlay-title' : '#settings-overlay .overlay-title', settingLabel: HAS_MANAGER ? '#view-settings .setting-row label' : '#settings-overlay .setting-row label' }));
+  } finally { await settingsView.close(); }
 
   // (c) hover: a real synthetic mouse move over tile #2, so :hover applies as it does for Sergei.
   const i = mock.HOVER_TILE_INDEX;
@@ -906,8 +946,11 @@ app.whenReady().then(async () => {
         for (const st of STATES) (first.states[st] && again.states[st] && first.states[st].pixelSha256 === again.states[st].pixelSha256 ? same : differ).push(`${first.theme}-${st}`);
       }
       extra.selfTest.push({ control: 'determinism: every self-test capture rendered again in a fresh window is pixel-identical', expected: 'all identical', observed: differ.length ? `DIFFERENT: ${differ.join(', ')}` : `${same.length}/${same.length} identical`, pass: differ.length === 0 && same.length > 0 });
-      await js(win, `document.getElementById('btn-settings').click(); document.getElementById('chk-startup').click(); true`);
-      await sleep(400);
+      const controlSettings = await settingsPage(win, themeOfWc.get(win.webContents.id));
+      try {
+        await js(controlSettings.win, `document.getElementById('chk-startup').click(), true`);
+        await sleep(400);
+      } finally { await controlSettings.close(); }
       extra.selfTest.push({ control: 'login-item counter sees the renderer toggling Start with Windows', expected: 'count >= 1 (gate FAILS)', observed: `count ${counters.loginItem - before.loginItem}`, pass: counters.loginItem > before.loginItem });
       extra.selfTest.push({ control: 'IPC allowlist gate sees channels outside the expected four', expected: 'unexpected >= 1 (gate FAILS)', observed: `unexpected ${unexpectedIpc.length}`, pass: unexpectedIpc.length > 0 });
       await win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent('<!doctype html><body style="margin:0;background:transparent"></body>'));
