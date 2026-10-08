@@ -144,6 +144,10 @@ app.whenReady().then(() => {
   setupIPC(ctl, store, app, mgr, { testHooks: TEST_HOOKS, quit: quitApp });
   setupUpdater(() => ctl.primaryWebContents(), () => mgr.window && !mgr.window.isDestroyed() ? mgr.window.webContents : null);
   ctl.getUpdateState = require('./updater').getUpdateState;
+  ctl.replayUpdateOffer = (id) => {
+    const rt = ctl.rt.get(id), region = ctl.region(id);
+    if (id === ctl.primaryId() && rt && rt.ready && region) require('./updater').replayOffer(rt.wc, region.layout);
+  };
 
   // ── Global show/hide hotkey ────────────────────────────────────────────
   // Sergei's default Ctrl+Space, rebindable. It hides every region if they

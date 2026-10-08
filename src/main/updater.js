@@ -18,18 +18,20 @@ function setTrayUpdateAvailable(flag) {
 let _target = () => null;
 let _manager = () => null;
 let state = { offer: 'none', version: '', percent: 0, checking: false };
+let offerDismissed = false;
 function getUpdateState() { return { ...state }; }
 function publish(channel, arg) {
   const downloading = state.offer === 'downloading';
   switch (channel) {
     case 'update-checking': state.checking = true; break;
-    case 'update-available': state = { offer: 'available', version: String(arg && arg.version || ''), percent: 0, checking: false }; break;
+    case 'update-available': offerDismissed = false; state = { offer: 'available', version: String(arg && arg.version || ''), percent: 0, checking: false }; break;
     case 'update-progress': state.offer = 'downloading'; state.percent = Math.max(0, Math.min(100, Number(arg) || 0)); state.checking = false; break;
     case 'update-ready': state.offer = 'ready'; state.checking = false; break;
     case 'update-not-available': state = { offer: 'none', version: '', percent: 0, checking: false }; break;
     case 'update-error': if (downloading) state.offer = 'available'; state.checking = false; break;
   }
   send(channel, arg);
+  try { require('./tray').refreshTrayMenu(); } catch { /* no tray in isolated tests */ }
   const wc = _manager();
   if (wc && !wc.isDestroyed()) wc.send('manager:update-state', { state: getUpdateState(), channel, arg });
 }
@@ -100,6 +102,7 @@ function setupUpdater(getTarget, getManager) {
   // user has explicitly waved the notification away.
   ipcMain.handle('dismiss-update', () => {
     dismissals += 1;
+    offerDismissed = true;
     setTrayUpdateAvailable(false);
   });
 
@@ -131,4 +134,17 @@ function checkForUpdates() {
   });
 }
 
-module.exports = { setupUpdater, checkForUpdates, dismissals: () => dismissals, getUpdateState, publish };
+// Replay only an undismissed offer to a ready primary with a banner slot.
+// This does not create a new notification, change the dot, or restart a check.
+function replayOffer(wc, layout) {
+  if (offerDismissed || !['grid', 'column'].includes(layout) || !wc || wc.isDestroyed()) return false;
+  if (state.offer === 'available' || state.offer === 'downloading') {
+    wc.send('update-available', { version: state.version });
+    if (state.offer === 'downloading') wc.send('update-progress', state.percent);
+    return true;
+  }
+  if (state.offer === 'ready') { wc.send('update-ready'); return true; }
+  return false;
+}
+
+module.exports = { setupUpdater, checkForUpdates, dismissals: () => dismissals, getUpdateState, publish, replayOffer };

@@ -619,6 +619,7 @@ class RegionController extends EventEmitter {
     this._applyShown(rt, rect);
     this._notifyState(id);
     this._managerChanged();
+    if (this.replayUpdateOffer) this.replayUpdateOffer(id);
     this.log({ event: 'layout', region: id.slice(0, 8), from: region.layout, to: layout, rect });
     return { ok: true, rect };
   }
@@ -890,6 +891,7 @@ class RegionController extends EventEmitter {
     const rt = this.rt.get(id);
     if (!rt) return;
     rt.ready = true;
+    if (this.replayUpdateOffer) this.replayUpdateOffer(id);
     if (id === this.primaryId() && this.saveErrorPending) {
       this.saveErrorPending = false;
       rt.wc.send('store-save-error');
@@ -1083,6 +1085,7 @@ class RegionController extends EventEmitter {
     this._notifyAllStates();
     this._managerChanged();
     this.emit('regions-changed');
+    if (this.replayUpdateOffer) this.replayUpdateOffer(this.primaryId());
     this.log({ event: 'region-deleted', region: id.slice(0, 8), items: items.length });
     return { ok: true };
   }

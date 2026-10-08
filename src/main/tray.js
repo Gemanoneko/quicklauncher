@@ -1,6 +1,6 @@
 const { Tray, Menu, nativeImage } = require('electron');
 const path = require('path');
-const { checkForUpdates } = require('./updater');
+const { checkForUpdates, getUpdateState } = require('./updater');
 const { REGION_CAP } = require('./regions/model');
 
 let tray = null;
@@ -148,7 +148,19 @@ function setupTray({ ctl, mgr, electronApp, store, quit }) {
         }
       },
       { type: 'separator' },
-      { label: 'Check for Updates', click: () => checkForUpdates() },
+      {
+        label: (() => {
+          const u = getUpdateState();
+          return u.offer === 'available' ? `Update available — v${u.version}…`
+            : u.offer === 'downloading' ? 'Update downloading…'
+            : u.offer === 'ready' ? 'Update ready to install…' : 'Check for Updates';
+        })(),
+        click: () => {
+          mgr.open('settings');
+          const u = getUpdateState();
+          if (u.offer === 'none' && !u.checking) checkForUpdates();
+        },
+      },
       { type: 'separator' },
       { label: 'Quit QuickLauncher', click: () => quit('tray') }
     ]);

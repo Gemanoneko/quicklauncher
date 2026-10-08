@@ -150,3 +150,7 @@ body.manager .cheat-key { flex-basis: 130px; }
   overflow: hidden; overflow-wrap: anywhere;
 }
 .mgr-status:empty { display: none; }
+
+/* Approved F5 option: existing Manager controls retain readable hover text. */
+body.manager button:hover,
+body.manager #btn-close-settings:hover { color: var(--text); }

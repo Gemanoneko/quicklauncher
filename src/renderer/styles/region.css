@@ -347,3 +347,11 @@ body.region.layout-grid #app-grid {
 body.region.layout-grid #app-grid::-webkit-scrollbar { width: 4px; }
 body.region.layout-grid #app-grid::-webkit-scrollbar-track { background: transparent; }
 body.region.layout-grid #app-grid::-webkit-scrollbar-thumb { background: var(--accent-text); border-radius: 2px; }
+
+/* Approved F5 option: message-only updates stay readable in a Column. */
+body.region.layout-column #update-banner:not(.notice):not(:has(#update-actions .update-btn:not(.update-dismiss))) { justify-content: space-between; }
+body.region.layout-column #update-banner:not(.notice):not(:has(#update-actions .update-btn:not(.update-dismiss))) #update-text {
+  position: static; width: auto; height: auto; clip: auto; overflow: hidden;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  white-space: normal; text-overflow: clip; overflow-wrap: anywhere; line-height: 12px;
+}
