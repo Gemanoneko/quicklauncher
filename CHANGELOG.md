@@ -9,6 +9,9 @@ version tags rather than semantic versioning strictness.
 ### Added
 - Region right-click menus now offer Add Region with the existing layout choices, radial capacity labels and eight-region limit, without opening Manager.
 
+### Fixed
+- Static themes such as X-Files no longer leave an opaque entrance overlay covering icons in Grid, Row and Column layouts.
+
 ### Notes
 - Manual QA by Sergei; no automated or runtime QA was performed for this addition.
 ## [v1.95.1] - 2026-10-09

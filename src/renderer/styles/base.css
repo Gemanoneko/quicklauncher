@@ -185,6 +185,9 @@ html, body {
   z-index: 300;
   pointer-events: none;
   background: var(--bg);
+  /* With no entrance animation, the curtain must not cover the content.
+     Entrance keyframes explicitly raise opacity while their fade runs. */
+  opacity: 0;
   animation: var(--app-entrance-anim, entrance-fade 1s ease-out forwards);
 }
 
