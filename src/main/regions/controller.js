@@ -1674,6 +1674,7 @@ class RegionController extends EventEmitter {
     if (!rt || !rt.win || !region) return;
     const s = this.settings();
     const many = this.regions().length > 1;
+    const atCap = this.regions().length >= M.REGION_CAP;
     const place = [
       ['Top left', 'top-left'], ['Top right', 'top-right'], ['Bottom left', 'bottom-left'],
       ['Bottom right', 'bottom-right'], ['Center', 'center'],
@@ -1682,6 +1683,17 @@ class RegionController extends EventEmitter {
       { label: 'Edit shortcuts', click: () => this._command(id, 'edit') },
       { label: 'Add file…', click: () => this._command(id, 'add-file') },
       { label: 'Add installed app…', click: () => this.manager && this.manager.open('picker', { regionId: id }) },
+      {
+        label: 'Add Region', enabled: !atCap,
+        submenu: [...M.BUILT_LAYOUTS].map((l) => ({
+          label: R.isRadial(l) ? `${layoutLabel(l)} (max ${R.capacity(l,this._iconSize(),this.workArea(),'up')})` : layoutLabel(l),
+          enabled: !atCap && (!R.isRadial(l) || R.capacity(l,this._iconSize(),this.workArea(),'up') > 0),
+          click: () => {
+            const r = this.createRegion(l);
+            if (!r.ok) this._box({ type: 'info', message: r.error, buttons: ['OK'] }, rt.win).catch(() => {});
+          },
+        })),
+      },
       { type: 'separator' },
       { label: 'Rename', click: () => this._command(id, 'rename-region') },
       // Spec 9.2: the layouts this build draws; the current one carries the check (Fan, Ring: M5).
