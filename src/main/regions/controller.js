@@ -1127,6 +1127,7 @@ class RegionController extends EventEmitter {
 
   // ── saves from a region page ──────────────────────────────────────────────
   swapItems(id, sourceId, targetId, expected) {
+    if (this.settings().sortShortcuts !== false) return { ok: false, error: 'Turn off alphabetical sorting to rearrange shortcuts.' };
     const current = M.itemsOf(this.apps(), id);
     if (!this.region(id) || this.store.isReadOnly() || !Array.isArray(expected)
         || current.length !== expected.length || current.some((a, i) => a.id !== expected[i])) return { ok: false, error: 'The shortcuts changed. Try again.' };
@@ -1169,6 +1170,15 @@ class RegionController extends EventEmitter {
     M.itemsOf(all, id).forEach((a, i) => {
       if (a.kind === 'moved' && !kept.has(a.id)) { items.splice(Math.min(i, items.length), 0, a); restored++; }
     });
+    if (this.settings().sortShortcuts !== false) {
+      // Names/removals/adds still apply; rendering never rewrites manual order.
+      const incoming = new Map(items.map(a => [a.id, a]));
+      const existing = M.itemsOf(all, id);
+      const existingIds = new Set(existing.map(a => a.id));
+      const ordered = existing.filter(a => incoming.has(a.id)).map(a => incoming.get(a.id));
+      ordered.push(...items.filter(a => !existingIds.has(a.id)));
+      items.splice(0, items.length, ...ordered);
+    }
     const region = this.region(id);
     if (R.isRadial(region.layout) && items.length > this._count(id)) {
       const cap = this._capOf(region);
@@ -1224,7 +1234,7 @@ class RegionController extends EventEmitter {
       return {ok:false,iconSize:this._iconSize(),error:'No room at this icon size. Use a smaller size.'};
     }
     this.store.set('settings', { ...this.settings(), ...patch });
-    this.broadcastSettingsChanged({ refit: Object.keys(patch).some((key) => key !== 'regionTransparency') });
+    this.broadcastSettingsChanged({ refit: Object.keys(patch).some((key) => key !== 'regionTransparency' && key !== 'sortShortcuts') });
     return {ok:true,iconSize:this._iconSize(),regionTransparency:this.settings().regionTransparency || 0};
   }
 

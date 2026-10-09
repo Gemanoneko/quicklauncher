@@ -488,6 +488,7 @@
     }
     $('chk-startup').checked = settings.startWithWindows !== false;
     $('chk-random-theme').checked = settings.randomTheme !== false;
+    $('chk-sort-shortcuts').checked = settings.sortShortcuts !== false;
     $('chk-reduced-motion').checked = settings.reducedMotion === true;
     if (!recording) $('input-hotkey').value = settings.globalHotkey || '';
   }
@@ -545,6 +546,15 @@
   $('chk-random-theme').addEventListener('change', (e) => {
     settings.randomTheme = e.target.checked;
     savePatch({ randomTheme: e.target.checked });
+  });
+  $('chk-sort-shortcuts').addEventListener('change', async (e) => {
+    const previous = settings.sortShortcuts !== false;
+    e.target.disabled = true;
+    try {
+      const result = await savePatch({ sortShortcuts: e.target.checked });
+      settings.sortShortcuts = result && result.ok ? e.target.checked : previous;
+    } catch { settings.sortShortcuts = previous; }
+    finally { e.target.disabled = false; renderSettings(); }
   });
   $('chk-reduced-motion').addEventListener('change', (e) => {
     settings.reducedMotion = e.target.checked;

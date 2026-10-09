@@ -4,6 +4,14 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.102.0] - 2026-10-09
+
+### Added
+- Global alphabetical sorting, enabled by default, with natural name ordering and Grid order down then across.
+- Settings toggle restores saved manual order when sorting is off; manual swap and reorder are available only with sorting off.
+
+### Notes
+- Sorting changes display order without rewriting saved manual positions. Manual QA by Sergei; no automated or runtime QA was performed.
 ## [v1.101.0] - 2026-10-09
 
 ### Added

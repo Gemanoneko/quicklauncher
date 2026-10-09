@@ -717,6 +717,27 @@ async function refreshMissingIcons() {
 }
 
 // ── Render ───────────────────────────────────────────────────────────────────
+const shortcutCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'accent' });
+const alphabeticalShortcuts = () => settings.sortShortcuts !== false;
+function displayedApps() {
+  if (!alphabeticalShortcuts()) return apps;
+  return apps.map((item, index) => ({ item, index })).sort((a, b) =>
+    shortcutCollator.compare(String(a.item.name || '').trim(), String(b.item.name || '').trim()) || a.index - b.index).map(entry => entry.item);
+}
+function updateSortedGridSlots() {
+  const tiles = [...elAppGrid.querySelectorAll('.app-tile:not(.drop-slot)')];
+  for (const tile of tiles) { tile.style.removeProperty('grid-row'); tile.style.removeProperty('grid-column'); }
+  if (!alphabeticalShortcuts() || !document.body.classList.contains('layout-grid')) return;
+  const columns = Math.max(1, getComputedStyle(elAppGrid).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
+  const visible = tiles.filter(tile => !tile.classList.contains('filter-hidden'));
+  const rows = Math.max(1, Math.ceil(visible.length / columns));
+  visible.forEach((tile, index) => {
+    tile.style.gridRow = String(index % rows + 1);
+    tile.style.gridColumn = String(Math.floor(index / rows) + 1);
+  });
+}
+window.addEventListener('resize', updateSortedGridSlots);
+
 function renderGrid() {
   if (activeFileRename) activeFileRename.cancel();
   const dropHint = $('drop-hint');
@@ -730,13 +751,14 @@ function renderGrid() {
     dropHint.classList.add('hidden');
   }
 
-  apps.forEach(appItem => elAppGrid.appendChild(createAppTile(appItem)));
+  displayedApps().forEach(appItem => elAppGrid.appendChild(createAppTile(appItem)));
   // Re-apply any active type-to-filter after a rebuild — innerHTML='' wiped
   // the .filter-hidden class. (UX Review §6C / I3.)
   if (_filterText) applyFilter();
   // Regions: an empty Column or Row draws its one dashed cell (region.js).
   if (window.qlAfterRender) window.qlAfterRender();
   if (window.qlAfterGridRender) window.qlAfterGridRender(retainedDraft);
+  updateSortedGridSlots();
 }
 
 function createAppTile(appItem) {
@@ -840,6 +862,7 @@ function startRename(appItem, labelEl) {
     labelEl.title = 'Click to rename';
     input.replaceWith(labelEl);
     await saveApps();
+    if (alphabeticalShortcuts()) renderGrid();
   }
 
   input.addEventListener('blur', commit);
@@ -1066,6 +1089,7 @@ function applyRegionTransparency() {
 $('theme-stylesheet').addEventListener('load', () => {
   regionPaintTheme = null;
   applyRegionTransparency();
+  updateSortedGridSlots();
 });
 
 function applySettings() {
@@ -1373,6 +1397,7 @@ function handleReorderMove(e) {
   // Outside this window: the main process relays the drag to the region
   // under the pointer (region.js), so nothing is reordered here.
   if (window.qlTileDragOut && window.qlTileDragOut.move(e, reorderState)) return;
+  if (alphabeticalShortcuts()) return;
 
   // Find which tile the cursor is over (ghost has pointer-events:none)
   const el = document.elementFromPoint(e.clientX, e.clientY);
@@ -1420,6 +1445,9 @@ async function handleReorderUp(e) {
   // Released outside this window: it lands in the region under the pointer,
   // or the drag is cancelled and the tile stays (region.js).
   if (window.qlTileDragOut && window.qlTileDragOut.end(e, state)) return;
+  if (alphabeticalShortcuts()) {
+    showNotice('Turn off alphabetical sorting to rearrange shortcuts.'); renderGrid(); return;
+  }
 
   const hit = document.elementFromPoint(e.clientX, e.clientY), target = hit && hit.closest('.app-tile');
   if (document.body.classList.contains('region') && target && elAppGrid.contains(target)
@@ -1497,6 +1525,7 @@ function applyFilter() {
     }
   }
   updateFilterChip();
+  updateSortedGridSlots();
   if (window.qlRadialRefresh) window.qlRadialRefresh();
 }
 
@@ -1538,6 +1567,14 @@ function moveTileFocus(direction) {
   const cur = tiles.indexOf(focused);
   if (cur === -1) {
     focusTileAtIndex(tiles, 0);
+    return;
+  }
+  if (alphabeticalShortcuts() && document.body.classList.contains('layout-grid')) {
+    const row = Number(focused.style.gridRow), column = Number(focused.style.gridColumn);
+    const wantedRow = row + (direction === 'up' ? -1 : direction === 'down' ? 1 : 0);
+    const wantedColumn = column + (direction === 'left' ? -1 : direction === 'right' ? 1 : 0);
+    const next = tiles.find(tile => Number(tile.style.gridRow) === wantedRow && Number(tile.style.gridColumn) === wantedColumn);
+    if (next) next.focus();
     return;
   }
   const cols = computeColumnCount(tiles);
@@ -1691,8 +1728,11 @@ function setupUpdateListeners() {
   // Settings changed in the main process (tray checkbox, the Manager, or this
   // region's theme changed elsewhere): re-read and re-apply them.
   window.api.on('settings-changed-externally', async () => {
+    const wasSorted = alphabeticalShortcuts();
     settings = await window.api.invoke('get-settings');
     applySettings();
+    if (wasSorted !== alphabeticalShortcuts()) { cancelReorder(); renderGrid(); }
+    else updateSortedGridSlots();
   });
 }
 

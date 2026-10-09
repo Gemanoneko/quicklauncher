@@ -992,6 +992,7 @@
   // Ctrl+Arrow (edit mode, addendum A5): Left / Right one place, Up / Down one
   // row (the column count the plain arrows use), among the visible tiles.
   async function moveTileBy(id, delta) {
+    if (settings.sortShortcuts !== false) { showNotice('Turn off alphabetical sorting to rearrange shortcuts.'); return; }
     const visible = visibleTiles().map((t) => t.dataset.id);
     const next = T.stepOrder(apps.map((a) => a.id), visible, id, delta);
     if (!next) return;
