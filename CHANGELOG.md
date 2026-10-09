@@ -4,6 +4,13 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.95.1] - 2026-10-09
+
+### Fixed
+- Installed-app picker keeps the current search when scanning finishes, trims surrounding search spaces and returns filtered matches to the top of the list.
+
+### Notes
+- Manual QA by Sergei; no automated or runtime QA was performed for this patch.
 ## [v1.95.0] - 2026-10-09
 
 ### Added

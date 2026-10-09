@@ -684,12 +684,13 @@
     try { installed = await api.invoke('get-installed-apps'); } catch { installed = []; }
     if (pickerRegionId !== regionId) return;
     $('picker-loading').classList.add('hidden');
-    renderPickerList(installed);
+    renderFilteredAppPicker();
   }
   function closeAppPicker() { elPicker.classList.add('hidden'); pickerRegionId = null; }
   function renderPickerList(items) {
     const el = $('picker-list');
     el.innerHTML = '';
+    el.scrollTop = 0;
     if (!items.length) {
       const empty = document.createElement('div');
       empty.className = 'picker-empty';
@@ -722,10 +723,11 @@
       el.appendChild(row);
     }
   }
-  $('picker-search').addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    renderPickerList(q ? installed.filter((a) => a.name.toLowerCase().includes(q)) : installed);
-  });
+  function renderFilteredAppPicker() {
+    const q = $('picker-search').value.trim().toLowerCase();
+    renderPickerList(q ? installed.filter((a) => String(a.name || '').toLowerCase().includes(q)) : installed);
+  }
+  $('picker-search').addEventListener('input', renderFilteredAppPicker);
   $('btn-browse-picker').addEventListener('click', async () => {
     const target = pickerRegionId;
     closeAppPicker();
