@@ -81,6 +81,15 @@
         </div>
 
         <div class="setting-row">
+          <label for="slider-region-transparency">Region transparency</label>
+          <div class="slider-row">
+            <input type="range" id="slider-region-transparency" min="0" max="100" step="5" value="0" aria-valuetext="0%" aria-describedby="region-transparency-help" title="Background transparency in every region">
+            <span id="region-transparency-val" class="setting-label">0%</span>
+          </div>
+          <div id="region-transparency-help" class="setting-label">Applies to all regions. Icons and text stay solid.</div>
+        </div>
+
+        <div class="setting-row">
           <label class="checkbox-label" title="Start QuickLauncher when you sign in to Windows">
             <input type="checkbox" id="chk-startup">
             <span class="checkmark"></span>

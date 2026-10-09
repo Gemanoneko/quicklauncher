@@ -381,6 +381,7 @@ class Store extends EventEmitter {
       apps: [],
       settings: {
         iconSize: 64,
+        regionTransparency: 0,
         startWithWindows: true,
         randomTheme: true,
         theme: 'cyberpunk',

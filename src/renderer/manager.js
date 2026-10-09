@@ -446,6 +446,17 @@
   // ── SETTINGS view ──────────────────────────────────────────────────────────
   const elSlider = $('slider-icon-size');
   const elSize = $('icon-size-val');
+  const elTransparency = $('slider-region-transparency');
+  const elTransparencyValue = $('region-transparency-val');
+  let transparencyRevision = 0, transparencySettlement = 0, transparencyPending = false;
+  function transparencyValue(value) {
+    return Number.isFinite(value) ? Math.round(Math.max(0, Math.min(100, value)) / 5) * 5 : 0;
+  }
+  function drawTransparency(value) {
+    elTransparency.value = value;
+    elTransparencyValue.textContent = `${value}%`;
+    elTransparency.setAttribute('aria-valuetext', `${value}%`);
+  }
   const ICON_SIZE_TITLE = 'Icon size in every region';
   const ICON_FIT_ERROR = 'No room at this icon size. Use a smaller size.';
   let iconRequestRevision = 0, iconSettlementRevision = 0, iconRequestPending = false;
@@ -469,6 +480,7 @@
     iconFitTimer = setTimeout(clearIconRefusal, 8000);
   }
   function renderSettings() {
+    if (!transparencyPending) drawTransparency(transparencyValue(settings.regionTransparency));
     const size = settings.iconSize || 64;
     if (!iconRequestPending) {
       if (document.activeElement !== elSlider) elSlider.value = size;
@@ -480,6 +492,25 @@
     if (!recording) $('input-hotkey').value = settings.globalHotkey || '';
   }
   const savePatch = (patch) => api.invoke('save-settings', patch);
+  elTransparency.addEventListener('input', async () => {
+    const value = transparencyValue(Number(elTransparency.value));
+    const revision = ++transparencyRevision;
+    transparencyPending = true;
+    drawTransparency(value);
+    try {
+      const result = await savePatch({ regionTransparency: value });
+      if (revision !== transparencyRevision) return;
+      if (result && result.ok) settings.regionTransparency = transparencyValue(result.regionTransparency);
+    } catch (error) {
+      console.error('Region transparency change failed:', error);
+    } finally {
+      if (revision === transparencyRevision) {
+        transparencyPending = false;
+        transparencySettlement++;
+        drawTransparency(transparencyValue(settings.regionTransparency));
+      }
+    }
+  });
   elSlider.addEventListener('input', async (e) => {
     const size = parseInt(e.target.value, 10);
     const revision = ++iconRequestRevision;
@@ -756,9 +787,14 @@
       do {
         again = false;
         const iconRevision = iconRequestRevision, iconSettlement = iconSettlementRevision;
+        const transparencyRequest = transparencyRevision, transparencySettled = transparencySettlement;
         const [st, se] = await Promise.all([api.invoke('manager:state'), api.invoke('get-settings')]);
         if (st) state = st;
-        if (se) settings = { ...se, ...(iconRequestPending || iconRevision !== iconRequestRevision || iconSettlement !== iconSettlementRevision ? { iconSize: settings.iconSize || 64 } : {}) };
+        if (se) settings = {
+          ...se,
+          ...(iconRequestPending || iconRevision !== iconRequestRevision || iconSettlement !== iconSettlementRevision ? { iconSize: settings.iconSize || 64 } : {}),
+          ...(transparencyPending || transparencyRequest !== transparencyRevision || transparencySettled !== transparencySettlement ? { regionTransparency: settings.regionTransparency || 0 } : {}),
+        };
         applyTheme(state.theme);
         renderRegions();
         renderMoved();

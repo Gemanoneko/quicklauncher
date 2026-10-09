@@ -890,8 +890,143 @@ async function saveApps() {
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────────
+let appliedTheme = null;
+let appliedIconSize = null;
+let regionPaintSheet = null;
+let regionPaintTheme = null;
+
+// Companion paint rules keep each theme's own fills, including literal colors
+// and gradients in hover/pressed rules. Only background paint changes: URL art,
+// text, images, borders, shadows, blur and layout declarations are left alone.
+// Build once per loaded theme; moving the slider only changes one CSS variable.
+function rebuildRegionPaint() {
+  if (!document.body.classList.contains('region')) return;
+  if (!regionPaintSheet) {
+    regionPaintSheet = new CSSStyleSheet();
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, regionPaintSheet];
+  }
+  const variables = getComputedStyle(document.body);
+  function balancedEnd(value, start) {
+    let depth = 0, quote = '';
+    for (let i = start; i < value.length; i++) {
+      const c = value[i];
+      if (c === '\\') { i++; continue; }
+      if (quote) { if (c === quote) quote = ''; continue; }
+      if (c === '"' || c === "'") { quote = c; continue; }
+      if (c === '(') depth++;
+      else if (c === ')' && --depth === 0) return i + 1;
+    }
+    return value.length;
+  }
+  function splitList(value) {
+    const parts = [];
+    let start = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] === '(') { i = balancedEnd(value, i) - 1; continue; }
+      if (value[i] === ',') { parts.push(value.slice(start, i)); start = i + 1; }
+    }
+    parts.push(value.slice(start));
+    return parts;
+  }
+  function resolveVariables(value, depth = 0) {
+    if (depth > 12) return value;
+    let result = '', pos = 0;
+    const re = /var\(/g;
+    let match;
+    while ((match = re.exec(value))) {
+      const end = balancedEnd(value, match.index + 3);
+      const args = splitList(value.slice(match.index + 4, end - 1));
+      const resolved = variables.getPropertyValue(args[0].trim()).trim() || args.slice(1).join(',').trim();
+      result += value.slice(pos, match.index) + (resolved ? resolveVariables(resolved, depth + 1) : value.slice(match.index, end));
+      pos = end; re.lastIndex = end;
+    }
+    return result + value.slice(pos);
+  }
+  const fade = (color) => `color-mix(in srgb, ${color} var(--ql-background-opacity), transparent)`;
+  function paint(value, depth = 0) {
+    if (depth > 12) return value;
+    let result = '';
+    for (let i = 0; i < value.length;) {
+      const rest = value.slice(i);
+      const token = rest.match(/^(#[\da-f]{3,8}\b|[-a-z_][\w-]*)/i);
+      if (!token) { result += value[i++]; continue; }
+      const word = token[0];
+      let end = i + word.length;
+      if (value[end] === '(') {
+        end = balancedEnd(value, end);
+        const fn = value.slice(i, end);
+        if (word.toLowerCase() === 'url') result += fn;
+        else {
+          const resolved = resolveVariables(fn);
+          if (CSS.supports('color', resolved) && !resolved.includes('var(')) result += fade(fn);
+          else if (word.toLowerCase() === 'var' && resolved !== fn) result += paint(resolved, depth + 1);
+          else result += word + '(' + paint(value.slice(i + word.length + 1, end - 1), depth + 1) + ')';
+        }
+      } else result += CSS.supports('color', word) ? fade(word) : word;
+      i = end;
+    }
+    return result;
+  }
+  function scopedSelectors(selectorText) {
+    return splitList(selectorText).map((selector) => selector.trim()).filter((selector) => {
+      // Pseudo-element decoration is artwork, except the theme's tile plate.
+      // Scrollbar thumbs and image backgrounds are foreground, not panel fills.
+      return (!selector.includes('::') || selector.includes('.tile-icon-wrap::before'))
+        && !/#(?:particles|app-entrance)\b/.test(selector)
+        && !/\.tile-icon(?!-wrap)[\s:.#\[]/.test(selector + ' ');
+    }).map((selector) => {
+      const pseudo = selector.indexOf('::');
+      const guard = ':where(body.region, body.region *)';
+      return pseudo < 0 ? selector + guard : selector.slice(0, pseudo) + guard + selector.slice(pseudo);
+    }).join(',');
+  }
+  function rulesText(rules) {
+    let result = '';
+    for (const rule of rules) {
+      if (rule.type === CSSRule.STYLE_RULE) {
+        const selector = scopedSelectors(rule.selectorText);
+        if (!selector) continue;
+        let declarations = '';
+        for (const property of ['background', 'background-color', 'background-image']) {
+          const value = rule.style.getPropertyValue(property);
+          if (!value) continue;
+          const changed = paint(value);
+          if (changed !== value) declarations += `${property}:${changed}${rule.style.getPropertyPriority(property) ? ' !important' : ''};`;
+        }
+        if (declarations) result += `${selector}{${declarations}}\n`;
+      } else if (rule.type === CSSRule.MEDIA_RULE || rule.type === CSSRule.SUPPORTS_RULE) {
+        const contents = rulesText(rule.cssRules);
+        if (contents) result += `${rule.cssText.slice(0, rule.cssText.indexOf('{'))}{${contents}}\n`;
+      }
+    }
+    return result;
+  }
+  let css = '';
+  for (const sheet of document.styleSheets) css += rulesText(sheet.cssRules);
+  // Constructed sheets do not require an inline-style CSP exception.
+  regionPaintSheet.replaceSync(css);
+  regionPaintTheme = $('theme-stylesheet').getAttribute('href');
+}
+
+function applyRegionTransparency() {
+  if (!document.body.classList.contains('region')) return;
+  const value = Number.isFinite(settings.regionTransparency)
+    ? Math.round(Math.max(0, Math.min(100, settings.regionTransparency)) / 5) * 5 : 0;
+  document.documentElement.style.setProperty('--ql-background-opacity', `${100 - value}%`);
+  if (value && $('theme-stylesheet').sheet
+      && (!regionPaintSheet || regionPaintTheme !== $('theme-stylesheet').getAttribute('href'))) rebuildRegionPaint();
+  if (regionPaintSheet) regionPaintSheet.disabled = value === 0;
+}
+
+$('theme-stylesheet').addEventListener('load', () => {
+  regionPaintTheme = null;
+  applyRegionTransparency();
+});
+
 function applySettings() {
   const size = settings.iconSize || 64;
+  const sizeChanged = size !== appliedIconSize;
+  appliedIconSize = size;
   document.documentElement.style.setProperty('--icon-size', size + 'px');
 
   // Reduced-motion is OS-or-user driven (UX Review §5). The user setting
@@ -903,10 +1038,19 @@ function applySettings() {
 
   const rawTheme = settings.theme || 'cyberpunk';
   const theme = VALID_THEMES.has(rawTheme) ? rawTheme : 'cyberpunk';
-  $('theme-stylesheet').href = `styles/themes/${theme}.css`;
-  startBannerCycle(theme);
-  if (window.qlRadialRefresh) window.qlRadialRefresh();
-  if (window.qlDisplayMetricsChanged) window.qlDisplayMetricsChanged();
+  const themeChanged = theme !== appliedTheme;
+  appliedTheme = theme;
+  if (themeChanged) {
+    const link = $('theme-stylesheet');
+    const href = `styles/themes/${theme}.css`;
+    if (link.getAttribute('href') !== href) link.setAttribute('href', href);
+    startBannerCycle(theme);
+  }
+  applyRegionTransparency();
+  if (themeChanged || sizeChanged) {
+    if (window.qlRadialRefresh) window.qlRadialRefresh();
+    if (window.qlDisplayMetricsChanged) window.qlDisplayMetricsChanged();
+  }
 }
 
 // Apply reduced-motion: union of user setting and OS prefers-reduced-motion.

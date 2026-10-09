@@ -4,6 +4,14 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.97.0] - 2026-10-09
+
+### Added
+- Global Region transparency slider in Settings (0–100% in steps of 5), applied live to all regions and saved across restarts.
+- Transparency affects background fills and gradients while retaining foreground icons, labels, controls, artwork and blur; 0% restores the original theme rendering.
+
+### Notes
+- Manual QA by Sergei; no automated or runtime QA was performed for this addition.
 ## [v1.96.0] - 2026-10-09
 
 ### Added

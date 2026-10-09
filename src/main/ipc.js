@@ -191,6 +191,9 @@ let installedAppsPromise = null;
 // regions (controller), rects are saved by the main process.
 function settingsPatch(settings) {
   const patch = {};
+  if (typeof settings.regionTransparency === 'number' && Number.isFinite(settings.regionTransparency)) {
+    patch.regionTransparency = Math.round(Math.max(0, Math.min(100, settings.regionTransparency)) / 5) * 5;
+  }
   if (typeof settings.iconSize === 'number' && settings.iconSize >= 32 && settings.iconSize <= 128) {
     patch.iconSize = settings.iconSize;
   }

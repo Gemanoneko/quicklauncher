@@ -1047,7 +1047,7 @@ class RegionController extends EventEmitter {
   _managerChanged() { if (this.manager) this.manager.changed(); }
 
   /** Any region or the Manager: settings (icon size, reduced motion, theme) were changed elsewhere. */
-  broadcastSettingsChanged() {
+  broadcastSettingsChanged({ refit = true } = {}) {
     for (const rt of this.rt.values()) {
       if (rt.gridMinimum && (rt.gridMinimum.iconSize!==this._iconSize() || rt.gridMinimum.theme!==M.effectiveTheme(this.region(rt.id),this.settings()))) {
         rt.gridMinimum=null;
@@ -1055,7 +1055,7 @@ class RegionController extends EventEmitter {
       }
       if (rt.wc && !rt.wc.isDestroyed()) rt.wc.send('settings-changed-externally');
     }
-    this._refitAllContent(); // the icon size sets a Column's width and a Row's height
+    if (refit) this._refitAllContent(); // the icon size sets a Column's width and a Row's height
     this._managerChanged();
   }
 
@@ -1191,8 +1191,8 @@ class RegionController extends EventEmitter {
       return {ok:false,iconSize:this._iconSize(),error:'No room at this icon size. Use a smaller size.'};
     }
     this.store.set('settings', { ...this.settings(), ...patch });
-    this.broadcastSettingsChanged();
-    return {ok:true,iconSize:this._iconSize()};
+    this.broadcastSettingsChanged({ refit: Object.keys(patch).some((key) => key !== 'regionTransparency') });
+    return {ok:true,iconSize:this._iconSize(),regionTransparency:this.settings().regionTransparency || 0};
   }
 
   // ── store read-only merge, fanned out to every region ────────────────────
