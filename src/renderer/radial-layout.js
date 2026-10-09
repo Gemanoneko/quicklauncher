@@ -5,7 +5,7 @@
  const HUB=96, PAD=8, GAP=6, CAPS={fan:10,ring:12}, DIRECTIONS=['up','right','down','left'];
  const radial=layout=>layout==='fan'||layout==='ring';
  const size=S=>Math.max(32,Math.min(128,Math.round(Number(S)||64)));
- function points(layout,n,R){const pitch=layout==='ring'?360/n:n===1?0:Math.min(180/(n-1),60);return Array.from({length:n},(_,k)=>{
+ function points(layout,n,R){const pitch=layout==='ring'?360/n:n===1?0:Math.min((n>=5?270:180)/(n-1),60);return Array.from({length:n},(_,k)=>{
    const angle=(layout==='ring'?-90+k*pitch:-90+(k-(n-1)/2)*pitch)*Math.PI/180;
    return{x:R*Math.cos(angle),y:R*Math.sin(angle)};
  });}
@@ -21,14 +21,16 @@
  }
  function tileClearance(pivot,chips){return Math.min(...chips.map(c=>Math.hypot(Math.max(c.x-pivot.x,pivot.x-c.x-c.width,0),Math.max(c.y-pivot.y,pivot.y-c.y-c.height,0))));}
  function turnPoint(x,y,width,height,turn){return turn===1?{x:height-y,y:x}:turn===2?{x:width-x,y:height-y}:turn===3?{x:y,y:width-x}:{x,y};}
- // Base hub must clear the actual rounded tiles in every Fan direction.
- function fanClearance(centres,T){const f=fanFrame(centres,T);return Math.min(...DIRECTIONS.map((_,turn)=>{
+ // Fan radius is chosen from actual rounded tile spacing and base hub
+ // clearance in all directions, without inheriting smaller counts' radii.
+ function fanFits(centres,T){const f=fanFrame(centres,T);return DIRECTIONS.every((_,turn)=>{
   const pivot=turnPoint(f.pivot.x,f.pivot.y,f.width,f.height,turn);
   const chips=centres.map(c=>{const p=turnPoint(f.pivot.x+c.x,f.pivot.y+c.y,f.width,f.height,turn);return{x:Math.round(p.x-T/2),y:Math.round(p.y-T/2),width:T,height:T};});
-  return tileClearance(pivot,chips);
- }));}
+  return tileClearance(pivot,chips)>=HUB/2+GAP&&separated(chips.map(c=>({x:c.x+T/2,y:c.y+T/2})),T);
+ });}
  function radius(layout,n,S=64){if(!radial(layout))throw Error('not a radial layout');n=Math.max(1,Math.min(CAPS[layout],Math.floor(Number(n)||1)));const T=size(S)+12;let previous=48+T/2+10;
-  for(let count=1;count<=n;count++){let R=48+T/2+10;while(!separated(points(layout,count,R),T)||(layout==='ring'?ringClearance(points(layout,count,R),T,R):fanClearance(points(layout,count,R),T))<HUB/2+GAP)R+=2;previous=Math.max(previous,R);}
+  if(layout==='fan'){let R=HUB/2+T/2+GAP;while(!fanFits(points(layout,n,R),T))R+=1;return R;}
+  for(let count=1;count<=n;count++){let R=48+T/2+10;while(!separated(points(layout,count,R),T)||ringClearance(points(layout,count,R),T,R)<HUB/2+GAP)R+=2;previous=Math.max(previous,R);}
   return previous;
  }
  function geometry(layout,count,S=64,direction='up'){
@@ -41,7 +43,7 @@
   const chips=centres.map(c=>{const p=rotate(pivot.x+c.x,pivot.y+c.y);return{x:Math.round(p.x-T/2),y:Math.round(p.y-T/2),width:T,height:T};});
   const hub=rotate(pivot.x,pivot.y),box=turn%2?{width:height,height:width}:{width,height};
   const diameter=layout==='ring'?Math.max(HUB,2*Math.floor(Math.min(HUB*R/radius('ring',1,S),2*(ringClearance(centres,T,R)-GAP))/2))
-   :Math.max(HUB,2*Math.floor(Math.min(HUB*R/radius('fan',1,S),2*(tileClearance(hub,chips)-GAP))/2));
+   :Math.max(HUB,2*Math.floor(Math.min(192,HUB+0.5*(R-radius('fan',1,S)),2*(tileClearance(hub,chips)-GAP))/2));
   if(layout==='fan'){
    // Extend only the circle's missing bounds. Integer shifts preserve the
    // rounded tile positions and their clearance, including after rotation.

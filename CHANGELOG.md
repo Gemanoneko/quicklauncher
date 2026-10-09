@@ -4,6 +4,13 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.100.1] - 2026-10-09
+
+### Fixed
+- Fan center stays compact while still growing with icon size, and icons sit closer to it using a wider arc and the minimum safe radius for the current count.
+
+### Notes
+- Ring remains unchanged. Manual QA by Sergei; no automated or runtime QA was performed for this correction.
 ## [v1.100.0] - 2026-10-09
 
 ### Changed
