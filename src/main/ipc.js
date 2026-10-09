@@ -2,7 +2,7 @@ const { ipcMain, dialog, shell, app, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
-const { randomUUID } = require('crypto');
+const { randomUUID, createHash } = require('crypto');
 const { checkForUpdates, dismissals: updateDismissals, publish: publishUpdate } = require('./updater');
 const { refreshTrayMenu } = require('./tray');
 const { trimIcon } = require('./icon-trim');
@@ -69,7 +69,7 @@ public static class IconHelper {
   public static string GetBase64(string path) {
     try {
       var s = new ShFI();
-      SHGetFileInfo(path, 0, ref s, (uint)Marshal.SizeOf(s), 0x4000);
+      if (SHGetFileInfo(path, 0, ref s, (uint)Marshal.SizeOf(s), 0x4000) == IntPtr.Zero) return null;
       var g = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
       IImageList2 l;
       if (SHGetImageList(4, ref g, out l) != 0) return null;
@@ -84,6 +84,18 @@ public static class IconHelper {
           return Convert.ToBase64String(ms.ToArray());
         }
       } finally { DestroyIcon(h); }
+    } catch { return null; }
+  }
+  // Let the shell interpret the shortcut's entire IconLocation, including
+  // positive ordinals, negative resource IDs and paths containing commas.
+  // Reject the generic document cache entry instead of overwriting a good icon.
+  public static string GetShortcutBase64(string path) {
+    try {
+      var actual = new ShFI(); var generic = new ShFI();
+      if (SHGetFileInfo(path, 0, ref actual, (uint)Marshal.SizeOf(actual), 0x4000) == IntPtr.Zero) return null;
+      if (SHGetFileInfo("ql-icon.unknown", 0x80, ref generic, (uint)Marshal.SizeOf(generic), 0x4010) != IntPtr.Zero
+          && actual.iIcon == generic.iIcon) return null;
+      return GetBase64(path);
     } catch { return null; }
   }
   // Shell thumbnail via IShellItemImageFactory.
@@ -136,7 +148,8 @@ let _iconHelperDll = null;
 // Async compilation — called once at startup, never blocks the main thread.
 function compileIconHelperDll() {
   return new Promise((resolve) => {
-    const dllPath = path.join(app.getPath('userData'), 'ql-icon-helper.dll');
+    const helperVersion = createHash('sha256').update(ICON_HELPER_CS).digest('hex').slice(0, 16);
+    const dllPath = path.join(app.getPath('userData'), `ql-icon-helper-${helperVersion}.dll`);
     if (fs.existsSync(dllPath)) { _iconHelperDll = dllPath; return resolve(dllPath); }
     const winDir = process.env.WINDIR || 'C:\\Windows';
     const candidates = [
@@ -145,7 +158,7 @@ function compileIconHelperDll() {
     ];
     const csc = candidates.find(c => fs.existsSync(c));
     if (!csc) return resolve(null);
-    const csPath = path.join(app.getPath('temp'), 'QLIconHelper.cs');
+    const csPath = path.join(app.getPath('temp'), `QLIconHelper-${helperVersion}.cs`);
     try { fs.writeFileSync(csPath, ICON_HELPER_CS); } catch { return resolve(null); }
     execFile(csc, [
       '/target:library', '/reference:System.Drawing.dll',
@@ -238,7 +251,7 @@ const DIALOG_OPTS = {
 function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null } = {}) {
   // Compile icon helper DLL in the background (async, non-blocking).
   // Must finish before any icon extraction calls use iconHelperLoadSnippet().
-  compileIconHelperDll();
+  compileIconHelperDll().then(() => refreshStoredShortcutIcons(ctl, store)).catch(() => {});
 
   const regionOf = (e) => ctl.regionIdOf(e.sender);
   const fromManager = (e) => mgr.isSender(e.sender);
@@ -478,17 +491,8 @@ $apps = Get-StartApps | ForEach-Object {
     try {
       $lnk = Find-StartLnk $name
       if ($lnk) {
-        $sc = $wsh.CreateShortcut($lnk.FullName)
-        if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\\s*,') {
-          $iconExe = ($sc.IconLocation -split ',')[0].Trim()
-          if ($iconExe -and (Test-Path $iconExe)) { $exePath = $iconExe }
-        }
-        if (-not $exePath -and $sc.TargetPath -and (Test-Path $sc.TargetPath)) {
-          $exePath = $sc.TargetPath
-        }
-        # Target in WindowsApps or other protected path: fall back to the .lnk itself.
-        # SHGetFileInfo on a .lnk resolves the icon through the shell cache regardless.
-        if (-not $exePath -and -not $iconPath) { $exePath = $lnk.FullName }
+        # Resolve the original link so its resource index is preserved.
+        $exePath = $lnk.FullName
       }
     } catch {}
   }
@@ -527,17 +531,7 @@ if (-not $apps -or @($apps).Count -eq 0) {
       $name = [IO.Path]::GetFileNameWithoutExtension($lnkFile.Name)
       $exePath = $null; $exeIconB64 = $null
       try {
-        $sc = $wsh.CreateShortcut($lnkFile.FullName)
-        if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\s*,') {
-          $p = ($sc.IconLocation -split ',')[0].Trim()
-          $p = [Environment]::ExpandEnvironmentVariables($p)
-          if ($p -and (Test-Path $p)) { $exePath = $p }
-        }
-        if (-not $exePath -and $sc.TargetPath) {
-          $p = [Environment]::ExpandEnvironmentVariables($sc.TargetPath)
-          try { if ($p -and (Test-Path $p)) { $exePath = $p } } catch {}
-        }
-        if (-not $exePath) { $exePath = $lnkFile.FullName }
+        $exePath = $lnkFile.FullName
         try { $exeIconB64 = [IconHelper]::GetBase64($exePath) } catch {}
       } catch {}
       [PSCustomObject]@{ Name=$name; AppID=$lnkFile.FullName; IconPath=$null; ExePath=$exePath; ExeIconB64=$exeIconB64; ShellIconB64=$null }
@@ -712,7 +706,8 @@ $apps | ConvertTo-Json -Depth 2
     // Broken tiles and files without a tile are re-checked in the background;
     // a change sends manager:changed, which reads the state again.
     ctl.refreshMoves().catch(() => {});
-    return { ...ctl.managerState(), version: electronApp.getVersion() };
+    return { ...ctl.managerState(), version: electronApp.getVersion(),
+      installedPaths: ctl.apps().map(a => ({ regionId: a.regionId, path: a.path })) };
   });
   // M3, Moved shortcuts (spec 8.1, 5.4, 5.5).
   onManager('manager:open-store', () => ctl.openStoreFolder({ parent: mgr.window }));
@@ -736,6 +731,7 @@ $apps | ConvertTo-Json -Depth 2
   onManager('manager:add-installed', (regionId, item) => {
     const entry = entryFromAppId(item || {});
     if (typeof regionId !== 'string' || !entry) return { ok: false };
+    if (ctl.apps().some(a => a.regionId === regionId && String(a.path).toLowerCase() === entry.path.toLowerCase())) return { ok: true, alreadyAdded: true };
     return ctl.addItems(regionId, [entry]);
   });
   onManager('manager:add-file', async (regionId) => {
@@ -877,9 +873,11 @@ try {
   $sc = $wsh.CreateShortcut($env:QL_PATH)
   $icon = $null; $target = $null
   if ($sc.IconLocation -and $sc.IconLocation -notmatch '^\\s*,') {
-    $p = (($sc.IconLocation -split ',')[0]).Trim()
+    $p = $sc.IconLocation
+    if ($p -match '^(.*),\\s*-?\\d+\\s*$') { $p = $Matches[1] }
+    $p = $p.Trim().Trim('"')
     $p = [Environment]::ExpandEnvironmentVariables($p)
-    if ($p -and (Test-Path $p)) { $icon = $p }
+    if ($p -and (Test-Path -LiteralPath $p)) { $icon = $p }
   }
   if ($sc.TargetPath) {
     $target = [Environment]::ExpandEnvironmentVariables($sc.TargetPath)
@@ -901,16 +899,56 @@ try {
 
 // Extract a 256×256 icon from an executable via the Windows jumbo image list.
 // Path is passed via environment variable to avoid PowerShell injection.
-function getJumboIconBase64(exePath) {
+function getJumboIconBase64(exePath, shortcut = false) {
   return new Promise((resolve) => {
     const ps = `try { ${iconHelperLoadSnippet()} } catch {}
-$b = [IconHelper]::GetBase64($env:QL_PATH)
+$b = [IconHelper]::${shortcut ? 'GetShortcutBase64' : 'GetBase64'}($env:QL_PATH)
 if ($b) { Write-Output $b }`;
     execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
       { windowsHide: true, stdio: 'pipe', timeout: 15000, env: { ...process.env, QL_PATH: exePath } },
       (err, stdout) => resolve(stdout ? stdout.trim() : null)
     );
   });
+}
+
+async function shortcutIconDataUrl(filePath) {
+  const b64 = await getJumboIconBase64(filePath, true);
+  if (!b64) return '';
+  try {
+    const img = trimIcon(nativeImage.createFromBuffer(Buffer.from(b64, 'base64')));
+    return img.isEmpty() ? '' : img.toDataURL();
+  } catch { return ''; }
+}
+
+// One source-version refresh for already stored links. Re-read the live list
+// before merging so removal/reorder/rename while extraction runs is preserved.
+async function refreshStoredShortcutIcons(ctl, store) {
+  const revision = 1;
+  if (store.get('shortcutIconRevision') === revision) return;
+  const changes = new Map();
+  for (const item of [...(store.get('apps') || [])]) {
+    if (!item || typeof item.path !== 'string' || path.extname(item.path).toLowerCase() !== '.lnk') continue;
+    const info = await resolveShortcutLink(item.path);
+    if (info && !info.icon && info.target) {
+      try { if ((await fs.promises.stat(info.target)).isDirectory()) continue; } catch { /* shell may still resolve it */ }
+    }
+    const icon = await shortcutIconDataUrl(item.path);
+    if (icon && icon !== item.iconDataUrl) changes.set(item.id, { path: item.path, oldIcon: item.iconDataUrl, icon });
+  }
+  const regions = new Set();
+  const current = store.get('apps') || [];
+  const updated = current.map(item => {
+    const change = changes.get(item.id);
+    if (!change || item.path !== change.path || item.iconDataUrl !== change.oldIcon) return item;
+    regions.add(item.regionId);
+    return { ...item, iconDataUrl: change.icon };
+  });
+  if (regions.size) {
+    store.set('apps', updated);
+    for (const id of regions) ctl._pushItems(id);
+    ctl._managerChanged();
+  }
+  store.set('shortcutIconRevision', revision);
 }
 
 // The IconFile= line of an Internet Shortcut (.url, INI text), or null.
@@ -958,6 +996,9 @@ async function buildAppEntry(filePath) {
   }
 
   let iconDataUrl = '';
+  if (path.extname(filePath).toLowerCase() === '.lnk' && !folderTarget) {
+    iconDataUrl = await shortcutIconDataUrl(filePath);
+  }
   const srcExt = path.extname(iconSourcePath).toLowerCase();
   const imageExts = new Set(['.ico', '.png', '.jpg', '.jpeg', '.bmp']);
   // .lnk included: SHGetFileInfo resolves the link and returns the target icon (no overlay)

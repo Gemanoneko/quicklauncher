@@ -701,9 +701,32 @@
   // ── installed-app picker, for one region ───────────────────────────────────
   const elPicker = $('apps-picker');
   let installed = [];
+  let pickerSession = 0, pickerInteraction = 0, pickerReturnFocus = null;
+  const pickerStatus = new Map();
+  for (const event of ['pointerdown', 'keydown', 'input']) elPicker.addEventListener(event, () => { pickerInteraction++; }, true);
+  function installedPath(item) {
+    return (/^[a-z]:\\.+\.lnk$/i.test(item.appId) || /^[a-z][a-z0-9+.-]*:\/\//i.test(item.appId)
+      ? item.appId : `shell:AppsFolder\\${item.appId}`).toLowerCase();
+  }
+  function updatePickerRows() {
+    for (const row of $('picker-list').children) {
+      if (!row._item) continue;
+      const key = `${pickerRegionId}\0${installedPath(row._item)}`;
+      const existing = (state.installedPaths || []).some(a => a.regionId === pickerRegionId && String(a.path).toLowerCase() === installedPath(row._item));
+      let status = pickerStatus.get(key) || {};
+      if (existing && (status.added || status.alreadyAdded)) status.confirmed = true;
+      if (!existing && status.confirmed) { pickerStatus.delete(key); status = {}; }
+      const disabled = !!(status.pending || status.added || status.alreadyAdded || existing);
+      row.setAttribute('aria-disabled', String(disabled));
+      row._status.textContent = status.pending ? 'Adding…' : status.added ? 'Added' : existing || status.alreadyAdded ? 'Already added' : status.error || '';
+    }
+  }
   async function openAppPicker(regionId) {
     const region = state && state.regions.find((r) => r.id === regionId);
     if (!region) return;
+    pickerReturnFocus = document.activeElement;
+    for (const [key, status] of pickerStatus) if (!status.pending) pickerStatus.delete(key);
+    const session = ++pickerSession;
     pickerRegionId = regionId;
     $('picker-title').textContent = `// ADD INSTALLED APP · ${region.name}`;
     const listEl2 = $('picker-list');
@@ -713,11 +736,15 @@
     elPicker.classList.remove('hidden');
     $('picker-search').focus();
     try { installed = await api.invoke('get-installed-apps'); } catch { installed = []; }
-    if (pickerRegionId !== regionId) return;
+    if (pickerRegionId !== regionId || session !== pickerSession) return;
     $('picker-loading').classList.add('hidden');
     renderFilteredAppPicker();
   }
-  function closeAppPicker() { elPicker.classList.add('hidden'); pickerRegionId = null; }
+  function closeAppPicker() {
+    elPicker.classList.add('hidden'); pickerRegionId = null; pickerSession++;
+    if (pickerReturnFocus && pickerReturnFocus.isConnected) pickerReturnFocus.focus();
+    pickerReturnFocus = null;
+  }
   function renderPickerList(items) {
     const el = $('picker-list');
     el.innerHTML = '';
@@ -732,6 +759,7 @@
     for (const item of items) {
       const row = document.createElement('div');
       row.className = 'picker-item';
+      row.setAttribute('role', 'button'); row.tabIndex = 0; row._item = item;
       if (item.iconDataUrl) {
         const img = document.createElement('img');
         img.src = item.iconDataUrl;
@@ -746,13 +774,27 @@
       nm.className = 'picker-item-name';
       nm.textContent = item.name;
       row.appendChild(nm);
+      const statusEl = document.createElement('span');
+      statusEl.className = 'picker-add-status'; statusEl.setAttribute('role', 'status');
+      row._status = statusEl; row.appendChild(statusEl);
       row.addEventListener('click', async () => {
         const target = pickerRegionId;
-        closeAppPicker();
-        if (target) await api.invoke('manager:add-installed', target, { name: item.name, appId: item.appId, iconDataUrl: item.iconDataUrl });
+        if (!target || row.getAttribute('aria-disabled') === 'true') return;
+        const session = pickerSession, interaction = pickerInteraction, focus = document.activeElement;
+        const key = `${target}\0${installedPath(item)}`;
+        pickerStatus.set(key, { pending: true }); updatePickerRows();
+        let result;
+        try { result = await api.invoke('manager:add-installed', target, { name: item.name, appId: item.appId, iconDataUrl: item.iconDataUrl }); }
+        catch { result = { ok: false }; }
+        pickerStatus.set(key, result && result.ok ? (result.alreadyAdded ? { alreadyAdded: true } : { added: true }) : { error: result && result.error || 'Could not add. Try again.' });
+        if (session !== pickerSession || target !== pickerRegionId) return;
+        updatePickerRows();
+        if (result && result.ok && interaction === pickerInteraction && document.activeElement === focus) $('picker-search').focus();
       });
+      row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); } });
       el.appendChild(row);
     }
+    updatePickerRows();
   }
   function renderFilteredAppPicker() {
     const q = $('picker-search').value.trim().toLowerCase();
@@ -799,6 +841,7 @@
         renderRegions();
         renderMoved();
         renderSettings();
+        if (pickerRegionId) updatePickerRows();
       } while (again);
     })();
     try { await refreshing; } finally { refreshing = null; }

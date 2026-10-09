@@ -2,6 +2,9 @@
 
 body.manager #app { height: 100vh; }
 body.manager #title-area { flex-direction: row; align-items: center; }
+.picker-add-status { margin-left: auto; flex: none; max-width: 50%; font-size: 12px; color: var(--text); }
+.picker-item[aria-disabled="true"] { cursor: default; }
+.picker-item:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px; }
 /* Controls win over theme art: the theme's tagline is not drawn in the Manager,
    where it ran under the tabs in every theme (fix-pass addendum C6). */
 body.manager #header::after { display: none; }

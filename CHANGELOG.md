@@ -4,6 +4,15 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.99.1] - 2026-10-09
+
+### Fixed
+- Shortcut icons use shell shortcut information so FortiClient links can show their configured icon.
+- Installed-app picker stays open for repeated additions, retaining search and scroll position and showing completed additions without adding duplicates.
+- Picker completion state resets when reopened, allowing removed shortcuts to be added again.
+
+### Notes
+- Manual QA by Sergei; no automated or runtime QA was performed for these changes.
 ## [v1.99.0] - 2026-10-09
 
 ### Added
