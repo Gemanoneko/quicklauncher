@@ -400,13 +400,21 @@ body.region.layout-radial #app-grid {
 }
 body.region.layout-radial #header {
   position: absolute; box-sizing: border-box; padding: 0; display: block;
-  min-height: 0; flex: none; background: var(--radial-panel-bg, var(--panel-bg)) !important;
+  /* Keep the radial base material live across theme/layout refreshes. At 0%
+     transparency the 100% color weight preserves its original color/alpha. */
+  min-height: 0; flex: none; background: color-mix(in srgb, var(--radial-panel-bg, var(--panel-bg)) var(--ql-background-opacity, 100%), transparent) !important;
   border: 1px solid var(--border); border-radius: 50%; box-shadow: none;
   clip-path: none !important; overflow: hidden; pointer-events: auto;
 }
 body.region.layout-radial.region-active #header { border-color: var(--border-h); }
 body.region.layout-radial.region-snapped #header { border-color: var(--accent-c); }
 body.region.layout-radial.region-blocked #header { border-color: var(--accent-m); }
+/* Grow only the Ring material; keep its existing control group centered at
+   readable sizes. Circular clipping keeps transparent corners out of hits. */
+body.region.layout-ring #header { clip-path: circle(50%) !important; }
+body.region.layout-ring #header :is(#title-area, #header-controls, #filter-chip, .radial-chip-rename, #radial-refusal) {
+  transform: translate(var(--ring-hub-offset, 0px), var(--ring-hub-offset, 0px));
+}
 body.region.layout-radial #title-area {
   position: absolute; left: 7px; top: 7px; width: 80px; height: 54px; display: block; max-width: none;
 }
@@ -466,7 +474,8 @@ body.region.layout-radial #app-grid .empty-cell,
 body.region.layout-radial .drag-ghost {
   position: absolute; box-sizing: border-box; padding: 5px; margin: 0;
   display: flex; align-items: center; justify-content: center;
-  background: var(--radial-panel-bg, var(--panel-bg)); border: 1px solid var(--border);
+  /* This existing radial fill also wins at hover/pressed; fade paint only. */
+  background: color-mix(in srgb, var(--radial-panel-bg, var(--panel-bg)) var(--ql-background-opacity, 100%), transparent); border: 1px solid var(--border);
   border-radius: max(var(--radius), 6px); clip-path: none !important;
   pointer-events: auto; overflow: hidden; min-width: 0; min-height: 0;
 }

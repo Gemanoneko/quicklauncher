@@ -18,7 +18,7 @@ const ICONS = [
   'work', 'code', 'chat', 'mail', 'star', 'home', 'terminal', 'folder',
 ];
 
-const REGION_CAP = 8;
+const REGION_CAP = 16;
 // Items a region can hold (spec 2.7, Q3). Grid, Column and Row have no cap.
 // The work-area fit rule that can lower these arrives with Fan and Ring (M5).
 const ITEM_CAPS = Object.freeze({ fan: 10, ring: 12 });

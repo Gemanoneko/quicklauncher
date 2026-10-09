@@ -27,7 +27,7 @@ const C = {
   HWND_TOP: 0, HWND_BOTTOM: 1,
   SWP_NOSIZE: 0x1, SWP_NOMOVE: 0x2, SWP_NOZORDER: 0x4, SWP_NOACTIVATE: 0x10,
   SWP_FRAMECHANGED: 0x20, SWP_SHOWWINDOW: 0x40, SWP_NOOWNERZORDER: 0x200,
-  GA_PARENT: 1, GA_ROOT: 2, GW_HWNDNEXT: 2, GW_CHILD: 5,
+  GA_PARENT: 1, GA_ROOT: 2, GW_HWNDNEXT: 2, GW_HWNDPREV: 3, GW_CHILD: 5,
   SW_HIDE: 0, SW_SHOWNA: 8,
 };
 
@@ -194,6 +194,31 @@ function raiseAmongSiblings(hwnd) {
   return !!W.SetWindowPos(hwnd, C.HWND_TOP, 0, 0, 0, 0, C.SWP_NOMOVE | C.SWP_NOSIZE | C.SWP_NOACTIVATE | C.SWP_NOOWNERZORDER);
 }
 
+// Drag-only ordering of an attached desktop child. Never promote a top-level
+// fallback window above applications, activate a window or set global topmost.
+function beginDragRaise(hwnd, host) {
+  if (!available || !hwnd || !host || !W.IsWindow(hwnd) || !W.IsWindow(host)
+      || W.GetAncestor(hwnd, C.GA_PARENT) !== host
+      || !(W.GetWindowLongW(hwnd, C.GWL_STYLE) & C.WS_CHILD)) return null;
+  const order = { hwnd, host, previous: W.GetWindow(hwnd, C.GW_HWNDPREV), next: W.GetWindow(hwnd, C.GW_HWNDNEXT) };
+  return raiseAmongSiblings(hwnd) ? order : null;
+}
+
+function endDragRaise(order) {
+  if (!available || !order || !W.IsWindow(order.hwnd) || !W.IsWindow(order.host)
+      || W.GetAncestor(order.hwnd, C.GA_PARENT) !== order.host) return false;
+  const sibling = (hwnd) => hwnd && W.IsWindow(hwnd) && W.GetAncestor(hwnd, C.GA_PARENT) === order.host;
+  let after = order.previous;
+  if (after && !sibling(after)) {
+    if (!sibling(order.next)) return false;
+    after = W.GetWindow(order.next, C.GW_HWNDPREV);
+    if (after === order.hwnd) return true;
+    if (after && !sibling(after)) return false;
+  }
+  return !!W.SetWindowPos(order.hwnd, after || C.HWND_TOP, 0, 0, 0, 0,
+    C.SWP_NOMOVE | C.SWP_NOSIZE | C.SWP_NOACTIVATE | C.SWP_NOOWNERZORDER);
+}
+
 // The window just above the topmost visible desktop root, so a top-level
 // fallback window lands on top of the desktop and under everything else.
 function insertAfterForBottomOfNormalBand(selfHwnd) {
@@ -286,7 +311,7 @@ function describe(hwnd) {
 
 module.exports = {
   available, loadError, C, hex, className, hwndOf, findHost, attachToHost, setChildRect, setTopLevelRect,
-  isAboveDefView, raiseAmongSiblings, detachToTopLevel, showTopLevelAtBottom, showNoActivate, hide,
+  isAboveDefView, raiseAmongSiblings, beginDragRaise, endDragRaise, detachToTopLevel, showTopLevelAtBottom, showNoActivate, hide,
   releaseFromShell, focusIfDesktopForeground, describe,
   isWindow: (h) => !!(available && h && W.IsWindow(h)),
   parentOf: (h) => (available ? W.GetAncestor(h, C.GA_PARENT) : 0),

@@ -990,6 +990,9 @@ function rebuildRegionPaint() {
         for (const property of ['background', 'background-color', 'background-image']) {
           const value = rule.style.getPropertyValue(property);
           if (!value) continue;
+          // Radial surfaces bind to the live global opacity themselves. Do not
+          // fade their already-adjusted paint a second time in this companion.
+          if (value.includes('--ql-background-opacity')) continue;
           const changed = paint(value);
           if (changed !== value) declarations += `${property}:${changed}${rule.style.getPropertyPriority(property) ? ' !important' : ''};`;
         }

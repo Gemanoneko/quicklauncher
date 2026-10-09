@@ -10,8 +10,13 @@
    return{x:R*Math.cos(angle),y:R*Math.sin(angle)};
  });}
  function separated(centres,T){return centres.every((a,i)=>centres.slice(i+1).every(b=>Math.abs(a.x-b.x)>=T+GAP-1e-8||Math.abs(a.y-b.y)>=T+GAP-1e-8));}
+ // Distance from the Ring centre to the actual rounded square tile bounds.
+ function ringClearance(centres,T,R){const pivot=R+T/2+PAD;return Math.min(...centres.map(c=>{
+  const x=Math.round(pivot+c.x-T/2),y=Math.round(pivot+c.y-T/2);
+  return Math.hypot(Math.max(x-pivot,pivot-x-T,0),Math.max(y-pivot,pivot-y-T,0));
+ }));}
  function radius(layout,n,S=64){if(!radial(layout))throw Error('not a radial layout');n=Math.max(1,Math.min(CAPS[layout],Math.floor(Number(n)||1)));const T=size(S)+12;let previous=48+T/2+10;
-  for(let count=1;count<=n;count++){let R=48+T/2+10;while(!separated(points(layout,count,R),T))R+=2;previous=Math.max(previous,R);}
+  for(let count=1;count<=n;count++){let R=48+T/2+10;while(!separated(points(layout,count,R),T)||(layout==='ring'&&ringClearance(points(layout,count,R),T,R)<HUB/2+GAP))R+=2;previous=Math.max(previous,R);}
   return previous;
  }
  function geometry(layout,count,S=64,direction='up'){
@@ -25,9 +30,11 @@
   const rotate=(x,y)=>turn===1?{x:height-y,y:x}:turn===2?{x:width-x,y:height-y}:turn===3?{x:y,y:width-x}:{x,y};
   const chips=centres.map(c=>{const p=rotate(pivot.x+c.x,pivot.y+c.y);return{x:Math.round(p.x-T/2),y:Math.round(p.y-T/2),width:T,height:T};});
   const hub=rotate(pivot.x,pivot.y),box=turn%2?{width:height,height:width}:{width,height};
-  return{layout,count:Math.max(0,Math.floor(Number(count)||0)),S,T,R,direction,pivot:hub,hub:{x:hub.x-HUB/2,y:hub.y-HUB/2,width:HUB,height:HUB},chips,...box};
+  const diameter=layout==='ring'?Math.max(HUB,2*Math.floor(Math.min(HUB*R/radius('ring',1,S),2*(ringClearance(centres,T,R)-GAP))/2)):HUB;
+  return{layout,count:Math.max(0,Math.floor(Number(count)||0)),S,T,R,direction,pivot:hub,hub:{x:hub.x-diameter/2,y:hub.y-diameter/2,width:diameter,height:diameter},chips,...box};
  }
  function capacity(layout,S,workArea,direction='up'){if(!radial(layout))return Infinity;let cap=0;for(let n=1;n<=CAPS[layout];n++){const g=geometry(layout,n,S,direction);if(g.width<=workArea.width-48&&g.height<=workArea.height-48)cap=n;}return cap;}
- function shapeRects(g){const rects=g.chips.map(c=>({...c}));const h=g.hub,R=HUB/2;for(let y=0;y<HUB;y++){const half=Math.sqrt(Math.max(0,R*R-(y+.5-R)**2));const left=Math.ceil(h.x+R-half),right=Math.floor(h.x+R+half);if(right>left)rects.push({x:left,y:Math.round(h.y+y),width:right-left,height:1});}return rects;}
- return{HUB,PAD,GAP,CAPS,DIRECTIONS,isRadial:radial,points,separated,radius,geometry,capacity,shapeRects};
+ function inHub(g,x,y){return (x-g.pivot.x)**2+(y-g.pivot.y)**2<=(g.hub.width/2)**2;}
+ function shapeRects(g){const rects=g.chips.map(c=>({...c}));const h=g.hub,R=h.width/2;for(let y=0;y<h.height;y++){const half=Math.sqrt(Math.max(0,R*R-(y+.5-R)**2));const left=Math.ceil(h.x+R-half),right=Math.floor(h.x+R+half);if(right>left)rects.push({x:left,y:Math.round(h.y+y),width:right-left,height:1});}return rects;}
+ return{HUB,PAD,GAP,CAPS,DIRECTIONS,isRadial:radial,points,separated,radius,geometry,capacity,inHub,shapeRects};
 }));

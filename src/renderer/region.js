@@ -333,6 +333,10 @@
   elHeader.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
     if (e.target.closest('button, input, #filter-chip')) return;
+    if (layoutNow === 'ring') {
+      const h = elHeader.getBoundingClientRect();
+      if (Math.hypot(e.clientX-h.left-h.width/2, e.clientY-h.top-h.height/2) > h.width/2) return;
+    }
     drag = { id: e.pointerId, sx: e.screenX, sy: e.screenY, moving: false, onTitle: !!e.target.closest('#title'), pending: null, inflight: false, ended: false };
     try { elHeader.setPointerCapture(e.pointerId); } catch { /* noop */ }
   });
@@ -361,9 +365,12 @@
     body.classList.remove('region-moving');
     setCue(null);
     if (d.moving) {
-      // Calls reach the main process in order: the last move, then the end.
-      if (d.pending) api.invoke('region:drag', { phase: 'move', ...d.pending });
-      api.invoke('region:drag', { phase: 'end' });
+      // Cancellation restores the starting rect. A real release includes its
+      // final coordinates, even if no pointermove was delivered at that point.
+      if (e && e.type === 'pointerup') {
+        api.invoke('region:drag', { phase: 'move', dx: e.screenX - d.sx, dy: e.screenY - d.sy, alt: e.altKey });
+        api.invoke('region:drag', { phase: 'end' });
+      } else api.invoke('region:drag', { phase: 'cancel' });
     } else if (e && e.type === 'pointerup' && d.onTitle && isEditing()) {
       startRegionRename();
     }
@@ -1123,6 +1130,7 @@
     const flow = g;
     const shift = { x: g.pivot.x-flow.pivot.x, y: g.pivot.y-flow.pivot.y };
     positionRect(elHeader, g.hub);
+    elHeader.style.setProperty('--ring-hub-offset', `${layoutNow === 'ring' ? (g.hub.width-window.QL_RADIAL.HUB)/2 : 0}px`);
     positionRect(elEditBar, { x:g.pivot.x-40, y:g.pivot.y-36, width:80, height:46 });
     if (!count && !elGridBox.querySelector('.empty-cell')) {
       const cell = document.createElement('div'); cell.className = 'empty-cell';

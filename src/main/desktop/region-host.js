@@ -29,6 +29,7 @@ class RegionHost extends EventEmitter {
     this.layout = null;
     this.win = null;
     this.hwnd = 0;
+    this.dragOrder = null;
     this.pendingSince = Date.now();
     this.lostAt = 0;
     this.stopping = false;
@@ -58,6 +59,7 @@ class RegionHost extends EventEmitter {
     win.once('closed', () => {
       if (this.win !== win) return;
       const lost = this.hwnd;
+      this.dragOrder = null;
       this.win = null;
       this.hwnd = 0;
       if (this.stopping) return;
@@ -70,6 +72,7 @@ class RegionHost extends EventEmitter {
   }
 
   _setMode(mode, info = {}) {
+    if (mode !== this.mode) this.endDragRaise();
     const prev = this.mode;
     this.mode = mode;
     if (mode === 'pending' && prev !== 'pending') this.pendingSince = Date.now();
@@ -198,6 +201,7 @@ class RegionHost extends EventEmitter {
 
   setHidden(hidden) {
     this.hidden = !!hidden;
+    if (this.hidden) this.endDragRaise();
     if (!this.win || this.win.isDestroyed() || !this.hwnd) return;
     if (this.hidden) {
       if (d.available) d.hide(this.hwnd); else this.win.hide();
@@ -218,6 +222,23 @@ class RegionHost extends EventEmitter {
     return d.focusIfDesktopForeground(this.hwnd);
   }
 
+  beginDragRaise() {
+    this.endDragRaise();
+    if (this.mode !== 'attached' || !this.win || this.win.isDestroyed()) return false;
+    const order = d.beginDragRaise(this.hwnd, this.host);
+    this.dragOrder = order ? { order, window: this.win } : null;
+    return !!order;
+  }
+
+  endDragRaise() {
+    const saved = this.dragOrder;
+    this.dragOrder = null;
+    if (!saved) return true;
+    if (saved.window !== this.win || !this.win || this.win.isDestroyed()
+        || saved.order.hwnd !== this.hwnd || saved.order.host !== this.host) return false;
+    return d.endDragRaise(saved.order);
+  }
+
   /** --ql-test-hooks: drop an attached region to fallback now (the desktop-child to top-level path); the next tick re-attaches it. */
   testDropToFallback() {
     if (this.mode !== 'attached' || !this.win || this.win.isDestroyed()) return false;
@@ -230,6 +251,7 @@ class RegionHost extends EventEmitter {
   }
 
   stop() {
+    this.endDragRaise();
     this.stopping = true;
     let released = false;
     if (this.win && !this.win.isDestroyed()) {

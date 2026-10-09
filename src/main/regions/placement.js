@@ -79,6 +79,38 @@ function findFree(r, inner, others, step = GAP) {
   return null;
 }
 
+/** Drag release only: exact nearest translation, preserving the panel size.
+ * A closest free point has each coordinate at the desired coordinate, an
+ * area limit, or an obstacle boundary. Check their bounded Cartesian product
+ * (at most 33 by 33 candidates for the sixteen-region limit), with stable ties.
+ * Translating the top-left and translating a fixed radial anchor have the
+ * same displacement; no layout-specific resizing or reordering happens here.
+ */
+function nearestDragPlacement(r, inner, others) {
+  if (r.width > inner.width || r.height > inner.height) return null;
+  const start = clampInto(r, inner);
+  if (fits(start, inner, others)) return start;
+  const minX = inner.x, maxX = right(inner) - r.width;
+  const minY = inner.y, maxY = bottom(inner) - r.height;
+  const xs = new Set([start.x, minX, maxX]);
+  const ys = new Set([start.y, minY, maxY]);
+  for (const obstacle of others) {
+    xs.add(obstacle.x - r.width - GAP); xs.add(right(obstacle) + GAP);
+    ys.add(obstacle.y - r.height - GAP); ys.add(bottom(obstacle) + GAP);
+  }
+  let best = null, distance = Infinity;
+  for (const x of xs) for (const y of ys) {
+    if (x < minX || x > maxX || y < minY || y > maxY) continue;
+    const candidate = { x, y, width: r.width, height: r.height };
+    if (!fits(candidate, inner, others)) continue;
+    const d = (x - start.x) ** 2 + (y - start.y) ** 2;
+    if (d < distance || (d === distance && (!best || y < best.y || (y === best.y && x < best.x)))) {
+      best = candidate; distance = d;
+    }
+  }
+  return best && round(best);
+}
+
 /** Spec 3.1: centre, then 32 px steps right and down (20 steps), then an outward search. */
 function placeNew(size, inner, others) {
   const w = Math.min(size.width, inner.width);
@@ -348,6 +380,6 @@ function regionAt(point, entries) {
 
 module.exports = {
   GAP, MARGIN, SNAP,
-  innerArea, tooClose, inside, fits, clampInto, findFree, placeNew,
+  innerArea, tooClose, inside, fits, clampInto, findFree, nearestDragPlacement, placeNew,
   moveConstrained, snap, dragStep, resizeStep, placeAt, relayout, regionAt, roomAlong,
 };

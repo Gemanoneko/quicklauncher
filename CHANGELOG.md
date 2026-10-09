@@ -4,6 +4,20 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.98.0] - 2026-10-09
+
+### Added
+- Up to sixteen regions, with the same limit used by creation controls and validation.
+
+### Changed
+- Regions can overlap temporarily while dragging; an occupied drop snaps to the nearest free desktop space.
+- Ring center grows with icon size, with minimum clearance and safe geometry when desktop space is limited.
+
+### Fixed
+- Defensive MatchAll binding preserves radial-layout transparency handling.
+
+### Notes
+- Manual QA by Sergei; no automated or runtime QA was performed for these changes.
 ## [v1.97.0] - 2026-10-09
 
 ### Added

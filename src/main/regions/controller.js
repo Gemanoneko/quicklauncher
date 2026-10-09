@@ -693,7 +693,7 @@ class RegionController extends EventEmitter {
     if (!region || !rt) return { ok: false, error: 'Region not found.' };
     if (!M.BUILT_LAYOUTS.has(layout)) return { ok: false, error: `${layout} regions are not available yet.` };
     if (region.layout === layout) return { ok: true, unchanged: true };
-    if (rt.drag || rt.resize) { rt.drag = null; rt.resize = null; this._command(id, 'cancel-drag'); }
+    if (rt.drag || rt.resize) { rt.host.endDragRaise(); rt.drag = null; rt.resize = null; this._command(id, 'cancel-drag'); }
     const wa = this.workArea();
     const inner = P.innerArea(wa);
     const others = this._shownRects(id);
@@ -945,6 +945,7 @@ class RegionController extends EventEmitter {
       rt.extras = { ...rt.extras, preview: false };
       if (!rt.drag && !rt.resize) continue;
       const baseline = rt.drag ? rt.drag.start : rt.resize.start;
+      rt.host.endDragRaise();
       rt.drag = null;
       rt.resize = null;
       this._applyShown(rt, baseline);
@@ -1481,7 +1482,7 @@ class RegionController extends EventEmitter {
     if (phase === 'cancel') { this._cancelTileDrag('released in the source region'); return { ok: true }; }
     const p = this._pageToDesktop(id, x, y);
     let hitId = p ? P.regionAt(p, this._tileTargets(id)) : null;
-    if (hitId && R.isRadial(this.region(hitId).layout) && !this.rt.get(hitId).displayFallback) { const rt=this.rt.get(hitId), g=this._radialGeometry(this.region(hitId)); const x=p.x-rt.shown.x,y=p.y-rt.shown.y; const chip=g.chips.some(c=>x>=c.x&&x<c.x+c.width&&y>=c.y&&y<c.y+c.height); const hub=(x-g.pivot.x)**2+(y-g.pivot.y)**2<=48**2; if (!chip&&!hub) hitId=null; }
+    if (hitId && R.isRadial(this.region(hitId).layout) && !this.rt.get(hitId).displayFallback) { const rt=this.rt.get(hitId), g=this._radialGeometry(this.region(hitId)); const x=p.x-rt.shown.x,y=p.y-rt.shown.y; const chip=g.chips.some(c=>x>=c.x&&x<c.x+c.width&&y>=c.y&&y<c.y+c.height); const hub=R.inHub(g,x,y); if (!chip&&!hub) hitId=null; }
     const dec = this._dropDecision(hitId, id);
     if (phase === 'move') {
       if (t.targetId && t.targetId !== hitId) this._sendPreview(t.targetId, { phase: 'leave', dragId: t.id });
@@ -1602,6 +1603,7 @@ class RegionController extends EventEmitter {
     if (!rt) return { ok: false };
     if (phase === 'start') {
       rt.drag = { start: { ...rt.shown }, last: { ...rt.shown } };
+      rt.host.beginDragRaise();
       return { ok: true };
     }
     if (!rt.drag) return { ok: false };
@@ -1609,15 +1611,21 @@ class RegionController extends EventEmitter {
       const s = rt.drag.start;
       const proposed = { ...s, x: s.x + Math.round(dx), y: s.y + Math.round(dy) };
       const space=this._gestureSpace(rt);
-      const res = P.dragStep(rt.drag.last, proposed, space.inner, space.others, { alt: !!alt });
+      const clamped = P.clampInto(proposed, space.inner);
+      const res = alt ? { rect: clamped, snapped: false } : P.snap(clamped, space.inner, []);
       rt.drag.last = res.rect;
       if (!sameRect(res.rect, rt.shown)) this._applyShown(rt, res.rect);
-      return { ok: true, snapped: res.snapped, blocked: res.blocked };
+      return { ok: true, snapped: res.snapped, blocked: false };
     }
-    const moved = !sameRect(rt.drag.start, rt.shown);
+    if (phase !== 'end' && phase !== 'cancel') return { ok: false };
+    const start = rt.drag.start;
+    const space = this._gestureSpace(rt);
+    const final = phase === 'cancel' ? start : P.nearestDragPlacement(rt.shown, space.inner, space.others) || start;
+    if (!sameRect(final, rt.shown)) this._applyShown(rt, final);
+    const moved = !sameRect(start, final);
+    rt.host.endDragRaise();
     rt.drag = null;
     if (moved) this._saveRectSoon(rt);
-    this._refitContent(id); // a Column or Row at its new place: the room there
     return { ok: true, moved };
   }
 
