@@ -198,6 +198,39 @@ function resolveIconPath(p) {
 // Returns the in-flight promise if one is already running.
 let installedAppsPromise = null;
 
+// Steam's current cache keeps icons under the app ID, named by content hash.
+// Share this exact lookup between the picker and the one-time stored refresh.
+const STEAM_ICON_LOOKUP = `
+function Find-SteamIcon([string]$root, [string]$id) {
+  if (-not $root -or $id -notmatch '^\\d+$') { return $null }
+  $legacy = Join-Path $root ("appcache\\librarycache\\" + $id + "_icon.jpg")
+  if (Test-Path -LiteralPath $legacy -PathType Leaf) { return $legacy }
+  $folder = Join-Path $root ("appcache\\librarycache\\" + $id)
+  $icon = Get-ChildItem -LiteralPath $folder -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -match '^[a-fA-F0-9]{40}\\.jpg$' } |
+    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+  if ($icon) { return $icon.FullName }
+  return $null
+}
+`;
+
+function storedSteamIconPaths(ids) {
+  if (!ids.length) return Promise.resolve([]);
+  const ps = `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+${STEAM_ICON_LOOKUP}
+$root = $null
+try { $root = (Get-ItemProperty 'HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam' -EA SilentlyContinue).InstallPath } catch {}
+if (-not $root) { try { $root = (Get-ItemProperty 'HKLM:\\SOFTWARE\\Valve\\Steam' -EA SilentlyContinue).InstallPath } catch {} }
+if (-not $root) { try { $root = (Get-ItemProperty 'HKCU:\\Software\\Valve\\Steam' -EA SilentlyContinue).SteamPath } catch {} }
+@($env:QL_STEAM_IDS -split ',' | ForEach-Object { $icon = Find-SteamIcon $root $_; if ($icon) { @{ Id = $_; IconPath = $icon } } }) | ConvertTo-Json -Compress`;
+  return new Promise(resolve => execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps],
+    { windowsHide: true, timeout: 15000, env: { ...process.env, QL_STEAM_IDS: ids.join(',') } }, (err, stdout) => {
+      if (err) { resolve(null); return; }
+      try { const data = stdout && stdout.trim() ? JSON.parse(stdout.trim()) : []; resolve(Array.isArray(data) ? data : data ? [data] : []); }
+      catch { resolve(null); }
+    }));
+}
+
 // Global settings a page may change, validated field by field. Only fields
 // present in `settings` come back, so a caller sends a patch. The theme and
 // the window rects are not global settings any more: themes belong to
@@ -420,6 +453,8 @@ Get-AppxPackage -ErrorAction SilentlyContinue | ForEach-Object { $pkgMap[$_.Pack
 $steamInstall = $null
 try { $steamInstall = (Get-ItemProperty 'HKLM:\\SOFTWARE\\WOW6432Node\\Valve\\Steam' -EA SilentlyContinue).InstallPath } catch {}
 if (-not $steamInstall) { try { $steamInstall = (Get-ItemProperty 'HKLM:\\SOFTWARE\\Valve\\Steam' -EA SilentlyContinue).InstallPath } catch {} }
+if (-not $steamInstall) { try { $steamInstall = (Get-ItemProperty 'HKCU:\\Software\\Valve\\Steam' -EA SilentlyContinue).SteamPath } catch {} }
+${STEAM_ICON_LOOKUP}
 try { ${iconHelperLoadSnippet()} } catch {}
 $apps = Get-StartApps | ForEach-Object {
   $appId = $_.AppID; $name = $_.Name; $iconPath = $null; $exePath = $null
@@ -427,8 +462,7 @@ $apps = Get-StartApps | ForEach-Object {
     # Steam game: use library cache icon (most reliable), fall back to Uninstall registry
     $steamId = $Matches[1]
     if ($steamInstall) {
-      $cacheIcon = Join-Path $steamInstall ("appcache\\librarycache\\" + $steamId + "_icon.jpg")
-      if (Test-Path $cacheIcon) { $iconPath = $cacheIcon }
+      $iconPath = Find-SteamIcon $steamInstall $steamId
     }
     if (-not $iconPath) {
       try {
@@ -570,7 +604,7 @@ $apps | ConvertTo-Json -Depth 2
             // thread in the icon helper (icon-worker.js), with identical output.
             const jobs = await Promise.all(items.map(async (item) => {
               if (item.IconPath) {
-                try { return { buf: await fs.promises.readFile(item.IconPath), requireNonEmpty: false }; }
+                try { return { buf: await fs.promises.readFile(item.IconPath), requireNonEmpty: true }; }
                 catch { return null; }
               }
               if (item.ExeIconB64) return { b64: item.ExeIconB64, requireNonEmpty: true };
@@ -923,12 +957,28 @@ async function shortcutIconDataUrl(filePath) {
   } catch { return ''; }
 }
 
-// One source-version refresh for already stored links. Re-read the live list
+// One source-version refresh for stored links and Steam protocol artwork. Re-read the live list
 // before merging so removal/reorder/rename while extraction runs is preserved.
 async function refreshStoredShortcutIcons(ctl, store) {
-  const revision = 1;
+  const revision = 2;
   if (store.get('shortcutIconRevision') === revision) return;
   const changes = new Map();
+  const stored = [...(store.get('apps') || [])];
+  const steamIds = [...new Set(stored.map(item => item && /^steam:\/\/rungameid\/(\d+)$/i.exec(item.path || '')).filter(Boolean).map(match => match[1]))];
+  const steamLookup = await storedSteamIconPaths(steamIds);
+  const steamPaths = new Map((steamLookup || []).map(item => [String(item.Id), item.IconPath]));
+  for (const item of stored) {
+    const steam = item && /^steam:\/\/rungameid\/(\d+)$/i.exec(item.path || '');
+    const source = steam && steamPaths.get(steam[1]);
+    if (!source) continue;
+    try {
+      const img = trimIcon(nativeImage.createFromBuffer(await fs.promises.readFile(source)));
+      if (!img.isEmpty()) {
+        const icon = img.toDataURL();
+        if (icon && icon !== item.iconDataUrl) changes.set(item.id, { path: item.path, oldIcon: item.iconDataUrl, icon });
+      }
+    } catch { /* keep the old icon if the source disappeared or failed to decode */ }
+  }
   for (const item of [...(store.get('apps') || [])]) {
     if (!item || typeof item.path !== 'string' || path.extname(item.path).toLowerCase() !== '.lnk') continue;
     const info = await resolveShortcutLink(item.path);
@@ -951,7 +1001,7 @@ async function refreshStoredShortcutIcons(ctl, store) {
     for (const id of regions) ctl._pushItems(id);
     ctl._managerChanged();
   }
-  store.set('shortcutIconRevision', revision);
+  if (steamLookup !== null) store.set('shortcutIconRevision', revision);
 }
 
 // The IconFile= line of an Internet Shortcut (.url, INI text), or null.

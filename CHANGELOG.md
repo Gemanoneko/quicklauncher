@@ -11,6 +11,9 @@ version tags rather than semantic versioning strictness.
 - Dropping an icon directly on another icon in the same region swaps their positions.
 - Ring supports up to sixteen icons; Fan capacity remains unchanged.
 
+### Fixed
+- Steam game icons use the current per-app hashed cache layout, with a stored-icon refresh that preserves good icons if lookup fails.
+
 ### Notes
 - Native shell helper compilation succeeded without execution. Manual QA by Sergei; no automated tests or runtime QA were performed.
 ## [v1.100.1] - 2026-10-09
