@@ -333,7 +333,7 @@
   elHeader.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
     if (e.target.closest('button, input, #filter-chip')) return;
-    if (layoutNow === 'ring') {
+    if (radial()) {
       const h = elHeader.getBoundingClientRect();
       if (Math.hypot(e.clientX-h.left-h.width/2, e.clientY-h.top-h.height/2) > h.width/2) return;
     }
@@ -1140,7 +1140,7 @@
     const flow = g;
     const shift = { x: g.pivot.x-flow.pivot.x, y: g.pivot.y-flow.pivot.y };
     positionRect(elHeader, g.hub);
-    elHeader.style.setProperty('--ring-hub-offset', `${layoutNow === 'ring' ? (g.hub.width-window.QL_RADIAL.HUB)/2 : 0}px`);
+    elHeader.style.setProperty('--radial-hub-offset', `${(g.hub.width-window.QL_RADIAL.HUB)/2}px`);
     positionRect(elEditBar, { x:g.pivot.x-40, y:g.pivot.y-36, width:80, height:46 });
     if (!count && !elGridBox.querySelector('.empty-cell')) {
       const cell = document.createElement('div'); cell.className = 'empty-cell';

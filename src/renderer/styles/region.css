@@ -423,11 +423,11 @@ body.region.layout-radial #header {
 body.region.layout-radial.region-active #header { border-color: var(--border-h); }
 body.region.layout-radial.region-snapped #header { border-color: var(--accent-c); }
 body.region.layout-radial.region-blocked #header { border-color: var(--accent-m); }
-/* Grow only the Ring material; keep its existing control group centered at
+/* Grow radial hub material; keep its existing control group centered at
    readable sizes. Circular clipping keeps transparent corners out of hits. */
-body.region.layout-ring #header { clip-path: circle(50%) !important; }
-body.region.layout-ring #header :is(#title-area, #header-controls, #filter-chip, .radial-chip-rename, #radial-refusal) {
-  transform: translate(var(--ring-hub-offset, 0px), var(--ring-hub-offset, 0px));
+body.region.layout-radial #header { clip-path: circle(50%) !important; }
+body.region.layout-radial #header :is(#title-area, #header-controls, #filter-chip, .radial-chip-rename, #radial-refusal) {
+  transform: translate(var(--radial-hub-offset, 0px), var(--radial-hub-offset, 0px));
 }
 body.region.layout-radial #title-area {
   position: absolute; left: 7px; top: 7px; width: 80px; height: 54px; display: block; max-width: none;

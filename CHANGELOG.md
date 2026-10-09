@@ -4,6 +4,13 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.100.0] - 2026-10-09
+
+### Changed
+- Fan center grows with icon size like Ring in all four directions, retaining clearance from tiles and upright controls at their existing size.
+
+### Notes
+- Manual QA by Sergei; no automated or runtime QA was performed for this change.
 ## [v1.99.1] - 2026-10-09
 
 ### Fixed
