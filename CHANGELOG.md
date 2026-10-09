@@ -4,6 +4,16 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.99.0] - 2026-10-09
+
+### Added
+- Resize Column height from its bottom edge and Row width from its right edge, with manual dimensions saved per layout and the other axis kept fixed.
+
+### Fixed
+- Region dragging no longer triggers auto-fit and changes region size after a drop.
+
+### Notes
+- Resizing keeps other regions in place. Manual QA by Sergei; no automated or runtime QA was performed for these changes.
 ## [v1.98.0] - 2026-10-09
 
 ### Added

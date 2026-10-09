@@ -50,6 +50,20 @@ body.region.edit-mode #title.renameable:hover { border-bottom-color: var(--accen
 /* Grid: a 6 px transparent resize rim around the panel (spec 4.3). */
 body.region.layout-grid { padding: 6px; }
 body.region.layout-grid #app { height: 100%; }
+/* Axis rims are part of the shared outer geometry, outside tile material. */
+body.region.layout-column { padding: 0 0 6px !important; }
+body.region.layout-row { padding: 0 6px 0 0 !important; }
+body.region.layout-column #app,
+body.region.layout-row #app { height: 100%; }
+body.region.layout-column::after,
+body.region.layout-row::after {
+  content: ''; position: fixed; right: 0; bottom: 0; z-index: 1000;
+  /* One alpha byte retains native hit testing even at 100% panel transparency.
+     Pseudo-elements are excluded from the background-paint companion. */
+  background: rgba(0, 0, 0, 0.004); pointer-events: auto;
+}
+body.region.layout-column::after { left: 0; height: 6px; cursor: ns-resize; }
+body.region.layout-row::after { top: 0; width: 6px; cursor: ew-resize; }
 
 /* The approved temporary Grid keeps the same controls and theme styling with
    the addendum's 24px actionable target floor. Ordinary Grid is unchanged. */

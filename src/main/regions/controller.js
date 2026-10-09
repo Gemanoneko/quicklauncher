@@ -603,7 +603,11 @@ class RegionController extends EventEmitter {
     const room = others
       ? P.roomAlong({ ...anchor, width: want.width, height: want.height }, L.growAxis(region.layout), P.innerArea(wa), others)
       : Infinity;
-    return L.boxAt(region.layout, anchor, want, wa, room, keep, { S: this._iconSize(), ...this._extras(region.id) }).rect;
+    return L.boxAt(region.layout, anchor, want, wa, room, keep, {
+      S: this._iconSize(), ...this._extras(region.id),
+      preferredLength: region.layout === 'column' ? region.columnHeight : region.rowWidth,
+      maxLength: L.growAxis(region.layout) === 'x' ? P.innerArea(wa).width : P.innerArea(wa).height,
+    }).rect;
   }
 
   /**
@@ -636,7 +640,7 @@ class RegionController extends EventEmitter {
   _refitContent(id) {
     const rt = this.rt.get(id);
     const region = this.region(id);
-    if (!rt || !region || rt.drag) return false;
+    if (!rt || !region || rt.drag || rt.resize) return false;
     if (rt.displayFallback || rt.displaySuppressed) { this.relayoutAll('content changed', false); return true; }
     if (R.isRadial(region.layout)) return this._refitRadial(region, rt);
     if (!L.isContentSized(region.layout)) return false;
@@ -693,7 +697,10 @@ class RegionController extends EventEmitter {
     if (!region || !rt) return { ok: false, error: 'Region not found.' };
     if (!M.BUILT_LAYOUTS.has(layout)) return { ok: false, error: `${layout} regions are not available yet.` };
     if (region.layout === layout) return { ok: true, unchanged: true };
-    if (rt.drag || rt.resize) { rt.host.endDragRaise(); rt.drag = null; rt.resize = null; this._command(id, 'cancel-drag'); }
+    if (rt.drag || rt.resize) {
+      if (rt.resize && L.isContentSized(region.layout) && !rt.displayFallback) this._applyShown(rt, rt.resize.start);
+      rt.host.endDragRaise(); rt.drag = null; rt.resize = null; this._command(id, 'cancel-drag');
+    }
     const wa = this.workArea();
     const inner = P.innerArea(wa);
     const others = this._shownRects(id);
@@ -714,7 +721,11 @@ class RegionController extends EventEmitter {
       size = { width: Math.max(M.GRID.minWidth, g.width), height: Math.max(M.GRID.minHeight, g.height) };
     } else {
       const want = L.contentSize(layout, this._count(id), this._iconSize(), this._extras(id));
-      size = L.boxAt(layout, anchor, want, wa, Infinity, 0, { S: this._iconSize(), ...this._extras(id) }).rect;
+      size = L.boxAt(layout, anchor, want, wa, Infinity, 0, {
+        S: this._iconSize(), ...this._extras(id),
+        preferredLength: layout === 'column' ? region.columnHeight : region.rowWidth,
+        maxLength: L.growAxis(layout) === 'x' ? inner.width : inner.height,
+      }).rect;
     }
     let rect = { ...anchor, width: size.width, height: size.height };
     if (!P.fits(rect, inner, others)) rect = P.findFree(rect, inner, others, P.GAP);
@@ -1620,7 +1631,16 @@ class RegionController extends EventEmitter {
     if (phase !== 'end' && phase !== 'cancel') return { ok: false };
     const start = rt.drag.start;
     const space = this._gestureSpace(rt);
-    const final = phase === 'cancel' ? start : P.nearestDragPlacement(rt.shown, space.inner, space.others) || start;
+    const dropped = phase === 'end' ? P.nearestDragPlacement(rt.shown, space.inner, space.others) : null;
+    let final = dropped || start;
+    const region = this.region(id);
+    if (dropped && region && L.isContentSized(region.layout) && !rt.displayFallback && !rt.displaySuppressed) {
+      // Restore content growth at the settled anchor, without the relocation
+      // fallback in _refitContent. Cancellation/no-room keeps the exact start.
+      const keep = L.growAxis(region.layout) === 'x' ? final.width : final.height;
+      const fitted = this._contentRect(region, final, { others: space.others, keep });
+      if (P.fits(fitted, space.inner, space.others)) final = fitted;
+    }
     if (!sameRect(final, rt.shown)) this._applyShown(rt, final);
     const moved = !sameRect(start, final);
     rt.host.endDragRaise();
@@ -1632,22 +1652,42 @@ class RegionController extends EventEmitter {
   resize(id, { phase, edges = {}, dx = 0, dy = 0, alt = false } = {}) {
     const rt = this.rt.get(id);
     const region = this.region(id);
-    if (!rt || !region || (region.layout !== 'grid' && !rt.displayFallback)) return { ok: false };
+    if (!rt || !region || (region.layout !== 'grid' && !L.isContentSized(region.layout) && !rt.displayFallback)) return { ok: false };
+    const axis = L.isContentSized(region.layout) && !rt.displayFallback;
     if (phase === 'start') {
-      rt.resize = { start: { ...rt.shown }, edges: { ...edges } };
+      if (axis && (rt.drag || rt.resize || (region.layout === 'column' ? !edges.bottom : !edges.right))) return { ok: false };
+      rt.resize = { start: { ...rt.shown }, edges: axis ? (region.layout === 'column' ? { bottom: true } : { right: true }) : { ...edges } };
       return { ok: true };
     }
     if (!rt.resize) return { ok: false };
     if (phase === 'move') {
       const space=this._gestureSpace(rt);
+      const minimum = axis ? L.contentSize(region.layout, 1, this._iconSize(), this._extras(id))
+        : rt.displayFallback ? D.gridMinimum(this._iconSize(),rt.gridMinimum) : { width: M.GRID.minWidth, height: M.GRID.minHeight };
       const res = P.resizeStep(rt.resize.start, rt.resize.edges, Math.round(dx), Math.round(dy),
-        space.inner, space.others, rt.displayFallback ? D.gridMinimum(this._iconSize(),rt.gridMinimum) : { width: M.GRID.minWidth, height: M.GRID.minHeight }, { alt: !!alt });
+        space.inner, space.others, minimum, { alt: !!alt });
       if (!sameRect(res.rect, rt.shown)) this._applyShown(rt, res.rect);
       return { ok: true, blocked: res.blocked };
     }
+    if (axis && phase !== 'end' && phase !== 'cancel') return { ok: false };
+    if (axis) {
+      const space = this._gestureSpace(rt);
+      const minimum = L.contentSize(region.layout, 1, this._iconSize(), this._extras(id));
+      if (phase === 'cancel' || rt.shown.width < minimum.width || rt.shown.height < minimum.height || !P.fits(rt.shown, space.inner, space.others)) {
+        const start = rt.resize.start; rt.resize = null;
+        if (!sameRect(start, rt.shown)) this._applyShown(rt, start);
+        return { ok: phase === 'cancel', changed: false };
+      }
+    }
     const changed = !sameRect(rt.resize.start, rt.shown);
     rt.resize = null;
-    if (changed && !rt.displayFallback) this._saveRectSoon(rt);
+    if (changed && axis) {
+      // Commit the accepted rectangle and manual dimension together, only
+      // after release. Cancelled and fully blocked gestures keep auto/manual.
+      clearTimeout(rt.saveTimer); rt.saveTimer = null; rt.pendingSave = null;
+      this._updateRegion(id, { rect: { ...rt.shown }, home: { ...this.workArea() },
+        [region.layout === 'column' ? 'columnHeight' : 'rowWidth']: region.layout === 'column' ? rt.shown.height : rt.shown.width });
+    } else if (changed && !rt.displayFallback) this._saveRectSoon(rt);
     if (rt.displayFallback) rt.fallbackMovementBase = { ...rt.shown };
     return { ok: true, changed };
   }

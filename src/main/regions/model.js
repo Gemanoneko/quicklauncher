@@ -186,6 +186,9 @@ function cleanRegion(raw, ctx, taken) {
   const gridSize = isPlainObject(raw.gridSize) && isFiniteNum(raw.gridSize.width) && isFiniteNum(raw.gridSize.height)
     ? { width: Math.round(raw.gridSize.width), height: Math.round(raw.gridSize.height) } : null;
   if (gridSize) out.gridSize = gridSize;
+  for (const key of ['columnHeight', 'rowWidth']) {
+    if (Number.isSafeInteger(raw[key]) && raw[key] > 0) out[key] = raw[key];
+  }
   if (isPlainObject(raw.radialAnchor) && isFiniteNum(raw.radialAnchor.x) && isFiniteNum(raw.radialAnchor.y)) out.radialAnchor = { x: raw.radialAnchor.x, y: raw.radialAnchor.y };
   if (['up', 'down', 'left', 'right'].includes(raw.fanDirection)) out.fanDirection = raw.fanDirection;
   return out;

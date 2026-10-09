@@ -410,9 +410,11 @@
   body.appendChild(grip);
 
   function zoneAt(x, y) {
-    if (!body.classList.contains('layout-grid')) return null;
     const w = window.innerWidth;
     const h = window.innerHeight;
+    if (body.classList.contains('layout-column')) return y >= h - RIM ? { bottom: true } : null;
+    if (body.classList.contains('layout-row')) return x >= w - RIM ? { right: true } : null;
+    if (!body.classList.contains('layout-grid')) return null;
     const cl = x < CORNER; const cr = x >= w - CORNER; const ct = y < CORNER; const cb = y >= h - CORNER;
     if ((cl || cr) && (ct || cb)) return { left: cl, right: cr, top: ct, bottom: cb };
     const l = x < RIM; const r = x >= w - RIM; const t = y < RIM; const b = y >= h - RIM;
@@ -467,7 +469,7 @@
     const z = zoneAt(e.clientX, e.clientY);
     if (!z) return;
     stop(e); // no header drag, no tile press under a corner zone
-    sizing = { id: e.pointerId, sx: e.screenX, sy: e.screenY, pending: null, inflight: false, ended: false, cursor: cursorFor(z) };
+    sizing = { id: e.pointerId, sx: e.screenX, sy: e.screenY, pending: null, inflight: false, ended: false, cursor: cursorFor(z), axis: layoutNow === 'column' || layoutNow === 'row' };
     try { document.documentElement.setPointerCapture(e.pointerId); } catch { /* noop */ }
     api.invoke('region:resize', { phase: 'start', edges: z });
   }, true);
@@ -478,12 +480,20 @@
     sizing = null;
     s.ended = true;
     try { document.documentElement.releasePointerCapture(s.id); } catch { /* noop */ }
-    if (s.pending) api.invoke('region:resize', { phase: 'move', ...s.pending });
-    api.invoke('region:resize', { phase: 'end' });
+    if (s.axis) {
+      if (e && e.type === 'pointerup') {
+        api.invoke('region:resize', { phase: 'move', dx: e.screenX-s.sx, dy: e.screenY-s.sy, alt: e.altKey });
+        api.invoke('region:resize', { phase: 'end' });
+      } else api.invoke('region:resize', { phase: 'cancel' });
+    } else {
+      if (s.pending) api.invoke('region:resize', { phase: 'move', ...s.pending });
+      api.invoke('region:resize', { phase: 'end' });
+    }
     setRimCursor('');
   }
   window.addEventListener('pointerup', endResize, true);
   window.addEventListener('pointercancel', endResize, true);
+  document.documentElement.addEventListener('lostpointercapture', e => { if (sizing && sizing.axis) endResize(e); });
 
   document.documentElement.addEventListener('mouseenter', () => body.classList.add('pointer-inside'));
   document.documentElement.addEventListener('mouseleave', () => {
