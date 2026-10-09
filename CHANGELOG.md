@@ -4,6 +4,13 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.102.3] - 2026-10-10
+
+### Fixed
+- Reapply retained region transparency after startup, updates and theme loading by refreshing paint rules for the stylesheet actually applied.
+
+### Notes
+- Saved transparency values remain unchanged. Manual QA by Sergei; no automated or runtime QA was performed.
 ## [v1.102.2] - 2026-10-09
 
 ### Fixed

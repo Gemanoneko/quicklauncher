@@ -1073,7 +1073,7 @@ function rebuildRegionPaint() {
   for (const sheet of document.styleSheets) css += rulesText(sheet.cssRules);
   // Constructed sheets do not require an inline-style CSP exception.
   regionPaintSheet.replaceSync(css);
-  regionPaintTheme = $('theme-stylesheet').getAttribute('href');
+  regionPaintTheme = $('theme-stylesheet').sheet.href;
 }
 
 function applyRegionTransparency() {
@@ -1081,8 +1081,11 @@ function applyRegionTransparency() {
   const value = Number.isFinite(settings.regionTransparency)
     ? Math.round(Math.max(0, Math.min(100, settings.regionTransparency)) / 5) * 5 : 0;
   document.documentElement.style.setProperty('--ql-background-opacity', `${100 - value}%`);
-  if (value && $('theme-stylesheet').sheet
-      && (!regionPaintSheet || regionPaintTheme !== $('theme-stylesheet').getAttribute('href'))) rebuildRegionPaint();
+  const link = $('theme-stylesheet');
+  // Changing href can leave the previous sheet attached until the new one
+  // applies. Never cache that previous paint under the requested theme.
+  if (value && link.sheet && link.sheet.href === link.href
+      && (!regionPaintSheet || regionPaintTheme !== link.sheet.href)) rebuildRegionPaint();
   if (regionPaintSheet) regionPaintSheet.disabled = value === 0;
 }
 
@@ -1183,6 +1186,9 @@ function whenBannerReady(theme, textEl) {
     poll();
   });
   return sheet.then(() => {
+    // Chromium can apply a changed sheet without firing its load event.
+    // Reuse this existing readiness wait; late old-theme waits must not repaint.
+    if (applied() && link.href.endsWith(want)) applyRegionTransparency();
     // Fetch the faces the banner text resolves to, then let any other pending load finish.
     const cs = getComputedStyle(textEl);
     const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
