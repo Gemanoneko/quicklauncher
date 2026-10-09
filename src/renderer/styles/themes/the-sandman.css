@@ -119,4 +119,4 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline-color:
 #theme-banner { background:#E8E4F0; border-top-color:#282032; box-shadow:inset 2px 0 0 #E6BD73; }
 #theme-banner-text { color:#282032; }
 .tile-icon-wrap { isolation:isolate; overflow:visible; }
-.tile-icon-wrap::before { content:""; position:absolute; inset:-3px; background:#21182F; border:1px solid #9B88B6; border-radius:50%; z-index:-1; pointer-events:none; }
+.tile-icon-wrap::before { content:none; }
