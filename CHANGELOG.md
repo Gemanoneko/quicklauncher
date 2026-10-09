@@ -10,7 +10,7 @@ version tags rather than semantic versioning strictness.
 - Resize Column height from its bottom edge and Row width from its right edge, with manual dimensions saved per layout and the other axis kept fixed.
 
 ### Fixed
-- Region dragging no longer triggers auto-fit and changes region size after a drop.
+- Automatic Row and Column regions refit at their dropped position; manually saved dimensions take precedence and remain preserved after dragging.
 
 ### Notes
 - Resizing keeps other regions in place. Manual QA by Sergei; no automated or runtime QA was performed for these changes.
