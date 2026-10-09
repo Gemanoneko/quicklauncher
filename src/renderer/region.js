@@ -176,7 +176,7 @@
       (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-size'),10)||64)+32+horizontalPadding+4));
     const S=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-size'),10)||64;
     const banner=q('theme-banner');
-    const tileHeight=Math.max(S+38,...[...probe.querySelectorAll('.app-tile:not(.filter-hidden)')].map(tile=>tile.getBoundingClientRect().height));
+    const tileHeight=Math.max(S+54,...[...probe.querySelectorAll('.app-tile:not(.filter-hidden)')].map(tile=>tile.getBoundingClientRect().height));
     const height=Math.ceil(Math.max(150,q('header').getBoundingClientRect().height+q('edit-bar').getBoundingClientRect().height+38+
       (banner ? banner.getBoundingClientRect().height : 0)+tileHeight+verticalPadding));
     probe.remove();

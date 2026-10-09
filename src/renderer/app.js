@@ -730,10 +730,9 @@ function updateSortedGridSlots() {
   if (!alphabeticalShortcuts() || !document.body.classList.contains('layout-grid')) return;
   const columns = Math.max(1, getComputedStyle(elAppGrid).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
   const visible = tiles.filter(tile => !tile.classList.contains('filter-hidden'));
-  const rows = Math.max(1, Math.ceil(visible.length / columns));
   visible.forEach((tile, index) => {
-    tile.style.gridRow = String(index % rows + 1);
-    tile.style.gridColumn = String(Math.floor(index / rows) + 1);
+    tile.style.gridRow = String(Math.floor(index / columns) + 1);
+    tile.style.gridColumn = String(index % columns + 1);
   });
 }
 window.addEventListener('resize', updateSortedGridSlots);

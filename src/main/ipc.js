@@ -286,6 +286,8 @@ function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null
   // Compile icon helper DLL in the background (async, non-blocking).
   // Must finish before any icon extraction calls use iconHelperLoadSnippet().
   compileIconHelperDll().then(() => refreshStoredShortcutIcons(ctl, store)).catch(() => {});
+  // Compile/cache only: no shell helper process is started until a user asks.
+  require('./shell-menu').prepare().catch(() => {});
 
   const regionOf = (e) => ctl.regionIdOf(e.sender);
   const fromManager = (e) => mgr.isSender(e.sender);

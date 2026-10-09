@@ -98,4 +98,4 @@ async function invoke(request, ownerWindow) {
     active = false;
   }
 }
-module.exports = { invoke };
+module.exports = { invoke, prepare: executable };

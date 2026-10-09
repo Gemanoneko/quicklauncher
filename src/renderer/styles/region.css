@@ -212,11 +212,23 @@ body.region.layout-row #filter-chip-clear { min-width: 24px; min-height: 24px; }
 #app-grid .empty-cell.as-slot > * { visibility: hidden; }
 
 /* ── Column: 180 wide (S + 68 from S = 112), height follows content (spec 2.3) ── */
-/* One cell of S + 32 per row, so the window height formula holds to the pixel; the
+/* Two visible lines only in rectangular layouts. The fixed label band is part
+   of shared cell geometry; radial chips retain their hidden labels. */
+body.region:not(.layout-radial) #app-grid .app-tile { min-height:calc(var(--icon-size) + 54px); }
+body.region:not(.layout-radial) #app-grid .tile-label {
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2;
+  white-space:normal; overflow-wrap:anywhere; word-break:normal;
+  overflow:hidden; overflow-clip-margin:0; text-overflow:ellipsis;
+  line-height:max(15px,round(up,1.2em,1px));
+  box-sizing:border-box; height:37px; min-height:37px; max-height:37px; flex:none;
+  margin:5px 0 0; padding:0 2px 2px; width:100%;
+}
+
+/* One cell of S + 54 per row, so the window height formula holds to the pixel; the
    tile list is the scroller (M4 rulings, Q18, below). */
 body.region.layout-column #app-grid {
   grid-template-columns: 1fr;
-  grid-auto-rows: calc(var(--icon-size) + 32px);
+  grid-auto-rows: calc(var(--icon-size) + 54px);
 }
 body.region.layout-column #filter-chip { min-width: 0; margin-left: 6px; }
 body.region.layout-column #header-controls { flex: none; margin-left: 6px; }
@@ -290,7 +302,7 @@ body.region.layout-row #app-grid {
   grid-template-columns: none;
   grid-auto-flow: column;
   grid-auto-columns: calc(var(--icon-size) + 32px);
-  grid-template-rows: calc(var(--icon-size) + 32px);
+  grid-template-rows: calc(var(--icon-size) + 54px);
 }
 
 /* ── M4 rulings (UX spec, "Addendum — M4 rulings", Judy 2026-10-05): her exact CSS ── */

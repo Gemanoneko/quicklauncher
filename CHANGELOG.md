@@ -4,6 +4,18 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.103.0] - 2026-10-10
+
+### Changed
+- Shortcut labels show up to two lines across layouts.
+- Alphabetically sorted Grid fills left to right, then moves to the next row.
+
+### Fixed
+- Native shortcut menus can reopen after the first use, with helper compilation prepared ahead of menu invocation.
+
+### Notes
+- Classic Windows shell popup remains light; matching Windows dark popup styling is not implemented.
+- Native helper compiled without execution. Manual QA by Sergei; no automated or runtime QA was performed.
 ## [v1.102.3] - 2026-10-10
 
 ### Fixed

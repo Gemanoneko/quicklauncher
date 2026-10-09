@@ -4,10 +4,10 @@
 // Sizes are DIP; S is the global icon size (32 to 128, default 64).
 //
 //   Column  width  max(180, S + 68)                      not resizable
-//           height (auto until manually resized) 40 header + 32 padding + c cells of S + 32, 8 apart
+//           height (auto until manually resized) 40 header + 32 padding + c cells of S + 54, 8 apart
 //                  (+ 38 edit bar, + 38 notice slot), c = max(n, 1)
-//                  + 6 bottom rim = 70 + 104n at S = 64
-//   Row     height S + 64                                not resizable
+//                  + 6 bottom rim = 70 + 126n at S = 64
+//   Row     height S + 86                                not resizable
 //           width (auto until manually resized) 96 leading cell + 16 + c cells of S + 32, 8 apart, + 20
 //                  + 6 right rim = 130 + 104n at S = 64
 // Auto sizes stop at 90% of the work area along their growth axis, then scroll; a
@@ -32,9 +32,9 @@ function iconSizeOf(settings) {
   return typeof v === 'number' && Number.isFinite(v) ? Math.min(128, Math.max(32, Math.round(v))) : 64;
 }
 
-const cellsLength = (n, S) => {
+const cellsLength = (n, S, extra = 32) => {
   const c = Math.max(1, Math.floor(Number(n) || 0));
-  return c * (S + 32) + (c - 1) * CELL_GAP;
+  return c * (S + extra) + (c - 1) * CELL_GAP;
 };
 
 /**
@@ -45,11 +45,11 @@ const cellsLength = (n, S) => {
  */
 function contentSize(layout, n, S = 64, { edit = false, notice = false } = {}) {
   if (layout === 'column') {
-    const height = HEADER + 2 * PAD + cellsLength(n, S) + (edit ? BAR : 0) + (notice ? BAR : 0) + AXIS_RIM;
+    const height = HEADER + 2 * PAD + cellsLength(n, S, 54) + (edit ? BAR : 0) + (notice ? BAR : 0) + AXIS_RIM;
     return { width: Math.max(COLUMN_MIN_WIDTH, S + 68), height };
   }
   if (layout === 'row') {
-    return { width: LEAD + PAD + cellsLength(n, S) + PAD + GUTTER + AXIS_RIM, height: S + 64 };
+    return { width: LEAD + PAD + cellsLength(n, S) + PAD + GUTTER + AXIS_RIM, height: S + 86 };
   }
   return null;
 }
@@ -99,7 +99,7 @@ function boxAt(layout, anchor, want, workArea, room, keep = 0, { S = 64, edit = 
   // DIP: never a sliver, never only its label. Never longer, never below one cell.
   if (L < wanted) {
     const lead = layout === 'column' ? HEADER + (edit ? BAR : 0) + (notice ? BAR : 0) : LEAD;
-    const pitch = S + 40;                                        // a cell of S + 32 and the 8 px gap
+    const pitch = S + (layout === 'column' ? 62 : 40); // rectangular height includes the two-line label band
     const phase = (((L - lead - PAD - AXIS_RIM) % pitch) + pitch) % pitch;  // how far the cut is into a tile
     if (phase < 24 || phase > S) {                               // under 24 DIP of the next tile, or into its label
       const land = Math.max(24, S - 24);                         // 40 at S = 64: the cut falls inside the icon

@@ -90,6 +90,7 @@ class MenuHost:Form {
  readonly Request request; public Result result=new Result();
  IContextMenu menu; IContextMenu2 menu2; IContextMenu3 menu3; bool done;
  IntPtr refCount,threadRef;
+ System.Windows.Forms.Timer completionTimer;
  public MenuHost(Request r){request=r;ShowInTaskbar=false;FormBorderStyle=FormBorderStyle.FixedToolWindow;Opacity=0;StartPosition=FormStartPosition.Manual;Location=new System.Drawing.Point(r.x,r.y);Size=new Size(1,1);}
  protected override void OnShown(EventArgs e){base.OnShown(e);BeginInvoke(new Action(Run));}
  protected override void WndProc(ref Message m){
@@ -104,7 +105,7 @@ class MenuHost:Form {
  }
  void Validate(){if(request.owner!=0&&!Native.IsWindow(new IntPtr(request.owner)))throw new IOException("The region was closed.");if(request.identity!=null&&!Native.Same(request.identity,Native.ReadIdentity(request.path)))throw new IOException("The shortcut changed or is unavailable. Refresh and try again.");}
  void Run(){
-  IntPtr pidl=IntPtr.Zero,child=IntPtr.Zero,raw=IntPtr.Zero,hmenu=IntPtr.Zero;IShellFolder folder=null;object context=null;
+  IntPtr pidl=IntPtr.Zero,child=IntPtr.Zero,raw=IntPtr.Zero,hmenu=IntPtr.Zero;IShellFolder folder=null;object context=null;bool invokedShell=false;
   try{
    Validate();uint attrs;string target=request.path;
    if(target.StartsWith("shell:AppsFolder\\",StringComparison.OrdinalIgnoreCase))target="::{4234D49B-0245-4DF3-B780-3893943456E1}\\"+target.Substring(17);
@@ -137,7 +138,7 @@ class MenuHost:Form {
       result.rename=true;result.fileName=Path.GetFileNameWithoutExtension(request.path);result.identity=request.identity;result.ok=true;
      }else{
       var invoke=new InvokeInfo {cbSize=Marshal.SizeOf(typeof(InvokeInfo)),mask=0x4000|0x100|0x20000000|(request.shift?0x10000000u:0u),hwnd=Handle,verb=new IntPtr(selected-1),verbW=new IntPtr(selected-1),show=1,point=new Point{x=request.x,y=request.y}};
-      Native.Phase("invoke");Validate();Marshal.ThrowExceptionForHR(menu.InvokeCommand(ref invoke));result.ok=true;
+      Native.Phase("invoke");Validate();invokedShell=true;Marshal.ThrowExceptionForHR(menu.InvokeCommand(ref invoke));result.ok=true;
      }
     }
    }
@@ -145,7 +146,17 @@ class MenuHost:Form {
   finally{
    menu=null;menu2=null;menu3=null;if(hmenu!=IntPtr.Zero)Native.DestroyMenu(hmenu);if(raw!=IntPtr.Zero)Marshal.Release(raw);
    if(context!=null)Marshal.FinalReleaseComObject(context);if(folder!=null)Marshal.FinalReleaseComObject(folder);if(pidl!=IntPtr.Zero)Marshal.FreeCoTaskMem(pidl);
-   Native.SHSetThreadRef(IntPtr.Zero);done=true;Application.Idle+=OnIdle;
+   Native.SHSetThreadRef(IntPtr.Zero);done=true;
+   // Closing the popup does not guarantee another WinForms Idle event: its
+   // native nested loop can already have exhausted the queue. No command means
+   // there is no asynchronous shell work/dialog whose host must stay alive.
+   if(!invokedShell)Close();
+   else {
+    Native.Phase("invoke");Application.Idle+=OnIdle;OnIdle(this,EventArgs.Empty);
+    // Shell ref releases need not post a window message. Check only while
+    // this selected command still owns asynchronous work or a real dialog.
+    if(!IsDisposed){completionTimer=new System.Windows.Forms.Timer();completionTimer.Interval=200;completionTimer.Tick+=OnIdle;completionTimer.Start();}
+   }
   }
  }
  void OnIdle(object sender,EventArgs e){
@@ -154,9 +165,17 @@ class MenuHost:Form {
   Native.EnumWindows((w,p)=>{uint pid;Native.GetWindowThreadProcessId(w,out pid);if(w!=Handle&&pid==ours&&Native.IsWindowVisible(w))dialogs=true;return true;},IntPtr.Zero);
   if(dialogs){Native.Phase("interactive");return;}
   if(refCount!=IntPtr.Zero&&Marshal.ReadInt32(refCount)>1){Native.Phase("invoke");return;}
-  Application.Idle-=OnIdle;Close();
+  Application.Idle-=OnIdle;if(completionTimer!=null)completionTimer.Stop();Close();
  }
- protected override void Dispose(bool disposing){if(threadRef!=IntPtr.Zero){Marshal.Release(threadRef);threadRef=IntPtr.Zero;}if(refCount!=IntPtr.Zero){Marshal.FreeHGlobal(refCount);refCount=IntPtr.Zero;}base.Dispose(disposing);}
+ protected override void Dispose(bool disposing){
+  Application.Idle-=OnIdle;
+  if(completionTimer!=null){completionTimer.Stop();completionTimer.Dispose();completionTimer=null;}
+  if(threadRef!=IntPtr.Zero){Marshal.Release(threadRef);threadRef=IntPtr.Zero;}
+  // A dismissed menu extension may retain its reference. Keep its counter
+  // allocated until this one-shot process exits rather than free live memory.
+  if(refCount!=IntPtr.Zero){if(Marshal.ReadInt32(refCount)==0)Marshal.FreeHGlobal(refCount);refCount=IntPtr.Zero;}
+  base.Dispose(disposing);
+ }
 }
 static class Program {
  [STAThread] static void Main(){
