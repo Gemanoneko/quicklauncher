@@ -113,6 +113,10 @@ body.manager #btn-open-cheatsheet:is(:hover,:active) { background:transparent; c
 #theme-banner::before { content:''; width:22px; height:22px; flex:none; font-size:0; opacity:1; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2022%2022%27%3E%3Cpath%20d%3D%27M11%202L14%205L18%204L18%208L21%2011L18%2014L18%2018L14%2017L11%2021L8%2017L4%2018L4%2014L1%2011L4%208L4%204L8%205Z%27%20fill%3D%27none%27%20stroke%3D%27%239DA893%27%20stroke-opacity%3D%271%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3Ccircle%20cx%3D%2711%27%20cy%3D%2711%27%20r%3D%275%27%20fill%3D%27none%27%20stroke%3D%27%23E0BE70%27%20stroke-width%3D%271.2%27%2F%3E%3C%2Fsvg%3E") center / 22px 22px no-repeat; pointer-events:none; }
 #theme-banner-text { font-family:'Palatino Linotype',Georgia,serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; line-height:1.2; letter-spacing:.3px; text-transform:none; color:#E4D9BE; text-shadow:none; }
 .tile-icon-wrap { isolation:isolate; overflow:visible; }
-.tile-icon-wrap::before { content:''; position:absolute; inset:-4px; z-index:-1; background:#263024; clip-path:circle(50% at 50% 50%); border:1px solid #9DA893; pointer-events:none; }
+.tile-icon-wrap::before { content:none; }
 .edit-mode #edit-bar { background-image:linear-gradient(#6A1A1A,#6A1A1A); background-size:16px 1px; background-repeat:no-repeat; }
+
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:600; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
 

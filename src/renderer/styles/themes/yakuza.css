@@ -113,3 +113,7 @@
 #theme-banner::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(#D4A83B 0 1px, #CF1B21 1px 4px); pointer-events: none; }
 #theme-banner::before { content: '龍'; width: 22px; font: 700 22px/22px 'Yu Gothic', 'MS Gothic', sans-serif; color: #D4A83B; opacity: 1; text-align: center; }
 #theme-banner-text { font-family: Bahnschrift, 'Segoe UI', sans-serif; font-weight: 600; letter-spacing: 1.2px; color: #F5F0E8; }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Libre Franklin','Segoe UI',sans-serif; font-size:12px; font-weight:600; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

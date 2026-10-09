@@ -154,3 +154,7 @@
 }
 .app-tile:focus-visible { outline-color: #D4A24C; }
 .tile-label { font-family: Georgia, 'Times New Roman', serif; }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:500; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

@@ -115,7 +115,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline-color:
 #theme-banner-text { font-family:Constantia, Georgia, serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; letter-spacing:0.3px; color:#D5E0F6; text-shadow:none; }
 
 /* Shape only the supporting plate; application glyph is complete above it. */
-.tile-icon-wrap::before { content:''; position:absolute; inset:0; background:#192644; border:1px solid #8F9FBA; border-radius:50%; clip-path:none; pointer-events:none; }
+.tile-icon-wrap::before { content:none; }
 .tile-icon { position:relative; z-index:1; }
 
 /* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */

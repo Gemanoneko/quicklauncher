@@ -127,3 +127,7 @@ body.region.layout-radial .tile-icon-wrap::before { transform:none; clip-path:in
 body.region.layout-radial.edit-mode .tile-icon-wrap::before { clip-path:polygon(3px 3px,calc(100% - 32px) 3px,calc(100% - 32px) 32px,calc(100% - 3px) 32px,calc(100% - 3px) calc(100% - 4px),3px calc(100% - 4px)); }
 /* The input outline has priority over the lower paper; retain upper/side edges. */
 .app-tile:has(.rename-input) .tile-icon-wrap::before { transform:none; clip-path:polygon(0 0,calc(100% - 32px) 0,calc(100% - 32px) 32px,100% 32px,100% calc(100% - 6px),0 calc(100% - 6px)); }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Jost','Segoe UI',sans-serif; font-size:12px; font-weight:500; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; text-decoration:none; }
+

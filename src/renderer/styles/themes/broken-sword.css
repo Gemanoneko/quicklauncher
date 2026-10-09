@@ -115,3 +115,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline-color:
 /* Reuse the committed measured header-art visibility contract. */
 #header { --ql-header-art-safety:1; }
 #header { box-shadow:inset 2px 0 0 #2A4A6A; }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:500; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

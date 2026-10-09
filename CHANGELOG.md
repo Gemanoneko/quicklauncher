@@ -4,6 +4,14 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.102.2] - 2026-10-09
+
+### Fixed
+- Removed the remaining decorative shortcut icon circles in seven themes.
+- Improved region title readability in Yakuza and twenty-one themes with analogous source-audited font issues, using scoped title rules.
+
+### Notes
+- Radial center hubs and theme artwork remain unchanged. Manual QA by Sergei; no automated tests, contrast checks or runtime QA were performed.
 ## [v1.102.1] - 2026-10-09
 
 ### Fixed

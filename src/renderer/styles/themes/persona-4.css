@@ -149,3 +149,7 @@
 
 /* Committed inherited-contrast addenda: preserve existing art, geometry and rest states. */
 body.region #header-controls :is(#btn-random-theme,#btn-settings,#btn-hide):active { background:#27220F; color:#F5D60A; border-color:#F5D60A; }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Libre Franklin','Segoe UI',sans-serif; font-size:12px; font-weight:600; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

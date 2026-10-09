@@ -118,3 +118,7 @@ body.manager #btn-open-cheatsheet:is(:hover,:active) { background:transparent; c
 .app-tile:hover { border-color:#D7B267; }
 .app-tile:hover { background-image:linear-gradient(#E8501A,#E8501A); background-size:8px 1px; background-position:center top; background-repeat:no-repeat; }
 
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:600; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

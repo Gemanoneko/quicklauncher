@@ -122,3 +122,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline-color:
 
 /* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
 body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:600; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

@@ -115,7 +115,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline-color:
 #theme-banner-text { font-family:Bahnschrift, 'Segoe UI', sans-serif; font-size:11px; font-weight:400; font-style:normal; font-synthesis:none; letter-spacing:0px; color:#F3E7D9; text-shadow:none; }
 
 /* Shape only the supporting plate; application glyph is complete above it. */
-.tile-icon-wrap::before { content:''; position:absolute; inset:0; background:#202020; border:1px solid #BC9AAC; border-radius:999px; clip-path:none; pointer-events:none; }
+.tile-icon-wrap::before { content:none; }
 .tile-icon { position:relative; z-index:1; }
 
 /* Four-pixel elbow does not extend into the title's historical 12px start. */

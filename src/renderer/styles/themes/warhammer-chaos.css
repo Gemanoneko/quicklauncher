@@ -128,3 +128,7 @@
 }
 #theme-banner::before { content: ''; width: 22px; height: 22px; font-size: 0; opacity: 1; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M3.2 22 C2.6 12.6 8.4 4.4 20.6 0.8 C16.2 6.6 14.8 14 15.2 22 Z' fill='rgb(98,82,82)' stroke='rgb(176,160,150)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M6 14.4 C7 10 10.6 6 16.6 3.2' fill='none' stroke='rgb(200,186,176)' stroke-opacity='0.6' stroke-width='0.9' stroke-linecap='round'/%3E%3Cpath d='M9.4 16.4 L11.2 13.4 L9.8 12 L12 8.6' fill='none' stroke='rgb(222,76,48)' stroke-width='1' stroke-linejoin='round' stroke-linecap='round'/%3E%3Cpath d='M2.6 16.6 L15.6 15.6 L15.7 19 L2.9 20 Z' fill='rgb(184,134,58)' stroke='rgb(110,78,34)' stroke-width='0.8' stroke-linejoin='round'/%3E%3Cpath d='M3.4 17.6 L15 16.7' stroke='rgb(226,178,96)' stroke-width='0.7'/%3E%3C/svg%3E") center / 22px 22px no-repeat; }
 #theme-banner-text { font-family: Cambria, 'Palatino Linotype', Georgia, serif; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: #E3D8CE; margin-right: 90px; }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:600; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

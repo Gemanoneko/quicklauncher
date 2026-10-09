@@ -134,3 +134,7 @@ html, body { font-variant-numeric: lining-nums; }
 
 /* Committed inherited-contrast addenda: preserve existing art, geometry and rest states. */
 body.manager #btn-open-cheatsheet:active { background:transparent; color:var(--accent-text); }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:500; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

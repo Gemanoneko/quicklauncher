@@ -116,3 +116,7 @@ body.manager #btn-open-cheatsheet:is(:hover,:active) { background:transparent; c
 .tile-icon-wrap::before { content:''; position:absolute; inset:-4px; z-index:-1; background:#221A16; clip-path:polygon(0 7px,5px 4px,10px 0,calc(100% - 8px) 3px,100% 0,calc(100% - 3px) 12px,100% calc(100% - 7px),calc(100% - 8px) 100%,8px calc(100% - 2px),0 100%); border:1px solid #AA8D68; pointer-events:none; }
 .edit-mode #edit-bar { background-image:linear-gradient(#A31414,#A31414); background-size:16px 1px; background-repeat:no-repeat; background-position:left top; }
 
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:600; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+

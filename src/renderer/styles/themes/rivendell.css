@@ -115,8 +115,12 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline-color:
 #theme-banner-text { font-family:Constantia, Georgia, serif; font-size:11px; font-weight:400; font-style:italic; font-synthesis:none; letter-spacing:0.3px; color:#E8EEF0; text-shadow:none; }
 
 /* Shape only the supporting plate; application glyph is complete above it. */
-.tile-icon-wrap::before { content:''; position:absolute; inset:0; background:#25323F; border:1px solid #89A8A6; border-radius:50%; clip-path:none; pointer-events:none; }
+.tile-icon-wrap::before { content:none; }
 .tile-icon { position:relative; z-index:1; }
 
 /* Manager hover rules must not repaint destructive glyphs with ordinary text ink. */
 body.manager .mgr-delete, body.manager .mgr-delete:hover, body.manager .mgr-delete:active { background:#70222C; border-color:#70222C; color:#FFF4F0; box-shadow:none; }
+
+/* Readable region names; preserve the theme's other typography and artwork. */
+body.region #header #title { font-family:'Cinzel','Palatino Linotype',Georgia,serif; font-size:12px; font-weight:500; font-style:normal; font-stretch:normal; letter-spacing:0.4px; text-shadow:none; text-transform:none; }
+
