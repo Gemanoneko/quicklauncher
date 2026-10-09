@@ -2,7 +2,7 @@
    Regions UX spec 2.5–2.7 and the committed M5 empty-Fan correction. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.QL_RADIAL=api;}(typeof self!=='undefined'?self:this,function(){
  'use strict';
- const HUB=96, PAD=8, GAP=6, CAPS={fan:10,ring:12}, DIRECTIONS=['up','right','down','left'];
+ const HUB=96, PAD=8, GAP=6, CAPS={fan:10,ring:16}, DIRECTIONS=['up','right','down','left'];
  const radial=layout=>layout==='fan'||layout==='ring';
  const size=S=>Math.max(32,Math.min(128,Math.round(Number(S)||64)));
  function points(layout,n,R){const pitch=layout==='ring'?360/n:n===1?0:Math.min((n>=5?270:180)/(n-1),60);return Array.from({length:n},(_,k)=>{

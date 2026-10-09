@@ -718,6 +718,7 @@ async function refreshMissingIcons() {
 
 // ── Render ───────────────────────────────────────────────────────────────────
 function renderGrid() {
+  if (activeFileRename) activeFileRename.cancel();
   const dropHint = $('drop-hint');
   const retainedDraft = window.qlBeforeGridRender ? window.qlBeforeGridRender() : null;
 
@@ -848,6 +849,47 @@ function startRename(appItem, labelEl) {
     if (e.key === 'Escape') { cancelled = true; input.replaceWith(labelEl); e.preventDefault(); e.stopPropagation(); }
   });
 }
+
+// Windows-menu Rename changes the file, separately from display-label rename.
+let activeFileRename = null;
+window.qlStartFileRename = (item, basename, submit, cancel, feedback) => {
+  if (activeFileRename) {
+    activeFileRename.cancel();
+    if (activeFileRename) { Promise.resolve(cancel()).catch(() => {}); feedback('Finish the current file rename first.'); return; }
+  }
+  const tile = [...document.querySelectorAll('.app-tile')].find(t => t.dataset.id === item.id);
+  const label = tile && tile.querySelector('.tile-label');
+  if (!tile || !label) { Promise.resolve(cancel()).catch(() => {}); return; }
+  const surface = window.qlFileRenameSurface && window.qlFileRenameSurface(item);
+  const input = surface ? surface.input : document.createElement('input');
+  input.type = 'text'; input.className = surface ? 'radial-chip-rename' : 'rename-input';
+  input.value = basename; input.maxLength = 240; input.title = 'File name'; input.setAttribute('aria-label', 'File name');
+  if (!surface) label.replaceWith(input);
+  let pending = false, done = false;
+  const focusTile = () => {
+    const current = [...document.querySelectorAll('.app-tile')].find(t => t.dataset.id === item.id);
+    (current || document.getElementById('app-grid')).focus({ preventScroll: true });
+  };
+  const restore = () => { if (surface) surface.restore(); else if (input.isConnected) input.replaceWith(label); };
+  const state = { cancel: () => {
+    if (pending || done) return; done = true; restore();
+    if (activeFileRename === state) activeFileRename = null;
+    Promise.resolve(cancel()).catch(() => {}); focusTile();
+  } };
+  activeFileRename = state;
+  input.addEventListener('keydown', async e => {
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); state.cancel(); return; }
+    if (e.key !== 'Enter') return;
+    e.preventDefault(); e.stopPropagation(); if (pending || done) return;
+    pending = true; input.readOnly = true;
+    let result; try { result = await submit(input.value); } catch { result = { ok: false, error: 'Windows could not rename this shortcut. Try again.' }; }
+    pending = false; input.readOnly = false;
+    if (!result || !result.ok) { feedback(result && result.error || 'Windows could not rename this shortcut. Try again.'); if (input.isConnected) input.focus(); else state.cancel(); return; }
+    done = true; restore(); if (activeFileRename === state) activeFileRename = null; focusTile();
+  });
+  input.addEventListener('blur', () => { if (!pending && !input._presentationMoving) state.cancel(); });
+  input.focus(); input.select();
+};
 
 // ── Actions ──────────────────────────────────────────────────────────────────
 async function launchApp(filePath) {
@@ -1280,6 +1322,7 @@ function setupTileReorder() {
 
     reorderState = {
       srcEl: tile,
+      order: apps.map(a => a.id),
       ghost: null,
       startX: e.clientX,
       startY: e.clientY,
@@ -1335,6 +1378,11 @@ function handleReorderMove(e) {
   const el = document.elementFromPoint(e.clientX, e.clientY);
   const overTile = el?.closest('.app-tile');
 
+  // A region tile body is a swap target. Keep its original position stable
+  // instead of inserting the source before the pointer is released.
+  if (document.body.classList.contains('region') && overTile && elAppGrid.contains(overTile)
+      && !overTile.matches('.filter-hidden,.drop-slot') && !el.closest('button,.btn-remove,.btn-move-back')) return;
+
   if (overTile && elAppGrid.contains(overTile) && overTile !== reorderState.srcEl) {
     const all = [...elAppGrid.querySelectorAll('.app-tile')];
     const srcPos  = all.indexOf(reorderState.srcEl);
@@ -1372,6 +1420,19 @@ async function handleReorderUp(e) {
   // Released outside this window: it lands in the region under the pointer,
   // or the drag is cancelled and the tile stays (region.js).
   if (window.qlTileDragOut && window.qlTileDragOut.end(e, state)) return;
+
+  const hit = document.elementFromPoint(e.clientX, e.clientY), target = hit && hit.closest('.app-tile');
+  if (document.body.classList.contains('region') && target && elAppGrid.contains(target)
+      && !target.matches('.filter-hidden,.drop-slot') && !hit.closest('button,.btn-remove,.btn-move-back')) {
+    try {
+      const result = await window.api.invoke('region:swap-items', {
+        sourceId: state.srcEl.dataset.id, targetId: target.dataset.id, order: state.order,
+      });
+      if (!result || !result.ok) showNotice(result && result.error || 'The shortcut order could not be saved.');
+      else if (Array.isArray(result.items)) apps = result.items;
+    } catch { showNotice('The shortcut order could not be saved.'); }
+    renderGrid(); return;
+  }
 
   // Derive new order from DOM positions
   const allTiles = [...elAppGrid.querySelectorAll('.app-tile')];

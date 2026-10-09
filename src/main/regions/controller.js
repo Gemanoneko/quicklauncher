@@ -856,7 +856,11 @@ class RegionController extends EventEmitter {
         // A reloaded page must announce itself again before it gets store messages.
         if (details && details.isMainFrame && !details.isSameDocument) rt.ready = false;
       });
+      const invalidateShellPage = () => { rt.shellPageGeneration = (rt.shellPageGeneration || 0) + 1; this._cancelShellRenames(rt.id); };
+      win.webContents.on('did-start-loading', invalidateShellPage);
+      win.webContents.on('render-process-gone', invalidateShellPage);
       win.on('closed', () => {
+        this._cancelShellRenames(rt.id);
         this.byWc.delete(wcId);
         if (rt.win === win) { rt.win = null; rt.wc = null; rt.ready = false; }
         const t = this.tileDrag;
@@ -1122,6 +1126,23 @@ class RegionController extends EventEmitter {
   }
 
   // ── saves from a region page ──────────────────────────────────────────────
+  swapItems(id, sourceId, targetId, expected) {
+    const current = M.itemsOf(this.apps(), id);
+    if (!this.region(id) || this.store.isReadOnly() || !Array.isArray(expected)
+        || current.length !== expected.length || current.some((a, i) => a.id !== expected[i])) return { ok: false, error: 'The shortcuts changed. Try again.' };
+    const from = current.findIndex(a => a.id === sourceId), to = current.findIndex(a => a.id === targetId);
+    if (from < 0 || to < 0) return { ok: false, error: 'The shortcut is unavailable.' };
+    if (from === to) return { ok: true, items: current };
+    const next = current.slice(); [next[from], next[to]] = [next[to], next[from]];
+    const previous = this.apps();
+    this.store.set('apps', M.replaceRegionItems(previous, id, next));
+    if (!this.store.flush()) {
+      this.store.set('apps', previous); this.store.flush();
+      return { ok: false, error: 'The shortcut order could not be saved. Try again.' };
+    }
+    this._pushItems(id); this._managerChanged(); return { ok: true, items: next };
+  }
+
   saveItemsFromRenderer(id, sanitized) {
     if (!this.region(id)) return;
     const rt = this.rt.get(id);
@@ -1774,30 +1795,70 @@ class RegionController extends EventEmitter {
     this._popup('region', rt, tpl, x, y);
   }
 
-  popupTileMenu(id, itemId, x, y) {
+  async popupTileMenu(id, itemId, x, y, shift = false) {
     const rt = this.rt.get(id);
-    if (!rt || !rt.win) return;
+    if (!rt || !rt.win || rt.win.isDestroyed()) return { ok: false, error: 'The region was closed.' };
+    const pageGeneration = rt.shellPageGeneration || 0;
     const item = this.apps().find((a) => a && a.id === itemId && a.regionId === id);
-    if (!item) return;
-    const others = this.regions().filter((r) => r.id !== id);
-    const tpl = [
-      { label: 'Rename', click: () => this._command(id, 'rename-tile', { itemId }) },
-      others.length
-        ? {
-          label: 'Move to',
-          // A full Fan or Ring is listed but disabled (spec 9.2).
-          submenu: others.map((r) => ({ label: menuLabel(r.name), enabled: this._dropDecision(r.id, id).ok, click: () => this.moveItemToRegion(itemId, r.id) })),
-        }
-        : { label: 'Move to', enabled: false },
-      // A moved tile's file goes back to the desktop; a reference is removed (spec 9.2).
-      // A broken one has no file to move: "Remove tile" removes its record (addendum B4).
-      item.kind === 'moved' && this._isBroken(item)
-        ? { label: 'Remove tile', click: () => { this.removeBrokenFromPage(id, itemId).catch(() => {}); } }
-        : item.kind === 'moved'
-          ? { label: 'Move back to desktop', click: () => { this.moveBackItems([itemId]).catch(() => {}); } }
-          : { label: 'Remove', click: () => this._command(id, 'remove-tile', { itemId }) },
-    ];
-    this._popup('tile', rt, tpl, x, y, { itemId });
+    if (!item) return { ok: false, error: 'The shortcut is unavailable.' };
+    const namespace = /^shell:AppsFolder\\/i.test(item.path);
+    if (!namespace && !/\.(lnk|url|exe)$/i.test(item.path)) return { ok: false, error: 'Windows has no shortcut menu for this item.' };
+    let ticket = null;
+    try {
+      if (!namespace) { if (!this.mover) throw Error('Windows shortcut menus are unavailable.'); ticket = await this.mover.prepareShellAction(itemId); }
+      const current = this.apps().find(a => a.id === itemId && a.regionId === id && a.path === item.path);
+      if (!current || rt.win.isDestroyed()) throw Error('The shortcut changed or the region was closed.');
+      const at = this._pageToDesktop(id, x, y); if (!at) throw Error('The shortcut position is unavailable.');
+      const physical = screen.dipToScreenPoint(at);
+      const result = await require('../shell-menu').invoke({ mode: 'menu', path: item.path, x: Math.round(physical.x), y: Math.round(physical.y),
+        owner: rt.host.hwnd || 0, identity: ticket && ticket.identity, shift: !!shift }, rt.win);
+      if (result.rename && ticket && rt.win && !rt.win.isDestroyed()
+          && (rt.shellPageGeneration || 0) === pageGeneration
+          && this.apps().some(a => a.id === itemId && a.regionId === id && a.path === item.path)) {
+        if (!this.shellRenameRequests) this.shellRenameRequests = new Map();
+        this.shellRenameRequests.set(ticket.id, { regionId: id, itemId, path: item.path, identity: ticket.identity });
+        return { ...result, ticket: ticket.id };
+      }
+      if (ticket) await this.mover.completeShellAction(ticket.id);
+      await this.refreshMoves(); this._pushItems(id);
+      return result;
+    } catch (error) {
+      if (ticket) await this.mover.completeShellAction(ticket.id).catch(() => {});
+      return { ok: false, error: error.message };
+    }
+  }
+
+  async renameShortcutFile(id, itemId, ticket, name, cancel = false) {
+    const pending = this.shellRenameRequests && this.shellRenameRequests.get(ticket);
+    if (!pending || pending.regionId !== id || pending.itemId !== itemId) return { ok: false, error: 'The rename request expired.' };
+    if (cancel) {
+      if (pending.busy) return { ok: false, error: 'The file rename is still pending.' };
+      this.shellRenameRequests.delete(ticket); await this.mover.completeShellAction(ticket); return { ok: true, cancelled: true };
+    }
+    const rt = this.rt.get(id), item = this.apps().find(a => a.id === itemId && a.regionId === id && a.path === pending.path);
+    if (!rt || !rt.win || rt.win.isDestroyed() || !item || typeof name !== 'string' || !name || name.length > 240) return { ok: false, error: 'The shortcut is unavailable or the file name is invalid.' };
+    if (pending.busy) return { ok: false, error: 'The file rename is still pending.' };
+    pending.busy = true;
+    const result = await require('../shell-menu').invoke({ mode: 'rename', path: pending.path, name, owner: rt.host.hwnd || 0, identity: pending.identity }, rt.win);
+    pending.busy = false;
+    if (!result.ok) {
+      if (!this.shellRenameRequests.has(ticket)) await this.mover.completeShellAction(ticket);
+      return result;
+    }
+    await this.mover.completeShellAction(ticket); this.shellRenameRequests.delete(ticket);
+    await this.refreshMoves(); this._pushItems(id);
+    const renamed = this.apps().find(a => a.id === itemId);
+    if (!renamed || renamed.path !== result.path) return { ok: false, error: 'Windows renamed the file, but its shortcut state needs recovery. Refresh and try again.' };
+    return { ok: true, item: renamed };
+  }
+
+  _cancelShellRenames(id) {
+    if (!this.shellRenameRequests) return;
+    for (const [ticket, pending] of this.shellRenameRequests) {
+      if (pending.regionId !== id) continue;
+      this.shellRenameRequests.delete(ticket);
+      if (!pending.busy) this.mover.completeShellAction(ticket).catch(() => {});
+    }
   }
 
   // Native menu at a point in the region page. With --ql-test-hooks it is

@@ -107,6 +107,7 @@ class Mover extends EventEmitter {
     this.journal = new Journal(journalDir, { fsp });
     this.real = { desktop: null, publicDesktop: null, store: null };
     this.missing = new Set();   // moved items whose file is gone (the broken state)
+    this.activeShellTickets = new Set(); // live menus/inline renames cannot be recovered mid-action
     this.orphans = [];          // { file, name }: shortcuts in the store folder with no item
     this._tail = Promise.resolve();
     this.ready = null;
@@ -154,6 +155,69 @@ class Mover extends EventEmitter {
     const st = await this.fsp.lstat(p);
     const buf = await this.fsp.readFile(p);
     return { size: st.size, mtimeMs: st.mtimeMs, sha256: crypto.createHash('sha256').update(buf).digest('hex') };
+  }
+
+  _sameIdentity(a, b) { return !!(a && b && a.volume === b.volume && a.id === b.id && a.created === b.created); }
+
+  prepareShellAction(itemId) {
+    return this._run(async () => {
+      const item = this.data.apps().find(a => a && a.id === itemId);
+      if (!item || !this.data.writable() || !this._allowed(item.path)) throw Error('The shortcut cannot be changed safely right now.');
+      const identity = this.win32.fileIdentity(item.path);
+      if (!identity || (item.fileIdentity && !this._sameIdentity(identity, item.fileIdentity))) throw Error('The shortcut changed or is unavailable. Refresh and try again.');
+      const fp = await this._fingerprint(item.path);
+      if (!this._sameIdentity(identity, this.win32.fileIdentity(item.path))) throw Error('The shortcut changed. Try again.');
+      const entry = await this.journal.intent({ id: this.newId(), op: 'shell-menu', itemId, src: item.path,
+        regionId: item.regionId, identity, size: fp.size, sha256: fp.sha256 });
+      this.activeShellTickets.add(entry.id);
+      if (!this.data.commit(this.data.apps().map(a => a.id === itemId ? { ...a, fileIdentity: identity } : a))) {
+        this.activeShellTickets.delete(entry.id);
+        throw Error('The shortcut state could not be saved. Try again.');
+      }
+      return entry;
+    });
+  }
+
+  completeShellAction(ticket) {
+    return this._run(async () => {
+      this.activeShellTickets.delete(ticket);
+      const entry = this.journal.pending().find(e => e.id === ticket && e.op === 'shell-menu');
+      if (entry) await this._reconcileShell(entry);
+      await this._scan();
+      return { ok: true };
+    });
+  }
+
+  async _reconcileShell(entry) {
+    if (this.activeShellTickets.has(entry.id)) return false;
+    const item = this.data.apps().find(a => a && a.id === entry.itemId);
+    // Independent tile changes never resurrect from a stale menu. Unknown
+    // file moves/deletes retain their original tile and recovery intent.
+    if (!item || !R.samePath(item.path, entry.src)) { await this.journal.finish(entry.id, 'aborted', { why: 'tile changed independently' }); return true; }
+    if (this._sameIdentity(entry.identity, this.win32.fileIdentity(entry.src))) { await this.journal.finish(entry.id, 'done'); return true; }
+    const dir = path.dirname(entry.src);
+    if (!this._allowed(dir)) return false;
+    let names; try { names = await this.fsp.readdir(dir); } catch { return false; }
+    const matches = [];
+    for (const name of names) {
+      const candidate = path.join(dir, name);
+      if (path.extname(candidate).toLowerCase() !== path.extname(entry.src).toLowerCase()) continue;
+      if (!this._sameIdentity(entry.identity, this.win32.fileIdentity(candidate))) continue;
+      try {
+        const fp = await this._fingerprint(candidate);
+        if (fp.size === entry.size && fp.sha256 === entry.sha256 && this._sameIdentity(entry.identity, this.win32.fileIdentity(candidate))) matches.push(candidate);
+      } catch { /* unreadable candidates stay unresolved */ }
+    }
+    if (matches.length !== 1 || !this.data.writable()) return false;
+    const dst = matches[0];
+    if (this.data.apps().some(a => a.id !== item.id && R.samePath(a.path, dst))) return false;
+    const committed = this.data.commit(this.data.apps().map(a => a.id === item.id && R.samePath(a.path, entry.src)
+      ? { ...a, path: dst, name: R.displayName(dst), fileIdentity: entry.identity,
+        ...(a.kind === 'moved' && a.origin ? { origin: path.join(path.dirname(a.origin), path.basename(dst)) } : {}) } : a));
+    if (!committed) return false;
+    await this.journal.finish(entry.id, 'done', { dst });
+    this.missing.delete(item.id); this.emit('changed', { regionIds: [item.regionId] });
+    return true;
   }
 
   async _verify(src, dst, fp) {
@@ -542,6 +606,7 @@ class Mover extends EventEmitter {
       this.log({ event: 'move', op: 'back', result: 'failed', name, code, why });
       return { ok: false, failure: { itemId, name, file: src, code, why, reason: R.reasonFor(code, { publicDesktop: target.publicDesktop }) } };
     };
+    if (item.fileIdentity && !this._sameIdentity(item.fileIdentity, this.win32.fileIdentity(src))) { this.missing.add(itemId); return fail(-1, 'original shortcut identity no longer matches'); }
     if (!this._allowed(src) || !this._allowed(target.dir)) return fail(-4, 'outside the test folder (test mode)');
     if (this.win32.attributes(src) == null) { this.missing.add(itemId); return fail(2, 'missing from the store folder'); }
     let fp;
@@ -555,6 +620,10 @@ class Mover extends EventEmitter {
     await this._step('back:intent', { journal: j, src, dst: t.dst });
     let m;
     for (;;) {
+      if (item.fileIdentity && !this._sameIdentity(item.fileIdentity, this.win32.fileIdentity(src))) {
+        await this.journal.finish(j.id, 'aborted', { why: 'original shortcut identity changed' });
+        this.missing.add(itemId); return fail(-1, 'original shortcut identity changed');
+      }
       m = this._move('back', src, t.dst);
       if (m.ok || !COLLISION.has(m.code)) break;
       const next = await this._freeTarget(target.dir, target.name, t.n + 1);
@@ -593,7 +662,11 @@ class Mover extends EventEmitter {
     return this._run(async () => {
       const item = this.data.apps().find((a) => a && a.id === itemId && a.kind === 'moved');
       if (!item) return { ok: false };
-      if (await this._exists(item.path)) return { ok: false, reason: 'file is there' };
+      if (await this._exists(item.path)) {
+        if (!item.fileIdentity || this._sameIdentity(item.fileIdentity, this.win32.fileIdentity(item.path))) return { ok: false, reason: 'file is there' };
+        // Only the original is missing. Removing its tile never touches the
+        // replacement file now occupying the same pathname.
+      }
       this.data.commit(this.data.apps().filter((a) => !(a && a.id === itemId)));
       this.missing.delete(itemId);
       await this.journal.note({ op: 'remove-missing', itemId, name: item.name, path: item.path });
@@ -698,6 +771,7 @@ class Mover extends EventEmitter {
   async _reconcile() {
     const resolved = [];
     for (const e of this.journal.pending()) {
+      if (e.op === 'shell-menu') { if (await this._reconcileShell(e)) resolved.push(e.id); continue; }
       const srcThere = await this._exists(e.src);
       const dstThere = await this._exists(e.dst);
       const apps = this.data.apps();
@@ -760,9 +834,10 @@ class Mover extends EventEmitter {
   scan() { return this._run(() => this._scan()); }
 
   async _scan() {
+    for (const entry of this.journal.pending().filter(e => e.op === 'shell-menu')) await this._reconcileShell(entry);
     const moved = this.data.apps().filter((a) => a && a.kind === 'moved');
     const missing = new Set();
-    for (const a of moved) if (!(await this._exists(a.path))) missing.add(a.id);
+    for (const a of moved) if (!(await this._exists(a.path)) || (a.fileIdentity && !this._sameIdentity(a.fileIdentity, this.win32.fileIdentity(a.path)))) missing.add(a.id);
     this.missing = missing;
     const orphans = [];
     if (this.folders.store) {

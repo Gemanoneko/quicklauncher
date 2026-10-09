@@ -512,13 +512,33 @@
   // The Menu key and Shift+F10 also make Chromium send a contextmenu event to
   // the focused element after our keydown has opened the menu: skip that one.
   let keyMenuUntil = 0;
+  let tileMenuPending = false;
+  async function openTileShellMenu(tile, x, y, shift = false) {
+    if (tileMenuPending) return;
+    const item = (apps || []).find(a => a.id === tile.dataset.id); if (!item) return;
+    tileMenuPending = true;
+    let result;
+    try { result = await api.invoke('region:tile-menu', { itemId: item.id, x, y, shift }); }
+    catch { result = { ok: false, error: 'Windows could not open this shortcut menu.' }; }
+    finally { tileMenuPending = false; }
+    if (result && result.rename && result.ticket) {
+      window.qlStartFileRename(item, result.fileName,
+        name => api.invoke('region:file-rename', { itemId: item.id, ticket: result.ticket, name }),
+        () => api.invoke('region:file-rename-cancel', { itemId: item.id, ticket: result.ticket }), showNotice);
+      return;
+    }
+    if (!result || !result.ok) showNotice(result && result.error || 'Windows has no shortcut menu for this item.');
+    const current = tileOf(item.id); (current || elGridBox).focus({ preventScroll: true });
+  }
   window.addEventListener('contextmenu', (e) => {
     if (performance.now() < keyMenuUntil) { keyMenuUntil = 0; stop(e); return; }
     if (isTextTarget(e.target)) return;
     // Right-click on the handle = region menu; elsewhere app.js enters edit mode.
     if (e.target.closest('#header')) { stop(e); openRegionMenuAt(e.clientX, e.clientY); return; }
     const tile = e.target.closest('.app-tile');
-    if (tile && isEditing()) { stop(e); api.invoke('region:tile-menu', { itemId: tile.dataset.id, x: e.clientX, y: e.clientY }); }
+    if (tile && !e.target.closest('button,.btn-remove,.btn-move-back') && !tile.classList.contains('drop-slot')) {
+      stop(e); openTileShellMenu(tile, e.clientX, e.clientY, e.shiftKey);
+    }
   }, true);
 
   function tileOf(id) {
@@ -1077,7 +1097,7 @@
         stop(e);
         keyMenuUntil = performance.now() + 800;
         const r = tile.getBoundingClientRect();
-        api.invoke('region:tile-menu', { itemId: tile.dataset.id, x: r.left, y: r.bottom });
+        openTileShellMenu(tile, r.left, r.bottom, e.shiftKey);
       }
     }
   }, true);
@@ -1215,6 +1235,12 @@
     input.addEventListener('blur',()=>finish(true));
     input.addEventListener('keydown',e=>{ e.stopPropagation(); if(e.key==='Enter'){e.preventDefault();finish(true);} if(e.key==='Escape'){e.preventDefault();finish(false);} });
     return true;
+  };
+  window.qlFileRenameSurface = item => {
+    if (!radial()) return null;
+    const input = document.createElement('input'); input._itemId = item.id;
+    elHeader.appendChild(input); chipRename = input; refreshRadial(); reportExtras();
+    return { input, restore: () => { if (chipRename === input) chipRename = null; input.remove(); refreshRadial(); reportExtras(); } };
   };
   elGridBox.addEventListener('mouseover', e => { const tile=e.target.closest('.app-tile:not(.filter-hidden)'); radialHover=tile ? tile.dataset.id : ''; refreshRadial(); });
   elGridBox.addEventListener('mouseleave',()=>{radialHover='';refreshRadial();});

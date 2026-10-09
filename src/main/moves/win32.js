@@ -50,6 +50,9 @@ if (koffi) {
       GetFileAttributesW: kernel32.func('uint32 __stdcall GetFileAttributesW(str16 name)'),
       GetLastError: kernel32.func('uint32 __stdcall GetLastError()'),
       SetLastError: kernel32.func('void __stdcall SetLastError(uint32 code)'),
+      CreateFileW: kernel32.func('intptr __stdcall CreateFileW(str16 name, uint32 access, uint32 share, intptr security, uint32 disposition, uint32 flags, intptr templateFile)'),
+      GetFileInformationByHandleEx: kernel32.func('int __stdcall GetFileInformationByHandleEx(intptr file, int infoClass, _Out_ void *info, uint32 size)'),
+      CloseHandle: kernel32.func('int __stdcall CloseHandle(intptr file)'),
       SHGetKnownFolderPath: shell32.func('int32 __stdcall SHGetKnownFolderPath(void *rfid, uint32 flags, intptr token, _Out_ void **path)'),
       CoTaskMemFree: ole32.func('void __stdcall CoTaskMemFree(void *pv)'),
     };
@@ -90,6 +93,24 @@ function attributes(p) {
   return a === ATTR.INVALID ? null : a >>> 0;
 }
 
+// Read metadata only, without following a reparse point or opening contents.
+// The creation time distinguishes recycled IDs; callers retain ambiguity as
+// broken state rather than substituting a file merely sharing its old path.
+function fileIdentity(p) {
+  if (!available) return null;
+  const attrs = attributes(p);
+  if (attrs == null || (attrs & (ATTR.DIRECTORY | ATTR.OFFLINE | ATTR.RECALL_ON_OPEN | ATTR.RECALL_ON_DATA_ACCESS | 0x400))) return null;
+  const file = W.CreateFileW(String(p), 0x80, 7, 0, 3, 0x200000, 0);
+  if (file === -1 || !file) return null;
+  try {
+    const id = Buffer.alloc(24), basic = Buffer.alloc(40);
+    if (!W.GetFileInformationByHandleEx(file, 18, id, id.length) || !W.GetFileInformationByHandleEx(file, 0, basic, basic.length)) return null;
+    if (basic.readUInt32LE(32) & (ATTR.DIRECTORY | ATTR.OFFLINE | ATTR.RECALL_ON_OPEN | ATTR.RECALL_ON_DATA_ACCESS | 0x400)) return null;
+    if (id.subarray(8).every(b => b === 0)) return null;
+    return { volume: id.readBigUInt64LE(0).toString(16), id: id.subarray(8).toString('hex'), created: basic.readBigUInt64LE(0).toString(16) };
+  } finally { W.CloseHandle(file); }
+}
+
 /** SHGetKnownFolderPath: the real folder (OneDrive-redirected or not), or null. */
 function knownFolder(name) {
   if (!available || !FOLDERID[name]) return null;
@@ -103,4 +124,4 @@ function knownFolder(name) {
   }
 }
 
-module.exports = { available, loadError, MOVE_FLAGS, ATTR, ERR, FOLDERID, moveFileNoReplace, attributes, knownFolder };
+module.exports = { available, loadError, MOVE_FLAGS, ATTR, ERR, FOLDERID, moveFileNoReplace, attributes, fileIdentity, knownFolder };

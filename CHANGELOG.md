@@ -4,6 +4,15 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.101.0] - 2026-10-09
+
+### Added
+- Shortcut right-click opens the Windows shell context menu; other region elements retain the region menu and Edit shortcuts access.
+- Dropping an icon directly on another icon in the same region swaps their positions.
+- Ring supports up to sixteen icons; Fan capacity remains unchanged.
+
+### Notes
+- Native shell helper compilation succeeded without execution. Manual QA by Sergei; no automated tests or runtime QA were performed.
 ## [v1.100.1] - 2026-10-09
 
 ### Fixed

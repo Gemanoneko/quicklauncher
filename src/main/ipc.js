@@ -672,8 +672,11 @@ $apps | ConvertTo-Json -Depth 2
   onRegion('region:nudge', (id, a) => ctl.nudge(id, num(a.dx), num(a.dy)));
   onRegion('region:menu', (id, a) => { ctl.popupRegionMenu(id, num(a.x), num(a.y)); });
   onRegion('region:tile-menu', (id, a) => {
-    if (typeof a.itemId === 'string') ctl.popupTileMenu(id, a.itemId, num(a.x), num(a.y));
+    if (typeof a.itemId === 'string') return ctl.popupTileMenu(id, a.itemId, num(a.x), num(a.y), !!a.shift);
   });
+  onRegion('region:file-rename', (id, a) => ctl.renameShortcutFile(id, String(a.itemId || ''), String(a.ticket || ''), a.name));
+  onRegion('region:file-rename-cancel', (id, a) => ctl.renameShortcutFile(id, String(a.itemId || ''), String(a.ticket || ''), '', true));
+  onRegion('region:swap-items', (id, a) => ctl.swapItems(id, a.sourceId, a.targetId, a.order));
   // A tile dragged out of its region (source page) and the slot it lands in (target page).
   onRegion('region:tile-drag', (id, a) => ctl.tileDragFrom(id, {
     phase: String(a.phase || ''), itemId: typeof a.itemId === 'string' ? a.itemId : '', x: num(a.x), y: num(a.y),
