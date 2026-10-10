@@ -73,8 +73,10 @@ static class PopupTheme {
    var version=new VersionInfo();version.size=(uint)Marshal.SizeOf(typeof(VersionInfo));
    if(RtlGetVersion(ref version)!=0||version.major!=10||version.minor!=0||version.platform!=2)return;
    bool legacy=version.build==17763;
+   // 26H2 (26300) shares the 26100 UxTheme servicing baseline. Keep exact
+   // known builds and the required-export checks below; unknown builds opt out.
    bool modern=version.build==18362||version.build==18363||(version.build>=19041&&version.build<=19045)
-    ||version.build==22000||version.build==22621||version.build==22631||version.build==26100||version.build==26200;
+    ||version.build==22000||version.build==22621||version.build==22631||version.build==26100||version.build==26200||version.build==26300;
    if(!legacy&&!modern)return;
    // Absolute System32 path and system-only loader search; retained for this
    // one-shot helper lifetime so optional delegates never reference an unloaded DLL.

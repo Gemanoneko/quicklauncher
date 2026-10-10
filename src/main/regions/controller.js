@@ -1829,7 +1829,7 @@ class RegionController extends EventEmitter {
         this.shellRenameRequests.set(ticket.id, { regionId: id, itemId, path: item.path, identity: ticket.identity });
         return { ...result, ticket: ticket.id };
       }
-      if (ticket) await this.mover.completeShellAction(ticket.id);
+      if (ticket) await this.mover.completeShellAction(ticket.id, { scan: false });
       await this.refreshMoves(); this._pushItems(id);
       return result;
     } catch (error) {
@@ -1855,7 +1855,7 @@ class RegionController extends EventEmitter {
       if (!this.shellRenameRequests.has(ticket)) await this.mover.completeShellAction(ticket);
       return result;
     }
-    await this.mover.completeShellAction(ticket); this.shellRenameRequests.delete(ticket);
+    await this.mover.completeShellAction(ticket, { scan: false }); this.shellRenameRequests.delete(ticket);
     await this.refreshMoves(); this._pushItems(id);
     const renamed = this.apps().find(a => a.id === itemId);
     if (!renamed || renamed.path !== result.path) return { ok: false, error: 'Windows renamed the file, but its shortcut state needs recovery. Refresh and try again.' };

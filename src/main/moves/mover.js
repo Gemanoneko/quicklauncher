@@ -178,12 +178,14 @@ class Mover extends EventEmitter {
     });
   }
 
-  completeShellAction(ticket) {
+  completeShellAction(ticket, { scan = true } = {}) {
     return this._run(async () => {
       this.activeShellTickets.delete(ticket);
       const entry = this.journal.pending().find(e => e.id === ticket && e.op === 'shell-menu');
       if (entry) await this._reconcileShell(entry);
-      await this._scan();
+      // Controllers that immediately refreshMoves perform this scan there,
+      // preserving the previous missing-item snapshot for change notifications.
+      if (scan) await this._scan();
       return { ok: true };
     });
   }

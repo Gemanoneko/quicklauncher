@@ -4,6 +4,15 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.103.2] - 2026-10-10
+
+### Fixed
+- Extend guarded native popup theme compatibility to Windows build 26300 while retaining optional API and high-contrast fallback checks.
+- Successful shell actions avoid duplicate reconciliation scans before the immediately following move refresh, improving readiness for the next menu invocation.
+
+### Notes
+- Opening safety checks remain intact. Menu latency is unmeasured; CLR startup and shell extensions can still add delay.
+- Native helper compiled without execution. Manual QA by Sergei; no automated or runtime QA was performed.
 ## [v1.103.1] - 2026-10-10
 
 ### Fixed
