@@ -4,6 +4,14 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.104.0] - 2026-10-10
+
+### Changed
+- Existing Ctrl+Space shortcut temporarily brings all regions above other windows and returns them to the desktop on the next press.
+- Tray Show/Hide remains the visibility control.
+
+### Notes
+- Temporary native window state is restored on return; manual QA by Sergei. No automated tests or native/runtime QA was performed.
 ## [v1.103.2] - 2026-10-10
 
 ### Fixed

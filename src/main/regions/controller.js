@@ -16,6 +16,7 @@ const L = require('./layouts');
 const R = require('../../renderer/radial-layout');
 const D = require('./display-adaptation');
 const { RegionHost } = require('../desktop/region-host');
+const desktopLayer = require('../desktop/desktop-layer');
 const MR = require('../moves/rules');
 const { Mover } = require('../moves/mover');
 
@@ -58,6 +59,8 @@ class RegionController extends EventEmitter {
     this.byWc = new Map();    // webContents id -> region id
     this.activeId = null;
     this.hidden = false;
+    this.foregroundSession = null; // temporary hotkey mode; never stored
+    this.shellMenuPending = 0;
     this.latestSeq = 0;       // last store renderer-sync seq fanned out
     this.manager = null;      // set by index.js
     this._watchdog = null;
@@ -120,11 +123,13 @@ class RegionController extends EventEmitter {
     // relayoutAll. A drag in flight is cancelled first (its coordinates
     // belong to the old work area).
     this._onDisplay = (reason = 'display change') => {
+      this._returnToDesktop(false);
       this._cancelGestures(reason);
       clearTimeout(this._displayTimer);
       this._displayTimer = setTimeout(() => this.relayoutAll(reason), DISPLAY_SETTLE_MS);
     };
     this._onResume = () => {
+      this._returnToDesktop(false);
       this._cancelGestures('resume');
       clearTimeout(this._resumeTimer);
       this._resumeTimer = setTimeout(() => this.relayoutAll('resume'), RESUME_SETTLE_MS);
@@ -133,7 +138,7 @@ class RegionController extends EventEmitter {
     screen.on('display-added', () => this._onDisplay());
     screen.on('display-removed', () => this._onDisplay());
     try {
-      powerMonitor.on('suspend', () => this._cancelGestures('suspend'));
+      powerMonitor.on('suspend', () => { this._returnToDesktop(false); this._cancelGestures('suspend'); });
       powerMonitor.on('resume', () => this._onResume());
     } catch { /* noop */ }
     if (this.testHooks) {
@@ -856,10 +861,11 @@ class RegionController extends EventEmitter {
         // A reloaded page must announce itself again before it gets store messages.
         if (details && details.isMainFrame && !details.isSameDocument) rt.ready = false;
       });
-      const invalidateShellPage = () => { rt.shellPageGeneration = (rt.shellPageGeneration || 0) + 1; this._cancelShellRenames(rt.id); };
+      const invalidateShellPage = () => { this._returnToDesktop(false); rt.shellPageGeneration = (rt.shellPageGeneration || 0) + 1; this._cancelShellRenames(rt.id); };
       win.webContents.on('did-start-loading', invalidateShellPage);
       win.webContents.on('render-process-gone', invalidateShellPage);
       win.on('closed', () => {
+        this._returnToDesktop(false);
         this._cancelShellRenames(rt.id);
         this.byWc.delete(wcId);
         if (rt.win === win) { rt.win = null; rt.wc = null; rt.ready = false; }
@@ -1471,7 +1477,7 @@ class RegionController extends EventEmitter {
     if (this.hidden) return [];
     return [...this.rt.values()]
       .filter((rt) => rt.id !== sourceId && !rt.displaySuppressed && rt.ready && rt.wc && !rt.wc.isDestroyed()
-        && (rt.host.mode === 'attached' || rt.host.mode === 'fallback'))
+        && (rt.host.mode === 'attached' || rt.host.mode === 'fallback' || rt.host.mode === 'foreground'))
       .map((rt) => ({ id: rt.id, rect: rt.shown }));
   }
 
@@ -1613,6 +1619,7 @@ class RegionController extends EventEmitter {
   isHidden() { return this.hidden; }
 
   hideAll() {
+    this._returnToDesktop(false);
     this._cancelGestures('hidden');
     this.hidden = true;
     for (const rt of this.rt.values()) {
@@ -1622,12 +1629,62 @@ class RegionController extends EventEmitter {
   }
 
   showAll() {
+    this._returnToDesktop(false);
     this.hidden = false;
     this.relayoutAll('show');
     for (const rt of this.rt.values()) rt.host.setHidden(!!(rt.displaySuppressed || rt.shapeBlocked || (rt.displayFallback && !rt.gridMinimum)));
   }
 
   toggleAll() { if (this.hidden) this.showAll(); else this.hideAll(); }
+
+  toggleForeground() {
+    // Ignore unsafe invocations rather than enqueueing a surprising later
+    // toggle. Existing rename drafts commit on blur, so leave them untouched.
+    if (this.shellMenuPending || this.tileDrag
+        || (this.shellRenameRequests && [...this.shellRenameRequests.values()].some(p => p.busy))
+        || [...this.rt.values()].some(rt => rt.drag || rt.resize || rt.previewBase || rt.menuOpen
+          || rt.extras.renaming || rt.host.busy)) return false;
+    if (this.foregroundSession) return this._returnToDesktop(true);
+    const hosts = [...this.rt.values()].filter(rt => !rt.displaySuppressed && !rt.shapeBlocked
+      && !(rt.displayFallback && !rt.gridMinimum));
+    if (!hosts.length || hosts.some(rt => !rt.win || rt.win.isDestroyed()
+        || (rt.host.mode !== 'attached' && rt.host.mode !== 'fallback'))) return false;
+    this.foregroundSession = { hidden: this.hidden, focus: desktopLayer.foregroundToken() };
+    this.hidden = false;
+    // Snapshot every sibling before detaching the first one; otherwise later
+    // snapshots would describe a partly dismantled desktop ordering.
+    const saved = hosts.map(rt => rt.host.captureForeground());
+    for (let i = 0; i < hosts.length; i++) {
+      if (!hosts[i].host.beginForeground(saved[i])) {
+        this._returnToDesktop(false);
+        return false;
+      }
+    }
+    this._managerChanged();
+    return true;
+  }
+
+  _returnToDesktop(restoreFocus) {
+    const session = this.foregroundSession;
+    if (!session) return false;
+    this.foregroundSession = null;
+    if (restoreFocus) desktopLayer.returnFocus(session.focus, [...this.rt.values()].map(rt => rt.host.hwnd));
+    this.hidden = session.hidden;
+    for (const rt of this.rt.values()) {
+      const participated = !!rt.host.foreground;
+      rt.host.endForeground();
+      // A newly created/reset window has no old snapshot. Current display
+      // suppression also takes precedence over a once-visible snapshot.
+      if (!participated || rt.displaySuppressed || rt.shapeBlocked || (rt.displayFallback && !rt.gridMinimum)) {
+        rt.host.setHidden(this.hidden || rt.displaySuppressed || rt.shapeBlocked || (rt.displayFallback && !rt.gridMinimum));
+      }
+    }
+    // Other region siblings now exist again, so valid original slots can be
+    // restored without dereferencing stale parents or recreating windows.
+    for (const rt of this.rt.values()) rt.host.finishForegroundOrder();
+    this._managerChanged();
+    return true;
+  }
 
   // ── move and resize (script-driven, spec 4) ───────────────────────────────
   _gestureSpace(rt) {
@@ -1814,6 +1871,7 @@ class RegionController extends EventEmitter {
     const namespace = /^shell:AppsFolder\\/i.test(item.path);
     if (!namespace && !/\.(lnk|url|exe)$/i.test(item.path)) return { ok: false, error: 'Windows has no shortcut menu for this item.' };
     let ticket = null;
+    this.shellMenuPending++;
     try {
       if (!namespace) { if (!this.mover) throw Error('Windows shortcut menus are unavailable.'); ticket = await this.mover.prepareShellAction(itemId); }
       const current = this.apps().find(a => a.id === itemId && a.regionId === id && a.path === item.path);
@@ -1835,6 +1893,8 @@ class RegionController extends EventEmitter {
     } catch (error) {
       if (ticket) await this.mover.completeShellAction(ticket.id).catch(() => {});
       return { ok: false, error: error.message };
+    } finally {
+      this.shellMenuPending--;
     }
   }
 
@@ -1885,7 +1945,11 @@ class RegionController extends EventEmitter {
       if (this.menuLog.length > 50) this.menuLog.shift();
       return;
     }
-    Menu.buildFromTemplate(tpl).popup({ window: extra.window || rt.win, x: Math.round(x), y: Math.round(y) });
+    rt.menuOpen = true;
+    try {
+      Menu.buildFromTemplate(tpl).popup({ window: extra.window || rt.win, x: Math.round(x), y: Math.round(y),
+        callback: () => { rt.menuOpen = false; } });
+    } catch (error) { rt.menuOpen = false; throw error; }
   }
 
   /**
@@ -2025,6 +2089,7 @@ class RegionController extends EventEmitter {
 
   // ── quit ───────────────────────────────────────────────────────────────────
   releaseAll() {
+    this._returnToDesktop(false);
     clearInterval(this._watchdog);
     clearInterval(this._metricsTimer);
     clearTimeout(this._displayTimer);

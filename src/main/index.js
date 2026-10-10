@@ -149,11 +149,8 @@ app.whenReady().then(() => {
     if (id === ctl.primaryId() && rt && rt.ready && region) require('./updater').replayOffer(rt.wc, region.layout);
   };
 
-  // ── Global show/hide hotkey ────────────────────────────────────────────
-  // Sergei's default Ctrl+Space, rebindable. It hides every region if they
-  // are shown, and shows them if hidden (regions spec Q1: toggle). It never
-  // moves keyboard focus. globalShortcut is the only Electron mechanism that
-  // fires while the regions are hidden or unfocused.
+  // Ctrl+Space (rebindable): temporarily bring regions above app windows,
+  // then return them to their desktop visibility on the next press.
   applyGlobalHotkey(store.get('settings').globalHotkey);
   registerHotkeyIpc();
 
@@ -213,7 +210,7 @@ function applyGlobalHotkey(accel) {
       _activeHotkey = null;
     }
     if (!accel) return { ok: true, registered: null };
-    const ok = globalShortcut.register(accel, () => ctl.toggleAll());
+    const ok = globalShortcut.register(accel, () => ctl.toggleForeground());
     if (!ok) {
       console.warn(`[hotkey] register failed for "${accel}" — likely held by another app`);
       return { ok: false, registered: null, reason: 'CONFLICT' };

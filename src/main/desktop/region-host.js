@@ -30,6 +30,7 @@ class RegionHost extends EventEmitter {
     this.win = null;
     this.hwnd = 0;
     this.dragOrder = null;
+    this.foreground = null;
     this.pendingSince = Date.now();
     this.lostAt = 0;
     this.stopping = false;
@@ -60,6 +61,7 @@ class RegionHost extends EventEmitter {
       if (this.win !== win) return;
       const lost = this.hwnd;
       this.dragOrder = null;
+      this.foreground = null;
       this.win = null;
       this.hwnd = 0;
       if (this.stopping) return;
@@ -115,6 +117,11 @@ class RegionHost extends EventEmitter {
     if (!this.win || this.win.isDestroyed()) {
       await this._ensureWindow();
       if (this.stopping || !this.win) return;
+    }
+    if (this.mode === 'foreground') return;
+    if (this._clearTopmostPending) {
+      if (!d.clearTopmost(this.hwnd)) return;
+      this._clearTopmostPending = false;
     }
     if (this.killSwitch) {
       if (this.mode !== 'fallback') this._goFallback(d.available ? 'kill switch' : 'desktop layer unavailable');
@@ -189,7 +196,7 @@ class RegionHost extends EventEmitter {
     this.screenRect = rect;
     if (!this.win || this.win.isDestroyed() || !this.hwnd) return false;
     if (this.mode === 'attached' && d.isWindow(this.host)) return d.setChildRect(this.hwnd, this.host, rect);
-    if (this.mode === 'fallback') {
+    if (this.mode === 'fallback' || this.mode === 'foreground') {
       if (d.available) return d.setTopLevelRect(this.hwnd, rect);
       this.win.setBounds(require('electron').screen.screenToDipRect(null, {
         x: rect.left, y: rect.top, width: rect.right - rect.left, height: rect.bottom - rect.top,
@@ -210,6 +217,9 @@ class RegionHost extends EventEmitter {
     if (this.mode === 'attached') {
       d.showNoActivate(this.hwnd);
       this._showToChromium(); // a region attached while hidden was never shown to Chromium
+    } else if (this.mode === 'foreground') {
+      if (d.available) d.showNoActivate(this.hwnd);
+      this._showToChromium();
     } else if (this.mode === 'fallback') {
       if (d.available) { d.showTopLevelAtBottom(this.hwnd); this._showToChromium(); } else this.win.showInactive();
     }
@@ -220,6 +230,67 @@ class RegionHost extends EventEmitter {
   focusAfterClick() {
     if (this.mode !== 'attached') return false;
     return d.focusIfDesktopForeground(this.hwnd);
+  }
+
+  captureForeground() {
+    return { window: this.win, hidden: this.hidden, mode: this.mode,
+      native: d.available ? d.captureForeground(this.hwnd) : null };
+  }
+
+  beginForeground(saved = this.captureForeground()) {
+    if (this.foreground || !this.win || this.win.isDestroyed()
+        || (this.mode !== 'attached' && this.mode !== 'fallback') || this.busy) return false;
+    this.endDragRaise();
+    if (saved.window !== this.win) return false;
+    if (d.available) {
+      saved.native = d.beginForeground(this.hwnd, this.screenRect, saved.native);
+      if (!saved.native) return false;
+      if (saved.native.failed) {
+        this.foreground = saved;
+        this.endForeground();
+        return false;
+      }
+    } else {
+      this.win.setAlwaysOnTop(true);
+    }
+    this.foreground = saved;
+    this.hidden = false;
+    this._setMode('foreground');
+    this._showToChromium();
+    return true;
+  }
+
+  endForeground() {
+    const saved = this.foreground;
+    this.foreground = null;
+    if (!saved) return true;
+    this.hidden = saved.hidden;
+    if (saved.window !== this.win || !this.win || this.win.isDestroyed()) return false;
+    if (d.available) {
+      const restored = d.restoreForeground(saved.native, this.screenRect);
+      this.host = restored.host || 0;
+      if (!restored.ok) {
+        d.hide(this.hwnd);
+        this._clearTopmostPending = true;
+        this._setMode('pending', { reason: 'foreground restore failed' });
+        return false;
+      }
+      this._setMode(restored.attached ? 'attached' : 'fallback');
+      if (restored.attached && restored.host === saved.native.parent) this._foregroundOrder = saved;
+    } else {
+      this.win.setAlwaysOnTop(false);
+      this._setMode('fallback');
+    }
+    this.setHidden(saved.hidden);
+    return true;
+  }
+
+  finishForegroundOrder() {
+    const saved = this._foregroundOrder;
+    this._foregroundOrder = null;
+    if (!saved || this.mode !== 'attached' || this.win !== saved.window || this.win.isDestroyed()
+        || this.hwnd !== saved.native.hwnd || this.host !== saved.native.parent) return;
+    d.endDragRaise({ hwnd: this.hwnd, host: this.host, previous: saved.native.previous, next: saved.native.next });
   }
 
   beginDragRaise() {
@@ -252,9 +323,11 @@ class RegionHost extends EventEmitter {
 
   stop() {
     this.endDragRaise();
+    this.foreground = null;
     this.stopping = true;
     let released = false;
     if (this.win && !this.win.isDestroyed()) {
+      if (d.available) d.clearTopmost(this.hwnd); else this.win.setAlwaysOnTop(false);
       released = d.releaseFromShell(this.hwnd);
       this.win.destroy();
     }

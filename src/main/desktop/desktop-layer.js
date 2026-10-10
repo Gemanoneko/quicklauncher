@@ -24,7 +24,7 @@ const C = {
   WS_CAPTION: 0x00c00000, WS_THICKFRAME: 0x00040000, WS_SYSMENU: 0x00080000,
   WS_MINIMIZEBOX: 0x00020000, WS_MAXIMIZEBOX: 0x00010000,
   WS_EX_TOOLWINDOW: 0x80, WS_EX_APPWINDOW: 0x40000,
-  HWND_TOP: 0, HWND_BOTTOM: 1,
+  HWND_TOP: 0, HWND_BOTTOM: 1, HWND_TOPMOST: -1, HWND_NOTOPMOST: -2,
   SWP_NOSIZE: 0x1, SWP_NOMOVE: 0x2, SWP_NOZORDER: 0x4, SWP_NOACTIVATE: 0x10,
   SWP_FRAMECHANGED: 0x20, SWP_SHOWWINDOW: 0x40, SWP_NOOWNERZORDER: 0x200,
   GA_PARENT: 1, GA_ROOT: 2, GW_HWNDNEXT: 2, GW_HWNDPREV: 3, GW_CHILD: 5,
@@ -55,6 +55,7 @@ if (koffi) {
       GetWindowRect: user32.func('int __stdcall GetWindowRect(intptr hwnd, void *rect)'),
       MapWindowPoints: user32.func('int __stdcall MapWindowPoints(intptr from, intptr to, void *pts, uint32 n)'),
       GetForegroundWindow: user32.func('intptr __stdcall GetForegroundWindow()'),
+      SetForegroundWindow: user32.func('int __stdcall SetForegroundWindow(intptr hwnd)'),
       GetDesktopWindow: user32.func('intptr __stdcall GetDesktopWindow()'),
       SetFocus: user32.func('intptr __stdcall SetFocus(intptr hwnd)'),
       GetLastError: kernel32.func('uint32 __stdcall GetLastError()'),
@@ -269,6 +270,78 @@ function showTopLevelAtBottom(hwnd) {
 function showNoActivate(hwnd) { return !!W.ShowWindow(hwnd, C.SW_SHOWNA); }
 function hide(hwnd) { return !!W.ShowWindow(hwnd, C.SW_HIDE); }
 
+// Temporary foreground mode touches only this process's region HWND. Restore
+// tokens are tied to its thread/process and are never used on a replacement.
+function ownedWindow(hwnd) {
+  return !!(available && hwnd && W.IsWindow(hwnd) && threadAndPid(hwnd).pid === process.pid);
+}
+function clearTopmost(hwnd) {
+  return ownedWindow(hwnd) && !!W.SetWindowPos(hwnd, C.HWND_NOTOPMOST, 0, 0, 0, 0,
+    C.SWP_NOMOVE | C.SWP_NOSIZE | C.SWP_NOACTIVATE | C.SWP_NOOWNERZORDER);
+}
+function captureForeground(hwnd) {
+  if (!ownedWindow(hwnd)) return null;
+  const parent = W.GetAncestor(hwnd, C.GA_PARENT);
+  return { hwnd, ...threadAndPid(hwnd), parent,
+    style: W.GetWindowLongW(hwnd, C.GWL_STYLE), exStyle: W.GetWindowLongW(hwnd, C.GWL_EXSTYLE),
+    previous: W.GetWindow(hwnd, C.GW_HWNDPREV), next: W.GetWindow(hwnd, C.GW_HWNDNEXT) };
+}
+function beginForeground(hwnd, rect, saved = captureForeground(hwnd)) {
+  if (!saved || !ownedWindow(hwnd)) return null;
+  const identity = threadAndPid(hwnd);
+  if (saved.hwnd !== hwnd || saved.pid !== identity.pid || saved.tid !== identity.tid
+      || saved.parent !== W.GetAncestor(hwnd, C.GA_PARENT)) return null;
+  const detached = detachToTopLevel(hwnd, rect, { show: false });
+  if (!detached.ok || !W.SetWindowPos(hwnd, C.HWND_TOPMOST, rect.left, rect.top,
+      rect.right - rect.left, rect.bottom - rect.top,
+      C.SWP_NOACTIVATE | C.SWP_NOOWNERZORDER | C.SWP_SHOWWINDOW)) {
+    // The host owns rollback so it also restores Chromium visibility and its
+    // attachment mode; native restoration alone would leave that state stale.
+    return { ...saved, failed: true };
+  }
+  return saved;
+}
+function restoreForeground(saved, rect) {
+  if (!saved || !ownedWindow(saved.hwnd)) return { ok: false };
+  const identity = threadAndPid(saved.hwnd);
+  if (identity.pid !== saved.pid || identity.tid !== saved.tid) return { ok: false };
+  const hwnd = saved.hwnd;
+  W.ShowWindow(hwnd, C.SW_HIDE);
+  if (!clearTopmost(hwnd)) return { ok: false };
+  let host = 0;
+  if (saved.style & C.WS_CHILD) {
+    // Explorer may have replaced its window tree while the regions were out.
+    const pick = findHost();
+    if (pick.ok) host = pick.host;
+    if (host) {
+      const result = attachToHost(hwnd, host, rect);
+      if (result.ok) {
+        W.SetWindowLongW(hwnd, C.GWL_STYLE, saved.style);
+        W.SetWindowLongW(hwnd, C.GWL_EXSTYLE, saved.exStyle);
+        setChildRect(hwnd, host, rect);
+        if (host === saved.parent) endDragRaise({ hwnd, host, previous: saved.previous, next: saved.next });
+        return { ok: true, host, attached: true };
+      }
+    }
+  }
+  const result = detachToTopLevel(hwnd, rect, { show: false });
+  return { ok: result.ok, host: 0, attached: false };
+}
+function foregroundToken() {
+  if (!available) return null;
+  const hwnd = W.GetForegroundWindow();
+  return hwnd && W.IsWindow(hwnd) ? { hwnd, ...threadAndPid(hwnd) } : null;
+}
+function returnFocus(token, regionHwnds) {
+  if (!available || !token || !W.IsWindow(token.hwnd) || !W.IsWindowVisible(token.hwnd)) return false;
+  const identity = threadAndPid(token.hwnd);
+  if (identity.pid !== token.pid || identity.tid !== token.tid || token.pid === process.pid) return false;
+  const current = W.GetForegroundWindow();
+  if (!regionHwnds.some(hwnd => ownedWindow(hwnd) && hwnd === current)) return false;
+  // Never steal focus from an app launched during the foreground session.
+  return !!W.SetForegroundWindow(token.hwnd);
+}
+
 // Before quitting: take the window out of Explorer's tree so Explorer never
 // holds a child from a dying process.
 function releaseFromShell(hwnd) {
@@ -313,6 +386,7 @@ module.exports = {
   available, loadError, C, hex, className, hwndOf, findHost, attachToHost, setChildRect, setTopLevelRect,
   isAboveDefView, raiseAmongSiblings, beginDragRaise, endDragRaise, detachToTopLevel, showTopLevelAtBottom, showNoActivate, hide,
   releaseFromShell, focusIfDesktopForeground, describe,
+  captureForeground, beginForeground, restoreForeground, clearTopmost, foregroundToken, returnFocus,
   isWindow: (h) => !!(available && h && W.IsWindow(h)),
   parentOf: (h) => (available ? W.GetAncestor(h, C.GA_PARENT) : 0),
   hasDefView: (host) => !!(available && W.FindWindowExW(host, 0, DEFVIEW, null)),
