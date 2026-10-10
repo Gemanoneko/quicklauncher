@@ -50,6 +50,49 @@ interface IContextMenu3 {
 class Identity { public string volume,id,created; }
 class Request { public string mode,path,name; public int x,y; public long owner; public bool shift; public Identity identity; }
 class Result { public bool ok,cancelled,rename; public string error,verb,path,fileName; public Identity identity; }
+// Optional classic-menu compatibility hooks used by Microsoft PowerToys.
+// Ordinal135 changed ABI at1903: never call it on an unknown build/signature.
+static class PopupTheme {
+ [StructLayout(LayoutKind.Sequential,CharSet=CharSet.Unicode)] struct VersionInfo {
+  public uint size,major,minor,build,platform;
+  [MarshalAs(UnmanagedType.ByValTStr,SizeConst=128)] public string servicePack;
+ }
+ [DllImport("ntdll.dll",CharSet=CharSet.Unicode)] static extern int RtlGetVersion(ref VersionInfo version);
+ [DllImport("kernel32.dll",CharSet=CharSet.Unicode)] static extern IntPtr LoadLibraryEx(string file,IntPtr reserved,uint flags);
+ [DllImport("kernel32.dll",ExactSpelling=true)] static extern IntPtr GetProcAddress(IntPtr module,IntPtr ordinal);
+ [UnmanagedFunctionPointer(CallingConvention.Winapi)] [return:MarshalAs(UnmanagedType.I1)] delegate bool ShouldDark();
+ [UnmanagedFunctionPointer(CallingConvention.Winapi)] [return:MarshalAs(UnmanagedType.I1)] delegate bool AllowApp([MarshalAs(UnmanagedType.I1)] bool allow);
+ [UnmanagedFunctionPointer(CallingConvention.Winapi)] delegate int PreferApp(int mode);
+ [UnmanagedFunctionPointer(CallingConvention.Winapi)] [return:MarshalAs(UnmanagedType.I1)] delegate bool AllowWindow(IntPtr window,[MarshalAs(UnmanagedType.I1)] bool allow);
+ [UnmanagedFunctionPointer(CallingConvention.Winapi)] delegate void Refresh();
+ static AllowWindow allowWindow;static bool useDark;
+ static Delegate Export(IntPtr module,int ordinal,Type type){IntPtr address=GetProcAddress(module,new IntPtr(ordinal));return address==IntPtr.Zero?null:Marshal.GetDelegateForFunctionPointer(address,type);}
+ public static void Initialize(){
+  try {
+   if(SystemInformation.HighContrast)return;
+   var version=new VersionInfo();version.size=(uint)Marshal.SizeOf(typeof(VersionInfo));
+   if(RtlGetVersion(ref version)!=0||version.major!=10||version.minor!=0||version.platform!=2)return;
+   bool legacy=version.build==17763;
+   bool modern=version.build==18362||version.build==18363||(version.build>=19041&&version.build<=19045)
+    ||version.build==22000||version.build==22621||version.build==22631||version.build==26100||version.build==26200;
+   if(!legacy&&!modern)return;
+   // Absolute System32 path and system-only loader search; retained for this
+   // one-shot helper lifetime so optional delegates never reference an unloaded DLL.
+   IntPtr module=LoadLibraryEx(Path.Combine(Environment.SystemDirectory,"uxtheme.dll"),IntPtr.Zero,0x800);
+   if(module==IntPtr.Zero)return;
+   var should=(ShouldDark)Export(module,132,typeof(ShouldDark));
+   var window=(AllowWindow)Export(module,133,typeof(AllowWindow));
+   var refresh=(Refresh)Export(module,104,typeof(Refresh));
+   var flush=(Refresh)Export(module,136,typeof(Refresh));
+   var appMode=Export(module,135,legacy?typeof(AllowApp):typeof(PreferApp));
+   if(should==null||window==null||refresh==null||flush==null||appMode==null)return;
+   refresh();useDark=should();
+   if(legacy)((AllowApp)appMode)(useDark);else((PreferApp)appMode)(useDark?2:3);
+   allowWindow=window;flush();
+  } catch {allowWindow=null;useDark=false;} // ordinary genuine shell menu remains available
+ }
+ public static void ApplyWindow(IntPtr window){try{if(allowWindow!=null)allowWindow(window,useDark);}catch{}}
+}
 static class Native {
  public static string lastPhase="initial";
  public static void Phase(string phase){if(phase==lastPhase)return;lastPhase=phase;Console.WriteLine("{\"phase\":\""+phase+"\"}");Console.Out.Flush();}
@@ -61,6 +104,7 @@ static class Native {
  [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr w);
  [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr w);
  [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr w);
+ [DllImport("user32.dll",CharSet=CharSet.Unicode)] public static extern int GetClassName(IntPtr w,StringBuilder name,int count);
  [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr w,out uint pid);
  public delegate bool WindowProc(IntPtr w,IntPtr p);
  [DllImport("user32.dll")] public static extern bool EnumWindows(WindowProc f,IntPtr p);
@@ -91,8 +135,10 @@ class MenuHost:Form {
  IContextMenu menu; IContextMenu2 menu2; IContextMenu3 menu3; bool done;
  IntPtr refCount,threadRef;
  System.Windows.Forms.Timer completionTimer;
+ object commandContext;IShellFolder commandFolder;IntPtr commandPidl;
+ System.Diagnostics.Stopwatch commandClock;long lastBusy;
  public MenuHost(Request r){request=r;ShowInTaskbar=false;FormBorderStyle=FormBorderStyle.FixedToolWindow;Opacity=0;StartPosition=FormStartPosition.Manual;Location=new System.Drawing.Point(r.x,r.y);Size=new Size(1,1);}
- protected override void OnShown(EventArgs e){base.OnShown(e);BeginInvoke(new Action(Run));}
+ protected override void OnShown(EventArgs e){PopupTheme.ApplyWindow(Handle);base.OnShown(e);BeginInvoke(new Action(Run));}
  protected override void WndProc(ref Message m){
   if(m.Msg==0x121&&m.WParam==IntPtr.Zero)Native.Phase("interactive");
   if(menu!=null&&(m.Msg==0x117||m.Msg==0x2b||m.Msg==0x2c||m.Msg==0x120)){
@@ -138,21 +184,24 @@ class MenuHost:Form {
       result.rename=true;result.fileName=Path.GetFileNameWithoutExtension(request.path);result.identity=request.identity;result.ok=true;
      }else{
       var invoke=new InvokeInfo {cbSize=Marshal.SizeOf(typeof(InvokeInfo)),mask=0x4000|0x100|0x20000000|(request.shift?0x10000000u:0u),hwnd=Handle,verb=new IntPtr(selected-1),verbW=new IntPtr(selected-1),show=1,point=new Point{x=request.x,y=request.y}};
-      Native.Phase("invoke");Validate();invokedShell=true;Marshal.ThrowExceptionForHR(menu.InvokeCommand(ref invoke));result.ok=true;
+      Native.Phase("invoke");Validate();invokedShell=true;int invoked=menu.InvokeCommand(ref invoke);
+      if(invoked!=0){Marshal.ThrowExceptionForHR(invoked);throw new IOException("Windows did not carry out the selected shortcut action.");}result.ok=true;
      }
     }
    }
   }catch(Exception e){result.error=e.Message;result.ok=false;}
   finally{
    menu=null;menu2=null;menu3=null;if(hmenu!=IntPtr.Zero)Native.DestroyMenu(hmenu);if(raw!=IntPtr.Zero)Marshal.Release(raw);
-   if(context!=null)Marshal.FinalReleaseComObject(context);if(folder!=null)Marshal.FinalReleaseComObject(folder);if(pidl!=IntPtr.Zero)Marshal.FreeCoTaskMem(pidl);
-   Native.SHSetThreadRef(IntPtr.Zero);done=true;
+   done=true;
    // Closing the popup does not guarantee another WinForms Idle event: its
    // native nested loop can already have exhausted the queue. No command means
    // there is no asynchronous shell work/dialog whose host must stay alive.
-   if(!invokedShell)Close();
+   if(!invokedShell){if(context!=null)Marshal.FinalReleaseComObject(context);if(folder!=null)Marshal.FinalReleaseComObject(folder);if(pidl!=IntPtr.Zero)Marshal.FreeCoTaskMem(pidl);Native.SHSetThreadRef(IntPtr.Zero);Close();}
    else {
-    Native.Phase("invoke");Application.Idle+=OnIdle;OnIdle(this,EventArgs.Empty);
+    // NOASYNC is advisory: retain native resources while queued command UI
+    // gets a chance to appear, not only until InvokeCommand returns.
+    commandContext=context;commandFolder=folder;commandPidl=pidl;commandClock=System.Diagnostics.Stopwatch.StartNew();
+    Native.Phase("invoke");Application.Idle+=OnIdle;
     // Shell ref releases need not post a window message. Check only while
     // this selected command still owns asynchronous work or a real dialog.
     if(!IsDisposed){completionTimer=new System.Windows.Forms.Timer();completionTimer.Interval=200;completionTimer.Tick+=OnIdle;completionTimer.Start();}
@@ -161,15 +210,34 @@ class MenuHost:Form {
  }
  void OnIdle(object sender,EventArgs e){
   if(!done)return;
-  bool dialogs=false;uint ours=(uint)System.Diagnostics.Process.GetCurrentProcess().Id;
-  Native.EnumWindows((w,p)=>{uint pid;Native.GetWindowThreadProcessId(w,out pid);if(w!=Handle&&pid==ours&&Native.IsWindowVisible(w))dialogs=true;return true;},IntPtr.Zero);
-  if(dialogs){Native.Phase("interactive");return;}
-  if(refCount!=IntPtr.Zero&&Marshal.ReadInt32(refCount)>1){Native.Phase("invoke");return;}
+  long elapsed=commandClock.ElapsedMilliseconds;
+  if(elapsed<600)return;
+  bool dialogs=false,pendingDialog=false;uint ours=(uint)System.Diagnostics.Process.GetCurrentProcess().Id;
+  Native.EnumWindows((w,p)=>{
+   uint pid;Native.GetWindowThreadProcessId(w,out pid);
+   if(w!=Handle&&pid==ours){
+    if(Native.IsWindowVisible(w))dialogs=true;
+    else {var name=new StringBuilder(64);Native.GetClassName(w,name,64);if(name.ToString()=="#32770")pendingDialog=true;}
+   }return true;
+  },IntPtr.Zero);
+  if(dialogs){lastBusy=elapsed;Native.Phase("interactive");return;}
+  if(pendingDialog){lastBusy=elapsed;Native.Phase("invoke");return;}
+  if(commandContext!=null||commandFolder!=null||commandPidl!=IntPtr.Zero){ReleaseCommandResources();lastBusy=elapsed;}
+  if(refCount!=IntPtr.Zero&&Marshal.ReadInt32(refCount)>1){lastBusy=elapsed;Native.Phase("invoke");return;}
+  // Let queued close/release messages drain before destroying their owner.
+  if(elapsed-lastBusy<600)return;
   Application.Idle-=OnIdle;if(completionTimer!=null)completionTimer.Stop();Close();
+ }
+ void ReleaseCommandResources(){
+  if(commandContext!=null){Marshal.FinalReleaseComObject(commandContext);commandContext=null;}
+  if(commandFolder!=null){Marshal.FinalReleaseComObject(commandFolder);commandFolder=null;}
+  if(commandPidl!=IntPtr.Zero){Marshal.FreeCoTaskMem(commandPidl);commandPidl=IntPtr.Zero;}
+  Native.SHSetThreadRef(IntPtr.Zero);
  }
  protected override void Dispose(bool disposing){
   Application.Idle-=OnIdle;
   if(completionTimer!=null){completionTimer.Stop();completionTimer.Dispose();completionTimer=null;}
+  ReleaseCommandResources();
   if(threadRef!=IntPtr.Zero){Marshal.Release(threadRef);threadRef=IntPtr.Zero;}
   // A dismissed menu extension may retain its reference. Keep its counter
   // allocated until this one-shot process exits rather than free live memory.
@@ -182,7 +250,7 @@ static class Program {
   Console.InputEncoding=new System.Text.UTF8Encoding(false);Console.OutputEncoding=new System.Text.UTF8Encoding(false);
   var json=new JavaScriptSerializer();Result result;
   bool initialized=false;
-  try{Marshal.ThrowExceptionForHR(Native.CoInitializeEx(IntPtr.Zero,2));initialized=true;Native.SetProcessDPIAware();var request=json.Deserialize<Request>(Console.In.ReadToEnd());using(var host=new MenuHost(request)){Application.Run(host);result=host.result;}}
+  try{Marshal.ThrowExceptionForHR(Native.CoInitializeEx(IntPtr.Zero,2));initialized=true;Native.SetProcessDPIAware();PopupTheme.Initialize();var request=json.Deserialize<Request>(Console.In.ReadToEnd());using(var host=new MenuHost(request)){Application.Run(host);result=host.result;}}
   catch(Exception e){result=new Result{ok=false,error=e.Message};}
   finally{if(initialized)Native.CoUninitialize();}
   Console.WriteLine(json.Serialize(result));

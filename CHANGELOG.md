@@ -4,6 +4,18 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.103.1] - 2026-10-10
+
+### Fixed
+- Keep native shell resources and dialog message processing alive for menu commands such as Properties.
+- Reapply retained transparency when region layout classes become ready.
+
+### Changed
+- Native popup follows Windows light/dark preference on explicitly supported builds, with high-contrast bypass and classic fallback elsewhere.
+
+### Notes
+- Popup theme matching is best-effort compatibility behavior, not a guarantee for future Windows builds.
+- Native helper compiled without execution. Manual QA by Sergei; no automated or runtime QA was performed.
 ## [v1.103.0] - 2026-10-10
 
 ### Changed

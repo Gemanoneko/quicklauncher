@@ -21,6 +21,9 @@
   let layoutNow = LAYOUTS.includes(params.get('layout')) ? params.get('layout') : 'grid';
   body.classList.add('region', `layout-${layoutNow}`);
   body.classList.toggle('layout-radial', radial());
+  // app.js can finish init/theme readiness before this script establishes
+  // region scope. Reapply here; later init still supplies any pending settings.
+  applyRegionTransparency();
   // An Explorer restart rebuilt this window: no entrance fade (spec 1).
   if (params.get('rebuilt') === '1') body.classList.add('no-entrance');
 
