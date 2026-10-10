@@ -222,8 +222,11 @@ class MenuHost:Form {
   },IntPtr.Zero);
   if(dialogs){lastBusy=elapsed;Native.Phase("interactive");return;}
   if(pendingDialog){lastBusy=elapsed;Native.Phase("invoke");return;}
-  if(commandContext!=null||commandFolder!=null||commandPidl!=IntPtr.Zero){ReleaseCommandResources();lastBusy=elapsed;}
+  // Only the helper's own IUnknown reference is known to be self-held.
+  // Any additional thread reference can represent outstanding shell work:
+  // preserve context/folder/PIDL until it releases, even without visible UI.
   if(refCount!=IntPtr.Zero&&Marshal.ReadInt32(refCount)>1){lastBusy=elapsed;Native.Phase("invoke");return;}
+  if(commandContext!=null||commandFolder!=null||commandPidl!=IntPtr.Zero){ReleaseCommandResources();lastBusy=elapsed;}
   // Let queued close/release messages drain before destroying their owner.
   if(elapsed-lastBusy<600)return;
   Application.Idle-=OnIdle;if(completionTimer!=null)completionTimer.Stop();Close();
