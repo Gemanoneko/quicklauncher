@@ -1,0 +1,738 @@
+{
+  "kind": "performance-timing-v2-artifact",
+  "artifactRoot": "C:/Users/AnGeLZzZ/AppData/Local/Temp/illuminati-quicklaunch-startup-perf-2026-10-10/artifact-baseline",
+  "sourceHead": "6ade021914797f6c4a14d4cd3ca6efd0bfe37dd5",
+  "entrySha256": "41f072ca67ef862cd75d32a3dcd1c4b881e6d4f1abaa0bd13f295199d7e3f8d6",
+  "files": [
+    {
+      "path": "chrome_100_percent.pak",
+      "sha256": "14a6a393c60f62df9bc1036e98346cd557e0ae73e8c7552d163fa64da77804d7",
+      "bytes": 151326
+    },
+    {
+      "path": "chrome_200_percent.pak",
+      "sha256": "20c93f2cfd69f3249cdfd46f317b37a9432ecc0de73323d24ecf65ce0f3c1bb6",
+      "bytes": 228242
+    },
+    {
+      "path": "d3dcompiler_47.dll",
+      "sha256": "af7b99be1b8770c0e4d18e43b04e81d11bdeb667fa6b07ade7a88f4c5676bf9a",
+      "bytes": 4916728
+    },
+    {
+      "path": "ffmpeg.dll",
+      "sha256": "94efdb523162f7a55884f6bc423012f3dd046f85504deccfeef59603307db71b",
+      "bytes": 2924544
+    },
+    {
+      "path": "icudtl.dat",
+      "sha256": "9ae98c06cbb0ea43c5cd6b5725310c008c65e46072421a1118cb88e1de9a8b92",
+      "bytes": 10468208
+    },
+    {
+      "path": "libEGL.dll",
+      "sha256": "c9f1fb6b4ded3404ad29e629874ff05852f48f82ac33ba606847cac0ebef79e4",
+      "bytes": 484352
+    },
+    {
+      "path": "libGLESv2.dll",
+      "sha256": "c636de2892cb651220331734ecc578003dfe31f6ed528ffffe66370b2114b086",
+      "bytes": 8364544
+    },
+    {
+      "path": "LICENSE.electron.txt",
+      "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d",
+      "bytes": 1096
+    },
+    {
+      "path": "LICENSES.chromium.html",
+      "sha256": "b1ac2fb5c8f0407ec73ffbfcff46aa634a3acf034eb10ef3f69cf483f43e591e",
+      "bytes": 9480298
+    },
+    {
+      "path": "locales/af.pak",
+      "sha256": "5bd93621de82965b8a7d425660d4afef8102d058e48e8b42e0a45ea2b32ab2fb",
+      "bytes": 521292
+    },
+    {
+      "path": "locales/am.pak",
+      "sha256": "d759c21b9569163629f2443e69f274ffdb3b1417eaa2b72d1dacc9a31819dbf3",
+      "bytes": 842504
+    },
+    {
+      "path": "locales/ar.pak",
+      "sha256": "3883cff8aacb76e0ee906eb27eb5e5437674bb9af85bce1087fb49667d0c47d1",
+      "bytes": 923034
+    },
+    {
+      "path": "locales/bg.pak",
+      "sha256": "c87083562fe57e1168aaed1f432e74372919c2008aa690ca6ce719f1787d9522",
+      "bytes": 961131
+    },
+    {
+      "path": "locales/bn.pak",
+      "sha256": "09dc06e2f6fbf4089cad32a23151cdc8fd873c17def2e85eaad31353743aac70",
+      "bytes": 1239850
+    },
+    {
+      "path": "locales/ca.pak",
+      "sha256": "17db67b5c28354db5bfa08697fae29c3555728a6409a653e0f136216c2d05e6d",
+      "bytes": 585477
+    },
+    {
+      "path": "locales/cs.pak",
+      "sha256": "09483aa859d024639f5bd2325007b4d2a35ce339231e051a943e1f0eed1b3336",
+      "bytes": 603449
+    },
+    {
+      "path": "locales/da.pak",
+      "sha256": "19d135158a35608e646299defa1647743132a9436c0411ccce2b595ef9738b45",
+      "bytes": 546500
+    },
+    {
+      "path": "locales/de.pak",
+      "sha256": "954451a308b8c451f080ab628f53a16e6638c201b4d79a094ac5f3ae263c50e2",
+      "bytes": 582999
+    },
+    {
+      "path": "locales/el.pak",
+      "sha256": "627dfa327bd3971ae2f26048c247fcbeaa33b3301c3b78f72ec3f199a365ca2d",
+      "bytes": 1053099
+    },
+    {
+      "path": "locales/en-GB.pak",
+      "sha256": "811cc30238e961c852267a897c579d6cbebfb957fde9be662d23e4ad989ec894",
+      "bytes": 474921
+    },
+    {
+      "path": "locales/en-US.pak",
+      "sha256": "de60674fcae1e9395cb9a2a2987dfbd97defba59dcf7e5e61a452602e38179c0",
+      "bytes": 479208
+    },
+    {
+      "path": "locales/es-419.pak",
+      "sha256": "99d5177b232925a00917b191ac358d88cd8e9a3eed73ed456ac4a62928345b49",
+      "bytes": 576469
+    },
+    {
+      "path": "locales/es.pak",
+      "sha256": "d66d7ac73c09edc6dd00dcb1b414bb662de6b588c06621764eb2e212db80fe9e",
+      "bytes": 576160
+    },
+    {
+      "path": "locales/et.pak",
+      "sha256": "7b17cf34b75cbcf65476af00a0751f55f77ade6caa68513ab3629a5254742b9c",
+      "bytes": 523890
+    },
+    {
+      "path": "locales/fa.pak",
+      "sha256": "00a9c5e4915408b948667b7b5c5715fc3fc8e6d628210bf9a341a55e86b6dfd3",
+      "bytes": 856769
+    },
+    {
+      "path": "locales/fi.pak",
+      "sha256": "c2e954d937baa4a8ad382d064d8c6b0ce2fc3375c576dde7b8f8adccb83e4bc5",
+      "bytes": 534639
+    },
+    {
+      "path": "locales/fil.pak",
+      "sha256": "70e5b30013027e3406ee0a9953bb34e27229d3e0ff60758a7c53837336966833",
+      "bytes": 604396
+    },
+    {
+      "path": "locales/fr.pak",
+      "sha256": "fae930c71e897b3a6275d526384e9a5ac62fedc562b76904dd108b55b26f1246",
+      "bytes": 623622
+    },
+    {
+      "path": "locales/gu.pak",
+      "sha256": "391a825c8f33718bc87ba6d8407e7fbe951b0fe554d0db689a6762eed38f3006",
+      "bytes": 1220384
+    },
+    {
+      "path": "locales/he.pak",
+      "sha256": "1325b70d40e5d5019276c50b4777451875f6dda15e9bb4e23df0de404a2bf76a",
+      "bytes": 752099
+    },
+    {
+      "path": "locales/hi.pak",
+      "sha256": "92b057a1e57bef223a3fd8c4789c0b8b94825822a07c29b2e7c057853cc627ef",
+      "bytes": 1286715
+    },
+    {
+      "path": "locales/hr.pak",
+      "sha256": "5df6daf8c34c3e74eea274c8d608b3a177f4d6070a3bfb481cec19ae853b58dc",
+      "bytes": 581407
+    },
+    {
+      "path": "locales/hu.pak",
+      "sha256": "a09f07ffc112438f9e79b88907b7853de161bbb91a807af96f57d01339e365bf",
+      "bytes": 626229
+    },
+    {
+      "path": "locales/id.pak",
+      "sha256": "8bd54bf3b8cd369b4a92804c160bd3d2b888cc0a716d910c7a324569777f4e95",
+      "bytes": 517344
+    },
+    {
+      "path": "locales/it.pak",
+      "sha256": "d881daf64575dab20072130995d602d21381ec4536b7c57d862b511fc7b34e63",
+      "bytes": 568007
+    },
+    {
+      "path": "locales/ja.pak",
+      "sha256": "c772f5030a7fa6437e8ec2161694566c8e22319b68c2a2d4777eea7b327f8142",
+      "bytes": 692156
+    },
+    {
+      "path": "locales/kn.pak",
+      "sha256": "29e2613bc55ebf10dc0e6318233aaac0b39428a3af0b1e0867805ba60194e88e",
+      "bytes": 1392950
+    },
+    {
+      "path": "locales/ko.pak",
+      "sha256": "6b32ceb4d71dc8fbebde2f4ca3a543dbc4963525345c9298e8daaa3279663340",
+      "bytes": 586014
+    },
+    {
+      "path": "locales/lt.pak",
+      "sha256": "1334d488e5b1a8357cb480508c8f6ce2ad211a9997f347e9ed1b9f712c60f74d",
+      "bytes": 630430
+    },
+    {
+      "path": "locales/lv.pak",
+      "sha256": "2486f896cf18c55462835ad2f363866995cbb992d5d9d39239b569727afa58b0",
+      "bytes": 629152
+    },
+    {
+      "path": "locales/ml.pak",
+      "sha256": "3335642c3f0c852beb595889d8a86431001133cb8c14c45bba688b764008b1d0",
+      "bytes": 1448167
+    },
+    {
+      "path": "locales/mr.pak",
+      "sha256": "39b3080a83994129a5dd5222dce549640bf51de644da13f2769e836126b7b782",
+      "bytes": 1194976
+    },
+    {
+      "path": "locales/ms.pak",
+      "sha256": "0615106f5c7adbeccd9bb1ea207c8bbdf5e917499e3860103a3fa60069b835b2",
+      "bytes": 541878
+    },
+    {
+      "path": "locales/nb.pak",
+      "sha256": "114ca3cf8ba38df9885e54feced2db9f25c789c12fbf41ded07e58ffeb7d852b",
+      "bytes": 525422
+    },
+    {
+      "path": "locales/nl.pak",
+      "sha256": "f7577370e356b5d1868b0faee46a3030aad4d7a72ff068e8910972862f7e43be",
+      "bytes": 543553
+    },
+    {
+      "path": "locales/pl.pak",
+      "sha256": "4f12dccb61513bad8306c4f8865daf59d5f666c3540c81bb9c56ef52a972819f",
+      "bytes": 605870
+    },
+    {
+      "path": "locales/pt-BR.pak",
+      "sha256": "74f1be3440a80f55b028cb3c42f291fe41c1626267603d94f57fdececeda3358",
+      "bytes": 568824
+    },
+    {
+      "path": "locales/pt-PT.pak",
+      "sha256": "72d9a069944ccf2ac4a6ef44110a2e3e70e8aa550664bc70445947ff72847038",
+      "bytes": 572356
+    },
+    {
+      "path": "locales/ro.pak",
+      "sha256": "432c9424a471857301b724035c973ad009502a7dec2a9df95ccfa73fc46dd0f9",
+      "bytes": 593139
+    },
+    {
+      "path": "locales/ru.pak",
+      "sha256": "d9dd48e68d20de6d90f8ae074b4f0f94ad8a9a9fcf20fb86a9a2a41caa618ea5",
+      "bytes": 975006
+    },
+    {
+      "path": "locales/sk.pak",
+      "sha256": "99ed2b13a2804a399a6f4bd5e5608221ffb5874229dea14c33ceb24d99dcbbea",
+      "bytes": 612854
+    },
+    {
+      "path": "locales/sl.pak",
+      "sha256": "d6a8d1e4539dc08fc4dd6ac5a048dc20047b6f202103e3782ce59e3f2d908696",
+      "bytes": 588186
+    },
+    {
+      "path": "locales/sr.pak",
+      "sha256": "de79d880a33f7ba3e5cd8ae457321671582e8fe513eb4e6f5b9e257f6fd3581d",
+      "bytes": 905278
+    },
+    {
+      "path": "locales/sv.pak",
+      "sha256": "298cadec1174abc1b918bce83b22a09835cf8dcba87a3438dbe114bbc0463bd9",
+      "bytes": 528661
+    },
+    {
+      "path": "locales/sw.pak",
+      "sha256": "c39c3ada455757bfcaecc3d80652e79201d2264578d42d221c52d7c50a601b0e",
+      "bytes": 556810
+    },
+    {
+      "path": "locales/ta.pak",
+      "sha256": "c66ce9d65f8691cc431db79178e77bc615bc1f212b27a754d395e5c8adc0fe13",
+      "bytes": 1439472
+    },
+    {
+      "path": "locales/te.pak",
+      "sha256": "4d9ba6b2727f5f62d90dd45019c68137f3d55efc23a85f62b4fa52ece972a073",
+      "bytes": 1329927
+    },
+    {
+      "path": "locales/th.pak",
+      "sha256": "77209d15decca546704f621bf4e8d9269c56add000c057c568d0fe977c447e21",
+      "bytes": 1117461
+    },
+    {
+      "path": "locales/tr.pak",
+      "sha256": "df9220e39703440ea7c9d9b74796ab5196fdd0ce7b5953af8813567f39ff500f",
+      "bytes": 567766
+    },
+    {
+      "path": "locales/uk.pak",
+      "sha256": "b76695b9352440d27c0319f59cd66df2d8d76eb1162d5f78a8374748562ad210",
+      "bytes": 975392
+    },
+    {
+      "path": "locales/ur.pak",
+      "sha256": "78799d1065fe84bc64c8c851d5457639172830516ee5c74f08e210973908770e",
+      "bytes": 850951
+    },
+    {
+      "path": "locales/vi.pak",
+      "sha256": "55bbd8fed3330da92aee877fb18640cf7c6391d7a6c6bb5aa2d072b4800d3ac4",
+      "bytes": 673832
+    },
+    {
+      "path": "locales/zh-CN.pak",
+      "sha256": "67e96bfc54394701cb91e112bb07b7b7042ce9f285db3332a19476af566444f6",
+      "bytes": 485251
+    },
+    {
+      "path": "locales/zh-TW.pak",
+      "sha256": "ed372b000597fce75c14edd18ccad1c99e2100be884b58a7e7498488163f2554",
+      "bytes": 479812
+    },
+    {
+      "path": "QuickLauncher.exe",
+      "sha256": "dab34c0f81dfec850f7da4b6f67044c40965653f70c9635ec780060d1385977c",
+      "bytes": 186339840
+    },
+    {
+      "path": "resources/app-update.yml",
+      "sha256": "7990f3535c60e92679c074e1cef33fcae0f0f065e0e84f281fce1369bc69dce9",
+      "bytes": 119
+    },
+    {
+      "path": "resources/app.asar",
+      "sha256": "a5371887c321ad07b1e1cab2265c4dae77e57ac3605d2a85a0295b09d765f1bc",
+      "bytes": 8764809
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/@koromix/koffi-win32-x64/index.js",
+      "sha256": "f9991ec70a0f775487ffadc2461d69edd1555e3d9bf80de0bbdd2eec7d245c49",
+      "bytes": 52
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/@koromix/koffi-win32-x64/package.json",
+      "sha256": "7239da61ab4504f6d5ff9815e6b4f9b8ab96e55131dd5e66374bce7e257b82a5",
+      "bytes": 644
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/@koromix/koffi-win32-x64/win32_x64/koffi.lib",
+      "sha256": "581078774d824496b8250bf436f47ef80e1694700c83955d9e9475fcfaebd980",
+      "bytes": 1688
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/@koromix/koffi-win32-x64/win32_x64/koffi.node",
+      "sha256": "dcb3048bba5cf115aa19172f091cf005f8be9d39fd42dfb5ea25103318784a44",
+      "bytes": 1044992
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/cnoke.cjs",
+      "sha256": "d5e4c3b53c1166265f3b7a386a0aec446bb99c41bf58c6c05643d1dcade12ffd",
+      "bytes": 31081
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/benchmarks.md",
+      "sha256": "22c01524839803c41120bb8c733580c8c8ed50fc8a91cd97135ee686f653bc49",
+      "bytes": 5101
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/callbacks.md",
+      "sha256": "f1e3f14a1d84a5b6d6d7d6d3015a9859043f4d3773b932d361bc49f08a240284",
+      "bytes": 7909
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/composites.md",
+      "sha256": "83d107330187f08088a7e2b1aa98f06585dcf2f0719aae66a47af6fb95edc40d",
+      "bytes": 16117
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/contribute.md",
+      "sha256": "72cecf31345e1d4e46d564bc4aa5020c5a445968cc2a818b337bf3a1019a4cbe",
+      "bytes": 5744
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/index.md",
+      "sha256": "8a69e582805fff52da9a2149c635895ade22a494502de1770a412673431b71a9",
+      "bytes": 3044
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/load.md",
+      "sha256": "7b9d19a90f00c1cc47537ac65742e577fad22ec2fd18d400d4485fe4e00022c4",
+      "bytes": 7526
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/migration.md",
+      "sha256": "3826d5c78a612cd11d0319d7c4e0afebde3c5c67a7848fcb5016fc9c4ccd3333",
+      "bytes": 8909
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/misc.md",
+      "sha256": "5c67bde9825e97564ac961b27a45b16c2162924d734d868e4e8065c17c18c445",
+      "bytes": 3851
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/output.md",
+      "sha256": "78a692be2e23954ad024345806b2d4937a45113be6c48cfc2fdd53dc49c32580",
+      "bytes": 9366
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/pointers.md",
+      "sha256": "628890dec2cbe8304e006effaaead83e36d5e6b3695f3b7bf7e8add1d26f513c",
+      "bytes": 15051
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/primitives.md",
+      "sha256": "3b4cab3721ecd6cad4ccc0ba251f9edae24e3b03bb94ac22234b5c8718a7f346",
+      "bytes": 7561
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/start.md",
+      "sha256": "95c57729bd5b4477e39a8950fd4f1e6c8121cf5fba58907d16f2c8d5bdf92b8d",
+      "bytes": 3008
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/types.md",
+      "sha256": "d8a1acfcc5f416038f05b6f53a93445e80cba70755592d6ceaf5b9df9b3c5440",
+      "bytes": 2828
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/unions.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/doc/values.md",
+      "sha256": "f712dc80674c1711b76edc64b1a55c06e5003e17b542afe071bc20cdfed161ba",
+      "bytes": 6324
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/index.cjs",
+      "sha256": "a200e15ec168d00cb3155794808a98243051c61dd7f6989c23c57ee220c918b9",
+      "bytes": 50
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/index.js",
+      "sha256": "34508972d2e18b79fd4a289943568a68bbaf18badd2e82a25c8deb1af27f6225",
+      "bytes": 85
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/indirect.cjs",
+      "sha256": "f36c7fd3caa9c43da3db45e1ee272892087b4001b6f575fffb76dd80574829b1",
+      "bytes": 53
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/indirect.js",
+      "sha256": "5c5045c5b5ec2083535efdfdbd95f5212545ce29a4b7f33a683504a35e5b6a02",
+      "bytes": 91
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/lib/native/base/base.hh",
+      "sha256": "1f22266da67ecdc7fe8479544c0bf85d4e106c932b986ab57e14479f0a439f8b",
+      "bytes": 176292
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/lib/native/base/unicode.inc",
+      "sha256": "a337b5e53a6c72534fcf093c58d7fbf12f7b1075f068ea83a09c91e34373b5a4",
+      "bytes": 36653
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/LICENSE.txt",
+      "sha256": "22bcbbbacd739b026a8dc484f62a31484ce4c4e31f3408b60b29b4e41d62b290",
+      "bytes": 1117
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/package.json",
+      "sha256": "0bc8e453353ff09d846bbd9b49724221ba743ff9b65b8e5ba6a52f49aa5d9488",
+      "bytes": 1848
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/CMakeLists.txt",
+      "sha256": "50d397027621169f878f6edd1cb72195576c2c33e1769d5534de69f45000cc5e",
+      "bytes": 9861
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/index.cjs",
+      "sha256": "5e8bf2ce51906244b2b8e8c5c321afd79c2f8d65c9846a118f845db96dbb33d0",
+      "bytes": 10999
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/index.js",
+      "sha256": "025b00fbc7f952eef40c98e4778832108585260be3611d2175584eff93d5604b",
+      "bytes": 9563
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/indirect.cjs",
+      "sha256": "ca74165a3a78b02cab86eda18147e073a43ca2f7123c5bc0aa575a34150b2377",
+      "bytes": 10933
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/indirect.js",
+      "sha256": "fda9ae20155cac5038d5d254670df48b40b9e828a4bd23a90934ebb2ba7a0947",
+      "bytes": 9507
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/arm32_asm.S",
+      "sha256": "7d47bd0119a1433bfb328d54a5c03d96e4b08917cfc469db304e8a5c918ec3c5",
+      "bytes": 4319
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/arm64_asm.asm",
+      "sha256": "89c2d933d801b41cd5adde2bb0762d98a2bcd96d2e2dcc18f76650a3e0f8d5db",
+      "bytes": 4489
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/arm64_asm.S",
+      "sha256": "bd2ccebb85c62abbf49a351f4b740a660eb2c8b2b1054fa7f9aafd9c0db92e61",
+      "bytes": 5455
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/loong64_asm.S",
+      "sha256": "0276681d52b70fee199edd73964e7684260027605563ce51c8eb04a8c6400025",
+      "bytes": 4644
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/ppc64_asm.S",
+      "sha256": "b2d8d01143d980a4ab9ff513d22924e9d41553b1903067f78de0b9bb9bf31570",
+      "bytes": 5648
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/riscv64_asm.S",
+      "sha256": "9294984fca21eff02784afe02b59f31d7dcde9c3600b68db1674b7b65174c3d2",
+      "bytes": 4369
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/x64sysv_asm.S",
+      "sha256": "4daa7ee2445cdd047d582af8c9079447c85b3d58db9806fb734eb6a2440ea411",
+      "bytes": 5486
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/x64win_asm.asm",
+      "sha256": "2e3e8014820b352cb0eb775c03996edcd8438917b0ca43e975cda3d4f5bfc467",
+      "bytes": 4708
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/x64win_asm.S",
+      "sha256": "cf309cb28046d9656e683deed3a4e9f5e44266f129593dd154d0c88f822854d3",
+      "bytes": 3883
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/x86_asm.asm",
+      "sha256": "e24a7ae3e2a95bef4bf6e695653bb6a6931c782f6045d3acfe5a1e6e18c8b8c5",
+      "bytes": 3875
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/abi/x86_asm.S",
+      "sha256": "d10bf04332429f032a59108c11c14087061c972231f39b7efccb35a16689f397",
+      "bytes": 4658
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/call.hh",
+      "sha256": "4492aa7fb78c7d812fe8ad550bb21ab96e579d4de3c5f223444a73cad0963246",
+      "bytes": 6017
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/errno.inc",
+      "sha256": "f2fea4a329fbf7aa7e5a6c52daacc480d70d782344e37fd7e62019f6b914201a",
+      "bytes": 8776
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/ffi.hh",
+      "sha256": "954d54c134a5a5debe9127342e69683b3cef2e7c3be25e1c987b02479fbab74f",
+      "bytes": 9627
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/interp.hh",
+      "sha256": "2e1002df27774b422b114ec120ef33d64993740b1c7288cbfc78f8073d6c5310",
+      "bytes": 3290
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/parser.hh",
+      "sha256": "cfd9e374884cdc0f60716de41bbe110d361bc10d0a8539942e37d34c86b525ae",
+      "bytes": 1253
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/primitives.inc",
+      "sha256": "34f524982a6e921a63c6766619b337b6d15f0a5cdefbf252481dda4b4369afda",
+      "bytes": 857
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/static.cjs",
+      "sha256": "522a9d98e271b565de4013910b8c81bb061a34d3460e43fd9a92daab8fbadddc",
+      "bytes": 3591
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/static.js",
+      "sha256": "a2a6ea215e4d5f26d039b48eee1e7c8ca037935c4fcba8d0ec2b6e680fa7a976",
+      "bytes": 3674
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/trampolines.cjs",
+      "sha256": "82895e2a78b911b297e7497d9d6033ab87a0afe64f4904615dacfa318d83adfa",
+      "bytes": 2033
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/type.hh",
+      "sha256": "1959e022aa9ce03a8db2e02ccc16d11fab6590cd8e066b6dfb4fd28b4759520c",
+      "bytes": 2499
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/util.hh",
+      "sha256": "2337c191d18c95f6bfe98db33b6ac8d6b04b4d0c41bb58abcf3bb0bf0695abad",
+      "bytes": 12808
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/uv.def",
+      "sha256": "4a40dc700dc66214fc1c464db8c4b78b82845e3b7b4e6103418ac519346ca4d2",
+      "bytes": 134
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/uv.hh",
+      "sha256": "7c440bf33890aece980fc66882408ae8f864d391a9e3c77596f000ae84afcef5",
+      "bytes": 2652
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/src/koffi/src/win32.hh",
+      "sha256": "46b0b57a2771e1f2647d49711ca249029dc93e92a17007302a78dd58fe3bd4f2",
+      "bytes": 3932
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-addon-api/LICENSE.md",
+      "sha256": "89024017b88a9f2b763f79b941a4f2db3b4428edfcacdc0b23866b2da633ad0c",
+      "bytes": 1150
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-addon-api/napi-inl.deprecated.h",
+      "sha256": "b66ed1e565e735bbfabcc2f72d466ab7c5414d3ef8851d1af440b81be7f2375c",
+      "bytes": 6323
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-addon-api/napi-inl.h",
+      "sha256": "965fe706f18a2acd7fde0c7dfd1e450cf2d855d2cec03d9d75021c1226f10a72",
+      "bytes": 243618
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-addon-api/napi.h",
+      "sha256": "f213cbbe041af5f4b8021bd88dd000dc99d7dd7f2e06aac58a2ab8b407ff4a8a",
+      "bytes": 125640
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-addon-api/README.md",
+      "sha256": "9c9fcf38e120933aac37fe2cbdcb85abb59ecb1a674abe944c9b627dff8539a6",
+      "bytes": 4994
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-api-headers/def/js_native_api.def",
+      "sha256": "77653a554fbb27f6c5666f4ba05f87d26f0de72bc3d0439961ac030030c2be66",
+      "bytes": 2734
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-api-headers/def/node_api.def",
+      "sha256": "e0d5e3da0520a42e26b563f6321291081bd15bdd20821d46818e5f47900f77d6",
+      "bytes": 3550
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-api-headers/include/js_native_api.h",
+      "sha256": "0953395662ea63697cd7a77a9320d94aa2829f9c9569abf3a74272b7a2923ce8",
+      "bytes": 31081
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-api-headers/include/js_native_api_types.h",
+      "sha256": "21eebde05d2ee59d315ac27d4aa82434ca88508a0b2cf5819802a00ca523831d",
+      "bytes": 6744
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-api-headers/include/node_api.h",
+      "sha256": "2d4560831e525b47b060ec8a0864ab73993df9e20215ce9f0fe7b24cd31af32a",
+      "bytes": 10370
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-api-headers/include/node_api_types.h",
+      "sha256": "a25356630d3058f0a0c8937d9f297e9471e037fda58c2696d8a505c2bd99cb00",
+      "bytes": 1930
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-api-headers/LICENSE",
+      "sha256": "a553508f516031c91f3af1148d44970cb81bbae6c4f091be6835d39cc252238c",
+      "bytes": 1064
+    },
+    {
+      "path": "resources/app.asar.unpacked/node_modules/koffi/vendor/node-api-headers/README.md",
+      "sha256": "63a4e81d19f02b164d51c4721ff3e88c81d410640de7e1d3520a2c406f0a7d83",
+      "bytes": 2741
+    },
+    {
+      "path": "resources/elevate.exe",
+      "sha256": "9b1fbf0c11c520ae714af8aa9af12cfd48503eedecd7398d8992ee94d1b4dc37",
+      "bytes": 107520
+    },
+    {
+      "path": "resources.pak",
+      "sha256": "c8cea345bb0b6878b329c9ffa0a1d0e99036bca70ba40ac7be5842ac3ffe45d6",
+      "bytes": 5630755
+    },
+    {
+      "path": "snapshot_blob.bin",
+      "sha256": "012485d0f26435a42f27c1852433e18d065952c8290b426b5e3ac12286ad8fe8",
+      "bytes": 313526
+    },
+    {
+      "path": "Uninstall QuickLauncher.exe",
+      "sha256": "9ff0b20a9fbaaae3d40080167012784eda0f3e45f812054ca96089fd9cfee258",
+      "bytes": 169233
+    },
+    {
+      "path": "v8_context_snapshot.bin",
+      "sha256": "f4bf1406c6e521f98dd39a2ceb6d81a8c0bf35055f062bdd708d98c53cd82536",
+      "bytes": 665981
+    },
+    {
+      "path": "vk_swiftshader.dll",
+      "sha256": "a4c0d966165bbc827c8ed00ab4ecd4a611d17872f6c2beacdd1ffa39dd08f275",
+      "bytes": 5448704
+    },
+    {
+      "path": "vk_swiftshader_icd.json",
+      "sha256": "32d83ff113fef532a9f97e0d2831f8656628ab1c99e9060f0332b1532839afd9",
+      "bytes": 106
+    },
+    {
+      "path": "vulkan-1.dll",
+      "sha256": "36d6a57e7f6bad5a82c096fa21a2e0c1e2b27801891c0f5f3319de18b4c1cd8b",
+      "bytes": 894976
+    }
+  ]
+}

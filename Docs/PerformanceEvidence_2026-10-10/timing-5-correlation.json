@@ -1,0 +1,16 @@
+{
+  "rootPid": 24956,
+  "cimPid": 24956,
+  "cimCreationDateUtc": "2026-10-10T15:01:15.8582570Z",
+  "cimEpochCorrectedFromPreservedIsoMs": 1791644475858.257,
+  "appMetricsCreationTimeMs": 1791644475858.257,
+  "creationDifferenceMs": 0,
+  "originalNumericCimFieldError": "PowerShell cast UTC epoch to local DateTime; historical1970+02 offset introduced7200000ms erroneous subtraction; preserved UTCISO unaffected",
+  "processStartToMainReadyMs": 348.948486328125,
+  "processStartToAllRegionsReadyMs": 872.318359375,
+  "wallMinusMonotonicOffsetMinMs": -1.84228515625,
+  "wallMinusMonotonicOffsetMaxMs": -0.358154296875,
+  "guards": {},
+  "errors": [],
+  "guardIdentitiesValid": true
+}

@@ -1,0 +1,32 @@
+
+[regions] {"event":"moves-setup","available":false,"reason":"test hooks without --ql-test-desktop","testMode":false}
+[regions] {"event":"moves-ready","available":false,"reason":"test hooks without --ql-test-desktop","reconciled":[],"missing":0,"orphans":0}
+[regions] {"event":"relayout","reason":"display change","workArea":{"x":0,"y":0,"width":5120,"height":1392},"moved":0}
+[regions] {"event":"mode","region":"caefcf54","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"04f4d259","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"f5658e01","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"22fe639e","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"c62f1c2c","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"06b2f6ea","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"dddd4b6e","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"551e3a52","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"c78133cf","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"9fc31c03","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"73ab9f39","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"207281e4","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"mode","region":"4a4e64df","from":"pending","to":"attached","layout":"raised","host":"0x10218","hostClass":"Progman"}
+[regions] {"event":"metrics","regions":13,"processes":16,"workingSetMB":1634,"privateMB":1392,"rendererPrivateMB":[32,32,32,76,36,36,32,31,32,32,33,34,31],"cpuPercent":0.1,"byType":{"Browser":1,"GPU":1,"Utility":1,"Tab":13}}
+[regions] {"event":"metrics","regions":13,"processes":16,"workingSetMB":1613,"privateMB":1353,"rendererPrivateMB":[32,32,32,76,36,36,32,31,32,32,33,34,31],"cpuPercent":0,"byType":{"Browser":1,"GPU":1,"Utility":1,"Tab":13}}
+[regions] {"event":"mode","region":"73ab9f39","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0xc013c"}
+[regions] {"event":"mode","region":"c62f1c2c","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x1f0ef0"}
+[regions] {"event":"mode","region":"04f4d259","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x80776"}
+[regions] {"event":"mode","region":"06b2f6ea","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x1d0f6e"}
+[regions] {"event":"mode","region":"551e3a52","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x670dac"}
+[regions] {"event":"mode","region":"c78133cf","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x5d0ed0"}
+[regions] {"event":"mode","region":"22fe639e","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0xd07fa"}
+[regions] {"event":"mode","region":"f5658e01","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x4077e"}
+[regions] {"event":"mode","region":"4a4e64df","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x400e24"}
+[regions] {"event":"mode","region":"207281e4","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x5078e"}
+[regions] {"event":"mode","region":"9fc31c03","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x330774"}
+[regions] {"event":"mode","region":"caefcf54","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x50742"}
+[regions] {"event":"mode","region":"dddd4b6e","from":"attached","to":"pending","layout":"raised","host":"0x10218","reason":"window destroyed with its parent","hwnd":"0x280d4a"}
