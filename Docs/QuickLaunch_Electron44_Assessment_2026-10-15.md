@@ -126,8 +126,24 @@ Runtime evidence, for when it is permitted. Both checks are synthetic and need n
 4. Approve the proposed set Electron 44.7.2 / builder 26.17.0 / updater 6.8.10 / koffi 3.3.2: **yes** or **no**?
 
 **Sergei's answers (2026-10-15):**
-1. Start folder: **"Same as now."** An exact match is impossible on Electron 44 (§ 1). This is recorded as a requirement: Ender and Judy design the closest app-managed match to today's behaviour, with **C** (last folder, across restarts) as the working reading. Questions 2 and 3 are answered by that design, not separately.
+1. Start folder: ~~"Same as now" (read as C)~~ **superseded the same day: Sergei chose A, always Downloads.** That is Electron 44's own default, so the dialog needs no code change and no remembered-folder state. Questions 2 and 3 no longer apply.
 4. Target set **APPROVED**: Electron **44.7.2**, electron-builder **26.17.0**, electron-updater **6.8.10**, koffi **3.3.2** (exact). This replaces the recorded 42.11.12 target. Approving the versions does not unblock execution; the Gate07 block still applies (see continuation plan step 3).
+
+### Gate07 waiver — Sergei, 2026-10-15
+
+**Sergei waived Gate07 for this migration** and chose to run it in Claude Code with normal studio checks. The guard Gate07 tested (`studio-command-safety`) is a Codex hook. Claude Code does not load it, so finishing that proof would not change the safety of a Claude Code install, and the Codex attempt looped and tripped Bitdefender.
+
+What this authorizes:
+- Ender sets the exact approved pins (Electron 44.7.2, builder 26.17.0, updater 6.8.10, koffi 3.3.2) and installs them in **this checkout only**. He also makes the NSIS `SetOutPath $TEMP` adaptation, builds the package without publishing, and runs the runtime checks listed above.
+- Futaba runs QA, Senua reviews, and Sully releases 1.104.1 through the normal pipeline.
+
+What stays in force:
+- No Codex hook, safety-tooling, test-helper or shared-settings work.
+- No antivirus changes. Bitdefender stays ON.
+- One attempt per step. On any failure or antivirus alert, STOP and report; no retry loops.
+- The running QuickLauncher, the real profile, the parked drafts and the `WIP/QuickLaunch` checkout stay untouched.
+
+This waiver supersedes the "dependency execution BLOCKED" lines in `Team/Docs/QuickLaunch_PostTrust_Gate07_Result_2026-10-15.md` and `Team/Docs/QuickLaunch_Claude_Handoff_2026-10-15.md` for this migration only.
 
 Local lessons: no new failure or lesson came up. The findings above are their own record.
 
