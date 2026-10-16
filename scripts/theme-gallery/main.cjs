@@ -89,9 +89,25 @@ for (const m of ['focus', 'moveTop']) install(BrowserWindow.prototype, 'BrowserW
 for (const fn of ['showErrorBox', 'showMessageBox', 'showMessageBoxSync', 'showOpenDialog', 'showOpenDialogSync', 'showSaveDialog', 'showSaveDialogSync', 'showCertificateTrustDialog']) {
   install(dialog, 'dialog', fn, 'dialogs', () => (fn.endsWith('Sync') ? (fn.includes('Message') ? 0 : undefined) : Promise.resolve({ canceled: true, response: 0, filePaths: [] })));
 }
-/** Every stub is still in place (nothing re-bound a real API behind our back). */
+/** The function actually stored for obj[method]: the data descriptor's value (own or inherited); an accessor is read. */
+function storedValue(obj, method) {
+  for (let o = obj; o; o = Object.getPrototypeOf(o)) {
+    const d = Object.getOwnPropertyDescriptor(o, method);
+    if (d) return 'value' in d ? d.value : obj[method];
+  }
+  return undefined;
+}
+/** Every stub is still in place (nothing re-bound a real API behind our back).
+ *  Electron 44's globalShortcut is a Proxy (lib/browser/api/global-shortcut.ts): set stores on the real
+ *  instance, getOwnPropertyDescriptor reads it, but get returns value.bind(instance), a fresh copy that is
+ *  never the stub and has no STUB tag. So the stored function must be ours, and a read must give the stub
+ *  itself or that bound copy of it. */
 function stubsIntact() {
-  const broken = stubbed.filter((s) => !(s.obj[s.method] && s.obj[s.method][STUB] === s.key)).map((s) => s.name);
+  const broken = stubbed.filter((s) => {
+    const v = storedValue(s.obj, s.method);
+    const got = s.obj[s.method];
+    return !(v && v[STUB] === s.key && (got === v || (typeof got === 'function' && got.name === `bound ${v.name}`)));
+  }).map((s) => s.name);
   return { total: stubbed.length, broken };
 }
 

@@ -163,3 +163,86 @@ Local lessons: no new failure or lesson came up. The findings above are their ow
 4. **Release steps:** applicable QA and handoff, Senua source review, isolated installer, update and quit checks (these are also the builder/updater compatibility evidence for Electron 44), then Sully's version, changelog, commit, tag, publish, artifact and retention steps. v1.104.1 is still pending; no release clearance exists.
 
 [Remaining product inventory](QuickLaunch_Maintenance_Remaining_2026-10-15.md) and the [final blocked checkpoint](../../../Team/Docs/QuickLaunch_PostTrust_Gate07_Result_2026-10-15.md) define the preserved scope and boundaries. The existing DependencyUpdate draft is untouched. The running app, real profile, parked work and evidence are preserved. This document is the sole assessment output. The completion pass created one temporary file list in the session scratchpad and removed it.
+
+## Migration pass — Ender, 2026-10-15/16 (Claude Code)
+
+Under the Gate07 waiver. Checkout verified first: `codex/axis-resize`, HEAD `ef9f23d`, only the DependencyUpdate draft untracked. Host Node 26.11.1, npm 11.20.0. Nothing committed; Sully owns the commit and the 1.104.1 bump.
+
+- **Pins and install.** `package.json` now pins electron 44.7.2, electron-builder 26.17.0, electron-updater 6.8.10 and koffi 3.3.2 exactly. One `npm install` (18 s). The lock resolves exactly those four, plus `@koromix/koffi-win32-x64` 3.3.2. The Electron 44 npm package has **no postinstall**, so its binary came from one run of its own `install.js` (40 s, checksum-checked against the bundled `checksums.json`). npm 11 `allowScripts` skipped two install scripts: koffi's `--prebuild` check (koffi loads the prebuilt `@koromix` `.node` directly) and `electron-winstaller` (Squirrel only, not our target).
+- **Resolution changes.** Top level: 47 changed, 37 added, 113 removed, nearly all builder tooling. Shipped closure: electron-updater 6.8.3→6.8.10 with its deps hoisted (builder-util-runtime 9.7.0, fs-extra 10.1.0, jsonfile 6.2.1, universalify 2.0.1), and sax 1.6.0→1.6.1.
+- **npm audit:** 9 (8 moderate, 1 high, 0 critical). The 8 moderate are build-time: the builder 26 chain `@electron/get`→`global-agent`→`roarr`→`sprintf-js`. Shipped only (`--omit=dev`): 1 high, `js-yaml` 4.1.1 via electron-updater, the **same version as at HEAD**. Not fixed (out of scope).
+- **NSIS.** `scripts/nsis/installer.nsh` gains `SetOutPath $TEMP` before `RMDir /r $INSTDIR`, and both comments now say 26.17.0. Its stock block, compared with indentation and line endings normalised, equals the 26.17.0 template's lines 164–187. The restore, the `--updated` skip, the busy-file rollback and the README-preserving `RMDir` are unchanged.
+- **Tests.**
+  - `check:contrast`: pass (101 themes, 0 errors).
+  - `test:regions`: 283 of 336 pass, 53 fail. All 53 are in 13 files that load no changed package: `updater-route` stubs electron-updater, and `controller-moves` uses koffi, which is unchanged. They fail on source shapes, such as `drawStatus is not defined`, `ctl.apps is not a function` and outdated menu lists. `src/` and `test/` are identical to HEAD, so this is **pre-existing drift independent of the migration**. It is not a documented baseline.
+  - `check:hover`: **VOID (exit 2) under Electron 44.** All 3838 pairs were measured with 0 errors; PC1–PC4 fired; isolation was clean (0 sockets, registry unchanged, 135 processes started and 0 left). The harness's integrity check reports its `globalShortcut.register/registerAll/unregister/unregisterAll` stubs "replaced" in all 4 processes, while every app, BrowserWindow and dialog stub held. **`prebuild` runs this check, so `npm run build`/release would fail.** `scripts/theme-gallery` was not changed.
+  - Skipped: `selftest:regions` and `tryit:regions`. Both launch a packaged QuickLauncher through the studio QA guard, which other agents are modifying at the moment; that launch is QA's to run.
+- **Package (no publish).** Built with `npx --no-install electron-builder --win --x64 --publish never -c.directories.output=dist/e44-candidate`. This deliberately did not use `npm run pack`, whose `clean:dist` would delete the shipped `dist/QuickLauncher Setup 1.104.0.exe`; at an unchanged version the new build would also take the same file name.
+  - Artifact: `dist/e44-candidate/QuickLauncher Setup 1.104.0.exe` (122,963,631 B).
+  - Inside it: asar `package.json` 1.104.0 with the exact pins; exe FileVersion 1.104.0; Electron 44.7.2 / Chrome 152.0.7977.149 strings; koffi `.node` in `app.asar.unpacked`; no `libEGL`/`libGLESv2` (static ANGLE).
+- **Bitmaps (§ 2 runtime evidence, part a).** GDI+ replicas of both IconHelper encode paths (`Icon.ToBitmap().Save(Png)`, and a `Bitmap(256,256,Format32bppArgb)` filled through `LockBits`, then `Save(Png)`) both write `IHDR sRGB(intent 0) gAMA(45455) pHYs IDAT IEND`, with no iCCP, cHRM or cICP. These PNGs are therefore sRGB-tagged, which equals the default `toBitmap` target.
+  - `ipc.js:846` `removeSolidBackground`: **no change needed**, by § 2's own criterion.
+  - `icon-trim.js:12`: unchanged for GDI+, JPEG, ICO and HICON inputs. ICC-tagged AppX logos and user PNGs are **still unproved**, because part b did not run.
+- **Part b and the `globalShortcut` probe did not run.** Command: `./node_modules/electron/dist/electron.exe scratch/e44-bitmap/main.js --qlp-in=… --qlp-out=… --qlp-ud=…`. It failed with `TypeError: Cannot read properties of undefined (reading 'setName')` under `Node.js v24.21.0`. Cause, verified: the agent shell exports `ELECTRON_RUN_AS_NODE=1`, so electron.exe ran as plain Node and no Electron started; `run.mjs:374` deletes this variable before it spawns Electron. Per the one-attempt rule it was not retried. The harness stays at `scratch/e44-bitmap/` (gitignored) for one authorised re-run with `env -u ELECTRON_RUN_AS_NODE`.
+
+**Local lessons (2026-10-16, owner Ender unless noted):**
+1. Agent shells carry `ELECTRON_RUN_AS_NODE=1`.
+   - Detector: a direct electron.exe launch prints `Node.js v…` and `app` is undefined.
+   - Cause: verified (the variable reads 1).
+   - Remedy (`env -u ELECTRON_RUN_AS_NODE`): not yet verified.
+   - Prevention: any brief that launches electron.exe directly says to unset it.
+2. `check:hover` is VOID on Electron 44 and blocks `prebuild`.
+   - Cause: unresolved hypothesis (Electron 44 re-binds, or uses accessors for, `globalShortcut` methods).
+   - Next check: the descriptor probe in `scratch/e44-bitmap/main.js`.
+   - A harness fix needs authorisation.
+3. `test:regions` has 53 pre-existing failures. Unresolved; Jane to route.
+4. When the version is unchanged, `npm run pack`/`build` delete the shipped installer in `dist/`. Build into a subfolder instead.
+
+**Follow-up, 2026-10-16 (Jane-approved single re-run).**
+
+The harness was run once as `env -u ELECTRON_RUN_AS_NODE ./node_modules/electron/dist/electron.exe scratch/e44-bitmap/main.js …`: Electron 44.7.2 / Chrome 152.0.7977.149, exit 0 in 1 s, no window, isolated userData, nothing left running.
+
+Before that run, two faults in the throwaway harness itself were fixed (product code untouched):
+- the `removeSolidBackground` extraction regex now tolerates the CRLF working copy; the old one would have thrown at load;
+- an `uncaughtException` listener now replaces Electron's modal error box.
+
+Lesson 1 remedy: **verified.**
+
+- **GDI+ inputs (both helper encode paths).**
+  - The Electron 44 default `toBitmap` equals the colour-chunk-stripped twin byte for byte: icon 0/4096 bytes differ, thumbnail 0/262144.
+  - The stripped twin decodes to the file's raw values (830/830 and 65536/65536 opaque pixels), and raw values are the 42-era result.
+  - Positive controls fired: a Display-P3 iCCP changes 2038 / 49152 bytes; gAMA 1/1.8 changes 1971 / 196608.
+- **`icon-trim.js:12` `trimIcon`: no change for GDI+, JPEG, ICO and HICON inputs.**
+  - GDI+ crops are identical: icon `0,1 32x30` and thumbnail `54,54 148x148` on both the original and the 42-era twin.
+  - The transparent-corner (alpha) path is unchanged even with the P3 control.
+  - **Differs only for ICC-tagged, non-sRGB, opaque PNGs** (AppX logos and user PNGs can be). Electron 44 converts to sRGB and widens saturated colour differences, so blocks just under the RGB-distance threshold of 25 now crop.
+  - Measured with a P3 tag, block shifted in red only: on a saturated-red background, raw distances 18–25 crop on 44 but stay uncropped on 42; on a grey background the band is 21–25. At 26 or more, the crop is identical.
+  - The output is a crop of the original, so colours never change. Impact: a slightly tighter crop for low-contrast, profiled logos only.
+- **`ipc.js:846` `removeSolidBackground`: no change.** Its output equals the 42-era expectation byte for byte (0/262144 bytes, 49152 px cleared on both). The P3 control does differ (49152 bytes, max delta 20), so the check is sensitive. Its only inputs are GDI+ PNGs, which are sRGB-tagged.
+- **`globalShortcut` probe.**
+  - Electron 44's `globalShortcut` reports `register`, `registerAll`, `unregister`, `unregisterAll` and `isRegistered` as own, writable, configurable data properties.
+  - Assignment does not throw, but **it never takes effect**: the read returns the original immediately, at `ready` and 500 ms later, on the same object.
+  - So `check:hover`'s stubs never installed, and its integrity check is correct to VOID the run. It is not a later re-bind. The cause of lesson 2 is now verified.
+  - `ELECTRON_RUN_AS_NODE` cannot explain the VOID: `run.mjs:373-374` deletes it before `spawn`, and that run rendered 3838 readings in offscreen windows. `check:hover` was therefore not re-run.
+  - The harness fix waits for Sergei. Next check for the fix pass: whether `Object.defineProperty` or a wrapper takes effect where assignment does not.
+
+**check:hover fix approved by Sergei 2026-10-16 (one-time exception to the test-helper stop).**
+
+- **Root cause of the VOID (verified).** In the tagged v44.7.2 source, `lib/browser/api/global-shortcut.ts` exports `new Proxy({}, …)`:
+  - its `set` trap forwards to the real instance (`Reflect.set`), so the harness stub *is* stored and *does* intercept calls;
+  - its `get` trap returns `value.bind(globalShortcut)`, a fresh bound copy that never `===` the stub and carries no `STUB` symbol.
+  - `stubsIntact()` checked through a plain read, so it called working stubs "replaced". The guard itself was never off.
+  - This also rules out the earlier "assignment never takes effect" reading: assignment works, the read just returns a copy.
+- **Fix:** `scripts/theme-gallery/main.cjs`, `stubsIntact()` only (+18/−2). It reads the *stored* function through its property descriptor and still requires the `STUB` tag. A plain read must also return the stub itself or exactly its bound copy (`bound f`). Readings, thresholds, controls and pass criteria are untouched.
+- **Pure-Node controls (no Electron):** 7/7 pass on a verbatim replica of the v44 Proxy.
+  - Stub behind the Proxy: counted intact, and a call reaches the stub.
+  - The check still fails on a real function re-bound through the Proxy, a re-bound plain method, and a getter returning a different bound function.
+  - The old logic fails on the Proxy, as observed.
+- **Runs, each once with `ELECTRON_RUN_AS_NODE` unset:**
+  - Pre-fix `check:hover`: VOID, exit 2, 76/92 stubs intact.
+  - Post-fix `check:hover`: **pass**, exit 0, 92/92 intact, 3838 pairs, 0 errors, PC1–PC4 fired, isolation clean, nothing left running.
+- **Build path:** `npm run check && electron-builder --win --x64 --publish never -c.directories.output=dist/e44-candidate` passed (contrast 0 errors, hover 92/92).
+  - Artifact: `dist/e44-candidate/QuickLauncher Setup 1.104.0.exe`, 122,963,630 B, sha256 `bf4d0a97…7e35`, asar version 1.104.0, Electron 44.7.2.
+  - The shipped `dist/QuickLauncher Setup 1.104.0.exe` hash is unchanged (`063d3604…f496`).
+  - `npm run build` itself was not run: it publishes, and its `clean:dist` would delete the shipped installer.
+- **Lesson 2 is resolved** (cause verified, remedy verified by the pass). Prevention: a harness that guards Electron APIs must check what is stored, not what a read returns, because Electron may wrap modules in binding Proxies.

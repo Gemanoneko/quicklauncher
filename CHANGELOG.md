@@ -4,6 +4,15 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.104.1] - 2026-10-16
+
+### Changed
+- Migrate runtime and build tooling to Electron 44.7.2 (electron-builder 26.17.0, electron-updater 6.8.10, koffi 3.3.2).
+- Installer uninstall step moves out of the install directory (`SetOutPath $TEMP`) to match the electron-builder 26.17.0 template.
+
+### Notes
+- Sergei approved the target set and waived Gate07 for this migration. Packaged-build QA and code review pending.
+
 ## [v1.104.0] - 2026-10-10
 
 ### Changed

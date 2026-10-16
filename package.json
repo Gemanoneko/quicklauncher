@@ -1,7 +1,7 @@
 {
   "name": "quicklauncher",
   "productName": "QuickLauncher",
-  "version": "1.104.0",
+  "version": "1.104.1",
   "description": "Cyberpunk-themed desktop quick launcher",
   "main": "src/main/index.js",
   "scripts": {
@@ -63,11 +63,11 @@
     }
   },
   "dependencies": {
-    "electron-updater": "^6.3.0",
-    "koffi": "^3.3.2"
+    "electron-updater": "6.8.10",
+    "koffi": "3.3.2"
   },
   "devDependencies": {
-    "electron": "^32.0.0",
-    "electron-builder": "^25.1.0"
+    "electron": "44.7.2",
+    "electron-builder": "26.17.0"
   }
 }

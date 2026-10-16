@@ -13,7 +13,7 @@
 ; page, where the user can still cancel. customRemoveFiles runs inside the
 ; section, after the stock "is QuickLauncher running?" check and before the
 ; files go. It replaces the stock removal block, which is copied below verbatim
-; from app-builder-lib 25.1.8 (templates/nsis/uninstaller.nsh). Re-check that
+; from app-builder-lib 26.17.0 (templates/nsis/uninstaller.nsh). Re-check that
 ; block whenever electron-builder is upgraded.
 ;
 ; An update runs the old uninstaller with --updated: nothing is restored then.
@@ -51,7 +51,7 @@
     ${endif}
   ${endif}
 
-  ; ---- electron-builder 25.1.8 stock removal, verbatim ----
+  ; ---- electron-builder 26.17.0 stock removal, verbatim ----
   ${if} ${isUpdated}
     CreateDirectory "$PLUGINSDIR\old-install"
 
@@ -72,6 +72,8 @@
 
   ${endif}
 
+  # Move out of $INSTDIR so it can be removed
+  SetOutPath $TEMP
   # Remove all files (or remaining shallow directories from the block above)
   RMDir /r $INSTDIR
 !macroend
