@@ -26,6 +26,10 @@
     "productName": "QuickLauncher",
     "copyright": "Copyright © 2025 Antigravity Projects",
     "icon": "icon.png",
+    "electronLanguages": [
+      "en-US",
+      "en-GB"
+    ],
     "directories": {
       "output": "dist",
       "buildResources": "."
