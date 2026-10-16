@@ -37,7 +37,11 @@
     "files": [
       "src/**/*",
       "icon.png",
-      "package.json"
+      "package.json",
+      "!**/node_modules/js-yaml/bin{,/**/*}",
+      "!**/node_modules/js-yaml/dist/*.map",
+      "!**/node_modules/js-yaml/dist/js-yaml{.js,.min.js}",
+      "!**/node_modules/js-yaml/lib/index_vite_proxy.tmp.mjs"
     ],
     "win": {
       "target": [
