@@ -15,7 +15,7 @@ version tags rather than semantic versioning strictness.
 - Exclude unused js-yaml files from the package (`ee4b037`).
 
 ### Notes
-- Packaged-build QA and code review pending.
+- Packaged-build QA GO and code review RELEASE CLEAR (see Docs/QuickLaunch_QA_v1.104.2_2026-10-17.md and Docs/QuickLaunch_CodeReview_v1.104.2_2026-10-17.md).
 
 ## [v1.104.1] - 2026-10-16
 
