@@ -4,6 +4,19 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.104.2] - 2026-10-17
+
+### Fixed
+- Ctrl+Space return trip left regions blank on Electron 44: `restoreForeground` wrote WS_VISIBLE back via `SetWindowLongW`, so the re-attached region was never re-shown and Chromium 133+ stopped compositing it. It now restores `saved.style & ~WS_VISIBLE` so the show call does a real show.
+
+### Changed
+- Release script pre-creates a draft release (fixes the electron-builder 26 upload race); js-yaml 4.3.2 clears the high audit finding (`d6c5add`).
+- Package English locales only (en-US, en-GB) for a smaller install (`2c12688`).
+- Exclude unused js-yaml files from the package (`ee4b037`).
+
+### Notes
+- Packaged-build QA and code review pending.
+
 ## [v1.104.1] - 2026-10-16
 
 ### Changed
