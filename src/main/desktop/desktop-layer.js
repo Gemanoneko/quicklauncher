@@ -20,7 +20,7 @@ try {
 
 const C = {
   GWL_STYLE: -16, GWL_EXSTYLE: -20,
-  WS_CHILD: 0x40000000, WS_POPUP: 0x80000000 | 0, WS_CLIPSIBLINGS: 0x04000000,
+  WS_CHILD: 0x40000000, WS_POPUP: 0x80000000 | 0, WS_VISIBLE: 0x10000000, WS_CLIPSIBLINGS: 0x04000000,
   WS_CAPTION: 0x00c00000, WS_THICKFRAME: 0x00040000, WS_SYSMENU: 0x00080000,
   WS_MINIMIZEBOX: 0x00020000, WS_MAXIMIZEBOX: 0x00010000,
   WS_EX_TOOLWINDOW: 0x80, WS_EX_APPWINDOW: 0x40000,
@@ -316,7 +316,10 @@ function restoreForeground(saved, rect) {
     if (host) {
       const result = attachToHost(hwnd, host, rect);
       if (result.ok) {
-        W.SetWindowLongW(hwnd, C.GWL_STYLE, saved.style);
+        // Never write WS_VISIBLE back: that makes the window visible without a
+        // show transition, so the caller's show is a no-op and, since Chromium
+        // 133 (Electron 35+), the page is never composited on the desktop again.
+        W.SetWindowLongW(hwnd, C.GWL_STYLE, saved.style & ~C.WS_VISIBLE);
         W.SetWindowLongW(hwnd, C.GWL_EXSTYLE, saved.exStyle);
         setChildRect(hwnd, host, rect);
         if (host === saved.parent) endDragRaise({ hwnd, host, previous: saved.previous, next: saved.next });
