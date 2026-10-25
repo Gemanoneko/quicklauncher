@@ -32,7 +32,7 @@ function resolveGhPath() {
 }
 
 const ghPath = resolveGhPath();
-const tokenRun = spawnSync(ghPath, ['auth', 'token'], { encoding: 'utf8' });
+const tokenRun = spawnSync(ghPath, ['auth', 'token'], { encoding: 'utf8', windowsHide: true });
 if (tokenRun.status !== 0) {
   console.error(`[release] \`${ghPath} auth token\` failed (exit ${tokenRun.status}).`);
   console.error('[release] Is GitHub CLI installed and authenticated? Run `gh auth login` to fix.');
@@ -61,7 +61,7 @@ const tag = `v${version}`;
 const repoArg = ['-R', `${owner}/${repo}`];
 
 function gh(args) {
-  return spawnSync(ghPath, [...args, ...repoArg], { encoding: 'utf8' });
+  return spawnSync(ghPath, [...args, ...repoArg], { encoding: 'utf8', windowsHide: true });
 }
 
 const view = gh(['release', 'view', tag, '--json', 'isDraft', '--jq', '.isDraft']);
@@ -86,6 +86,7 @@ console.log('[release] Starting build + upload to the draft...');
 const build = spawnSync('npm', ['run', 'build'], {
   env: { ...process.env, GH_TOKEN: token },
   stdio: 'inherit',
+  windowsHide: true,
   shell: true, // npm on Windows is npm.cmd — needs shell
 });
 if (build.status !== 0) {

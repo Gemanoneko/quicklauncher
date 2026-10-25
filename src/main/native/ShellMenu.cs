@@ -156,7 +156,8 @@ class MenuHost:Form {
   IntPtr pidl=IntPtr.Zero,child=IntPtr.Zero,raw=IntPtr.Zero,hmenu=IntPtr.Zero;IShellFolder folder=null;object context=null;bool invokedShell=false;
   try{
    Validate();uint attrs;string target=request.path;
-   if(target.StartsWith("shell:AppsFolder\\",StringComparison.OrdinalIgnoreCase))target="::{4234D49B-0245-4DF3-B780-3893943456E1}\\"+target.Substring(17);
+   // SHParseDisplayName understands the shell:AppsFolder alias directly.
+   // Replacing it with a desktop CLSID path fails with E_INVALIDARG on Windows.
    Marshal.ThrowExceptionForHR(Native.SHParseDisplayName(target,IntPtr.Zero,out pidl,0,out attrs));
    Guid folderId=new Guid("000214E6-0000-0000-C000-000000000046");
    Marshal.ThrowExceptionForHR(Native.SHBindToParent(pidl,ref folderId,out folder,out child));

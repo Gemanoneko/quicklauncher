@@ -29,6 +29,10 @@ const fakeLayer = {
   isAboveDefView: () => ({ above: true, me: 0, defView: 1 }),
   releaseFromShell: () => true,
   describe: () => ({ alive: true }),
+  captureForeground: h => ({hwnd:h,parent:0x99}),
+  beginForeground: (_h,_r,saved) => saved,
+  restoreForeground: () => ({ok:true,host:0x99,attached:true}),
+  endDragRaise: () => true,
 };
 const realLoad = Module._load;
 Module._load = function load(request, parent, isMain) {
@@ -103,4 +107,15 @@ test('the drop from attached to fallback shows the window to Chromium again', as
   calls = [];
   assert.equal(h.testDropToFallback(), true);
   assert.deepEqual(calls, ['win32:detach show=true', 'electron:showInactive']);
+});
+
+test('foreground return still performs the native and Chromium show; a previously hidden region stays hidden', async () => {
+  hostOk=true;
+  for(const hidden of [false,true]){
+    const h=await host({killSwitch:false,hidden});
+    assert.equal(h.beginForeground(),true);calls=[];
+    assert.equal(h.endForeground(),true);h.finishForegroundOrder();
+    assert.equal(h.hidden,hidden);
+    assert.deepEqual(calls,hidden?['win32:hide']:['win32:showNoActivate','electron:showInactive']);
+  }
 });

@@ -861,11 +861,17 @@ class RegionController extends EventEmitter {
         // A reloaded page must announce itself again before it gets store messages.
         if (details && details.isMainFrame && !details.isSameDocument) rt.ready = false;
       });
-      const invalidateShellPage = () => { this._returnToDesktop(false); rt.shellPageGeneration = (rt.shellPageGeneration || 0) + 1; this._cancelShellRenames(rt.id); };
+      const invalidateShellPage = () => {
+        this._returnToDesktop(false);
+        this._resetPageInteractions(rt);
+        rt.shellPageGeneration = (rt.shellPageGeneration || 0) + 1;
+        this._cancelShellRenames(rt.id);
+      };
       win.webContents.on('did-start-loading', invalidateShellPage);
       win.webContents.on('render-process-gone', invalidateShellPage);
       win.on('closed', () => {
         this._returnToDesktop(false);
+        this._resetPageInteractions(rt);
         this._cancelShellRenames(rt.id);
         this.byWc.delete(wcId);
         if (rt.win === win) { rt.win = null; rt.wc = null; rt.ready = false; }
@@ -1590,6 +1596,22 @@ class RegionController extends EventEmitter {
   }
 
   // ── focus, active region, hide/show ───────────────────────────────────────
+  _resetPageInteractions(rt) {
+    // These belong to the destroyed/reloaded document, not the region. A new
+    // radial page's all-false extras can otherwise leave a stale rename or
+    // preview blocking the global hotkey indefinitely.
+    const baseline = rt.previewBase ? rt.previewBase.shown : rt.drag ? rt.drag.start : rt.resize ? rt.resize.start : null;
+    if (rt.previewBase) rt.radialAnchor = { ...rt.previewBase.anchor };
+    if (rt.drag || rt.resize || rt.host.dragOrder) rt.host.endDragRaise();
+    if (rt.popupMenu) { try { rt.popupMenu.closePopup(rt.win); } catch { /* destroyed owner */ } rt.popupMenu = null; }
+    rt.drag = null; rt.resize = null; rt.previewBase = null; rt.menuOpen = false;
+    rt.extras = { edit: false, notice: false, preview: false, renaming: false };
+    if (baseline) this._applyShown(rt, baseline);
+    if (this.tileDrag && (this.tileDrag.sourceId === rt.id || this.tileDrag.targetId === rt.id)) {
+      this._cancelTileDrag('page unavailable', { notifySource: true, instant: true });
+    }
+  }
+
   setActive(id) {
     if (!this.region(id) || this.activeId === id) return;
     const old = this.activeId;
@@ -1643,7 +1665,12 @@ class RegionController extends EventEmitter {
     if (this.shellMenuPending || this.tileDrag
         || (this.shellRenameRequests && [...this.shellRenameRequests.values()].some(p => p.busy))
         || [...this.rt.values()].some(rt => rt.drag || rt.resize || rt.previewBase || rt.menuOpen
-          || rt.extras.renaming || rt.host.busy)) return false;
+          || rt.extras.renaming || rt.host.busy)) {
+      this.log({ event: 'foreground-blocked', shellMenu: !!this.shellMenuPending, tileDrag: !!this.tileDrag,
+        regions: [...this.rt.values()].filter(rt => rt.drag || rt.resize || rt.previewBase || rt.menuOpen || rt.extras.renaming || rt.host.busy)
+          .map(rt => ({ region: rt.id.slice(0, 8), drag: !!rt.drag, resize: !!rt.resize, preview: !!rt.previewBase, menu: !!rt.menuOpen, renaming: !!rt.extras.renaming, busy: !!rt.host.busy })) });
+      return false;
+    }
     if (this.foregroundSession) return this._returnToDesktop(true);
     const hosts = [...this.rt.values()].filter(rt => !rt.displaySuppressed && !rt.shapeBlocked
       && !(rt.displayFallback && !rt.gridMinimum));
@@ -1866,13 +1893,20 @@ class RegionController extends EventEmitter {
     const rt = this.rt.get(id);
     if (!rt || !rt.win || rt.win.isDestroyed()) return { ok: false, error: 'The region was closed.' };
     const pageGeneration = rt.shellPageGeneration || 0;
-    const item = this.apps().find((a) => a && a.id === itemId && a.regionId === id);
+    let item = this.apps().find((a) => a && a.id === itemId && a.regionId === id);
     if (!item) return { ok: false, error: 'The shortcut is unavailable.' };
     const namespace = /^shell:AppsFolder\\/i.test(item.path);
     if (!namespace && !/\.(lnk|url|exe)$/i.test(item.path)) return { ok: false, error: 'Windows has no shortcut menu for this item.' };
     let ticket = null;
     this.shellMenuPending++;
     try {
+      if (namespace) {
+        const resolved = await require('../installed-apps').resolveStoredInstalledApp(item, this.store,
+          regionId => { this._pushItems(regionId); this._managerChanged(); });
+        if (!resolved.ok) return { ok: false, error: 'The shortcut is unavailable.' };
+        item = { ...item, path: resolved.path };
+        if ((rt.shellPageGeneration || 0) !== pageGeneration) return { ok: false, error: 'The region was closed.' };
+      }
       if (!namespace) { if (!this.mover) throw Error('Windows shortcut menus are unavailable.'); ticket = await this.mover.prepareShellAction(itemId); }
       const current = this.apps().find(a => a.id === itemId && a.regionId === id && a.path === item.path);
       if (!current || rt.win.isDestroyed()) throw Error('The shortcut changed or the region was closed.');
@@ -1947,8 +1981,10 @@ class RegionController extends EventEmitter {
     }
     rt.menuOpen = true;
     try {
-      Menu.buildFromTemplate(tpl).popup({ window: extra.window || rt.win, x: Math.round(x), y: Math.round(y),
-        callback: () => { rt.menuOpen = false; } });
+      const menu = Menu.buildFromTemplate(tpl);
+      rt.popupMenu = menu;
+      menu.popup({ window: extra.window || rt.win, x: Math.round(x), y: Math.round(y),
+        callback: () => { if (rt.popupMenu === menu) { rt.menuOpen = false; rt.popupMenu = null; } } });
     } catch (error) { rt.menuOpen = false; throw error; }
   }
 

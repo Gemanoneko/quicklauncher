@@ -4,6 +4,14 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.104.3] - 2026-10-25
+
+### Fixed
+- Make global hotkey changes atomic and retry registration when a shortcut is temporarily unavailable.
+- Clear a stale region page blocker when its window is no longer active.
+- Remove the invalid AppsFolder native menu rewrite.
+- Validate installed app IDs before launch; recover a missing Blender target only when a unique versioned installation is found, while keeping the tile.
+
 ## [v1.104.2] - 2026-10-17
 
 ### Fixed

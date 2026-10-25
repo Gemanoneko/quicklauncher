@@ -7,6 +7,7 @@ const { checkForUpdates, dismissals: updateDismissals, publish: publishUpdate } 
 const { refreshTrayMenu } = require('./tray');
 const { trimIcon } = require('./icon-trim');
 const { encodeIcons } = require('./icon-worker');
+const { resolveInstalledPath, resolveStoredInstalledApp } = require('./installed-apps');
 
 // Derive valid theme identifiers from the CSS files on disk.
 // This automatically stays in sync when themes are added or removed.
@@ -391,12 +392,16 @@ function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null
     };
 
     if (isProtocol) {
+      const resolved = matchedApp
+        ? await resolveStoredInstalledApp(matchedApp, store, id => { ctl._pushItems(id); ctl._managerChanged(); })
+        : await resolveInstalledPath(filePath);
+      if (!resolved.ok) { reportFailure(resolved.reason); return; }
       // Use explorer.exe for shell: URIs (Store apps) and steam:// URLs.
       // explorer.exe always exits 1 even on success, so we can't reliably
       // detect failure here — leave silent. Errors here are extremely rare
       // (Store apps that have been uninstalled fall back to "open with"
       // dialog which is itself a form of feedback).
-      execFile('explorer.exe', [filePath], { windowsHide: false, stdio: 'pipe' }, () => {});
+      execFile('explorer.exe', [resolved.path], { windowsHide: false, stdio: 'pipe' }, () => {});
       return;
     }
 

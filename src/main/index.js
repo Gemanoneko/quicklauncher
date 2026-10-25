@@ -153,6 +153,10 @@ app.whenReady().then(() => {
   // then return them to their desktop visibility on the next press.
   applyGlobalHotkey(store.get('settings').globalHotkey);
   registerHotkeyIpc();
+  // A transient login-time conflict must not disable the configured binding
+  // for the rest of the session. No key is ever taken from another app.
+  hotkeyRetry = setInterval(retryGlobalHotkey, 5000);
+  hotkeyRetry.unref();
 
   // Apply auto-launch preference (packaged builds only — dev builds use the
   // bare Electron binary as exe path, which would register the wrong entry)
@@ -187,6 +191,7 @@ app.on('window-all-closed', () => {
 // being explicit avoids edge cases on rapid restart (cached registrations
 // occasionally survive on Windows when a child crash kills the renderer).
 app.on('will-quit', () => {
+  clearInterval(hotkeyRetry);
   try { globalShortcut.unregisterAll(); } catch { /* noop */ }
   // Normal quit paths (including autoUpdater.quitAndInstall) — write any
   // change still sitting in a debounce, and leave Explorer's tree.
@@ -199,27 +204,36 @@ app.on('will-quit', () => {
 // Track the currently-registered accelerator so we can unregister cleanly
 // before applying a new one.
 let _activeHotkey = null;
+let hotkeyRetry = null;
 
-function applyGlobalHotkey(accel) {
+function retryGlobalHotkey() {
+  const accel = (store.get('settings') || {}).globalHotkey;
+  if (accel && (_activeHotkey !== accel || !globalShortcut.isRegistered(accel))) applyGlobalHotkey(accel, true);
+}
+
+function applyGlobalHotkey(accel, quiet = false) {
   // Accelerator string shape (e.g. 'Ctrl+Space', 'Alt+Shift+Q') is validated
   // by globalShortcut.register itself — bad strings throw; we catch and
   // report failure so the Manager can surface it in Settings.
   try {
-    if (_activeHotkey) {
-      globalShortcut.unregister(_activeHotkey);
+    if (accel && accel === _activeHotkey && globalShortcut.isRegistered(accel)) return { ok: true, registered: accel };
+    if (!accel) {
+      if (_activeHotkey) globalShortcut.unregister(_activeHotkey);
       _activeHotkey = null;
+      return { ok: true, registered: null };
     }
-    if (!accel) return { ok: true, registered: null };
     const ok = globalShortcut.register(accel, () => ctl.toggleForeground());
     if (!ok) {
-      console.warn(`[hotkey] register failed for "${accel}" — likely held by another app`);
-      return { ok: false, registered: null, reason: 'CONFLICT' };
+      if (!quiet) console.warn(`[hotkey] register failed for "${accel}" — likely held by another app`);
+      return { ok: false, registered: _activeHotkey, reason: 'CONFLICT' };
     }
+    // Keep the working binding until the replacement is known to be ours.
+    if (_activeHotkey && _activeHotkey !== accel) globalShortcut.unregister(_activeHotkey);
     _activeHotkey = accel;
     return { ok: true, registered: accel };
   } catch (err) {
-    console.warn(`[hotkey] register threw for "${accel}":`, err.message);
-    return { ok: false, registered: null, reason: 'INVALID' };
+    if (!quiet) console.warn(`[hotkey] register threw for "${accel}":`, err.message);
+    return { ok: false, registered: _activeHotkey, reason: 'INVALID' };
   }
 }
 
