@@ -1,5 +1,7 @@
 # QuickLauncher v1.104.3 QA report — 2026-10-25
 
+**Post-release user result:** Sergei reports that chat-checklist items **1–5 pass**. Item **6 (Windows-login startup)** remains pending his next sign-in. The original agent QA verdict below is preserved as historical evidence; see the post-release acceptance section at the end.
+
 Futaba. Candidate: pinned 396-file source snapshot from `WIP/QuickLaunch` HEAD `8c4783ab5f28e3cc24fb398103e61755d86ce2f5`, dirty `Y`, source digest `f69136bc2775983afdf71317417427b9fe571e97bc5cdec84b3cbf20c400f6ae`. This report is for that snapshot and its nonpublishing package only. The unpacked candidate was run once under an owned guard with an isolated TEMP profile and desktop fixture.
 
 **Verdict:** NO-GO
@@ -68,3 +70,11 @@ This authorizes publishing **1.104.3** while deferring the remaining native menu
 6. **Reopen and startup:** reopen QuickLaunch and check Ctrl+Space and the saved layout again. If Start With Windows was enabled, confirm it remains enabled; at your next normal Windows sign-in, confirm QuickLaunch returns. No immediate reboot is required.
 
 If a check fails, record the action, the affected shortcut/region, and a screenshot or exact error text. Do not treat an unperformed check as passed.
+
+## Post-release acceptance reported by Sergei — 2026-10-25
+
+Sergei replied to the delivered chat checklist:
+
+> 1- 5 pass. I'll check 6 next time I login.
+
+Record the current checks for version/layout, Ctrl+Space, right-click menus, Blender launch, and Manager close/tray Quit/reopen as **user-reported PASS**. Windows-login startup is **PENDING**, to be checked at his next normal sign-in. This is user acceptance of the released build, not an additional agent test run or a replacement of the historical agent verdict. A future Blender-upgrade scenario has not been separately observed; no new upgrade or restart is requested.
