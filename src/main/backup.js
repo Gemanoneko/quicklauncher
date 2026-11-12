@@ -58,6 +58,7 @@ function validate(bundle, validThemes) {
       || !Array.isArray(d.regions) || !d.regions.length || d.regions.length > M.REGION_CAP
       || d.regionsVersion !== M.REGIONS_VERSION || !Array.isArray(bundle.files)) fail('The backup configuration is invalid.');
   const bounded = n => Number.isSafeInteger(n) && Math.abs(n) <= 1000000;
+  const coordinate = n => typeof n === 'number' && Number.isFinite(n) && Math.abs(n) <= 1000000;
   const rect = r => plain(r) && ['x', 'y', 'width', 'height'].every(k => bounded(r[k])) && r.width > 0 && r.height > 0;
   const s = d.settings;
   for (const k of ['sortShortcuts', 'startWithWindows', 'randomTheme', 'reducedMotion', 'matchAll'])
@@ -76,7 +77,7 @@ function validate(bundle, validThemes) {
         || (validThemes && !validThemes.has(r.theme))) fail('A region in the backup is invalid or unsupported.');
     if ((r.gridSize != null && (!plain(r.gridSize) || !bounded(r.gridSize.width) || !bounded(r.gridSize.height) || r.gridSize.width <= 0 || r.gridSize.height <= 0))
         || ['columnHeight', 'rowWidth'].some(k => r[k] != null && (!bounded(r[k]) || r[k] <= 0))
-        || (r.radialAnchor != null && (!plain(r.radialAnchor) || !bounded(r.radialAnchor.x) || !bounded(r.radialAnchor.y)))
+        || (r.radialAnchor != null && (!plain(r.radialAnchor) || !coordinate(r.radialAnchor.x) || !coordinate(r.radialAnchor.y)))
         || (r.fanDirection != null && !['up', 'down', 'left', 'right'].includes(r.fanDirection))) fail('A backup layout is invalid.');
     ids.add(r.id); names.add(r.name.toLowerCase());
   }
@@ -150,7 +151,7 @@ class Backup {
   }
   _sameFile(p, proof) {
     try {
-      const r = this._read(p);
+    const r = this._read(p);
       // NTFS filename tunnelling can restore a recently deleted destination's
       // creation timestamp during rename. The volume/file ID and exact bytes
       // must still be the same; capture the full new identity for the tile.

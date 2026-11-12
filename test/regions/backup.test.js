@@ -160,6 +160,19 @@ test('cross-region reference tiles are preserved without copying physical files'
   assert.deepEqual(fs.readdirSync(f.folders.store), ['Game.url']);
 });
 
+test('real Fan half-pixel pivot anchor survives export/import exactly', async t => {
+  const f = setup(t);
+  const radial = require('../../src/renderer/radial-layout');
+  const g = radial.geometry('fan', 2, 64);
+  const region = f.store.data.regions[0];
+  region.layout = 'fan';
+  region.radialAnchor = { x: region.rect.x + g.pivot.x, y: region.rect.y + g.pivot.y };
+  assert.equal(Number.isInteger(region.radialAnchor.x), false, 'positive control: real geometry produces a fractional anchor');
+  const expected = clone(region);
+  await f.backup.exportTo(f.archive); f.store.replaceData(f.empty()); await f.backup.importFrom(f.archive);
+  assert.deepEqual(f.store.data.regions[0], expected);
+});
+
 test('newly recreated shortcut rolls back after commit failure or interrupted promotion', async t => {
   for (const crash of [false, true]) {
     const f = setup(t); await f.backup.exportTo(f.archive); fs.unlinkSync(f.file); f.store.replaceData(f.empty());
