@@ -173,3 +173,13 @@ html:has(#theme-stylesheet[href$='/2001.css']) body.manager,
 html:has(#theme-stylesheet[href$='/promise-mascot.css']) body.manager { --mgr-button-pressed-text: var(--text); }
 html:has(#theme-stylesheet[href$='/star-wars-republic.css']) body.manager,
 html:has(#theme-stylesheet[href$='/star-wars-separatist.css']) body.manager { --mgr-button-hover-text: var(--btn-hover-text); }
+
+.mgr-backup { padding-top: 16px; border-top: 1px solid var(--border); min-width: 0; }
+.mgr-backup > .setting-label { margin-bottom: 6px; }
+#backup-help, #backup-status { font-size: 12px; line-height: 1.4; color: var(--text); letter-spacing: normal; text-transform: none; overflow-wrap: anywhere; }
+.mgr-backup-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.mgr-backup-actions button { min-height: 32px; min-width: 24px; padding: 4px 8px; }
+.mgr-backup-actions button:hover, .mgr-backup-actions button:active { color: var(--text); }
+.mgr-backup-actions button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+#backup-status { white-space: pre-wrap; margin-top: 8px; }
+#backup-status:empty { display: none; }

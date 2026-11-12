@@ -111,7 +111,9 @@ class RegionController extends EventEmitter {
       this.store.set('regions', res.data.regions);
       this.store.set('regionsVersion', res.data.regionsVersion);
     }
-    this._randomThemesAtStartup();
+    // The first boot after import displays the exported themes exactly.
+    // The saved random-theme preference resumes on subsequent normal starts.
+    if (!this.store.get('backupResult')) this._randomThemesAtStartup();
     this.activeId = this.primaryId();
 
     // Shown rects: saved rects fitted to the current work area (nothing saved).

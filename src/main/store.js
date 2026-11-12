@@ -407,6 +407,19 @@ class Store extends EventEmitter {
     this._save();
   }
 
+  // Backup import replaces one complete generation, never a sequence of
+  // apps/settings/regions saves. The caller's write-ahead journal owns file
+  // recovery if this durable commit cannot complete.
+  replaceData(data) {
+    if (this.isReadOnly() || !this._isValid(data)) return false;
+    const previous = this.data;
+    this.data = data;
+    this._save();
+    if (this.flush()) return true;
+    this.data = previous;
+    return false;
+  }
+
   // Debounced save — same 100 ms coalescing as before.
   _save() {
     this._dirty = true;

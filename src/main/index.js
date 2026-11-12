@@ -49,6 +49,19 @@ if (moveSetup.refused) {
 logRegions({ event: 'moves-setup', available: moveSetup.available, reason: moveSetup.reason, testMode: !!moveSetup.testMode, folders: moveSetup.testMode ? moveSetup.folders : undefined });
 
 const store = new Store();
+const { Backup } = require('./backup');
+// Recover before migration, windows, hotkeys, or the mover can observe a
+// partially imported setup. Recovery refusal preserves its intent and files.
+try {
+  new Backup({ store, folders: moveSetup.folders || {}, win32: win32Moves, validThemes: VALID_THEMES }).recover();
+} catch (e) {
+  app.whenReady().then(() => {
+    require('electron').dialog.showErrorBox('Import needs recovery', `${e.message}\n\nRecovery record: ${path.join(path.dirname(store.dataPath), 'backup-import.json')}\nKeep this file and the QuickLauncher Shortcuts folder. Resolve the reported file conflict, then start QuickLauncher again.`);
+    app.exit(1);
+  });
+  // Do not continue booting into an uncertain file/configuration generation.
+  return;
+}
 const ctl = new RegionController({
   store, validThemes: VALID_THEMES, killSwitch: KILL_SWITCH, testHooks: TEST_HOOKS, log: logRegions,
   moveSetup, win32: win32Moves, buildEntry: (p) => buildAppEntry(p),
@@ -86,7 +99,9 @@ let quitting = false;
 function quitApp(reason) {
   if (quitting) return;
   quitting = true;
-  try { ctl.flushPendingRects(); } catch { /* never block quitting */ }
+  // Imported regions already have their exported rects. The old runtime must
+  // not write pending pre-import drag bounds over that committed generation.
+  if (reason !== 'backup-import') try { ctl.flushPendingRects(); } catch { /* never block quitting */ }
   try { store.flush(); } catch { /* never block quitting */ }
   try { logRegions({ event: 'quit', reason, released: ctl.releaseAll() }); } catch { /* noop */ }
   app.exit(0);
@@ -173,6 +188,16 @@ app.whenReady().then(() => {
         path: app.getPath('exe')
       });
     }
+  }
+  if (store.get('backupResult')) {
+    const result = store.get('backupResult');
+    const hotkey = store.get('settings').globalHotkey;
+    ctl.mover.ready.then(() => {
+      mgr.backupResult = ctl.mover.missing.size ? 'Import needs attention: a restored shortcut is unavailable.' : result.message;
+      if (hotkey && _activeHotkey !== hotkey) mgr.backupResult += `\nHotkey unavailable: ${hotkey}.`;
+      store.set('backupResult', null);
+      mgr.open('settings');
+    }).catch(() => { mgr.backupResult = 'Import needs recovery. Restart QuickLauncher.'; mgr.open('settings'); });
   }
 });
 

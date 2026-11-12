@@ -4,6 +4,12 @@ All notable changes to this tool are recorded here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project uses date-stamped
 version tags rather than semantic versioning strictness.
 
+## [v1.105.0] - 2026-11-12
+
+### Added
+- Export a complete backup of layouts, settings, shortcut records and managed shortcut files from Manager Settings, then import it after reinstalling.
+- Restore matching desktop shortcuts into QuickLauncher without leaving duplicate copies; refuse ambiguous or changed files and recover interrupted imports safely.
+
 ## [v1.104.3] - 2026-10-25
 
 ### Fixed

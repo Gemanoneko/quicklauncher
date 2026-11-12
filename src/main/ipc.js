@@ -284,6 +284,69 @@ const DIALOG_OPTS = {
 // a region page gets and saves its own region's items; the Manager gets the
 // manager:* channels. A call from anything else is ignored.
 function setupIPC(ctl, store, electronApp, mgr, { testHooks = false, quit = null } = {}) {
+  const { Backup } = require('./backup');
+  const backup = new Backup({ store, mover: ctl.mover, folders: ctl.moveSetup.folders,
+    win32: ctl.win32 || require('./moves/win32'), validThemes: VALID_THEMES, version: electronApp.getVersion() });
+  let backupDialog = false;
+  // Native pickers and confirmation are owned by the Manager. File paths are
+  // selected here, never accepted from renderer IPC.
+  const backupAction = async importing => {
+    if (backupDialog) return { ok: false, error: 'A backup operation is already running.' };
+    backupDialog = true;
+    try {
+      ctl.flushPendingRects();
+      const filters = [{ name: 'QuickLauncher backup', extensions: ['qlbackup'] }];
+      if (!importing) {
+        const picked = await dialog.showSaveDialog(mgr.window, { title: 'Export QuickLauncher backup', buttonLabel: 'Save',
+          defaultPath: `QuickLauncher-backup-${new Date().toISOString().slice(0, 10)}.qlbackup`, filters });
+        if (picked.canceled || !picked.filePath) return { canceled: true };
+        mgr.send('manager:backup-status', 'Saving backup…');
+        ctl.flushPendingRects();
+        const result = await backup.exportTo(picked.filePath);
+        return { ...result, message: `Backup saved.\n${picked.filePath}` };
+      }
+      const picked = await dialog.showOpenDialog(mgr.window, { title: 'Import QuickLauncher backup', buttonLabel: 'Open', filters, properties: ['openFile'] });
+      if (picked.canceled || !picked.filePaths.length) return { canceled: true };
+      mgr.send('manager:backup-status', 'Checking backup…');
+      ctl.flushPendingRects();
+      const file = picked.filePaths[0], preview = await backup.preview(file);
+      const count = (n, one, many = one + 's') => `${n} ${n === 1 ? one : many}`;
+      const detail = [`Backup: ${path.basename(file)}`,
+        `${count(preview.regions, 'region')} · ${count(preview.shortcuts, 'shortcut')}`,
+        `${count(preview.managed, 'moved shortcut')} · ${count(preview.external, 'reference')}`,
+        'This replaces your layout, settings, and shortcut list.',
+        'Matching shortcuts on the desktop move into QuickLauncher.',
+        'QuickLauncher restarts to apply the backup.',
+        ...(preview.returned ? [`${count(preview.returned, 'current moved shortcut')} will return to the desktop.`] : []),
+        ...(preview.missing ? [`${count(preview.missing, 'shortcut target')} ${preview.missing === 1 ? 'is' : 'are'} unavailable.`, ...preview.missingPaths] : [])].join('\n');
+      const answer = await dialog.showMessageBox(mgr.window, { type: 'question', title: 'Import QuickLauncher backup?',
+        message: 'Replace this QuickLauncher setup?', detail, buttons: ['Cancel', 'Import'], defaultId: 0, cancelId: 0, noLink: true });
+      if (answer.response !== 1) return { canceled: true };
+      mgr.send('manager:backup-status', 'Restoring backup…');
+      ctl.flushPendingRects();
+      const result = await backup.importFrom(file, preview.token);
+      // Import has committed its complete state. No renderer round-trip or
+      // stale settings save can run before this controlled restart.
+      electronApp.relaunch();
+      if (quit) quit('backup-import'); else electronApp.exit(0);
+      return result;
+    } catch (e) {
+      if (e.recoveryRequired) {
+        // Keep an unresolved file transaction isolated from all old region
+        // interactions. Startup retries recovery before creating any window.
+        ctl.releaseAll();
+        dialog.showErrorBox('Import needs recovery', `${e.message}\n\nRecovery record: ${e.recoveryPath}\nYour files were kept. Resolve the reported file conflict, then start QuickLauncher again.`);
+        electronApp.exit(1);
+        return { ok: false, error: e.message };
+      }
+      const reasons = { ENOSPC: 'the disk is full. Free some space and try again.', EACCES: 'access was denied. Check the folder permissions and try again.',
+        EPERM: 'access was denied. Check the folder permissions and try again.', EBUSY: 'a file is in use. Close the app using it and try again.',
+        ENOENT: 'a file or folder is missing. Choose the backup again.', ENOTDIR: 'the selected folder is unavailable. Choose another folder.' };
+      const reason = e.code ? reasons[e.code] || 'the file could not be accessed. Check the folder and try again.' : e.message;
+      const message = `${importing ? 'Backup not imported' : 'Backup not saved'}: ${reason}`;
+      return { ok: false, error: message };
+    } finally { backupDialog = false; }
+  };
   // Compile icon helper DLL in the background (async, non-blocking).
   // Must finish before any icon extraction calls use iconHelperLoadSnippet().
   compileIconHelperDll().then(() => refreshStoredShortcutIcons(ctl, store)).catch(() => {});
@@ -747,11 +810,14 @@ $apps | ConvertTo-Json -Depth 2
 
   // ── Manager ───────────────────────────────────────────────────────────────
   const onManager = (channel, fn) => ipcMain.handle(channel, (e, ...args) => (fromManager(e) ? fn(...args) : null));
+  onManager('manager:export-backup', () => backupAction(false));
+  onManager('manager:import-backup', () => backupAction(true));
   onManager('manager:state', () => {
     // Broken tiles and files without a tile are re-checked in the background;
     // a change sends manager:changed, which reads the state again.
     ctl.refreshMoves().catch(() => {});
     return { ...ctl.managerState(), version: electronApp.getVersion(),
+      backupResult: mgr.backupResult || null,
       installedPaths: ctl.apps().map(a => ({ regionId: a.regionId, path: a.path })) };
   });
   // M3, Moved shortcuts (spec 8.1, 5.4, 5.5).

@@ -20,6 +20,8 @@ const INVOKE_CHANNELS = new Set([
   'install-update',
   'get-installed-apps',
   'manager:state',
+  'manager:export-backup',
+  'manager:import-backup',
   'manager:create-region',
   'manager:new-region-menu',
   'manager:update-region',
@@ -39,6 +41,7 @@ const INVOKE_CHANNELS = new Set([
 
 const ON_CHANNELS = new Set([
   'manager:changed',
+  'manager:backup-status',
   'manager:update-state',
   'manager:created',
   'manager:show-view',

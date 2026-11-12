@@ -52,6 +52,34 @@
   $('tab-regions').addEventListener('click', () => showView('regions'));
   $('tab-settings').addEventListener('click', () => showView('settings'));
 
+  let backupBusy = false, backupResultSeen = false;
+  const backupStatus = (text, error = false) => {
+    const el = $('backup-status');
+    el.setAttribute('role', error ? 'alert' : 'status');
+    el.textContent = text || '';
+  };
+  async function runBackup(importing) {
+    if (backupBusy) return;
+    backupBusy = true;
+    const button = $(importing ? 'btn-import-backup' : 'btn-export-backup');
+    const previous = $('backup-status').textContent;
+    $('btn-export-backup').disabled = $('btn-import-backup').disabled = true;
+    try {
+      const r = await api.invoke(importing ? 'manager:import-backup' : 'manager:export-backup');
+      if (r && r.canceled) backupStatus(previous);
+      else if (r && r.ok) backupStatus(r.message || 'Restoring backup…');
+      else backupStatus(r && r.error || 'The backup operation could not finish. Try again.', true);
+    } catch { backupStatus('The backup operation could not finish. Try again.', true); }
+    finally {
+      backupBusy = false;
+      $('btn-export-backup').disabled = $('btn-import-backup').disabled = false;
+      button.focus();
+    }
+  }
+  $('btn-export-backup').addEventListener('click', () => runBackup(false));
+  $('btn-import-backup').addEventListener('click', () => runBackup(true));
+  api.on('manager:backup-status', text => backupStatus(text));
+
   // ── shared theme dropdown (the searchable SKIN picker, one list for all) ───
   const listEl = $('theme-picker-list');
   let openPicker = null; // { input, current, onPick }
@@ -851,6 +879,10 @@
         renderRegions();
         renderMoved();
         renderSettings();
+        if (state.backupResult && !backupResultSeen) {
+          backupResultSeen = true;
+          backupStatus(state.backupResult);
+        }
         if (pickerRegionId) updatePickerRows();
       } while (again);
     })();
@@ -865,6 +897,7 @@
     if (v === 'picker') { showView('regions'); openAppPicker(msg.regionId); return; }
     if (v === 'cheatsheet') { openCheatsheet(); return; }
     showView(v === 'settings' ? 'settings' : 'regions');
+    if (v === 'settings' && state.backupResult) $('backup-section').scrollIntoView({ block: 'nearest' });
     if (v === 'regions' && msg.regionId && rows.has(msg.regionId)) {
       const r = rows.get(msg.regionId);
       r.row.scrollIntoView({ block: 'nearest' });
