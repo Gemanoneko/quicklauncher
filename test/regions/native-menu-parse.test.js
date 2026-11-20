@@ -1,4 +1,5 @@
 'use strict';
+require('../../scripts/tool-env.cjs');
 // Optional Windows parse-only integration. No Form, popup, launch, key or real
 // profile write: compile the actual production parsing block into a one-shot
 // STA probe, then run it hidden under the verification runner's private Job.

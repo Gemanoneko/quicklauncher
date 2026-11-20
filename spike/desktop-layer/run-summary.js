@@ -13,6 +13,7 @@
 // window shown, or a desktop window raised above the app windows (the Win7-10
 // way). Every raw signal is in the log, so the reader can re-infer.
 
+require('../../scripts/tool-env.cjs');
 const os = require('node:os');
 const path = require('node:path');
 const fs = require('node:fs');

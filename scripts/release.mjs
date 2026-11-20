@@ -14,6 +14,7 @@
 // The tag must already be pushed (`--verify-tag`): without it GitHub would tag
 // the default branch, not the release commit.
 
+import './tool-env.cjs';
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 

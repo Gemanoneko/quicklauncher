@@ -1,4 +1,5 @@
 'use strict';
+require('../../scripts/tool-env.cjs');
 // Plain Node: node --test test/
 // The safe file move (tech plan § 3) on REAL files: every test builds its own
 // fake Desktop, Public Desktop, store folder and profile inside the temp

@@ -24,6 +24,7 @@
  * (crash: the second launch is skipped; restore: the held file is not held; refusal:
  * a folder inside %TEMP% is passed). Exit 0 when every check passes.
  */
+import toolEnv from './tool-env.cjs';
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
@@ -47,6 +48,7 @@ const ROOT = resolve(opt('root', join(tmpdir(), 'ql-regions-m3')));
 if (!['crash-add', 'crash-back', 'restore', 'refusal'].includes(PART)) { console.error('m3-crash: --part crash-add|crash-back|restore|refusal'); process.exit(1); }
 if (!GUARD || !existsSync(GUARD)) { console.error('m3-crash: --guard <quicklaunch-safe-launch.mjs> is required'); process.exit(1); }
 if (!existsSync(EXE)) { console.error(`m3-crash: no build at ${EXE}`); process.exit(1); }
+toolEnv.assertOutput(ROOT);
 mkdirSync(ROOT, { recursive: true });
 {
   const real = realpathSync.native(ROOT).toLowerCase();

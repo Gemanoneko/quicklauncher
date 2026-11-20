@@ -32,6 +32,7 @@
  * listed in m2Checks and m2bChecks, and a foreground event for this build in
  * the observer's log. Exit 0 when every check passes.
  */
+import toolEnv from './tool-env.cjs';
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { appendFileSync, copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
@@ -88,6 +89,8 @@ function check(name, ok, evidence) {
 const stamp = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
 const ROOT_DIR = resolve(opt('root', join(tmpdir(), 'ql-regions-selftest')));
 {
+  toolEnv.assertOutput(ROOT_DIR);
+  if (SHOTS) toolEnv.assertOutput(resolve(SHOTS));
   mkdirSync(ROOT_DIR, { recursive: true });
   const real = realpathSync.native(ROOT_DIR).toLowerCase();
   const temps = [tmpdir(), process.env.TEMP, process.env.TMP].filter(Boolean).map((p) => realpathSync.native(p).toLowerCase());

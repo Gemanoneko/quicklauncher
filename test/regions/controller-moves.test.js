@@ -1,4 +1,5 @@
 'use strict';
+require('../../scripts/tool-env.cjs');
 // Plain Node: node --test test/
 // M3 in the real RegionController (electron and the desktop host stubbed, as in
 // controller.test.js) with the real mover on real files in the temp folder

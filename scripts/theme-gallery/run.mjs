@@ -67,6 +67,7 @@
 // HKCU Run and StartupApproved\Run keys before and after and fails on any difference (it never
 // writes the registry), samples netstat for sockets owned by the processes it started, and
 // confirms none of them remain. It ends only the process it spawned, through its own handle.
+import toolEnv from '../tool-env.cjs';
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -173,6 +174,7 @@ if (hoverCheck) {
   } catch (e) { refuse.push(`hover baseline ${path.relative(REPO, HOVER_BASELINE)}: ${e.message}`); }
 }
 for (const [label, p] of [['--out', OUT], ['--work', WORK]]) {
+  try { toolEnv.assertOutput(p); } catch (e) { refuse.push(e.message); }
   if (appData && inside(path.join(appData, 'QuickLauncher'), p)) refuse.push(`${label} is inside the real QuickLauncher profile`);
   if (localAppData && inside(path.join(localAppData, 'Programs'), p)) refuse.push(`${label} is inside an installed-apps folder`);
   for (const sub of ['src', 'dist', 'node_modules', '.git']) if (inside(path.join(REPO, sub), p)) refuse.push(`${label} is inside the repo's ${sub}/`);

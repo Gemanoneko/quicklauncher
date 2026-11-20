@@ -153,7 +153,8 @@ app.whenReady().then(() => {
     logRegions({ event: 'sentinel-error', error: String(e && e.message) });
   }
 
-  setupTray({ ctl, mgr, electronApp: app, store, quit: quitApp });
+  // Automated region tests quit through IPC. Registering an unused icon writes Explorer history.
+  if (!TEST_HOOKS) setupTray({ ctl, mgr, electronApp: app, store, quit: quitApp });
   // The tray's New region item is disabled at the cap: rebuild it when the count changes.
   ctl.on('regions-changed', () => refreshTrayMenu());
   setupIPC(ctl, store, app, mgr, { testHooks: TEST_HOOKS, quit: quitApp });

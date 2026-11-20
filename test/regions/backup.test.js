@@ -1,4 +1,5 @@
 'use strict';
+require('../../scripts/tool-env.cjs');
 // Real files + native no-replace moves/Windows identities, isolated from all
 // user data. No Electron launch, registry, shortcut execution or shell calls.
 const test = require('node:test');

@@ -1,4 +1,5 @@
 'use strict';
+require('../../scripts/tool-env.cjs');
 // Plain Node: node --test test/
 // The try-it's printed text (UX spec, "Addendum — try-it rewrite", Futaba
 // measures 1 to 5): the script is run with --print (nothing is created or
@@ -17,8 +18,8 @@ const REPO = path.join(__dirname, '..', '..');
 const SCRIPT = path.join(REPO, 'scripts', 'tryit-regions.mjs');
 const SPEC = path.join(REPO, 'Docs', 'QuickLaunch_Regions_UXSpec_2026-10-01.md');
 const BASE = path.resolve(process.env.QL_TEST_TMP || os.tmpdir());
-const APPDATA = path.join(BASE, 'ql-tryit-text', `${process.pid}`, 'AppData');
-fs.mkdirSync(APPDATA, { recursive: true }); // empty: no QuickLauncher data file, so 0 shortcuts
+const APPDATA = fs.mkdtempSync(path.join(BASE, 'ql-tryit-text-'));
+test.after(() => fs.rmdirSync(APPDATA)); // empty: --print only reads the stand-in profile
 
 function printed(fallback) {
   const r = spawnSync(process.execPath, [SCRIPT, '--print', ...(fallback ? ['--fallback'] : [])],

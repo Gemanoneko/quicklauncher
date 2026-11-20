@@ -14,6 +14,7 @@
  * hotkey Ctrl+Shift+Space, because the installed QuickLauncher holds Ctrl+Space.
  * The run ends when QuickLauncher quits from its tray, or after 5 minutes.
  */
+import './tool-env.cjs';
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
