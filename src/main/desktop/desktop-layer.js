@@ -23,7 +23,8 @@ const C = {
   WS_CHILD: 0x40000000, WS_POPUP: 0x80000000 | 0, WS_VISIBLE: 0x10000000, WS_CLIPSIBLINGS: 0x04000000,
   WS_CAPTION: 0x00c00000, WS_THICKFRAME: 0x00040000, WS_SYSMENU: 0x00080000,
   WS_MINIMIZEBOX: 0x00020000, WS_MAXIMIZEBOX: 0x00010000,
-  WS_EX_TOOLWINDOW: 0x80, WS_EX_APPWINDOW: 0x40000,
+  WS_EX_TOOLWINDOW: 0x80, WS_EX_APPWINDOW: 0x40000, WS_EX_LAYERED: 0x80000,
+  LWA_ALPHA: 0x2,
   HWND_TOP: 0, HWND_BOTTOM: 1, HWND_TOPMOST: -1, HWND_NOTOPMOST: -2,
   SWP_NOSIZE: 0x1, SWP_NOMOVE: 0x2, SWP_NOZORDER: 0x4, SWP_NOACTIVATE: 0x10,
   SWP_FRAMECHANGED: 0x20, SWP_SHOWWINDOW: 0x40, SWP_NOOWNERZORDER: 0x200,
@@ -50,6 +51,7 @@ if (koffi) {
       GetWindowThreadProcessId: user32.func('uint32 __stdcall GetWindowThreadProcessId(intptr hwnd, void *pid)'),
       GetWindowLongW: user32.func('int32 __stdcall GetWindowLongW(intptr hwnd, int idx)'),
       SetWindowLongW: user32.func('int32 __stdcall SetWindowLongW(intptr hwnd, int idx, int32 val)'),
+      SetLayeredWindowAttributes: user32.func('int __stdcall SetLayeredWindowAttributes(intptr hwnd, uint32 key, uint8 alpha, uint32 flags)'),
       SetWindowPos: user32.func('int __stdcall SetWindowPos(intptr hwnd, intptr after, int x, int y, int cx, int cy, uint32 flags)'),
       ShowWindow: user32.func('int __stdcall ShowWindow(intptr hwnd, int cmd)'),
       GetWindowRect: user32.func('int __stdcall GetWindowRect(intptr hwnd, void *rect)'),
@@ -155,6 +157,21 @@ function screenToClientRect(parent, r) {
 // (in front of the icon view). Never activates.
 function attachToHost(hwnd, host, screenRect) {
   const oldStyle = W.GetWindowLongW(hwnd, C.GWL_STYLE);
+  // Chromium's transparent top-level surface blends against black as a desktop
+  // child. Layer the HWND at full opacity so Windows blends the surface alpha
+  // with the desktop without fading icons or changing the native hit shape.
+  const exStyle = W.GetWindowLongW(hwnd, C.GWL_EXSTYLE);
+  // Chromium's software compositor can own an existing layered window.
+  // Setting constant attributes on that window would block its own updates.
+  const addLayer = !(exStyle & C.WS_EX_LAYERED);
+  if (addLayer) {
+    W.SetWindowLongW(hwnd, C.GWL_EXSTYLE, exStyle | C.WS_EX_LAYERED);
+    if (!W.SetLayeredWindowAttributes(hwnd, 0, 255, C.LWA_ALPHA)) {
+      const alphaError = W.GetLastError();
+      W.SetWindowLongW(hwnd, C.GWL_EXSTYLE, exStyle);
+      return { ok: false, error: `SetLayeredWindowAttributes failed, GetLastError=${alphaError}` };
+    }
+  }
   const strip = C.WS_POPUP | C.WS_CAPTION | C.WS_THICKFRAME | C.WS_SYSMENU | C.WS_MINIMIZEBOX | C.WS_MAXIMIZEBOX;
   const childStyle = (oldStyle & ~strip) | C.WS_CHILD | C.WS_CLIPSIBLINGS;
   W.SetWindowLongW(hwnd, C.GWL_STYLE, childStyle);
@@ -163,6 +180,7 @@ function attachToHost(hwnd, host, screenRect) {
   const err = W.GetLastError();
   if (!prev && err) {
     W.SetWindowLongW(hwnd, C.GWL_STYLE, oldStyle);
+    if (addLayer) W.SetWindowLongW(hwnd, C.GWL_EXSTYLE, exStyle);
     return { ok: false, error: `SetParent failed, GetLastError=${err}` };
   }
   const rc = screenToClientRect(host, screenRect);
